@@ -1,0 +1,46 @@
+:root {
+  --in-app-bar-height: 50px;
+  --in-app-bar-padding: 0 15px;
+  --in-menu-icon-size: var(--el-menu-icon-width);
+  --in-menu-show: 210px;
+  --in-menu-hide: 56px;
+  --in-menu-base-level-padding: 16px;
+
+  --in-breadcrumb-icon-size: 16px;
+
+  --in-tabs-height: 26px;
+  --in-tabs-font-size: 12px;
+  --in-tabs-border-color: var(--el-border-color-light);
+
+  --in-common-margin: 12px;
+  --in-common-padding: 12px;
+
+  --in-transition-duration: var(--el-transition-duration);
+}
+
+:root {
+  --in-menu-bg-color: #191a20;
+  --in-menu-bg-hover-color: #14151a;
+  --in-menu-text-color: #bdbdc0;
+  --in-menu-text-active-color: #ffffff;
+
+  --in-color-primary: var(--el-color-primary);
+  --in-text-color: var(--el-text-color-primary);
+  --in-text-color-light: var(--el-text-color-regular);
+  --in-text-color-lighter: var(--el-text-color-secondary);
+  --in-text-color-primary: var(--el-text-color-primary);
+  --in-text-color-secondary: var(--el-text-color-secondary);
+  --in-box-shadow: var(--el-box-shadow);
+
+  --in-bg-color: var(--el-bg-color);
+  --in-bg-color-page: var(--el-bg-color-page);
+  --in-bg-color-mute: #f2f2f2;
+
+  --in-border-color: var(--el-border-color);
+  --in-border-color-light: var(--el-border-color-lighter);
+  --in-color-info-light-5: var(--el-color-info-light-5);
+}
+
+:root {
+  --in-border-style: 1px solid var(--in-border-color);
+}
