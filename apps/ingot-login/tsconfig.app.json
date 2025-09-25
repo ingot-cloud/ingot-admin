@@ -1,12 +1,11 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "extends": "../../tsconfig.vue-base.json",
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "*.d.ts"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
+    "baseUrl": ".",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "composite": true,
-    "baseUrl": ".",
-    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*"]
     }

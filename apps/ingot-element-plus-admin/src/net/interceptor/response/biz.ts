@@ -58,6 +58,7 @@ const bizResponseFailureHandler = (
         return Promise.reject(response);
       }
 
+      console.log("pkce token失效不进行refresh，直接重新登录");
       // pkce token失效不进行refresh，直接重新登录
       logoutAndReload(true);
       break;

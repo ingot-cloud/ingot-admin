@@ -1,12 +1,3 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "include": ["src", "eslint.config.*"],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "declaration": true,
-    "declarationDir": "dist",
-    "composite": true,
-    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
-  }
+  "extends": "../../tsconfig.package-base.json"
 }

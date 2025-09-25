@@ -8,5 +8,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.4"
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.0"
+  }
 }
