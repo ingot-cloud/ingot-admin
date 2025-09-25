@@ -2,8 +2,17 @@
   "name": "ingot-admin",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "pnpm --filter ingot-element-plus-admin dev && pnpm --filter ingot-login dev",
+    "dev:admin": "pnpm --filter ingot-element-plus-admin dev",
+    "dev:login": "pnpm --filter ingot-login dev",
+    "build": "pnpm --filter ingot-element-plus-admin build && pnpm --filter ingot-login build",
+    "build:admin": "pnpm --filter ingot-element-plus-admin build",
+    "build:login": "pnpm --filter ingot-login build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -11,7 +20,19 @@
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
     "@tsconfig/node22": "^22.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "@typescript-eslint/utils": "^8.44.1",
+    "@vitest/eslint-plugin": "^1.1.39",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
-    "typescript": "~5.8.0"
+    "eslint": "^9.22.0",
+    "eslint-plugin-playwright": "^2.2.0",
+    "eslint-plugin-vue": "~10.0.0",
+    "jiti": "^2.6.0",
+    "prettier": "3.5.3",
+    "typescript": "~5.8.0",
+    "typescript-eslint": "^8.44.1"
   }
 }
