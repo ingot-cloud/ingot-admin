@@ -6,6 +6,9 @@
     "types": ["vite/client", "element-plus/global", "unplugin-icons/types/vue"],
     "jsx": "preserve",
     "jsxImportSource": "vue",
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@ingot/utils": ["../../packages/utils/src/index.ts"]
+    }
   }
 }

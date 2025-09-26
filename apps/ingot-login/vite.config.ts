@@ -93,6 +93,9 @@ export default defineConfig(({ mode }) => {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
         "@cmps": fileURLToPath(new URL("./src/components", import.meta.url)),
         "@models": fileURLToPath(new URL("./src/models", import.meta.url)),
+        "@ingot/utils": fileURLToPath(
+          new URL("../../packages/utils/src/index.ts", import.meta.url),
+        ),
       },
     },
     css: {
