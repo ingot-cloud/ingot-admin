@@ -30,7 +30,6 @@ export const AES = async <T>(params: AESParams<T>) => {
   for (const key of keys) {
     try {
       const value = result[key];
-      console.log(2, value);
       if (action === "encrypt") {
         result[key] =
           mode === "GCM" ? await encryptGCM(value, encodeKey) : encryptCBC(value, encodeKey);
