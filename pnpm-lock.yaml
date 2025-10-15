@@ -34,6 +34,9 @@ importers:
 
   .:
     devDependencies:
+      '@iconify/utils':
+        specifier: ^3.0.2
+        version: 3.0.2
       '@playwright/test':
         specifier: ^1.51.1
         version: 1.56.0
@@ -70,6 +73,9 @@ importers:
       '@typescript-eslint/utils':
         specifier: ^8.44.1
         version: 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
+      '@unocss/preset-wind3':
+        specifier: ^66.5.3
+        version: 66.5.3
       '@unocss/reset':
         specifier: ^66.1.2
         version: 66.5.3
