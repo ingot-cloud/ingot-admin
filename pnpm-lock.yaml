@@ -173,7 +173,7 @@ importers:
         specifier: ^2.2.8
         version: 2.2.12(typescript@5.9.3)
 
-  apps/ingot-element-plus-admin:
+  apps/ingot-admin:
     dependencies:
       '@element-plus/icons-vue':
         specifier: ^2.3.1

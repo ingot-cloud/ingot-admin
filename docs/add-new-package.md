@@ -78,7 +78,7 @@ packages/
 #### 4.2 在 Vite 配置中添加别名（两个应用都要添加）：
 
 ```js
-// apps/ingot-login/vite.config.ts 和 apps/ingot-element-plus-admin/vite.config.ts
+// apps/ingot-login/vite.config.ts 和 apps/ingot-admin/vite.config.ts
 resolve: {
   alias: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),
