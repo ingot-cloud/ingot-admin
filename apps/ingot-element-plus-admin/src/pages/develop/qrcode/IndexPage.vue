@@ -114,7 +114,7 @@ import {
   LineOptionsType,
   RoundOptionsType,
 } from "@/components/qrcode";
-import { saveSvg, saveImg } from "@/utils/download";
+import { saveSvg, saveImg } from "@ingot/utils";
 
 const QrcodeRef = ref();
 const qrcodeSize = computed<number>({
