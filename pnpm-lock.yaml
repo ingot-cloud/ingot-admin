@@ -281,6 +281,9 @@ importers:
 
   apps/ingot-login:
     dependencies:
+      '@ingot/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@ingot/utils':
         specifier: workspace:*
         version: link:../../packages/utils
