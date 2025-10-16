@@ -29,6 +29,9 @@ overrides:
   vite: ^6.2.4
   vitest: ^3.1.1
   vue-tsc: ^2.2.8
+  '@unocss/preset-wind3': 66.5.3
+  '@unocss/reset': 66.5.3
+  unocss: 66.5.3
 
 importers:
 
@@ -74,10 +77,10 @@ importers:
         specifier: ^8.44.1
         version: 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       '@unocss/preset-wind3':
-        specifier: ^66.5.3
+        specifier: 66.5.3
         version: 66.5.3
       '@unocss/reset':
-        specifier: ^66.1.2
+        specifier: 66.5.3
         version: 66.5.3
       '@vitejs/plugin-vue':
         specifier: ^5.2.3
@@ -146,7 +149,7 @@ importers:
         specifier: ^8.44.1
         version: 8.46.1(eslint@9.37.0(jiti@2.6.1))(typescript@5.9.3)
       unocss:
-        specifier: ^66.1.2
+        specifier: 66.5.3
         version: 66.5.3(postcss@8.5.6)(vite@6.3.6(@types/node@22.18.10)(jiti@2.6.1)(terser@5.44.0))
       unplugin-auto-import:
         specifier: ^19.2.0
@@ -184,6 +187,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.2(vue@3.5.22(typescript@5.9.3))
+      '@ingot/hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
       '@ingot/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -360,6 +366,12 @@ importers:
       '@iconify/vue':
         specifier: ^5.0.0
         version: 5.0.0(vue@3.5.22(typescript@5.9.3))
+
+  packages/hooks:
+    dependencies:
+      vue:
+        specifier: 3.5.22
+        version: 3.5.22(typescript@5.9.3)
 
   packages/utils:
     dependencies:
@@ -4539,7 +4551,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/generator': 7.28.3
-      '@babel/parser': 7.27.7
+      '@babel/parser': 7.28.4
       '@babel/template': 7.27.2
       '@babel/types': 7.28.4
       debug: 4.4.3

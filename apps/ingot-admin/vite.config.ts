@@ -84,6 +84,9 @@ export default defineConfig(({ mode }) => {
         "@ingot/utils": fileURLToPath(
           new URL("../../packages/utils/src/index.ts", import.meta.url),
         ),
+        "@ingot/hooks": fileURLToPath(
+          new URL("../../packages/hooks/src/index.ts", import.meta.url),
+        ),
       },
     },
     css: {

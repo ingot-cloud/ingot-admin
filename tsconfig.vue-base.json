@@ -9,7 +9,8 @@
     "allowJs": true,
     "composite": true,
     "paths": {
-      "@ingot/utils": ["../../packages/utils/src/index.ts"]
+      "@ingot/utils": ["../../packages/utils/src/index.ts"],
+      "@ingot/hooks": ["../../packages/hooks/src/index.ts"]
     }
   }
 }

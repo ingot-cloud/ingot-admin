@@ -14,6 +14,7 @@
     "build:admin": "pnpm --filter @ingot/utils build && pnpm --filter ingot-admin build",
     "build:login": "pnpm --filter @ingot/utils build && pnpm --filter ingot-login build",
     "build:utils": "pnpm --filter @ingot/utils build",
+    "build:hooks": "pnpm --filter @ingot/hooks build",
     "clean": "pnpm --filter \"*\" run clean && rimraf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --fix",
