@@ -39,8 +39,9 @@ pnpm create:package:config <package-name>
 - ✅ `eslint.config.ts`（ESLint 规则）
 - ✅ `src/index.ts`（入口文件）
 - ✅ `README.md`（说明文档）
-- ✅ 自动更新 `tsconfig.vue-base.json`
-- ✅ 自动更新所有 `vite.config.ts` 文件
+- ✅ 自动更新根目录 `tsconfig.json` 的 `references`
+- ✅ 自动更新 `tsconfig.vue-base.json` 的路径映射
+- ✅ 自动更新所有 `vite.config.ts` 文件的别名
 
 ### 创建后的步骤：
 
@@ -132,9 +133,33 @@ packages/
 
 ### 4. 添加到基础配置中
 
-**只需要在以下两个地方添加一行配置：**
+**需要在以下三个地方添加配置：**
 
-#### 4.1 在 `tsconfig.vue-base.json` 中添加路径映射：
+#### 4.1 在根目录 `tsconfig.json` 中添加 references：
+
+```json
+{
+  "references": [
+    {
+      "path": "./apps/ingot-admin"
+    },
+    {
+      "path": "./apps/ingot-login"
+    },
+    {
+      "path": "./packages/utils"
+    },
+    {
+      "path": "./packages/hooks"
+    },
+    {
+      "path": "./packages/your-new-package" // 👈 添加这一行
+    }
+  ]
+}
+```
+
+#### 4.2 在 `tsconfig.vue-base.json` 中添加路径映射：
 
 ```json
 {
@@ -147,7 +172,7 @@ packages/
 }
 ```
 
-#### 4.2 在 Vite 配置中添加别名（两个应用都要添加）：
+#### 4.3 在 Vite 配置中添加别名（两个应用都要添加）：
 
 ```js
 // apps/ingot-login/vite.config.ts 和 apps/ingot-admin/vite.config.ts

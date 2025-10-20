@@ -224,7 +224,23 @@ async function updateConfigs(packageName) {
   log(`\n🔧 正在更新配置文件...`, "blue");
 
   try {
-    // 1. 更新 tsconfig.vue-base.json
+    // 1. 更新根目录 tsconfig.json 的 references
+    log("  - 更新根目录 tsconfig.json...", "yellow");
+    const rootTsconfigPath = path.join(rootDir, "tsconfig.json");
+    const rootTsconfig = JSON.parse(fs.readFileSync(rootTsconfigPath, "utf-8"));
+
+    const newReference = { path: `./packages/${packageName}` };
+    const referenceExists = rootTsconfig.references.some((ref) => ref.path === newReference.path);
+
+    if (!referenceExists) {
+      rootTsconfig.references.push(newReference);
+      fs.writeFileSync(rootTsconfigPath, JSON.stringify(rootTsconfig, null, 2) + "\n");
+      log("    ✓ tsconfig.json 已更新", "green");
+    } else {
+      log("    ⊙ tsconfig.json 已包含该配置", "yellow");
+    }
+
+    // 2. 更新 tsconfig.vue-base.json
     log("  - 更新 tsconfig.vue-base.json...", "yellow");
     const tsconfigVueBasePath = path.join(rootDir, "tsconfig.vue-base.json");
     const tsconfigVueBase = JSON.parse(fs.readFileSync(tsconfigVueBasePath, "utf-8"));
@@ -239,7 +255,7 @@ async function updateConfigs(packageName) {
       log("    ⊙ tsconfig.vue-base.json 已包含该配置", "yellow");
     }
 
-    // 2. 更新 Vite 配置文件
+    // 3. 更新 Vite 配置文件
     const viteConfigs = ["apps/ingot-admin/vite.config.ts", "apps/ingot-login/vite.config.ts"];
 
     for (const viteConfigPath of viteConfigs) {
@@ -253,26 +269,58 @@ async function updateConfigs(packageName) {
         continue;
       }
 
-      // 找到最后一个 @ingot 别名的位置
-      const lastIngotAliasMatch = content.match(/@ingot\/[^:]+:\s*fileURLToPath\([^)]+\),?\s*\n/g);
+      // 找到 resolve.alias 块，并在最后一个 @ingot 别名后面插入
+      // 策略：找到最后一个 "@ingot/ 开头的行，然后向下查找它对应的结束 ),
 
-      if (lastIngotAliasMatch) {
-        const lastIngotAlias = lastIngotAliasMatch[lastIngotAliasMatch.length - 1];
-        const insertPos = content.lastIndexOf(lastIngotAlias) + lastIngotAlias.length;
+      // 查找所有 "@ingot/ 别名的起始位置
+      const ingotLines = [];
+      const lines = content.split("\n");
 
-        // 确定相对路径的深度
-        const depth = viteConfigPath.split("/").length - 1;
-        const relativePath = "../".repeat(depth);
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].includes('"@ingot/')) {
+          ingotLines.push(i);
+        }
+      }
 
-        const newAlias = `        "@ingot/${packageName}": fileURLToPath(
+      if (ingotLines.length > 0) {
+        // 获取最后一个 @ingot 别名的行号
+        const lastIngotLineIndex = ingotLines[ingotLines.length - 1];
+
+        // 从这一行开始向下查找对应的 ), 结束位置
+        let endLineIndex = lastIngotLineIndex + 1;
+        let foundEnd = false;
+
+        // 查找包含 ), 的行（注意缩进应该是8个空格）
+        while (endLineIndex < lines.length) {
+          const line = lines[endLineIndex];
+          // 匹配8个空格+), 的模式
+          if (/^\s{8}\),\s*$/.test(line)) {
+            foundEnd = true;
+            break;
+          }
+          endLineIndex++;
+        }
+
+        if (foundEnd) {
+          // 确定相对路径的深度
+          const depth = viteConfigPath.split("/").length - 1;
+          const relativePath = "../".repeat(depth);
+
+          // 在找到的行后面插入新的别名
+          const newAlias = `        "@ingot/${packageName}": fileURLToPath(
           new URL("${relativePath}packages/${packageName}/src/index.ts", import.meta.url),
-        ),\n`;
+        ),`;
 
-        content = content.slice(0, insertPos) + newAlias + content.slice(insertPos);
-        fs.writeFileSync(fullPath, content);
-        log(`    ✓ ${viteConfigPath} 已更新`, "green");
+          lines.splice(endLineIndex + 1, 0, newAlias);
+          content = lines.join("\n");
+
+          fs.writeFileSync(fullPath, content);
+          log(`    ✓ ${viteConfigPath} 已更新`, "green");
+        } else {
+          log(`    ⚠ 无法找到 @ingot 别名的结束位置，请手动添加`, "red");
+        }
       } else {
-        log(`    ⚠ 无法自动更新 ${viteConfigPath}，请手动添加`, "red");
+        log(`    ⚠ 无法找到 @ingot 别名，请手动添加`, "red");
       }
     }
 
