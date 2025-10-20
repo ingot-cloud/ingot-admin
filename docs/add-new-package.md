@@ -1,5 +1,77 @@
 # 添加新 Package 指南
 
+## 🚀 自动化方式（推荐）
+
+使用自动化脚本快速创建新的 package：
+
+### 方式一：交互式创建
+
+```bash
+pnpm create:package
+```
+
+然后按照提示输入 package 名称和描述即可。脚本会询问是否自动更新配置文件。
+
+### 方式二：命令行参数创建
+
+```bash
+# 基本用法
+pnpm create:package <package-name>
+
+# 带描述
+pnpm create:package my-package "这是一个工具包"
+```
+
+### 单独更新配置文件
+
+如果你已经创建了 package，只需要更新配置文件（tsconfig.vue-base.json 和 vite.config.ts）：
+
+```bash
+pnpm create:package:config <package-name>
+```
+
+### 自动化脚本会创建：
+
+- ✅ 完整的目录结构（`packages/your-package/`）
+- ✅ `package.json`（包含所有必要配置）
+- ✅ `tsconfig.json`（TypeScript 配置）
+- ✅ `tsconfig.eslint.json`（ESLint 配置）
+- ✅ `eslint.config.ts`（ESLint 规则）
+- ✅ `src/index.ts`（入口文件）
+- ✅ `README.md`（说明文档）
+- ✅ 自动更新 `tsconfig.vue-base.json`
+- ✅ 自动更新所有 `vite.config.ts` 文件
+
+### 创建后的步骤：
+
+1. 在需要使用的应用的 `package.json` 中添加依赖：
+
+   ```json
+   {
+     "dependencies": {
+       "@ingot/your-package": "workspace:*"
+     }
+   }
+   ```
+
+2. 安装依赖并构建：
+
+   ```bash
+   pnpm install
+   pnpm --filter @ingot/your-package build
+   ```
+
+3. 开始开发：
+   ```bash
+   pnpm --filter @ingot/your-package dev
+   ```
+
+---
+
+## 📝 手动方式
+
+如果你想手动创建或了解详细配置，可以参考以下步骤：
+
 ## 快速添加新包的步骤
 
 ### 1. 创建包目录结构

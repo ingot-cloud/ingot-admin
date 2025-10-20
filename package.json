@@ -18,7 +18,9 @@
     "clean": "pnpm --filter \"*\" run clean && rimraf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "create:package": "node scripts/create-package.mjs",
+    "create:package:config": "node scripts/create-package.mjs config"
   },
   "keywords": [],
   "author": "",
