@@ -174,3 +174,17 @@ export function assignIgnoreKeys<T extends {}, U>(target: T, source: U, ignoreKe
   });
   Object.assign(target, middle);
 }
+
+/**
+ * 省略对象指定key
+ * @param obj
+ * @param keys
+ * @returns
+ */
+export function omit(obj: any, ...keys: string[]) {
+  const target = Object.assign({}, obj);
+  keys.forEach((key) => {
+    delete target[key];
+  });
+  return target;
+}

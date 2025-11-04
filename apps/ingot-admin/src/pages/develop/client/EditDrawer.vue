@@ -36,11 +36,11 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="重定向URL">
-          <el-input
+          <in-input-tag
             v-model="editForm.redirectUris"
             clearable
             placeholder="请输入重定向URL"
-          ></el-input>
+          ></in-input-tag>
         </el-form-item>
 
         <el-form-item label="Client认证方式">
@@ -221,32 +221,34 @@ const handleActionButton = () => {
         Message.warning("未改变数据");
         return;
       }
-      let request;
-      if (isEdit.value) {
-        params.id = id.value;
-        request = UpdateClientAPI(params);
-      } else {
-        request = CreateClientAPI(params);
-      }
 
-      loading.value = true;
-      request
-        .then((response) => {
-          // 创建成功，显示秘钥
-          if (!isEdit.value) {
-            SecretDialogRef.value.show(
-              (response.data as AppSecretVO).appId!,
-              (response.data as AppSecretVO).appSecret!,
-            );
-          }
-          Message.success("操作成功");
-          emits("success");
-          show.value = false;
-          loading.value = false;
-        })
-        .catch(() => {
-          loading.value = false;
-        });
+      console.log(params);
+      let request;
+      // if (isEdit.value) {
+      //   params.id = id.value;
+      //   request = UpdateClientAPI(params);
+      // } else {
+      //   request = CreateClientAPI(params);
+      // }
+
+      // loading.value = true;
+      // request
+      //   .then((response) => {
+      //     // 创建成功，显示秘钥
+      //     if (!isEdit.value) {
+      //       SecretDialogRef.value.show(
+      //         (response.data as AppSecretVO).appId!,
+      //         (response.data as AppSecretVO).appSecret!,
+      //       );
+      //     }
+      //     Message.success("操作成功");
+      //     emits("success");
+      //     show.value = false;
+      //     loading.value = false;
+      //   })
+      //   .catch(() => {
+      //     loading.value = false;
+      //   });
     }
   });
 };
