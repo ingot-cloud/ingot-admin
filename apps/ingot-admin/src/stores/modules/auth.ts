@@ -69,7 +69,9 @@ export const useAuthStore = defineStore(
      */
     const logout = (ignoreRevokeAPI?: boolean): Promise<void> => {
       return Promise.race([
-        RevokeTokenAPI(getAccessToken.value),
+        new Promise((resolve) => {
+          RevokeTokenAPI(getAccessToken.value).then(resolve).catch(resolve);
+        }),
         new Promise<any>((resolve) => {
           // 不忽略revokeAPI最多等待退出接口1500ms
           setTimeout(
