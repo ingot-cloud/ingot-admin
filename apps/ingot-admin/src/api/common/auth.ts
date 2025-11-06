@@ -2,18 +2,25 @@ import Http from "@/net";
 import type { UserToken, R } from "@/models";
 import { useAppStore } from "@/stores/modules/app";
 import { useLoginStore } from "@/stores/modules/login";
+import { AES } from "@/utils/encrypt";
 import { storeToRefs } from "pinia";
 
-export function AuthorizeCodeTokenAPI(code: string) {
+export async function AuthorizeCodeTokenAPI(code: string) {
   const loginStore = useLoginStore();
   const { app } = useAppStore();
   const grant_type = "authorization_code";
+
+  const afterEncrypt = await AES({
+    data: { client_id: app.login.clientId },
+    keys: ["client_id"],
+  });
+
   // post 请求参数使用form data，get请求参数使用params
   const data = new URLSearchParams({
     code,
     grant_type,
     code_verifier: loginStore.codeVerifier,
-    client_id: app.login.clientId,
+    client_id: afterEncrypt.client_id,
     redirect_uri: app.login.loginCallbackUri,
   });
   return Http.post<UserToken>("/api/auth/oauth2/token", data, {

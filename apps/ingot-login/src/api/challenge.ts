@@ -35,21 +35,25 @@ export async function PreAuthorizeAPI({
   const loginStore = useLoginStore();
   const pre_grant_type = loginStore.preGrantType;
   const afterEncrypt = await AES({
-    data: { password },
-    keys: ["password"],
+    data: { username, password },
+    keys: ["username", "password"],
   });
   // application/x-www-form-urlencoded
   const data = new URLSearchParams({
-    username,
+    username: afterEncrypt.username,
     password: afterEncrypt.password,
   });
   const parameter = toRaw(loginStore.requiredParameters);
+  const afterEncryptParameter = await AES({
+    data: { ...parameter },
+    keys: ["client_id", "scope"],
+  });
   return Http.post<PreAuthorizeResult>("/api/auth/oauth2/pre_authorize", data, {
     params: {
       user_type: "0",
       _vc_code: code,
       pre_grant_type,
-      ...parameter,
+      ...afterEncryptParameter,
     },
   });
 }
@@ -57,15 +61,19 @@ export async function PreAuthorizeAPI({
 /**
  * 授权认证
  */
-export function AuthorizeAPI(tenant: string): Promise<R<AuthorizaResult>> {
+export async function AuthorizeAPI(tenant: string): Promise<R<AuthorizaResult>> {
   const loginStore = useLoginStore();
   const pre_grant_type = loginStore.preGrantType;
   const parameter = toRaw(loginStore.requiredParameters);
+  const afterEncryptParameter = await AES({
+    data: { ...parameter },
+    keys: ["client_id", "scope"],
+  });
   return Http.get<AuthorizaResult>("/api/auth/oauth2/authorize", null, {
     params: {
       org: tenant,
       pre_grant_type,
-      ...parameter,
+      ...afterEncryptParameter,
     },
   });
 }
