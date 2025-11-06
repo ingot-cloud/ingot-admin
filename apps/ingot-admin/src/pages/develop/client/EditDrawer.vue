@@ -28,12 +28,11 @@
         </el-form-item>
 
         <el-form-item label="访问范围">
-          <el-input
+          <in-input-tag
             v-model="editForm.scopes"
             clearable
             placeholder="请输入客户端scope"
-            class="form-item"
-          ></el-input>
+          ></in-input-tag>
         </el-form-item>
         <el-form-item label="重定向URL">
           <in-input-tag
@@ -221,34 +220,32 @@ const handleActionButton = () => {
         Message.warning("未改变数据");
         return;
       }
-
-      console.log(params);
       let request;
-      // if (isEdit.value) {
-      //   params.id = id.value;
-      //   request = UpdateClientAPI(params);
-      // } else {
-      //   request = CreateClientAPI(params);
-      // }
+      if (isEdit.value) {
+        params.id = id.value;
+        request = UpdateClientAPI(params);
+      } else {
+        request = CreateClientAPI(params);
+      }
 
-      // loading.value = true;
-      // request
-      //   .then((response) => {
-      //     // 创建成功，显示秘钥
-      //     if (!isEdit.value) {
-      //       SecretDialogRef.value.show(
-      //         (response.data as AppSecretVO).appId!,
-      //         (response.data as AppSecretVO).appSecret!,
-      //       );
-      //     }
-      //     Message.success("操作成功");
-      //     emits("success");
-      //     show.value = false;
-      //     loading.value = false;
-      //   })
-      //   .catch(() => {
-      //     loading.value = false;
-      //   });
+      loading.value = true;
+      request
+        .then((response) => {
+          // 创建成功，显示秘钥
+          if (!isEdit.value) {
+            SecretDialogRef.value.show(
+              (response.data as AppSecretVO).appId!,
+              (response.data as AppSecretVO).appSecret!,
+            );
+          }
+          Message.success("操作成功");
+          emits("success");
+          show.value = false;
+          loading.value = false;
+        })
+        .catch(() => {
+          loading.value = false;
+        });
     }
   });
 };
@@ -265,6 +262,7 @@ defineExpose({
   show(data?: OAuth2RegisteredClient) {
     isEdit.value = Boolean(data);
     show.value = true;
+    editFlag.value = false;
     // 重置数据
     copyParamsWithKeys(editForm, defaultEditForm, keys);
     copyParamsWithKeys(rawEditForm, defaultEditForm, keys);
