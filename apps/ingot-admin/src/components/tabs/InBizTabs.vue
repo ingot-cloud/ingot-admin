@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import type { TabItem } from "./types";
 import { tabsRootContextKey } from "./constants";
-import { useOrderedChildren } from "element-plus";
+import { useOrderedChildren } from "@/hooks/components/useOrderedChildren";
 
 const model = defineModel<string>({ required: true });
 const emits = defineEmits(["change"]);

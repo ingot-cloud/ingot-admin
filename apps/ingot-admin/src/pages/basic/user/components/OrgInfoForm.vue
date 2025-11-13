@@ -32,11 +32,13 @@ const fetchData = () => {
     .then((response) => {
       loading.value = false;
       orgList.value = response.data;
-      nextTick(() => {
-        OrgInfoFormItemRef.value.forEach((itemRef: any) => {
-          itemRef.refresh();
+      if (orgList.value.length > 0) {
+        nextTick(() => {
+          OrgInfoFormItemRef.value.forEach((itemRef: any) => {
+            itemRef.refresh();
+          });
         });
-      });
+      }
     })
     .catch(() => {
       loading.value = false;

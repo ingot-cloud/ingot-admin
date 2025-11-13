@@ -246,6 +246,7 @@ declare global {
   const useObjectUrl: typeof import('@vueuse/core')['useObjectUrl']
   const useOffsetPagination: typeof import('@vueuse/core')['useOffsetPagination']
   const useOnline: typeof import('@vueuse/core')['useOnline']
+  const useOrderedChildren: typeof import('./src/hooks/components/useOrderedChildren')['useOrderedChildren']
   const usePageLeave: typeof import('@vueuse/core')['usePageLeave']
   const usePaging: typeof import('./src/hooks/biz/usePaging')['usePaging']
   const useParallax: typeof import('@vueuse/core')['useParallax']
@@ -596,6 +597,7 @@ declare module 'vue' {
     readonly useObjectUrl: UnwrapRef<typeof import('@vueuse/core')['useObjectUrl']>
     readonly useOffsetPagination: UnwrapRef<typeof import('@vueuse/core')['useOffsetPagination']>
     readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
+    readonly useOrderedChildren: UnwrapRef<typeof import('./src/hooks/components/useOrderedChildren')['useOrderedChildren']>
     readonly usePageLeave: UnwrapRef<typeof import('@vueuse/core')['usePageLeave']>
     readonly usePaging: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['usePaging']>
     readonly useParallax: UnwrapRef<typeof import('@vueuse/core')['useParallax']>
