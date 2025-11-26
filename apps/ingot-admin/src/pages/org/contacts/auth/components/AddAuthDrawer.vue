@@ -23,8 +23,10 @@
 </template>
 <script lang="ts" setup>
 import { TreeKeyAndProps, type AuthorityTreeNode } from "@/models";
-import { OrgAuthList, BindAuthorityAPI } from "@/api/org/auth";
+import { OrgAuthTreeAPI } from "@/api/org/auth";
+import { useRoleStore } from "@/stores/modules/org/role";
 
+const roleStore = useRoleStore();
 const emit = defineEmits(["success"]);
 
 const treeRef = ref();
@@ -51,7 +53,7 @@ const onCheckChange = (
 };
 const fetchData = () => {
   loading.value = true;
-  OrgAuthList()
+  OrgAuthTreeAPI()
     .then((res) => {
       data.value = res.data;
       loading.value = false;
@@ -75,10 +77,11 @@ const handleActionButton = () => {
     });
   // 过滤权限，如果父节点是选中状态，那么不需要绑定当前节点，并且孙子节点等都不需要
   btnLoading.value = true;
-  BindAuthorityAPI({
-    id: id.value,
-    bindIds,
-  })
+  roleStore
+    .bindAuthority({
+      id: id.value,
+      setIds: bindIds,
+    })
     .then(() => {
       message.success("操作成功");
       btnLoading.value = false;

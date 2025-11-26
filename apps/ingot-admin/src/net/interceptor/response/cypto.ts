@@ -2,7 +2,6 @@ import type { AxiosResponse, AxiosError } from "axios";
 import type { PostFilter } from "@/net/types";
 import type { R } from "@/models/net";
 import { AES } from "@/utils/encrypt";
-import { tr } from "element-plus/es/locales.mjs";
 
 class CryptoInterceptor implements PostFilter {
   order(): number {

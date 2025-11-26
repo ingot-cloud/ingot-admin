@@ -66,7 +66,7 @@ const privateHandleDelete = (item: any) => {
   confirm.warning(`是否将成员(${item.nickname})移除角色(${ops.currentNode.name})`).then(() => {
     BindUserAPI({
       id: ops.currentNode.id,
-      removeIds: [item.userId],
+      unassignIds: [item.userId],
     }).then(() => {
       ops.fetchUserData();
     });

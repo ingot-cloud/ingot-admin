@@ -1,4 +1,4 @@
-import type { Page, CreateOrgDTO, SysTenant, R } from "@/models";
+import type { Page, CreateOrgDTO, SysTenant, R, MetaApp } from "@/models";
 import {
   TenantSearchAPI,
   TenantPageAPI,
@@ -6,7 +6,8 @@ import {
   TenantUpdateAPI,
   TenantRemoveAPI,
   TenantInfoAPI,
-} from "@/api/basic/tenant";
+  TenantOrgApps,
+} from "@/api/platform/org/tenant";
 
 export const useTenantStore = defineStore("tenant", () => {
   const needUpdate = ref(false);
@@ -93,6 +94,18 @@ export const useTenantStore = defineStore("tenant", () => {
     });
   };
 
+  const fetchTenantOrgApps = () => {
+    return new Promise<Array<MetaApp>>((resolve, reject) => {
+      TenantOrgApps()
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  };
+
   return {
     needUpdate,
     changeUpdateFlag,
@@ -102,5 +115,6 @@ export const useTenantStore = defineStore("tenant", () => {
     removeTenant,
     search,
     info,
+    fetchTenantOrgApps,
   };
 });

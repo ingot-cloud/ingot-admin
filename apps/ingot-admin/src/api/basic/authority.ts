@@ -1,5 +1,5 @@
 import request from "@/net";
-import type { R, SysAuthority, AuthorityTreeNode, AuthorityFilterDTO } from "@/models";
+import type { R, MetaAuthority, AuthorityTreeNode, AuthorityFilterDTO } from "@/models";
 import { filterParams } from "@/utils/object";
 
 /**
@@ -20,7 +20,7 @@ export function GetAuthorityTreeAPI(
  * @param params 参数
  * @returns
  */
-export function CreateAuthorityAPI(params: SysAuthority): Promise<R<void>> {
+export function CreateAuthorityAPI(params: MetaAuthority): Promise<R<void>> {
   filterParams(params);
   return request.post<void>("/api/pms/v1/admin/authority", params);
 }
@@ -30,7 +30,7 @@ export function CreateAuthorityAPI(params: SysAuthority): Promise<R<void>> {
  * @param params 参数
  * @returns
  */
-export function UpdateAuthorityAPI(params: SysAuthority): Promise<R<void>> {
+export function UpdateAuthorityAPI(params: MetaAuthority): Promise<R<void>> {
   filterParams(params);
   return request.put<void>("/api/pms/v1/admin/authority", params);
 }

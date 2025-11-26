@@ -7,6 +7,7 @@ import type {
   OrgUserProfileVO,
   R,
   UserPasswordDTO,
+  UserPageItemWithBindRoleStatusVO,
 } from "@/models";
 import { filterParams } from "@/utils/object";
 import { AES } from "@/utils/encrypt";
@@ -14,23 +15,23 @@ import { AES } from "@/utils/encrypt";
 /**
  * 初始化密码
  */
-export function InitPwdAPI(params: UserPasswordDTO): Promise<R<Page<UserPageItemVO>>> {
-  const afterEncrypt = AES({
+export async function InitPwdAPI(params: UserPasswordDTO): Promise<R<Page<UserPageItemVO>>> {
+  const afterEncrypt = await AES({
     data: params,
     keys: ["password", "newPassword"],
   });
-  return request.put<Page<UserPageItemVO>>("/api/pms/v1/org/user/initFixPwd", afterEncrypt);
+  return request.put<Page<UserPageItemVO>>("/api/pms/v1/org/user/pwd/init", afterEncrypt);
 }
 
 /**
  * 修改密码
  */
-export function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
-  const afterEncrypt = AES({
+export async function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
+  const afterEncrypt = await AES({
     data: params,
     keys: ["password", "newPassword"],
   });
-  return request.put<void>("/api/pms/v1/org/user/fixPwd", afterEncrypt);
+  return request.put<void>("/api/pms/v1/org/user/pwd", afterEncrypt);
 }
 
 /**
@@ -49,12 +50,31 @@ export function UserPageAPI(
   });
 }
 
+export function UserPageWithBindRoleStatusAPI(
+  page: Page,
+  condition?: UserQueryDTO,
+): Promise<R<Page<UserPageItemWithBindRoleStatusVO>>> {
+  // condition不传roleId
+  const roleId = condition?.roleId;
+  if (condition) {
+    filterParams(condition);
+    delete condition.roleId;
+  }
+  return request.get<Page<UserPageItemWithBindRoleStatusVO>>(
+    `/api/pms/v1/org/user/role/${roleId}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+  );
+}
+
 /**
  * 用户简介信息
  * @param id 用户ID
  */
 export function UserProfileAPI(id: string): Promise<R<OrgUserProfileVO>> {
-  return request.get<OrgUserProfileVO>(`/api/pms/v1/org/user/profile/${id}`);
+  return request.get<OrgUserProfileVO>(`/api/pms/v1/org/user/detail/${id}`);
 }
 
 /**

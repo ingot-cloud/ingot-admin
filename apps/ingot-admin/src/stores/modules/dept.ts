@@ -1,5 +1,5 @@
 import type { DeptTreeNode } from "@/models";
-import { DeptOrgTreeAPI } from "@/api/basic/dept";
+import { DeptTreeAPI } from "@/api/platform/system/dept";
 
 export const useDeptStore = defineStore("dept", () => {
   const expandedKeys = ref<Array<string>>([]);
@@ -7,7 +7,7 @@ export const useDeptStore = defineStore("dept", () => {
 
   const fetchOrgDeptTree = (orgId: string) => {
     return new Promise<Array<DeptTreeNode>>((resolve, reject) => {
-      DeptOrgTreeAPI(orgId)
+      DeptTreeAPI(orgId)
         .then((response) => {
           const data = response.data;
           data.forEach((root) => {

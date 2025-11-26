@@ -5,3 +5,5 @@ export * from "./clientEnums";
 export * from "./menuEnums";
 export * from "./socialEnums";
 export * from "./orgEnums";
+export * from "./roleEnums";
+export * from "./authorityEnums";

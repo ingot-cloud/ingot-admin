@@ -2,17 +2,24 @@ export interface ApplicationFilterDTO {
   appName?: string;
 }
 
-export interface SysApplication {
+export interface MetaApp {
   id?: string;
   menuId?: string;
   authorityId?: string;
-  defaultApp?: boolean;
+  name?: string;
+  icon?: string;
+  intro?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface SysApplicationTenant {
+export interface AppEnabledDTO {
+  id: string;
+  enabled: boolean;
+}
+
+export interface MetaAppTenant {
   id?: string;
   tenantId?: string;
   appId?: string;
@@ -23,12 +30,12 @@ export interface SysApplicationTenant {
   updatedAt?: string;
 }
 
-export interface ApplicationPageItemVO extends SysApplication {
+export interface ApplicationPageItemVO extends MetaApp {
   menuName?: string;
   menuIcon?: string;
 }
 
-export interface ApplicationOrgPageItemVO extends SysApplicationTenant {
+export interface ApplicationOrgPageItemVO extends MetaAppTenant {
   menuName?: string;
   menuIcon?: string;
 }

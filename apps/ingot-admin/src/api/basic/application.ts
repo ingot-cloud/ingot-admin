@@ -2,13 +2,15 @@ import Http from "@/net";
 import type {
   R,
   Page,
-  SysApplication,
+  MetaApp,
   ApplicationPageItemVO,
   ApplicationOrgPageItemVO,
   ApplicationFilterDTO,
-  SysApplicationTenant,
+  MetaAppTenant,
 } from "@/models";
 import { filterParams } from "@/utils/object";
+
+const PATH = "/api/pms/v1/platform/admin/application";
 
 export function ApplicationPageAPI(
   page: Page,
@@ -31,7 +33,7 @@ export function SyncApplication(id: string) {
   return Http.put<void>(`/api/pms/v1/admin/application/sync/${id}`);
 }
 
-export function CreateAppAPI(params: SysApplication) {
+export function CreateAppAPI(params: MetaApp) {
   return Http.post<void>("/api/pms/v1/admin/application", params);
 }
 
@@ -39,14 +41,14 @@ export function RemoveAppAPI(id: string) {
   return Http.delete<void>(`/api/pms/v1/admin/application/${id}`, null);
 }
 
-export function UpdateAppStatusAPI(params: SysApplication) {
+export function UpdateAppStatusAPI(params: MetaApp) {
   return Http.put<void>("/api/pms/v1/admin/application/status", params);
 }
 
-export function UpdateAppDefaultAPI(params: SysApplication) {
+export function UpdateAppDefaultAPI(params: MetaApp) {
   return Http.put<void>("/api/pms/v1/admin/application/default", params);
 }
 
-export function UpdateOrgAppStatusAPI(orgId: string, params: SysApplicationTenant) {
+export function UpdateOrgAppStatusAPI(orgId: string, params: MetaAppTenant) {
   return Http.put<void>(`/api/pms/v1/admin/application/status/org/${orgId}`, params);
 }

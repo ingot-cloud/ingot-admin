@@ -1,4 +1,4 @@
-import type { RoleGroupItemVO, PageChangeParams, UserPageItemVO } from "@/models";
+import type { PageChangeParams, RoleTreeNodeVO, UserPageItemVO } from "@/models";
 import { UserPageAPI, UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
 import { copyParams } from "@/utils/object";
 
@@ -6,7 +6,7 @@ export const useOps = () => {
   const paging = usePaging(transformPageAPI(UserPageAPI));
   const confirmStatus = useConfirmStatus(transformUpdateAPI(UpdateUserAPI), paging.exec);
   const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveUserAPI), paging.exec);
-  const currentNode = reactive<RoleGroupItemVO>({});
+  const currentNode = reactive<RoleTreeNodeVO>({});
 
   /**
    * 重置过滤条件
@@ -29,7 +29,7 @@ export const useOps = () => {
    * 处理节点点击事件
    * @param node 角色树节点
    */
-  const handleTreeNodeClick = (node: RoleGroupItemVO): void => {
+  const handleTreeNodeClick = (node: RoleTreeNodeVO): void => {
     copyParams(currentNode, node);
     paging.condition.roleId = node.id;
     fetchUserData();

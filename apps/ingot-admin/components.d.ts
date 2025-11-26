@@ -133,6 +133,7 @@ declare module 'vue' {
     InTagEnum: typeof import('./src/components/biz/InTagEnum.vue')['default']
     InTitle: typeof import('./src/components/InTitle.vue')['default']
     InTree: typeof import('./src/components/InTree.vue')['default']
+    InTreeSelect: typeof import('./src/components/tree-select/InTreeSelect.vue')['default']
     InUpload: typeof import('./src/components/upload/InUpload.vue')['default']
     InUploadAvatar: typeof import('./src/components/upload/InUploadAvatar.vue')['default']
     InUserDropdown: typeof import('./src/layouts/widgets/user-dropdown/InUserDropdown.vue')['default']

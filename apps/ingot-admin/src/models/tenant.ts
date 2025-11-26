@@ -5,8 +5,9 @@ export interface SysTenant {
   name?: string;
   code?: string;
   avatar?: string;
+  orgType?: string;
+  planId?: string;
   status?: CommonStatus;
-  startAt?: string;
   endAt?: string;
   createdAt?: string;
 }

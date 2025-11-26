@@ -14,16 +14,31 @@ export interface RolePageItemVO {
   createdAt: string;
 }
 
-export interface RoleTreeNode {
+export interface MetaRole {
   id?: string;
+  pid?: string;
   name?: string;
-  isGroup?: boolean;
-  children?: Array<RoleTreeNode>;
+  code?: string;
+  type?: string;
+  orgType?: string;
+  filterDept?: boolean;
+  scopeType?: string;
+  scopes?: Array<string>;
+  status?: CommonStatus;
 }
 
-export interface SysRole {
+export interface RoleTreeNodeVO extends MetaRole {
+  children?: Array<RoleTreeNodeVO>;
+  custom?: boolean;
+  typeText?: string;
+  orgTypeText?: string;
+  scopeTypeText?: string;
+  statusText?: string;
+}
+
+export interface TenantRolePrivate {
   id?: string;
-  groupId?: string;
+  pid?: string;
   name?: string;
   code?: string;
   type?: string;
@@ -33,31 +48,11 @@ export interface SysRole {
   status?: CommonStatus;
 }
 
-export interface RoleBindParams {
+export interface BizRoleAssignUsersDTO {
+  deptId?: string;
   id?: string;
-  removeIds?: Array<string>;
-  bindIds?: Array<string>;
-}
-
-export interface RoleGroupItemVO {
-  id?: string;
-  name?: string;
-  code?: string;
-  status?: string;
-  isGroup?: boolean;
-  groupId?: string;
-  type?: string;
-  filterDept?: boolean;
-  scopeType?: string;
-  scopes?: Array<string>;
-  children?: Array<RoleGroupItemVO>;
-}
-
-export interface SysRoleGroup {
-  id?: string;
-  name?: string;
-  sort?: string;
-  type?: string;
+  assignIds?: Array<string>;
+  unassignIds?: Array<string>;
 }
 
 export interface RoleFilterDTO {
@@ -65,5 +60,5 @@ export interface RoleFilterDTO {
   roleType?: string;
 }
 
-export interface AppRole extends SysRole {}
-export interface AppRoleGroup extends SysRoleGroup {}
+export interface AppRole extends MetaRole {}
+export interface AppRoleGroup {}

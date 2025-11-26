@@ -1,15 +1,19 @@
-import type { SysRole, RolePageItemVO, RoleGroupItemVO, SysRoleGroup, Option } from "@/models";
+import type {
+  RoleTreeNodeVO,
+  TenantRolePrivate,
+  Option,
+  SetDTO,
+  BizAuthorityTreeNodeVO,
+} from "@/models";
 import {
   RoleOptionsAPI,
-  RoleListAPI,
-  RoleGroupListAPI,
+  RoleTreeAPI,
   CreateRoleAPI,
   UpdateRoleAPI,
   RemoveRoleAPI,
-  CreateRoleGroupAPI,
-  UpdateRoleGroupAPI,
-  RemoveRoleGroupAPI,
-  GroupSortAPI,
+  RoleSortAPI,
+  BindAuthorityAPI,
+  GetBindAuthoritiesAPI,
 } from "@/api/org/role";
 
 export const useRoleStore = defineStore("org.role", () => {
@@ -35,9 +39,9 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const fetchRoleList = (condition?: SysRole) => {
-    return new Promise<Array<RolePageItemVO>>((resolve, reject) => {
-      RoleListAPI(condition)
+  const fetchRoleTree = (condition?: TenantRolePrivate) => {
+    return new Promise<Array<RoleTreeNodeVO>>((resolve, reject) => {
+      RoleTreeAPI(condition)
         .then((response) => {
           resolve(response.data);
         })
@@ -47,19 +51,7 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const fetchRoleGroupList = () => {
-    return new Promise<Array<RoleGroupItemVO>>((resolve, reject) => {
-      RoleGroupListAPI()
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
-  };
-
-  const createRole = (params: SysRole) => {
+  const createRole = (params: TenantRolePrivate) => {
     return new Promise<void>((resolve, reject) => {
       CreateRoleAPI(params)
         .then(() => {
@@ -72,7 +64,7 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const updateRole = (params: SysRole) => {
+  const updateRole = (params: TenantRolePrivate) => {
     return new Promise<void>((resolve, reject) => {
       UpdateRoleAPI(params)
         .then(() => {
@@ -98,9 +90,9 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const createRoleGroup = (params: SysRoleGroup) => {
+  const sortRole = (ids: Array<string>) => {
     return new Promise<void>((resolve, reject) => {
-      CreateRoleGroupAPI(params)
+      RoleSortAPI(ids)
         .then(() => {
           resolve();
         })
@@ -110,9 +102,9 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const updateRoleGroup = (params: SysRoleGroup) => {
+  const bindAuthority = (params: SetDTO) => {
     return new Promise<void>((resolve, reject) => {
-      UpdateRoleGroupAPI(params)
+      BindAuthorityAPI(params)
         .then(() => {
           resolve();
         })
@@ -122,23 +114,11 @@ export const useRoleStore = defineStore("org.role", () => {
     });
   };
 
-  const removeRoleGroup = (id: string) => {
-    return new Promise<void>((resolve, reject) => {
-      RemoveRoleGroupAPI(id)
-        .then(() => {
-          resolve();
-        })
-        .catch(() => {
-          reject();
-        });
-    });
-  };
-
-  const groupSort = (ids: Array<string>) => {
-    return new Promise<void>((resolve, reject) => {
-      GroupSortAPI(ids)
-        .then(() => {
-          resolve();
+  const getBindAuthorities = (id: string) => {
+    return new Promise<Array<BizAuthorityTreeNodeVO>>((resolve, reject) => {
+      GetBindAuthoritiesAPI(id)
+        .then((response) => {
+          resolve(response.data);
         })
         .catch(() => {
           reject();
@@ -149,14 +129,12 @@ export const useRoleStore = defineStore("org.role", () => {
   return {
     roleOptions,
     fetchRoleOptions,
-    fetchRoleGroupList,
-    fetchRoleList,
+    fetchRoleTree,
     createRole,
     updateRole,
     removeRole,
-    createRoleGroup,
-    updateRoleGroup,
-    removeRoleGroup,
-    groupSort,
+    sortRole,
+    bindAuthority,
+    getBindAuthorities,
   };
 });

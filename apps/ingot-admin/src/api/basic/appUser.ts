@@ -11,6 +11,7 @@ import type {
 } from "@/models";
 import { filterParams } from "@/utils/object";
 
+const PATH = "/api/pms/v1/platform/admin/appUser";
 /**
  * 用户分页信息
  */
@@ -18,7 +19,7 @@ export function UserPageAPI(page: Page, condition?: AppUser): Promise<R<Page<App
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<AppUser>>("/api/pms/v1/admin/appUser/page", {
+  return request.get<Page<AppUser>>(`${PATH}/page`, {
     ...page,
     ...condition,
   });
@@ -29,7 +30,7 @@ export function UserPageAPI(page: Page, condition?: AppUser): Promise<R<Page<App
  * @param id 用户ID
  */
 export function UserProfileAPI(id: string): Promise<R<UserProfileVO>> {
-  return request.get<UserProfileVO>(`/api/pms/v1/admin/appUser/profile/${id}`);
+  return request.get<UserProfileVO>(`${PATH}/profile/${id}`);
 }
 
 /**
@@ -38,7 +39,7 @@ export function UserProfileAPI(id: string): Promise<R<UserProfileVO>> {
  */
 export function CreateUserAPI(params: AppUserCreateDTO): Promise<R<void>> {
   filterParams(params);
-  return request.post<void>("/api/pms/v1/admin/appUser", params);
+  return request.post<void>(`${PATH}`, params);
 }
 
 /**
@@ -47,21 +48,21 @@ export function CreateUserAPI(params: AppUserCreateDTO): Promise<R<void>> {
  */
 export function UpdateUserAPI(params: AppUser): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>("/api/pms/v1/admin/appUser", params);
+  return request.put<void>(`${PATH}`, params);
 }
 
 /**
  * 删除用户
  */
 export function RemoveUserAPI(id: string): Promise<R<void>> {
-  return request.delete<void>(`/api/pms/v1/admin/appUser/${id}`);
+  return request.delete<void>(`${PATH}/${id}`);
 }
 
 /**
  * 用户组织信息
  */
 export function UserOrgInfoAPI(id: string) {
-  return request.get<Array<UserOrgInfoVO>>(`/api/pms/v1/admin/appUser/orgInfo/${id}`);
+  return request.get<Array<UserOrgInfoVO>>(`${PATH}/orgInfo/${id}`);
 }
 
 /**
@@ -69,7 +70,7 @@ export function UserOrgInfoAPI(id: string) {
  */
 export function UserOrgEditAPI(params: UserOrgEditDTO) {
   filterParams(params);
-  return request.put<void>(`/api/pms/v1/admin/appUser/org`, params);
+  return request.put<void>(`${PATH}/org`, params);
 }
 
 /**
@@ -77,12 +78,12 @@ export function UserOrgEditAPI(params: UserOrgEditDTO) {
  */
 export function UserOrgLeaveAPI(params: UserOrgEditDTO) {
   filterParams(params);
-  return request.put<void>(`/api/pms/v1/admin/appUser/org/leave`, params);
+  return request.put<void>(`${PATH}/org/leave`, params);
 }
 
 /**
  * 用户重置密码
  */
 export function UserResetPwdAPI(id: string) {
-  return request.put<ResetPwdVO>(`/api/pms/v1/admin/appUser/resetPwd/${id}`);
+  return request.put<ResetPwdVO>(`${PATH}/resetPwd/${id}`);
 }

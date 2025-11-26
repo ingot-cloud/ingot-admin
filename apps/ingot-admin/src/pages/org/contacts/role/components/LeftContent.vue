@@ -44,10 +44,14 @@
     >
       <template #default="{ node, data }">
         <div class="role-item">
-          <in-icon v-if="data.isGroup" name="mingcute:group-line" class="icon" />
+          <in-icon
+            v-if="data.type == RoleTypeEnums.GROUP"
+            name="mingcute:group-line"
+            class="icon"
+          />
           <in-icon v-else name="tabler:user" class="icon" />
           <span class="text">{{ node.label }}</span>
-          <el-dropdown trigger="hover" class="action" v-if="data.type == OrgTypeEnums.Custom">
+          <el-dropdown trigger="hover" class="action" v-if="data.custom">
             <div class="action-icon">
               <in-icon name="icon-park-outline:more" cursor-pointer />
             </div>
@@ -68,15 +72,15 @@
 </template>
 <script setup lang="ts">
 import { TreeKeyAndProps } from "@/models";
-import { OrgTypeEnums } from "@/models/enums";
+import { RoleTypeEnums } from "@/models/enums";
 import { Search } from "@element-plus/icons-vue";
 import { useRoleStore } from "@/stores/modules/org/role";
-import type { RoleGroupItemVO, Option } from "@/models";
+import type { RoleTreeNodeVO, Option } from "@/models";
 import RoleGroupDrawer from "./RoleGroupDrawer.vue";
 import RoleDrawer from "./RoleDrawer.vue";
 
 const roleStore = useRoleStore();
-const roleTree = ref<Array<RoleGroupItemVO>>([]);
+const roleTree = ref<Array<RoleTreeNodeVO>>([]);
 const emits = defineEmits(["onNodeClick"]);
 
 const roleTreeRef = ref();
@@ -91,13 +95,13 @@ watch(searchValue, (val) => {
   roleTreeRef.value!.filter(val);
 });
 
-const privateOnNodeClick = (value: RoleGroupItemVO) => {
-  if (value.isGroup) {
+const privateOnNodeClick = (value: RoleTreeNodeVO) => {
+  if (value.type == RoleTypeEnums.GROUP) {
     return;
   }
   emits("onNodeClick", value);
 };
-const privateFilterNode = (value: string, data: RoleGroupItemVO) => {
+const privateFilterNode = (value: string, data: RoleTreeNodeVO) => {
   if (!value || !data.name) return true;
   return data.name.indexOf(value) > -1;
 };
@@ -105,16 +109,18 @@ const privateFilterNode = (value: string, data: RoleGroupItemVO) => {
 const fetchData = () => {
   loading.value = true;
   roleStore
-    .fetchRoleGroupList()
+    .fetchRoleTree()
     .then((data) => {
       loading.value = false;
       roleTree.value = data;
-      groupList.value = roleTree.value.map((item) => {
-        return {
-          value: item.id!,
-          label: item.name!,
-        };
-      });
+      groupList.value = roleTree.value
+        .filter((item) => item.custom && item.type == RoleTypeEnums.GROUP)
+        .map((item) => {
+          return {
+            value: item.id!,
+            label: item.name!,
+          };
+        });
     })
     .catch(() => {
       loading.value = false;
@@ -124,9 +130,8 @@ const fetchData = () => {
 const privateHandleRoleCollapseAction = (value: boolean) => {
   privateHandleExpanded(roleTree.value, value);
 };
-const privateHandleExpanded = (list: Array<RoleGroupItemVO>, value: boolean) => {
+const privateHandleExpanded = (list: Array<RoleTreeNodeVO>, value: boolean) => {
   list.forEach((item) => {
-    console.log(item, roleTreeRef.value.getNode(item.id));
     const node = roleTreeRef.value.getNode(item.id);
     node.expanded = value;
     if (node.parent) {
@@ -147,7 +152,7 @@ const privateAllowDrop = (draggingNode: any, dropNode: any, type: string) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const privateOnDropSuccess = (node: any) => {
   const ids = roleTree.value.map((item) => item.id!);
-  roleStore.groupSort(ids);
+  roleStore.sortRole(ids);
 };
 const privateOnNodeExpand = (data: any) => {
   defaultExpandedKeys.value.push(data.id);
@@ -162,17 +167,17 @@ const privateHandleCreateGroup = () => {
 const privateHandleCreateRole = () => {
   RoleDrawerRef.value.show();
 };
-const privateEditRoleOrGroup = (params: RoleGroupItemVO) => {
-  if (params.isGroup) {
+const privateEditRoleOrGroup = (params: RoleTreeNodeVO) => {
+  if (params.type == RoleTypeEnums.GROUP) {
     RoleGroupDrawerRef.value.show(params);
   } else {
     RoleDrawerRef.value.show(params);
   }
 };
-const confirmDeleteGroup = useConfirmDelete(roleStore.removeRoleGroup, fetchData);
+const confirmDeleteGroup = useConfirmDelete(roleStore.removeRole, fetchData);
 const confirmDeleteRole = useConfirmDelete(roleStore.removeRole, fetchData);
-const privateDeleteRoleOrGroup = (params: RoleGroupItemVO) => {
-  if (params.isGroup) {
+const privateDeleteRoleOrGroup = (params: RoleTreeNodeVO) => {
+  if (params.type == RoleTypeEnums.GROUP) {
     confirmDeleteGroup.exec(params.id!, `是否删除角色组:${params.name}`, "删除成功");
   } else {
     confirmDeleteRole.exec(params.id!, `是否删除角色:${params.name}`, "删除成功");

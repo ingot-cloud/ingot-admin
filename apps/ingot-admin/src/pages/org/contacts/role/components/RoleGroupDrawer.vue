@@ -18,7 +18,8 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
-import type { RoleGroupItemVO } from "@/models";
+import type { RoleTreeNodeVO } from "@/models";
+import { RoleTypeEnums } from "@/models/enums";
 import { useRoleStore } from "@/stores/modules/org/role";
 import { Message } from "@/utils/message";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@/utils/object";
@@ -26,9 +27,10 @@ import { copyParamsWithKeys, getDiffWithIgnore } from "@/utils/object";
 const rawForm = {
   id: undefined,
   name: undefined,
+  type: RoleTypeEnums.GROUP,
 };
 
-const keys = ["name"];
+const keys = ["id", "name", "type"];
 
 const title = ref("");
 const show = ref(false);
@@ -57,12 +59,14 @@ const handleActionButton = () => {
         Message.warning("未改变数据");
         return;
       }
+      params.type = RoleTypeEnums.GROUP;
+
       let request;
       if (isEdit.value) {
         params.id = id.value;
-        request = roleStore.updateRoleGroup(params);
+        request = roleStore.updateRole(params);
       } else {
-        request = roleStore.createRoleGroup(params);
+        request = roleStore.createRole(params);
       }
 
       loading.value = true;
@@ -81,7 +85,7 @@ const handleActionButton = () => {
 };
 
 defineExpose({
-  show(data?: RoleGroupItemVO) {
+  show(data?: RoleTreeNodeVO) {
     isEdit.value = Boolean(data);
     show.value = true;
     nextTick(() => {

@@ -45,7 +45,7 @@
   </el-select-v2>
 </template>
 <script lang="ts" setup>
-import { SearchByPhone } from "@/api/basic/user";
+import { SearchByPhone } from "@/api/platform/system/user";
 import type { SimpleUserWithPhoneVO } from "@/models";
 
 const loading = ref(false);
@@ -99,7 +99,6 @@ const remoteMethod = (query: string) => {
 };
 
 const privateOnChanged = (value: string) => {
-  console.log("a", value);
   emits("onChanged", value);
 };
 </script>

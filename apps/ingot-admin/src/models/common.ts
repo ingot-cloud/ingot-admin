@@ -90,3 +90,14 @@ export interface PageChangeParams {
 export interface OptionIDEntity {
   id?: string;
 }
+
+export interface SetDTO {
+  id?: string;
+  setIds?: Array<string>;
+}
+
+export interface AssignDTO {
+  id?: string;
+  assignIds?: Array<string>;
+  unassignIds?: Array<string>;
+}

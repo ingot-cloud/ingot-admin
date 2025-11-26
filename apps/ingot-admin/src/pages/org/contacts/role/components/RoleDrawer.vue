@@ -8,17 +8,17 @@
       :model="editForm"
       :rules="rules"
     >
-      <el-form-item label="角色名称" prop="name">
-        <el-input v-model="editForm.name" clearable placeholder="请输入角色名称"></el-input>
-      </el-form-item>
       <el-form-item label="角色组" prop="groupId">
         <in-select
           w-full
-          v-model="editForm.groupId"
+          v-model="editForm.pid"
           placeholder="请选择角色组"
           :options="groupList"
           :disabled="isEdit"
         />
+      </el-form-item>
+      <el-form-item label="角色名称" prop="name">
+        <el-input v-model="editForm.name" clearable placeholder="请输入角色名称"></el-input>
       </el-form-item>
       <el-form-item label="数据权限" prop="scopeType">
         <in-select
@@ -43,7 +43,8 @@
 </template>
 <script setup lang="ts">
 import type { PropType } from "vue";
-import type { RoleGroupItemVO, Option } from "@/models";
+import type { RoleTreeNodeVO, Option } from "@/models";
+import { RoleTypeEnums } from "@/models/enums";
 import { useRoleStore } from "@/stores/modules/org/role";
 import { Message } from "@/utils/message";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@/utils/object";
@@ -52,13 +53,14 @@ import BizDeptSelect from "@/components/biz/dept-select/BizDeptSelect.vue";
 
 const rawForm = {
   id: undefined,
+  pid: undefined,
   name: undefined,
-  groupId: undefined,
+  type: RoleTypeEnums.ROLE,
   scopeType: undefined,
   scopes: [],
 };
 
-const keys = ["name", "groupId", "scopeType", "scopes"];
+const keys = ["id", "pid", "name", "type", "scopeType", "scopes"];
 
 const title = ref("");
 const show = ref(false);
@@ -66,7 +68,7 @@ const id = ref();
 
 const rules = {
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
-  groupId: [{ required: true, message: "请选择角色组", trigger: "blur" }],
+  pid: [{ required: true, message: "请选择角色组", trigger: "blur" }],
   scopeType: [{ required: true, message: "请选择数据权限", trigger: "blur" }],
   scopes: [{ required: true, message: "请选择数据范围", trigger: "blur" }],
 };
@@ -97,6 +99,7 @@ const handleActionButton = () => {
         Message.warning("未改变数据");
         return;
       }
+      params.type = RoleTypeEnums.ROLE;
       let request;
       if (isEdit.value) {
         params.id = id.value;
@@ -121,10 +124,9 @@ const handleActionButton = () => {
 };
 
 defineExpose({
-  show(data?: RoleGroupItemVO) {
+  show(data?: RoleTreeNodeVO) {
     isEdit.value = Boolean(data);
     show.value = true;
-    console.log("data", data);
     nextTick(() => {
       const form = unref(editFormRef);
       form.resetFields();

@@ -1,4 +1,4 @@
-import type { AuthorityTreeNode, SysAuthority, AuthorityFilterDTO } from "@/models";
+import type { AuthorityTreeNode, MetaAuthority, AuthorityFilterDTO } from "@/models";
 import {
   GetAuthorityTreeAPI,
   CreateAuthorityAPI,
@@ -29,7 +29,7 @@ export const useAuthorityStore = defineStore("authority", () => {
         });
     });
   };
-  const createAuthority = (params: SysAuthority) => {
+  const createAuthority = (params: MetaAuthority) => {
     return new Promise<void>((resolve, reject) => {
       CreateAuthorityAPI(params)
         .then(() => {
@@ -40,7 +40,7 @@ export const useAuthorityStore = defineStore("authority", () => {
         });
     });
   };
-  const updateAuthority = (params: SysAuthority) => {
+  const updateAuthority = (params: MetaAuthority) => {
     return new Promise<void>((resolve, reject) => {
       UpdateAuthorityAPI(params)
         .then(() => {

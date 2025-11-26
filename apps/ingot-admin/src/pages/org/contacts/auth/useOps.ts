@@ -1,17 +1,19 @@
-import type { RoleGroupItemVO, AuthorityTreeNode } from "@/models";
-import { GetBindAuthoritiesAPI } from "@/api/org/auth";
+import type { RoleTreeNodeVO, AuthorityTreeNode } from "@/models";
 import { copyParams } from "@/utils/object";
+import { useRoleStore } from "@/stores/modules/org/role";
 
+const roleStore = useRoleStore();
 export const useOps = () => {
   const loading = ref(false);
   const records = ref<Array<AuthorityTreeNode>>([]);
-  const currentNode = reactive<RoleGroupItemVO>({ id: "", name: "" });
+  const currentNode = reactive<RoleTreeNodeVO>({ id: "", name: "" });
 
   const fetchData = (): void => {
     loading.value = true;
-    GetBindAuthoritiesAPI(currentNode.id!)
-      .then((response) => {
-        records.value = response.data;
+    roleStore
+      .getBindAuthorities(currentNode.id!)
+      .then((data) => {
+        records.value = data;
         loading.value = false;
       })
       .catch(() => {
@@ -22,7 +24,7 @@ export const useOps = () => {
   /**
    * 处理节点点击事件
    */
-  const handleTreeNodeClick = (node: RoleGroupItemVO): void => {
+  const handleTreeNodeClick = (node: RoleTreeNodeVO): void => {
     copyParams(currentNode, node);
     fetchData();
   };

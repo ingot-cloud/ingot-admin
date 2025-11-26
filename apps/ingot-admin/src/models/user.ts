@@ -17,6 +17,10 @@ export interface UserPageItemVO {
   createdAt: string;
 }
 
+export interface UserPageItemWithBindRoleStatusVO extends UserPageItemVO {
+  canBind?: boolean;
+}
+
 export interface AllOrgUserFilterDTO {
   nickname?: string;
   phone?: string;

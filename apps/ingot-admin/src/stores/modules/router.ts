@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 import type { MenuRouteRecord } from "@/layouts";
 import { default as routes } from "@/router/routes";
-import { GetUserMenuAPI } from "@/api/basic/menu";
+import { UserMenuAPI } from "@/api/common/user";
 import { generateMenus, transformMenu, cacheRoutes } from "@/router/helper/route";
 import { usePermissions } from "./auth";
 
@@ -20,7 +20,7 @@ export const useRouterStore = defineStore("router", () => {
       dynamicRoutes: Array<RouteRecordRaw>;
     }>((resolve) => {
       if (forceRefresh || menus.value.length === 0) {
-        GetUserMenuAPI()
+        UserMenuAPI()
           .then((response) => {
             permissions.updateAuthorities(response.data);
             dynamicRoutes.value = transformMenu(response.data);

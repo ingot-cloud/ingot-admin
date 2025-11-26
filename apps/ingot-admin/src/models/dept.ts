@@ -17,25 +17,6 @@ export interface DeptTreeNode {
   memberCount?: string;
 }
 
-/**
- * 部门模型
- */
-export interface SysDept {
-  id?: string;
-  pid?: string;
-  name?: string;
-  sort?: number;
-  status?: CommonStatus;
-}
-
-export interface DeptWithManagerVO extends SysDept {
-  managerUsers?: Array<SimpleUserVO>;
-}
-
-export interface DeptWithManagerDTO extends SysDept {
-  managerUserIds?: Array<string>;
-}
-
 export const RootDept: DeptTreeNode = {
   id: "0",
   name: "根部门",

@@ -19,7 +19,6 @@ const props = defineProps({
 
 const tagText = computed(() => {
   const opposite = props.enumObj.getOpposite(props.value);
-  console.log(props.value!);
   return props.enumObj.getTagText(opposite);
 });
 </script>

@@ -35,7 +35,7 @@ const onItemClick = (tab: string) => {
   switch (tab) {
     case "成员":
       go({
-        path: "/org/contacts/member",
+        path: "/org/contacts/user",
       });
       break;
     case "部门":
@@ -55,7 +55,7 @@ const onItemClick = (tab: string) => {
       break;
     case "组织架构":
       go({
-        path: "/org/contacts/orgstructure",
+        path: "/org/contacts/structure",
       });
       break;
   }

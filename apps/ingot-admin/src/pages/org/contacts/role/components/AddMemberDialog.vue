@@ -6,7 +6,8 @@
       :data="paging.pageInfo.records"
       :headers="tableHeaders"
       :page="paging.pageInfo"
-      ref="tableRef"
+      ref="AddMemberTableRef"
+      row-key="userId"
       @refresh="paging.exec"
       @handleSizeChange="paging.exec"
       @handleCurrentChange="paging.exec"
@@ -36,7 +37,7 @@
   </in-dialog>
 </template>
 <script lang="ts" setup>
-import { UserPageAPI } from "@/api/org/user";
+import { UserPageWithBindRoleStatusAPI } from "@/api/org/user";
 import type { TableHeaderRecord } from "@/components/table";
 import { BindUserAPI } from "@/api/org/role";
 
@@ -46,6 +47,7 @@ const tableHeaders: Array<TableHeaderRecord> = [
   {
     type: "selection",
     width: "50",
+    selectable: (row: any) => row.canBind,
   },
   {
     label: "名称",
@@ -56,8 +58,8 @@ const tableHeaders: Array<TableHeaderRecord> = [
     prop: "phone",
   },
 ];
-const tableRef = ref();
-const paging = usePaging(transformPageAPI(UserPageAPI));
+const AddMemberTableRef = ref();
+const paging = usePaging(transformPageAPI(UserPageWithBindRoleStatusAPI));
 const visible = ref(false);
 const title = ref("");
 const id = ref("");
@@ -77,7 +79,7 @@ const onConfirmClick = () => {
   confirmLoading.value = true;
   BindUserAPI({
     id: id.value,
-    bindIds: bindIds.value,
+    assignIds: bindIds.value,
   })
     .then(() => {
       message.success("操作成功");
@@ -92,12 +94,13 @@ const onConfirmClick = () => {
 
 defineExpose({
   show: (params: any) => {
+    paging.condition.roleId = params.id;
     paging.exec();
     id.value = params.id;
     title.value = params.name;
     visible.value = true;
     nextTick(() => {
-      tableRef.value.clearSelection();
+      AddMemberTableRef.value?.clearSelection();
     });
   },
 });
