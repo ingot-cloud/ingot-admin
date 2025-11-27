@@ -1,5 +1,11 @@
 import type { DeptTreeNode, DeptWithManagerDTO } from "@/models";
-import { DeptTreeAPI, CreateDeptAPI, UpdateDeptAPI, RemoveDeptAPI } from "@/api/org/dept";
+import {
+  DeptTreeAPI,
+  DeptSimpleTreeAPI,
+  CreateDeptAPI,
+  UpdateDeptAPI,
+  RemoveDeptAPI,
+} from "@/api/org/dept";
 
 export const useDeptStore = defineStore("org.dept", () => {
   const expandedKeys = ref<Array<string>>([]);
@@ -20,6 +26,17 @@ export const useDeptStore = defineStore("org.dept", () => {
           deptTree.value = data.slice();
           childTree.value = data.length > 1 ? data.slice(1) : [];
           resolve(data);
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  };
+  const fetchDeptSimpleTree = () => {
+    return new Promise<Array<DeptTreeNode>>((resolve, reject) => {
+      DeptSimpleTreeAPI()
+        .then((response) => {
+          resolve(response.data);
         })
         .catch(() => {
           reject();
@@ -65,6 +82,7 @@ export const useDeptStore = defineStore("org.dept", () => {
     deptTree,
     childTree,
     fetchDeptTree,
+    fetchDeptSimpleTree,
     createDept,
     updateDept,
     removeDept,

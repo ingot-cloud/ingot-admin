@@ -1,8 +1,8 @@
 import request from "@/net";
-import type { DeptTreeNode } from "@/models";
+import type { DeptTreeNodeWithManagerVO } from "@/models";
 
 const PATH = "/api/pms/v1/platform/system/dept";
 
 export function DeptTreeAPI(orgId: string) {
-  return request.get<Array<DeptTreeNode>>(`${PATH}/tree/${orgId}`);
+  return request.get<Array<DeptTreeNodeWithManagerVO>>(`${PATH}/tree/${orgId}`);
 }

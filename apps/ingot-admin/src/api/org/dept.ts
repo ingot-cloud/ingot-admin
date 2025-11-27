@@ -1,15 +1,19 @@
 import Http from "@/net";
-import type { DeptTreeNode, DeptWithManagerDTO, R } from "@/models";
+import type { DeptTreeNodeWithManagerVO, DeptWithManagerDTO, DeptTreeNode, R } from "@/models";
 
 /**
  * 获取部门树结构
  */
-export function DeptTreeAPI(): Promise<R<Array<DeptTreeNode>>> {
-  return Http.get<Array<DeptTreeNode>>("/api/pms/v1/org/dept/tree");
+export function DeptTreeAPI(): Promise<R<Array<DeptTreeNodeWithManagerVO>>> {
+  return Http.get<Array<DeptTreeNodeWithManagerVO>>("/api/pms/v1/org/dept/tree");
 }
 
-export function DeptTree2API(): Promise<R<Array<DeptTreeNode>>> {
-  return Http.get<Array<DeptTreeNode>>("/api/pms/v1/org/dept/tree2");
+export function DeptTree2API(): Promise<R<Array<DeptTreeNodeWithManagerVO>>> {
+  return Http.get<Array<DeptTreeNodeWithManagerVO>>("/api/pms/v1/org/dept/tree2");
+}
+
+export function DeptSimpleTreeAPI(): Promise<R<Array<DeptTreeNode>>> {
+  return Http.get<Array<DeptTreeNode>>("/api/pms/v1/org/dept/simpleTree");
 }
 
 /**

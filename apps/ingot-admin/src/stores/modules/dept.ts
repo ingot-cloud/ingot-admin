@@ -1,12 +1,12 @@
-import type { DeptTreeNode } from "@/models";
+import type { DeptTreeNodeWithManagerVO } from "@/models";
 import { DeptTreeAPI } from "@/api/platform/system/dept";
 
 export const useDeptStore = defineStore("dept", () => {
   const expandedKeys = ref<Array<string>>([]);
-  const deptTree = ref<Array<DeptTreeNode>>([]);
+  const deptTree = ref<Array<DeptTreeNodeWithManagerVO>>([]);
 
   const fetchOrgDeptTree = (orgId: string) => {
-    return new Promise<Array<DeptTreeNode>>((resolve, reject) => {
+    return new Promise<Array<DeptTreeNodeWithManagerVO>>((resolve, reject) => {
       DeptTreeAPI(orgId)
         .then((response) => {
           const data = response.data;

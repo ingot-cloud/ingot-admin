@@ -60,7 +60,7 @@ import type {
   UserOrgInfoVO,
   UserOrgEditDTO,
   SysTenant,
-  DeptTreeNode,
+  DeptTreeNodeWithManagerVO,
   RoleTreeNodeVO,
 } from "@/models";
 import { UserOrgEditAPI, UserOrgLeaveAPI } from "@/api/platform/system/user";
@@ -105,7 +105,7 @@ const confirm = useMessageConfirm();
 const roleStore = useRoleStore();
 const deptStore = useDeptStore();
 const tenantStore = useTenantStore();
-const deptTree = ref<Array<DeptTreeNode>>([]);
+const deptTree = ref<Array<DeptTreeNodeWithManagerVO>>([]);
 const roleOrgTree = ref<Array<RoleTreeNodeVO>>([]);
 
 const treeSelectProps = {
