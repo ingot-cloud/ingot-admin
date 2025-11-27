@@ -20,6 +20,14 @@
       <el-form-item label="角色名称" prop="name">
         <el-input v-model="editForm.name" clearable placeholder="请输入角色名称"></el-input>
       </el-form-item>
+
+      <el-form-item prop="filterDept" label="部门角色">
+        <el-radio-group v-model="editForm.filterDept">
+          <el-radio-button :value="true"> 是 </el-radio-button>
+          <el-radio-button :value="false"> 否 </el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
       <el-form-item label="数据权限" prop="scopeType">
         <in-select
           w-full
@@ -58,9 +66,10 @@ const rawForm = {
   type: RoleTypeEnums.ROLE,
   scopeType: undefined,
   scopes: [],
+  filterDept: false,
 };
 
-const keys = ["id", "pid", "name", "type", "scopeType", "scopes"];
+const keys = ["id", "pid", "name", "type", "scopeType", "scopes", "filterDept"];
 
 const title = ref("");
 const show = ref(false);

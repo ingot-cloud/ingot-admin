@@ -53,6 +53,13 @@
         ></el-input>
       </el-form-item>
 
+      <el-form-item prop="filterDept" label="部门角色">
+        <el-radio-group v-model="editForm.filterDept">
+          <el-radio-button :value="true"> 是 </el-radio-button>
+          <el-radio-button :value="false"> 否 </el-radio-button>
+        </el-radio-group>
+      </el-form-item>
+
       <el-form-item v-if="isEdit" label="权限">
         <div flex flex-wrap gap-2 flex-row v-if="bindAuthorities.length > 0">
           <in-tag
@@ -117,7 +124,18 @@ const rawForm: MetaRole = {
   status: undefined,
 };
 
-const keys = ["id", "pid", "name", "code", "status", "type", "orgType"];
+const keys = [
+  "id",
+  "pid",
+  "name",
+  "code",
+  "status",
+  "type",
+  "orgType",
+  "filterDept",
+  "scopeType",
+  "scopes",
+];
 
 const roleTypeEnum = useRoleTypeEnums();
 const orgTypeEnum = useOrgTypeEnums();
