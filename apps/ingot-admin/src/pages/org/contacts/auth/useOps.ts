@@ -1,11 +1,11 @@
-import type { RoleTreeNodeVO, AuthorityTreeNode } from "@/models";
+import type { RoleTreeNodeVO, PermissionTreeNode } from "@/models";
 import { copyParams } from "@/utils/object";
 import { useRoleStore } from "@/stores/modules/org/role";
 
 const roleStore = useRoleStore();
 export const useOps = () => {
   const loading = ref(false);
-  const records = ref<Array<AuthorityTreeNode>>([]);
+  const records = ref<Array<PermissionTreeNode>>([]);
   const currentNode = reactive<RoleTreeNodeVO>({ id: "", name: "" });
 
   const fetchData = (): void => {

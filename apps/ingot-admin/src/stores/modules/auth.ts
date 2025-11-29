@@ -179,38 +179,38 @@ export const useUserInfoStore = defineStore("security.user", () => {
 
 export const usePermissions = defineStore("security.permissions", () => {
   const roles = ref<Array<string>>([]);
-  const authorities = ref<Array<string>>([]);
+  const permissions = ref<Array<string>>([]);
 
   const updateRoles = (params: Array<string>) => {
     roles.value = params;
   };
 
-  const updateAuthorities = (menus: Array<MenuTreeNode>) => {
-    const permissions: Array<string> = [];
+  const updatePermissions = (menus: Array<MenuTreeNode>) => {
+    const permissionsData: Array<string> = [];
     menus.forEach((item) => {
-      if (item.authorityCode) {
-        permissions.push(item.authorityCode);
+      if (item.permissionCode) {
+        permissionsData.push(item.permissionCode);
       }
       if (item.children?.length) {
-        extractPermissionsItem(permissions, item);
+        extractPermissionsItem(permissionsData, item);
       }
     });
 
-    authorities.value = permissions;
+    permissions.value = permissionsData;
   };
 
   return {
     roles,
-    authorities,
+    permissions,
     updateRoles,
-    updateAuthorities,
+    updatePermissions,
   };
 });
 
 const extractPermissionsItem = (permissions: Array<string>, menu: MenuTreeNode) => {
   menu.children?.forEach((item) => {
-    if (item.authorityCode) {
-      permissions.push(item.authorityCode);
+    if (item.permissionCode) {
+      permissions.push(item.permissionCode);
     }
     if (item.children?.length) {
       extractPermissionsItem(permissions, item);

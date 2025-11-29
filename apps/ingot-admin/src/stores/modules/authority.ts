@@ -1,4 +1,4 @@
-import type { AuthorityTreeNode, MetaAuthority, AuthorityFilterDTO } from "@/models";
+import type { PermissionTreeNode, MetaPermission, PermissionFilterDTO } from "@/models";
 import {
   GetAuthorityTreeAPI,
   CreateAuthorityAPI,
@@ -8,10 +8,10 @@ import {
 
 export const useAuthorityStore = defineStore("authority", () => {
   const expandedKeys = ref<Array<string>>([]);
-  const authorityTree = ref<Array<AuthorityTreeNode>>([]);
+  const authorityTree = ref<Array<PermissionTreeNode>>([]);
 
-  const fetchAuthorityTree = (filter?: AuthorityFilterDTO) => {
-    return new Promise<Array<AuthorityTreeNode>>((resolve, reject) => {
+  const fetchAuthorityTree = (filter?: PermissionFilterDTO) => {
+    return new Promise<Array<PermissionTreeNode>>((resolve, reject) => {
       GetAuthorityTreeAPI(filter)
         .then((response) => {
           const data = response.data;
@@ -29,7 +29,7 @@ export const useAuthorityStore = defineStore("authority", () => {
         });
     });
   };
-  const createAuthority = (params: MetaAuthority) => {
+  const createAuthority = (params: MetaPermission) => {
     return new Promise<void>((resolve, reject) => {
       CreateAuthorityAPI(params)
         .then(() => {
@@ -40,7 +40,7 @@ export const useAuthorityStore = defineStore("authority", () => {
         });
     });
   };
-  const updateAuthority = (params: MetaAuthority) => {
+  const updateAuthority = (params: MetaPermission) => {
     return new Promise<void>((resolve, reject) => {
       UpdateAuthorityAPI(params)
         .then(() => {

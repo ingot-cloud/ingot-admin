@@ -20,7 +20,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "权限编码",
-    prop: "authorityCode",
+    prop: "permissionCode",
     transform: (v) => v || "-",
     width: "200",
   },

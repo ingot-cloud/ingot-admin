@@ -22,7 +22,7 @@
   </in-drawer>
 </template>
 <script lang="ts" setup>
-import { TreeKeyAndProps, type AuthorityTreeNode } from "@/models";
+import { TreeKeyAndProps, type PermissionTreeNode } from "@/models";
 import { OrgAuthTreeAPI } from "@/api/org/auth";
 import { useRoleStore } from "@/stores/modules/org/role";
 
@@ -35,14 +35,14 @@ const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<AuthorityTreeNode>>([]);
+const data = ref<Array<PermissionTreeNode>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
 
 const message = useMessage();
 
 const onCheckChange = (
-  node: AuthorityTreeNode,
+  node: PermissionTreeNode,
   isChecked: boolean,
   // childChecked: boolean
 ) => {

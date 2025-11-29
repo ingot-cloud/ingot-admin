@@ -22,7 +22,7 @@
   </in-dialog>
 </template>
 <script lang="ts" setup>
-import { TreeKeyAndProps, type AuthorityTreeNode } from "@/models";
+import { TreeKeyAndProps, type PermissionTreeNode } from "@/models";
 import { BindAuthorityAPI } from "@/api/platform/meta/role";
 import { GetAuthorityTreeAPI } from "@/api/platform/meta/authority";
 
@@ -34,14 +34,14 @@ const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<AuthorityTreeNode>>([]);
+const data = ref<Array<PermissionTreeNode>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
 
 const message = useMessage();
 
 const onCheckChange = (
-  node: AuthorityTreeNode,
+  node: PermissionTreeNode,
   isChecked: boolean,
   // childChecked: boolean
 ) => {

@@ -1,6 +1,6 @@
 import request from "@/net";
-import type { AuthorityTreeNode } from "@/models";
+import type { PermissionTreeNode } from "@/models";
 
 export function OrgAuthTreeAPI() {
-  return request.get<Array<AuthorityTreeNode>>("/api/pms/v1/org/auth/tree");
+  return request.get<Array<PermissionTreeNode>>("/api/pms/v1/org/auth/tree");
 }

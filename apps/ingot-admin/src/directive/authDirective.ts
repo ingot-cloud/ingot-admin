@@ -10,7 +10,7 @@ export function authDirective(app: App) {
 
       // 当前用户没有该权限且没有该角色，移除元素
       if (
-        permissions.authorities.some((v: string) => reqAuth.startsWith(v)) ||
+        permissions.permissions.some((v: string) => reqAuth.startsWith(v)) ||
         permissions.roles.some((v: string) => v === reqAuth)
       ) {
         return;
@@ -33,7 +33,7 @@ export function authDirective(app: App) {
         return;
       }
       // 检查权限
-      result = permissions.authorities.some((v: string) => {
+      result = permissions.permissions.some((v: string) => {
         return reqAuths.some((auth: string) => auth.startsWith(v));
       });
       if (result) {
@@ -49,7 +49,7 @@ export function authDirective(app: App) {
       const permissions = usePermissions();
       const reqAuths = binding.value;
 
-      const userAuths = [...permissions.roles, ...permissions.authorities];
+      const userAuths = [...permissions.roles, ...permissions.permissions];
 
       const result = reqAuths.every((auth: string) =>
         userAuths.some((v: string) => auth.startsWith(v)),

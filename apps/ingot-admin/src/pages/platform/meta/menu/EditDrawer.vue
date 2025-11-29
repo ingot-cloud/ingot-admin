@@ -65,7 +65,7 @@
         </el-form-item>
 
         <el-form-item prop="cache" label="是否开启权限">
-          <el-radio-group v-model="editForm.enableAuthority">
+          <el-radio-group v-model="editForm.enablePermission">
             <el-radio-button :value="true"> 是 </el-radio-button>
             <el-radio-button :value="false"> 否 </el-radio-button>
           </el-radio-group>
@@ -241,9 +241,9 @@ const defaultEditForm: MetaMenu = {
   name: undefined,
   menuType: MenuType.Directory,
   path: undefined,
-  enableAuthority: false,
-  authorityId: undefined,
-  authorityCode: undefined,
+  enablePermission: false,
+  permissionId: undefined,
+  permissionCode: undefined,
   routeName: undefined,
   customViewPath: false,
   viewPath: undefined,
@@ -388,8 +388,8 @@ defineExpose({
         // 添加子菜单默认类型为菜单
         editForm.menuType = MenuType.Menu;
       } else {
-        if (data.authorityId === "0") {
-          data.authorityId = undefined;
+        if (data.permissionId === "0") {
+          data.permissionId = undefined;
         }
         copyParams(editForm, data);
         copyParams(rawForm, data);

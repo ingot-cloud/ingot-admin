@@ -1,5 +1,5 @@
 import request from "@/net";
-import type { R, MetaAuthority, AuthorityTreeNode, AuthorityFilterDTO } from "@/models";
+import type { R, MetaPermission, PermissionTreeNode, PermissionFilterDTO } from "@/models";
 import { filterParams } from "@/utils/object";
 
 /**
@@ -7,12 +7,12 @@ import { filterParams } from "@/utils/object";
  * @returns
  */
 export function GetAuthorityTreeAPI(
-  filter?: AuthorityFilterDTO,
-): Promise<R<Array<AuthorityTreeNode>>> {
+  filter?: PermissionFilterDTO,
+): Promise<R<Array<PermissionTreeNode>>> {
   if (filter) {
     filterParams(filter);
   }
-  return request.get<Array<AuthorityTreeNode>>("/api/pms/v1/admin/authority/tree", filter);
+  return request.get<Array<PermissionTreeNode>>("/api/pms/v1/admin/authority/tree", filter);
 }
 
 /**
@@ -20,7 +20,7 @@ export function GetAuthorityTreeAPI(
  * @param params 参数
  * @returns
  */
-export function CreateAuthorityAPI(params: MetaAuthority): Promise<R<void>> {
+export function CreateAuthorityAPI(params: MetaPermission): Promise<R<void>> {
   filterParams(params);
   return request.post<void>("/api/pms/v1/admin/authority", params);
 }
@@ -30,7 +30,7 @@ export function CreateAuthorityAPI(params: MetaAuthority): Promise<R<void>> {
  * @param params 参数
  * @returns
  */
-export function UpdateAuthorityAPI(params: MetaAuthority): Promise<R<void>> {
+export function UpdateAuthorityAPI(params: MetaPermission): Promise<R<void>> {
   filterParams(params);
   return request.put<void>("/api/pms/v1/admin/authority", params);
 }

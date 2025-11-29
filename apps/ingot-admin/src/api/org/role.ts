@@ -5,7 +5,7 @@ import type {
   RoleTreeNodeVO,
   R,
   Option,
-  BizAuthorityTreeNodeVO,
+  BizPermissionTreeNodeVO,
   SetDTO,
 } from "@/models";
 import { filterParams } from "@/utils/object";
@@ -50,9 +50,9 @@ export function BindUserAPI(params: BizRoleAssignUsersDTO): Promise<R<void>> {
 }
 
 export function BindAuthorityAPI(params: SetDTO): Promise<R<void>> {
-  return request.put<void>(`${PATH}/${params.id}/authorities`, params);
+  return request.put<void>(`${PATH}/${params.id}/permissions`, params);
 }
 
-export function GetBindAuthoritiesAPI(id: string): Promise<R<Array<BizAuthorityTreeNodeVO>>> {
-  return request.get<Array<BizAuthorityTreeNodeVO>>(`${PATH}/${id}/authorities`);
+export function GetBindAuthoritiesAPI(id: string): Promise<R<Array<BizPermissionTreeNodeVO>>> {
+  return request.get<Array<BizPermissionTreeNodeVO>>(`${PATH}/${id}/permissions`);
 }

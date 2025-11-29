@@ -22,7 +22,7 @@ export const useRouterStore = defineStore("router", () => {
       if (forceRefresh || menus.value.length === 0) {
         UserMenuAPI()
           .then((response) => {
-            permissions.updateAuthorities(response.data);
+            permissions.updatePermissions(response.data);
             dynamicRoutes.value = transformMenu(response.data);
             allRoutes.value = routes.concat(dynamicRoutes.value);
             menus.value = generateMenus(allRoutes.value);

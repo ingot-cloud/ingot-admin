@@ -10,9 +10,9 @@ export interface MetaMenu {
   name?: string;
   menuType?: string;
   path?: string;
-  enableAuthority?: boolean;
-  authorityId?: string;
-  authorityCode?: string;
+  enablePermission?: boolean;
+  permissionId?: string;
+  permissionCode?: string;
   routeName?: string;
   customViewPath?: boolean;
   viewPath?: string;

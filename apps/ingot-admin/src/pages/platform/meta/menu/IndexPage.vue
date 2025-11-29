@@ -47,8 +47,8 @@
       <template #path="{ item }">
         <in-copy-tag :text="item.path" />
       </template>
-      <template #authorityCode="{ item }">
-        <in-copy-tag v-if="item.enableAuthority" :text="item.authorityCode || '-'" />
+      <template #permissionCode="{ item }">
+        <in-copy-tag v-if="item.enablePermission" :text="item.permissionCode || '-'" />
         <el-tag v-else>未开启</el-tag>
       </template>
       <template #icon="{ item }">
@@ -140,13 +140,7 @@ const fetchData = () => {
       menuData.value.forEach((item) => {
         expandRowKeys.value.push(String(item.id));
       });
-      selectData.value = [
-        {
-          id: "0",
-          name: "根菜单",
-          children: data,
-        },
-      ];
+      selectData.value = data;
     })
     .catch(() => {
       loading.value = false;

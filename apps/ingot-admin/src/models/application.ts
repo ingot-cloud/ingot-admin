@@ -5,7 +5,7 @@ export interface ApplicationFilterDTO {
 export interface MetaApp {
   id?: string;
   menuId?: string;
-  authorityId?: string;
+  permissionId?: string;
   name?: string;
   icon?: string;
   intro?: string;
@@ -24,7 +24,7 @@ export interface MetaAppTenant {
   tenantId?: string;
   appId?: string;
   menuId?: string;
-  authorityId?: string;
+  permissionId?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;

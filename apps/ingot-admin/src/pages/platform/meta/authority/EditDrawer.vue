@@ -55,13 +55,13 @@
   </in-drawer>
 </template>
 <script lang="ts">
-import type { MetaAuthority as P } from "@/models";
+import type { MetaPermission as P } from "@/models";
 export interface API {
   show(data?: P | string): void;
 }
 </script>
 <script lang="ts" setup>
-import type { MetaAuthority } from "@/models";
+import type { MetaPermission } from "@/models";
 import { TreeKeyAndProps } from "@/models";
 import { useOrgTypeEnums } from "@/models/enums";
 import { Message } from "@/utils/message";
@@ -78,7 +78,7 @@ const rules = {
   orgType: [{ required: true, message: "请选择组织类型", trigger: "blur" }],
 };
 
-const defaultEditForm: MetaAuthority = {
+const defaultEditForm: MetaPermission = {
   id: undefined,
   pid: undefined,
   name: undefined,
@@ -121,7 +121,7 @@ const handleConfirmClick = () => {
   form.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
-      let params: MetaAuthority = {};
+      let params: MetaPermission = {};
       let request;
       if (edit.value) {
         params = getDiffWithIgnore(rawEditForm, editForm);
@@ -150,7 +150,7 @@ const handleConfirmClick = () => {
 };
 
 defineExpose({
-  show(data?: MetaAuthority | string) {
+  show(data?: MetaPermission | string) {
     visible.value = true;
 
     // 重置数据

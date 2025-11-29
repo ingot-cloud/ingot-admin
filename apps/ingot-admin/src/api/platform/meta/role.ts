@@ -1,5 +1,5 @@
 import request from "@/net";
-import type { RoleTreeNodeVO, MetaRole, SetDTO, R, AuthorityTreeNode, Option } from "@/models";
+import type { RoleTreeNodeVO, MetaRole, SetDTO, R, PermissionTreeNode, Option } from "@/models";
 import { filterParams } from "@/utils/object";
 
 const PATH = "/api/pms/v1/platform/meta/role";
@@ -32,9 +32,9 @@ export function DeleteRoleAPI(id: string): Promise<R<void>> {
 }
 
 export function BindAuthorityAPI(params: SetDTO): Promise<R<void>> {
-  return request.put<void>(`${PATH}/${params.id}/authorities`, params);
+  return request.put<void>(`${PATH}/${params.id}/permissions`, params);
 }
 
-export function GetBindAuthoritiesAPI(id: string): Promise<R<Array<AuthorityTreeNode>>> {
-  return request.get<Array<AuthorityTreeNode>>(`${PATH}/${id}/authorities`);
+export function GetBindAuthoritiesAPI(id: string): Promise<R<Array<PermissionTreeNode>>> {
+  return request.get<Array<PermissionTreeNode>>(`${PATH}/${id}/permissions`);
 }

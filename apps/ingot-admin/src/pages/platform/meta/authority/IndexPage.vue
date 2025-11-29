@@ -70,7 +70,7 @@
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";
-import type { MetaAuthority, AuthorityTreeNode } from "@/models";
+import type { MetaPermission, PermissionTreeNode } from "@/models";
 import { useOrgTypeEnums, useAuthorityTypeEnums } from "@/models/enums";
 import EditDrawer from "./EditDrawer.vue";
 import type { TableAPI } from "@/components/table";
@@ -85,9 +85,9 @@ const authorityTypeEnums = useAuthorityTypeEnums();
 const loading = ref(false);
 const EditDrawerRef = ref();
 const tableRef = ref<TableAPI>();
-const treeData = ref<Array<AuthorityTreeNode>>([]);
-const selectData = ref([] as Array<AuthorityTreeNode>);
-const filter = ref<MetaAuthority>({});
+const treeData = ref<Array<PermissionTreeNode>>([]);
+const selectData = ref([] as Array<PermissionTreeNode>);
+const filter = ref<MetaPermission>({});
 
 const fetchData = (): void => {
   loading.value = true;
@@ -106,7 +106,7 @@ const handleCreate = (): void => {
   EditDrawerRef.value?.show();
 };
 
-const handleEdit = (params: MetaAuthority | string): void => {
+const handleEdit = (params: MetaPermission | string): void => {
   EditDrawerRef.value?.show(params);
 };
 </script>

@@ -99,7 +99,7 @@ import {
   TreeKeyAndProps,
   type RoleTreeNodeVO,
   type MetaRole,
-  type AuthorityTreeNode,
+  type PermissionTreeNode,
 } from "@/models";
 import { Message } from "@/utils/message";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@/utils/object";
@@ -151,7 +151,7 @@ const isAddChild = ref(false);
 const id = ref();
 const editForm = reactive(Object.assign({}, rawForm));
 const rawEditForm = Object.assign({}, rawForm);
-const bindAuthorities = ref<Array<AuthorityTreeNode>>([]);
+const bindAuthorities = ref<Array<PermissionTreeNode>>([]);
 const rules = {
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
   code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],

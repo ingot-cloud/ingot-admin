@@ -3,7 +3,7 @@ import type {
   TenantRolePrivate,
   Option,
   SetDTO,
-  BizAuthorityTreeNodeVO,
+  BizPermissionTreeNodeVO,
 } from "@/models";
 import {
   RoleOptionsAPI,
@@ -115,7 +115,7 @@ export const useRoleStore = defineStore("org.role", () => {
   };
 
   const getBindAuthorities = (id: string) => {
-    return new Promise<Array<BizAuthorityTreeNodeVO>>((resolve, reject) => {
+    return new Promise<Array<BizPermissionTreeNodeVO>>((resolve, reject) => {
       GetBindAuthoritiesAPI(id)
         .then((response) => {
           resolve(response.data);
