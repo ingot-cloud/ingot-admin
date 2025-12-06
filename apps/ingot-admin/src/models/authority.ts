@@ -23,3 +23,18 @@ export interface BizPermissionTreeNodeVO extends PermissionTreeNode {
 export interface PermissionFilterDTO extends MetaPermission {
   orgTypeText?: string;
 }
+
+export interface MemberPermission {
+  id?: string;
+  pid?: string;
+  name?: string;
+  code?: string;
+  status?: CommonStatus;
+  type?: string;
+  remark?: string;
+  createdAt?: string;
+}
+
+export interface MemberPermissionTreeNodeVO extends MemberPermission {
+  children?: Array<MemberPermissionTreeNodeVO>;
+}

@@ -17,11 +17,11 @@
   </in-drawer>
 </template>
 <script lang="ts" setup>
-import type { AppUserCreateDTO } from "@/models";
+import type { MemberUserDTO } from "@/models";
 import { copyParams } from "@/utils/object";
-import { CreateUserAPI } from "@/api/basic/appUser";
+import { CreateUserAPI } from "@/api/platform/member/user";
 
-const defaultEditForm: AppUserCreateDTO = {
+const defaultEditForm: MemberUserDTO = {
   phone: undefined,
   nickname: undefined,
   avatar: undefined,

@@ -60,5 +60,14 @@ export interface RoleFilterDTO {
   roleType?: string;
 }
 
-export interface AppRole extends MetaRole {}
-export interface AppRoleGroup {}
+export interface MemberRole {
+  id?: string;
+  pid?: string;
+  name?: string;
+  code?: string;
+  builtIn?: boolean;
+  status?: CommonStatus;
+}
+export interface MemberRoleTreeNodeVO extends MemberRole {
+  children?: Array<MemberRoleTreeNodeVO>;
+}

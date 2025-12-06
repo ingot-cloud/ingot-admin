@@ -1,6 +1,7 @@
 import type { OptionIDEntity } from "./common";
 import type { CommonStatus } from "./enums";
 import type { SysUserTenant } from "./tenant";
+import type { MemberRole } from "./role";
 
 /**
  * UserPageItemVO
@@ -89,7 +90,7 @@ export interface UserQueryDTO extends SysUser {
   deptId?: string;
 }
 
-export interface AppUser {
+export interface MemberUser {
   id?: string;
   username?: string;
   nickname?: string;
@@ -99,9 +100,23 @@ export interface AppUser {
   status?: CommonStatus;
 }
 
-export interface AppUserCreateDTO {
+export interface MemberUserDTO {
+  id?: string;
   nickname?: string;
   phone?: string;
+  email?: string;
+  avatar?: string;
+  status?: CommonStatus;
+}
+
+export interface MemberUserProfileVO extends MemberUser {
+  roles?: Array<MemberRole>;
+}
+
+export interface MemberUserBaseInfoDTO {
+  nickname?: string;
+  phone?: string;
+  email?: string;
   avatar?: string;
 }
 

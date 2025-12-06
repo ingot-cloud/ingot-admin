@@ -1,7 +1,7 @@
 <template>
   <in-dialog :title="title" v-model="visible">
     <div flex flex-col gap-2>
-      <div flex flex-row gap-2>
+      <div flex flex-row gap-2 p-t-2>
         <div m-r-10px>密码:</div>
         <in-copy-tag :text="passwordValue"></in-copy-tag>
       </div>

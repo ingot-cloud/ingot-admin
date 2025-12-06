@@ -100,5 +100,5 @@ export function UserOrgLeaveAPI(params: UserOrgEditDTO) {
  * 用户重置密码
  */
 export function UserResetPwdAPI(id: string) {
-  return request.put<ResetPwdVO>(`${PATH}/pwd/${id}`);
+  return request.put<ResetPwdVO>(`${PATH}/${id}/reset-password`);
 }

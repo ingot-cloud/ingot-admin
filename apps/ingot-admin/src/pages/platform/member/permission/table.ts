@@ -1,26 +1,24 @@
 import type { TableHeaderRecord } from "@/components/table";
-
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
-    label: "角色名",
-    prop: "name",
-  },
-  {
-    label: "角色编码",
+    label: "权限",
     prop: "code",
   },
   {
-    label: "角色类型",
+    label: "名称",
+    prop: "name",
+    width: "150",
+  },
+  {
+    label: "类型",
     prop: "type",
+    width: "100",
   },
   {
     label: "状态",
     prop: "status",
-  },
-  {
-    label: "创建时间",
-    prop: "createdAt",
-    hide: true,
+    width: "100",
+    align: "center",
   },
   {
     label: "操作",

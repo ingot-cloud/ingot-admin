@@ -84,13 +84,13 @@
 
 <script lang="ts" setup>
 import type { TableAPI } from "@/components/table";
-import type { SysUser } from "@/models";
+import type { MemberUser } from "@/models";
 import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import EditDrawer from "./components/EditDrawer.vue";
 import ResetPwdDialog from "./components/ResetPwdDialog.vue";
-import { UserResetPwdAPI } from "@/api/basic/appUser";
+import { UserResetPwdAPI } from "@/api/platform/member/user";
 
 const ops = useOps();
 
@@ -105,11 +105,11 @@ const handleCreateUser = (): void => {
   CreateDrawerRef.value?.show();
 };
 
-const handleDetailUser = (params: SysUser): void => {
+const handleDetailUser = (params: MemberUser): void => {
   EditDrawerRef.value.show(params);
 };
 
-const handleResetPwdUser = (params: SysUser): void => {
+const handleResetPwdUser = (params: MemberUser): void => {
   confirm.warning(`是否重置该用户(${params.nickname})密码`).then(() => {
     UserResetPwdAPI(params.id!).then((response) => {
       message.success("操作成功");
