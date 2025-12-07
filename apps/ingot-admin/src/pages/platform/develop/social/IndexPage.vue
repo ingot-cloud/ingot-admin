@@ -52,7 +52,7 @@
           type="danger"
           text
           link
-          @click="confirmDelete.exec(item.id, `是否删除社交信息(${item.clientId})`, '删除成功')"
+          @click="confirmDelete.exec(item.id, `是否删除社交信息(${item.name})`, '删除成功')"
         >
           <template #icon>
             <i-ep:delete />
