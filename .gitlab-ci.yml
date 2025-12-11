@@ -1,0 +1,193 @@
+image: docker:27.5.1
+
+variables:
+  DEV_VERSION: $CI_COMMIT_SHORT_SHA
+  RELEASE_VERSION: 0.1.0
+
+# 使用 pnpm store 缓存加速依赖安装
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - .pnpm-store/
+
+stages:
+  - build
+  - docker
+  - deploy
+
+# ------------------------------
+# PNPM 配置模板
+# ------------------------------
+.pnpm:
+  image: node:20.9.0
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@10.12.4 --activate
+    - pnpm config set store-dir .pnpm-store
+    - pnpm config set registry https://registry.npmmirror.com
+    - pnpm install --frozen-lockfile
+  tags: [ingot]
+
+# ------------------------------
+# admin 项目 build
+# ------------------------------
+build-admin:
+  stage: build
+  extends: .pnpm
+  variables:
+    PROJECT: apps/ingot-admin
+  script:
+    - cd $PROJECT
+    - pnpm build:170
+  artifacts:
+    paths:
+      - apps/ingot-admin/dist/
+    expire_in: 1 hour
+  rules:
+    # 自动触发：当 admin 相关文件变化时
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      changes:
+        - apps/ingot-admin/**/*
+        - packages/**/*
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - .gitlab-ci.yml
+      when: on_success
+    # 手动触发：在 release_170 分支上始终可以手动执行
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: manual
+      allow_failure: true
+
+# ------------------------------
+# login 项目 build
+# ------------------------------
+build-login:
+  stage: build
+  extends: .pnpm
+  variables:
+    PROJECT: apps/ingot-login
+  script:
+    - cd $PROJECT
+    - pnpm build:170
+  artifacts:
+    paths:
+      - apps/ingot-login/dist/
+    expire_in: 1 hour
+  rules:
+    # 自动触发：当 login 相关文件变化时
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      changes:
+        - apps/ingot-login/**/*
+        - packages/**/*
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - .gitlab-ci.yml
+      when: on_success
+    # 手动触发：在 release_170 分支上始终可以手动执行
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: manual
+      allow_failure: true
+
+# ------------------------------
+# Docker 构建模板
+# ------------------------------
+.docker-build-template:
+  stage: docker
+  script:
+    - rm -rf docker-build
+    - mkdir -p docker-build
+    - docker build -t ${MODULE_NAME}:${RELEASE_VERSION} $BUILD_CONTEXT
+    - docker save -o ./docker-build/${MODULE_NAME}.tar ${MODULE_NAME}:${RELEASE_VERSION}
+    - ls -l docker-build
+  artifacts:
+    paths:
+      - docker-build/
+    expire_in: 1 hour
+  tags: [ingot]
+
+# ------------------------------
+# admin Docker 镜像
+# ------------------------------
+docker-admin:
+  extends: .docker-build-template
+  variables:
+    MODULE_NAME: "ingot-admin"
+    BUILD_CONTEXT: "apps/indohit-admin"
+  rules:
+    # 只有当 build-admin 成功执行后才触发
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: build-admin
+      optional: false
+
+# ------------------------------
+# login Docker 镜像
+# ------------------------------
+docker-login:
+  extends: .docker-build-template
+  variables:
+    MODULE_NAME: "ingot-login"
+    BUILD_CONTEXT: "apps/indohit-login"
+  rules:
+    # 只有当 build-login 成功执行后才触发
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: build-login
+      optional: false
+
+# ------------------------------
+# 部署模板
+# ------------------------------
+.deploy-template:
+  stage: deploy
+  script:
+    - docker ps -q --filter name="${SERVICE_NAME}" | xargs -r docker rm -f
+    - docker load -i ./docker-build/${MODULE_NAME}.tar
+    - |
+      docker run -d --name ${SERVICE_NAME} --restart always \
+        --network ingot-net \
+        -e VIRTUAL_HOST=${VIRTUAL_HOST} \
+        -e VIRTUAL_PORT=${VIRTUAL_PORT} \
+        -e LETSENCRYPT_HOST=${VIRTUAL_HOST} \
+        ${MODULE_NAME}:${RELEASE_VERSION}
+  tags: [ingot]
+
+# ------------------------------
+# admin 项目部署
+# ------------------------------
+deploy-admin:
+  extends: .deploy-template
+  variables:
+    MODULE_NAME: ingot-admin
+    SERVICE_NAME: ingot-admin
+    VIRTUAL_HOST: admin.ingotcloud.top
+    VIRTUAL_PORT: 3000
+  rules:
+    # 只有当 docker-admin 成功执行后才触发
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: docker-admin
+      optional: false
+
+# ------------------------------
+# login 项目部署
+# ------------------------------
+deploy-login:
+  extends: .deploy-template
+  variables:
+    MODULE_NAME: ingot-login
+    SERVICE_NAME: ingot-login
+    VIRTUAL_HOST: login.ingotcloud.top
+    VIRTUAL_PORT: 3000
+  rules:
+    # 只有当 docker-login 成功执行后才触发
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: docker-login
+      optional: false
