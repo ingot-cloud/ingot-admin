@@ -40,6 +40,7 @@ export interface SysUser extends OptionIDEntity {
 
 export interface UserDTO {
   id?: string;
+  username?: string;
   phone?: string;
   nickname?: string;
   email?: string;

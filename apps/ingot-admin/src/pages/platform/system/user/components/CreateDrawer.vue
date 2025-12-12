@@ -4,6 +4,9 @@
       <el-form-item label="头像">
         <in-common-upload-avatar :dir="uploadDir" v-model="editForm.avatar" />
       </el-form-item>
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="editForm.username" clearable placeholder="请输入用户名"></el-input>
+      </el-form-item>
       <el-form-item label="姓名" prop="nickname">
         <el-input v-model="editForm.nickname" clearable placeholder="请输入姓名"></el-input>
       </el-form-item>
@@ -26,6 +29,7 @@ import { CreateUserAPI } from "@/api/platform/system/user";
 
 const defaultEditForm: UserDTO = {
   phone: undefined,
+  username: undefined,
   nickname: undefined,
   email: undefined,
   avatar: undefined,
@@ -43,6 +47,7 @@ const uploadDir = ref("user/avatar");
 
 const rules = {
   phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
+  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   nickname: [{ required: true, message: "请输入姓名", trigger: "blur" }],
 };
 
