@@ -2,7 +2,7 @@ import request from "@/net";
 import type { R, Page, OAuth2RegisteredClient, AppSecretVO } from "@/models";
 import { filterParams } from "@/utils/object";
 
-const PATH = "/api/pms/v1/platform/dev/client";
+const PATH = "/api/auth/client";
 
 /**
  * 获取分页信息
