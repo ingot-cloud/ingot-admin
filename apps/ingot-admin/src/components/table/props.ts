@@ -1,6 +1,11 @@
 import type { TableHeaderRecord, TablePage } from "./types";
 import { TreeListKeyAndProps } from "@/models";
-import { type TableProps } from "element-plus";
+
+// 简化的 treeProps 类型定义
+export interface SimpleTreeProps {
+  hasChildren?: string;
+  children?: string;
+}
 
 export interface ExtendTableProps {
   headers?: Array<TableHeaderRecord>;
@@ -12,7 +17,48 @@ export interface ExtendTableProps {
   pageLayout?: string;
 }
 
-export type InTableProps = Partial<TableProps<any>> & ExtendTableProps;
+// 手动定义所有需要的表格属性，避免复杂的类型继承
+export interface InTableProps extends ExtendTableProps {
+  data?: any[];
+  stripe?: boolean;
+  border?: boolean;
+  fit?: boolean;
+  showHeader?: boolean;
+  highlightCurrentRow?: boolean;
+  defaultExpandAll?: boolean;
+  defaultSort?: any;
+  tooltipEffect?: 'dark' | 'light';
+  tooltipOptions?: any;
+  showSummary?: boolean;
+  sumText?: string;
+  selectOnIndeterminate?: boolean;
+  indent?: number;
+  lazy?: boolean;
+  treeProps?: SimpleTreeProps;
+  tableLayout?: 'fixed' | 'auto';
+  scrollbarAlwaysOn?: boolean;
+  flexible?: boolean;
+  allowDragLastColumn?: boolean;
+  preserveExpandedContent?: boolean;
+  rowKey?: string | ((row: any) => string);
+  expandRowKeys?: any[];
+  height?: string | number;
+  maxHeight?: string | number;
+  size?: 'large' | 'default' | 'small';
+  emptyText?: string;
+  cellClassName?: string | ((data: any) => string);
+  cellStyle?: any;
+  headerCellClassName?: string | ((data: any) => string);
+  headerCellStyle?: any;
+  rowClassName?: string | ((data: any) => string);
+  rowStyle?: any;
+  headerRowClassName?: string | ((data: any) => string);
+  headerRowStyle?: any;
+  currentRowKey?: string | number;
+  spanMethod?: (data: any) => number[] | { rowspan: number; colspan: number };
+  summaryMethod?: (data: any) => string[];
+  load?: (row: any, treeNode: any, resolve: Function) => void;
+}
 
 export const DefaultProps = {
   loading: false,
@@ -34,7 +80,7 @@ export const DefaultProps = {
   highlightCurrentRow: false,
   defaultExpandAll: false,
   defaultSort: undefined,
-  tooltipEffect: "dark",
+  tooltipEffect: "dark" as const,
   tooltipOptions: () => ({
     enterable: true,
     placement: "top",
@@ -47,8 +93,8 @@ export const DefaultProps = {
   selectOnIndeterminate: false,
   indent: 16,
   lazy: false,
-  treeProps: () => TreeListKeyAndProps.props as any,
-  tableLayout: "fixed" as any,
+  treeProps: (): SimpleTreeProps => TreeListKeyAndProps.props,
+  tableLayout: "fixed" as const,
   scrollbarAlwaysOn: false,
   flexible: false,
   allowDragLastColumn: true,

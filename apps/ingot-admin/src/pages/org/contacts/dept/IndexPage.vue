@@ -85,7 +85,7 @@ const fetchData = () => {
   loading.value = true;
   deptStore
     .fetchDeptTree()
-    .then((data) => {
+    .then((data: Array<DeptTreeNodeWithManagerVO>) => {
       loading.value = false;
       if (data && data.length > 0 && expandRowKeys.value.length === 0) {
         expandRowKeys.value = [data[0].id!];

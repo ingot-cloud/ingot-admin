@@ -13,24 +13,29 @@ export const useDeptStore = defineStore("org.dept", () => {
   const childTree = ref<Array<DeptTreeNodeWithManagerVO>>([]);
 
   const fetchDeptTree = () => {
-    return new Promise<Array<DeptTreeNodeWithManagerVO>>((resolve, reject) => {
-      DeptTreeAPI()
-        .then((response) => {
-          const data = response.data;
-          data.forEach((root) => {
-            if (root.id) {
-              expandedKeys.value.push(root.id);
-            }
-          });
+    return new Promise<Array<DeptTreeNodeWithManagerVO>>(
+      (
+        resolve: (value: Array<DeptTreeNodeWithManagerVO>) => void,
+        reject: (reason?: any) => void,
+      ) => {
+        DeptTreeAPI()
+          .then((response) => {
+            const data = response.data;
+            data.forEach((root) => {
+              if (root.id) {
+                expandedKeys.value.push(root.id);
+              }
+            });
 
-          deptTree.value = data.slice();
-          childTree.value = data.length > 1 ? data.slice(1) : [];
-          resolve(data);
-        })
-        .catch(() => {
-          reject();
-        });
-    });
+            deptTree.value = data.slice();
+            childTree.value = data.length > 1 ? data.slice(1) : [];
+            resolve(data);
+          })
+          .catch(() => {
+            reject();
+          });
+      },
+    );
   };
   const fetchDeptSimpleTree = () => {
     return new Promise<Array<DeptTreeNode>>((resolve, reject) => {

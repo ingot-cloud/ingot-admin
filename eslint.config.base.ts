@@ -1,11 +1,12 @@
 import { globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
+import type { Linter } from "eslint";
 
 /**
  * 基础 ESLint 配置
  * 适用于所有 TypeScript 项目（非 Vue）
  */
-export const baseConfig = [
+export const baseConfig: Linter.Config[] = [
   globalIgnores([
     "**/dist/**",
     "**/dist-ssr/**",

@@ -35,6 +35,7 @@ import { TreeKeyAndProps } from "@/models";
 import { Message } from "@/utils/message";
 import { copyParams, copyParamsWithKeys } from "@/utils/object";
 import { CreateAppAPI } from "@/api/platform/meta/app";
+import type { TreeData } from "element-plus";
 
 const rules = {
   menuId: [{ required: true, message: "请选择菜单", trigger: "blur" }],
@@ -52,7 +53,7 @@ const keys = Object.keys(defaultEditForm);
 const emits = defineEmits(["success"]);
 defineProps({
   menuData: {
-    type: Array,
+    type: Array as PropType<TreeData>,
   },
 });
 

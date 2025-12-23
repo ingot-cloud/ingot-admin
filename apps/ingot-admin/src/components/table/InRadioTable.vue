@@ -77,7 +77,6 @@ import type { TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable } from "element-plus";
-import type { ComponentInstance } from "vue";
 
 defineOptions({
   name: "InRadioTable",
@@ -147,7 +146,7 @@ const tableRef = (instance: any) => {
   vm!.exposeProxy = instance;
 };
 
-defineExpose({} as ComponentInstance<typeof ElTable>);
+defineExpose({} as any);
 </script>
 <style lang="postcss" scoped>
 :deep(th.el-table__cell) {

@@ -69,6 +69,7 @@ import { useDeptStore } from "@/stores/modules/org/dept";
 import { UserPageAPI } from "@/api/org/user";
 import { Message } from "@/utils/message";
 import { copyParams, getDiff } from "@/utils/object";
+import type { TreeData } from "element-plus";
 
 interface DeptWithManager extends DeptWithManagerDTO {
   managerUsers?: Array<SimpleUserVO>;
@@ -92,7 +93,7 @@ const rules = {
 const emits = defineEmits(["success"]);
 defineProps({
   selectData: {
-    type: Array,
+    type: Array as PropType<TreeData>,
   },
 });
 

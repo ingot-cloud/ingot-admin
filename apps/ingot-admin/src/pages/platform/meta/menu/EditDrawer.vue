@@ -224,6 +224,7 @@ import {
 import { CreateMenuAPI, UpdateMenuAPI, RemoveMenuAPI } from "@/api/platform/meta/menu";
 import { Message } from "@/utils/message";
 import { copyParams, getDiff } from "@/utils/object";
+import type { TreeData } from "element-plus";
 
 const rules = {
   name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
@@ -267,7 +268,7 @@ const menuLinkTypeEnum = useMenuLinkTypeEnum();
 const emits = defineEmits(["success"]);
 defineProps({
   selectData: {
-    type: Array,
+    type: Array as PropType<TreeData>,
   },
 });
 

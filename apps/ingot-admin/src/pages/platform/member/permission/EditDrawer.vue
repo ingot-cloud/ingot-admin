@@ -62,6 +62,7 @@ import {
   UpdateAuthorityAPI,
   RemoveAuthorityAPI,
 } from "@/api/platform/member/permission";
+import type { TreeData } from "element-plus";
 
 const rules = {
   name: [{ required: true, message: "请输入权限名称", trigger: "blur" }],
@@ -82,7 +83,7 @@ const keys = Object.keys(defaultEditForm);
 const emits = defineEmits(["success"]);
 defineProps({
   selectData: {
-    type: Array,
+    type: Array as PropType<TreeData>,
   },
 });
 
