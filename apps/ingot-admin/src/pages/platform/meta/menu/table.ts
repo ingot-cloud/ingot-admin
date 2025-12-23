@@ -4,7 +4,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "菜单名称",
     prop: "name",
-    width: "200",
+    minWidth: "200",
   },
   {
     label: "菜单类型",

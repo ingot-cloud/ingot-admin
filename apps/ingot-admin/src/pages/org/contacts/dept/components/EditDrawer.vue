@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { CommonStatus, CommonStatusEnumExtArray } from "@/models/enums";
 import { TreeKeyAndProps } from "@/models";
-import type { DeptWithManagerVO, SimpleUserVO, DeptWithManagerDTO } from "@/models";
+import type { DeptTreeNodeWithManagerVO, SimpleUserVO, DeptWithManagerDTO } from "@/models";
 import { useDeptStore } from "@/stores/modules/org/dept";
 import { UserPageAPI } from "@/api/org/user";
 import { Message } from "@/utils/message";
@@ -108,7 +108,7 @@ const editFormRef = ref();
 
 const title = ref("");
 const editForm = reactive(Object.assign({}, defaultEditForm));
-const rawForm: DeptWithManagerVO = {};
+const rawForm: DeptTreeNodeWithManagerVO = {};
 const userList = ref<Array<SimpleUserVO>>([]);
 
 const handleConfirmClick = () => {
@@ -159,7 +159,7 @@ const queryData = (nickname: string) => {
   });
 };
 
-const show = (data: DeptWithManagerVO | string) => {
+const show = (data: DeptTreeNodeWithManagerVO | string) => {
   visible.value = true;
 
   // 重置数据

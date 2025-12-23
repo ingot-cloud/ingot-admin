@@ -38,7 +38,7 @@
       @handleSizeChange="ops.fetchUserData"
       @handleCurrentChange="ops.fetchUserData"
     >
-      <template #title> 系统用户管理 </template>
+      <template #title> 用户管理 </template>
       <template #toolbar>
         <in-button type="primary" @click="handleCreateUser"> 添加用户 </in-button>
       </template>

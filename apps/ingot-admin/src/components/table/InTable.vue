@@ -37,7 +37,10 @@
 
   <component :is="h(ElTable, { ...$attrs, ...props, ref: tableRef })" v-loading="loading">
     <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
-      <template v-slot="scope" v-if="!item.type">
+      <template v-if="item.type === 'expand'" #default="props">
+        <slot :name="item.prop" :item="props.row" :index="props.$index"> </slot>
+      </template>
+      <template v-slot="scope" v-if="!item.type || item.type === 'default'">
         <slot :name="item.prop" :item="scope.row" :index="scope.$index">
           {{
             item.transform

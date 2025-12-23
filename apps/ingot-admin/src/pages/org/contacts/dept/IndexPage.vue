@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 import ContactsTabs from "@/pages/org/contacts/components/ContactsTabs.vue";
 import { tableHeaders } from "./table";
-import type { DeptWithManagerVO } from "@/models";
+import type { DeptTreeNodeWithManagerVO } from "@/models";
 import { useDeptStore } from "@/stores/modules/org/dept";
 import { useUserInfoStore } from "@/stores/modules/auth";
 import EditDrawer from "./components/EditDrawer.vue";
@@ -98,7 +98,7 @@ const fetchData = () => {
 
 const confirmDelete = useConfirmDelete(deptStore.removeDept, fetchData);
 
-const handleEdit = (data?: DeptWithManagerVO | string) => {
+const handleEdit = (data?: DeptTreeNodeWithManagerVO | string) => {
   EditDrawerRef.value.show(data || deptTree.value[0].id);
 };
 
