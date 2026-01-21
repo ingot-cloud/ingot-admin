@@ -31,7 +31,11 @@ export const useUserOps = () => {
    */
   const handleTreeNodeClick = (node: DeptTreeNode): void => {
     copyParams(currentDeptNode, node);
-    paging.condition.deptId = node.id;
+    if (node.mainFlag) {
+      paging.condition.deptId = undefined;
+    } else {
+      paging.condition.deptId = node.id;
+    }
     fetchUserData();
   };
 
