@@ -42,4 +42,25 @@ export const commonRoutes: Array<RouteRecordRaw> = [
     meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
     component: () => import("@/pages/common/errors/404Page.vue"),
   },
+  {
+    path: "/sso_callback",
+    meta: {
+      title: "登录",
+      permitAuth: true,
+      hideMenu: true,
+      hideBreadcrumb: true,
+      manualCloseGlobalLoading: true,
+    },
+    component: () => import("@/pages/common/sso-callback/IndexPage.vue"),
+  },
+  {
+    path: "/init",
+    meta: {
+      permitAuth: false,
+      hideMenu: true,
+      hideBreadcrumb: true,
+      manualCloseGlobalLoading: true,
+    },
+    component: () => import("@/pages/common/init/IndexPage.vue"),
+  },
 ];

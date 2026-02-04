@@ -1,7 +1,6 @@
 import type { RouteRecordRaw } from "vue-router";
-import { securityRoutes } from "./security";
 import { commonRoutes } from "./common";
 
-const routes: Array<RouteRecordRaw> = [...commonRoutes, ...securityRoutes];
+const routes: Array<RouteRecordRaw> = [...commonRoutes];
 
 export default routes;
