@@ -7,3 +7,4 @@ export * from "./socialEnums";
 export * from "./orgEnums";
 export * from "./roleEnums";
 export * from "./authorityEnums";
+export * from "./credentialEnums";

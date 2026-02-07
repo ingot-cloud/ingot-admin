@@ -15,3 +15,4 @@ export * from "./oss";
 export * from "./id";
 export * from "./application";
 export * from "./token";
+export * from "./credential";
