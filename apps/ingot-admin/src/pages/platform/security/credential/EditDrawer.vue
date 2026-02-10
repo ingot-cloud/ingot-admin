@@ -43,6 +43,8 @@ const currentComponent = computed(() => {
       return HistoryView;
     case CredentialPolicyTypeEnum.EXPIRATION:
       return ExpirationView;
+    default:
+      return StrengthView;
   }
 });
 
@@ -53,7 +55,7 @@ const title = ref("添加凭证策略");
 const visible = ref(false);
 const editForm = reactive<CredentialPolicyConfig>({
   id: undefined,
-  policyType: undefined,
+  policyType: CredentialPolicyTypeEnum.STRENGTH,
   priority: undefined,
   enabled: true,
   policyConfig: {},
@@ -84,19 +86,25 @@ defineExpose({
     visible.value = true;
 
     if (params) {
+      Object.assign(editForm, params);
       editFlag.value = true;
       title.value = "编辑凭证策略";
       nextTick(() => {
         currentComponentRef.value.setForm(params?.policyConfig);
       });
     } else {
+      Object.assign(editForm, {
+        id: undefined,
+        policyType: CredentialPolicyTypeEnum.STRENGTH,
+        priority: undefined,
+        enabled: true,
+        policyConfig: {},
+      });
       editFlag.value = false;
       title.value = "添加凭证策略";
     }
-
     nextTick(() => {
-      EditFormRef.value.resetFields();
-      Object.assign(editForm, params);
+      EditFormRef.value.clearValidate();
     });
   },
 });

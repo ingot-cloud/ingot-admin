@@ -93,10 +93,11 @@ const rules = {
 
 defineExpose({
   setForm: (form: any) => {
-    nextTick(() => {
-      editFormRef.value.resetFields();
-      Object.assign(editForm, defaultEditForm, form);
-    });
+    editFormRef.value.clearValidate();
+    Object.assign(editForm, form);
+  },
+  resetFields: () => {
+    editFormRef.value.resetFields();
   },
   getForm: () => {
     return new Promise((resolve, reject) => {
