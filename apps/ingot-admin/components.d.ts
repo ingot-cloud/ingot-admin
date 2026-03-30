@@ -8,6 +8,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AccountStatus: typeof import('./src/components/biz/user/AccountStatus.vue')['default']
+    AccountStatusEditButton: typeof import('./src/components/biz/user/AccountStatusEditButton.vue')['default']
+    AccountStatusView: typeof import('./src/components/biz/user/AccountStatusView.vue')['default']
     BizDeptSelect: typeof import('./src/components/biz/dept-select/BizDeptSelect.vue')['default']
     BizSearchUserByPhone: typeof import('./src/components/biz/search-user-by-phone/BizSearchUserByPhone.vue')['default']
     ClientSelect: typeof import('./src/components/biz/ClientSelect.vue')['default']
@@ -23,6 +26,7 @@ declare module 'vue' {
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDivider: typeof import('element-plus/es')['ElDivider']
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
@@ -76,6 +80,7 @@ declare module 'vue' {
     'IIon:reloadSharp': typeof import('~icons/ion/reload-sharp')['default']
     'ILineMd:arrowCloseLeft': typeof import('~icons/line-md/arrow-close-left')['default']
     'ILineMd:arrowCloseRight': typeof import('~icons/line-md/arrow-close-right')['default']
+    'IMage:homeSecurityLock': typeof import('~icons/mage/home-security-lock')['default']
     'IMaterialSymbols:expandRounded': typeof import('~icons/material-symbols/expand-rounded')['default']
     'IMaterialSymbols:moreVert': typeof import('~icons/material-symbols/more-vert')['default']
     'IMaterialSymbols:verticalAlignTopRounded': typeof import('~icons/material-symbols/vertical-align-top-rounded')['default']

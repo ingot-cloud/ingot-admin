@@ -35,7 +35,8 @@ export interface SysUser extends OptionIDEntity {
   phone?: string;
   email?: string;
   avatar?: string;
-  status?: CommonStatus;
+  enabled?: boolean;
+  locked?: boolean;
 }
 
 export interface UserDTO {
@@ -45,7 +46,6 @@ export interface UserDTO {
   nickname?: string;
   email?: string;
   avatar?: string;
-  status?: CommonStatus;
 }
 
 export interface UserProfileVO {
@@ -54,7 +54,8 @@ export interface UserProfileVO {
   nickname?: string;
   phone?: string;
   email?: string;
-  status?: CommonStatus;
+  enabled?: boolean;
+  locked?: boolean;
   createdAt: string;
 }
 
@@ -65,7 +66,8 @@ export interface OrgUserProfileVO {
   nickname?: string;
   phone?: string;
   email?: string;
-  status?: CommonStatus;
+  enabled?: boolean;
+  locked?: boolean;
   createdAt: string;
 }
 
@@ -129,4 +131,9 @@ export interface SimpleUserVO {
 
 export interface SimpleUserWithPhoneVO extends SimpleUserVO {
   phone?: string;
+}
+
+export interface AccountLockDTO {
+  reasonDetail?: string;
+  lockedUntil?: string;
 }

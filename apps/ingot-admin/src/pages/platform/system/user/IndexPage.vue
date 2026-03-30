@@ -54,7 +54,7 @@
         <in-copy-tag :text="item.username" />
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <account-status-view :enabled="item.enabled" :locked="item.locked" />
       </template>
       <template #actions="{ item }">
         <in-button link text type="primary" @click="handleDetailUser(item)">
@@ -63,11 +63,12 @@
           </template>
           详情
         </in-button>
-        <common-status-button
-          text
-          link
-          :status="item.status"
-          @click="ops.handleDisableUser(item)"
+        <account-status-edit-button
+          v-if="item.id"
+          :userId="item.id"
+          :enabled="item.enabled"
+          :locked="item.locked"
+          @success="ops.fetchUserData"
         />
         <in-button link text type="danger" @click="handleResetPwdUser(item)">
           <template #icon>
