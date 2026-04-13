@@ -53,6 +53,7 @@ export const useUserInfoStore = defineStore("security.user", () => {
     user: undefined,
     roles: [],
     allows: [],
+    mustChangePwd: false,
   };
   const userInfo = reactive<UserInfo>(defaultUser);
 
@@ -72,7 +73,7 @@ export const useUserInfoStore = defineStore("security.user", () => {
   const getCurrentOrg = computed(() => userInfo.allows.find((item) => item.main));
   const getUserInfoWhetherExist = computed(() => userInfo.user && userInfo.user.phone);
   const getIsInitPwd = computed(() => {
-    return userInfo.user && userInfo.user.initPwd;
+    return userInfo.mustChangePwd;
   });
 
   const clear = () => {

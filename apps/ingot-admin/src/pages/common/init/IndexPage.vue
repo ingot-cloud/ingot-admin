@@ -12,7 +12,7 @@
             <div class="title">初始化密码</div>
           </div>
 
-          <div class="tips">第一次登录请设置您的登录密码</div>
+          <div class="tips">请设置您的登录密码</div>
 
           <el-form
             ref="editFormRef"
@@ -93,12 +93,7 @@ const handleConfirmClick = () => {
           loading.value = false;
           message.success("设置成功");
           userInfoStore.clear();
-          go(
-            {
-              path: "/",
-            },
-            true,
-          );
+          useLogin().go();
         })
         .catch(() => {
           loading.value = false;

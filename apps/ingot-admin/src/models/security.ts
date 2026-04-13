@@ -15,13 +15,13 @@ export interface User {
   phone?: string;
   nickname?: string;
   avatar?: string;
-  initPwd?: boolean;
 }
 
 export interface UserInfo {
   user?: User;
   roles: Array<string>;
   allows: Array<TenantItem>;
+  mustChangePwd: boolean
 }
 
 export interface UserPasswordDTO {
