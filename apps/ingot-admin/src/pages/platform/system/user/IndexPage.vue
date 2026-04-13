@@ -80,14 +80,14 @@
     </in-table>
   </in-filter-container>
 
-  <CreateDrawer ref="CreateDrawerRef" @success="ops.fetchUserData" />
+  <CreateDrawer ref="CreateDrawerRef" @success="handleCreateSuccessEvt" />
   <EditDrawer ref="EditDrawerRef" @success="ops.fetchUserData" />
   <ResetPwdDialog ref="ResetPwdDialogRef" />
 </template>
 
 <script lang="ts" setup>
 import type { TableAPI } from "@/components/table";
-import type { SysUser } from "@/models";
+import type { SysUser, ResetPwdVO } from "@/models";
 import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
 import CreateDrawer from "./components/CreateDrawer.vue";
@@ -119,6 +119,11 @@ const handleResetPwdUser = (params: SysUser): void => {
       ResetPwdDialogRef.value.show(response.data.random);
     });
   });
+};
+
+const handleCreateSuccessEvt = (userVo: ResetPwdVO) => {
+  ops.fetchUserData();
+  ResetPwdDialogRef.value.show(userVo.random);
 };
 
 onMounted(() => {

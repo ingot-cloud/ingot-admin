@@ -67,11 +67,11 @@ const handleConfirmClick = () => {
     if (valid) {
       loading.value = true;
       CreateUserAPI(editForm)
-        .then(() => {
+        .then((res) => {
           loading.value = false;
           visible.value = false;
           message.success("操作成功");
-          emits("success");
+          emits("success", res.data);
         })
         .catch(() => {
           loading.value = false;
