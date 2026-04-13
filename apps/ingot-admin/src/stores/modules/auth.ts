@@ -1,76 +1,21 @@
-import type { UserToken, UserInfo } from "@/models/security";
-import { RefreshTokenAPI, RevokeTokenAPI, AuthorizeCodeTokenAPI } from "@/api/common/auth";
+import type { UserInfo } from "@/models/security";
+import { LogoutAPI } from "@/api/common/auth";
 import { UserInfoAPI } from "@/api/common/user";
 import type { MenuTreeNode } from "@/models";
+
 /**
  * 授权信息
  */
 export const useAuthStore = defineStore(
   "security",
   () => {
-    const token = reactive<UserToken>({});
-
-    const getAccessToken = computed(() => {
-      if (token.accessToken && token.tokenType) {
-        return `${token.tokenType} ${token.accessToken}`;
-      }
-      return "";
-    });
-
-    const getRefreshToken = computed(() => {
-      return token.refreshToken || "";
-    });
-
-    const getOrg = computed(() => {
-      return token.org || "";
-    });
-
-    // 更新 token
-    const updateToken = (value: UserToken) => {
-      Object.assign(token, value);
-    };
-
-    /**
-     * 授权码登录
-     * @param code 授权码
-     * @returns
-     */
-    const codeLogin = (code: string): Promise<void> => {
-      return new Promise((resolve, reject) => {
-        AuthorizeCodeTokenAPI(code)
-          .then((response) => {
-            updateToken(response.data);
-            resolve();
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    };
-
-    /**
-     * 刷新token
-     */
-    const refreshToken = (): Promise<UserToken> => {
-      return new Promise((resolve, reject) => {
-        RefreshTokenAPI(getRefreshToken.value)
-          .then((response) => {
-            updateToken(response.data);
-            resolve(response.data);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-    };
-
     /**
      * 退出登录
      */
-    const logout = (ignoreRevokeAPI?: boolean): Promise<void> => {
+    const logout = async (ignoreRevokeAPI?: boolean): Promise<void> => {
       return Promise.race([
         new Promise((resolve) => {
-          RevokeTokenAPI(getAccessToken.value).then(resolve).catch(resolve);
+          LogoutAPI().then(resolve).catch(resolve);
         }),
         new Promise<any>((resolve) => {
           // 不忽略revokeAPI最多等待退出接口1500ms
@@ -82,25 +27,11 @@ export const useAuthStore = defineStore(
           );
         }),
       ]).then(() => {
-        updateToken({
-          accessToken: undefined,
-          tokenType: undefined,
-          refreshToken: undefined,
-          expiresIn: undefined,
-          scope: undefined,
-        });
         useUserInfoStore().clear();
       });
     };
 
     return {
-      token,
-      getAccessToken,
-      getRefreshToken,
-      getOrg,
-      updateToken,
-      codeLogin,
-      refreshToken,
       logout,
     };
   },

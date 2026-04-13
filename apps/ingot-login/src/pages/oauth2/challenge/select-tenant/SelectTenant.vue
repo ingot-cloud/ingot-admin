@@ -43,7 +43,7 @@ const handleBack = () => {
 };
 const handleItemClick = (params: TenantItem) => {
   loading.value = true;
-  loginStore.authorizeCodeRequest(params.id!).catch(() => {
+  loginStore.selectTenant(params.id!).catch(() => {
     loading.value = false;
   });
 };

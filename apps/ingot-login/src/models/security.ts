@@ -17,9 +17,7 @@ export interface PreAuthorizeResult {
 }
 
 export interface AuthorizaResult {
-  code?: string;
-  state?: string;
-  redirect_uri?: string;
+  redirectUri?: string;
 }
 
 export interface User {

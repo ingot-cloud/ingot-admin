@@ -12,14 +12,6 @@ export interface NetConfig {
  */
 export interface LoginConfig {
   /**
-   * 客户端ID
-   */
-  clientId: string;
-  /**
-   * 登录scope
-   */
-  scope: string;
-  /**
    * 登录地址
    */
   loginUri: string;
@@ -31,6 +23,10 @@ export interface LoginConfig {
    * 登录失败图片
    */
   errorImage: string;
+  /**
+   * 指纹是否启用
+   */
+  fingerprintEnabled: boolean;
 }
 
 /**

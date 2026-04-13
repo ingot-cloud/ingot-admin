@@ -26,6 +26,10 @@ export interface LoginConfig {
    * 登录描述
    */
   desc: string;
+  /**
+   * 指纹是否启用
+   */
+  fingerprintEnabled: boolean;
 }
 
 export interface RequiredParameters {

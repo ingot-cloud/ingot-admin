@@ -13,28 +13,30 @@ const router = createRouter({
       path: "/oauth2/challenge",
       beforeEnter: (to) => {
         const query = to.query;
-        const nullKey = hasNullParameter(query);
-        if (nullKey) {
-          return {
-            path: "/errors",
-            query: {
-              errorMsg: `参数无效：${nullKey} is blank`,
-              redirect_uri: query.redirect_uri,
-            },
-          };
-        }
+        // 不需要检查必要参数 @since 20260411
+        // const nullKey = hasNullParameter(query);
+        // if (nullKey) {
+        //   return {
+        //     path: "/errors",
+        //     query: {
+        //       errorMsg: `参数无效：${nullKey} is blank`,
+        //       redirect_uri: query.redirect_uri,
+        //     },
+        //   };
+        // }
         // 装载参数
         const loginStore = useLoginStore();
         loginStore.set(query);
         return new Promise((resolve) => {
-          loginStore
-            .sessionAuthorize()
-            .then(() => {
-              resolve(true);
-            })
-            .catch(() => {
-              resolve(true);
-            });
+          resolve(true);
+          // loginStore
+          //   .sessionAuthorize()
+          //   .then(() => {
+          //     resolve(true);
+          //   })
+          //   .catch(() => {
+          //     resolve(true);
+          //   });
         });
       },
       component: () => import("@/pages/oauth2/challenge/IndexPage.vue"),

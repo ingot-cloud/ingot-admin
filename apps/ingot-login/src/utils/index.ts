@@ -74,3 +74,10 @@ export function isNumber(val: unknown) {
 export function isBoolean(val: unknown) {
   return is(val, TYPE_BOOLEAN);
 }
+
+/**
+ * 解析布尔值
+ */
+export function parseBoolean(val: any) {
+  return val === "true" || val === true;
+}

@@ -53,38 +53,15 @@ const bizResponseFailureHandler = (
 
   const code = response.code;
   switch (code) {
+    case StatusCode.UNAUTHORIZED:
     case StatusCode.TokenInvalid:
       if (config.refreshTokenAndRetry) {
         return Promise.reject(response);
       }
 
-      console.log("pkce token失效不进行refresh，直接重新登录");
       // pkce token失效不进行refresh，直接重新登录
       logoutAndReload(true);
       break;
-    // return new Promise((resolve) => {
-    //   useAuthStore()
-    //     .refreshToken()
-    //     .then((userToken) => {
-    //       // 刷新成功重试刚才的请求，替换token重新请求
-    //       // 避免再次请求失败，刷新token后的重试不走失效逻辑
-    //       const retryConfig = Object.assign({}, config);
-    //       retryConfig.refreshTokenAndRetry = true;
-    //       retryConfig.headers = retryConfig.headers || {};
-    //       retryConfig.headers[
-    //         "Authorization"
-    //       ] = `${userToken.tokenType} ${userToken.accessToken}`;
-    //       return Http.rawRequest(retryConfig);
-    //     })
-    //     .then((temp) => {
-    //       resolve(temp);
-    //     })
-    //     .catch(() => {
-    //       Message.warning("令牌失效", { showClose: true });
-    //       // 刷新失败退出登录
-    //       logoutAndReload();
-    //     });
-    // });
     case StatusCode.TokenSignBack:
       Confirm.warning("您已被签退，可以取消继续留在该页面，或者重新登录", {
         confirmButtonText: "重新登录",

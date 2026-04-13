@@ -1,6 +1,6 @@
 import type { RequiredParameters } from "../types";
 import type { LocationQuery } from "vue-router";
-import { PreAuthorizeAPI, AuthorizeAPI, SessionAuthorizeAPI } from "@/api/challenge";
+import { LoginAPI, SelectTenantAPI, SessionAuthorizeAPI } from "@/api/challenge";
 import type { PreAuthorizeResult } from "@/models";
 
 export const useLoginStore = defineStore("app.login", () => {
@@ -41,7 +41,7 @@ export const useLoginStore = defineStore("app.login", () => {
   }): Promise<PreAuthorizeResult> => {
     return new Promise((resolve, reject) => {
       preAuthorizeResult.value = undefined;
-      PreAuthorizeAPI({
+      LoginAPI({
         username,
         password,
         code,
@@ -56,12 +56,12 @@ export const useLoginStore = defineStore("app.login", () => {
     });
   };
 
-  const authorizeCodeRequest = (tenant: string) => {
+  const selectTenant = (tenant: string) => {
     return new Promise((resolve, reject) => {
-      AuthorizeAPI(tenant)
+      SelectTenantAPI(tenant)
         .then((response) => {
           const data = response.data;
-          window.location.href = `${data.redirect_uri}?code=${data.code}&state=${data.state}`;
+          window.location.href = `${data.redirectUri}`;
           resolve(response.data);
         })
         .catch((err) => {
@@ -90,7 +90,7 @@ export const useLoginStore = defineStore("app.login", () => {
     getPreAuthorizeResult,
     changePreGrantType,
     set,
-    authorizeCodeRequest,
+    selectTenant,
     preAuthorize,
     sessionAuthorize,
   };

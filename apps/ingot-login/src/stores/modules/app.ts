@@ -1,4 +1,5 @@
 import type { LoginConfig } from "../types";
+import { parseBoolean } from "@/utils";
 
 /**
  * 全局配置
@@ -12,6 +13,7 @@ export const useAppStore = defineStore("app", () => {
     title: import.meta.env.VITE_APP_LOGIN_TITLE,
     qrcodeTitle: import.meta.env.VITE_APP_LOGIN_QRCODE_TITLE,
     desc: import.meta.env.VITE_APP_LOGIN_DESC,
+    fingerprintEnabled: parseBoolean(import.meta.env.VITE_APP_FINGERPRINT_ENABLED),
   });
 
   return {

@@ -12,8 +12,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_AES: string;
   readonly VITE_APP_BUCKET_NAME: string;
   readonly VITE_APP_COPYRIGHT: string;
-  readonly VITE_APP_LOGIN_CLIENT_ID: string;
-  readonly VITE_APP_LOGIN_SCOPE: string;
   readonly VITE_APP_LOGIN_URI: string;
   readonly VITE_APP_LOGIN_CALLBACK_URI: string;
   readonly VITE_APP_ERROR_IMAGE: string;
@@ -24,6 +22,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_SETTINGS_SHOW_COPYRIGHT: boolean;
   readonly VITE_APP_SETTINGS_SHOW_SEARCH: boolean;
   readonly VITE_APP_SETTINGS_SHOW_WATERMARK: boolean;
+  readonly VITE_APP_FINGERPRINT_ENABLED: boolean;
 }
 
 interface ImportMeta {

@@ -11,11 +11,10 @@ export const useAppStore = defineStore("app", () => {
     title: import.meta.env.VITE_APP_TITLE,
     copyright: import.meta.env.VITE_APP_COPYRIGHT.replace("{0}", now.getFullYear() + ""),
     login: {
-      clientId: import.meta.env.VITE_APP_LOGIN_CLIENT_ID,
-      scope: import.meta.env.VITE_APP_LOGIN_SCOPE,
       loginUri: import.meta.env.VITE_APP_LOGIN_URI,
       loginCallbackUri: import.meta.env.VITE_APP_LOGIN_CALLBACK_URI,
       errorImage: import.meta.env.VITE_APP_ERROR_IMAGE,
+      fingerprintEnabled: parseBoolean(import.meta.env.VITE_APP_FINGERPRINT_ENABLED),
     },
     netConfig: {
       baseURL: import.meta.env.VITE_APP_NET_BASE_URL || undefined,

@@ -43,17 +43,6 @@ export const commonRoutes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/common/errors/404Page.vue"),
   },
   {
-    path: "/sso_callback",
-    meta: {
-      title: "登录",
-      permitAuth: true,
-      hideMenu: true,
-      hideBreadcrumb: true,
-      manualCloseGlobalLoading: true,
-    },
-    component: () => import("@/pages/common/sso-callback/IndexPage.vue"),
-  },
-  {
     path: "/init",
     meta: {
       permitAuth: false,

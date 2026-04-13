@@ -20,10 +20,7 @@ export function SessionAuthorizeAPI(): Promise<R<PreAuthorizeResult>> {
   });
 }
 
-/**
- * 预授权
- */
-export async function PreAuthorizeAPI({
+export async function LoginAPI({
   username,
   password,
   code,
@@ -32,28 +29,19 @@ export async function PreAuthorizeAPI({
   password: string;
   code?: string;
 }): Promise<R<PreAuthorizeResult>> {
-  const loginStore = useLoginStore();
-  const pre_grant_type = loginStore.preGrantType;
   const afterEncrypt = await AES({
     data: { username, password },
     keys: ["username", "password"],
   });
-  // application/x-www-form-urlencoded
-  const data = new URLSearchParams({
+
+  const data = {
     username: afterEncrypt.username,
     password: afterEncrypt.password,
-  });
-  const parameter = toRaw(loginStore.requiredParameters);
-  const afterEncryptParameter = await AES({
-    data: { ...parameter },
-    keys: ["client_id", "scope"],
-  });
-  return Http.post<PreAuthorizeResult>("/api/auth/oauth2/pre_authorize", data, {
+  }
+
+  return Http.post<PreAuthorizeResult>("/api/bff/auth/login", data, {
     params: {
-      user_type: "0",
       _vc_code: code,
-      pre_grant_type,
-      ...afterEncryptParameter,
     },
   });
 }
@@ -61,19 +49,11 @@ export async function PreAuthorizeAPI({
 /**
  * 授权认证
  */
-export async function AuthorizeAPI(tenant: string): Promise<R<AuthorizaResult>> {
+export async function SelectTenantAPI(tenant: string): Promise<R<AuthorizaResult>> {
   const loginStore = useLoginStore();
-  const pre_grant_type = loginStore.preGrantType;
   const parameter = toRaw(loginStore.requiredParameters);
-  const afterEncryptParameter = await AES({
-    data: { ...parameter },
-    keys: ["client_id", "scope"],
-  });
-  return Http.get<AuthorizaResult>("/api/auth/oauth2/authorize", null, {
-    params: {
-      org: tenant,
-      pre_grant_type,
-      ...afterEncryptParameter,
-    },
+  return Http.post<AuthorizaResult>("/api/bff/auth/tenant/select", {
+    tenantId: tenant,
+    redirectUri: parameter.redirect_uri,
   });
 }

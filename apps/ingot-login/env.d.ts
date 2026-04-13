@@ -14,6 +14,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_LOGIN_BANNER: string;
   readonly VITE_APP_LOGIN_TITLE: string;
   readonly VITE_APP_LOGIN_DESC: string;
+  readonly VITE_APP_FINGERPRINT_ENABLED: boolean;
 }
 
 interface ImportMeta {

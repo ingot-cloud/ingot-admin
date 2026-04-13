@@ -1,12 +1,3 @@
-export interface UserToken {
-  accessToken?: string;
-  tokenType?: string;
-  refreshToken?: string;
-  expiresIn?: number;
-  scope?: string;
-  org?: string;
-}
-
 export interface TenantItem {
   id?: string;
   name?: string;
