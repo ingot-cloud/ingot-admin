@@ -7,6 +7,7 @@ import type {
   R,
   ResetPwdVO,
   SetDTO,
+  AccountLockDTO
 } from "@/models";
 import { filterParams } from "@/utils/object";
 
@@ -68,4 +69,28 @@ export function UserResetPwdAPI(id: string) {
 export function SetUserRoleAPI(params: SetDTO): Promise<R<void>> {
   filterParams(params);
   return request.put<void>(`${PATH}/${params.id}/roles`, params);
+}
+
+export function EnableAccountAPI(id: string, reason?: string) {
+  return request.put<void>(`${PATH}/${id}/enable`, {
+    reason
+  });
+}
+
+export function DisableAccountAPI(id: string, reason?: string) {
+  return request.put<void>(`${PATH}/${id}/disable`, {
+    reason
+  });
+}
+
+export function LockAccountAPI(id: string, payload: AccountLockDTO) {
+  return request.put<void>(`${PATH}/${id}/lock`, {
+    ...payload
+  });
+}
+
+export function UnlockAccountAPI(id: string, payload: AccountLockDTO) {
+  return request.put<void>(`${PATH}/${id}/unlock`, {
+    ...payload
+  });
 }

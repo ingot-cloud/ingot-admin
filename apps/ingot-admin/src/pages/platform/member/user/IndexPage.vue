@@ -52,7 +52,7 @@
         <in-copy-tag :text="item.username" />
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <account-status-view :enabled="item.enabled" :locked="item.locked" />
       </template>
       <template #actions="{ item }">
         <in-button link text type="primary" @click="handleDetailUser(item)">
@@ -61,11 +61,16 @@
           </template>
           详情
         </in-button>
-        <common-status-button
-          text
-          link
-          :status="item.status"
-          @click="ops.handleDisableUser(item)"
+        <account-status-edit-button
+          v-if="item.id"
+          :userId="item.id"
+          :enabled="item.enabled"
+          :locked="item.locked"
+          @success="ops.fetchUserData"
+          :enableAccountAPI="EnableAccountAPI"
+          :disableAccountAPI="DisableAccountAPI"
+          :lockAccountAPI="LockAccountAPI"
+          :unlockAccountAPI="UnlockAccountAPI"
         />
         <in-button link text type="danger" @click="handleResetPwdUser(item)">
           <template #icon>
@@ -90,7 +95,13 @@ import { tableHeaders } from "./table";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import EditDrawer from "./components/EditDrawer.vue";
 import ResetPwdDialog from "./components/ResetPwdDialog.vue";
-import { UserResetPwdAPI } from "@/api/platform/member/user";
+import {
+  UserResetPwdAPI,
+  EnableAccountAPI,
+  DisableAccountAPI,
+  LockAccountAPI,
+  UnlockAccountAPI,
+} from "@/api/platform/member/user";
 
 const ops = useOps();
 

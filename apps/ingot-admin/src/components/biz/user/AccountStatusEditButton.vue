@@ -53,12 +53,12 @@
   </in-dialog>
 </template>
 <script lang="ts" setup>
-import {
+import type {
   EnableAccountAPI,
   DisableAccountAPI,
   LockAccountAPI,
   UnlockAccountAPI,
-} from "@/api/platform/system/user";
+} from "@/components/biz/user/types";
 import { Icon } from "@iconify/vue";
 
 const props = defineProps({
@@ -81,6 +81,18 @@ const props = defineProps({
   link: {
     type: Boolean,
     default: true,
+  },
+  enableAccountAPI: {
+    type: Function as PropType<EnableAccountAPI>,
+  },
+  disableAccountAPI: {
+    type: Function as PropType<DisableAccountAPI>,
+  },
+  lockAccountAPI: {
+    type: Function as PropType<LockAccountAPI>,
+  },
+  unlockAccountAPI: {
+    type: Function as PropType<UnlockAccountAPI>,
   },
 });
 
@@ -106,12 +118,12 @@ const handleEnableClick = () => {
   const action = props.enabled ? "禁用" : "启用";
   confirm.warning(`是否${action}该用户`).then(() => {
     if (props.enabled) {
-      DisableAccountAPI(props.userId).then(() => {
+      props.disableAccountAPI?.(props.userId).then(() => {
         message.success("操作成功");
         emit("success");
       });
     } else {
-      EnableAccountAPI(props.userId).then(() => {
+      props.enableAccountAPI?.(props.userId).then(() => {
         message.success("操作成功");
         emit("success");
       });
@@ -135,8 +147,8 @@ const handleLockConfirmClick = () => {
       return;
     }
 
-    const request = props.locked ? UnlockAccountAPI : LockAccountAPI;
-    request(props.userId, lockForm.value)
+    const request = props.locked ? props.unlockAccountAPI : props.lockAccountAPI;
+    request?.(props.userId, lockForm.value)
       .then(() => {
         lockLoading.value = false;
         message.success("操作成功");

@@ -100,7 +100,8 @@ export interface MemberUser {
   phone?: string;
   email?: string;
   avatar?: string;
-  status?: CommonStatus;
+  enabled?: boolean;
+  locked?: boolean;
 }
 
 export interface MemberUserDTO {
@@ -109,7 +110,6 @@ export interface MemberUserDTO {
   phone?: string;
   email?: string;
   avatar?: string;
-  status?: CommonStatus;
 }
 
 export interface MemberUserProfileVO extends MemberUser {

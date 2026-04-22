@@ -69,6 +69,10 @@
           :enabled="item.enabled"
           :locked="item.locked"
           @success="ops.fetchUserData"
+          :enableAccountAPI="EnableAccountAPI"
+          :disableAccountAPI="DisableAccountAPI"
+          :lockAccountAPI="LockAccountAPI"
+          :unlockAccountAPI="UnlockAccountAPI"
         />
         <in-button link text type="danger" @click="handleResetPwdUser(item)">
           <template #icon>
@@ -93,7 +97,13 @@ import { tableHeaders } from "./table";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import EditDrawer from "./components/EditDrawer.vue";
 import ResetPwdDialog from "./components/ResetPwdDialog.vue";
-import { UserResetPwdAPI } from "@/api/platform/system/user";
+import {
+  UserResetPwdAPI,
+  EnableAccountAPI,
+  DisableAccountAPI,
+  LockAccountAPI,
+  UnlockAccountAPI,
+} from "@/api/platform/system/user";
 
 const ops = useOps();
 
