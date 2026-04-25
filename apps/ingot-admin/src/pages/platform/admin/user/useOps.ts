@@ -1,5 +1,5 @@
 import type { PageChangeParams, } from "@/models";
-import { UserPageAPI, } from "@/api/platform/member/user";
+import { UserPageAPI, } from "@/api/platform/admin/user";
 
 export const useOps = () => {
   const paging = usePaging(transformPageAPI(UserPageAPI));

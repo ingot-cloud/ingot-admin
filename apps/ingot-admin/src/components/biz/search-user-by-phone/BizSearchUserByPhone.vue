@@ -45,7 +45,7 @@
   </el-select-v2>
 </template>
 <script lang="ts" setup>
-import { SearchByPhone } from "@/api/platform/system/user";
+import { SearchByPhone } from "@/api/platform/admin/user";
 import type { SimpleUserWithPhoneVO } from "@/models";
 
 const loading = ref(false);

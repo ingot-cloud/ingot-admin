@@ -1,10 +1,10 @@
 import type { CommonStatus } from "./enums";
 
-export interface MenuTreeNode extends MetaMenu {
+export interface MenuTreeNode extends PlatformMenu {
   children?: Array<MenuTreeNode>;
 }
 
-export interface MetaMenu {
+export interface PlatformMenu {
   id?: string;
   pid?: string;
   name?: string;
@@ -29,6 +29,6 @@ export interface MetaMenu {
   status?: CommonStatus;
 }
 
-export interface MenuFilterDTO extends MetaMenu {
+export interface MenuFilterDTO extends PlatformMenu {
   orgTypeText?: string;
 }

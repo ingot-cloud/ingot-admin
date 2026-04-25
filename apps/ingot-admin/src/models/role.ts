@@ -14,7 +14,7 @@ export interface RolePageItemVO {
   createdAt: string;
 }
 
-export interface MetaRole {
+export interface PlatformRole {
   id?: string;
   pid?: string;
   name?: string;
@@ -27,7 +27,7 @@ export interface MetaRole {
   status?: CommonStatus;
 }
 
-export interface RoleTreeNodeVO extends MetaRole {
+export interface RoleTreeNodeVO extends PlatformRole {
   children?: Array<RoleTreeNodeVO>;
   custom?: boolean;
   typeText?: string;

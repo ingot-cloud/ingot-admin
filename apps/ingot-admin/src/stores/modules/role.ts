@@ -1,5 +1,5 @@
 import type { RoleTreeNodeVO, Option } from "@/models";
-import { RoleTreeAPI } from "@/api/platform/system/role";
+import { RoleTreeAPI } from "@/api/platform/admin/role";
 
 export const useRoleStore = defineStore("role", () => {
   const roleOrgTree = ref<Array<RoleTreeNodeVO>>([]);

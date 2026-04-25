@@ -1,5 +1,5 @@
 import Http from "@/net";
-import type { SysTenant, MetaApp, CreateOrgDTO, AppEnabledDTO, Page, R } from "@/models";
+import type { SysTenant, PlatformApp, CreateOrgDTO, AppEnabledDTO, Page, R } from "@/models";
 import { filterParams } from "@/utils/object";
 
 const PATH = "/api/pms/v1/platform/org/tenant";
@@ -47,8 +47,8 @@ export function TenantRemoveAPI(id: string): Promise<R<void>> {
   return Http.delete<void>(`${PATH}/${id}`);
 }
 
-export function TenantOrgApps(): Promise<R<Array<MetaApp>>> {
-  return Http.get<Array<MetaApp>>(`${PATH}/apps`);
+export function TenantOrgApps(): Promise<R<Array<PlatformApp>>> {
+  return Http.get<Array<PlatformApp>>(`${PATH}/apps`);
 }
 
 export function TenantOrgAppEnabled(params: AppEnabledDTO): Promise<R<void>> {

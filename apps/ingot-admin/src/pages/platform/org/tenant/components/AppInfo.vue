@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { MetaApp } from "@/models";
+import type { PlatformApp } from "@/models";
 import type { TableHeaderRecord } from "@/components/table";
 import { CommonStatus } from "@/models/enums";
 import { TenantOrgAppEnabled } from "@/api/platform/org/tenant";
@@ -37,7 +37,7 @@ const tableHeaders: Array<TableHeaderRecord> = [
   },
 ];
 
-interface AppItem extends MetaApp {
+interface AppItem extends PlatformApp {
   statusBoolean: boolean;
 }
 
@@ -72,7 +72,7 @@ const handleStatusChange = (params: AppItem) => {
 };
 
 defineExpose({
-  setData(data: Array<MetaApp>) {
+  setData(data: Array<PlatformApp>) {
     appList.value = data.map((item) => {
       return {
         statusBoolean: item.status == CommonStatus.Enable,

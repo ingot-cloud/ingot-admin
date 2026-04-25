@@ -2,7 +2,7 @@ export interface ApplicationFilterDTO {
   appName?: string;
 }
 
-export interface MetaApp {
+export interface PlatformApp {
   id?: string;
   menuId?: string;
   permissionId?: string;
@@ -19,7 +19,7 @@ export interface AppEnabledDTO {
   enabled: boolean;
 }
 
-export interface MetaAppTenant {
+export interface PlatformAppTenant {
   id?: string;
   tenantId?: string;
   appId?: string;
@@ -30,12 +30,12 @@ export interface MetaAppTenant {
   updatedAt?: string;
 }
 
-export interface ApplicationPageItemVO extends MetaApp {
+export interface ApplicationPageItemVO extends PlatformApp {
   menuName?: string;
   menuIcon?: string;
 }
 
-export interface ApplicationOrgPageItemVO extends MetaAppTenant {
+export interface ApplicationOrgPageItemVO extends PlatformAppTenant {
   menuName?: string;
   menuIcon?: string;
 }

@@ -1,4 +1,4 @@
-import type { Page, CreateOrgDTO, SysTenant, R, MetaApp } from "@/models";
+import type { Page, CreateOrgDTO, SysTenant, R, PlatformApp } from "@/models";
 import {
   TenantSearchAPI,
   TenantPageAPI,
@@ -95,7 +95,7 @@ export const useTenantStore = defineStore("tenant", () => {
   };
 
   const fetchTenantOrgApps = () => {
-    return new Promise<Array<MetaApp>>((resolve, reject) => {
+    return new Promise<Array<PlatformApp>>((resolve, reject) => {
       TenantOrgApps()
         .then((response) => {
           resolve(response.data);

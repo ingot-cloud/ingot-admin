@@ -1,6 +1,6 @@
 import type { CommonStatus } from "./enums";
 
-export interface MetaPermission {
+export interface PlatformPermission {
   id?: string;
   pid?: string;
   name?: string;
@@ -12,15 +12,15 @@ export interface MetaPermission {
   createdAt?: string;
 }
 
-export interface PermissionTreeNode extends MetaPermission {
+export interface PermissionTreeNode extends PlatformPermission {
   children?: Array<PermissionTreeNode>;
 }
 
 export interface BizPermissionTreeNodeVO extends PermissionTreeNode {
-  metaRoleBind?: boolean;
+  PlatformRoleBind?: boolean;
 }
 
-export interface PermissionFilterDTO extends MetaPermission {
+export interface PermissionFilterDTO extends PlatformPermission {
   orgTypeText?: string;
 }
 
