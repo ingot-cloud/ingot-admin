@@ -2,6 +2,7 @@ import type { UserInfo } from "@/models/security";
 import { LogoutAPI } from "@/api/common/auth";
 import { UserInfoAPI } from "@/api/common/user";
 import type { MenuTreeNode } from "@/models";
+import { isRoleSystemAdmin } from "@/constants/role";
 
 /**
  * 授权信息
@@ -75,7 +76,9 @@ export const useUserInfoStore = defineStore("security.user", () => {
   const getIsInitPwd = computed(() => {
     return userInfo.mustChangePwd;
   });
-
+  const getIsSystemAdmin = computed(() => {
+    return userInfo.roles.some((role) => isRoleSystemAdmin(role));
+  });
   const clear = () => {
     Object.assign(userInfo, { user: undefined, roles: [] });
   };
@@ -104,6 +107,7 @@ export const useUserInfoStore = defineStore("security.user", () => {
     getAllows,
     getCurrentOrg,
     getIsInitPwd,
+    getIsSystemAdmin,
     clear,
     fetchUserInfo,
   };

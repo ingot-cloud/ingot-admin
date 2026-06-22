@@ -47,11 +47,19 @@ export function TenantRemoveAPI(id: string): Promise<R<void>> {
   return Http.delete<void>(`${PATH}/${id}`);
 }
 
-export function TenantOrgApps(): Promise<R<Array<PlatformApp>>> {
-  return Http.get<Array<PlatformApp>>(`${PATH}/apps`);
+export function TenantOrgApps(tenantId: string): Promise<R<Array<PlatformApp>>> {
+  return Http.get<Array<PlatformApp>>(`${PATH}/apps`, null, {
+    headers: {
+      Tenant: tenantId,
+    }
+  });
 }
 
-export function TenantOrgAppEnabled(params: AppEnabledDTO): Promise<R<void>> {
+export function TenantOrgAppEnabled(tenantId: string, params: AppEnabledDTO): Promise<R<void>> {
   filterParams(params);
-  return Http.put<void>(`${PATH}/app/status`, params);
+  return Http.put<void>(`${PATH}/app/status`, params, {
+    headers: {
+      Tenant: tenantId,
+    }
+  });
 }

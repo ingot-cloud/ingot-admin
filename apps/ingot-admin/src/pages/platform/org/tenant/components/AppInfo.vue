@@ -9,6 +9,7 @@
             class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
           />
           {{ item.name }}
+          <in-tag :value="orgTypeEnums.getTagText(item.appType)" />
         </div>
       </template>
       <template #actions="{ item }">
@@ -22,6 +23,7 @@ import type { PlatformApp } from "@/models";
 import type { TableHeaderRecord } from "@/components/table";
 import { CommonStatus } from "@/models/enums";
 import { TenantOrgAppEnabled } from "@/api/platform/org/tenant";
+import { useOrgTypeEnums } from "@/models/enums";
 
 const tableHeaders: Array<TableHeaderRecord> = [
   {
@@ -41,9 +43,11 @@ interface AppItem extends PlatformApp {
   statusBoolean: boolean;
 }
 
+const orgTypeEnums = useOrgTypeEnums();
+
 const appList = ref<Array<AppItem>>([]);
 const confirm = useMessageConfirm();
-
+const tenantId = ref("");
 const handleStatusChange = (params: AppItem) => {
   const actionMessage = params.statusBoolean
     ? `是否禁用应用(${params.name})`
@@ -53,7 +57,7 @@ const handleStatusChange = (params: AppItem) => {
       confirm
         .warning(actionMessage)
         .then(() => {
-          TenantOrgAppEnabled({
+          TenantOrgAppEnabled(tenantId.value, {
             id: params.id!,
             enabled: !params.statusBoolean,
           })
@@ -72,10 +76,12 @@ const handleStatusChange = (params: AppItem) => {
 };
 
 defineExpose({
-  setData(data: Array<PlatformApp>) {
+  setData(tenantIdValue: string, data: Array<PlatformApp>) {
+    tenantId.value = tenantIdValue;
     appList.value = data.map((item) => {
       return {
         statusBoolean: item.status == CommonStatus.Enable,
+        tenantId: tenantId,
         ...item,
       };
     });

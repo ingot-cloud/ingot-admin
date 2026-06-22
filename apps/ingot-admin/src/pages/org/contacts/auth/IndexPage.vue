@@ -53,17 +53,24 @@ import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
 import AddAuthDrawer from "./components/AddAuthDrawer.vue";
 import { isRoleManager } from "@/constants/role";
+import { type BizPermissionTreeNodeVO } from "@/models";
 
 const AddAuthDrawerRef = ref();
 const ops = useOps();
 
-const stretch = (tree: Array<any>): Array<string> => {
+const stretch = (tree: Array<BizPermissionTreeNodeVO>, readonly?: boolean): Array<string> => {
   let ids: Array<string> = [];
 
   tree.forEach((item) => {
-    ids.push(item.id as string);
+    if (readonly) {
+      if (item.defaultFlag) {
+        ids.push(item.id as string);
+      }
+    } else {
+      ids.push(item.id as string);
+    }
     if (item.children) {
-      ids = ids.concat(stretch(item.children));
+      ids = ids.concat(stretch(item.children, readonly));
     }
   });
 
@@ -71,7 +78,12 @@ const stretch = (tree: Array<any>): Array<string> => {
 };
 
 const privateAddAuth = () => {
-  AddAuthDrawerRef.value.show(ops.currentNode.id, ops.currentNode.name, stretch(ops.records.value));
+  AddAuthDrawerRef.value.show(
+    ops.currentNode.id,
+    ops.currentNode.name,
+    stretch(ops.records.value),
+    stretch(ops.records.value, true),
+  );
 };
 </script>
 <style scoped lang="postcss">

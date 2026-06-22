@@ -6,11 +6,13 @@ export interface MenuTreeNode extends PlatformMenu {
 
 export interface PlatformMenu {
   id?: string;
+  appId?: string;
+  appCode?: string;
   pid?: string;
   name?: string;
   menuType?: string;
   path?: string;
-  enablePermission?: boolean;
+  accessMode?: string;
   permissionId?: string;
   permissionCode?: string;
   routeName?: string;

@@ -6,6 +6,7 @@ export const NotFound = {
   redirect: "/404",
 };
 export enum PageLayoutViewPath {
+  CUSTOM = "custom",
   MAIN = "@/layouts/InAppLayout.vue",
   SIMPLE = "@/layouts/InSimpleLayout.vue",
   IFRAME = "@/layouts/InIFrameLayout.vue",
@@ -36,11 +37,15 @@ export const LAYOUT_IFRAME = () => import(PageLayoutViewPath.IFRAME);
 export const LAYOUT_EXTERNAL = () => import(PageLayoutViewPath.EXTERNAL);
 export const LayoutOptions: Array<Option> = [
   {
-    label: "标准视图",
+    label: "自定义",
+    value: PageLayoutViewPath.CUSTOM,
+  },
+  {
+    label: "标准视图布局",
     value: PageLayoutViewPath.MAIN,
   },
   {
-    label: "路由视图",
+    label: "路由视图布局",
     value: PageLayoutViewPath.SIMPLE,
   },
   {

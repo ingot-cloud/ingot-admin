@@ -81,12 +81,12 @@ const handleConfirmClick = () => {
 const fetchData = (data: SysTenant) => {
   loading.value = true;
   tenantStore
-    .fetchTenantOrgApps()
+    .fetchTenantOrgApps(data.id!)
     .then((response) => {
       loading.value = false;
       nextTick(() => {
         BaseInfoFormRef.value.setData(data);
-        AppInfoRef.value.setData(response);
+        AppInfoRef.value.setData(data.id!, response);
       });
     })
     .catch(() => {

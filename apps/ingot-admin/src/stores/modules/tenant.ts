@@ -94,9 +94,9 @@ export const useTenantStore = defineStore("tenant", () => {
     });
   };
 
-  const fetchTenantOrgApps = () => {
+  const fetchTenantOrgApps = (tenantId: string) => {
     return new Promise<Array<PlatformApp>>((resolve, reject) => {
-      TenantOrgApps()
+      TenantOrgApps(tenantId)
         .then((response) => {
           resolve(response.data);
         })

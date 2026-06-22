@@ -10,6 +10,7 @@ export const TreeKeyAndProps = {
   props: {
     children: "children",
     label: "name",
+    disabled: 'disabled',
   },
   nodeKey: "id",
 };

@@ -51,6 +51,7 @@ pnpm build
 
 ## 📚 文档
 
+- [📋 SDD 规格与变更](./specs/README.md) - 产品/能力规格与变更提案（规格驱动开发）
 - [📖 首次构建流程](./docs/getting-started.md) - **必读**，包含完整的设置和构建说明
 - [📦 添加新 Package 指南](./docs/add-new-package.md) - 如何在 monorepo 中添加新的共享包
 - [⚙️ TypeScript 配置模板](./docs/typescript-config-template.md) - TypeScript 配置说明

@@ -8,7 +8,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AccountStatus: typeof import('./src/components/biz/user/AccountStatus.vue')['default']
     AccountStatusEditButton: typeof import('./src/components/biz/user/AccountStatusEditButton.vue')['default']
     AccountStatusView: typeof import('./src/components/biz/user/AccountStatusView.vue')['default']
     BizDeptSelect: typeof import('./src/components/biz/dept-select/BizDeptSelect.vue')['default']
@@ -16,6 +15,7 @@ declare module 'vue' {
     ClientSelect: typeof import('./src/components/biz/ClientSelect.vue')['default']
     CommonStatusButton: typeof import('./src/components/biz/CommonStatusButton.vue')['default']
     CommonStatusTag: typeof import('./src/components/biz/CommonStatusTag.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
@@ -46,6 +46,7 @@ declare module 'vue' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElOption: typeof import('element-plus/es')['ElOption']
+    ElPageHeader: typeof import('element-plus/es')['ElPageHeader']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElPopover: typeof import('element-plus/es')['ElPopover']
     ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
@@ -66,6 +67,7 @@ declare module 'vue' {
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
     FixPwdDrawer: typeof import('./src/layouts/widgets/user-dropdown/FixPwdDrawer.vue')['default']
+    'ICarbon:application': typeof import('~icons/carbon/application')['default']
     'ICarbon:listBoxes': typeof import('~icons/carbon/list-boxes')['default']
     'ICarbon:parentChild': typeof import('~icons/carbon/parent-child')['default']
     'IClarity:closeLine': typeof import('~icons/clarity/close-line')['default']
@@ -74,6 +76,7 @@ declare module 'vue' {
     IconDark: typeof import('./src/components/icons/IconDark.vue')['default']
     IconLight: typeof import('./src/components/icons/IconLight.vue')['default']
     'IDashicons:alignCenter': typeof import('~icons/dashicons/align-center')['default']
+    'IEp:arrowLeft': typeof import('~icons/ep/arrow-left')['default']
     'IEp:delete': typeof import('~icons/ep/delete')['default']
     'IEp:edit': typeof import('~icons/ep/edit')['default']
     'IEp:plus': typeof import('~icons/ep/plus')['default']
@@ -83,7 +86,6 @@ declare module 'vue' {
     'IIon:reloadSharp': typeof import('~icons/ion/reload-sharp')['default']
     'ILineMd:arrowCloseLeft': typeof import('~icons/line-md/arrow-close-left')['default']
     'ILineMd:arrowCloseRight': typeof import('~icons/line-md/arrow-close-right')['default']
-    'IMage:homeSecurityLock': typeof import('~icons/mage/home-security-lock')['default']
     'IMaterialSymbols:expandRounded': typeof import('~icons/material-symbols/expand-rounded')['default']
     'IMaterialSymbols:moreVert': typeof import('~icons/material-symbols/more-vert')['default']
     'IMaterialSymbols:verticalAlignTopRounded': typeof import('~icons/material-symbols/vertical-align-top-rounded')['default']

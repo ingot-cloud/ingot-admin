@@ -1,5 +1,5 @@
 <template>
-  <in-drawer :title="title" v-model="isShow" :loading="loading" padding="0" size="30%">
+  <in-dialog :title="title" v-model="isShow">
     <in-filter-container :showBacktop="false">
       <div class="auth-content">
         <in-tree
@@ -19,18 +19,14 @@
       <in-button @click="isShow = false"> 取消 </in-button>
       <in-button type="primary" :loading="btnLoading" @click="handleActionButton"> 确定 </in-button>
     </template>
-  </in-drawer>
+  </in-dialog>
 </template>
 <script lang="ts" setup>
 import { TreeKeyAndProps, type PermissionTreeNode } from "@/models";
-import { OrgAuthTreeAPI } from "@/api/org/auth";
-import { useRoleStore } from "@/stores/modules/org/role";
+import { BindAuthorityAPI } from "@/api/platform/config/role";
+import { GetAuthorityTreeAPI } from "@/api/platform/config/authority";
+import { OrgTypeEnums } from "@/models/enums";
 
-interface DataItem extends PermissionTreeNode {
-  disabled?: boolean;
-}
-
-const roleStore = useRoleStore();
 const emit = defineEmits(["success"]);
 
 const treeRef = ref();
@@ -39,21 +35,18 @@ const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<DataItem>>([]);
+const orgType = ref<OrgTypeEnums>();
+const data = ref<Array<PermissionTreeNode>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
-const readonlySelectedIds = ref<Array<string>>([]);
 
 const message = useMessage();
 
 const onCheckChange = (
-  node: DataItem,
+  node: PermissionTreeNode,
   isChecked: boolean,
   // childChecked: boolean
 ) => {
-  if (node.disabled) {
-    return;
-  }
   const selectId = node.id!;
   selectedIds.value = isChecked
     ? [...selectedIds.value, selectId]
@@ -61,27 +54,14 @@ const onCheckChange = (
 };
 const fetchData = () => {
   loading.value = true;
-  OrgAuthTreeAPI()
+  GetAuthorityTreeAPI({ orgType: orgType.value == OrgTypeEnums.System ? undefined : orgType.value })
     .then((res) => {
-      data.value = handleDisabled(res.data);
-      console.log(data.value, readonlySelectedIds.value);
+      data.value = res.data;
       loading.value = false;
     })
     .catch(() => {
       loading.value = false;
     });
-};
-
-const handleDisabled = (data: Array<DataItem>) => {
-  data.forEach((item) => {
-    if (readonlySelectedIds.value.includes(item.id!)) {
-      item.disabled = true;
-    }
-    if (item.children) {
-      handleDisabled(item.children);
-    }
-  });
-  return data;
 };
 
 const handleActionButton = () => {
@@ -98,11 +78,10 @@ const handleActionButton = () => {
     });
   // 过滤权限，如果父节点是选中状态，那么不需要绑定当前节点，并且孙子节点等都不需要
   btnLoading.value = true;
-  roleStore
-    .bindAuthority({
-      id: id.value,
-      setIds: bindIds,
-    })
+  BindAuthorityAPI({
+    id: id.value,
+    setIds: bindIds,
+  })
     .then(() => {
       message.success("操作成功");
       btnLoading.value = false;
@@ -115,14 +94,9 @@ const handleActionButton = () => {
 };
 
 defineExpose({
-  show(
-    idIn: string,
-    titleIn: string,
-    selectedIdsIn: Array<string>,
-    readonlySelectedIdsIn: Array<string>,
-  ) {
-    readonlySelectedIds.value = readonlySelectedIdsIn;
+  show(idIn: string, titleIn: string, orgTypeIn: OrgTypeEnums, selectedIdsIn: Array<string>) {
     id.value = idIn;
+    orgType.value = orgTypeIn;
     isShow.value = true;
     title.value = titleIn;
     selectedIds.value = selectedIdsIn;

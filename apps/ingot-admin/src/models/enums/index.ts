@@ -9,3 +9,4 @@ export * from "./roleEnums";
 export * from "./authorityEnums";
 export * from "./credentialEnums";
 export * from "./dictEnums";
+export * from "./appEnums";
