@@ -112,7 +112,7 @@
         v-model="editForm.customViewPath"
       />
       <div p-20px v-if="!isButton() && isDefaultLink() && editForm.customViewPath">
-        <el-form-item v-if="isDirectory()" label="布局类型">
+        <el-form-item label="布局类型">
           <in-select
             w-full
             v-model="currentSelectLayoutOption"
@@ -121,7 +121,11 @@
             @onChanged="privateOnLayoutSelectChanged"
           />
         </el-form-item>
-        <el-form-item label="视图路径" prop="viewPath" v-if="editForm.viewPath === undefined">
+        <el-form-item
+          label="视图路径"
+          prop="viewPath"
+          v-if="currentSelectLayoutOption === PageLayoutViewPath.CUSTOM"
+        >
           <el-input v-model="editForm.viewPath" placeholder="请输入视图路径" clearable />
         </el-form-item>
       </div>
