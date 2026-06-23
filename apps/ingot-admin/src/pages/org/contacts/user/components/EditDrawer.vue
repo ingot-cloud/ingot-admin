@@ -28,6 +28,7 @@
         <el-input v-model="editForm.email" clearable placeholder="请输入email"></el-input>
       </el-form-item>
     </el-form>
+    <div class="text-sm text-gray-500 color-red">*默认密码和手机号相同，请登录自行修改</div>
     <template #footer>
       <in-button type="primary" @click="handleActionButton">确定</in-button>
     </template>
