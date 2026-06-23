@@ -4,8 +4,8 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "图标",
     prop: "menuType",
-    width: "80",
     align: "center",
+    minWidth: "80",
   },
   {
     label: "菜单名称",
@@ -26,6 +26,10 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
     prop: "status",
     width: "80",
     align: "center",
+  },
+  {
+    label: "备注",
+    prop: "remark",
   },
   {
     label: "操作",

@@ -84,6 +84,16 @@
         <el-form-item prop="sort" label="排序">
           <el-input-number v-model="editForm.sort" :min="0" :max="9999" w-full />
         </el-form-item>
+        <el-form-item prop="sort" label="备注">
+          <el-input
+            v-model="editForm.remark"
+            :autosize="{ minRows: 2, maxRows: 4 }"
+            maxlength="200"
+            show-word-limit
+            type="textarea"
+            w-full
+          />
+        </el-form-item>
         <el-form-item prop="status" label="状态">
           <el-radio-group v-model="editForm.status">
             <el-radio-button :value="CommonStatus.Enable">
@@ -224,6 +234,7 @@ const defaultEditForm: PlatformMenu = {
   linkType: MenuLinkType.Default,
   linkUrl: undefined,
   status: CommonStatus.Enable,
+  remark: undefined,
 };
 
 const menuTypeEnum = useMenuTypeEnum();

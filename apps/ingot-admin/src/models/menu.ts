@@ -29,6 +29,7 @@ export interface PlatformMenu {
   linkType?: string;
   linkUrl?: string;
   status?: CommonStatus;
+  remark?: string;
 }
 
 export interface MenuFilterDTO extends PlatformMenu {

@@ -36,6 +36,10 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "150",
   },
   {
+    label: "备注",
+    prop: "remark",
+  },
+  {
     label: "路由名称",
     prop: "routeName",
     hide: true,
