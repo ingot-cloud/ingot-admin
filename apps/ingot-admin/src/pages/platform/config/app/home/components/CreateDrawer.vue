@@ -86,7 +86,7 @@ const emit = defineEmits<{
 const rules = {
   code: [
     { required: true, message: "请输入应用编码", trigger: "blur" },
-    { pattern: /^[a-z][a-z0-9:.-_]*$/, message: "编码需以小写字母开头", trigger: "blur" },
+    { pattern: /^[a-z][a-z0-9:.\-_]*$/, message: "编码格式不正确", trigger: "blur" },
   ],
   name: [{ required: true, message: "请输入应用名称", trigger: "blur" }],
   appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
