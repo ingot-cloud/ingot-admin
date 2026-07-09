@@ -1,7 +1,7 @@
 // Ensure this file is parsed as a module regardless of dependencies.
 export {};
 
-import type { AESKeysConfig } from "@ingot/utils";
+import type { CryptoOption, EnvelopeContext } from "@ingot/crypto";
 
 declare module "axios" {
   interface AxiosRequestConfig {
@@ -34,33 +34,29 @@ declare module "axios" {
     ignoreTenant?: boolean;
 
     /**
-     * 请求参数中需要加密的字段配置
-     * 支持三种格式：
-     * 1. 简单格式：['phone', 'email'] - 默认为 string 类型
-     * 2. 配置格式：[{ key: 'phone', type: 'string' }, { key: 'status', type: 'object' }]
-     * 3. 混合格式：['phone', { key: 'status', type: 'object' }]
+     * 信封加密配置：分别声明请求方向与响应方向如何加解密。
+     * 请求或响应任一方向存在即触发握手并携带协议头。
      */
-    aesEncryptKeys?: AESKeysConfig;
+    crypto?: CryptoOption;
 
     /**
-     * 响应数据中需要解密的字段配置
-     * 支持三种格式：
-     * 1. 简单格式：['phone', 'email'] - 解密后为 string 类型
-     * 2. 配置格式：[{ key: 'phone', type: 'string' }, { key: 'isActive', type: 'boolean' }]
-     * 3. 混合格式：['phone', { key: 'isActive', type: 'boolean' }]
-     *
-     * type 说明：
-     * - string: 解密后保持字符串（默认）
-     * - number: 解密后转换为数字
-     * - boolean: 解密后转换为布尔值
-     * - object: 解密后通过 JSON.parse 转换为对象
-     * - array: 解密后通过 JSON.parse 转换为数组
+     * 内部：信封加密本次请求的握手上下文，用于解密响应
      */
-    aesDecryptKeys?: AESKeysConfig;
+    __cryptoCtx?: EnvelopeContext;
 
     /**
-     * 加解密模式，默认CBC
+     * 内部：保留的原始请求体明文，用于 kid 失效重试时重新加密
      */
-    aesMode?: "CBC" | "GCM";
+    __cryptoPlainData?: unknown;
+
+    /**
+     * 内部：保留的原始 query 参数明文（query 模式），用于 kid 失效重试时重新加密
+     */
+    __cryptoPlainParams?: unknown;
+
+    /**
+     * 内部：信封加密是否已因 kid 失效重试过
+     */
+    __cryptoRetried?: boolean;
   }
 }

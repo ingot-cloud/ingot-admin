@@ -1,23 +1,23 @@
 import type { InternalAxiosRequestConfig, AxiosError } from "axios";
-import { generateFingerprint } from "@ingot/utils";
+import type { PreFilter } from "@/net/types";
 import { createEnvelopeSession, applyEncryptedRequest } from "@ingot/crypto";
-import { useAppStore } from "@/stores/modules/app";
 import { keyStore, cryptoHeaderNames } from "@/net/crypto";
 
-export const onRequestFulfilled = async (
-  config: InternalAxiosRequestConfig,
-): Promise<InternalAxiosRequestConfig> => {
-  const loginStore = useAppStore();
-  if (loginStore.login.fingerprintEnabled) {
-    const fingerprint = await generateFingerprint().catch(() => "");
-    if (fingerprint) {
-      config.headers["X-In-Ca-Sig"] = fingerprint;
-    }
+/**
+ * 信封加密请求拦截器：按 config.crypto 握手、写协议头，并按请求方向模式加密。
+ * query 模式加密 config.params（GET），whole/field 模式加密 config.data。
+ */
+class EnvelopeInterceptor implements PreFilter {
+  order(): number {
+    return 25;
   }
 
-  // 信封加密：按 config.crypto 握手、写协议头，并按请求方向模式加密请求体
-  const option = config.crypto;
-  if (option && (option.request || option.response)) {
+  async resolved(config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> {
+    const option = config.crypto;
+    if (!option || (!option.request && !option.response)) {
+      return config;
+    }
+
     const session = await createEnvelopeSession(keyStore, cryptoHeaderNames);
     config.__cryptoCtx = session.context;
     config.headers = config.headers || {};
@@ -40,11 +40,13 @@ export const onRequestFulfilled = async (
         config.data = applied.data;
       }
     }
+
+    return config;
   }
 
-  return Promise.resolve(config);
-};
+  rejected(error: AxiosError): Promise<void> {
+    return Promise.reject(error);
+  }
+}
 
-export const onRequestRejected = (error: AxiosError): Promise<void> => {
-  return Promise.reject(error);
-};
+export default new EnvelopeInterceptor();

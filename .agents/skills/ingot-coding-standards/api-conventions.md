@@ -157,24 +157,35 @@ export default new Http();
 | `manualProcessingFailure` | 业务失败时不弹 toast，由调用方处理 |
 | `manualProcessingAbort` | 取消请求时不弹 toast |
 | `refreshTokenAndRetry` | 401 时刷新 token 重试 |
-| `aesEncryptKeys` | 请求体字段 AES 加密 |
-| `aesDecryptKeys` | 响应体字段 AES 解密 |
-| `aesMode` | `"CBC"` \| `"GCM"` |
+| `crypto` | 信封加密配置（请求/响应方向独立，见 `docs/envelope-crypto.md`） |
 
-### AES 加解密示例
+### 信封加密示例
 
 ```typescript
 export function UserInfoAPI(): Promise<R<UserInfo>> {
   return request.get<UserInfo>("/api/pms/v1/auth/user/info", null, {
-    aesDecryptKeys: [
-      { key: "initPwd", type: "boolean" },
-      { key: "roles", type: "array" },
-    ],
+    crypto: {
+      response: {
+        mode: "field",
+        fields: [
+          { key: "mustChangePwd", type: "boolean" },
+          { key: "roles", type: "array" },
+        ],
+      },
+    },
+  });
+}
+
+export function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
+  return request.put<void>("/api/pms/v1/org/user/pwd", params, {
+    crypto: {
+      request: { mode: "field", fields: ["password", "newPassword"] },
+    },
   });
 }
 ```
 
-加解密底层实现：`@ingot/utils` 的 AES 模块；app 层通过 `utils/encrypt.ts` 注入 `VITE_APP_AES` 环境变量。
+加解密底层实现：`@ingot/crypto` 包 + axios 信封拦截器（`net/interceptor/request/envelope.ts`、`response/envelope.ts`）。
 
 ---
 
@@ -326,5 +337,4 @@ return arr.find((item) => item.value == value)?.oppositeValue || ("" as any);
 
 - `src/net/`（Http 类、拦截器、R\<T\>、StatusCode）
 - `src/utils/object.ts`（equals、filterParams、omit）
-- `src/utils/encrypt.ts`（@ingot/utils 薄包装）
 - `src/components/verifition/`（验证码组件）

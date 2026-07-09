@@ -99,6 +99,9 @@ export default defineConfig(({ mode }) => {
         "@ingot/hooks": fileURLToPath(
           new URL("../../packages/hooks/src/index.ts", import.meta.url),
         ),
+        "@ingot/crypto": fileURLToPath(
+          new URL("../../packages/crypto/src/index.ts", import.meta.url),
+        ),
       },
     },
     css: {

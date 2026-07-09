@@ -6,10 +6,18 @@ import type { UserInfo, R, MenuTreeNode } from "@/models";
  */
 export function UserInfoAPI(): Promise<R<UserInfo>> {
   return Http.get<UserInfo>("/api/pms/v1/auth/user/info", null, {
-    aesDecryptKeys: [
-      { key: "initPwd", type: "boolean" },
-      { key: "roles", type: "array" },
-    ],
+    crypto: {
+      response: {
+        mode: "field",
+        fields: [{
+          key: "mustChangePwd",
+          type: "boolean",
+        }, {
+          key: "roles",
+          type: "array",
+        }],
+      },
+    },
   });
 }
 

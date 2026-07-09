@@ -1,6 +1,5 @@
 import Http from "@/net";
 import type { R, PreAuthorizeResult, AuthorizaResult } from "@/models";
-import { AES } from "@/utils/encrypt";
 import { useLoginStore } from "@/stores/modules/login";
 
 /**
@@ -29,19 +28,17 @@ export async function LoginAPI({
   password: string;
   code?: string;
 }): Promise<R<PreAuthorizeResult>> {
-  const afterEncrypt = await AES({
-    data: { username, password },
-    keys: ["username", "password"],
-  });
-
-  const data = {
-    username: afterEncrypt.username,
-    password: afterEncrypt.password,
-  }
-
-  return Http.post<PreAuthorizeResult>("/api/bff/auth/login", data, {
+  return Http.post<PreAuthorizeResult>("/api/bff/auth/login", {
+    username,
+    password,
+  }, {
     params: {
       _vc_code: code,
+    },
+    crypto: {
+      request: {
+        mode: "whole",
+      },
     },
   });
 }

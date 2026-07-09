@@ -10,28 +10,27 @@ import type {
   UserPageItemWithBindRoleStatusVO,
 } from "@/models";
 import { filterParams } from "@/utils/object";
-import { AES } from "@/utils/encrypt";
 
 /**
  * 初始化密码
  */
-export async function InitPwdAPI(params: UserPasswordDTO): Promise<R<Page<UserPageItemVO>>> {
-  const afterEncrypt = await AES({
-    data: params,
-    keys: ["password", "newPassword"],
+export function InitPwdAPI(params: UserPasswordDTO): Promise<R<Page<UserPageItemVO>>> {
+  return request.put<Page<UserPageItemVO>>("/api/pms/v1/org/user/pwd/init", params, {
+    crypto: {
+      request: { mode: "whole" },
+    },
   });
-  return request.put<Page<UserPageItemVO>>("/api/pms/v1/org/user/pwd/init", afterEncrypt);
 }
 
 /**
  * 修改密码
  */
-export async function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
-  const afterEncrypt = await AES({
-    data: params,
-    keys: ["password", "newPassword"],
+export function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
+  return request.put<void>("/api/pms/v1/org/user/pwd", params, {
+    crypto: {
+      request: { mode: "whole" },
+    },
   });
-  return request.put<void>("/api/pms/v1/org/user/pwd", afterEncrypt);
 }
 
 /**

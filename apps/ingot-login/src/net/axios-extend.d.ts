@@ -1,6 +1,8 @@
 // Ensure this file is parsed as a module regardless of dependencies.
 export {};
 
+import type { CryptoOption, EnvelopeContext } from "@ingot/crypto";
+
 declare module "axios" {
   interface AxiosRequestConfig {
     /**
@@ -30,5 +32,31 @@ declare module "axios" {
      * 请求头忽略传递 tenant
      */
     ignoreTenant?: boolean;
+
+    /**
+     * 信封加密配置：分别声明请求方向与响应方向如何加解密。
+     * 请求或响应任一方向存在即触发握手并携带协议头。
+     */
+    crypto?: CryptoOption;
+
+    /**
+     * 内部：信封加密本次请求的握手上下文，用于解密响应
+     */
+    __cryptoCtx?: EnvelopeContext;
+
+    /**
+     * 内部：保留的原始请求体明文，用于 kid 失效重试时重新加密
+     */
+    __cryptoPlainData?: unknown;
+
+    /**
+     * 内部：保留的原始 query 参数明文（query 模式），用于 kid 失效重试时重新加密
+     */
+    __cryptoPlainParams?: unknown;
+
+    /**
+     * 内部：信封加密是否已因 kid 失效重试过
+     */
+    __cryptoRetried?: boolean;
   }
 }

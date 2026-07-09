@@ -13,6 +13,9 @@
     },
     {
       "path": "./packages/hooks"
+    },
+    {
+      "path": "./packages/crypto"
     }
   ],
   "compilerOptions": {

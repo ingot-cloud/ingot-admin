@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@ingot/crypto": "workspace:*",
     "@ingot/hooks": "workspace:*",
     "@ingot/utils": "workspace:*",
     "@vue/shared": "^3.5.22",

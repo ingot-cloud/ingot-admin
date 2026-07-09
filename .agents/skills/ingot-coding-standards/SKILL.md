@@ -1,6 +1,6 @@
 ---
 name: ingot-coding-standards
-description: Enforces ingot-admin monorepo coding standards for Vue 3, TypeScript, Pinia, UnoCSS, and Element Plus. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, or hooks in this repository.
+description: Enforces ingot-admin monorepo coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto (@ingot/crypto). Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption in this repository.
 ---
 
 # ingot-admin 编码规范

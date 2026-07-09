@@ -188,6 +188,9 @@ importers:
       '@element-plus/icons-vue':
         specifier: ^2.3.1
         version: 2.3.2(vue@3.5.22(typescript@5.9.3))
+      '@ingot/crypto':
+        specifier: workspace:*
+        version: link:../../packages/crypto
       '@ingot/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -288,6 +291,9 @@ importers:
 
   apps/ingot-login:
     dependencies:
+      '@ingot/crypto':
+        specifier: workspace:*
+        version: link:../../packages/crypto
       '@ingot/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -376,6 +382,8 @@ importers:
       '@iconify/vue':
         specifier: ^5.0.0
         version: 5.0.0(vue@3.5.22(typescript@5.9.3))
+
+  packages/crypto: {}
 
   packages/hooks:
     dependencies:
