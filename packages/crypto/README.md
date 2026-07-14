@@ -7,9 +7,25 @@
 - 请求体与响应体使用同一 CEK + AAD 加解密；
 - 公钥缓存与轮换由 `KeyStore` 管理，支持 sessionStorage 持久化（各子域独立），公钥拉取由使用方注入。
 
-本包只依赖 WebCrypto（`crypto.subtle`），不含任何 HTTP 依赖。
+优先使用浏览器原生 WebCrypto（`crypto.subtle`）；在 **非 Secure Context**（如 `http://192.168.x.x` 内网 HTTP）下，自动懒加载 `webcrypto-liner`（`index.es.js` 独立实例）作为降级，算法与协议参数不变。不含任何 HTTP 依赖。
 
 支持 6 种加密粒度：请求 `whole` / `query` / `field`，响应 `data_only` / `full` / `field`，请求与响应方向相互独立。
+
+## 内网 HTTP 说明
+
+| 场景 | 行为 |
+|------|------|
+| HTTPS / localhost | 原生 `crypto.subtle`，无额外 bundle |
+| HTTP 内网 IP | 动态加载 `webcrypto-liner`（`index.es.js`，单独 chunk） |
+
+```typescript
+import { isNativeSubtleAvailable, isCryptoSupported } from "@ingot/crypto";
+
+isNativeSubtleAvailable(); // 当前是否使用原生 subtle
+isCryptoSupported();       // 信封加密是否可用（含降级）
+```
+
+**注意**：降级仅解决浏览器 API 限制，不替代 HTTPS。HTTP 下未加密字段与 Cookie/Token 仍为明文传输，内网仍建议部署 HTTPS（自签/内网 CA）。
 
 ## 使用
 

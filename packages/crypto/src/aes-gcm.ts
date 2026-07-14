@@ -1,18 +1,15 @@
 import { base64Decode, base64Encode } from "./base64";
 import { toArrayBufferView } from "./buffer";
+import { getSubtleCrypto, randomBytes } from "./provider";
+
+export { randomBytes };
 
 const IV_LENGTH = 12;
 const TAG_LENGTH = 128;
 
-/**
- * 生成指定长度的随机字节
- */
-export function randomBytes(length: number): Uint8Array {
-  return crypto.getRandomValues(new Uint8Array(length));
-}
-
 async function importAesKey(rawKey: Uint8Array, usages: KeyUsage[]): Promise<CryptoKey> {
-  return crypto.subtle.importKey("raw", toArrayBufferView(rawKey), { name: "AES-GCM" }, false, usages);
+  const subtle = await getSubtleCrypto();
+  return subtle.importKey("raw", toArrayBufferView(rawKey), { name: "AES-GCM" }, false, usages);
 }
 
 /**
@@ -25,7 +22,8 @@ export async function encryptGcm(
 ): Promise<string> {
   const iv = randomBytes(IV_LENGTH);
   const key = await importAesKey(cek, ["encrypt"]);
-  const encrypted = await crypto.subtle.encrypt(
+  const subtle = await getSubtleCrypto();
+  const encrypted = await subtle.encrypt(
     { name: "AES-GCM", iv: toArrayBufferView(iv), additionalData: toArrayBufferView(aad), tagLength: TAG_LENGTH },
     key,
     toArrayBufferView(new TextEncoder().encode(plainText)),
@@ -51,7 +49,8 @@ export async function decryptGcm(
   const encrypted = combined.slice(IV_LENGTH);
 
   const key = await importAesKey(cek, ["decrypt"]);
-  const decrypted = await crypto.subtle.decrypt(
+  const subtle = await getSubtleCrypto();
+  const decrypted = await subtle.decrypt(
     { name: "AES-GCM", iv: toArrayBufferView(iv), additionalData: toArrayBufferView(aad), tagLength: TAG_LENGTH },
     key,
     toArrayBufferView(encrypted),

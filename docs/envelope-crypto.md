@@ -9,7 +9,7 @@
   - 用 CEK 加密请求内容；
   - 用服务端公钥 `RSA-OAEP-256` 包裹 CEK 放入请求头；
   - 在内存中保留该 CEK/AAD，用于解密本次响应。
-- 应用层加密是对 HTTPS 的补充，HTTPS 仍必须启用。
+- 应用层加密是对 HTTPS 的补充；传输层仍建议启用 HTTPS（见第 9 节内网部署说明）。
 
 握手与协议头对所有模式完全一致，差异只在于“哪部分是密文”。
 
@@ -161,8 +161,9 @@ flowchart TD
 
 ## 7. 代码结构
 
-`@ingot/crypto`（`packages/crypto/src/`，纯 WebCrypto，无 HTTP 依赖）：
+`@ingot/crypto`（`packages/crypto/src/`，无 HTTP 依赖）：
 
+- `provider.ts`：检测 Secure Context，原生 `crypto.subtle` 不可用时懒加载 `webcrypto-liner/build/index.es.js` 独立实例。
 - `aes-gcm.ts`：AES-256-GCM 加解密（内部随机 IV），输出/解析 `base64(IV‖密文‖Tag)`。
 - `rsa-oaep.ts`：导入 X509(SPKI) 公钥、`RSA-OAEP-256` 包裹 CEK。
 - `fields.ts`：字段级深度遍历加解密 + 类型转换。
@@ -182,3 +183,46 @@ flowchart TD
 - 包裹：`{ name: "RSA-OAEP", hash: "SHA-256" }`（MGF1 亦为 SHA-256）。
 - 内容：`{ name: "AES-GCM", iv, additionalData: AAD, tagLength: 128 }`；密钥 `importKey` 为 256 位。
 - 输出拼接：`IV(12) ‖ ciphertextWithTag`（GCM 密文末尾已含 16 字节 tag），再 `base64`。
+
+## 9. 内网 HTTP 与 WebCrypto 降级
+
+### 9.1 问题本质
+
+浏览器限制的是 **Secure Context**（安全上下文），与是否能访问互联网无关：
+
+| API | `http://192.168.x.x` | `https://...` / `localhost` |
+|-----|----------------------|-------------------------------|
+| `crypto.getRandomValues` | 可用 | 可用 |
+| `crypto.subtle` | **不可用** | 可用 |
+
+纯 HTTP 内网 IP 访问时，若直接调用 `crypto.subtle`，信封加密会在握手阶段失败。
+
+### 9.2 自动降级机制
+
+`@ingot/crypto` 通过 `provider.ts` 自动选择实现：
+
+1. **Secure Context**（HTTPS / localhost）：使用浏览器原生 `crypto.subtle`，无额外体积。
+2. **非 Secure Context**（HTTP 内网 IP）：首次需要加解密时，动态 `import("webcrypto-liner/build/index.es.js")` 获取独立 `Crypto` 实例（不替换 `window.crypto`，避免 `delete self.crypto` 在部分浏览器失败），由其实现提供完整 `SubtleCrypto`（RSA-OAEP-256、AES-256-GCM + AAD），算法参数与原生路径一致。
+
+诊断 API（可从 `@ingot/crypto` 导入）：
+
+```ts
+import { isNativeSubtleAvailable, isCryptoSupported } from "@ingot/crypto";
+
+isNativeSubtleAvailable(); // 是否走原生 subtle
+isCryptoSupported();       // 信封加密是否可用（含降级）
+```
+
+降级包会单独 code-split（约 45KB gzip），仅 HTTP 环境按需加载。
+
+### 9.3 安全边界
+
+- **Polyfill 解决的是浏览器 API 限制**，不是传输层加密。HTTP 下未走信封加密的流量（普通 GET、响应 `code/message`、Cookie/Token 等）仍为明文。
+- **仍建议内网部署 HTTPS**（自签证书 / 内网 CA + Nginx 终结 TLS）作为纵深防御。
+- 若客户环境完全无法上 HTTPS 且接受传输明文风险，polyfill 是让密码等敏感字段继续走信封加密的兼容手段，需与后端、安全评审对齐。
+
+### 9.4 推荐部署优先级
+
+1. **首选**：内网 HTTPS（改动最小、安全最好）。
+2. **兜底**：HTTP + WebCrypto 降级（本方案），保证 `config.crypto` 接口可用。
+3. **可选后续**：全局开关 `VITE_APP_CRYPTO_ENABLED` 在内网关闭信封加密（需后端配合）。
