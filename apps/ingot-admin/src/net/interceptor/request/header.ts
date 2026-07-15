@@ -12,7 +12,7 @@ class HeaderInterceptor implements PreFilter {
     config.headers = config.headers || {};
     const appStore = useAppStore();
     if (appStore.app.login.fingerprintEnabled) {
-      config.headers["X-In-Ca-Sig"] = await generateFingerprint().catch(() => "");
+      config.headers["In-Ca-Sig"] = await generateFingerprint().catch(() => "");
     }
     return config;
   }

@@ -11,7 +11,7 @@ export const onRequestFulfilled = async (
   if (loginStore.login.fingerprintEnabled) {
     const fingerprint = await generateFingerprint().catch(() => "");
     if (fingerprint) {
-      config.headers["X-In-Ca-Sig"] = fingerprint;
+      config.headers["In-Ca-Sig"] = fingerprint;
     }
   }
 

@@ -9,7 +9,7 @@ pnpm build
 
 docker login -u ${JY_DOCKER_REGISTRY_USERNAME} -p ${JY_DOCKER_REGISTRY_PASSWORD} docker-registry.ingotcloud.top
 
-docker buildx build --platform linux/amd64 -t docker-registry.ingotcloud.top/ingot/${MODULE_NAME}:${INNER_VERSION} .
+docker buildx build --platform linux/arm64 -t docker-registry.ingotcloud.top/ingot/${MODULE_NAME}:${INNER_VERSION} --load .
 
 docker push docker-registry.ingotcloud.top/ingot/${MODULE_NAME}:${INNER_VERSION}
 
