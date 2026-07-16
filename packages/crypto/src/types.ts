@@ -113,11 +113,11 @@ export const CRYPTO_MD_V1 = "h1";
  * 默认协议头名称
  */
 export const DEFAULT_HEADER_NAMES: CryptoHeaderNames = {
-  md: "X-In-Crypto-Md",
-  kv: "X-In-Crypto-Kv",
-  sk: "X-In-Crypto-Sk",
-  no: "X-In-Crypto-No",
-  ts: "X-In-Crypto-Ts",
-  alg: "X-In-Crypto-Al",
-  enc: "X-In-Crypto-En",
+  md: "In-Crypto-Md",
+  kv: "In-Crypto-Kv",
+  sk: "In-Crypto-Sk",
+  no: "In-Crypto-No",
+  ts: "In-Crypto-Ts",
+  alg: "In-Crypto-Al",
+  enc: "In-Crypto-En",
 };
