@@ -7,3 +7,12 @@ export interface CredentialPolicyConfig {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface InitialPasswordPolicyConfig {
+  generation: string;
+  length?: number;
+  fixedPassword?: string;
+  validHours: number;
+  oneTime: boolean;
+  forceChangeOnFirstLogin: boolean;
+}

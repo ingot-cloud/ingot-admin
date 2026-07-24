@@ -1,29 +1,37 @@
 <template>
-  <in-form ref="editFormRef" class="form" :model="editForm" :rules="rules">
-    <el-form-item label="历史密码数量" prop="checkCount">
-      <el-input
-        v-model="editForm.checkCount"
-        type="number"
-        clearable
-        placeholder="请输入保存的近期密码数量"
-      ></el-input>
-    </el-form-item>
+  <in-form ref="editFormRef" class="policy-form" :model="editForm" :rules="rules" :disabled="disabled">
+    <el-row :gutter="24">
+      <el-col :span="8">
+        <el-form-item label="历史密码数量" prop="checkCount">
+          <el-input
+            v-model="editForm.checkCount"
+            type="number"
+            clearable
+            placeholder="请输入保存的近期密码数量"
+          />
+        </el-form-item>
+      </el-col>
+    </el-row>
   </in-form>
 </template>
 <script setup lang="ts">
+defineProps<{
+  disabled?: boolean;
+}>();
+
 const defaultEditForm = {
   checkCount: undefined,
 };
 
 const editFormRef = ref();
-const editForm = reactive<any>(Object.assign({}, defaultEditForm));
+const editForm = reactive(Object.assign({}, defaultEditForm));
 
 const rules = {
   checkCount: [{ required: true, message: "请输入保存的近期密码数量", trigger: "blur" }],
 };
 
 defineExpose({
-  setForm: (form: any) => {
+  setForm: (form: Partial<typeof defaultEditForm>) => {
     editFormRef.value.clearValidate();
     Object.assign(editForm, form);
   },
