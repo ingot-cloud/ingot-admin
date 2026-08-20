@@ -1,17 +1,32 @@
 # 需求：<feature>
 
-<!-- 变更的功能名称 -->
+<!-- 变更的功能名称。写页面/交互与验收，不要逐字段复制接口（接口见 ./API.md）。 -->
 
-> 使用 ADDED / MODIFIED / REMOVED 标记相对 `current/<domain>/<capability>/spec.md` 的变化。
-> 归档时将 ADDED、MODIFIED 合并进 current，将 REMOVED 从 current 删除。
+> 从零做新页面：填写下方「场景与页面」，可不填 ADDED / MODIFIED / REMOVED。
+> 已有 `current/<domain>/<capability>/spec.md`、本次是增量时：用 ADDED / MODIFIED / REMOVED 标记相对 current 的变化；归档时把页面行为合并进 current，不要把整份 API.md 合并进去。
+
+## 场景与页面
+
+### 场景 1：<名称>
+
+- **角色**：
+- **入口**：
+- **步骤**：
+- **预期结果**：
+
+### 页面结构
+
+<!-- Tab、表格列、筛选、操作按钮、抽屉/详情等 -->
+
+## 验收标准
+
+- [ ] ...
 
 ## ADDED
 
-<!-- 新增的需求 -->
+<!-- 仅增量变更时填写 -->
 
 ### REQ-A001：<需求标题>
-
-系统 SHALL ...
 
 **验收标准：**
 
@@ -19,7 +34,7 @@
 
 ## MODIFIED
 
-<!-- 修改的需求；注明原 REQ ID 及变更内容 -->
+<!-- 仅增量变更时填写；注明原 REQ ID 及变更内容 -->
 
 ### REQ-M001：<原 REQ ID> → <新描述>
 
@@ -31,7 +46,7 @@
 
 ## REMOVED
 
-<!-- 废弃的需求；注明原 REQ ID 及移除原因 -->
+<!-- 仅增量变更时填写；注明原 REQ ID 及移除原因 -->
 
 ### REQ-R001：<原 REQ ID>
 

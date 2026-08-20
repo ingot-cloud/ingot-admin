@@ -1,6 +1,6 @@
 # ingot-admin 项目宪章（CONSTITUTION）
 
-本文档定义 ingot-admin monorepo 的**不可协商原则**。所有 SDD 变更（`changes/`）的设计与实现必须符合本宪章。
+本文档定义 ingot-admin monorepo 的**不可协商原则**。所有 `specs/changes/` 的设计与实现必须符合本宪章。
 
 详细编码规范见：[ingot-coding-standards SKILL](../.agents/skills/ingot-coding-standards/SKILL.md)
 
@@ -32,11 +32,12 @@
 1. **UnoCSS 优先**：使用原子类；禁止 scss/less（遗留代码除外）
 2. **响应式**：支持多种设备尺寸
 
-### SDD 流程
+### 变更流程
 
-1. **规格先行**：非 trivial 变更须在 `changes/active/` 有对应提案后再实现
-2. **真相单一**：`current/` 始终反映系统当前行为；变更通过 REQUIREMENTS 合并，不维护平行规格
-3. **可追溯**：完成的变更归档至 `changes/archive/<year>/`，保留完整 artifact 集
+1. **输入先行**：先有 inbox 投递或已生成的 change（接口和/或需求）；change-id 与目录由 Agent 创建
+2. **施工门禁**：active change 状态为 `approved` 之后才能改业务代码；偏离已批准设计时先更新 spec 并重新确认
+3. **真相单一**：`current/` 只反映已上线的页面行为；接口副本留在 change 的 `API.md`，不在 current 维护平行契约；实施期间不提前改 current
+4. **可追溯**：完成的变更归档至 `changes/archive/<year>/`，保留完整 artifact 集；取消的 change 不得删除，记原因后归档
 
 ### 构建与依赖
 

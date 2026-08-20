@@ -10,6 +10,12 @@
 
 <!-- 链接到 apps/ingot-admin/src/pages/platform/<domain>/... 等 -->
 
+## 对接接口
+
+<!-- 链到归档 change 的 API.md，不要在 current 维护完整接口副本 -->
+
+- 
+
 ## 变更记录
 
 | 日期 | 变更 ID | 说明 |
