@@ -8,8 +8,8 @@ export enum TokenAuthMethod {
   Standard = "0",
 }
 export const TokenAuthMethodEnumExtArray = [
-  newEnumExt(TokenAuthMethod.Unique, "唯一", "warning"),
-  newEnumExt(TokenAuthMethod.Standard, "标准", "danger"),
+  newEnumExt(TokenAuthMethod.Unique, "单会话", "warning"),
+  newEnumExt(TokenAuthMethod.Standard, "多会话", "danger"),
 ];
 export const useTokenAuthMethodEnum = () => {
   return useEnum(TokenAuthMethodEnumExtArray);

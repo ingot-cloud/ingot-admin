@@ -14,7 +14,7 @@ export * from "./social";
 export * from "./oss";
 export * from "./id";
 export * from "./application";
-export * from "./token";
+export * from "./session";
 export * from "./credential";
 export * from "./accessProtection";
 export * from "./dict";

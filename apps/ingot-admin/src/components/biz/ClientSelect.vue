@@ -2,9 +2,9 @@
   <in-page-select
     :load-data="loadData"
     :page-size="20"
-    :value-field="valueField"
+    :value-field="props.valueField"
     :label-field="labelField"
-    :default-select-index="0"
+    :default-select-index="props.defaultSelectIndex"
   />
 </template>
 
@@ -12,7 +12,17 @@
 import type { LoadDataParams } from "@/components/select/InPageSelect.vue";
 import { ClientPageAPI } from "@/api/platform/dev/client";
 
-const valueField = "id";
+const props = withDefaults(
+  defineProps<{
+    valueField?: string;
+    defaultSelectIndex?: number;
+  }>(),
+  {
+    valueField: "id",
+    defaultSelectIndex: 0,
+  },
+);
+
 const labelField = "clientName";
 const loadData = async (params: LoadDataParams) => {
   const page = {

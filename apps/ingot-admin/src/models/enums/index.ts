@@ -11,3 +11,4 @@ export * from "./credentialEnums";
 export * from "./accessProtectionEnums";
 export * from "./dictEnums";
 export * from "./appEnums";
+export * from "./sessionEnums";
