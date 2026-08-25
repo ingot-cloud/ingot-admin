@@ -17,4 +17,5 @@ export * from "./application";
 export * from "./session";
 export * from "./credential";
 export * from "./accessProtection";
+export * from "./accountLockout";
 export * from "./dict";
