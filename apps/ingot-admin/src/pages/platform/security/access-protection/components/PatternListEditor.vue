@@ -71,6 +71,26 @@ const httpMethodEnum = useHttpMethodEnum();
 const pathRules = [{ required: true, message: "请输入路径", trigger: "blur" }];
 const methodRules = [{ required: true, message: "请选择方法", trigger: "change" }];
 
+const normalizeMethod = (method?: string): string | undefined => {
+  if (method === "*") {
+    return HttpMethodEnum.ALL;
+  }
+  return method;
+};
+
+watch(
+  modelValue,
+  (list) => {
+    list.forEach((item) => {
+      const normalized = normalizeMethod(item.method);
+      if (normalized !== item.method) {
+        item.method = normalized;
+      }
+    });
+  },
+  { deep: true, immediate: true },
+);
+
 const privateOnAdd = (): void => {
   modelValue.value = [
     ...modelValue.value,

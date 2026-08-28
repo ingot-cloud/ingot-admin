@@ -35,13 +35,6 @@
         {{ loading ? "登录中..." : "登录" }}
       </in-button>
     </div>
-    <Verify
-      @success="verifySuccess"
-      :mode="'pop'"
-      :captchaType="'blockPuzzle'"
-      :imgSize="{ width: '330px', height: '155px' }"
-      ref="VerifyRef"
-    />
   </div>
 </template>
 <script lang="ts" setup>
@@ -49,24 +42,17 @@ import { useAppStore } from "@/stores/modules/app";
 import password from "./password";
 import LoginInput from "../components/LoginInput.vue";
 import { Message } from "@/utils/message";
+import type { PreAuthorizeResult } from "@/models";
 
 const { login } = useAppStore();
-const emit = defineEmits(["success"]);
+const emit = defineEmits<{ success: [result: PreAuthorizeResult] }>();
 
-// 定义verify组件引用
-const VerifyRef = ref();
 const { formModel, loading } = password;
 const canLogin = computed(() => {
   return formModel.username.length > 0 && formModel.password.length > 0;
 });
 
 const handleLogin = () => {
-  VerifyRef.value.show();
-};
-
-// 滑块验证码校验成功调用后台登录接口
-const verifySuccess = (params: any) => {
-  formModel.code = params.captchaVerification;
   password.handleLogin().then((result) => {
     emit("success", result);
   });
@@ -160,4 +146,4 @@ onMounted(() => {
   }
 }
 </style>
-. ./password
+

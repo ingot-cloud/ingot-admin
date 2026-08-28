@@ -10,6 +10,7 @@ import { onResponseFulfilled, onResponseRejected } from "./interceptor/response"
 import type { R } from "@/models";
 import NProgress from "@/components/nprogress";
 import CancelManager from "./cancel";
+import { bindChallengeRetry } from "./challenge";
 
 class Http {
   private instance: AxiosInstance;
@@ -49,6 +50,7 @@ class Http {
         return onResponseRejected(error);
       },
     );
+    bindChallengeRetry((config) => this.instance.request(config));
   }
 
   getOrigin() {

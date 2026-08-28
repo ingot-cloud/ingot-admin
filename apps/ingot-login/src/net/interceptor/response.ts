@@ -22,6 +22,7 @@ import {
   maybeRefreshKeyOnKidMismatch,
   isEnvelopeResponse,
 } from "@/net/crypto";
+import { tryHandleGatewayChallenge } from "@/net/challenge";
 
 /**
  * 未知响应实体
@@ -40,10 +41,11 @@ const axiosResponseToR = (response?: AxiosResponse<R>): R => {
   if (!response || !response.data) {
     return UnknownResponse;
   }
+  const body = response.data as R & { msg?: string };
   const result = Object.assign({}, response, {
-    data: response.data.data,
-    message: response.data.message,
-    code: response.data.code,
+    data: body.data,
+    message: body.message || body.msg || "",
+    code: body.code,
   });
   return result;
 };
@@ -167,6 +169,17 @@ export const onResponseFulfilled = async (response: AxiosResponse<R>): Promise<R
  * 响应拒绝拦截器
  * @param error
  */
-export const onResponseRejected = (error: AxiosError<R>): Promise<R> => {
+export const onResponseRejected = async (error: AxiosError<R>): Promise<R> => {
+  try {
+    const retried = await tryHandleGatewayChallenge(error);
+    if (retried) {
+      return retried;
+    }
+  } catch (challengeError) {
+    if (challengeError instanceof Error) {
+      Message.warning(challengeError.message, { showClose: true });
+    }
+    return Promise.reject(challengeError);
+  }
   return bizResponseFailureHandler(error.config || {}, axiosResponseToR(error.response));
 };

@@ -6,6 +6,7 @@ import type {
   GatewayIpList,
   ViolationEscalationConfig,
   GatewayBlacklistEvent,
+  GatewayChallengePolicy,
 } from "@/models";
 
 const PATH = "/api/security/platform/security/policy";
@@ -78,4 +79,24 @@ export function GetBlockEventsAPI(limit = 100): Promise<R<Array<GatewayBlacklist
 
 export function BroadcastPolicyInvalidationAPI(): Promise<R<void>> {
   return request.post<void>(`${PATH}/broadcast-invalidation`);
+}
+
+export function GetChallengePoliciesAPI(): Promise<R<Array<GatewayChallengePolicy>>> {
+  return request.get<Array<GatewayChallengePolicy>>(`${PATH}/challenges`);
+}
+
+export function CreateChallengePolicyAPI(
+  policy: GatewayChallengePolicy,
+): Promise<R<void>> {
+  return request.post<void>(`${PATH}/challenges`, policy);
+}
+
+export function UpdateChallengePolicyAPI(
+  policy: GatewayChallengePolicy,
+): Promise<R<void>> {
+  return request.put<void>(`${PATH}/challenges`, policy);
+}
+
+export function DeleteChallengePolicyAPI(id: string): Promise<R<void>> {
+  return request.delete<void>(`${PATH}/challenges/${id}`);
 }

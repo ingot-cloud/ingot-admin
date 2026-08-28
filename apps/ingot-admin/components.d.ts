@@ -12,6 +12,7 @@ declare module 'vue' {
     AccountStatusView: typeof import('./src/components/biz/user/AccountStatusView.vue')['default']
     BizDeptSelect: typeof import('./src/components/biz/dept-select/BizDeptSelect.vue')['default']
     BizSearchUserByPhone: typeof import('./src/components/biz/search-user-by-phone/BizSearchUserByPhone.vue')['default']
+    ChallengeHost: typeof import('./src/components/challenge/ChallengeHost.vue')['default']
     ClientSelect: typeof import('./src/components/biz/ClientSelect.vue')['default']
     CommonStatusButton: typeof import('./src/components/biz/CommonStatusButton.vue')['default']
     CommonStatusTag: typeof import('./src/components/biz/CommonStatusTag.vue')['default']

@@ -58,5 +58,15 @@ declare module "axios" {
      * 内部：信封加密是否已因 kid 失效重试过
      */
     __cryptoRetried?: boolean;
+
+    /**
+     * 跳过网关 412 挑战拦截（验证码拉码/验码自身使用）
+     */
+    skipChallenge?: boolean;
+
+    /**
+     * 内部：网关挑战重试次数
+     */
+    __challengeRetryCount?: number;
   }
 }

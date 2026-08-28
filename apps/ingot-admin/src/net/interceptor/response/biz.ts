@@ -11,6 +11,7 @@ import { Message, Confirm } from "@/utils/message";
 import { StatusCode } from "@/net/status-code";
 import { logoutAndReload } from "@/utils/security";
 import { isString } from "@/utils";
+import { parseChallengeRequired } from "@ingot/utils";
 
 /**
  * 未知响应实体
@@ -29,10 +30,11 @@ const axiosResponseToR = (response?: AxiosResponse<R>): R => {
   if (!response || !response.data) {
     return UnknownResponse;
   }
+  const body = response.data as R & { msg?: string };
   const result = Object.assign({}, response, {
-    data: response.data.data,
-    message: response.data.message,
-    code: response.data.code,
+    data: body.data,
+    message: body.message || body.msg || "",
+    code: body.code,
   });
   return result;
 };
@@ -91,6 +93,9 @@ class BizInterceptor implements PostFilter {
   }
 
   rejected(error: AxiosError<R>): Promise<R> {
+    if (parseChallengeRequired(error.response?.status, error.response?.data)) {
+      return Promise.reject(error);
+    }
     // 异常响应，并且响应结果为String那么退出登录
     if (error.code === "ERR_BAD_RESPONSE" && error.response && isString(error.response.data)) {
       logoutAndReload(true);

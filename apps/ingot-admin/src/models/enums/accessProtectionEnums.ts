@@ -131,7 +131,7 @@ export enum HttpMethodEnum {
   PUT = "PUT",
   DELETE = "DELETE",
   PATCH = "PATCH",
-  ALL = "*",
+  ALL = "ANY",
 }
 
 export const HttpMethodEnumExtArray = [
@@ -140,10 +140,34 @@ export const HttpMethodEnumExtArray = [
   newEnumExt(HttpMethodEnum.PUT, "PUT", "warning"),
   newEnumExt(HttpMethodEnum.DELETE, "DELETE", "danger"),
   newEnumExt(HttpMethodEnum.PATCH, "PATCH", "info"),
-  newEnumExt(HttpMethodEnum.ALL, "*", "info"),
+  newEnumExt(HttpMethodEnum.ALL, "ANY", "info"),
 ];
 
 export const useHttpMethodEnum = () => useEnum(HttpMethodEnumExtArray);
+
+export enum ChallengeTriggerEnum {
+  ALWAYS = "always",
+  ON_RATE_LIMIT = "on_rate_limit",
+}
+
+export const ChallengeTriggerEnumExtArray = [
+  newEnumExt(ChallengeTriggerEnum.ALWAYS, "始终挑战", "warning"),
+  newEnumExt(ChallengeTriggerEnum.ON_RATE_LIMIT, "限流后挑战", "danger"),
+];
+
+export const useChallengeTriggerEnum = () => useEnum(ChallengeTriggerEnumExtArray);
+
+export enum ChallengeTypeEnum {
+  SLIDER = "SLIDER",
+  IMAGE = "IMAGE",
+}
+
+export const ChallengeTypeEnumExtArray = [
+  newEnumExt(ChallengeTypeEnum.SLIDER, "滑块", "primary"),
+  newEnumExt(ChallengeTypeEnum.IMAGE, "图形", "success"),
+];
+
+export const useChallengeTypeEnum = () => useEnum(ChallengeTypeEnumExtArray);
 
 export enum AccessProtectionTabEnum {
   ENDPOINT_GROUP = "endpoint-group",
@@ -151,6 +175,7 @@ export enum AccessProtectionTabEnum {
   IP_LIST = "ip-list",
   VIOLATION_ESCALATION = "violation-escalation",
   LOGIN_FAILURE = "login-failure",
+  CHALLENGE = "challenge",
   BLOCK_EVENT = "block-event",
 }
 
@@ -160,6 +185,7 @@ export const AccessProtectionTabEnumExtArray = [
   newEnumExt(AccessProtectionTabEnum.IP_LIST, "黑白名单", "warning"),
   newEnumExt(AccessProtectionTabEnum.VIOLATION_ESCALATION, "违规升级", "danger"),
   newEnumExt(AccessProtectionTabEnum.LOGIN_FAILURE, "登录失败保护", "info"),
+  newEnumExt(AccessProtectionTabEnum.CHALLENGE, "挑战策略", "warning"),
   newEnumExt(AccessProtectionTabEnum.BLOCK_EVENT, "封禁审计", "info"),
 ];
 

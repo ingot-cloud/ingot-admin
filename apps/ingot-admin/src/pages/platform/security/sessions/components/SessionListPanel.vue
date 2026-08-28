@@ -82,10 +82,10 @@
 import type { PlatformSessionVO } from "@/models";
 import { useSessionUserTypeEnum, useTokenAuthMethodEnum } from "@/models/enums";
 import { ROLE_SYSTEM_ADMIN_CODE } from "@/constants/role";
-import { tableHeaders } from "../table";
-import { useOps } from "../useOps";
-import { SESSION_REVOKE_PERMISSION } from "../constants";
-import { displaySessionTenant, displaySessionUser } from "../sessionDisplay";
+import { tableHeaders } from "../table.ts";
+import { useOps } from "../useOps.ts";
+import { SESSION_REVOKE_PERMISSION } from "../constants.ts";
+import { displaySessionTenant, displaySessionUser } from "../sessionDisplay.ts";
 import ClientIdField from "./ClientIdField.vue";
 import SessionDetailDrawer from "./SessionDetailDrawer.vue";
 

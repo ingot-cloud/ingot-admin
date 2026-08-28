@@ -69,3 +69,22 @@ export interface GatewayBlacklistEvent {
   expiresAt?: string;
   source?: string;
 }
+
+export interface GatewayChallengePolicy {
+  id?: string;
+  code?: string;
+  groupCode?: string;
+  patternList?: Array<GatewayEndpointPattern>;
+  trigger?: string;
+  challengeType?: string;
+  scope?: string;
+  passTokenTtlSec?: number;
+  passTokenRemaining?: number;
+  enabled?: boolean;
+  priority?: number;
+  remark?: string;
+  challengeFailureLimit?: number;
+  blockTtlSec?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}

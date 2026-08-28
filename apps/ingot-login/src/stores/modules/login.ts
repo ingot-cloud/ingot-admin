@@ -33,18 +33,15 @@ export const useLoginStore = defineStore("app.login", () => {
   const preAuthorize = ({
     username,
     password,
-    code,
   }: {
     username: string;
     password: string;
-    code?: string;
   }): Promise<PreAuthorizeResult> => {
     return new Promise((resolve, reject) => {
       preAuthorizeResult.value = undefined;
       LoginAPI({
         username,
         password,
-        code,
       })
         .then((response) => {
           preAuthorizeResult.value = response.data;

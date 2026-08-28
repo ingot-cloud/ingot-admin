@@ -3,6 +3,7 @@ import type { AxiosInstance, AxiosRequestConfig } from "axios";
 import type { R } from "@/models/net";
 import RequestInterceptor from "./interceptor/request";
 import ResponseInterceptor from "./interceptor/response";
+import { bindChallengeRetry } from "./challenge";
 
 class Http {
   private instance: AxiosInstance;
@@ -15,6 +16,7 @@ class Http {
 
     RequestInterceptor.install(this.instance);
     ResponseInterceptor.install(this.instance);
+    bindChallengeRetry((config) => this.instance.request(config));
   }
 
   rawRequest<T = any>(config: AxiosRequestConfig): Promise<R<T>> {

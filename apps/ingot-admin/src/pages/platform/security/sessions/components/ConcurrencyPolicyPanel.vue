@@ -88,9 +88,9 @@ import {
   useSessionUserTypeEnum,
 } from "@/models/enums";
 import { ROLE_SYSTEM_ADMIN_CODE } from "@/constants/role";
-import { policyTableHeaders } from "../policyTable";
-import { useConcurrencyPolicy } from "../useConcurrencyPolicy";
-import { SESSION_POLICY_UPDATE_PERMISSION } from "../constants";
+import { policyTableHeaders } from "../policyTable.ts";
+import { useConcurrencyPolicy } from "../useConcurrencyPolicy.ts";
+import { SESSION_POLICY_UPDATE_PERMISSION } from "../constants.ts";
 import ConcurrencyPolicyDrawer from "./ConcurrencyPolicyDrawer.vue";
 
 const { loading, tableData, loadAll, removePolicy } = useConcurrencyPolicy();

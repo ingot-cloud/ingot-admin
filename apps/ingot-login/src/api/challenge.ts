@@ -1,4 +1,4 @@
-import Http from "@/net";
+import request from "@/net";
 import type { R, PreAuthorizeResult, AuthorizaResult } from "@/models";
 import { useLoginStore } from "@/stores/modules/login";
 
@@ -9,7 +9,7 @@ export function SessionAuthorizeAPI(): Promise<R<PreAuthorizeResult>> {
   const loginStore = useLoginStore();
   const pre_grant_type = "session";
   const parameter = toRaw(loginStore.requiredParameters);
-  return Http.post<PreAuthorizeResult>("/api/auth/oauth2/pre_authorize", null, {
+  return request.post<PreAuthorizeResult>("/api/auth/oauth2/pre_authorize", null, {
     params: {
       user_type: "0",
       pre_grant_type,
@@ -22,25 +22,24 @@ export function SessionAuthorizeAPI(): Promise<R<PreAuthorizeResult>> {
 export async function LoginAPI({
   username,
   password,
-  code,
 }: {
   username: string;
   password: string;
-  code?: string;
 }): Promise<R<PreAuthorizeResult>> {
-  return Http.post<PreAuthorizeResult>("/api/bff/auth/login", {
-    username,
-    password,
-  }, {
-    params: {
-      _vc_code: code,
+  return request.post<PreAuthorizeResult>(
+    "/api/bff/auth/login",
+    {
+      username,
+      password,
     },
-    crypto: {
-      request: {
-        mode: "whole",
+    {
+      crypto: {
+        request: {
+          mode: "whole",
+        },
       },
     },
-  });
+  );
 }
 
 /**
@@ -49,7 +48,7 @@ export async function LoginAPI({
 export async function SelectTenantAPI(tenant: string): Promise<R<AuthorizaResult>> {
   const loginStore = useLoginStore();
   const parameter = toRaw(loginStore.requiredParameters);
-  return Http.post<AuthorizaResult>("/api/bff/auth/tenant/select", {
+  return request.post<AuthorizaResult>("/api/bff/auth/tenant/select", {
     tenantId: tenant,
     redirectUri: parameter.redirect_uri,
   });

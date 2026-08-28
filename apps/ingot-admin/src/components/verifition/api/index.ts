@@ -1,17 +1,26 @@
 /**
- * 此处可直接引用自己项目封装好的 axios 配合后端联调
+ * 验证码拉码 / 验码。URL 与 Header 名由 412 data 动态传入，禁止写死。
  */
 
 import request from "@/net";
 
-//获取验证图片  以及token
-export function reqGet(data: Object) {
-  return request.get<Object>("/api/vc/image", data);
+export function reqGet(url: string, data: Record<string, unknown>) {
+  return request.get<Record<string, unknown>>(url, data, {
+    skipChallenge: true,
+    permit: true,
+  });
 }
 
-//滑动或者点选验证
-export function reqCheck(data: Object) {
-  return request.post("/api/vc/image/check", null, {
+export function reqCheck(
+  url: string,
+  data: Record<string, unknown>,
+  headers?: Record<string, string>,
+) {
+  return request.post<Record<string, unknown>>(url, null, {
     params: data,
+    headers,
+    skipChallenge: true,
+    permit: true,
+    manualProcessingFailure: true,
   });
 }

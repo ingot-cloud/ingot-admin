@@ -33,6 +33,10 @@
         v-if="visitedTabs[AccessProtectionTabEnum.LOGIN_FAILURE]"
         v-show="activeTab === AccessProtectionTabEnum.LOGIN_FAILURE"
       />
+      <ChallengePolicyPanel
+        v-if="visitedTabs[AccessProtectionTabEnum.CHALLENGE]"
+        v-show="activeTab === AccessProtectionTabEnum.CHALLENGE"
+      />
       <BlockEventPanel
         v-if="visitedTabs[AccessProtectionTabEnum.BLOCK_EVENT]"
         v-show="activeTab === AccessProtectionTabEnum.BLOCK_EVENT"
@@ -49,6 +53,7 @@ import RateLimitRulePanel from "./components/RateLimitRulePanel.vue";
 import IpListPanel from "./components/IpListPanel.vue";
 import ViolationEscalationPanel from "./components/ViolationEscalationPanel.vue";
 import LoginFailurePanel from "./components/LoginFailurePanel.vue";
+import ChallengePolicyPanel from "./components/ChallengePolicyPanel.vue";
 import BlockEventPanel from "./components/BlockEventPanel.vue";
 
 const accessProtectionTabEnum = useAccessProtectionTabEnum();

@@ -143,9 +143,40 @@ export default {
         };
       },
     },
+    vcScope: {
+      type: String,
+      default: "",
+    },
+    scopeParam: {
+      type: String,
+      default: "",
+    },
+    passTokenParam: {
+      type: String,
+      default: "",
+    },
+    captchaGetUrl: {
+      type: String,
+      default: "",
+    },
+    captchaCheckUrl: {
+      type: String,
+      default: "",
+    },
   },
   setup(props) {
-    const { mode, captchaType, type, blockSize, explain } = toRefs(props);
+    const {
+      mode,
+      captchaType,
+      type,
+      blockSize,
+      explain,
+      vcScope,
+      scopeParam,
+      passTokenParam,
+      captchaGetUrl,
+      captchaCheckUrl,
+    } = toRefs(props);
     const { proxy } = getCurrentInstance();
     let secretKey = ref(""), //后端返回的ase加密秘钥
       passFlag = ref(""), //是否通过的标识
@@ -312,58 +343,61 @@ export default {
             : JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
           token: backToken.value,
         };
-        reqCheck(data).then((response) => {
-          let res = response.data;
-          if (res.repCode == "0000") {
-            moveBlockBackgroundColor.value = "#5cb85c";
-            leftBarBorderColor.value = "#5cb85c";
-            iconColor.value = "#fff";
-            iconClass.value = "icon-check";
-            showRefresh.value = false;
-            isEnd.value = true;
-            if (mode.value == "pop") {
-              setTimeout(() => {
-                proxy.$parent.clickShow = false;
-                refresh();
-              }, 1500);
-            }
-            passFlag.value = true;
-            tipWords.value = `${((endMovetime.value - startMoveTime.value) / 1000).toFixed(
-              2,
-            )}s验证成功`;
-            var captchaVerification = secretKey.value
-              ? aesEncrypt(
-                  backToken.value +
-                    "---" +
-                    JSON.stringify({
-                      x: moveLeftDistance,
-                      y: 5.0,
-                    }),
-                  secretKey.value,
-                  // eslint-disable-next-line no-mixed-spaces-and-tabs
-                )
-              : backToken.value + "---" + JSON.stringify({ x: moveLeftDistance, y: 5.0 });
+        const checkHeaders = {};
+        if (scopeParam.value && vcScope.value) {
+          checkHeaders[scopeParam.value] = vcScope.value;
+        }
+        const markCheckFailed = () => {
+          moveBlockBackgroundColor.value = "#d9534f";
+          leftBarBorderColor.value = "#d9534f";
+          iconColor.value = "#fff";
+          iconClass.value = "icon-close";
+          passFlag.value = false;
+          setTimeout(function () {
+            refresh();
+          }, 1000);
+          proxy.$parent.$emit("error", proxy);
+          tipWords.value = "验证失败";
+          setTimeout(() => {
+            tipWords.value = "";
+          }, 1000);
+        };
+        const markCheckSuccess = (passToken, scope) => {
+          moveBlockBackgroundColor.value = "#5cb85c";
+          leftBarBorderColor.value = "#5cb85c";
+          iconColor.value = "#fff";
+          iconClass.value = "icon-check";
+          showRefresh.value = false;
+          isEnd.value = true;
+          if (mode.value === "pop") {
             setTimeout(() => {
-              tipWords.value = "";
-              proxy.$parent.$parent.closeBox();
-              proxy.$parent.$parent.$emit("success", { captchaVerification });
-            }, 1000);
-          } else {
-            moveBlockBackgroundColor.value = "#d9534f";
-            leftBarBorderColor.value = "#d9534f";
-            iconColor.value = "#fff";
-            iconClass.value = "icon-close";
-            passFlag.value = false;
-            setTimeout(function () {
+              proxy.$parent.clickShow = false;
               refresh();
-            }, 1000);
-            proxy.$parent.$emit("error", proxy);
-            tipWords.value = "验证失败";
-            setTimeout(() => {
-              tipWords.value = "";
-            }, 1000);
+            }, 1500);
           }
-        });
+          passFlag.value = true;
+          tipWords.value = `${((endMovetime.value - startMoveTime.value) / 1000).toFixed(
+            2,
+          )}s验证成功`;
+          setTimeout(() => {
+            tipWords.value = "";
+            proxy.$parent.$parent.$emit("success", { passToken, scope });
+            proxy.$parent.$parent.closeBox();
+          }, 1000);
+        };
+        reqCheck(captchaCheckUrl.value, data, checkHeaders)
+          .then((response) => {
+            const payload = response.data || {};
+            const passToken = passTokenParam.value ? payload[passTokenParam.value] : undefined;
+            if (passToken) {
+              markCheckSuccess(passToken, payload[scopeParam.value] || vcScope.value);
+              return;
+            }
+            markCheckFailed();
+          })
+          .catch(() => {
+            markCheckFailed();
+          });
         status.value = false;
       }
     }
@@ -397,17 +431,21 @@ export default {
       let data = {
         captchaType: captchaType.value,
       };
-      reqGet(data).then((response) => {
-        let res = response.data;
-        if (res.repCode == "0000") {
-          backImgBase.value = res.repData.originalImageBase64;
-          blockBackImgBase.value = res.repData.jigsawImageBase64;
-          backToken.value = res.repData.token;
-          secretKey.value = res.repData.secretKey;
-        } else {
-          tipWords.value = res.repMsg;
-        }
-      });
+      reqGet(captchaGetUrl.value, data)
+        .then((response) => {
+          let res = response.data;
+          if (res.repCode == "0000") {
+            backImgBase.value = res.repData.originalImageBase64;
+            blockBackImgBase.value = res.repData.jigsawImageBase64;
+            backToken.value = res.repData.token;
+            secretKey.value = res.repData.secretKey;
+          } else {
+            tipWords.value = res.repMsg;
+          }
+        })
+        .catch(() => {
+          tipWords.value = "获取验证码失败";
+        });
     }
 
     return {

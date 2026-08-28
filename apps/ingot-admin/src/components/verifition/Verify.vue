@@ -26,6 +26,11 @@
           :mode="mode"
           :type="verifyType"
           :vSpace="vSpace"
+          :vcScope="vcScope"
+          :scopeParam="scopeParam"
+          :passTokenParam="passTokenParam"
+          :captchaGetUrl="captchaGetUrl"
+          :captchaCheckUrl="captchaCheckUrl"
         ></component>
       </div>
     </div>
@@ -86,9 +91,30 @@ export default {
     barSize: {
       type: Object,
     },
+    vcScope: {
+      type: String,
+      default: "",
+    },
+    scopeParam: {
+      type: String,
+      default: "",
+    },
+    passTokenParam: {
+      type: String,
+      default: "",
+    },
+    captchaGetUrl: {
+      type: String,
+      default: "",
+    },
+    captchaCheckUrl: {
+      type: String,
+      default: "",
+    },
   },
-  setup(props) {
-    const { captchaType, mode } = toRefs(props);
+  setup(props, { emit }) {
+    const { captchaType, mode, vcScope, scopeParam, passTokenParam, captchaGetUrl, captchaCheckUrl } =
+      toRefs(props);
     const clickShow = ref(false);
     const verifyType = ref(undefined);
     const componentType = ref(undefined);
@@ -113,7 +139,7 @@ export default {
     };
     const closeBox = () => {
       clickShow.value = false;
-      // refresh();
+      emit("close");
     };
     const show = () => {
       refresh();
@@ -141,6 +167,11 @@ export default {
       showBox,
       closeBox,
       show,
+      vcScope,
+      scopeParam,
+      passTokenParam,
+      captchaGetUrl,
+      captchaCheckUrl,
     };
   },
 };
