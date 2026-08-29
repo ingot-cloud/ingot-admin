@@ -20,14 +20,14 @@
 
 ## 验证
 
-- [ ] 满足 REQUIREMENTS.md 验收标准
-- [ ] 对接行为与 API.md 一致
+- [x] 满足 REQUIREMENTS.md 验收标准
+- [x] 对接行为与 API.md 一致
 - [x] 本地构建通过（`pnpm build:packages` + `ingot-admin` / `ingot-login` build）
-- [ ] 手动测试：挑战 Tab；登录 412；其它业务 API 412；滑块失败不重试；关闭挑战不弹窗
+- [x] 手动测试：挑战 Tab；登录 412；其它业务 API 412；滑块失败不重试；关闭挑战不弹窗
 
 ## 收尾
 
-- [ ] 更新 `current/security/access-protection/spec.md`
-- [ ] 视情况补 `current/ingot-login/` 与公共 412 行为
-- [ ] 在 capability README 记录变更 ID，并链到归档后的 `API.md`
-- [ ] README 状态改为 `completed`，将变更目录移至 `changes/archive/2026/20260827-security-challenge-verification/`
+- [x] 更新 `current/security/access-protection/spec.md`
+- [x] 视情况补 `current/ingot-login/` 与公共 412 行为
+- [x] 在 capability README 记录变更 ID，并链到归档后的 `API.md`
+- [x] README 状态改为 `completed`，将变更目录移至 `changes/archive/2026/20260827-security-challenge-verification/`

@@ -41,14 +41,14 @@
 
 ## 验收标准
 
-- [ ] 访问防护「挑战策略」Tab CRUD 与校验符合 API.md §2
-- [ ] 写成功提示「规则将在数秒内生效」
-- [ ] login 与 admin 的 axios 都拦截 412 + `CHALLENGE_REQUIRED`
-- [ ] 拉码 URL、验码 URL、Header 名均来自 412 `data`，不写死
-- [ ] PassToken / scope 只出现在 Header，不写 query；`/vc/**` 不套 412
-- [ ] 同 scope 共用一次滑块；不同 scope 不混用 token
-- [ ] 登录页不再单独处理 412
-- [ ] 不调用 Inner Feign；管理台不传 Bearer Token
+- [x] 访问防护「挑战策略」Tab CRUD 与校验符合 API.md §2
+- [x] 写成功提示「规则将在数秒内生效」
+- [x] login 与 admin 的 axios 都拦截 412 + `CHALLENGE_REQUIRED`
+- [x] 拉码 URL、验码 URL、Header 名均来自 412 `data`，不写死
+- [x] PassToken / scope 只出现在 Header，不写 query；`/vc/**` 不套 412
+- [x] 同 scope 共用一次滑块；不同 scope 不混用 token
+- [x] 登录页不再单独处理 412
+- [x] 不调用 Inner Feign；管理台不传 Bearer Token
 
 ## ADDED
 
@@ -60,9 +60,9 @@
 
 **验收标准：**
 
-- [ ] 时序符合 API.md §3.4
-- [ ] 缺 `data` 字段不当作挑战
-- [ ] 验码失败 / 用户关闭不重试原请求
+- [x] 时序符合 API.md §3.4
+- [x] 缺 `data` 字段不当作挑战
+- [x] 验码失败 / 用户关闭不重试原请求
 
 ## MODIFIED
 
@@ -72,5 +72,5 @@
 
 **验收标准：**
 
-- [ ] `LoginAPI` 不传验证码字段
-- [ ] 关闭挑战时无滑块
+- [x] `LoginAPI` 不传验证码字段
+- [x] 关闭挑战时无滑块

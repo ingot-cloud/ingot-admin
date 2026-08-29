@@ -1,6 +1,6 @@
 # 20260827-security-challenge-verification
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -64,8 +64,8 @@ L4 访问防护把挑战策略标为「可只读、前端可隐藏」。L6 启�
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-08-29
 - 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
+- 更新的 current capability：`security/access-protection`、`common/gateway-challenge`、`ingot-login/password-login`
+- 与原设计的差异：施工中按用户更新的 API.md，PassToken / scope 从 query 改为 Header；挑战策略 `id` 前端按 string 存储；路径任意方法提交 `ANY`
 - 取消原因：
