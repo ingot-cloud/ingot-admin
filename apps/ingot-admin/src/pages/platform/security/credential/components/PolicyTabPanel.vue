@@ -38,7 +38,7 @@ interface PolicyViewExpose {
 }
 
 const props = defineProps<{
-  policyType: string;
+  policyType: CredentialPolicyTypeEnum;
   config?: CredentialPolicyConfig;
   savePolicy: SavePolicyFn;
 }>();

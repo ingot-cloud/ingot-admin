@@ -39,11 +39,20 @@
       @rowClick="privateRowClick"
     >
       <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
-        <template v-if="item.type === 'expand'" #default="props">
-          <slot :name="item.prop" :item="props.row" :index="props.$index"> </slot>
-        </template>
-        <template v-slot="scope" v-if="!item.type || item.type === 'default'">
-          <slot :name="item.prop" :item="scope.row" :index="scope.$index">
+        <template #default="scope">
+          <slot
+            v-if="item.type === 'expand'"
+            :name="item.prop"
+            :item="scope.row"
+            :index="scope.$index"
+          >
+          </slot>
+          <slot
+            v-else-if="!item.type || item.type === 'default'"
+            :name="item.prop"
+            :item="scope.row"
+            :index="scope.$index"
+          >
             {{
               item.transform
                 ? item.transform(scope.row[String(item.prop)])
@@ -73,17 +82,20 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { TableHeaderRecord } from "./types";
+import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { useAppStateStore } from "@/stores/modules/app";
-import { ElTable } from "element-plus";
+import { ElTable, type TableInstance } from "element-plus";
+import type { ComponentPublicInstance } from "vue";
 
 defineOptions({
   name: "InRadioTable",
   inheritAttrs: false,
 });
 
-const slot = useSlots();
+type TableRow = NonNullable<InTableProps["data"]>[number];
+
+const slot = defineSlots<InTableSlots<TableRow>>();
 const props = withDefaults(defineProps<InTableProps>(), DefaultProps);
 const emits = defineEmits(["handleSizeChange", "handleCurrentChange", "refresh"]);
 const { componentSize } = storeToRefs(useAppStateStore());
@@ -117,7 +129,7 @@ watch(
 
 const radioValue = ref();
 
-const privateRowClick = (item: any) => {
+const privateRowClick = (item: TableRow) => {
   if (props.radioKey) {
     radioValue.value = item[props.radioKey];
   }
@@ -130,7 +142,7 @@ const privateHandleSizeChange = (val: number) => {
 const privateHandleCurrentChange = (val: number) => {
   emits("handleCurrentChange", { value: val, type: "current" });
 };
-const privateOnHeaderChanged = (value: Array<String>) => {
+const privateOnHeaderChanged = (value: string[]) => {
   headersEnable.value = props.headers.filter((item: TableHeaderRecord) =>
     value.includes(item.prop as string),
   );
@@ -139,14 +151,19 @@ const privateOnRefreshClick = () => {
   emits("refresh");
 };
 
-// 传递table所有方法
-const vm = getCurrentInstance();
-const tableRef = (instance: any) => {
-  vm!.exposed = instance;
-  vm!.exposeProxy = instance;
+const tableInstance = shallowRef<TableInstance>();
+const tableRef = (instance: Element | ComponentPublicInstance | null) => {
+  tableInstance.value =
+    instance && "clearSelection" in instance && "toggleRowSelection" in instance
+      ? (instance as TableInstance)
+      : undefined;
 };
 
-defineExpose({} as any);
+defineExpose<TableAPI<TableRow>>({
+  clearSelection: () => tableInstance.value?.clearSelection(),
+  toggleRowSelection: (row, selected) =>
+    tableInstance.value?.toggleRowSelection(row, selected),
+});
 </script>
 <style lang="postcss" scoped>
 :deep(th.el-table__cell) {

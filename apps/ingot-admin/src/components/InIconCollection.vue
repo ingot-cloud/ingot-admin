@@ -5,16 +5,14 @@
       :key="name"
       :name="name"
       class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-      @click="onItemClick(name)"
+      @click="privateOnItemClick(name)"
     />
   </div>
 </template>
 <script lang="ts" setup>
-import { defineEmits } from "vue";
-
-const emits = defineEmits(["onItemClick"]);
+const emit = defineEmits<{ select: [item: string] }>();
 const icons = useIconsCollection();
-const onItemClick = (item: string) => {
-  emits("onItemClick", item);
+const privateOnItemClick = (item: string) => {
+  emit("select", item);
 };
 </script>

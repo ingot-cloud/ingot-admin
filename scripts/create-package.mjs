@@ -66,7 +66,6 @@ const templates = {
     include: ["src/**/*"],
     exclude: ["node_modules", "dist", "**/*.test.*", "**/*.spec.*"],
     compilerOptions: {
-      baseUrl: ".",
       rootDir: "src",
       outDir: "dist",
       declaration: true,

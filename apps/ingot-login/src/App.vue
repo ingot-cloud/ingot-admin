@@ -5,10 +5,10 @@
   </el-config-provider>
 </template>
 <script lang="ts" setup>
-import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import zhCn from "element-plus/es/locale/lang/zh-cn";
 import ChallengeHost from "@/components/challenge/ChallengeHost.vue";
 
-const componentSize = "default" as any;
+const componentSize = "default" as const;
 const buttonConfig = reactive({
   autoInsertSpace: false,
 });

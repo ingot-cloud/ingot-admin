@@ -33,12 +33,12 @@
 <script lang="ts" setup>
 import type { PropType } from "vue";
 import type { TableHeaderRecord } from "./types";
-import type { ElTable } from "element-plus";
+import type { TableInstance } from "element-plus";
 import { ClickOutside as vClickOutside } from "element-plus";
 
 const props = defineProps({
   data: {
-    type: Object as PropType<Array<TableHeaderRecord>>,
+    type: Array as PropType<Array<TableHeaderRecord>>,
     default() {
       return [];
     },
@@ -46,7 +46,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["onSelectionChange"]);
 
-const settingTable = ref<InstanceType<typeof ElTable>>();
+const settingTable = ref<TableInstance>();
 const settingPopoverRef = ref();
 const settingButtonRef = ref();
 

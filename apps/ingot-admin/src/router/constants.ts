@@ -13,6 +13,7 @@ export enum PageLayoutViewPath {
   EXTERNAL = "@/layouts/InExtLinkLayout.vue",
 }
 export enum PageName {
+  DYNAMIC_ROUTE_BOOTSTRAP = "DynamicRouteBootstrap",
   REDIRECT = "Redirect",
 }
 export enum PagePath {

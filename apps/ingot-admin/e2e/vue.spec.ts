@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
-// See here how to get started:
-// https://playwright.dev/docs/intro
-test('visits the app root url', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('h1')).toHaveText('You did it!');
-})
+test("serves the admin application shell", async ({ page }) => {
+  const response = await page.goto("/", { waitUntil: "domcontentloaded" });
+
+  expect(response?.ok()).toBe(true);
+  await expect(page).toHaveTitle("Ingot管理后台");
+});

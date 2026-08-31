@@ -181,10 +181,10 @@ defineExpose({
 
   & .filter-control {
     @apply w-200px;
+  }
 
-    &--status {
-      @apply w-160px;
-    }
+  & .filter-control--status {
+    @apply w-160px;
   }
 }
 </style>

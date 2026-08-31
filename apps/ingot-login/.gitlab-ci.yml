@@ -1,7 +1,7 @@
 image: docker:20.10.9
 
 variables:
-  MODULE_NAME: ingot-admin
+  MODULE_NAME: ingot-login
   DEV_VERSION: $CI_COMMIT_SHORT_SHA
   RELEASE_VERSION: 0.1.0
 
@@ -20,16 +20,16 @@ stages:
 .pnpm:
   before_script:
     - corepack enable
-    - corepack prepare pnpm@latest-7 --activate
+    - corepack prepare pnpm@10.12.4 --activate
     - pnpm config set store-dir .pnpm-store
 
 npm-install:
   stage: install
   extends: .pnpm
-  image: node:16.20.0
+  image: node:22.17.0
   script:
-    - pnpm install # install dependencies
-    - pnpm build
+    - pnpm install --frozen-lockfile
+    - pnpm build:login
   when: manual
   tags: [ingot]
 
@@ -39,7 +39,7 @@ docker-build:
     INNER_VERSION: ${RELEASE_VERSION}
   script:
     - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" docker-registry.wangchao.im
-    - docker build -t docker-registry.wangchao.im/ingot/${MODULE_NAME}:${INNER_VERSION} .
+    - docker build -t docker-registry.wangchao.im/ingot/${MODULE_NAME}:${INNER_VERSION} apps/ingot-login
     - docker push docker-registry.wangchao.im/ingot/${MODULE_NAME}:${INNER_VERSION}
   tags: [ingot]
   when: manual
@@ -50,9 +50,9 @@ docker-run:
   stage: deploy
   variables:
     INNER_VERSION: ${RELEASE_VERSION}
-    SERVICE_NAME: ingot-admin-${INNER_VERSION}
+    SERVICE_NAME: ingot-login-${INNER_VERSION}
     IMAGE_NAME: docker-registry.wangchao.im/ingot/${MODULE_NAME}:${INNER_VERSION}
-    VIRTUAL_HOST: ingot-admin.wangchao.im
+    VIRTUAL_HOST: ingot-login.wangchao.im
     VIRTUAL_PORT: 3000
   script:
     - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" docker-registry.wangchao.im

@@ -8,7 +8,6 @@
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "*.d.ts"],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    "baseUrl": ".",
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "paths": {
       "@/*": ["./src/*"]
@@ -19,8 +18,7 @@
 
 ## 配置说明
 
-- `baseUrl: "."` - 相对于当前应用目录，确保路径解析正确
-- `paths` - 只需配置应用特有的路径映射（如 `@/*`）
+- `paths` - 路径相对于当前 tsconfig，只需配置应用特有的路径映射（如 `@/*`）
 - **不需要 `references`**：packages 依赖通过根目录统一管理
 - **packages 路径映射统一在 `tsconfig.vue-base.json` 中管理**
 

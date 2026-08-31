@@ -18,7 +18,7 @@ let fallbackSubtle: SubtleCrypto | undefined;
  */
 export async function getSubtleCrypto(): Promise<SubtleCrypto> {
   if (isNativeSubtleAvailable()) {
-    console.log("use native subtle");
+    console.debug("use native subtle");
     return globalThis.crypto.subtle;
   }
   if (!subtlePromise) {

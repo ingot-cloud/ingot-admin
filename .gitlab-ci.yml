@@ -19,7 +19,7 @@ stages:
 # PNPM 配置模板
 # ------------------------------
 .pnpm:
-  image: node:20.9.0
+  image: node:22.17.0
   before_script:
     - corepack enable
     - corepack prepare pnpm@10.12.4 --activate
@@ -34,11 +34,8 @@ stages:
 build-admin:
   stage: build
   extends: .pnpm
-  variables:
-    PROJECT: apps/ingot-admin
   script:
-    - cd $PROJECT
-    - pnpm build:170
+    - pnpm build:admin
   artifacts:
     paths:
       - apps/ingot-admin/dist/
@@ -65,11 +62,8 @@ build-admin:
 build-login:
   stage: build
   extends: .pnpm
-  variables:
-    PROJECT: apps/ingot-login
   script:
-    - cd $PROJECT
-    - pnpm build:170
+    - pnpm build:login
   artifacts:
     paths:
       - apps/ingot-login/dist/
@@ -114,7 +108,7 @@ docker-admin:
   extends: .docker-build-template
   variables:
     MODULE_NAME: "ingot-admin"
-    BUILD_CONTEXT: "apps/indohit-admin"
+    BUILD_CONTEXT: "apps/ingot-admin"
   rules:
     # 只有当 build-admin 成功执行后才触发
     - if: '$CI_COMMIT_BRANCH == "release_170"'
@@ -130,7 +124,7 @@ docker-login:
   extends: .docker-build-template
   variables:
     MODULE_NAME: "ingot-login"
-    BUILD_CONTEXT: "apps/indohit-login"
+    BUILD_CONTEXT: "apps/ingot-login"
   rules:
     # 只有当 build-login 成功执行后才触发
     - if: '$CI_COMMIT_BRANCH == "release_170"'

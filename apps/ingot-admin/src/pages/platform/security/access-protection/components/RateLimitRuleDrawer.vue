@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GatewayEndpointGroup, GatewayRateLimitRule } from "@/models";
+import type { GatewayEndpointGroup, GatewayEndpointPattern, GatewayRateLimitRule } from "@/models";
 import {
   ControlBehaviorEnum,
   HttpMethodEnum,
@@ -120,7 +120,11 @@ const props = defineProps<{
   groups: Array<GatewayEndpointGroup>;
 }>();
 
-const defaultEditForm: GatewayRateLimitRule = {
+type RateLimitRuleForm = GatewayRateLimitRule & {
+  patternList: Array<GatewayEndpointPattern>;
+};
+
+const defaultEditForm: RateLimitRuleForm = {
   id: undefined,
   code: undefined,
   groupCode: undefined,
@@ -141,7 +145,7 @@ const rateLimitDimensionEnum = useRateLimitDimensionEnum();
 const controlBehaviorEnum = useControlBehaviorEnum();
 
 const editFormRef = ref();
-const editForm = reactive<GatewayRateLimitRule>(Object.assign({}, defaultEditForm));
+const editForm = reactive<RateLimitRuleForm>(Object.assign({}, defaultEditForm));
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
@@ -155,8 +159,8 @@ const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteRateLimitRuleAPI
 
 const groupOptions = computed(() =>
   props.groups
-    .filter((item) => item.code)
-    .map((item) => ({
+    .filter((item: any) => item.code)
+    .map((item: any) => ({
       label: `${item.name} (${item.code})`,
       value: item.code!,
     })),
@@ -227,9 +231,9 @@ const privateOnConfirmClick = (): void => {
     }
 
     loading.value = true;
-    const payload = Object.assign({}, toRaw(editForm));
+    const payload: GatewayRateLimitRule = Object.assign({}, toRaw(editForm));
     if (payload.groupCode) {
-      payload.patternList = undefined;
+      delete payload.patternList;
     }
     const request = edit.value ? UpdateRateLimitRuleAPI(payload) : CreateRateLimitRuleAPI(payload);
 

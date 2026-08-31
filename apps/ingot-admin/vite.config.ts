@@ -5,7 +5,6 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import vueDevTools from "vite-plugin-vue-devtools";
 
-import { createHtmlPlugin } from "vite-plugin-html";
 import postcssNesting from "postcss-nesting";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -16,7 +15,6 @@ import Unocss from "unocss/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import path from "path";
-import TopLevelAwait from "vite-plugin-top-level-await";
 
 // https://vitejs.dev/config/
 // 参数 { mode, command, ssrBuild }
@@ -29,14 +27,6 @@ export default defineConfig(({ mode }) => {
       vue(),
       vueJsx(),
       vueDevTools(),
-      createHtmlPlugin({
-        inject: {
-          data: {
-            //将环境变量 VITE_APP_TITLE 赋值给 title 方便 html页面使用 title 获取系统标题
-            title: getViteEnv("VITE_APP_TITLE"),
-          },
-        },
-      }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), "src/assets/icons")],
@@ -54,6 +44,7 @@ export default defineConfig(({ mode }) => {
       // https://github.com/antfu/vite-plugin-components
       Components({
         dts: "./components.d.ts",
+        dtsTsx: false,
         dirs: ["./src/components", "./src/layouts"],
         resolvers: [
           ElementPlusResolver(),
@@ -74,8 +65,10 @@ export default defineConfig(({ mode }) => {
       }),
       // https://github.com/unocss/unocss
       Unocss(),
-      TopLevelAwait(),
     ],
+    legacy: {
+      inconsistentCjsInterop: true,
+    },
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -104,7 +97,7 @@ export default defineConfig(({ mode }) => {
         "/api": {
           target: "http://localhost:7980",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, "/"),
+          rewrite: (path) => path.replace(/^\/api(?=\/|$)/, "") || "/",
         },
       },
     },

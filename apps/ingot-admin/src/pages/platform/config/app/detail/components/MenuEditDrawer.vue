@@ -78,7 +78,7 @@
             :virtual-ref="iconButtonRef"
             virtual-triggering
           >
-            <in-icon-collection @onItemClick="privateOnIconSelect" />
+            <in-icon-collection @select="privateOnIconSelect" />
           </el-popover>
         </el-form-item>
         <el-form-item prop="sort" label="排序">

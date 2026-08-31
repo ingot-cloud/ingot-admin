@@ -1,13 +1,27 @@
-import type { TableColumnCtx } from "element-plus/lib/components/table/src/table-column/defaults";
+import type { TableColumnCtx } from "element-plus";
 
-export interface TableAPI {
+export interface TableAPI<Row = unknown> {
   clearSelection(): void;
-  toggleRowSelection(row: any, selected?: boolean): void;
+  toggleRowSelection(row: Row, selected?: boolean): void;
 }
 
-export type TransformItem<In, Out> = (value: In) => Out;
+export interface TableSlotScope<Row = unknown> {
+  item: Row;
+  index: number;
+}
 
-export interface TableHeaderRecord<In = any, Out = any> extends Partial<TableColumnCtx<any>> {
+export type InTableSlots<Row = unknown> = {
+  [name: string]: ((scope: TableSlotScope<Row>) => unknown) | undefined;
+  title?: () => unknown;
+  subtitle?: () => unknown;
+  toolbar?: () => unknown;
+};
+
+export type TransformItem<In, Out> = {
+  bivarianceHack(value: In): Out;
+}["bivarianceHack"];
+
+export interface TableHeaderRecord<In = unknown, Out = unknown> extends Partial<TableColumnCtx> {
   hide?: boolean;
   transform?: TransformItem<In, Out>;
 }

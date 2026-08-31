@@ -11,7 +11,9 @@ export type FetchPageAPI<T, C> = (page: Page, condition?: C) => Promise<R<Page<T
 /**
  * 删除记录接口
  */
-export type DeleteRecordAPI = (id: string) => Promise<R<void>>;
+export type RecordId = string | number;
+
+export type DeleteRecordAPI<Id extends RecordId = string> = (id: Id) => Promise<R<void>>;
 
 /**
  * 更新记录接口
@@ -26,7 +28,7 @@ export type FetchPageFn<T, C> = (page: Page, condition?: C) => Promise<Page<T>>;
 /**
  * 删除记录方法
  */
-export type DeleteRecordFn = (id: string) => Promise<void>;
+export type DeleteRecordFn<Id extends RecordId = string> = (id: Id) => Promise<void>;
 
 /**
  * 更新记录方法
@@ -50,8 +52,10 @@ export const transformPageAPI = <T, C>(api: FetchPageAPI<T, C>): FetchPageFn<T, 
   };
 };
 
-export const transformDeleteAPI = (api: DeleteRecordAPI): DeleteRecordFn => {
-  return (id: string) => {
+export const transformDeleteAPI = <Id extends RecordId>(
+  api: DeleteRecordAPI<Id>,
+): DeleteRecordFn<Id> => {
+  return (id: Id) => {
     return new Promise((resolve, reject) => {
       api(id)
         .then(() => {
@@ -121,8 +125,11 @@ export const usePaging = <Record, Condition>(fetchPageFn: FetchPageFn<Record, Co
 /**
  * 确认删除
  */
-export const useConfirmDelete = (deleteRecord: DeleteRecordFn, callback?: ActionCallbackFn) => {
-  const exec = (id: string, message: string, successMessage?: string) => {
+export const useConfirmDelete = <Id extends RecordId>(
+  deleteRecord: DeleteRecordFn<Id>,
+  callback?: ActionCallbackFn,
+) => {
+  const exec = (id: Id, message: string, successMessage?: string) => {
     Confirm.warning(message).then(() => {
       deleteRecord(id).then(() => {
         if (callback) {

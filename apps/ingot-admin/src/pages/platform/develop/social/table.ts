@@ -23,12 +23,12 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "类型",
     prop: "type",
-    transform: (v) => useSocialTypeEnumsEnum().getTagText(v).text,
+    transform: (value) => useSocialTypeEnumsEnum().getTagText(String(value)).text,
   },
   {
     label: "重定向地址",
     prop: "redirectUrl",
-    transform: (v) => v || "无",
+    transform: (value) => value || "无",
   },
   {
     label: "状态",

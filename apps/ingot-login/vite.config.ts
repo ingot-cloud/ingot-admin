@@ -5,7 +5,6 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import vueDevTools from "vite-plugin-vue-devtools";
 
-import { createHtmlPlugin } from "vite-plugin-html";
 import postcssNesting from "postcss-nesting";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
@@ -28,28 +27,6 @@ export default defineConfig(({ mode }) => {
       vue(),
       vueJsx(),
       vueDevTools(),
-      createHtmlPlugin({
-        inject: {
-          data: {
-            //将环境变量 VITE_APP_TITLE 赋值给 title 方便 html页面使用 title 获取系统标题
-            title: getViteEnv("VITE_APP_TITLE"),
-          },
-        },
-        // minify: true,
-        // pages: [
-        //   {
-        //     filename: "challenge",
-        //     entry: "/src/pages/oauth2/challenge/main.ts",
-        //     template: "challenge.html",
-        //     injectOptions: {
-        //       data: {
-        //         //将环境变量 VITE_APP_TITLE 赋值给 title 方便 html页面使用 title 获取系统标题
-        //         title: getViteEnv("VITE_APP_TITLE"),
-        //       },
-        //     },
-        //   },
-        // ],
-      }),
       createSvgIconsPlugin({
         // 指定需要缓存的图标文件夹
         iconDirs: [path.resolve(process.cwd(), "src/assets/icons")],
@@ -67,6 +44,7 @@ export default defineConfig(({ mode }) => {
       // https://github.com/antfu/vite-plugin-components
       Components({
         dts: "./components.d.ts",
+        dtsTsx: false,
         dirs: ["./src/components", "./src/layouts"],
         resolvers: [
           ElementPlusResolver(),
@@ -88,6 +66,9 @@ export default defineConfig(({ mode }) => {
       // https://github.com/unocss/unocss
       Unocss(),
     ],
+    legacy: {
+      inconsistentCjsInterop: true,
+    },
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -116,7 +97,7 @@ export default defineConfig(({ mode }) => {
         "/api": {
           target: "http://localhost:7980",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, "/"),
+          rewrite: (path) => path.replace(/^\/api(?=\/|$)/, "") || "/",
         },
       },
     },

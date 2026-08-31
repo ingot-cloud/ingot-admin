@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { GatewayEndpointGroup } from "@/models";
+import type { GatewayEndpointGroup, GatewayEndpointPattern } from "@/models";
 import { HttpMethodEnum } from "@/models/enums";
 import { copyParams } from "@/utils/object";
 import {
@@ -49,7 +49,11 @@ import PatternListEditor from "./PatternListEditor.vue";
 const CODE_PATTERN = /^[a-zA-Z0-9-]+$/;
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
 
-const defaultEditForm: GatewayEndpointGroup = {
+type EndpointGroupForm = GatewayEndpointGroup & {
+  patternList: Array<GatewayEndpointPattern>;
+};
+
+const defaultEditForm: EndpointGroupForm = {
   id: undefined,
   code: undefined,
   name: undefined,
@@ -61,7 +65,7 @@ const defaultEditForm: GatewayEndpointGroup = {
 const emits = defineEmits<{ success: [] }>();
 
 const editFormRef = ref();
-const editForm = reactive<GatewayEndpointGroup>(Object.assign({}, defaultEditForm));
+const editForm = reactive<EndpointGroupForm>(Object.assign({}, defaultEditForm));
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);

@@ -52,4 +52,13 @@ export const commonRoutes: Array<RouteRecordRaw> = [
     },
     component: () => import("@/pages/common/init/IndexPage.vue"),
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: PageName.DYNAMIC_ROUTE_BOOTSTRAP,
+    component: LAYOUT_MAIN,
+    meta: {
+      hideMenu: true,
+      hideBreadcrumb: true,
+    },
+  },
 ];
