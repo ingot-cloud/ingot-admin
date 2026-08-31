@@ -75,6 +75,8 @@ D/E/F 是无后端依赖的框架验证页，不引入虚构业务 CRUD。
 - [ ] A 与 D 之间切换不整页刷新，并共享用户、权限、主题和公共状态
 - [ ] target 深层路由刷新、登录重定向与退出登录正常
 - [ ] `pnpm pack` 产物能在隔离消费工程完成类型检查与生产构建
+- [ ] 新 app/packages 复用 workspace catalog；发布 manifest 不泄漏 `catalog:` 或 `workspace:` 协议
+- [ ] TypeScript 6 + `moduleResolution: "Bundler"` 与 Vite 8/Rolldown library build 均通过
 - [ ] 新增脚手架和文档能指导创建 app、插件、稳定页面键和全局组件
 
 ## ADDED
@@ -109,6 +111,7 @@ D/E/F 是无后端依赖的框架验证页，不引入虚构业务 CRUD。
 - [ ] 跨 app 能力全部位于 packages，不复制 net、stores、layouts 或公共组件
 - [ ] 发布包不要求消费方配置本 monorepo 的 `@/` 路径
 - [ ] Vue 生态运行时依赖通过 peer dependency 保持单实例
+- [ ] workspace 内版本来自 catalog，peer ranges 与当前 catalog major/minor 兼容
 
 ## MODIFIED
 

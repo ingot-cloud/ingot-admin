@@ -60,6 +60,8 @@
 
 - 管理台当前大量代码依赖 app 级 `@/` 别名和 auto-import；抽包时必须改为包内边界，避免发布产物依赖消费方源码结构。
 - Vue、Vue Router、Pinia 与 Element Plus 必须保持单实例；package 需要正确配置 peer dependencies 和 Vite externals。
+- 当前工具链基线已升级为 Vue 3.5、Vue Router 5、Pinia 4、Element Plus 2.14、TypeScript 6 与 Vite 8；新 packages 必须复用 workspace catalog，禁止重新维护一套版本。
+- Vite 8 已使用 Rolldown，新的共享构建配置必须使用 `build.rolldownOptions`，不得继续新增已弃用的 `rollupOptions`。
 - UnoCSS、全局 CSS、SVG 虚拟模块和异步页面 chunk 在 library/app 两种构建方式下都要验证。
 - 旧后端菜单使用源码路径作为 `viewPath`；兼容别名移除前必须完成后端数据迁移。
 - 这是大范围文件移动，实施期间不得与其它修改 admin 公共组件、Router、net 或 stores 的 change 并行施工。

@@ -145,6 +145,27 @@ export function bootstrapAdminApp(
 
 ## 构建与发布接口
 
+### 依赖基线
+
+本 change 以当前 workspace catalog 与根工具链为实现基线：
+
+| 类别 | 版本 |
+|------|------|
+| Node / pnpm | `>=22.17.0 <23` / `10.12.4` |
+| Vue / Vue Router | `3.5.42` / `5.3.0` |
+| Pinia / persistedstate | `4.0.3` / `4.7.1` |
+| Element Plus / VueUse | `2.14.5` / `14.4.0` |
+| TypeScript / vue-tsc | `6.0.3` / `3.3.11` |
+| Vite / Vitest | `8.2.2` / `4.1.11` |
+| UnoCSS | `66.8.1` |
+| AutoImport / Components | `21.1.0` / `32.1.0` |
+
+- workspace app/package 的普通依赖与开发依赖优先使用 `catalog:`，版本真相只保留在 `pnpm-workspace.yaml`。
+- `@ingot/admin-core`、`@ingot/admin-base` 的 peer dependencies 使用与 catalog 对齐的兼容范围：`vue ^3.5.42`、`vue-router ^5.3.0`、`pinia ^4.0.3`、`element-plus ^2.14.5`、`@vueuse/core ^14.4.0`；直接使用 `@vue/shared` 时还需声明 `@vue/shared ^3.5.42`。
+- `@ingot/vite-config` 的构建工具 peer ranges 与 Vite 8、TypeScript 6 及当前 unplugin major 对齐。
+- `pnpm pack` 后的发布 manifest 不得残留 `catalog:` 或 `workspace:` 协议，独立仓库只看到可安装的 semver。
+- Vue package 的 TypeScript 配置继承根配置并使用 `moduleResolution: "Bundler"`。
+
 `@ingot/vite-config` 导出：
 
 ```ts
@@ -158,7 +179,7 @@ export function defineIngotLibraryConfig(
 ```
 
 - app 配置保留 Vue、JSX、UnoCSS、AutoImport、Components、SVG icons 和 HTML title 能力。
-- library 配置生成 ESM、类型声明与独立 CSS；Vue、Vue Router、Pinia、Element Plus 作为 peer dependencies/external。
+- library 配置生成 ESM、类型声明与独立 CSS；Vue、Vue Router、Pinia、Element Plus、VueUse 和直接引用的 `@vue/shared` 通过 Vite 8 `build.rolldownOptions.external` 排除并由 peer dependencies 提供。
 - package 内部允许扫描自己的组件和 hooks，消费 app 不扫描已发布 package 的源码。
 
 ## 前端注意

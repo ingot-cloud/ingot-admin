@@ -87,12 +87,16 @@ await bootstrapAdminApp({
 ### 构建与发布
 
 - `admin-core`、`admin-base` 使用 Vue library build 输出 ESM、`.d.ts`、CSS 和异步页面 chunks。
-- Vue、Vue Router、Pinia、Element Plus、VueUse 作为 peer dependencies，并在 Rollup external 中排除。
+- 当前实现基线为 Node 22.17、pnpm 10.12.4、Vue 3.5.42、Vue Router 5.3.0、Pinia 4.0.3、Element Plus 2.14.5、TypeScript 6.0.3 和 Vite 8.2.2。
+- workspace 普通/开发依赖统一引用 `pnpm-workspace.yaml` catalog；不得在三个新 package 中重复硬编码同一依赖的精确版本。
+- Vue、Vue Router、Pinia、Element Plus、VueUse 及直接引用的 `@vue/shared` 作为 peer dependencies，并通过 Vite 8 `build.rolldownOptions.external` 排除。
+- peer ranges 以当前 catalog 的 compatible major/minor 为边界；升级 catalog 时必须同步更新 peer ranges 和隔离消费测试。
+- Vue packages 继承根 TypeScript 6 配置，保持 `moduleResolution: "Bundler"`，不回退到 Node resolution。
 - package 内部不使用指向消费 app 的 `@/`；包间引用只走公开的 `@ingot/*` exports。
 - `vite-config` 提供 app/library 配置工厂，各 app 只补端口、代理、标题、图标目录等参数。
 - 根 scripts 增加 core/base/config 构建和 target dev/build；build 顺序由 workspace 依赖决定。
 - CI 为 target 增加 build、Docker、deploy 模板参数；OAuth client 与 callback URI 仍由部署环境配置。
-- 隔离消费验证先 `pnpm pack` 三个 package，再在临时 fixture 安装 tarball 进行 type-check 和 production build。
+- 隔离消费验证先 `pnpm pack` 三个 package，检查 tarball manifest 已将 `catalog:`/`workspace:` 转换为 semver，再在临时 fixture 安装并执行 TypeScript 6 type-check 和 Vite 8 production build。
 
 ## 对接映射
 
