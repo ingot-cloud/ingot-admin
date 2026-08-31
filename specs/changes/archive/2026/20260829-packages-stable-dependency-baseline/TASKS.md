@@ -59,6 +59,6 @@
 
 ## 收尾
 
-- [ ] 更新 `current/packages/stable-dependency-baseline/spec.md`
-- [ ] 在 capability README 记录 change ID
-- [ ] README 状态改为 `completed`，归档至 `changes/archive/2026/`
+- [x] 更新 `current/packages/stable-dependency-baseline/spec.md`
+- [x] 在 capability README 记录 change ID
+- [x] README 状态改为 `completed`，归档至 `changes/archive/2026/`

@@ -1,6 +1,6 @@
 # 20260829-packages-stable-dependency-baseline
 
-> 状态：validating
+> 状态：completed
 
 ## 协作模式
 
@@ -68,14 +68,14 @@ TypeScript 6 中废弃，CI 的 Node.js 版本也低于 Vite 8 及新版 unplugi
 
 ## 相关链接
 
-- [项目宪章](../../../CONSTITUTION.md)
-- [编码规范](../../../../.agents/skills/ingot-coding-standards/SKILL.md)
+- [项目宪章](../../../../CONSTITUTION.md)
+- [编码规范](../../../../../.agents/skills/ingot-coding-standards/SKILL.md)
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
+- 完成日期：2026-08-31
+- 关联提交或 PR：`eacc209` refactor: 依赖版本整体升级
+- 更新的 current capability：`packages/stable-dependency-baseline`
 - 与原设计的差异：
   - TypeScript 保持 6.0.3；验收阶段补齐表格组件公开插槽契约后，vue-tsc 升级至 3.3.11。
   - overrides 只保留 `elliptic`、`rollup`、`defu`、`lodash`/`lodash-es` 的父依赖限定安全补丁。
