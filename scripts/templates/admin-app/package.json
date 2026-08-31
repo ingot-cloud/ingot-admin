@@ -1,0 +1,36 @@
+{
+  "name": "{{appCode}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "test:unit": "vitest",
+    "clean": "rimraf node_modules dist",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@ingot/admin-base": "workspace:*",
+    "@ingot/admin-core": "workspace:*",
+    "@vue/shared": "catalog:",
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "catalog:",
+    "@iconify-json/ep": "catalog:",
+    "@iconify-json/mdi": "catalog:",
+    "@iconify/vue": "catalog:",
+    "@ingot/vite-config": "workspace:*"
+  }
+}

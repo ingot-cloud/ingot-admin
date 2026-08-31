@@ -2,6 +2,8 @@
 
 本文档将指导你如何首次设置和构建 Ingot Admin 项目。
 
+> 插件化后台运行时（`admin-core` / `admin-base` / `target-project`）见 [composable-admin-runtime.md](./composable-admin-runtime.md)。
+
 ## 📋 前置要求
 
 - **Node.js**: 版本 >= 18

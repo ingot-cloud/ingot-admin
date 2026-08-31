@@ -1,6 +1,6 @@
 # 20260829-packages-composable-admin-runtime
 
-> 状态：draft
+> 状态：implementing
 
 ## 协作模式
 

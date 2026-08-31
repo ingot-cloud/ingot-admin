@@ -71,6 +71,8 @@ export interface InAdminPlugin {
 export interface InBrandingConfig {
   title: string;
   logo?: string;
+  copyright?: string;
+  symbol?: string;
 }
 
 export interface InLoginConfig {
@@ -78,6 +80,30 @@ export interface InLoginConfig {
   callbackUri: string;
   errorImage?: string;
   fingerprintEnabled: boolean;
+}
+
+export interface InNetConfig {
+  baseURL?: string;
+  timeout?: number;
+  timeoutErrorMessage?: string;
+}
+
+export interface InStorageConfig {
+  storePrefix: string;
+  cookieDomain: string;
+  cookieExpireTime: number;
+}
+
+export type InComponentSize = "large" | "default" | "small";
+
+export interface InSettingsConfig {
+  componentSize?: InComponentSize;
+  showMenu?: boolean;
+  showTabs?: boolean;
+  showBreadcrumb?: boolean;
+  showCopyright?: boolean;
+  showSearch?: boolean;
+  showWatermark?: boolean;
 }
 
 export type AdminShellSlot =
@@ -92,6 +118,12 @@ export interface InAdminAppOptions {
   plugins: InAdminPlugin[];
   branding: InBrandingConfig;
   login: InLoginConfig;
+  net?: InNetConfig;
+  storage?: InStorageConfig;
+  settings?: InSettingsConfig;
+  basicToken?: string;
+  bucketName?: string;
+  publicPath?: string;
   shellSlots?: Partial<Record<AdminShellSlot, Component>>;
 }
 
@@ -108,9 +140,11 @@ export function bootstrapAdminApp(
 
 约束：
 
-- `appCode` 使用小写 kebab-case，作为诊断、持久化状态和应用配置命名空间。
+- `appCode` 使用小写 kebab-case，作为诊断和应用配置命名空间。
 - `mountTarget` 默认 `#app`。
 - `bootstrapAdminApp` 必须等待插件校验、注册和 `install` 完成后才 mount。
+- 现有 `VITE_APP_*` 环境变量由应用入口转换为上述 typed options，包内运行时不再读取消费 app 的 `import.meta.env`。
+- 持久化存储键继续使用 `storage.storePrefix`（兼容现有 `__ingot__` 前缀），避免迁移后丢失本地状态。
 - `shellSlots` 只能填充公开插槽，不替换整个基础布局。
 
 ### 3. 错误类型
