@@ -8,7 +8,7 @@
 
 ## 相关源码
 
-<!-- 链接到 apps/ingot-admin/src/pages/platform/<domain>/... 等 -->
+<!-- 链接到 apps/admin/src/pages/platform/<domain>/... 等 -->
 
 ## 对接接口
 

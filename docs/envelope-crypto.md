@@ -1,6 +1,6 @@
 # 信封加密（Envelope Crypto）前端对接
 
-本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/crypto` 包，`ingot-admin` 与 `ingot-login` 通过各自的 axios 拦截器接入，对业务代码透明。
+本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/shared/crypto` 包，`ingot-admin` 与 `ingot-login` 通过各自的 axios 拦截器接入，对业务代码透明。
 
 ## 1. 背景与原理
 
@@ -161,7 +161,7 @@ flowchart TD
 
 ## 7. 代码结构
 
-`@ingot/crypto`（`packages/crypto/src/`，无 HTTP 依赖）：
+`@ingot/shared/crypto`（`packages/shared/src/crypto/`，无 HTTP 依赖）：
 
 - `provider.ts`：检测 Secure Context，原生 `crypto.subtle` 不可用时懒加载 `webcrypto-liner/build/index.es.js` 独立实例。
 - `aes-gcm.ts`：AES-256-GCM 加解密（内部随机 IV），输出/解析 `base64(IV‖密文‖Tag)`。
@@ -199,15 +199,15 @@ flowchart TD
 
 ### 9.2 自动降级机制
 
-`@ingot/crypto` 通过 `provider.ts` 自动选择实现：
+`@ingot/shared/crypto` 通过 `provider.ts` 自动选择实现：
 
 1. **Secure Context**（HTTPS / localhost）：使用浏览器原生 `crypto.subtle`，无额外体积。
 2. **非 Secure Context**（HTTP 内网 IP）：首次需要加解密时，动态 `import("webcrypto-liner/build/index.es.js")` 获取独立 `Crypto` 实例（不替换 `window.crypto`，避免 `delete self.crypto` 在部分浏览器失败），由其实现提供完整 `SubtleCrypto`（RSA-OAEP-256、AES-256-GCM + AAD），算法参数与原生路径一致。
 
-诊断 API（可从 `@ingot/crypto` 导入）：
+诊断 API（可从 `@ingot/shared/crypto` 导入）：
 
 ```ts
-import { isNativeSubtleAvailable, isCryptoSupported } from "@ingot/crypto";
+import { isNativeSubtleAvailable, isCryptoSupported } from "@ingot/shared/crypto";
 
 isNativeSubtleAvailable(); // 是否走原生 subtle
 isCryptoSupported();       // 信封加密是否可用（含降级）

@@ -1,4 +1,18 @@
 {
+  // pnpm catalog: 协议会导致内置 npm 扩展解析 package.json 失败
+  "npm.autoDetect": "off",
+  "npm.packageManager": "pnpm",
+  "npm.scriptRunner": "pnpm",
+  // 模板路径按 apps/* 目标位置编写；原位打开会被 TS/Volar 误校验
+  "files.exclude": {
+    "**/scripts/templates": true
+  },
+  "files.watcherExclude": {
+    "**/scripts/templates/**": true
+  },
+  "search.exclude": {
+    "**/scripts/templates/**": true
+  },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "tsconfig.json": "tsconfig.*.json, env.d.ts",

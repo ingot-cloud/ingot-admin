@@ -1,6 +1,8 @@
 import type { Component } from "vue";
 import {
   INGOT_ADMIN_PLUGIN_API_VERSION,
+  MenuType,
+  defineStaticMenus,
   type AsyncComponentLoader,
   type InAdminPlugin,
 } from "@ingot/admin-core";
@@ -29,7 +31,7 @@ Object.entries(pageModules).forEach(([path, loader]) => {
 export const targetPlugin: InAdminPlugin = {
   id: "{{pluginId}}",
   apiVersion: INGOT_ADMIN_PLUGIN_API_VERSION,
-  dependsOn: ["ingot-admin-base"],
+  dependsOn: ["ingot-admin"],
   pages,
   components: {
     BizTargetDemoBadge,
@@ -37,6 +39,23 @@ export const targetPlugin: InAdminPlugin = {
   directives: {
     "demo-highlight": demoHighlightDirective,
   },
+  staticMenus: defineStaticMenus([
+    {
+      name: "本地 Demo",
+      path: "/demo",
+      routeName: "{{pluginId}}-demo-root",
+      menuType: MenuType.Directory,
+      children: [
+        {
+          name: "概览",
+          path: "/demo/overview",
+          routeName: "{{pluginId}}-demo-overview",
+          menuType: MenuType.Menu,
+          viewPath: "{{pageKeyPrefix}}.demo.overview",
+        },
+      ],
+    },
+  ]),
 };
 
 declare module "vue" {

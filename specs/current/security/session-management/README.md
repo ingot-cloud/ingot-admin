@@ -6,9 +6,9 @@
 
 ## 相关源码
 
-- [apps/ingot-admin/src/pages/platform/security/onlinetoken](../../../../apps/ingot-admin/src/pages/platform/security/onlinetoken)
-- [apps/ingot-admin/src/api/platform/security/session.ts](../../../../apps/ingot-admin/src/api/platform/security/session.ts)
-- [apps/ingot-admin/src/api/platform/security/concurrencyPolicy.ts](../../../../apps/ingot-admin/src/api/platform/security/concurrencyPolicy.ts)
+- [apps/admin/src/pages/platform/security/onlinetoken](../../../../apps/admin/src/pages/platform/security/onlinetoken)
+- [apps/admin/src/api/platform/security/session.ts](../../../../apps/admin/src/api/platform/security/session.ts)
+- [apps/admin/src/api/platform/security/concurrencyPolicy.ts](../../../../apps/admin/src/api/platform/security/concurrencyPolicy.ts)
 
 ## 对接接口
 

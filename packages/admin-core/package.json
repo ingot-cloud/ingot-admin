@@ -1,0 +1,82 @@
+{
+  "name": "@ingot/admin-core",
+  "version": "0.1.0",
+  "description": "Ingot 后台构建期插件运行时",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && vue-tsc --build",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --pretty false",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "clean": "rimraf node_modules dist"
+  },
+  "engines": {
+    "node": ">=22.17.0 <23"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "peerDependencies": {
+    "@vue/shared": "^3.5.42",
+    "@vueuse/core": "^14.4.0",
+    "element-plus": "^2.14.5",
+    "pinia": "^4.0.3",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "vue": "^3.5.42",
+    "vue-router": "^5.3.0"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@ingot/shared": "workspace:*",
+    "axios": "catalog:",
+    "beautify-qrcode": "catalog:",
+    "crypto-js": "catalog:",
+    "js-cookie": "catalog:",
+    "nprogress": "catalog:",
+    "qs": "catalog:",
+    "tinymce": "catalog:",
+    "vue3-tree-org": "catalog:",
+    "@iconify/vue": "catalog:"
+  },
+  "devDependencies": {
+    "@iconify-json/bi": "catalog:",
+    "@iconify-json/carbon": "catalog:",
+    "@iconify-json/clarity": "catalog:",
+    "@iconify-json/dashicons": "catalog:",
+    "@iconify-json/ep": "catalog:",
+    "@iconify-json/ion": "catalog:",
+    "@iconify-json/line-md": "catalog:",
+    "@iconify-json/mage": "catalog:",
+    "@iconify-json/material-symbols": "catalog:",
+    "@iconify-json/mdi": "catalog:",
+    "@iconify-json/mdi-light": "catalog:",
+    "@iconify-json/tabler": "catalog:",
+    "@iconify-json/teenyicons": "catalog:",
+    "@iconify-json/twemoji": "catalog:",
+    "@iconify/vue": "catalog:",
+    "@ingot/vite-config": "workspace:*",
+    "@unocss/preset-wind3": "catalog:",
+    "@vue/shared": "catalog:",
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vite": "catalog:",
+    "vitest": "4.1.11",
+    "vue": "catalog:",
+    "vue-router": "catalog:",
+    "vue-tsc": "catalog:",
+    "jsdom": "30.0.1"
+  }
+}

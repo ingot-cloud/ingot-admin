@@ -1,0 +1,54 @@
+{
+  "name": "@ingot/admin-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/plugin.ts",
+    "./plugin": "./src/plugin.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test",
+    "clean": "rimraf node_modules dist",
+    "build-only": "vite build",
+    "type-check": "vue-tsc -p tsconfig.app.json --noEmit",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@ingot/admin-core": "workspace:*",
+    "@ingot/shared": "workspace:*",
+    "@vue/shared": "catalog:",
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@iconify-json/bi": "catalog:",
+    "@iconify-json/carbon": "catalog:",
+    "@iconify-json/clarity": "catalog:",
+    "@iconify-json/dashicons": "catalog:",
+    "@iconify-json/ep": "catalog:",
+    "@iconify-json/ion": "catalog:",
+    "@iconify-json/line-md": "catalog:",
+    "@iconify-json/mage": "catalog:",
+    "@iconify-json/material-symbols": "catalog:",
+    "@iconify-json/mdi": "catalog:",
+    "@iconify-json/mdi-light": "catalog:",
+    "@iconify-json/tabler": "catalog:",
+    "@iconify-json/teenyicons": "catalog:",
+    "@iconify-json/twemoji": "catalog:",
+    "@iconify/vue": "catalog:",
+    "@ingot/vite-config": "workspace:*"
+  },
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
+}

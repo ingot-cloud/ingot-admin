@@ -6,8 +6,8 @@
 
 ## 相关源码
 
-- [apps/ingot-admin/src/pages/platform/security/account-protection](../../../../apps/ingot-admin/src/pages/platform/security/account-protection)
-- [apps/ingot-admin/src/api/platform/security/accountLockoutPolicy.ts](../../../../apps/ingot-admin/src/api/platform/security/accountLockoutPolicy.ts)
+- [apps/admin/src/pages/platform/security/account-protection](../../../../apps/admin/src/pages/platform/security/account-protection)
+- [apps/admin/src/api/platform/security/accountLockoutPolicy.ts](../../../../apps/admin/src/api/platform/security/accountLockoutPolicy.ts)
 
 ## 对接接口
 

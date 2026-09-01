@@ -194,7 +194,7 @@ async function createPackage(packageName, description) {
     log(`   "@ingot/${packageName}": ["../../packages/${packageName}/src/index.ts"]`, "reset");
 
     log(
-      "\n2. 更新 apps/ingot-admin/vite.config.ts 和 apps/ingot-login/vite.config.ts，添加别名：",
+      "\n2. 更新 apps/admin/vite.config.ts 和 apps/auth/vite.config.ts，添加别名：",
       "yellow",
     );
     log(`   "@ingot/${packageName}": fileURLToPath(`, "reset");
@@ -255,7 +255,7 @@ async function updateConfigs(packageName) {
     }
 
     // 3. 更新 Vite 配置文件
-    const viteConfigs = ["apps/ingot-admin/vite.config.ts", "apps/ingot-login/vite.config.ts"];
+    const viteConfigs = ["apps/admin/vite.config.ts", "apps/auth/vite.config.ts"];
 
     for (const viteConfigPath of viteConfigs) {
       log(`  - 更新 ${viteConfigPath}...`, "yellow");

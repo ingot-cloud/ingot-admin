@@ -141,10 +141,10 @@ packages/
 {
   "references": [
     {
-      "path": "./apps/ingot-admin"
+      "path": "./apps/admin"
     },
     {
-      "path": "./apps/ingot-login"
+      "path": "./apps/auth"
     },
     {
       "path": "./packages/utils"
@@ -175,7 +175,7 @@ packages/
 #### 4.3 在 Vite 配置中添加别名（两个应用都要添加）：
 
 ```js
-// apps/ingot-login/vite.config.ts 和 apps/ingot-admin/vite.config.ts
+// apps/auth/vite.config.ts 和 apps/admin/vite.config.ts
 resolve: {
   alias: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),

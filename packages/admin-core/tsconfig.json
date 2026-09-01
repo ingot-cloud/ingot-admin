@@ -1,0 +1,29 @@
+{
+  "extends": "../../tsconfig.vue-base.json",
+  "include": ["env.d.ts", "auto-imports.d.ts", "components.d.ts", "src/**/*", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.spec.ts"],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist",
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "composite": true,
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@cmps/*": ["./src/components/*"],
+      "@models/*": ["./src/models/*"],
+      "@ingot/shared": ["../shared/src/index.ts"],
+      "@ingot/shared/crypto": ["../shared/src/crypto/index.ts"],
+      "@ingot/shared/hooks": ["../shared/src/hooks/index.ts"]
+    }
+  },
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ]
+}

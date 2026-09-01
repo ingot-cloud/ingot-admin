@@ -1,6 +1,6 @@
 ---
 name: ingot-coding-standards
-description: Enforces ingot-admin monorepo coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto (@ingot/crypto). Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption in this repository.
+description: Enforces ingot-admin monorepo coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto (@ingot/shared/crypto). Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption in this repository.
 ---
 
 # ingot-admin 编码规范
@@ -53,7 +53,7 @@ apps/{app}/src/
 
 ### 页面四件套
 
-参考 `apps/ingot-admin/src/pages/platform/base/dict/`：
+参考 `apps/admin/src/pages/platform/base/dict/`：
 
 | 文件            | 职责                            |
 | --------------- | ------------------------------- |
@@ -133,7 +133,7 @@ pages/platform/base/app/
 | `console.log` / `console.debug`          | 移除或用 `@/utils/message`                                       |
 | `eslint-disable` 掩盖未用参数            | 修正函数签名或移除参数                                           |
 | `throw "字符串"`                         | `throw new Error("...")`                                         |
-| 跨 app 复制 net/utils/组件               | 抽取到 `packages/@ingot/utils` 或 `@ingot/hooks`                 |
+| 跨 app 复制 net/utils/组件               | 抽取到 `@ingot/shared` 或 `@ingot/admin-core`                    |
 | 新增无域前缀的同名 store                 | 带域前缀命名                                                     |
 
 ## 修改已有代码时

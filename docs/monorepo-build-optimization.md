@@ -8,7 +8,7 @@
 // ❌ 不推荐：随着包增多会越来越难维护
 {
   "scripts": {
-    "build": "pnpm --filter @ingot/utils build && pnpm --filter @ingot/hooks build && pnpm --filter @ingot/components build && pnpm --filter @ingot/config build && pnpm --filter ingot-admin build && pnpm --filter ingot-login build"
+    "build": "pnpm --filter @ingot/utils build && pnpm --filter @ingot/hooks build && pnpm --filter @ingot/components build && pnpm --filter @ingot/config build && pnpm --filter @ingot/admin-app build && pnpm --filter @ingot/auth-app build"
   }
 }
 ```
@@ -25,8 +25,8 @@
     "build:packages": "pnpm --filter \"./packages/*\" build",
     "build:apps": "pnpm --filter \"./apps/*\" build",
     "build": "pnpm build:packages && pnpm build:apps",
-    "build:admin": "pnpm build:packages && pnpm --filter ingot-admin build",
-    "build:login": "pnpm build:packages && pnpm --filter ingot-login build"
+    "build:admin": "pnpm build:packages && pnpm --filter @ingot/admin-app build",
+    "build:login": "pnpm build:packages && pnpm --filter @ingot/auth-app build"
   }
 }
 ```
@@ -125,8 +125,8 @@ pnpm add -D turbo
   "scripts": {
     "build:utils": "pnpm --filter @ingot/utils build",
     "build:hooks": "pnpm --filter @ingot/hooks build",
-    "build:admin": "pnpm --filter ingot-admin build",
-    "build:login": "pnpm --filter ingot-login build",
+    "build:admin": "pnpm --filter @ingot/admin-app build",
+    "build:login": "pnpm --filter @ingot/auth-app build",
     "build:packages": "run-p build:utils build:hooks",
     "build:apps": "run-p build:admin build:login",
     "build": "run-s build:packages build:apps"
@@ -239,8 +239,8 @@ packages/
   "references": [
     { "path": "./packages/utils" },
     { "path": "./packages/hooks" },
-    { "path": "./apps/ingot-admin" },
-    { "path": "./apps/ingot-login" }
+    { "path": "./apps/admin" },
+    { "path": "./apps/auth" }
   ]
 }
 ```

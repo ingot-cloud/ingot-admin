@@ -14,9 +14,9 @@
     "composite": true,
     "skipLibCheck": true,
     "paths": {
-      "@ingot/utils": ["../../packages/utils/src/index.ts"],
-      "@ingot/hooks": ["../../packages/hooks/src/index.ts"],
-      "@ingot/crypto": ["../../packages/crypto/src/index.ts"]
+      "@ingot/shared": ["../../packages/shared/src/index.ts"],
+      "@ingot/shared/crypto": ["../../packages/shared/src/crypto/index.ts"],
+      "@ingot/shared/hooks": ["../../packages/shared/src/hooks/index.ts"]
     }
   }
 }

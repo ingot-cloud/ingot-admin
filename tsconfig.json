@@ -3,19 +3,19 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/ingot-admin"
+      "path": "./apps/admin"
     },
     {
-      "path": "./apps/ingot-login"
+      "path": "./apps/auth"
     },
     {
-      "path": "./packages/utils"
+      "path": "./packages/shared"
     },
     {
-      "path": "./packages/hooks"
+      "path": "./packages/vite-config"
     },
     {
-      "path": "./packages/crypto"
+      "path": "./packages/admin-core"
     }
   ],
   "compilerOptions": {

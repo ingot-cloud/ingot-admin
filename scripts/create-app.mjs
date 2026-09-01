@@ -1,19 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * 基于薄组合入口模板创建新的后台 app（含可选本地插件骨架）。
+ * 基于薄组合入口模板创建新的后台 app。
  * 用法：
  *   pnpm create:app
  *   pnpm create:app my-app
+ * 图形界面：pnpm --filter create-app dev
  */
-import fs from "node:fs";
-import path from "node:path";
 import readline from "node:readline";
-import { fileURLToPath } from "node:url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const rootDir = path.resolve(__dirname, "..");
-const templateDir = path.join(rootDir, "scripts/templates/admin-app");
+import { OFFICIAL_PLUGINS, scaffoldApp, toKebab } from "./lib/scaffold-app.mjs";
 
 const colors = {
   reset: "\x1b[0m",
@@ -33,37 +28,7 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-const toKebab = (value) =>
-  value
-    .trim()
-    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
-    .replace(/[\s_]+/g, "-")
-    .replace(/[^a-zA-Z0-9-]/g, "")
-    .toLowerCase();
-
-const copyDir = (from, to, replacements) => {
-  fs.mkdirSync(to, { recursive: true });
-  for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
-    const src = path.join(from, entry.name);
-    const destName = entry.name.replace(/__APP__/g, replacements.appCode);
-    const dest = path.join(to, destName);
-    if (entry.isDirectory()) {
-      copyDir(src, dest, replacements);
-      continue;
-    }
-    let content = fs.readFileSync(src, "utf8");
-    for (const [token, value] of Object.entries(replacements)) {
-      content = content.replaceAll(`{{${token}}}`, value);
-    }
-    fs.writeFileSync(dest, content);
-  }
-};
-
 const main = async () => {
-  if (!fs.existsSync(templateDir)) {
-    throw new Error(`模板目录不存在: ${templateDir}`);
-  }
-
   const argName = process.argv[2];
   const rawName = argName || (await question("App 名称 (kebab-case，如 acme-admin): "));
   const appCode = toKebab(rawName);
@@ -72,50 +37,44 @@ const main = async () => {
   }
 
   const portInput = (await question("开发端口 [5800]: ")).trim() || "5800";
+  const titleInput = (await question(`标题 [${appCode}]: `)).trim() || appCode;
+
+  const available = OFFICIAL_PLUGINS.filter((plugin) => plugin.available);
+  log(`官方插件: ${available.map((plugin) => plugin.id).join(", ")}`, "yellow");
+  const pluginInput = (
+    await question("勾选官方插件，逗号分隔 [ingot-admin]: ")
+  )
+    .trim()
+    .toLowerCase();
+  const officialPluginIds = (pluginInput || "ingot-admin")
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
   const withPlugin =
     ((await question("是否生成本地插件骨架? (Y/n): ")).trim().toLowerCase() || "y") !== "n";
 
-  const appDir = path.join(rootDir, "apps", appCode);
-  if (fs.existsSync(appDir)) {
-    throw new Error(`目录已存在: ${appDir}`);
-  }
-
-  const replacements = {
+  const result = scaffoldApp({
     appCode,
-    appTitle: appCode,
     port: portInput,
-    storePrefix: `__${appCode.replace(/-/g, "_")}__`,
-    pluginId: `${appCode}-feature`,
-    pageKeyPrefix: appCode.replace(/-/g, "."),
-  };
+    title: titleInput,
+    officialPluginIds,
+    withLocalPlugin: withPlugin,
+  });
 
-  copyDir(templateDir, appDir, replacements);
-
-  if (!withPlugin) {
-    fs.rmSync(path.join(appDir, "src/plugins"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/pages/demo"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/components"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/directives"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/stores"), { recursive: true, force: true });
-    const mainPath = path.join(appDir, "src/main.ts");
-    let main = fs.readFileSync(mainPath, "utf8");
-    main = main
-      .replace(/import \{ targetPlugin \} from "\.\/plugins\/targetPlugin";\n/, "")
-      .replace(/plugins: \[adminBasePlugin, targetPlugin\]/, "plugins: [adminBasePlugin]");
-    fs.writeFileSync(mainPath, main);
-  }
-
-  log(`\n✓ 已创建 apps/${appCode}`, "green");
+  log(`\n✓ 已创建 apps/${result.appCode}`, "green");
   log("接下来：", "yellow");
   log(`  1. pnpm install`);
-  log(`  2. 按需修改 apps/${appCode}/.env`);
-  log(`  3. pnpm --filter ${appCode} dev`);
-  log(`文档见 docs/composable-admin-runtime.md`);
-  rl.close();
+  log(`  2. 按需修改 apps/${result.appCode}/.env`);
+  log(`  3. pnpm --filter ${result.appCode} dev`);
+  log(`文档见 docs/create-app.md`);
 };
 
-main().catch((error) => {
-  log(String(error.message || error), "red");
-  rl.close();
-  process.exit(1);
-});
+main()
+  .catch((error) => {
+    log(String(error.message || error), "red");
+    process.exitCode = 1;
+  })
+  .finally(() => {
+    rl.close();
+  });

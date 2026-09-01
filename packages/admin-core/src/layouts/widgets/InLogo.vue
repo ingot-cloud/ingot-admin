@@ -1,0 +1,33 @@
+<template>
+  <div flex justify-center items-center box-border class="in-logo">
+    <img class="logo-image" :src="logoSrc" />
+    <span class="title">
+      {{ app.title }}
+    </span>
+  </div>
+</template>
+<script setup lang="ts">
+import defaultLogo from "@/assets/logo-white.png";
+import { useAppStore } from "@/stores/modules/app";
+import { getAdminRuntimeConfig } from "@/runtime";
+
+const { app } = useAppStore();
+const logoSrc = computed(() => getAdminRuntimeConfig().branding.logo ?? defaultLogo);
+</script>
+<style scoped lang="postcss">
+.in-logo {
+  @apply h-[var(--in-app-bar-height)];
+
+  & .logo-image {
+    height: 28px;
+    width: 28px;
+    margin-bottom: 5px;
+  }
+
+  & .title {
+    @apply m-l-2 truncate;
+    color: white;
+    font-size: 18px;
+  }
+}
+</style>

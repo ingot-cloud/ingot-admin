@@ -7,10 +7,10 @@ login 与 admin 对经网关请求统一拦截 HTTP 412 `CHALLENGE_REQUIRED`，�
 ## 相关源码
 
 - [packages/utils/src/challenge.ts](../../../../packages/utils/src/challenge.ts)
-- [apps/ingot-admin/src/net/challenge.ts](../../../../apps/ingot-admin/src/net/challenge.ts)
-- [apps/ingot-login/src/net/challenge.ts](../../../../apps/ingot-login/src/net/challenge.ts)
-- [apps/ingot-admin/src/components/challenge/ChallengeHost.vue](../../../../apps/ingot-admin/src/components/challenge/ChallengeHost.vue)
-- [apps/ingot-login/src/components/challenge/ChallengeHost.vue](../../../../apps/ingot-login/src/components/challenge/ChallengeHost.vue)
+- [apps/admin/src/net/challenge.ts](../../../../apps/admin/src/net/challenge.ts)
+- [apps/auth/src/net/challenge.ts](../../../../apps/auth/src/net/challenge.ts)
+- [apps/admin/src/components/challenge/ChallengeHost.vue](../../../../apps/admin/src/components/challenge/ChallengeHost.vue)
+- [apps/auth/src/components/challenge/ChallengeHost.vue](../../../../apps/auth/src/components/challenge/ChallengeHost.vue)
 
 ## 对接接口
 

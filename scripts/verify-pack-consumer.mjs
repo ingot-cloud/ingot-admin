@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * 将 admin-core / admin-base / vite-config（及 workspace 依赖）pnpm pack 后，
+ * 将 shared / vite-config / admin-core pnpm pack 后，
  * 在临时目录安装并执行 type-check + production build，验证发布产物可独立消费。
  */
 import { execSync } from "node:child_process";
@@ -13,14 +13,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 
-const PACKAGES = [
-  "@ingot/utils",
-  "@ingot/hooks",
-  "@ingot/crypto",
-  "@ingot/vite-config",
-  "@ingot/admin-core",
-  "@ingot/admin-base",
-];
+const PACKAGES = ["@ingot/shared", "@ingot/vite-config", "@ingot/admin-core"];
 
 const run = (command, cwd = rootDir) => {
   console.log(`\n> ${command}`);
@@ -64,7 +57,6 @@ const main = () => {
     }
     const tarballPath = path.join(packsDir, path.basename(match[0]));
     if (!fs.existsSync(tarballPath)) {
-      // pnpm 有时打印绝对路径
       const abs = output
         .split("\n")
         .map((line) => line.trim())
@@ -87,7 +79,6 @@ const main = () => {
     console.log(`✓ ${name} manifest 无 catalog:/workspace:`);
   }
 
-  // 未发布到 npm 的 @ingot/* 一律用本地 tarball，避免被解析到 registry
   const localIngotDeps = Object.fromEntries(
     [...tarballByName.entries()].map(([name, tarball]) => [name, `file:${tarball}`]),
   );
@@ -187,13 +178,11 @@ export default defineConfig({
   fs.writeFileSync(
     path.join(consumerDir, "src/main.ts"),
     `import { bootstrapAdminApp } from "@ingot/admin-core";
-import { adminBasePlugin } from "@ingot/admin-base";
 import "@ingot/admin-core/style.css";
-import "@ingot/admin-base/style.css";
 
 void bootstrapAdminApp({
   appCode: "pack-consumer",
-  plugins: [adminBasePlugin],
+  plugins: [],
   branding: { title: "Pack Consumer" },
   login: {
     loginUri: "/login",

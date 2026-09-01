@@ -6,9 +6,9 @@
 
 ## 相关源码
 
-- [apps/ingot-login/src/pages/oauth2/challenge/password](../../../../apps/ingot-login/src/pages/oauth2/challenge/password)
-- [apps/ingot-login/src/api/challenge.ts](../../../../apps/ingot-login/src/api/challenge.ts)
-- [apps/ingot-login/src/components/challenge/ChallengeHost.vue](../../../../apps/ingot-login/src/components/challenge/ChallengeHost.vue)
+- [apps/auth/src/pages/oauth2/challenge/password](../../../../apps/auth/src/pages/oauth2/challenge/password)
+- [apps/auth/src/api/challenge.ts](../../../../apps/auth/src/api/challenge.ts)
+- [apps/auth/src/components/challenge/ChallengeHost.vue](../../../../apps/auth/src/components/challenge/ChallengeHost.vue)
 
 ## 对接接口
 

@@ -44,7 +44,7 @@
 
 ## 依赖与约束
 
-- 全局拦截实现见 `apps/ingot-login/src/net/` 与 `@ingot/utils`
+- 全局拦截实现见 `apps/auth/src/net/` 与 `@ingot/utils`
 
 ## 验收标准
 

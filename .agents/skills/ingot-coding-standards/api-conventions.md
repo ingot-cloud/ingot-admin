@@ -3,7 +3,7 @@
 ## API 模块组织
 
 ```
-apps/ingot-admin/src/api/
+apps/admin/src/api/
 ├── common/          # auth、user、oss
 ├── org/             # 租户/组织侧
 └── platform/        # 平台管理
@@ -80,7 +80,7 @@ import Http from "@/net";
 
 ## 响应类型 R\<T\>
 
-定义于 `apps/ingot-admin/src/models/net.ts`：
+定义于 `apps/admin/src/models/net.ts`：
 
 ```typescript
 export interface R<T = unknown> extends AxiosResponse {
@@ -185,7 +185,7 @@ export function FixPasswordAPI(params: UserPasswordDTO): Promise<R> {
 }
 ```
 
-加解密底层实现：`@ingot/crypto` 包 + axios 信封拦截器（`net/interceptor/request/envelope.ts`、`response/envelope.ts`）。
+加解密底层实现：`@ingot/shared/crypto` 包 + axios 信封拦截器（`net/interceptor/request/envelope.ts`、`response/envelope.ts`）。
 
 ---
 
@@ -258,12 +258,13 @@ import { isObject, isString } from "@/utils/index";
 
 | 包 | 职责 | 使用 |
 |----|------|------|
-| `@ingot/utils` | AES、指纹、下载 | 跨 app 通用 |
-| `@ingot/hooks` | `useStateResettable` | 优先于 app 内重复实现 |
+| `@ingot/shared` | 指纹、下载、挑战契约 | 跨 app 通用 |
+| `@ingot/shared/crypto` | 信封加密 | 敏感字段 / HYBRID |
+| `@ingot/shared/hooks` | `useStateResettable` | 优先于 app 内重复实现 |
 
 **新工具函数流程**：
 1. 检查 `@/utils/` 是否已有
-2. 检查 `@ingot/utils` 是否已有
+2. 检查 `@ingot/shared` 是否已有
 3. 仅单 app 使用 → 放 `apps/{app}/src/utils/`
 4. 跨 app 使用 → 放 `packages/` 并 workspace 引用
 
@@ -315,7 +316,7 @@ export function TenantInfoAPI(id: string) {
 // ✅
 throw new Error("Unsupported image type");
 
-// ❌ packages/utils/src/download.ts 现有模式
+// ❌ packages/shared/src/download.ts 现有模式
 throw "Error image type";
 ```
 

@@ -1,8 +1,7 @@
 import { bootstrapAdminApp, parseBoolean } from "@ingot/admin-core";
-import { adminBasePlugin } from "@ingot/admin-base";
 import type { InComponentSize } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
-import "@ingot/admin-base/style.css";
+import { adminPlugin } from "@ingot/admin-app/plugin";
 import { targetPlugin } from "./plugins/targetPlugin";
 
 const env = import.meta.env;
@@ -10,7 +9,7 @@ const componentSize = (env.VITE_APP_SETTINGS_COMPONENT_SIZE || "default") as InC
 
 await bootstrapAdminApp({
   appCode: "{{appCode}}",
-  plugins: [adminBasePlugin, targetPlugin],
+  plugins: [adminPlugin, targetPlugin],
   branding: {
     title: env.VITE_APP_TITLE,
     copyright: env.VITE_APP_COPYRIGHT,

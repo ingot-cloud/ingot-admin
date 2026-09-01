@@ -63,12 +63,12 @@ pnpm build
 ```
 ingot-admin/
 ├── apps/                      # 应用目录
-│   ├── ingot-admin/          # 管理后台应用
+│   ├── admin/                # 管理后台应用
 │   │   ├── src/              # 源代码
 │   │   ├── public/           # 静态资源
 │   │   ├── dist/             # 构建输出
 │   │   └── package.json
-│   └── ingot-login/          # 登录页面应用
+│   └── auth/                 # 登录页面应用
 │       ├── src/
 │       ├── public/
 │       └── package.json

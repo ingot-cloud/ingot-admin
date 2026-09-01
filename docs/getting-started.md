@@ -2,7 +2,7 @@
 
 本文档将指导你如何首次设置和构建 Ingot Admin 项目。
 
-> 插件化后台运行时（`admin-core` / `admin-base` / `target-project`）见 [composable-admin-runtime.md](./composable-admin-runtime.md)。
+> 插件化后台运行时见 [composable-admin-runtime.md](./composable-admin-runtime.md)；脚手架见 [create-app.md](./create-app.md)。
 
 ## 📋 前置要求
 
@@ -45,9 +45,9 @@ pnpm build
 
 ```json
 "paths": {
-  "@ingot/utils": ["../../packages/utils/src/index.ts"],
-  "@ingot/hooks": ["../../packages/hooks/src/index.ts"]
-}
+      "@ingot/shared": ["../../packages/shared/src/index.ts"],
+      "@ingot/shared/hooks": ["../../packages/shared/src/hooks/index.ts"]
+    }
 ```
 
 但构建时，TypeScript 和 Vite 仍然会查找 `package.json` 中定义的类型声明文件：
@@ -61,7 +61,7 @@ pnpm build
 如果没有先构建这些包，`dist` 目录不存在，就会导致以下错误：
 
 ```
-error TS2307: Cannot find module '@ingot/utils' or its corresponding type declarations.
+error TS2307: Cannot find module '@ingot/shared' or its corresponding type declarations.
 ```
 
 ### 4. 启动开发服务器
@@ -111,17 +111,15 @@ pnpm build:login
 
 ## 🔧 常见问题
 
-### Q1: 遇到 "Cannot find module '@ingot/utils'" 错误
+### Q1: 遇到 "Cannot find module '@ingot/shared'" 错误
 
 **原因**: 基础包未构建。
 
 **解决方案**:
 ```bash
-# 方式一：构建所有基础包（推荐）
 pnpm build:packages
-
-# 方式二：逐个构建
-pnpm build:utils && pnpm build:hooks
+# 或
+pnpm build:shared
 ```
 
 ### Q2: 修改了 packages 下的代码，但应用没有更新
@@ -148,7 +146,7 @@ pnpm build:packages
 pnpm build:packages
 
 # 然后运行类型检查
-cd apps/ingot-admin
+cd apps/admin
 pnpm type-check
 ```
 
@@ -172,8 +170,8 @@ pnpm dev:admin
 ```
 ingot-admin/
 ├── apps/                      # 应用目录
-│   ├── ingot-admin/          # 管理后台应用
-│   └── ingot-login/          # 登录页面应用
+│   ├── admin/                # 管理后台应用
+│   └── auth/                 # 登录页面应用
 ├── packages/                  # 共享包目录
 │   ├── utils/                # 工具函数包
 │   └── hooks/                # React/Vue Hooks 包

@@ -55,8 +55,8 @@
 // tsconfig.json
 {
   "references": [
-    { "path": "./apps/ingot-admin" },
-    { "path": "./apps/ingot-login" },
+    { "path": "./apps/admin" },
+    { "path": "./apps/auth" },
     { "path": "./packages/utils" }
   ]
 }

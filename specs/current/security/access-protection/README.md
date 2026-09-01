@@ -6,8 +6,8 @@
 
 ## 相关源码
 
-- [apps/ingot-admin/src/pages/platform/security/access-protection](../../../../apps/ingot-admin/src/pages/platform/security/access-protection)
-- [apps/ingot-admin/src/api/platform/security/policy.ts](../../../../apps/ingot-admin/src/api/platform/security/policy.ts)
+- [apps/admin/src/pages/platform/security/access-protection](../../../../apps/admin/src/pages/platform/security/access-protection)
+- [apps/admin/src/api/platform/security/policy.ts](../../../../apps/admin/src/api/platform/security/policy.ts)
 
 ## 对接接口
 
