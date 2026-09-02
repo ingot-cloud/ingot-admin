@@ -15,10 +15,11 @@
 
 ### 架构与代码组织
 
-1. **Monorepo 边界**：跨 app 复用逻辑必须放在 `packages/`，禁止在 `apps/` 间复制
-2. **页面结构**：页面拆分为 `IndexPage.vue` + `table.ts` + `useOps.ts` + `components/`
-3. **API 层**：函数命名 `XxxAPI`，显式 `Promise<R<T>>`，统一 `import request from "@/net"`
-4. **目录语义**：业务页面在 `pages/`（非 `views/`）；API 按业务域拆分
+1. **Monorepo 边界**：跨 app / 插件复用逻辑必须放在 `packages/`，禁止在 `apps/` 或官方插件之间复制
+2. **三层目录**：`apps/` 是可运行 composition root；`plugins/` 是不可独立运行的业务源码插件；`packages/` 是无页面公共抽象。依赖只允许 `apps → plugins/packages`、`plugins → packages`
+3. **页面结构**：页面拆分为 `IndexPage.vue` + `table.ts` + `useOps.ts` + `components/`
+4. **API 层**：函数命名 `XxxAPI`，显式 `Promise<R<T>>`，统一 `import request from "@/net"`
+5. **目录语义**：业务页面在插件 `pages/`（非 `views/`）；官方 admin 不复制业务实现；API 按业务域拆分
 
 ### 代码质量
 

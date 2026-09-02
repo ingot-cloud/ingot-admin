@@ -17,6 +17,6 @@
 
 ## 文档与归档
 
-- [ ] 状态改为 `validating`，记录构建、测试和手动验收结果
-- [ ] 更新 current 的官方插件组合行为及 security 页面键说明
-- [ ] 用户验收后填写完成记录、改为 `completed` 并归档
+- [x] 状态改为 `validating`，记录构建、测试和手动验收结果
+- [x] 更新 current 的官方插件组合行为及 security 页面键说明
+- [x] 用户验收后填写完成记录、改为 `completed` 并归档

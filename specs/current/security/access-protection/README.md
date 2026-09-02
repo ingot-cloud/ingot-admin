@@ -6,8 +6,8 @@
 
 ## 相关源码
 
-- [apps/admin/src/pages/platform/security/access-protection](../../../../apps/admin/src/pages/platform/security/access-protection)
-- [apps/admin/src/api/platform/security/policy.ts](../../../../apps/admin/src/api/platform/security/policy.ts)
+- [plugins/security/src/pages/access-protection](../../../../plugins/security/src/pages/access-protection)
+- [plugins/security/src/api/security/policy.ts](../../../../plugins/security/src/api/security/policy.ts)
 
 ## 对接接口
 
@@ -18,3 +18,4 @@
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
 | 2026-08-29 | [20260827-security-challenge-verification](../../../changes/archive/2026/20260827-security-challenge-verification/) | 访问防护增加「挑战策略」Tab；策略 id 按字符串传递 |
+| 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.access.protection`，兼容旧 semantic / 文件键 |

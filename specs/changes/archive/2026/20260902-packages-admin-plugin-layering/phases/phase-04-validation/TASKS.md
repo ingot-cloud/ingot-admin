@@ -20,5 +20,5 @@
 - [x] 更新 CI changes 规则，使 plugins 变化触发 admin 和插件检查
 - [x] 更新 AGENTS、coding standards 和架构开发约定
 - [x] 状态改为 `validating`，记录自动化与手动验收结果
-- [ ] 验收后更新 CONSTITUTION 和 current specs
-- [ ] 填写完成记录、状态改为 `completed` 并归档
+- [x] 验收后更新 CONSTITUTION 和 current specs
+- [x] 填写完成记录、状态改为 `completed` 并归档

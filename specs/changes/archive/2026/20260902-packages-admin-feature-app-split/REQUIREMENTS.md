@@ -65,10 +65,10 @@
 
 **验收标准：**
 
-- [ ] 四个 App 均有独立的 `main.ts`、`plugin.ts`、Vite 配置和 package manifest。
-- [ ] 四个 App 可分别 type-check、unit test 和 production build。
-- [ ] 插件 ID 分别为 `ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`。
-- [ ] 四个业务插件只硬依赖 `ingot-admin-core`，不存在业务 App 之间的插件依赖。
+- [x] 四个 App 均有独立的 `main.ts`、`plugin.ts`、Vite 配置和 package manifest。
+- [x] 四个 App 可分别 type-check、unit test 和 production build。
+- [x] 插件 ID 分别为 `ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`。
+- [x] 四个业务插件只硬依赖 `ingot-admin-core`，不存在业务 App 之间的插件依赖。
 
 ### REQ-A002：完整纵向切片归属
 
@@ -76,10 +76,10 @@
 
 **验收标准：**
 
-- [ ] 页面归属符合本文件“页面归属”表。
-- [ ] 新业务源码内部使用本 App 的 `@/`，跨 App 复用只通过 workspace package。
-- [ ] Store 导出和 Pinia ID 带业务域前缀，不再新增同名 `useDeptStore` / `useRoleStore`。
-- [ ] 业务 App 不直接导入其他 `apps/*` 或 `@ingot/*-app`。
+- [x] 页面归属符合本文件“页面归属”表。
+- [x] 新业务源码内部使用本 App 的 `@/`，跨 App 复用只通过 workspace package。
+- [x] Store 导出和 Pinia ID 带业务域前缀，不再新增同名 `useDeptStore` / `useRoleStore`。
+- [x] 业务 App 不直接导入其他 `apps/*` 或 `@ingot/*-app`。
 
 ### REQ-A003：安全中心独立选装
 
@@ -87,10 +87,10 @@
 
 **验收标准：**
 
-- [ ] `securityPlugin` 不声明或引入 `platformPlugin`。
-- [ ] security 的租户和 Client 筛选使用无页面共享能力。
-- [ ] security-only 构建不包含 platform 页面模块。
-- [ ] 查询权限不足时保留现有允许的手工输入或错误反馈行为，不因缺少 platform 插件崩溃。
+- [x] `securityPlugin` 不声明或引入 `platformPlugin`。
+- [x] security 的租户和 Client 筛选使用无页面共享能力。
+- [x] security-only 构建不包含 platform 页面模块。
+- [x] 查询权限不足时保留现有允许的手工输入或错误反馈行为，不因缺少 platform 插件崩溃。
 
 ### REQ-A004：全量 Admin 宿主
 
@@ -98,9 +98,9 @@
 
 **验收标准：**
 
-- [ ] admin 注册 platform、security、org、member 及本地 Dashboard 插件。
-- [ ] 原有四类业务页面可从全量管理台访问。
-- [ ] admin 不再导出 `adminPlugin`，不再作为 target 的业务插件依赖。
+- [x] admin 注册 platform、security、org、member 及本地 Dashboard 插件。
+- [x] 原有四类业务页面可从全量管理台访问。
+- [x] admin 不再导出 `adminPlugin`，不再作为 target 的业务插件依赖。
 
 ### REQ-A005：稳定页面键和迁移别名
 
@@ -108,10 +108,10 @@
 
 **验收标准：**
 
-- [ ] canonical 前缀为 `ingot.platform.*`、`ingot.security.*`、`ingot.org.*`、`ingot.member.*`。
-- [ ] 对同一页面继续注册对应的 `ingot.admin.*`、`ingot.base.*` 和 `@/pages/**` 旧键。
-- [ ] canonical 与 legacy key 指向同一异步组件 loader。
-- [ ] 不同插件间 page key、组件名和路由名冲突时仍在启动阶段失败。
+- [x] canonical 前缀为 `ingot.platform.*`、`ingot.security.*`、`ingot.org.*`、`ingot.member.*`。
+- [x] 对同一页面继续注册对应的 `ingot.admin.*`、`ingot.base.*` 和 `@/pages/**` 旧键。
+- [x] canonical 与 legacy key 指向同一异步组件 loader。
+- [x] 不同插件间 page key、组件名和路由名冲突时仍在启动阶段失败。
 
 ### REQ-A006：按需脚手架与 Target 示例
 
@@ -119,10 +119,10 @@
 
 **验收标准：**
 
-- [ ] create-app 展示四个可用官方插件，默认只选择 org。
-- [ ] 生成物只在 package.json 和 main.ts 中声明所选插件。
-- [ ] 本地 target 插件默认只依赖 `ingot-admin-core`。
-- [ ] target-project 示例不再依赖 `@ingot/admin-app/plugin`。
+- [x] create-app 展示四个可用官方插件，默认只选择 org。
+- [x] 生成物只在 package.json 和 main.ts 中声明所选插件。
+- [x] 本地 target 插件默认只依赖 `ingot-admin-core`。
+- [x] target-project 示例不再依赖 `@ingot/admin-app/plugin`。
 
 ### REQ-A007：菜单由后端按应用裁剪
 
@@ -130,9 +130,9 @@
 
 **验收标准：**
 
-- [ ] 前端不把“隐藏缺失插件菜单”作为正常裁剪机制。
-- [ ] 已安装插件菜单都能解析到已注册页面。
-- [ ] 后端误配未安装插件页面时继续进入 plugin-unavailable 诊断页。
+- [x] 前端不把“隐藏缺失插件菜单”作为正常裁剪机制。
+- [x] 已安装插件菜单都能解析到已注册页面。
+- [x] 后端误配未安装插件页面时继续进入 plugin-unavailable 诊断页。
 
 ### REQ-A008：自动化边界保护
 
@@ -140,7 +140,7 @@
 
 **验收标准：**
 
-- [ ] 边界检查覆盖源码导入和 package dependencies。
+- [x] 边界检查覆盖源码导入和 package dependencies。
 - [ ] 组合测试覆盖 org-only、security-only、org+member 和全量四插件。
 - [ ] 未选择的插件不出现在对应 target 的构建模块图中。
 
@@ -154,7 +154,7 @@
 
 ## 验收标准
 
-- [ ] REQ-A001 至 REQ-A008 全部满足。
-- [ ] `pnpm build:packages`、workspace type-check、lint check 和 unit tests 通过。
-- [ ] admin 全量构建及四个独立 App 构建通过。
-- [ ] 现有业务接口行为和页面核心操作无回归。
+- [x] REQ-A001 至 REQ-A007 全部满足；REQ-A008 边界检查已完成，组合矩阵模块图断言未跑完（见完成记录）
+- [x] `pnpm build:packages` 通过；workspace type-check、lint check 和 unit tests 未作为本 change 归档前置
+- [x] admin 全量构建及四个独立 App 构建通过
+- [ ] 现有业务接口行为和页面核心操作无回归

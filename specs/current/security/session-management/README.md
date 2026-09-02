@@ -6,9 +6,9 @@
 
 ## 相关源码
 
-- [apps/admin/src/pages/platform/security/onlinetoken](../../../../apps/admin/src/pages/platform/security/onlinetoken)
-- [apps/admin/src/api/platform/security/session.ts](../../../../apps/admin/src/api/platform/security/session.ts)
-- [apps/admin/src/api/platform/security/concurrencyPolicy.ts](../../../../apps/admin/src/api/platform/security/concurrencyPolicy.ts)
+- [plugins/security/src/pages/sessions](../../../../plugins/security/src/pages/sessions)
+- [plugins/security/src/api/security/session.ts](../../../../plugins/security/src/api/security/session.ts)
+- [plugins/security/src/api/security/concurrencyPolicy.ts](../../../../plugins/security/src/api/security/concurrencyPolicy.ts)
 
 ## 对接接口
 
@@ -19,3 +19,4 @@
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
 | 2026-08-20 | [20260820-security-session-management](../../../changes/archive/2026/20260820-security-session-management/) | 对接会话查询/下线与并发策略，替代旧 `/auth/token/**` |
+| 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.sessions`，兼容旧 semantic / 文件键 |

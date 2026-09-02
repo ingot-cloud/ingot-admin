@@ -6,8 +6,8 @@
 
 ## 相关源码
 
-- [apps/admin/src/pages/platform/security/account-protection](../../../../apps/admin/src/pages/platform/security/account-protection)
-- [apps/admin/src/api/platform/security/accountLockoutPolicy.ts](../../../../apps/admin/src/api/platform/security/accountLockoutPolicy.ts)
+- [plugins/security/src/pages/account-protection](../../../../plugins/security/src/pages/account-protection)
+- [plugins/security/src/api/security/accountLockoutPolicy.ts](../../../../plugins/security/src/api/security/accountLockoutPolicy.ts)
 
 ## 对接接口
 
@@ -18,3 +18,4 @@
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
 | 2026-08-25 | [20260825-security-account-protection](../../../changes/archive/2026/20260825-security-account-protection/) | 新增账号保护页与账号锁定 Tab（B / C 两栏策略） |
+| 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.account.protection`，兼容旧 semantic / 文件键 |

@@ -1,6 +1,6 @@
 # 20260902-packages-admin-feature-app-split
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -72,13 +72,18 @@
 
 ## 相关链接
 
-- [现有 App 插件化规格](../../../current/packages/app-plugins-shared-scaffold/spec.md)
-- [项目宪章](../../../CONSTITUTION.md)
+- [现有 App 插件化规格](../../../../current/packages/app-plugins-shared-scaffold/spec.md)
+- [项目宪章](../../../../CONSTITUTION.md)
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-09-02
 - 关联提交或 PR：
-- 更新的 current capability：`packages/app-plugins-shared-scaffold`、相关 security capability
+- 更新的 current capability：`packages/app-plugins-shared-scaffold`、`security/session-management`、`security/access-protection`、`security/account-protection`
 - 与原设计的差异：
+  1. Vite `@/` 不能做成 Rolldown 原生 alias（会把业务 App 的 `@/` 指到宿主）。`createOfficialAppVitePlugin` 按 importer 解析，并用 `resolveSourceFile` 补 `.ts` / `index.ts`（目录本身不能当模块）。
+  2. 宿主 vue-tsc 用官方插件 `.d.ts` stub（admin 四个、target 的 org），避免 `@/` 指错。
+  3. `KNOWN_OFFICIAL_APPS` 不再包含 `@ingot/admin-app`。
+  4. Phase 04 组合矩阵模块图断言、workspace lint、手工菜单回归未全部勾选；用户于 2026-09-02 要求归档。
+  5. 归档时后续 change `20260902-packages-admin-plugin-layering` 已把四个业务 App 迁入 `plugins/`；`current/` 源码链接指向现树，不链已删除的 `apps/platform` 等目录。
 - 取消原因：

@@ -53,8 +53,9 @@
 
 **验收标准：**
 
-- [x] 入口 `pages/platform/security/account-protection/IndexPage.vue`
-- [x] viewPath `@/pages/platform/security/account-protection/IndexPage.vue`
+- [x] 入口 `plugins/security/src/pages/account-protection/IndexPage.vue`
+- [x] canonical viewPath `ingot.security.account.protection`
+- [x] 兼容 `ingot.admin.platform.security.account.protection`、`ingot.base.platform.security.account.protection`、`@/pages/platform/security/account-protection/IndexPage.vue`
 - [x] 无「账号锁定」子菜单
 
 ### REQ-002：B / C 两栏独立维护

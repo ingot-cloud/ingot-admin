@@ -1,6 +1,6 @@
 # 20260902-packages-admin-plugin-layering
 
-> 状态：validating
+> 状态：completed
 
 ## 协作模式
 
@@ -8,7 +8,7 @@
 
 ## 前置条件
 
-- 前置 change：`20260902-packages-admin-feature-app-split`（仍为 `implementing`，尚未验收归档）
+- 前置 change：[`20260902-packages-admin-feature-app-split`](../20260902-packages-admin-feature-app-split/)（已 `completed` 并归档）
 - 用户于 2026-09-02 明确要求：以前置 change 当前工作树为基线直接实施本 change，验收一并延后。
 - 本 change 不回改、替代或取消前置 change 的历史工件。
 
@@ -79,14 +79,14 @@
 
 ## 相关链接
 
-- 前置 change：`20260902-packages-admin-feature-app-split`（完成后链接归档目录）
-- [当前 App 插件化规格](../../../current/packages/app-plugins-shared-scaffold/spec.md)
-- [项目宪章](../../../CONSTITUTION.md)
+- 前置 change：[`20260902-packages-admin-feature-app-split`](../20260902-packages-admin-feature-app-split/)
+- [当前 App 插件化规格](../../../../current/packages/app-plugins-shared-scaffold/spec.md)
+- [项目宪章](../../../../CONSTITUTION.md)
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-09-02
 - 关联提交或 PR：
 - 更新的 current capability：`packages/app-plugins-shared-scaffold`
-- 与原设计的差异：
+- 与原设计的差异：前置 change 尚未验收时用户要求直接开工；admin 对官方插件使用 `*-plugin.d.ts` 类型垫片，避免宿主 vue-tsc 混用插件 `@/`。Phase 04 模块图产物断言与手工菜单/裁剪回归未单独勾完；用户于 2026-09-02 要求归档视为验收。
 - 取消原因：

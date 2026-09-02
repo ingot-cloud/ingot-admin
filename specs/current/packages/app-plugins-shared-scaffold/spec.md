@@ -1,106 +1,141 @@
 # App 插件化与共享包规格
 
-本文写已上线的组合与脚手架行为；接口细节见归档 [API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。
+本文写已上线的组合、分层与脚手架行为。接口细节见归档 [20260831 API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。
 
 ## 概述
 
-平台业务页住在 `ingot-admin`。该 App 导出 `adminPlugin`，既可独立 `dev/build`，也可被 `target-project` 等宿主 `plugins: [adminPlugin, …]` 打进同一 SPA。`@ingot/admin-base`、`@ingot/utils`、`@ingot/crypto`、`@ingot/hooks` 已删除。
+仓库使用 apps、plugins、packages 三层。官方业务能力是 `@ingot/{platform,security,org,member}-plugin` 源码插件，位于 `plugins/`，不可独立 `dev`/`build`。`apps/admin` 默认注册全部四个插件，通过 `src/plugins.ts` 集中声明清单。未列入的插件不进入构建产物。Dashboard 属于 platform 插件。`@ingot/admin-base`、`@ingot/utils`、`@ingot/crypto`、`@ingot/hooks` 与 `apps/target-project` 已删除。
 
 ## 范围
 
 ### In Scope
 
-- 官方 App 插件导出与组合构建
-- `@ingot/shared`（utils + crypto + hooks）
+- apps / plugins / packages 目录职责与单向依赖
+- 四个官方源码插件的页面归属、纵向切片与构建期组合
+- 默认 admin composition root 与插件裁剪
+- `@ingot/admin-common`、`@ingot/shared`、`@ingot/admin-core`
+- `definePluginPages` 生成 canonical 与迁移期 legacy 页面键
 - 静态菜单与后端动态菜单合并
-- 本地 `create-app` 脚手架
+- 本地 `create-app` 脚手架与 `examples/admin-plugin`
 
 ### Out of Scope
 
-- 真实 `ingot-ops` 业务（仅占位）
 - 运行时远程加载插件 / 微前端
-- 将 `ingot-login` 改为管理台插件
+- 将 `apps/auth` 改为管理台插件
+- 前端自动隐藏后端误配的未安装插件菜单
+- 可发布的官方插件 dist 或跨仓库插件市场
 
 ## 用户场景
 
-### 场景 1：平台 App 独立部署
+### 场景 1：直接使用默认后台
 
-- **角色**：平台管理员
-- **前置条件**：启动 `ingot-admin`
-- **步骤**：登录后访问原有 platform / org / dashboard 页
-- **预期结果**：行为与迁出 `admin-base` 之前等价
+- **角色**：后台项目开发者
+- **前置条件**：配置环境并启动 `apps/admin`
+- **步骤**：登录后访问平台控制面、安全中心、组织管理、会员管理及 Dashboard
+- **预期结果**：默认包含四个官方插件；同一 Router / Pinia 实例；Dashboard 来自 platform 插件
 
-### 场景 2：项目 App 组合官方插件
+### 场景 2：裁剪默认后台能力
 
-- **角色**：项目开发者
-- **前置条件**：`target-project` 依赖 `ingot-admin`
-- **步骤**：`plugins: [adminPlugin, targetPlugin]` 后构建或开发
-- **预期结果**：单 SPA 内同时可用平台页与项目页；共享 Router / Pinia
+- **角色**：后台项目开发者
+- **前置条件**：编辑 `apps/admin/src/plugins.ts` 与 package.json
+- **步骤**：移除插件 import、注册项和 dependency，并同步后端菜单
+- **预期结果**：未选择插件不进入模块图；后端不再返回其菜单；其余能力正常
 
-### 场景 3：静态 + 动态菜单
+### 场景 3：开发并注册业务插件
+
+- **角色**：业务前端开发者
+- **前置条件**：在 `plugins/<name>` 编写纵向切片与 `plugin.ts`
+- **步骤**：完成 type-check/单测后注册到 admin 清单
+- **预期结果**：插件无需独立 App 即可检查和测试；由 admin Vite 编译运行
+
+### 场景 4：创建独立后台 App
+
+- **角色**：需要多后台交付的开发者
+- **前置条件**：本地执行 `pnpm create:app`（`127.0.0.1:5801`）
+- **步骤**：填写独立 appCode / 端口，默认全选官方插件，可取消；可选本地插件骨架
+- **预期结果**：写入新的 `apps/<appCode>`；生成 `src/plugins.ts` 与依赖一致；已有目录拒绝覆盖
+
+### 场景 5：静态 + 动态菜单
 
 - **角色**：项目开发者
 - **前置条件**：插件或 App 声明 `staticMenus`，后端返回用户菜单
 - **步骤**：启动后查看侧栏
-- **预期结果**：静态在前、动态在后；同 `path` / `routeName` 冲突则启动失败；仅静态时 Demo 菜单仍可见
-
-### 场景 4：可视化创建 App
-
-- **角色**：项目开发者
-- **前置条件**：本地执行 `pnpm create:app`（`127.0.0.1:5801`）
-- **步骤**：填写 appCode / 端口，勾选 `ingot-admin`，生成
-- **预期结果**：写入新的 `apps/<appCode>`；已有目录拒绝覆盖
+- **预期结果**：静态在前、动态在后；同 `path` / `routeName` 冲突则启动失败；后端误配未安装插件时进入 plugin-unavailable 诊断页
 
 ## 功能需求
 
-### REQ-001：业务页归属 App 插件
+### REQ-001：三层目录和依赖方向
 
-系统 SHALL 把平台业务页放在 `apps/admin`，并通过 `adminPlugin` 导出；宿主通过 workspace 依赖组合。仓库根包名为 `@ingot/workspace`，不得与 App 名 `ingot-admin` 冲突。
-
-**验收标准：**
-
-- [x] `@ingot/admin-base` 已移除
-- [x] `ingot-admin` 独立构建与 `target-project` 组合构建均通过
-
-### REQ-002：共享工具包
-
-系统 SHALL 以 `@ingot/shared`（含 `./crypto`、`./hooks`）替代原 utils / crypto / hooks 三包。`admin-core` 与 `ingot-login` 依赖该包。
+系统 SHALL 使用 apps、plugins、packages 表达运行应用、业务插件和公共模块。依赖只允许 `apps → plugins/packages`、`plugins → packages` 和 packages 内部无环依赖。
 
 **验收标准：**
 
-- [x] login 与 admin-core 构建通过
-- [x] `pnpm test:pack` 验证 shared / vite-config / admin-core 发布产物可独立消费
+- [x] `pnpm-workspace.yaml` 包含 `apps/*`、`plugins/*`、`packages/*`
+- [x] 官方业务插件之间不存在源码 import 或 package dependency
+- [x] packages 不注册业务页面或 `InAdminPlugin` 实例
+- [x] `pnpm check:boundaries` 检查非法反向依赖、遗留 `@base` 和清单/依赖不一致
 
-### REQ-003：静态与动态菜单混合
+### REQ-002：官方源码插件
 
-系统 SHALL 在启动时合并 App/插件 `staticMenus` 与 `UserMenuAPI` 动态菜单；冲突报错。
-
-**验收标准：**
-
-- [x] `mergeMenuTrees` / `defineStaticMenus` 有单测
-- [x] `target-project` 示例静态菜单（D/E/F）随插件注册
-
-### REQ-004：本地脚手架
-
-系统 SHALL 提供 `apps/create-app` Web UI 与 `pnpm create:app:cli`，复用 `scripts/lib/scaffold-app.mjs`，只写入 `apps/` 下不存在的目录。
+系统 SHALL 提供四个不可独立运行的官方插件，包名为 `@ingot/{platform,security,org,member}-plugin`，导出 `platformPlugin`、`securityPlugin`、`orgPlugin`、`memberPlugin`。插件 ID 分别为 `ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`。
 
 **验收标准：**
 
-- [x] 可勾选 `ingot-admin`；`ingot-ops` 占位不可选
-- [x] 生成物 `main.ts` 包含对应官方插件 import
+- [x] 每个插件保留本域 pages、API、models、stores、组件和 `plugin.ts`
+- [x] 插件没有独立 HTML、public、dev/preview/production build
+- [x] 插件可独立 type-check、lint 和 unit test
+- [x] Dashboard 在 platform 插件，canonical 为 `ingot.platform.dashboard`，兼容 `ingot.admin.dashboard`、`ingot.base.dashboard` 与 `@/pages/dashboard/IndexPage.vue`
+
+### REQ-003：默认通用 Admin
+
+系统 SHALL 将 `apps/admin` 作为唯一默认通用后台。`appCode` 读取 `VITE_APP_CODE`，缺省 `ingot-admin`。
+
+**验收标准：**
+
+- [x] admin 默认注册全部四个官方插件
+- [x] 清单集中在 `src/plugins.ts`，业务页面不在 admin 复制
+- [x] admin 保留 dev/build、Docker 和部署能力
+
+### REQ-004：页面键与共享能力
+
+系统 SHALL 为 IndexPage 生成 canonical 键 `ingot.{domain}.*`，并在迁移期同时注册 `ingot.admin.*`、`ingot.base.*` 与原 `@/pages/**` 文件键。租户与 Client 只读选择器在 `@ingot/admin-common`。
+
+**验收标准：**
+
+- [x] 例如会话页 canonical 为 `ingot.security.sessions`
+- [x] security 可单独选装，选择器来自 admin-common，不依赖 platform 插件
+- [x] 业务源码不再使用 `@base`
+
+### REQ-005：菜单、脚手架与文档
+
+系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件。根 README 与 `docs/development-model.md` 说明三层开发入口。
+
+**验收标准：**
+
+- [x] 菜单接口仍为 `GET /api/pms/v1/auth/user/menus`
+- [x] 生成物 `src/plugins.ts` 与 package.json 只包含所选官方插件
+- [x] 已删除 `apps/target-project`；示例在 `examples/admin-plugin`
+- [x] `pnpm check:docs` 与 `pnpm check:examples` 覆盖文档链接和示例类型
 
 ## 非功能需求
 
-- 组合方 Vite 必须能编译官方 App 内的 Vue SFC 与 `import.meta.glob`
+- 组合方 Vite 必须按 importer 编译官方插件内的 Vue SFC、`import.meta.glob` 与 `@/`
+- Vue / Router / Pinia / Element Plus / VueUse 保持单实例
 - create-app 仅限本地，不得暴露到公网
+- 不改变现有业务接口路径与 `R<T>` 包装
+- 插件为构建期静态组合，不引入远程运行时加载
 
 ## 依赖与约束
 
-- 官方 App 插件只依赖 `@ingot/admin-core` 与 `@ingot/shared`，不得反向依赖其他业务 App
-- 页面稳定键优先 `ingot.admin.*`，兼容 `ingot.base.*` 与 `@/pages/**`
+- 官方业务插件不得互相依赖；跨插件复用进入有明确职责的 package
+- 只有两个及以上插件实际使用的无页面能力才能进入 `admin-common`
+- 仓库根包名为 `@ingot/workspace`
+- 页面稳定键优先 `ingot.{domain}.*`，兼容 `ingot.admin.*`、`ingot.base.*` 与 `@/pages/**`
+- 裁剪插件时必须同步 `src/plugins.ts`、package.json 和后端菜单
 
 ## 验收标准
 
-- [x] 独立 admin、组合 target、login 生产构建通过
-- [x] 类型检查与 admin-core / target 单测通过
-- [x] create-app UI 与共享 scaffold 可生成新 App
+- [x] 三层目录与单向依赖由边界脚本保护
+- [x] 四个官方源码插件与 admin 宿主可类型检查；packages 可构建
+- [x] create-app 可按全选、裁剪、空插件和本地插件生成
+- [x] 文档、示例和分层检查纳入根 `pnpm check`

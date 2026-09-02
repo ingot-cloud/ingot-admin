@@ -45,10 +45,10 @@
 
 **验收标准：**
 
-- [ ] `pnpm-workspace.yaml` 包含 `apps/*`、`plugins/*`、`packages/*`。
-- [ ] 依赖只允许 `apps → plugins/packages`、`plugins → packages` 和 packages 内部无环依赖。
-- [ ] packages 不包含业务菜单、业务页面或 `InAdminPlugin` 实例。
-- [ ] 官方业务插件之间不存在源码 import 或 package dependency。
+- [x] `pnpm-workspace.yaml` 包含 `apps/*`、`plugins/*`、`packages/*`。
+- [x] 依赖只允许 `apps → plugins/packages`、`plugins → packages` 和 packages 内部无环依赖。
+- [x] packages 不包含业务菜单、业务页面或 `InAdminPlugin` 实例。
+- [x] 官方业务插件之间不存在源码 import 或 package dependency。
 
 ### REQ-A002：四个官方源码插件
 
@@ -56,11 +56,11 @@
 
 **验收标准：**
 
-- [ ] 目录和包名分别为 `plugins/platform` / `@ingot/platform-plugin`、`plugins/security` / `@ingot/security-plugin`、`plugins/org` / `@ingot/org-plugin`、`plugins/member` / `@ingot/member-plugin`。
-- [ ] 每个插件保留本域 pages、API、models、stores、组件和 `plugin.ts`。
-- [ ] 插件 package 根直接导出其 `platformPlugin`、`securityPlugin`、`orgPlugin` 或 `memberPlugin`。
-- [ ] 插件没有 `main.ts`、HTML、public、运行端口、dev、preview 或 production build。
-- [ ] 插件仍可独立 type-check、lint 和 unit test。
+- [x] 目录和包名分别为 `plugins/platform` / `@ingot/platform-plugin`、`plugins/security` / `@ingot/security-plugin`、`plugins/org` / `@ingot/org-plugin`、`plugins/member` / `@ingot/member-plugin`。
+- [x] 每个插件保留本域 pages、API、models、stores、组件和 `plugin.ts`。
+- [x] 插件 package 根直接导出其 `platformPlugin`、`securityPlugin`、`orgPlugin` 或 `memberPlugin`。
+- [x] 插件没有 `main.ts`、HTML、public、运行端口、dev、preview 或 production build。
+- [x] 插件仍可独立 type-check、lint 和 unit test。
 
 ### REQ-A003：默认通用 Admin
 
@@ -68,12 +68,12 @@
 
 **验收标准：**
 
-- [ ] admin 默认注册全部四个官方插件。
-- [ ] admin 业务页面全部来自 plugins，不在自身复制业务实现。
-- [ ] admin 使用 `src/plugins.ts` 集中声明插件清单。
-- [ ] appCode 从 `VITE_APP_CODE` 读取，缺省为 `ingot-admin`。
-- [ ] admin 原有 dev/build、Docker 和部署能力保持可用。
-- [ ] Dashboard 归 platform 插件，并兼容已有页面 key。
+- [x] admin 默认注册全部四个官方插件。
+- [x] admin 业务页面全部来自 plugins，不在自身复制业务实现。
+- [x] admin 使用 `src/plugins.ts` 集中声明插件清单。
+- [x] appCode 从 `VITE_APP_CODE` 读取，缺省为 `ingot-admin`。
+- [x] admin 原有 dev/build、Docker 和部署能力保持可用。
+- [x] Dashboard 归 platform 插件，并兼容已有页面 key。
 
 ### REQ-A004：移除重复 Target 应用
 
@@ -81,10 +81,10 @@
 
 **验收标准：**
 
-- [ ] `apps/target-project`、对应根脚本、CI build/deploy job 和文档引用被移除。
-- [ ] 原 target 的页面、组件、指令、Store、静态菜单示例整理到 `examples/admin-plugin`。
-- [ ] 示例不参与默认 workspace build 或 admin 运行。
-- [ ] 示例可通过独立 type-check，文档可直接链接到其关键源码。
+- [x] `apps/target-project`、对应根脚本、CI build/deploy job 和文档引用被移除。
+- [x] 原 target 的页面、组件、指令、Store、静态菜单示例整理到 `examples/admin-plugin`。
+- [x] 示例不参与默认 workspace build 或 admin 运行。
+- [x] 示例可通过独立 type-check，文档可直接链接到其关键源码。
 
 ### REQ-A005：源码插件构建支持
 
@@ -92,11 +92,11 @@
 
 **验收标准：**
 
-- [ ] Vite 根据 App direct dependencies 发现 `plugins/*` 源码根。
-- [ ] 插件内部 `@/` 解析到自身 src，不与宿主或其他插件冲突。
-- [ ] Vue、Router、Pinia、Element Plus 和 VueUse 保持单实例。
-- [ ] 未选择插件不进入 optimizeDeps、页面注册表和构建模块图。
-- [ ] 插件有统一的 Vitest、自动导入和组件类型配置，但不会生成 dist。
+- [x] Vite 根据 App direct dependencies 发现 `plugins/*` 源码根。
+- [x] 插件内部 `@/` 解析到自身 src，不与宿主或其他插件冲突。
+- [x] Vue、Router、Pinia、Element Plus 和 VueUse 保持单实例。
+- [x] 未选择插件不进入 optimizeDeps、页面注册表和构建模块图。
+- [x] 插件有统一的 Vitest、自动导入和组件类型配置，但不会生成 dist。
 
 ### REQ-A006：Create App 定位与生成结果
 
@@ -104,11 +104,11 @@
 
 **验收标准：**
 
-- [ ] UI 和 CLI 默认选择全部四个官方插件，同时允许任意取消。
-- [ ] 生成物只包含 bootstrap、环境/构建配置、部署资源和集中插件清单。
-- [ ] 生成物的 package dependencies 与插件清单严格一致。
-- [ ] 可选的 App 私有插件骨架继续可用。
-- [ ] UI 和文档明确提示通常应直接使用 `apps/admin`。
+- [x] UI 和 CLI 默认选择全部四个官方插件，同时允许任意取消。
+- [x] 生成物只包含 bootstrap、环境/构建配置、部署资源和集中插件清单。
+- [x] 生成物的 package dependencies 与插件清单严格一致。
+- [x] 可选的 App 私有插件骨架继续可用。
+- [x] UI 和文档明确提示通常应直接使用 `apps/admin`。
 
 ### REQ-A007：完整开发文档
 
@@ -116,12 +116,12 @@
 
 **验收标准：**
 
-- [ ] 根 README 的结构、版本、脚本和文档导航与实现一致。
-- [ ] 有总览文档说明三层职责、依赖规则和开发路径选择。
-- [ ] 有插件开发文档覆盖目录、API、页面、菜单、注册、测试和边界。
-- [ ] 有 App 开发文档覆盖 bootstrap、环境、插件裁剪、create-app、构建和部署。
-- [ ] 运行时与 create-app 参考文档全部更新到源码插件模型。
-- [ ] 文档命令、内部链接和示例通过自动化检查。
+- [x] 根 README 的结构、版本、脚本和文档导航与实现一致。
+- [x] 有总览文档说明三层职责、依赖规则和开发路径选择。
+- [x] 有插件开发文档覆盖目录、API、页面、菜单、注册、测试和边界。
+- [x] 有 App 开发文档覆盖 bootstrap、环境、插件裁剪、create-app、构建和部署。
+- [x] 运行时与 create-app 参考文档全部更新到源码插件模型。
+- [x] 文档命令、内部链接和示例通过自动化检查。
 
 ### REQ-A008：分层治理与回归保护
 
@@ -129,10 +129,10 @@
 
 **验收标准：**
 
-- [ ] 边界脚本检查非法依赖、遗留 `@base`、插件清单与依赖不一致。
-- [ ] AGENTS、coding standards 和 CONSTITUTION 记录新的目录和依赖规则。
-- [ ] 组合验证覆盖单插件、部分插件和全插件场景。
-- [ ] 前置 change 已 completed/archived 才允许本 change 开工。
+- [x] 边界脚本检查非法依赖、遗留 `@base`、插件清单与依赖不一致。
+- [x] AGENTS、coding standards 和 CONSTITUTION 记录新的目录和依赖规则。
+- [x] 组合验证覆盖单插件、部分插件和全插件场景。
+- [x] 前置 change 已 completed/archived 才允许本 change 开工。
 
 ## 非功能需求
 
@@ -144,6 +144,6 @@
 
 ## 验收标准
 
-- [ ] REQ-A001 至 REQ-A008 全部满足。
-- [ ] packages build、plugins check、apps type-check、lint、unit tests 和 admin build 通过。
-- [ ] 默认 admin、裁剪组合、create-app 生成物和文档示例完成验收。
+- [x] REQ-A001 至 REQ-A008 全部满足。
+- [x] packages build、plugins check、apps type-check、lint、unit tests 和 admin build 通过。
+- [x] 默认 admin、裁剪组合、create-app 生成物和文档示例完成验收。

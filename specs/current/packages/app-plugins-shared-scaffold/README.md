@@ -2,26 +2,39 @@
 
 ## 概述
 
-业务页只存在于各 App（如 `ingot-admin`）。App 可独立部署，也可作为官方插件被其他 App 组合进同一 SPA。跨 App 工具合并为 `@ingot/shared`；壳层与菜单混合配置在 `@ingot/admin-core`。本地用 `apps/create-app` 勾选官方插件生成新 App。
+仓库按 apps / plugins / packages 三层组织。官方业务能力是 `plugins/` 下的源码插件（platform、security、org、member），不可独立运行。`apps/admin` 是默认通用后台 composition root，在 `src/plugins.ts` 构建期静态注册所选插件。跨插件工具在 `@ingot/shared`；壳层、菜单混合与通用组件在 `@ingot/admin-core`；跨域只读租户/Client 选择器在 `@ingot/admin-common`。需要独立 appCode、品牌或部署流水线时，用 `apps/create-app` 生成新 App。
 
 ## 相关源码
 
-- [apps/admin/src/plugin.ts](../../../../apps/admin/src/plugin.ts)
-- [packages/shared](../../../../packages/shared)
+- [apps/admin](../../../../apps/admin)
+- [apps/admin/src/plugins.ts](../../../../apps/admin/src/plugins.ts)
+- [plugins/platform](../../../../plugins/platform)
+- [plugins/security](../../../../plugins/security)
+- [plugins/org](../../../../plugins/org)
+- [plugins/member](../../../../plugins/member)
+- [packages/admin-common](../../../../packages/admin-common)
 - [packages/admin-core](../../../../packages/admin-core)
-- [packages/vite-config/src/official-apps.ts](../../../../packages/vite-config/src/official-apps.ts)
-- [apps/target-project](../../../../apps/target-project)
+- [packages/shared](../../../../packages/shared)
+- [packages/vite-config/src/official-plugins.ts](../../../../packages/vite-config/src/official-plugins.ts)
 - [apps/create-app](../../../../apps/create-app)
 - [scripts/lib/scaffold-app.mjs](../../../../scripts/lib/scaffold-app.mjs)
+- [examples/admin-plugin](../../../../examples/admin-plugin)
+- [docs/development-model.md](../../../../docs/development-model.md)
+- [docs/plugin-development.md](../../../../docs/plugin-development.md)
+- [docs/app-development.md](../../../../docs/app-development.md)
 - [docs/composable-admin-runtime.md](../../../../docs/composable-admin-runtime.md)
 - [docs/create-app.md](../../../../docs/create-app.md)
 
 ## 对接接口
 
-菜单接口仍为 `GET /api/pms/v1/auth/user/menus`，结构不变。插件与静态菜单约定见归档 [API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。
+菜单接口仍为 `GET /api/pms/v1/auth/user/menus`，结构不变。插件与静态菜单约定见归档 [20260831 API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。本能力无新增后端接口。
+
+拆分设计见 [20260902-packages-admin-feature-app-split DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/DESIGN.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。
 
 ## 变更记录
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
 | 2026-08-31 | [20260831-app-plugins-shared-scaffold](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/) | App-as-plugin、`@ingot/shared`、静态+动态菜单、create-app |
+| 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 拆成 platform/security/org/member 四个官方插件；`admin-common`；canonical 页面键与 legacy 别名 |
+| 2026-09-02 | [20260902-packages-admin-plugin-layering](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/) | apps/plugins/packages 三层；官方能力改为源码插件；admin 为唯一默认后台；删除 target-project |
