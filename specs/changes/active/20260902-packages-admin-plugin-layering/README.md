@@ -1,6 +1,6 @@
 # 20260902-packages-admin-plugin-layering
 
-> 状态：draft
+> 状态：validating
 
 ## 协作模式
 
@@ -8,9 +8,8 @@
 
 ## 前置条件
 
-- 前置 change：`20260902-packages-admin-feature-app-split`
-- 本 change 按前置 change 已全部实现、验收并归档后的代码状态设计。
-- 前置 change 未达到 `completed` 前，本 change 不得批准或修改业务代码。
+- 前置 change：`20260902-packages-admin-feature-app-split`（仍为 `implementing`，尚未验收归档）
+- 用户于 2026-09-02 明确要求：以前置 change 当前工作树为基线直接实施本 change，验收一并延后。
 - 本 change 不回改、替代或取消前置 change 的历史工件。
 
 ## 背景与动机
