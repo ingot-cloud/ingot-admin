@@ -2,7 +2,10 @@
   <div class="page">
     <header class="hero">
       <h1>创建 Ingot App</h1>
-      <p>仅限本地开发。生成结果写入仓库 <code>apps/&lt;appCode&gt;</code>，不会覆盖已有目录。</p>
+      <p>
+        普通单后台项目请直接使用 <code>apps/admin</code>。仅在需要独立 appCode、品牌、环境、构建或部署流水线时才创建新
+        App。生成结果写入仓库 <code>apps/&lt;appCode&gt;</code>，不会覆盖已有目录。
+      </p>
     </header>
 
     <el-card shadow="never">
@@ -62,7 +65,7 @@ const form = reactive({
   appCode: "",
   title: "",
   port: "5800",
-  officialPluginIds: ["ingot-admin"],
+  officialPluginIds: ["ingot-platform", "ingot-security", "ingot-org", "ingot-member"],
   withLocalPlugin: true,
 });
 
@@ -90,7 +93,7 @@ const privateOnSubmit = async () => {
     const data = (await response.json()) as { ok: boolean; message?: string; appCode?: string };
     ok.value = data.ok;
     message.value = data.ok
-      ? `已生成 apps/${data.appCode}。请执行 pnpm install 后 pnpm --filter ${data.appCode} dev。`
+      ? `已生成 apps/${data.appCode}。普通项目请优先使用 apps/admin。请执行 pnpm install 后 pnpm --filter ${data.appCode} dev。`
       : (data.message ?? "生成失败");
   } catch (error) {
     ok.value = false;

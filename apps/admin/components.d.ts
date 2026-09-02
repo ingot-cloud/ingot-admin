@@ -11,13 +11,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AccountStatusEditButton: typeof import('./src/components/biz/user/AccountStatusEditButton.vue')['default']
-    AccountStatusView: typeof import('./src/components/biz/user/AccountStatusView.vue')['default']
-    BizDeptSelect: typeof import('./src/components/biz/dept-select/BizDeptSelect.vue')['default']
-    BizSearchUserByPhone: typeof import('./src/components/biz/search-user-by-phone/BizSearchUserByPhone.vue')['default']
-    ClientSelect: typeof import('./src/components/biz/ClientSelect.vue')['default']
-    CommonStatusButton: typeof import('./src/components/biz/CommonStatusButton.vue')['default']
-    CommonStatusTag: typeof import('./src/components/biz/CommonStatusTag.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
@@ -55,14 +48,8 @@ declare module 'vue' {
     'IMaterialSymbols:moreVert': typeof import('~icons/material-symbols/more-vert')['default']
     'IMdi:arrowVerticalCollapse': typeof import('~icons/mdi/arrow-vertical-collapse')['default']
     'IMdi:cardAccountDetailsOutline': typeof import('~icons/mdi/card-account-details-outline')['default']
-    InInputTag: typeof import('./src/components/biz/InInputTag.vue')['default']
-    InStatusButton: typeof import('./src/components/biz/InStatusButton.vue')['default']
-    InTag: typeof import('./src/components/biz/InTag.vue')['default']
-    InTagEnum: typeof import('./src/components/biz/InTagEnum.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TenantOptions: typeof import('./src/components/biz/tenant-options/TenantOptions.vue')['default']
-    TenantSelect: typeof import('./src/components/biz/TenantSelect.vue')['default']
   }
   export interface GlobalDirectives {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

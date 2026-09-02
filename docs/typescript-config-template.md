@@ -57,7 +57,7 @@
   "references": [
     { "path": "./apps/admin" },
     { "path": "./apps/auth" },
-    { "path": "./packages/utils" }
+    { "path": "./packages/shared" }
   ]
 }
 ```
@@ -72,7 +72,7 @@
 
 1. 复制上述 `tsconfig.app.json` 到新应用目录
 2. 在根目录 `tsconfig.json` 的 `references` 中添加新应用路径
-3. 在新应用的 `package.json` 中添加 `"@ingot/utils": "workspace:*"`
+3. 在新应用的 `package.json` 中添加 `"@ingot/shared": "workspace:*"`
 4. 在新应用的 `vite.config.ts` 中添加 packages 别名（参考现有应用）
 
 ## 添加新 packages 步骤

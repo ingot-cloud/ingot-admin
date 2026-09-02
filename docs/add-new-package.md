@@ -147,10 +147,10 @@ packages/
       "path": "./apps/auth"
     },
     {
-      "path": "./packages/utils"
+      "path": "./packages/shared"
     },
     {
-      "path": "./packages/hooks"
+      "path": "./packages/admin-core"
     },
     {
       "path": "./packages/your-new-package" // 👈 添加这一行
@@ -165,7 +165,7 @@ packages/
 {
   "compilerOptions": {
     "paths": {
-      "@ingot/utils": ["../../packages/utils/src/index.ts"],
+      "@ingot/shared": ["../../packages/shared/src/index.ts"],
       "@ingot/your-new-package": ["../../packages/your-new-package/src/index.ts"] // 👈 添加这一行
     }
   }
@@ -181,7 +181,7 @@ resolve: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),
     "@cmps": fileURLToPath(new URL("./src/components", import.meta.url)),
     "@models": fileURLToPath(new URL("./src/models", import.meta.url)),
-    "@ingot/utils": fileURLToPath(new URL("../../packages/utils/src/index.ts", import.meta.url)),
+    "@ingot/shared": fileURLToPath(new URL("../../packages/shared/src/index.ts", import.meta.url)),
     "@ingot/your-new-package": fileURLToPath(new URL("../../packages/your-new-package/src/index.ts", import.meta.url))  // 👈 添加这一行
   },
 }

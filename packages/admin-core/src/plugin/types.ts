@@ -25,12 +25,12 @@ export interface InAdminPluginContext {
  * 不会在运行时远程加载。
  */
 export interface InAdminPlugin {
-  /** kebab-case 全局唯一 ID，官方 App 插件使用 App 名，如 `ingot-admin` */
+  /** kebab-case 全局唯一 ID，官方 App 插件使用 App 名，如 `ingot-org` */
   id: string;
   apiVersion: typeof INGOT_ADMIN_PLUGIN_API_VERSION;
   /** 必须先于本插件加载的插件 ID；官方业务插件需包含 `ingot-admin-core` */
   dependsOn?: string[];
-  /** 稳定页面键 → 异步组件。推荐 `ingot.admin.*`，兼容期可同时注册 `ingot.base.*` 与 `@/pages/**` */
+  /** 稳定页面键 → 异步组件。推荐 `ingot.{domain}.*`，兼容期可同时注册 `ingot.admin.*`、`ingot.base.*` 与 `@/pages/**` */
   pages?: Record<PageKey, AsyncComponentLoader>;
   components?: Record<string, Component>;
   directives?: Record<string, Directive>;

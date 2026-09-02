@@ -8,7 +8,8 @@
 // ❌ 不推荐：随着包增多会越来越难维护
 {
   "scripts": {
-    "build": "pnpm --filter @ingot/utils build && pnpm --filter @ingot/hooks build && pnpm --filter @ingot/components build && pnpm --filter @ingot/config build && pnpm --filter @ingot/admin-app build && pnpm --filter @ingot/auth-app build"
+    "build:packages": "pnpm --filter \"./packages/*\" build",
+    "build:apps": "pnpm --filter \"./apps/*\" --filter \"!create-app\" build",
   }
 }
 ```
@@ -123,11 +124,11 @@ pnpm add -D turbo
 ```json
 {
   "scripts": {
-    "build:utils": "pnpm --filter @ingot/utils build",
-    "build:hooks": "pnpm --filter @ingot/hooks build",
+    "build:shared": "pnpm --filter @ingot/shared build",
+    "build:admin-core": "pnpm --filter @ingot/admin-core build",
     "build:admin": "pnpm --filter @ingot/admin-app build",
     "build:login": "pnpm --filter @ingot/auth-app build",
-    "build:packages": "run-p build:utils build:hooks",
+    "build:packages": "pnpm --filter \"./packages/*\" build",
     "build:apps": "run-p build:admin build:login",
     "build": "run-s build:packages build:apps"
   }
@@ -196,10 +197,10 @@ pnpm add -D turbo
 
 ```
 packages/
-├── utils/        # 纯工具函数，不依赖其他包
-├── hooks/        # 可能依赖 utils
-├── components/   # 可能依赖 utils 和 hooks
-└── config/       # 配置，不依赖其他包
+├── shared/       # 框架无关工具
+├── admin-core/   # 管理台 runtime
+├── admin-common/ # 多插件共享无页面能力
+└── vite-config/  # Vite 共享配置
 ```
 
 ### 2. 使用 workspace 协议
@@ -209,8 +210,8 @@ packages/
 ```json
 {
   "dependencies": {
-    "@ingot/utils": "workspace:*",
-    "@ingot/hooks": "workspace:*"
+    "@ingot/shared": "workspace:*",
+    "@ingot/admin-core": "workspace:*"
   }
 }
 ```
@@ -237,8 +238,8 @@ packages/
 ```json
 {
   "references": [
-    { "path": "./packages/utils" },
-    { "path": "./packages/hooks" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/admin-core" },
     { "path": "./apps/admin" },
     { "path": "./apps/auth" }
   ]
@@ -318,7 +319,7 @@ pnpm -r build --dry-run
 
 ```bash
 # 使用 pnpm why 查看包依赖关系
-pnpm why @ingot/utils
+pnpm why @ingot/shared
 
 # 使用 pnpm list 查看所有包
 pnpm list -r --depth=0

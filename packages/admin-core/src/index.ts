@@ -28,6 +28,12 @@ export * from "./hooks/web/useTitle";
 export * from "./components/table";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
 export { coreGlobalComponents } from "./components/coreComponents";
+export type {
+  DisableAccountAPI,
+  EnableAccountAPI,
+  LockAccountAPI,
+  UnlockAccountAPI,
+} from "./components/user/types";
 export {
   CorrectLevel,
   LineOptionsType,

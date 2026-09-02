@@ -16,6 +16,7 @@
     "dist"
   ],
   "scripts": {
+    "dev": "vite build --watch",
     "build": "vite build && vue-tsc --build",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --pretty false",

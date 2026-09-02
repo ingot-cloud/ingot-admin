@@ -16,10 +16,10 @@ import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import vueDevTools from "vite-plugin-vue-devtools";
 import {
   ADMIN_CORE_AUTO_IMPORTS,
-  createOfficialAppAliasEntries,
-  createOfficialAppVitePlugin,
-  resolveOfficialApps,
-} from "./official-apps.js";
+  createOfficialPluginAliasEntries,
+  createOfficialSourcePlugin,
+  resolveOfficialPlugins,
+} from "./official-plugins.js";
 import type { InViteBaseOptions } from "./types.js";
 
 export interface InSharedViteConfigResult {
@@ -91,7 +91,7 @@ export const createSharedViteConfig = (
   const iconDir = options.iconDir ?? "src/assets/icons";
   const absoluteIconDir = path.resolve(options.rootDir, iconDir);
   const cryptoJsBundle = resolveCryptoJsBundle(options.rootDir);
-  const officialApps = resolveOfficialApps(options.rootDir, options.officialAppPlugins);
+  const officialPlugins = resolveOfficialPlugins(options.rootDir, options.officialPlugins);
   const sharedSrc = resolveWorkspaceSharedSrc(options.rootDir);
   const hostAliases = flattenAliases(options.aliases);
   const hostAt = hostAliases.find((alias) => isHostAtAlias(alias.find));
@@ -101,9 +101,7 @@ export const createSharedViteConfig = (
       : path.resolve(options.rootDir, "src");
   const plugins: PluginOption[] = [vue(), vueJsx()];
 
-  if (officialApps.length > 0) {
-    plugins.push(createOfficialAppVitePlugin(officialApps, options.rootDir));
-  }
+  plugins.push(createOfficialSourcePlugin(officialPlugins, options.rootDir, hostSrcDir));
 
   if (options.enableDevTools !== false) {
     plugins.push(vueDevTools());
@@ -164,7 +162,7 @@ export const createSharedViteConfig = (
       },
       resolve: {
         alias: [
-          ...createOfficialAppAliasEntries(officialApps, hostSrcDir),
+          ...createOfficialPluginAliasEntries(officialPlugins),
           ...(sharedSrc
             ? ([
                 {

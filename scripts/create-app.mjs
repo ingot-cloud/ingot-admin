@@ -40,16 +40,20 @@ const main = async () => {
   const titleInput = (await question(`标题 [${appCode}]: `)).trim() || appCode;
 
   const available = OFFICIAL_PLUGINS.filter((plugin) => plugin.available);
-  log(`官方插件: ${available.map((plugin) => plugin.id).join(", ")}`, "yellow");
+  log("普通单后台项目请直接使用 apps/admin。", "yellow");
+  log("仅在需要独立 appCode、品牌、环境、构建或部署流水线时才创建新 App。", "yellow");
+  log(`官方插件（默认全选）: ${available.map((plugin) => plugin.id).join(", ")}`, "yellow");
   const pluginInput = (
-    await question("勾选官方插件，逗号分隔 [ingot-admin]: ")
+    await question(`勾选官方插件，逗号分隔 [${available.map((plugin) => plugin.id).join(",")}]: `)
   )
     .trim()
     .toLowerCase();
-  const officialPluginIds = (pluginInput || "ingot-admin")
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const officialPluginIds = pluginInput
+    ? pluginInput
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean)
+    : available.map((plugin) => plugin.id);
 
   const withPlugin =
     ((await question("是否生成本地插件骨架? (Y/n): ")).trim().toLowerCase() || "y") !== "n";
@@ -63,11 +67,12 @@ const main = async () => {
   });
 
   log(`\n✓ 已创建 apps/${result.appCode}`, "green");
+  log("普通项目请优先使用 apps/admin，而不是再建一个全插件 App。", "yellow");
   log("接下来：", "yellow");
   log(`  1. pnpm install`);
-  log(`  2. 按需修改 apps/${result.appCode}/.env`);
+  log(`  2. 按需修改 apps/${result.appCode}/.env 与 src/plugins.ts`);
   log(`  3. pnpm --filter ${result.appCode} dev`);
-  log(`文档见 docs/create-app.md`);
+  log(`文档见 docs/create-app.md 与 docs/app-development.md`);
 };
 
 main()

@@ -82,3 +82,8 @@ export interface AssignDTO {
   assignIds?: Array<string>;
   unassignIds?: Array<string>;
 }
+
+export interface AccountLockDTO {
+  reasonDetail?: string;
+  lockedUntil?: string;
+}

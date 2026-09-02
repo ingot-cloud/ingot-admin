@@ -3,6 +3,7 @@
  * CLI（scripts/create-app.mjs）与本地 Web UI（apps/create-app）共用。
  *
  * 安全：仅写入仓库 `apps/` 下尚不存在的目录，拒绝覆盖。
+ * 普通单后台项目应直接使用 `apps/admin`；本工具用于创建需要独立运行和部署的 App。
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -17,22 +18,40 @@ export const TEMPLATE_DIR = path.join(REPO_ROOT, "scripts/templates/admin-app");
 /** @type {OfficialPluginOption[]} */
 export const OFFICIAL_PLUGINS = [
   {
-    id: "ingot-admin",
-    packageName: "@ingot/admin-app",
-    importPath: "@ingot/admin-app/plugin",
-    exportName: "adminPlugin",
-    label: "@ingot/admin-app（平台管理页）",
+    id: "ingot-platform",
+    packageName: "@ingot/platform-plugin",
+    importPath: "@ingot/platform-plugin",
+    exportName: "platformPlugin",
+    label: "@ingot/platform-plugin（平台控制面）",
     available: true,
   },
   {
-    id: "ingot-ops",
-    packageName: "ingot-ops",
-    importPath: "ingot-ops/plugin",
-    exportName: "opsPlugin",
-    label: "ingot-ops（即将提供）",
-    available: false,
+    id: "ingot-security",
+    packageName: "@ingot/security-plugin",
+    importPath: "@ingot/security-plugin",
+    exportName: "securityPlugin",
+    label: "@ingot/security-plugin（安全中心）",
+    available: true,
+  },
+  {
+    id: "ingot-org",
+    packageName: "@ingot/org-plugin",
+    importPath: "@ingot/org-plugin",
+    exportName: "orgPlugin",
+    label: "@ingot/org-plugin（组织管理）",
+    available: true,
+  },
+  {
+    id: "ingot-member",
+    packageName: "@ingot/member-plugin",
+    importPath: "@ingot/member-plugin",
+    exportName: "memberPlugin",
+    label: "@ingot/member-plugin（会员管理）",
+    available: true,
   },
 ];
+
+export const DEFAULT_OFFICIAL_PLUGIN_IDS = OFFICIAL_PLUGINS.map((plugin) => plugin.id);
 
 export const toKebab = (value) =>
   String(value ?? "")
@@ -60,7 +79,7 @@ const copyDir = (from, to, replacements) => {
   }
 };
 
-const renderMainTs = ({ appCode, official, withLocalPlugin }) => {
+const renderPluginsTs = ({ official, withLocalPlugin }) => {
   const officialImports = official
     .map((plugin) => `import { ${plugin.exportName} } from "${plugin.importPath}";`)
     .join("\n");
@@ -71,18 +90,25 @@ const renderMainTs = ({ appCode, official, withLocalPlugin }) => {
     ...official.map((plugin) => plugin.exportName),
     ...(withLocalPlugin ? ["targetPlugin"] : []),
   ];
-  const pluginList = pluginIds.join(", ");
 
+  return `import type { InAdminPlugin } from "@ingot/admin-core";
+${officialImports ? `${officialImports}\n` : ""}${localImport ? `${localImport}\n` : ""}
+export const appPlugins: InAdminPlugin[] = [${pluginIds.join(", ")}];
+`;
+};
+
+const renderMainTs = ({ appCode }) => {
   return `import { bootstrapAdminApp, parseBoolean } from "@ingot/admin-core";
 import type { InComponentSize } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
-${officialImports ? `${officialImports}\n` : ""}${localImport ? `${localImport}\n` : ""}
+import { appPlugins } from "./plugins";
+
 const env = import.meta.env;
 const componentSize = (env.VITE_APP_SETTINGS_COMPONENT_SIZE || "default") as InComponentSize;
 
 await bootstrapAdminApp({
-  appCode: "${appCode}",
-  plugins: [${pluginList}],
+  appCode: env.VITE_APP_CODE || "${appCode}",
+  plugins: appPlugins,
   branding: {
     title: env.VITE_APP_TITLE,
     copyright: env.VITE_APP_COPYRIGHT,
@@ -133,17 +159,32 @@ const patchPackageJson = (appDir, official) => {
   fs.writeFileSync(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`);
 };
 
-const patchLocalPluginDependsOn = (appDir, official) => {
+const patchOfficialPluginTypes = (appDir, official) => {
+  const tsconfigPath = path.join(appDir, "tsconfig.app.json");
+  const tsconfig = JSON.parse(fs.readFileSync(tsconfigPath, "utf8"));
+  const paths = { "@/*": ["./src/*"] };
+  for (const plugin of official) {
+    const shortName = plugin.packageName.replace("@ingot/", "");
+    const fileName = `${shortName}.d.ts`;
+    fs.writeFileSync(
+      path.join(appDir, fileName),
+      `import type { InAdminPlugin } from "@ingot/admin-core";\n\nexport declare const ${plugin.exportName}: InAdminPlugin;\n`,
+    );
+    paths[plugin.packageName] = [`./${fileName}`];
+  }
+  tsconfig.compilerOptions = tsconfig.compilerOptions ?? {};
+  tsconfig.compilerOptions.paths = paths;
+  fs.writeFileSync(tsconfigPath, `${JSON.stringify(tsconfig, null, 2)}\n`);
+};
+
+const patchLocalPluginDependsOn = (appDir) => {
   const pluginPath = path.join(appDir, "src/plugins/targetPlugin.ts");
   if (!fs.existsSync(pluginPath)) {
     return;
   }
-  const dependsOn = official.some((plugin) => plugin.id === "ingot-admin")
-    ? '["ingot-admin"]'
-    : '["ingot-admin-core"]';
   const content = fs.readFileSync(pluginPath, "utf8").replace(
     /dependsOn: \[[^\]]*\]/,
-    `dependsOn: ${dependsOn}`,
+    `dependsOn: ["ingot-admin-core"]`,
   );
   fs.writeFileSync(pluginPath, content);
 };
@@ -170,7 +211,7 @@ export const scaffoldApp = (input) => {
     throw new Error("端口必须是数字");
   }
 
-  const officialPluginIds = input.officialPluginIds ?? ["ingot-admin"];
+  const officialPluginIds = input.officialPluginIds ?? DEFAULT_OFFICIAL_PLUGIN_IDS;
   const official = [];
   for (const id of officialPluginIds) {
     const plugin = OFFICIAL_PLUGINS.find((item) => item.id === id);
@@ -209,11 +250,10 @@ export const scaffoldApp = (input) => {
   };
 
   copyDir(TEMPLATE_DIR, appDir, replacements);
-  fs.writeFileSync(
-    path.join(appDir, "src/main.ts"),
-    renderMainTs({ appCode, official, withLocalPlugin }),
-  );
+  fs.writeFileSync(path.join(appDir, "src/plugins.ts"), renderPluginsTs({ official, withLocalPlugin }));
+  fs.writeFileSync(path.join(appDir, "src/main.ts"), renderMainTs({ appCode }));
   patchPackageJson(appDir, official);
+  patchOfficialPluginTypes(appDir, official);
 
   if (!withLocalPlugin) {
     fs.rmSync(path.join(appDir, "src/plugins"), { recursive: true, force: true });
@@ -222,7 +262,7 @@ export const scaffoldApp = (input) => {
     fs.rmSync(path.join(appDir, "src/directives"), { recursive: true, force: true });
     fs.rmSync(path.join(appDir, "src/stores"), { recursive: true, force: true });
   } else {
-    patchLocalPluginDependsOn(appDir, official);
+    patchLocalPluginDependsOn(appDir);
   }
 
   return {

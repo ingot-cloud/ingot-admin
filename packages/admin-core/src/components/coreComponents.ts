@@ -33,6 +33,14 @@ import InCommonUpload from "./upload/InCommonUpload.vue";
 import InCommonUploadAvatar from "./upload/InCommonUploadAvatar.vue";
 import InWithLabel from "./InWithLabel.vue";
 import InRefreshIcon from "./icons/InRefreshIcon.vue";
+import InInputTag from "./tag/InInputTag.vue";
+import InTag from "./tag/InTag.vue";
+import InTagEnum from "./tag/InTagEnum.vue";
+import CommonStatusButton from "./status/CommonStatusButton.vue";
+import CommonStatusTag from "./status/CommonStatusTag.vue";
+import InStatusButton from "./status/InStatusButton.vue";
+import AccountStatusEditButton from "./user/AccountStatusEditButton.vue";
+import AccountStatusView from "./user/AccountStatusView.vue";
 
 export const coreGlobalComponents: Record<string, Component> = {
   InButton,
@@ -69,6 +77,14 @@ export const coreGlobalComponents: Record<string, Component> = {
   InCommonUploadAvatar,
   InWithLabel,
   InRefreshIcon,
+  InInputTag,
+  InTag,
+  InTagEnum,
+  CommonStatusButton,
+  CommonStatusTag,
+  InStatusButton,
+  AccountStatusEditButton,
+  AccountStatusView,
 };
 
 declare module "vue" {
@@ -107,5 +123,13 @@ declare module "vue" {
     InCommonUploadAvatar: typeof InCommonUploadAvatar;
     InWithLabel: typeof InWithLabel;
     InRefreshIcon: typeof InRefreshIcon;
+    InInputTag: typeof InInputTag;
+    InTag: typeof InTag;
+    InTagEnum: typeof InTagEnum;
+    CommonStatusButton: typeof CommonStatusButton;
+    CommonStatusTag: typeof CommonStatusTag;
+    InStatusButton: typeof InStatusButton;
+    AccountStatusEditButton: typeof AccountStatusEditButton;
+    AccountStatusView: typeof AccountStatusView;
   }
 }

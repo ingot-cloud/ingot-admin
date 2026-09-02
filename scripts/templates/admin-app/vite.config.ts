@@ -9,8 +9,6 @@ export default defineInAppConfig({
   iconDir: fileURLToPath(new URL("../../packages/admin-core/src/assets/icons", import.meta.url)),
   aliases: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),
-    "@ingot/admin-app/plugin": fileURLToPath(new URL("../admin/src/plugin.ts", import.meta.url)),
-    "@ingot/admin-app": fileURLToPath(new URL("../admin/src/plugin.ts", import.meta.url)),
   },
   proxy: {
     "/api": {

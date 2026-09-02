@@ -3,11 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": "./src/plugin.ts",
-    "./plugin": "./src/plugin.ts",
-    "./package.json": "./package.json"
-  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -23,6 +18,10 @@
   "dependencies": {
     "@element-plus/icons-vue": "catalog:",
     "@ingot/admin-core": "workspace:*",
+    "@ingot/member-plugin": "workspace:*",
+    "@ingot/org-plugin": "workspace:*",
+    "@ingot/platform-plugin": "workspace:*",
+    "@ingot/security-plugin": "workspace:*",
     "@ingot/shared": "workspace:*",
     "@vue/shared": "catalog:",
     "@vueuse/core": "catalog:",

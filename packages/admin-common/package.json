@@ -1,0 +1,49 @@
+{
+  "name": "@ingot/admin-common",
+  "version": "0.1.0",
+  "description": "跨管理域共享的无页面查询能力与选择器",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && vue-tsc --build",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build --pretty false",
+    "test": "vitest run",
+    "test:unit": "vitest run",
+    "clean": "rimraf node_modules dist"
+  },
+  "engines": {
+    "node": ">=22.17.0 <23"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "peerDependencies": {
+    "element-plus": "^2.14.5",
+    "vue": "^3.5.42"
+  },
+  "dependencies": {
+    "@ingot/admin-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@ingot/vite-config": "workspace:*",
+    "element-plus": "catalog:",
+    "jsdom": "30.0.1",
+    "pinia": "catalog:",
+    "vite": "catalog:",
+    "vitest": "4.1.11",
+    "vue": "catalog:",
+    "vue-router": "catalog:",
+    "vue-tsc": "catalog:",
+    "@vueuse/core": "catalog:"
+  }
+}

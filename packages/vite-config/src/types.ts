@@ -1,6 +1,6 @@
 import type { AliasOptions, PluginOption, ProxyOptions, UserConfig } from "vite";
 import type { ImportsMap } from "unplugin-auto-import/types";
-import type { InOfficialAppPluginOption } from "./official-apps.js";
+import type { InOfficialPluginOption } from "./official-plugins.js";
 
 export interface InViteBaseOptions {
   rootDir: string;
@@ -12,9 +12,10 @@ export interface InViteBaseOptions {
   extraPlugins?: PluginOption[];
   autoImports?: ImportsMap;
   /**
-   * 官方 App 插件包名或配置。省略时根据当前 package.json 的 name / dependencies 自动识别 `@ingot/admin-app`。
+   * 官方源码插件包名或配置。省略时根据当前 package.json 的 name / dependencies
+   * 自动识别已知官方插件（platform / security / org / member）。
    */
-  officialAppPlugins?: Array<string | InOfficialAppPluginOption>;
+  officialPlugins?: Array<string | InOfficialPluginOption>;
   extend?: UserConfig;
 }
 

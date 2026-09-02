@@ -28,18 +28,18 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 ## 目录约定
 
 ```
-apps/{app}/src/
-├── api/           # 按业务域拆分（common/org/platform）
-├── components/    # 全局组件 In* / Biz*（自动注册）
-├── hooks/         # biz/ web/ components/
-├── layouts/
-├── models/        # DTO/VO/枚举/R<T>/Page<T>
-├── net/           # Http 单例 + 拦截器
-├── pages/         # 页面（非 views/）
-├── router/
-├── stores/modules/
-└── utils/
+apps/{app}/                 # composition root：bootstrap、环境、插件清单
+plugins/{plugin}/src/       # 业务纵向切片
+├── api/
+├── components/
+├── models/
+├── pages/                  # IndexPage + table.ts + useOps.ts + components/
+├── stores/
+└── plugin.ts
+packages/                   # 无页面公共抽象（admin-core / admin-common / shared）
 ```
+
+官方插件不得互相依赖；跨插件复用进入 `packages/`。页面示例见 `plugins/platform/src/pages/config/dict/`。
 
 ## 必须遵循
 
@@ -53,7 +53,7 @@ apps/{app}/src/
 
 ### 页面四件套
 
-参考 `apps/admin/src/pages/platform/base/dict/`：
+参考 `plugins/platform/src/pages/config/dict/`：
 
 | 文件            | 职责                            |
 | --------------- | ------------------------------- |

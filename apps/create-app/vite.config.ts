@@ -48,7 +48,7 @@ const scaffoldPlugin = (): Plugin => ({
             title: body.title as string | undefined,
             officialPluginIds: Array.isArray(body.officialPluginIds)
               ? body.officialPluginIds.map((id) => String(id))
-              : [],
+              : undefined,
             withLocalPlugin: body.withLocalPlugin !== false,
           });
           sendJson(res, 200, { ok: true, ...result });

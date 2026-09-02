@@ -14,3 +14,11 @@
 
 - 用户同一句话要求「根据 inbox 生成并实现」：先产出 `draft` spec，**停下来等确认**。用户明确说可以开工后，再将状态改为 `approved` → `implementing` 并改代码。
 - 实现只读该 change 目录（`API.md`、`REQUIREMENTS.md`、`DESIGN.md`），不要再读已清空的 inbox。
+
+架构分层（详情见 [docs/development-model.md](./docs/development-model.md)）：
+
+- `apps/`：可运行、可部署的应用，是 composition root
+- `plugins/`：不可独立运行的业务源码插件
+- `packages/`：无页面的公共抽象
+- 依赖只允许 `apps → plugins/packages`、`plugins → packages`；官方插件不得互相依赖
+- 普通后台直接使用 `apps/admin`，不要把业务页面写回 admin 宿主

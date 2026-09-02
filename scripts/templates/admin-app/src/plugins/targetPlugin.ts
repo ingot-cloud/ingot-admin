@@ -31,7 +31,7 @@ Object.entries(pageModules).forEach(([path, loader]) => {
 export const targetPlugin: InAdminPlugin = {
   id: "{{pluginId}}",
   apiVersion: INGOT_ADMIN_PLUGIN_API_VERSION,
-  dependsOn: ["ingot-admin"],
+  dependsOn: ["ingot-admin-core"],
   pages,
   components: {
     BizTargetDemoBadge,

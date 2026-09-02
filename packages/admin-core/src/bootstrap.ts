@@ -21,7 +21,7 @@ const APP_CODE_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
  * 启动管理台 SPA。
  *
  * `plugins` 在构建期静态导入并注册页面/组件/静态菜单；
- * 官方 App 插件（如 `adminPlugin`）与本地插件列在同一数组即完成组合。
+ * 官方 App 插件（如 `orgPlugin`）与本地插件列在同一数组即完成组合。
  *
  * @param options.appCode kebab-case 应用编码
  * @param options.plugins 构建开关：未列入的插件不会进入产物

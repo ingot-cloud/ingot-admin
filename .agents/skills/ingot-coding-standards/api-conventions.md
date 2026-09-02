@@ -3,16 +3,7 @@
 ## API 模块组织
 
 ```
-apps/admin/src/api/
-├── common/          # auth、user、oss
-├── org/             # 租户/组织侧
-└── platform/        # 平台管理
-    ├── admin/       # 平台管理员
-    ├── base/        # menu/role/dict/app
-    ├── dev/         # client/social
-    ├── member/
-    ├── org/
-    └── security/
+plugins/{plugin}/src/api/
 ```
 
 每个文件对应一个资源域，模块内定义 `PATH` 常量 + 若干 `XxxAPI` 函数。
@@ -80,7 +71,7 @@ import Http from "@/net";
 
 ## 响应类型 R\<T\>
 
-定义于 `apps/admin/src/models/net.ts`：
+定义于 `packages/admin-core/src/models/net.ts`：
 
 ```typescript
 export interface R<T = unknown> extends AxiosResponse {

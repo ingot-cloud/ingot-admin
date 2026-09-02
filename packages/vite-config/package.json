@@ -1,7 +1,7 @@
 {
   "name": "@ingot/vite-config",
   "version": "0.1.0",
-  "description": "Ingot Vue 应用与组件库共享 Vite 配置",
+  "description": "Ingot Vue 应用、源码插件与组件库共享 Vite 配置",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,7 +18,9 @@
     "build": "tsc --build",
     "dev": "tsc --build --watch",
     "clean": "rimraf node_modules dist",
-    "type-check": "tsc --build --pretty false"
+    "type-check": "tsc --build --pretty false",
+    "test": "vitest run",
+    "test:unit": "vitest run"
   },
   "engines": {
     "node": ">=22.17.0 <23"
@@ -48,6 +50,7 @@
     "unplugin-vue-components": "catalog:",
     "vite": "catalog:",
     "vite-plugin-svg-icons": "catalog:",
-    "vite-plugin-vue-devtools": "catalog:"
+    "vite-plugin-vue-devtools": "catalog:",
+    "vitest": "4.1.11"
   }
 }

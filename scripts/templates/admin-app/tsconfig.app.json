@@ -5,9 +5,7 @@
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "paths": {
-      "@/*": ["./src/*"],
-      "@ingot/admin-app": ["./admin-app-plugin.d.ts"],
-      "@ingot/admin-app/plugin": ["./admin-app-plugin.d.ts"]
+      "@/*": ["./src/*"]
     }
   },
   "references": [

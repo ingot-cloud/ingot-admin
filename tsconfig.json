@@ -9,6 +9,18 @@
       "path": "./apps/auth"
     },
     {
+      "path": "./plugins/platform"
+    },
+    {
+      "path": "./plugins/security"
+    },
+    {
+      "path": "./plugins/org"
+    },
+    {
+      "path": "./plugins/member"
+    },
+    {
       "path": "./packages/shared"
     },
     {
@@ -16,6 +28,9 @@
     },
     {
       "path": "./packages/admin-core"
+    },
+    {
+      "path": "./packages/admin-common"
     }
   ],
   "compilerOptions": {

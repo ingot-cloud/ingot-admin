@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import "@ingot/admin-core";
 interface ImportMetaEnv {
+  readonly VITE_APP_CODE: string;
   readonly VITE_APP_TITLE: string;
   readonly VITE_APP_SYMBOL: string;
   readonly VITE_APP_STORE_PREFIX: string;

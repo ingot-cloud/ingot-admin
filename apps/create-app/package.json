@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "type-check": "vue-tsc --noEmit",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/",
     "clean": "rimraf node_modules dist"
   },
   "dependencies": {

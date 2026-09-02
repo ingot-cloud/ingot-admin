@@ -128,7 +128,7 @@ const emits = defineEmits(["onChanged"]);
 
 ## 页面四件套
 
-以 `pages/platform/admin/user/` 为参考：
+以 `plugins/platform/src/pages/admin/user/` 为参考：
 
 ### table.ts — 表头配置
 

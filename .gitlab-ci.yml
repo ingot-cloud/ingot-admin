@@ -45,6 +45,7 @@ build-admin:
     - if: '$CI_COMMIT_BRANCH == "release_170"'
       changes:
         - apps/admin/**/*
+        - plugins/**/*
         - packages/**/*
         - package.json
         - pnpm-lock.yaml
@@ -52,32 +53,6 @@ build-admin:
         - .gitlab-ci.yml
       when: on_success
     # 手动触发：在 release_170 分支上始终可以手动执行
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: manual
-      allow_failure: true
-
-# ------------------------------
-# target 项目 build
-# ------------------------------
-build-target:
-  stage: build
-  extends: .pnpm
-  script:
-    - pnpm build:target
-  artifacts:
-    paths:
-      - apps/target-project/dist/
-    expire_in: 1 hour
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      changes:
-        - apps/target-project/**/*
-        - packages/**/*
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - .gitlab-ci.yml
-      when: on_success
     - if: '$CI_COMMIT_BRANCH == "release_170"'
       when: manual
       allow_failure: true
@@ -144,21 +119,6 @@ docker-admin:
       optional: false
 
 # ------------------------------
-# target Docker 镜像
-# ------------------------------
-docker-target:
-  extends: .docker-build-template
-  variables:
-    MODULE_NAME: "target-project"
-    BUILD_CONTEXT: "apps/target-project"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: build-target
-      optional: false
-
-# ------------------------------
 # login Docker 镜像
 # ------------------------------
 docker-login:
@@ -207,23 +167,6 @@ deploy-admin:
       when: on_success
   needs:
     - job: docker-admin
-      optional: false
-
-# ------------------------------
-# target 项目部署
-# ------------------------------
-deploy-target:
-  extends: .deploy-template
-  variables:
-    MODULE_NAME: target-project
-    SERVICE_NAME: target-project
-    VIRTUAL_HOST: target.ingotcloud.top
-    VIRTUAL_PORT: 3000
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: docker-target
       optional: false
 
 # ------------------------------
