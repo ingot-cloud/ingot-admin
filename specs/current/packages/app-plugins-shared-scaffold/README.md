@@ -40,3 +40,4 @@
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 拆成 platform/security/org/member 四个官方插件；`admin-common`；canonical 页面键与 legacy 别名 |
 | 2026-09-02 | [20260902-packages-admin-plugin-layering](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/) | apps/plugins/packages 三层；官方能力改为源码插件；admin 为唯一默认后台；删除 target-project |
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | 去掉 `@/` 与 `ingot.` 前缀；布局扫描 `layout.*`；菜单编辑下拉选视图；create-app 与 appCode 同源 |
+| 2026-09-03 | [20260903-packages-app-convention-local-plugin](../../../changes/archive/2026/20260903-packages-app-convention-local-plugin/) | App 约定目录本地插件；组件/hook 自动注入；重名失败 |

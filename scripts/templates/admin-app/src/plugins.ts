@@ -1,8 +1,9 @@
 import type { InAdminPlugin } from "@ingot/admin-core";
-import { createTargetPlugin } from "./plugins/targetPlugin";
+import { createAppLocalPlugin } from "./app-plugin";
+import { createDemoMenus } from "./demoMenus";
 
 export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
   const plugins: InAdminPlugin[] = [];
-  plugins.push(createTargetPlugin(appCode));
+  plugins.push(createAppLocalPlugin(appCode, { staticMenus: createDemoMenus(appCode) }));
   return plugins;
 };

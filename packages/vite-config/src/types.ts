@@ -7,6 +7,11 @@ export interface InViteBaseOptions {
   aliases?: AliasOptions;
   componentDirs?: string[];
   hookDirs?: string[];
+  /**
+   * 管理台约定目录守卫。为 true 时扫描组件 In*、El* 前缀与 hook/store 保留导出名。
+   * 仅 `apps/admin` 与 create-app 生成的后台开启；`apps/auth` 不要开。
+   */
+  enforceAppConventions?: boolean;
   iconDir?: string;
   enableDevTools?: boolean;
   extraPlugins?: PluginOption[];

@@ -42,11 +42,13 @@ pnpm test:pack
 ## 官方源码插件
 
 ```ts
-import { adminPlugins } from "./plugins";
+import { createAdminPlugins } from "./plugins";
+
+const appCode = import.meta.env.VITE_APP_CODE || "ingot-admin";
 
 await bootstrapAdminApp({
-  appCode: import.meta.env.VITE_APP_CODE || "ingot-admin",
-  plugins: adminPlugins,
+  appCode,
+  plugins: createAdminPlugins(appCode),
 });
 ```
 

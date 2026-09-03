@@ -10,7 +10,7 @@ export default defineInAppConfig({
   aliases: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),
   },
-  hookDirs: [],
+  enforceAppConventions: true,
   proxy: {
     "/api": {
       target: "http://localhost:7980",

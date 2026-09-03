@@ -28,7 +28,15 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 ## 目录约定
 
 ```
-apps/{app}/                 # composition root：bootstrap、环境、插件清单
+apps/{app}/src/             # composition root + 本 App 约定扩展
+├── app-plugin.ts           # 冻结 glob，加文件不必改
+├── plugins.ts
+├── pages/                  # IndexPage 四件套；进 registry
+├── layouts/
+├── components/             # 全局 Biz* 组件
+├── hooks/
+├── directives/
+└── stores/                 # 与 core 同一 Pinia；persist 需显式声明
 plugins/{plugin}/src/       # 业务纵向切片
 ├── api/
 ├── components/
@@ -39,7 +47,7 @@ plugins/{plugin}/src/       # 业务纵向切片
 packages/                   # 无页面公共抽象（admin-core / admin-common / shared）
 ```
 
-官方插件不得互相依赖；跨插件复用进入 `packages/`。页面示例见 `plugins/platform/src/pages/config/dict/`。
+官方插件不得互相依赖；跨插件复用进入 `packages/`。App 全局组件必须 `Biz*`，禁止 `In*` / `El*`。页面示例见 `plugins/platform/src/pages/config/dict/`。
 
 ## 必须遵循
 

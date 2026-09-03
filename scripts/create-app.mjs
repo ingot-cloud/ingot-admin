@@ -56,7 +56,7 @@ const main = async () => {
     : available.map((plugin) => plugin.id);
 
   const withPlugin =
-    ((await question("是否生成本地插件骨架? (Y/n): ")).trim().toLowerCase() || "y") !== "n";
+    ((await question("是否生成本地 Demo 页? (Y/n): ")).trim().toLowerCase() || "y") !== "n";
 
   const result = scaffoldApp({
     appCode,

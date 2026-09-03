@@ -31,14 +31,14 @@ pnpm create:app:cli acme-admin
 | 标题 | `VITE_APP_TITLE`，默认与编码相同 |
 | 开发端口 | 写入 Vite `server.port` 与登录回调 URI |
 | 官方插件 | 多选四个 `@ingot/*-plugin`，**默认全选**，可全部取消 |
-| 本地插件骨架 | 是否生成 App 私有 `targetPlugin` + Demo 页 + 示例 `staticMenus` |
+| 本地 Demo 页 | 是否生成示例页、示例组件/指令/store 与 `staticMenus`。约定插件与空目录始终生成 |
 
 ## 生成结果
 
 - `src/main.ts`：bootstrap，`appCode` 读取 `VITE_APP_CODE`
 - `src/plugins.ts`：集中插件清单，与 `package.json` 依赖一致
 - 环境、Vite/TS、Docker 与代理配置
-- 可选的 App 私有插件骨架
+- 始终生成 `src/app-plugin.ts` 与约定目录；可选 Demo 页
 
 ## 安全
 
@@ -52,7 +52,7 @@ pnpm install
 pnpm --filter <appCode> dev
 ```
 
-入口示例（默认全选且生成本地插件时）：
+入口示例（默认全选且生成 Demo 时）：
 
 ```ts
 import type { InAdminPlugin } from "@ingot/admin-core";
@@ -60,7 +60,8 @@ import { platformPlugin } from "@ingot/platform-plugin";
 import { securityPlugin } from "@ingot/security-plugin";
 import { orgPlugin } from "@ingot/org-plugin";
 import { memberPlugin } from "@ingot/member-plugin";
-import { createTargetPlugin } from "./plugins/targetPlugin";
+import { createAppLocalPlugin } from "./app-plugin";
+import { createDemoMenus } from "./demoMenus";
 
 export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
   const plugins: InAdminPlugin[] = [
@@ -69,9 +70,9 @@ export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
     orgPlugin,
     memberPlugin,
   ];
-  plugins.push(createTargetPlugin(appCode));
+  plugins.push(createAppLocalPlugin(appCode, { staticMenus: createDemoMenus(appCode) }));
   return plugins;
 };
 ```
 
-`main.ts` 里 `appCode` 与 `createAppPlugins(appCode)` 必须是同一份值，本地页面/布局才会用 appCode 当 prefix。本地插件默认 `dependsOn: ["ingot-admin-core"]`。菜单编码见 [菜单 view_path](./menu-view-path.md)。更多约定见 [App 开发](./app-development.md) 与 [运行时](./composable-admin-runtime.md)。
+`main.ts` 里 `appCode` 与 `createAppPlugins(appCode)` 必须是同一份值，本地页面/布局才会用 appCode 当 prefix。约定插件默认 `dependsOn: ["ingot-admin-core"]`。关闭 Demo 时仍会注册 `createAppLocalPlugin(appCode)`。菜单编码见 [菜单 view_path](./menu-view-path.md)。更多约定见 [App 开发](./app-development.md) 与 [运行时](./composable-admin-runtime.md)。

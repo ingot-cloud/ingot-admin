@@ -18,20 +18,15 @@ App 只负责启动和部署。默认通用后台是 `apps/admin`。
 
 ## Bootstrap
 
-`apps/admin/src/main.ts` 读取 runtime 配置并调用 `bootstrapAdminApp`。插件清单集中在 `src/plugins.ts`：
+`apps/admin/src/main.ts` 读取 runtime 配置并调用 `bootstrapAdminApp`。插件清单集中在 `src/plugins.ts`，`appCode` 与约定本地插件必须同源：
 
 ```ts
-import type { InAdminPlugin } from "@ingot/admin-core";
-import { platformPlugin } from "@ingot/platform-plugin";
-import { securityPlugin } from "@ingot/security-plugin";
-import { orgPlugin } from "@ingot/org-plugin";
-import { memberPlugin } from "@ingot/member-plugin";
-
-export const adminPlugins: InAdminPlugin[] = [
+export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
   platformPlugin,
   securityPlugin,
   orgPlugin,
   memberPlugin,
+  createAppLocalPlugin(appCode),
 ];
 ```
 
@@ -60,9 +55,24 @@ export const adminPlugins: InAdminPlugin[] = [
 
 登录应用是 `apps/auth`，不属于管理台插件体系。
 
-## App 私有插件
+## App 约定本地插件
 
-create-app 可以生成仅属于该 App 的本地插件。用 `defineAppLocalPlugin(appCode)`，prefix 与 `main.ts` 的 appCode 相同。官方 admin 保持 composition root，不在自身堆积业务页面。本地插件需要被多个 App 复用时，再提升到 `plugins/`。
+每个管理台 App（含 `apps/admin`）都有一份冻结的 `src/app-plugin.ts`，用 glob 扫描约定目录。新增文件不必改注册逻辑。
+
+```text
+src/pages/**/IndexPage.vue    # 进 page registry，prefix 为 appCode 转点号
+src/layouts/**/IndexPage.vue  # `{prefix}.layout.*`
+src/components/**/*.vue       # 全局组件，文件名必须 Biz*
+src/hooks/**/*.ts             # AutoImport
+src/directives/**/*.ts        # 文件名转 kebab-case，需 default 导出
+src/stores/**/*.ts            # AutoImport；与 core 同一 Pinia，persist 需显式声明
+```
+
+`pages/**/components/` 仍是页面私有。`In*` / `El*` 与 `usePaging`、`useAppStore` 等保留名会在构建期失败；与官方插件全局组件重名会在启动时失败。
+
+admin 仍是 composition root，不复制官方插件页面；本部署专属扩展放约定目录。要跨 App 复用再升到 `plugins/`。
+
+Store 不要再 `createPinia`。需要落盘时写 `persist: { storage, pick }`，键前缀来自 `VITE_APP_STORE_PREFIX`。
 
 菜单 `view_path` 约定见 [菜单 view_path](./menu-view-path.md)。
 

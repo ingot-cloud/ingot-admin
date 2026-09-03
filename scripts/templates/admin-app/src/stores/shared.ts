@@ -1,12 +1,10 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-
 /**
- * 验证 target 与 base/core 共享同一 Pinia 实例的演示 store。
+ * 验证 App 与 admin-core 共享同一 Pinia 实例的演示 store。
+ * 需要落盘时自行加 persist，不会默认 persist。
  */
-export const useTargetSharedStore = defineStore("target.shared", () => {
+export const useAppSharedStore = defineStore("{{pageKeyPrefix}}.shared", () => {
   const counter = ref(0);
-  const note = ref("来自 target.shared");
+  const note = ref("来自 App 本地 store");
 
   const increment = () => {
     counter.value += 1;
@@ -14,7 +12,7 @@ export const useTargetSharedStore = defineStore("target.shared", () => {
 
   const reset = () => {
     counter.value = 0;
-    note.value = "来自 target.shared";
+    note.value = "来自 App 本地 store";
   };
 
   return {

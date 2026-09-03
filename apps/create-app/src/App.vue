@@ -31,7 +31,7 @@
             </el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item label="本地插件骨架">
+        <el-form-item label="本地 Demo 页">
           <el-switch v-model="form.withLocalPlugin" />
         </el-form-item>
         <el-form-item>

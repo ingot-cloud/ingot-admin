@@ -1,3 +1,4 @@
+export * from "./app-conventions.js";
 export * from "./app.js";
 export * from "./library.js";
 export * from "./official-plugins.js";

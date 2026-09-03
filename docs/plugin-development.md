@@ -72,7 +72,7 @@ pages: definePluginPages({
 
 1. 确认插件在 `plugins/` 且 workspace 包含 `plugins/*`
 2. `apps/admin/package.json` 添加 `"@ingot/<name>-plugin": "workspace:*"`
-3. 在 `apps/admin/src/plugins.ts` 导入并加入 `adminPlugins`
+3. 在 `apps/admin/src/plugins.ts` 导入并加入 `createAdminPlugins`
 4. `pnpm install`
 5. 后端按 appCode / OAuth Client 返回对应菜单
 

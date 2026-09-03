@@ -14,6 +14,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import type { Alias, AliasOptions, PluginOption, UserConfig } from "vite";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import vueDevTools from "vite-plugin-vue-devtools";
+import { createAppConventionGuard } from "./app-conventions.js";
 import {
   ADMIN_CORE_AUTO_IMPORTS,
   createOfficialPluginAliasEntries,
@@ -21,6 +22,8 @@ import {
   resolveOfficialPlugins,
 } from "./official-plugins.js";
 import type { InViteBaseOptions } from "./types.js";
+
+const DEFAULT_APP_HOOK_DIRS = ["./src/hooks/**", "./src/stores/**"];
 
 export interface InSharedViteConfigResult {
   plugins: PluginOption[];
@@ -121,7 +124,7 @@ export const createSharedViteConfig = (
         ...(hasAdminCoreDep(options.rootDir) ? [ADMIN_CORE_AUTO_IMPORTS] : []),
         ...(options.autoImports ? [options.autoImports] : []),
       ],
-      dirs: options.hookDirs ?? ["./src/hooks/**"],
+      dirs: options.hookDirs ?? DEFAULT_APP_HOOK_DIRS,
       dts: "./auto-imports.d.ts",
       vueTemplate: true,
       resolvers: [ElementPlusResolver()],
@@ -147,6 +150,15 @@ export const createSharedViteConfig = (
       },
     }),
     Unocss(),
+    ...(options.enforceAppConventions
+      ? [
+          createAppConventionGuard({
+            rootDir: options.rootDir,
+            componentDirs: options.componentDirs ?? ["./src/components"],
+            scriptDirs: options.hookDirs ?? DEFAULT_APP_HOOK_DIRS,
+          }),
+        ]
+      : []),
     ...(options.extraPlugins ?? []),
   );
 

@@ -18,6 +18,7 @@
 - 布局与页面同一套 IndexPage 扫描；菜单编辑从 registry 选择视图
 - 静态菜单与后端动态菜单合并
 - 本地 `create-app` 脚手架与 `examples/admin-plugin`
+- App 约定本地插件（pages / layouts / components / hooks / directives / stores）与重名失败
 
 ### Out of Scope
 
@@ -53,8 +54,8 @@
 
 - **角色**：需要多后台交付的开发者
 - **前置条件**：本地执行 `pnpm create:app`（`127.0.0.1:5801`）
-- **步骤**：填写独立 appCode / 端口，默认全选官方插件，可取消；可选本地插件骨架
-- **预期结果**：写入新的 `apps/<appCode>`；生成 `src/plugins.ts` 与依赖一致；已有目录拒绝覆盖
+- **步骤**：填写独立 appCode / 端口，默认全选官方插件，可取消；可选本地 Demo 页
+- **预期结果**：写入新的 `apps/<appCode>`；始终有 `src/app-plugin.ts` 与约定目录；`src/plugins.ts` 与依赖一致；已有目录拒绝覆盖
 
 ### 场景 5：静态 + 动态菜单
 
@@ -69,6 +70,13 @@
 - **前置条件**：已登录默认 admin，打开应用详情菜单管理
 - **步骤**：添加目录或菜单；从下拉选择布局或页面；菜单类型确认默认可改 path；目录自行填写 path
 - **预期结果**：提交 canonical `view_path` 且 `customViewPath=true`；不能手填 `@/`；按钮不选视图；内嵌/外链绑定 `layout.iframe` / `layout.external`
+
+### 场景 7：在 App 约定目录扩展本部署能力
+
+- **角色**：后台项目开发者
+- **前置条件**：使用 `apps/admin` 或 create-app 生成的后台
+- **步骤**：在 `src/pages` / `components` / `hooks` / `stores` 新增文件，不改 `app-plugin.ts`
+- **预期结果**：页面进入 registry；`Biz*` 组件与 hook/store 可直接使用；`InButton`、`usePaging` 仍可用；`In*` 或保留导出名构建失败
 
 ## 功能需求
 
@@ -101,8 +109,8 @@
 **验收标准：**
 
 - [x] admin 默认注册全部四个官方插件
-- [x] 清单集中在 `src/plugins.ts`，业务页面不在 admin 复制
-- [x] admin 保留 dev/build、Docker 和部署能力
+- [x] 清单集中在 `src/plugins.ts` 的 `createAdminPlugins(appCode)`，官方插件页面不在 admin 复制
+- [x] admin 保留约定目录供本部署扩展，以及 dev/build、Docker 和部署能力
 
 ### REQ-004：页面键、布局扫描与共享能力
 
@@ -117,7 +125,7 @@
 
 ### REQ-005：菜单、脚手架与文档
 
-系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件；本地插件用 `defineAppLocalPlugin(appCode)`，与 `main.ts` 同源。菜单编辑从当前 registry 选择页面或布局。根 README 与 `docs/development-model.md` 说明三层开发入口；`docs/menu-view-path.md` 说明编码与迁库。
+系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件；始终生成约定本地插件 `defineAppLocalPlugin(appCode)`，与 `main.ts` 同源；原本地插件开关只控制 Demo。菜单编辑从当前 registry 选择页面或布局。根 README 与 `docs/development-model.md` 说明三层开发入口；`docs/menu-view-path.md` 说明编码与迁库。
 
 **验收标准：**
 
@@ -126,6 +134,18 @@
 - [x] 已删除 `apps/target-project`；示例在 `examples/admin-plugin`
 - [x] `pnpm check:docs` 与 `pnpm check:examples` 覆盖文档链接和示例类型
 - [x] 菜单类型默认 path 为 `'/' + key.replaceAll('.', '/')`，目录不自动填 path；提交 `customViewPath=true`
+- [x] 生成物始终包含 `src/app-plugin.ts`；关闭 Demo 时仍注册约定插件
+
+### REQ-006：App 约定本地插件与自动注入
+
+系统 SHALL 为每个管理台 App 提供约定目录本地插件。`src/components` 的 `Biz*` 组件与 `src/directives` 自动进入 registry；`src/hooks` 与 `src/stores` 由 AutoImport 注入。与 admin-core 或已注册插件重名时构建或启动失败。App store 使用同一 Pinia；persist 必须显式声明。
+
+**验收标准：**
+
+- [x] `defineAppLocalPlugin` 接受组件/指令 glob，文件名推导注册名
+- [x] `apps/admin` 具备空约定目录与 `createAdminPlugins(appCode)`
+- [x] 管理台 Vite `enforceAppConventions` 拒绝 `In*` / `El*` 与保留导出名
+- [x] Store 不默认 persist，id 使用 appCode 点分前缀
 
 ## 非功能需求
 
@@ -148,5 +168,5 @@
 
 - [x] 三层目录与单向依赖由边界脚本保护
 - [x] 四个官方源码插件与 admin 宿主可类型检查；packages 可构建
-- [x] create-app 可按全选、裁剪、空插件和本地插件生成
+- [x] create-app 可按全选、裁剪、空插件生成，并始终带约定本地插件
 - [x] 文档、示例和分层检查纳入根 `pnpm check`

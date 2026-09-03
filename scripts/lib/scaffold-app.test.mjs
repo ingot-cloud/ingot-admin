@@ -47,9 +47,10 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   assert.match(pluginsTs, /import \{ securityPlugin \} from "@ingot\/security-plugin";/);
   assert.match(pluginsTs, /import \{ orgPlugin \} from "@ingot\/org-plugin";/);
   assert.match(pluginsTs, /import \{ memberPlugin \} from "@ingot\/member-plugin";/);
-  assert.match(pluginsTs, /import \{ createTargetPlugin \} from "\.\/plugins\/targetPlugin";/);
+  assert.match(pluginsTs, /import \{ createAppLocalPlugin \} from "\.\/app-plugin";/);
+  assert.match(pluginsTs, /import \{ createDemoMenus \} from "\.\/demoMenus";/);
   assert.match(pluginsTs, /export const createAppPlugins = \(appCode: string\): InAdminPlugin\[] => \{/);
-  assert.match(pluginsTs, /plugins.push\(createTargetPlugin\(appCode\)\);/);
+  assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/);
 
   const mainTs = fs.readFileSync(path.join(result.appDir, "src/main.ts"), "utf8");
   assert.match(mainTs, /import \{ createAppPlugins \} from "\.\/plugins";/);
@@ -64,9 +65,14 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   assert.equal(pkg.dependencies["@ingot/member-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/admin-app"], undefined);
 
-  const pluginTs = fs.readFileSync(path.join(result.appDir, "src/plugins/targetPlugin.ts"), "utf8");
+  const pluginTs = fs.readFileSync(path.join(result.appDir, "src/app-plugin.ts"), "utf8");
   assert.match(pluginTs, /defineAppLocalPlugin\(/);
-  assert.match(pluginTs, /createTargetPlugin = \(appCode: string\)/);
+  assert.match(pluginTs, /createAppLocalPlugin = \(/);
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/components/BizTargetDemoBadge.vue")));
+  assert.doesNotMatch(
+    fs.readFileSync(path.join(result.appDir, "src/app-plugin.ts"), "utf8"),
+    /BizTargetDemoBadge/,
+  );
 
   const tsconfig = JSON.parse(fs.readFileSync(path.join(result.appDir, "tsconfig.app.json"), "utf8"));
   assert.deepEqual(tsconfig.compilerOptions.paths["@ingot/org-plugin"], ["./org-plugin.d.ts"]);
@@ -88,7 +94,9 @@ test("脚手架支持裁剪官方插件", () => {
   const pluginsTs = fs.readFileSync(path.join(result.appDir, "src/plugins.ts"), "utf8");
   assert.match(pluginsTs, /import \{ orgPlugin \} from "@ingot\/org-plugin";/);
   assert.doesNotMatch(pluginsTs, /platformPlugin/);
-  assert.doesNotMatch(pluginsTs, /createTargetPlugin/);
+  assert.doesNotMatch(pluginsTs, /createDemoMenus/);
+  assert.match(pluginsTs, /import \{ createAppLocalPlugin \} from "\.\/app-plugin";/);
+  assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode\)\);/);
   assert.match(pluginsTs, /const plugins: InAdminPlugin\[] = \[orgPlugin];/);
 
   const pkg = JSON.parse(fs.readFileSync(path.join(result.appDir, "package.json"), "utf8"));
@@ -96,12 +104,16 @@ test("脚手架支持裁剪官方插件", () => {
   assert.equal(pkg.dependencies["@ingot/platform-plugin"], undefined);
   assert.equal(pkg.dependencies["@ingot/security-plugin"], undefined);
   assert.equal(pkg.dependencies["@ingot/member-plugin"], undefined);
-  assert.equal(fs.existsSync(path.join(result.appDir, "src/plugins")), false);
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/app-plugin.ts")));
+  assert.equal(fs.existsSync(path.join(result.appDir, "src/demoMenus.ts")), false);
+  assert.equal(fs.existsSync(path.join(result.appDir, "src/pages/demo")), false);
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/components/.gitkeep")));
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/hooks/.gitkeep")));
 
   fs.rmSync(rootDir, { recursive: true, force: true });
 });
 
-test("脚手架允许空官方插件并保留本地插件骨架", () => {
+test("脚手架允许空官方插件并保留约定插件与 Demo", () => {
   const rootDir = makeRoot();
   const result = scaffoldApp({
     appCode: "blank-admin",
@@ -112,12 +124,13 @@ test("脚手架允许空官方插件并保留本地插件骨架", () => {
 
   const pluginsTs = fs.readFileSync(path.join(result.appDir, "src/plugins.ts"), "utf8");
   assert.doesNotMatch(pluginsTs, /@ingot\/(platform|security|org|member)-plugin/);
-  assert.match(pluginsTs, /plugins.push\(createTargetPlugin\(appCode\)\);/);
+  assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/);
 
   const pkg = JSON.parse(fs.readFileSync(path.join(result.appDir, "package.json"), "utf8"));
   assert.equal(pkg.dependencies["@ingot/org-plugin"], undefined);
   assert.equal(pkg.dependencies["@ingot/platform-plugin"], undefined);
-  assert.ok(fs.existsSync(path.join(result.appDir, "src/plugins/targetPlugin.ts")));
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/app-plugin.ts")));
+  assert.ok(fs.existsSync(path.join(result.appDir, "src/demoMenus.ts")));
 
   fs.rmSync(rootDir, { recursive: true, force: true });
 });

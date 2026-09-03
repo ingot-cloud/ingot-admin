@@ -238,6 +238,8 @@ export const useUserInfoStore = defineStore("security.user", () => {
 
 ### 持久化
 
+App `src/stores/` 与 admin-core 共用 `createAdminPinia()` 上已安装的 persistedstate 插件，不要再 `createPinia`。未写 `persist` 的 store 不会落盘。Pinia id 使用 appCode 点分前缀（如 `ingot.admin.foo`）。
+
 ```typescript
 export const useLoginStore = defineStore(
   "login",

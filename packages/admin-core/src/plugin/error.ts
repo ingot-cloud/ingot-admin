@@ -6,7 +6,9 @@ export type InAdminPluginErrorCode =
   | "DUPLICATE_PAGE_KEY"
   | "DUPLICATE_COMPONENT_NAME"
   | "DUPLICATE_DIRECTIVE_NAME"
-  | "DUPLICATE_ROUTE_NAME";
+  | "DUPLICATE_ROUTE_NAME"
+  | "INVALID_COMPONENT_NAME"
+  | "INVALID_DIRECTIVE_MODULE";
 
 export class InAdminPluginError extends Error {
   public readonly code: InAdminPluginErrorCode;

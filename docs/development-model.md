@@ -22,8 +22,8 @@ apps ─────→ plugins ─────→ packages
 
 ## 选择哪条路
 
-1. **直接使用 `apps/admin`**：普通单后台、OA、运营后台或 C 端业务管理。这是默认入口。
-2. **开发 `plugins/<name>`**：新增或修改业务页面和 API。插件自己 type-check / lint / 单测，由 admin 编译运行。
+1. **直接使用 `apps/admin`**：普通单后台、OA、运营后台或 C 端业务管理。这是默认入口。本部署专属页面/组件/hook 放 `apps/admin/src` 约定目录，不必手写注册。
+2. **开发 `plugins/<name>`**：新增或修改可复用业务页面和 API。插件自己 type-check / lint / 单测，由 admin 编译运行。
 3. **create-app 生成新 App**：需要独立 appCode、品牌、环境变量、构建产物或部署流水线时才创建。
 
 不要为了“看起来像独立产品”再复制一套全插件后台。`apps/admin` 已经承担这个角色。

@@ -1,3 +1,4 @@
+export * from "./assets";
 export * from "./error";
 export * from "./local";
 export * from "./pages";

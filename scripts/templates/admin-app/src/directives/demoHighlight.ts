@@ -3,7 +3,7 @@ import type { Directive } from "vue";
 /**
  * 演示指令：挂载时为元素添加高亮样式类。
  */
-export const demoHighlightDirective: Directive<HTMLElement, string | undefined> = {
+const demoHighlightDirective: Directive<HTMLElement, string | undefined> = {
   mounted(el, binding) {
     el.classList.add("target-demo-highlight");
     if (binding.value) {
@@ -15,3 +15,5 @@ export const demoHighlightDirective: Directive<HTMLElement, string | undefined> 
     delete el.dataset.demoLabel;
   },
 };
+
+export default demoHighlightDirective;

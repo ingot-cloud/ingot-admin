@@ -2,6 +2,12 @@ import {
   INGOT_ADMIN_PLUGIN_API_VERSION,
   type InAdminPlugin,
 } from "./types";
+import {
+  definePluginComponents,
+  definePluginDirectives,
+  type PluginComponentGlobModules,
+  type PluginDirectiveGlobModules,
+} from "./assets";
 import { definePluginPages, toViewPrefix, type PluginPageGlobModules } from "./pages";
 
 export interface DefineAppLocalPluginOptions {
@@ -11,6 +17,8 @@ export interface DefineAppLocalPluginOptions {
   pageSourceRoot?: string;
   layoutModules?: PluginPageGlobModules;
   layoutSourceRoot?: string;
+  componentModules?: PluginComponentGlobModules;
+  directiveModules?: PluginDirectiveGlobModules;
   components?: InAdminPlugin["components"];
   directives?: InAdminPlugin["directives"];
   staticMenus?: InAdminPlugin["staticMenus"];
@@ -18,6 +26,7 @@ export interface DefineAppLocalPluginOptions {
 
 /**
  * 用与 bootstrap 相同的 appCode 生成本地插件。页面 prefix 为 appCode 转点号，布局再拼 `.layout`。
+ * 组件/指令 glob 存在时按约定目录自动注册，不必再手写映射。
  */
 export const defineAppLocalPlugin = (options: DefineAppLocalPluginOptions): InAdminPlugin => {
   const prefix = toViewPrefix(options.appCode);
@@ -35,6 +44,12 @@ export const defineAppLocalPlugin = (options: DefineAppLocalPluginOptions): InAd
         canonicalPrefix: `${prefix}.layout`,
       })
     : undefined;
+  const components = options.componentModules
+    ? definePluginComponents(options.componentModules)
+    : options.components;
+  const directives = options.directiveModules
+    ? definePluginDirectives(options.directiveModules)
+    : options.directives;
 
   return {
     id: options.id ?? `${options.appCode}-local`,
@@ -42,8 +57,8 @@ export const defineAppLocalPlugin = (options: DefineAppLocalPluginOptions): InAd
     dependsOn: ["ingot-admin-core"],
     pages,
     layouts,
-    components: options.components,
-    directives: options.directives,
+    components,
+    directives,
     staticMenus: options.staticMenus,
   };
 };

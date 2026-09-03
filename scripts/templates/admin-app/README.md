@@ -8,8 +8,9 @@
 
 1. 在仓库根目录执行 `pnpm install`
 2. 按需修改 `.env` 与 `src/plugins.ts`
-3. 从 `src/plugins.ts` 和 `package.json` 同步增删官方插件依赖
-4. 让后端应用 / OAuth Client 只返回本 App 需要的菜单
-5. `pnpm --filter {{appCode}} dev`
+3. 本 App 扩展放 `src/pages` / `components` / `hooks` / `stores` 等约定目录，不必改 `app-plugin.ts`
+4. 从 `src/plugins.ts` 和 `package.json` 同步增删官方插件依赖
+5. 让后端应用 / OAuth Client 只返回本 App 需要的菜单
+6. `pnpm --filter {{appCode}} dev`
 
 更完整的说明见仓库 `docs/app-development.md` 与 `docs/create-app.md`。

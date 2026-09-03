@@ -79,26 +79,33 @@ const copyDir = (from, to, replacements) => {
   }
 };
 
-const renderPluginsTs = ({ official, withLocalPlugin }) => {
+const renderPluginsTs = ({ official, withDemo }) => {
   const officialImports = official
     .map((plugin) => `import { ${plugin.exportName} } from "${plugin.importPath}";`)
     .join("\n");
-  const localImport = withLocalPlugin
-    ? `import { createTargetPlugin } from "./plugins/targetPlugin";`
-    : "";
   const officialIds = official.map((plugin) => plugin.exportName);
   const officialList = officialIds.join(", ");
-  const localPush = withLocalPlugin
-    ? `\n  plugins.push(createTargetPlugin(appCode));`
-    : "";
+  const demoImport = withDemo ? `import { createDemoMenus } from "./demoMenus";\n` : "";
+  const localPush = withDemo
+    ? `\n  plugins.push(createAppLocalPlugin(appCode, { staticMenus: createDemoMenus(appCode) }));`
+    : `\n  plugins.push(createAppLocalPlugin(appCode));`;
 
   return `import type { InAdminPlugin } from "@ingot/admin-core";
-${officialImports ? `${officialImports}\n` : ""}${localImport ? `${localImport}\n` : ""}
+${officialImports ? `${officialImports}\n` : ""}import { createAppLocalPlugin } from "./app-plugin";
+${demoImport}
 export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
   const plugins: InAdminPlugin[] = [${officialList}];${localPush}
   return plugins;
 };
 `;
+};
+
+const ensureGitkeep = (dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+  const keep = path.join(dir, ".gitkeep");
+  if (!fs.existsSync(keep) && fs.readdirSync(dir).filter((name) => name !== ".gitkeep").length === 0) {
+    fs.writeFileSync(keep, "");
+  }
 };
 
 const renderMainTs = ({ appCode }) => {
@@ -182,16 +189,22 @@ const patchOfficialPluginTypes = (appDir, official) => {
   fs.writeFileSync(tsconfigPath, `${JSON.stringify(tsconfig, null, 2)}\n`);
 };
 
-const patchLocalPluginDependsOn = (appDir) => {
-  const pluginPath = path.join(appDir, "src/plugins/targetPlugin.ts");
-  if (!fs.existsSync(pluginPath)) {
-    return;
+const stripDemoSkeleton = (appDir) => {
+  fs.rmSync(path.join(appDir, "src/pages/demo"), { recursive: true, force: true });
+  fs.rmSync(path.join(appDir, "src/components"), { recursive: true, force: true });
+  fs.rmSync(path.join(appDir, "src/directives"), { recursive: true, force: true });
+  fs.rmSync(path.join(appDir, "src/stores"), { recursive: true, force: true });
+  fs.rmSync(path.join(appDir, "src/demoMenus.ts"), { force: true });
+  for (const relative of [
+    "src/pages",
+    "src/layouts",
+    "src/components",
+    "src/hooks",
+    "src/directives",
+    "src/stores",
+  ]) {
+    ensureGitkeep(path.join(appDir, relative));
   }
-  const content = fs.readFileSync(pluginPath, "utf8").replace(
-    /dependsOn: \[[^\]]*\]/,
-    `dependsOn: ["ingot-admin-core"]`,
-  );
-  fs.writeFileSync(pluginPath, content);
 };
 
 /**
@@ -255,19 +268,13 @@ export const scaffoldApp = (input) => {
   };
 
   copyDir(TEMPLATE_DIR, appDir, replacements);
-  fs.writeFileSync(path.join(appDir, "src/plugins.ts"), renderPluginsTs({ official, withLocalPlugin }));
+  fs.writeFileSync(path.join(appDir, "src/plugins.ts"), renderPluginsTs({ official, withDemo: withLocalPlugin }));
   fs.writeFileSync(path.join(appDir, "src/main.ts"), renderMainTs({ appCode }));
   patchPackageJson(appDir, official);
   patchOfficialPluginTypes(appDir, official);
 
   if (!withLocalPlugin) {
-    fs.rmSync(path.join(appDir, "src/plugins"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/pages/demo"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/components"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/directives"), { recursive: true, force: true });
-    fs.rmSync(path.join(appDir, "src/stores"), { recursive: true, force: true });
-  } else {
-    patchLocalPluginDependsOn(appDir);
+    stripDemoSkeleton(appDir);
   }
 
   return {
