@@ -110,7 +110,7 @@ pnpm create:app:cli      # 交互式 CLI
 2. 若需要官方业务页，workspace/path 依赖对应 `@ingot/*-plugin` 源码
 3. peer 安装与 catalog 对齐的 `vue`、`vue-router`、`pinia`、`element-plus`
 4. 使用 `defineInAppConfig`，入口调用 `bootstrapAdminApp`
-5. `import "@ingot/admin-core/style.css"`
+5. `import "@ingot/admin-core/style.css"` 与 `import "uno.css"`（后者由 App 的 UnoCSS 插件生成 App / 插件原子类）
 
 发布前确认 tarball 的 `package.json` 中不再包含 `workspace:` / `catalog:`。
 

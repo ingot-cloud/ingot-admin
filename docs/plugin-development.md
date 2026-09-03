@@ -37,6 +37,8 @@ Dashboard 属于 platform 插件，canonical key 为 `platform.dashboard`。
 
 Vite 使用 `defineInSourcePluginConfig`。`@/` 指向插件自身 `src`，由宿主 Vite 按 importer 解析，不与其它插件冲突。
 
+样式走宿主 App 的 UnoCSS：插件不要 `import "uno.css"`，也不要指望插件目录下的 `unocss.config.ts` 在 App 构建时生效。原子类写在模板或 `@apply` 中即可，由 `apps/*/src/main.ts` 的 `uno.css` 生成。
+
 ## 目录与四件套
 
 业务页面放在插件 `src/pages/`，保持 `IndexPage.vue` + `table.ts` + `useOps.ts` + `components/`。

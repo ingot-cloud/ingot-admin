@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+declare module "uno.css";
 interface ImportMetaEnv {
   readonly VITE_APP_CODE: string;
   readonly VITE_APP_TITLE: string;

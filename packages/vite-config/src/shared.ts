@@ -22,6 +22,7 @@ import {
   resolveOfficialPlugins,
 } from "./official-plugins.js";
 import type { InViteBaseOptions } from "./types.js";
+import { createUnoContentFilesystem } from "./uno-content.js";
 
 const DEFAULT_APP_HOOK_DIRS = ["./src/hooks/**", "./src/stores/**"];
 
@@ -149,7 +150,11 @@ export const createSharedViteConfig = (
         [symbol]: FileSystemIconLoader(absoluteIconDir),
       },
     }),
-    Unocss(),
+    Unocss({
+      content: {
+        filesystem: createUnoContentFilesystem(options.rootDir, officialPlugins),
+      },
+    }),
     ...(options.enforceAppConventions
       ? [
           createAppConventionGuard({

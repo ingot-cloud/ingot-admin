@@ -54,6 +54,8 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
 
   const mainTs = fs.readFileSync(path.join(result.appDir, "src/main.ts"), "utf8");
   assert.match(mainTs, /import \{ createAppPlugins \} from "\.\/plugins";/);
+  assert.match(mainTs, /import "@ingot\/admin-core\/style\.css";/);
+  assert.match(mainTs, /import "uno\.css";/);
   assert.match(mainTs, /const appCode = env.VITE_APP_CODE \|\| "acme-admin"/);
   assert.match(mainTs, /plugins: createAppPlugins\(appCode\)/);
   assert.doesNotMatch(mainTs, /adminPlugin/);

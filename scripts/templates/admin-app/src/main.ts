@@ -1,6 +1,7 @@
 import { bootstrapAdminApp, parseBoolean } from "@ingot/admin-core";
 import type { InComponentSize } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
+import "uno.css";
 import { createAppPlugins } from "./plugins";
 
 const env = import.meta.env;
