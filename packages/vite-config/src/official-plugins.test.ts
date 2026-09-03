@@ -254,7 +254,7 @@ describe("createOfficialSourcePlugin", () => {
     expect(config.resolve?.dedupe).toEqual(
       expect.arrayContaining(["vue", "vue-router", "pinia", "element-plus", "@vueuse/core"]),
     );
-    expect(config.optimizeDeps?.exclude).toEqual(["@ingot/platform-plugin"]);
+    expect(config.optimizeDeps?.exclude).toEqual(["@ingot/platform-plugin", "@ingot/admin-core"]);
     expect(config.server?.fs?.allow).toEqual(expect.arrayContaining([plugin.rootDir, hostDir]));
     expect(config.optimizeDeps?.exclude).not.toContain("@ingot/org-plugin");
   });

@@ -19,7 +19,7 @@ describe("mergeMenuTrees", () => {
         path: "/dashboard",
         routeName: "Dashboard",
         menuType: MenuType.Menu,
-        viewPath: "ingot.admin.dashboard",
+        viewPath: "platform.dashboard",
       },
     ];
     const merged = mergeMenuTrees(staticMenus, dynamicMenus);

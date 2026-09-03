@@ -1,6 +1,6 @@
 # App 插件化与共享包规格
 
-本文写已上线的组合、分层与脚手架行为。接口细节见归档 [20260831 API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。
+本文写已上线的组合、分层与脚手架行为。接口细节见归档 [20260831 API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。viewPath 编码见 [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/)。
 
 ## 概述
 
@@ -14,7 +14,8 @@
 - 四个官方源码插件的页面归属、纵向切片与构建期组合
 - 默认 admin composition root 与插件裁剪
 - `@ingot/admin-common`、`@ingot/shared`、`@ingot/admin-core`
-- `definePluginPages` 生成 canonical 与迁移期 legacy 页面键
+- `definePluginPages` 只生成 canonical 键（无 `@/` / `ingot.admin.*` / `ingot.base.*`）
+- 布局与页面同一套 IndexPage 扫描；菜单编辑从 registry 选择视图
 - 静态菜单与后端动态菜单合并
 - 本地 `create-app` 脚手架与 `examples/admin-plugin`
 
@@ -60,7 +61,14 @@
 - **角色**：项目开发者
 - **前置条件**：插件或 App 声明 `staticMenus`，后端返回用户菜单
 - **步骤**：启动后查看侧栏
-- **预期结果**：静态在前、动态在后；同 `path` / `routeName` 冲突则启动失败；后端误配未安装插件时进入 plugin-unavailable 诊断页
+- **预期结果**：静态在前、动态在后；同 `path` / `routeName` 冲突则启动失败；后端误配未安装插件或未迁库的旧 `@/` `view_path` 时进入 plugin-unavailable 诊断页
+
+### 场景 6：创建菜单时选择已扫描视图
+
+- **角色**：平台管理员
+- **前置条件**：已登录默认 admin，打开应用详情菜单管理
+- **步骤**：添加目录或菜单；从下拉选择布局或页面；菜单类型确认默认可改 path；目录自行填写 path
+- **预期结果**：提交 canonical `view_path` 且 `customViewPath=true`；不能手填 `@/`；按钮不选视图；内嵌/外链绑定 `layout.iframe` / `layout.external`
 
 ## 功能需求
 
@@ -84,7 +92,7 @@
 - [x] 每个插件保留本域 pages、API、models、stores、组件和 `plugin.ts`
 - [x] 插件没有独立 HTML、public、dev/preview/production build
 - [x] 插件可独立 type-check、lint 和 unit test
-- [x] Dashboard 在 platform 插件，canonical 为 `ingot.platform.dashboard`，兼容 `ingot.admin.dashboard`、`ingot.base.dashboard` 与 `@/pages/dashboard/IndexPage.vue`
+- [x] Dashboard 在 platform 插件，canonical 为 `platform.dashboard`
 
 ### REQ-003：默认通用 Admin
 
@@ -96,26 +104,28 @@
 - [x] 清单集中在 `src/plugins.ts`，业务页面不在 admin 复制
 - [x] admin 保留 dev/build、Docker 和部署能力
 
-### REQ-004：页面键与共享能力
+### REQ-004：页面键、布局扫描与共享能力
 
-系统 SHALL 为 IndexPage 生成 canonical 键 `ingot.{domain}.*`，并在迁移期同时注册 `ingot.admin.*`、`ingot.base.*` 与原 `@/pages/**` 文件键。租户与 Client 只读选择器在 `@ingot/admin-common`。
+系统 SHALL 为 IndexPage 生成 canonical 键 `{domain}.*`（无全局 `ingot.` 前缀）。布局扫描 `layouts/{slot}/IndexPage.vue` 为 `layout.{slot}`；系统页为 `common.*`；App 本地页面 prefix 为 `appCode` 的 `-` 转 `.`，本地布局再拼 `.layout`。不注册 `@/`、`ingot.admin.*`、`ingot.base.*`。租户与 Client 只读选择器在 `@ingot/admin-common`。
 
 **验收标准：**
 
-- [x] 例如会话页 canonical 为 `ingot.security.sessions`
+- [x] 例如会话页 canonical 为 `security.sessions`，Dashboard 为 `platform.dashboard`
+- [x] core 扫描 `layout.main|simple|iframe|external`；宿主 `optimizeDeps.exclude` 包含 `@ingot/admin-core`
 - [x] security 可单独选装，选择器来自 admin-common，不依赖 platform 插件
 - [x] 业务源码不再使用 `@base`
 
 ### REQ-005：菜单、脚手架与文档
 
-系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件。根 README 与 `docs/development-model.md` 说明三层开发入口。
+系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件；本地插件用 `defineAppLocalPlugin(appCode)`，与 `main.ts` 同源。菜单编辑从当前 registry 选择页面或布局。根 README 与 `docs/development-model.md` 说明三层开发入口；`docs/menu-view-path.md` 说明编码与迁库。
 
 **验收标准：**
 
-- [x] 菜单接口仍为 `GET /api/pms/v1/auth/user/menus`
-- [x] 生成物 `src/plugins.ts` 与 package.json 只包含所选官方插件
+- [x] 菜单接口仍为 `GET /api/pms/v1/auth/user/menus`；`view_path` 只认 canonical
+- [x] 生成物 `src/plugins.ts` 为 `createAppPlugins(appCode)`，与 package.json 只包含所选官方插件
 - [x] 已删除 `apps/target-project`；示例在 `examples/admin-plugin`
 - [x] `pnpm check:docs` 与 `pnpm check:examples` 覆盖文档链接和示例类型
+- [x] 菜单类型默认 path 为 `'/' + key.replaceAll('.', '/')`，目录不自动填 path；提交 `customViewPath=true`
 
 ## 非功能需求
 
@@ -130,7 +140,8 @@
 - 官方业务插件不得互相依赖；跨插件复用进入有明确职责的 package
 - 只有两个及以上插件实际使用的无页面能力才能进入 `admin-common`
 - 仓库根包名为 `@ingot/workspace`
-- 页面稳定键优先 `ingot.{domain}.*`，兼容 `ingot.admin.*`、`ingot.base.*` 与 `@/pages/**`
+- 页面稳定键为 `{domain}.*`、`layout.*`、`common.*` 或 App 本地 `{appCode 转点号}.*`，不兼容 `@/` 与旧 `ingot.admin.*` / `ingot.base.*`
+- 上线须先迁 `platform_menu.view_path`（或同时发）；后端原样保存前端提交的 `view_path`
 - 裁剪插件时必须同步 `src/plugins.ts`、package.json 和后端菜单
 
 ## 验收标准

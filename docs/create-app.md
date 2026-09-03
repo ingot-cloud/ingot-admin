@@ -60,15 +60,18 @@ import { platformPlugin } from "@ingot/platform-plugin";
 import { securityPlugin } from "@ingot/security-plugin";
 import { orgPlugin } from "@ingot/org-plugin";
 import { memberPlugin } from "@ingot/member-plugin";
-import { targetPlugin } from "./plugins/targetPlugin";
+import { createTargetPlugin } from "./plugins/targetPlugin";
 
-export const appPlugins: InAdminPlugin[] = [
-  platformPlugin,
-  securityPlugin,
-  orgPlugin,
-  memberPlugin,
-  targetPlugin,
-];
+export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
+  const plugins: InAdminPlugin[] = [
+    platformPlugin,
+    securityPlugin,
+    orgPlugin,
+    memberPlugin,
+  ];
+  plugins.push(createTargetPlugin(appCode));
+  return plugins;
+};
 ```
 
-本地插件默认 `dependsOn: ["ingot-admin-core"]`。更多约定见 [App 开发](./app-development.md) 与 [运行时](./composable-admin-runtime.md)。
+`main.ts` 里 `appCode` 与 `createAppPlugins(appCode)` 必须是同一份值，本地页面/布局才会用 appCode 当 prefix。本地插件默认 `dependsOn: ["ingot-admin-core"]`。菜单编码见 [菜单 view_path](./menu-view-path.md)。更多约定见 [App 开发](./app-development.md) 与 [运行时](./composable-admin-runtime.md)。

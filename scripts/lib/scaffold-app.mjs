@@ -84,16 +84,20 @@ const renderPluginsTs = ({ official, withLocalPlugin }) => {
     .map((plugin) => `import { ${plugin.exportName} } from "${plugin.importPath}";`)
     .join("\n");
   const localImport = withLocalPlugin
-    ? `import { targetPlugin } from "./plugins/targetPlugin";`
+    ? `import { createTargetPlugin } from "./plugins/targetPlugin";`
     : "";
-  const pluginIds = [
-    ...official.map((plugin) => plugin.exportName),
-    ...(withLocalPlugin ? ["targetPlugin"] : []),
-  ];
+  const officialIds = official.map((plugin) => plugin.exportName);
+  const officialList = officialIds.join(", ");
+  const localPush = withLocalPlugin
+    ? `\n  plugins.push(createTargetPlugin(appCode));`
+    : "";
 
   return `import type { InAdminPlugin } from "@ingot/admin-core";
 ${officialImports ? `${officialImports}\n` : ""}${localImport ? `${localImport}\n` : ""}
-export const appPlugins: InAdminPlugin[] = [${pluginIds.join(", ")}];
+export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
+  const plugins: InAdminPlugin[] = [${officialList}];${localPush}
+  return plugins;
+};
 `;
 };
 
@@ -101,14 +105,15 @@ const renderMainTs = ({ appCode }) => {
   return `import { bootstrapAdminApp, parseBoolean } from "@ingot/admin-core";
 import type { InComponentSize } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
-import { appPlugins } from "./plugins";
+import { createAppPlugins } from "./plugins";
 
 const env = import.meta.env;
 const componentSize = (env.VITE_APP_SETTINGS_COMPONENT_SIZE || "default") as InComponentSize;
+const appCode = env.VITE_APP_CODE || "${appCode}";
 
 await bootstrapAdminApp({
-  appCode: env.VITE_APP_CODE || "${appCode}",
-  plugins: appPlugins,
+  appCode,
+  plugins: createAppPlugins(appCode),
   branding: {
     title: env.VITE_APP_TITLE,
     copyright: env.VITE_APP_COPYRIGHT,

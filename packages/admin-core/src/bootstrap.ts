@@ -65,6 +65,7 @@ export const bootstrapAdminApp = async (
     pinia,
     router,
     resolvePage: (pageKey: PageKey) => registry.resolvePage(pageKey),
+    listViews: () => registry.listViews(),
   });
   for (const plugin of plugins) {
     await plugin.install?.(context);

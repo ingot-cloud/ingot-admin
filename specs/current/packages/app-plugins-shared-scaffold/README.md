@@ -24,12 +24,13 @@
 - [docs/app-development.md](../../../../docs/app-development.md)
 - [docs/composable-admin-runtime.md](../../../../docs/composable-admin-runtime.md)
 - [docs/create-app.md](../../../../docs/create-app.md)
+- [docs/menu-view-path.md](../../../../docs/menu-view-path.md)
 
 ## 对接接口
 
 菜单接口仍为 `GET /api/pms/v1/auth/user/menus`，结构不变。插件与静态菜单约定见归档 [20260831 API.md](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/API.md)。本能力无新增后端接口。
 
-拆分设计见 [20260902-packages-admin-feature-app-split DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/DESIGN.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。
+拆分设计见 [20260902-packages-admin-feature-app-split DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/DESIGN.md)。三层架构见 [20260902-packages-admin-plugin-layering DESIGN.md](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/DESIGN.md)。viewPath 编码与迁库见 [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) 与 [docs/menu-view-path.md](../../../../docs/menu-view-path.md)。
 
 ## 变更记录
 
@@ -38,3 +39,4 @@
 | 2026-08-31 | [20260831-app-plugins-shared-scaffold](../../../changes/archive/2026/20260831-app-plugins-shared-scaffold/) | App-as-plugin、`@ingot/shared`、静态+动态菜单、create-app |
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 拆成 platform/security/org/member 四个官方插件；`admin-common`；canonical 页面键与 legacy 别名 |
 | 2026-09-02 | [20260902-packages-admin-plugin-layering](../../../changes/archive/2026/20260902-packages-admin-plugin-layering/) | apps/plugins/packages 三层；官方能力改为源码插件；admin 为唯一默认后台；删除 target-project |
+| 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | 去掉 `@/` 与 `ingot.` 前缀；布局扫描 `layout.*`；菜单编辑下拉选视图；create-app 与 appCode 同源 |

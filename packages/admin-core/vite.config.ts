@@ -16,7 +16,7 @@ export default defineInLibraryConfig({
     "@ingot/shared/crypto": path.resolve(rootDir, "../shared/src/crypto/index.ts"),
     "@ingot/shared/hooks": path.resolve(rootDir, "../shared/src/hooks/index.ts"),
   },
-  componentDirs: ["./src/components", "./src/layouts"],
+  componentDirs: ["./src/components", "./src/layouts/widgets"],
   hookDirs: ["./src/hooks/**"],
   iconDir: "src/assets/icons",
   external: [

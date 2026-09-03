@@ -19,9 +19,7 @@ export const orgPlugin: InAdminPlugin = {
   pages: definePluginPages({
     modules,
     sourceRoot: "./pages",
-    canonicalPrefix: "ingot.org",
-    legacySemanticPrefix: "org",
-    legacyFilePrefix: "@/pages/org",
+    canonicalPrefix: "org",
   }),
   components: domainGlobalComponents,
 };

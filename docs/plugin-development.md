@@ -11,7 +11,9 @@
 | `plugins/org` | `@ingot/org-plugin` | `orgPlugin` | `ingot-org` |
 | `plugins/member` | `@ingot/member-plugin` | `memberPlugin` | `ingot-member` |
 
-Dashboard 属于 platform 插件，canonical key 为 `ingot.platform.dashboard`，同时兼容 `ingot.admin.dashboard`、`ingot.base.dashboard` 和 `@/pages/dashboard/IndexPage.vue`。
+Dashboard 属于 platform 插件，canonical key 为 `platform.dashboard`。
+
+菜单 `view_path` 编码、迁库与落库约定见 [菜单 view_path](./menu-view-path.md)。
 
 ## 包清单
 
@@ -47,18 +49,17 @@ API、models、stores、业务组件跟随所属插件，不要跨插件复制�
 pages: definePluginPages({
   modules: import.meta.glob("./pages/**/*.vue"),
   sourceRoot: "./pages",
-  canonicalPrefix: "ingot.org",
-  legacySemanticPrefix: "org",
-  legacyFilePrefix: "@/pages/org",
+  canonicalPrefix: "org",
 })
 ```
 
-只为 `IndexPage.vue` 生成 semantic key。动态菜单的 `viewPath` 应使用 canonical key；legacy key 仅用于兼容已配置菜单。
+只为 `IndexPage.vue` 生成 semantic key。动态菜单的 `view_path` 必须使用 canonical key。布局用插件的 `layouts` 字段同样扫描 `layouts/**/IndexPage.vue`。
 
 ## 可选能力
 
 `InAdminPlugin` 还可以声明：
 
+- `layouts`：布局 `IndexPage` 扫描结果，与 pages 共用查找表
 - `components`：全局业务组件
 - `directives`：指令
 - `staticMenus`：前端静态菜单（示例或无后端菜单的页面）

@@ -56,11 +56,11 @@ await bootstrapAdminApp({
 
 - 插件 `id`：`ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`
 - 官方插件 `dependsOn` 必须包含 `ingot-admin-core`，彼此不得互相依赖
-- 页面稳定键优先 `ingot.{domain}.*`；兼容期同时注册 `ingot.admin.*`、`ingot.base.*` 与旧文件路径
+- 页面稳定键：官方 `{domain}.*`，布局 `layout.*`，系统 `common.*`，App 本地用 `appCode`（`-` 转 `.`）
 - Vue / Router / Pinia / Element Plus / VueUse 必须单实例（peer + Vite `dedupe`）
 - 插件内部 `@/` 按 importer 解析到该插件 `src`，宿主 `@/` 留给 App
 
-`createOfficialSourcePlugin` 负责上述 alias、`server.fs.allow` 和 `optimizeDeps.exclude`。
+`createOfficialSourcePlugin` 负责上述 alias、`server.fs.allow` 和 `optimizeDeps.exclude`（官方插件 + `@ingot/admin-core`）。排除 admin-core 是为了保留 `import.meta.glob` 的路径键，布局才能扫成 `layout.*`。
 
 ## 静态 + 动态菜单
 
@@ -89,7 +89,7 @@ export const examplePlugin: InAdminPlugin = {
 
 合并顺序：App `staticMenus` → 各插件 `staticMenus` → 后端 `UserMenuAPI`。静态在前。同 `path` / `routeName` 冲突会抛错。后端为空或失败时，仅静态菜单仍可出现在侧栏。公共 403/404 只走 `staticRoutes` 且 `hideMenu`。
 
-页面、组件、指令、路由名冲突会抛错，禁止静默覆盖。未知 `viewPath` 渲染 `ingot.common.plugin-unavailable`。
+未知 `viewPath` 渲染 `common.plugin.unavailable`。编码约定见 [菜单 view_path](./menu-view-path.md)。
 
 可复制示例见 [examples/admin-plugin](../examples/admin-plugin/README.md)。
 

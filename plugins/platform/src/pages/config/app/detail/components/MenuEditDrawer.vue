@@ -34,6 +34,28 @@
         <el-form-item prop="name" label="菜单名称">
           <el-input v-model="editForm.name" placeholder="请输入菜单名称" clearable />
         </el-form-item>
+        <el-form-item
+          v-if="!isButton() && isDefaultLink()"
+          prop="viewPath"
+          label="绑定视图"
+        >
+          <el-select
+            w-full
+            filterable
+            v-model="editForm.viewPath"
+            placeholder="选择已扫描的页面或布局"
+            @change="privateOnViewPathChange"
+          >
+            <el-option-group v-for="group in viewOptionGroups" :key="group.label" :label="group.label">
+              <el-option
+                v-for="item in group.options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-option-group>
+          </el-select>
+        </el-form-item>
         <el-form-item prop="path" label="菜单路由" v-if="isDefaultLink()">
           <el-input v-model="editForm.path" placeholder="请输入菜单路由" clearable />
         </el-form-item>
@@ -106,30 +128,6 @@
         </el-form-item>
       </div>
 
-      <in-form-group-title
-        v-if="!isButton() && isDefaultLink()"
-        title="视图高级选项"
-        v-model="editForm.customViewPath"
-      />
-      <div p-20px v-if="!isButton() && isDefaultLink() && editForm.customViewPath">
-        <el-form-item label="布局类型">
-          <in-select
-            w-full
-            v-model="currentSelectLayoutOption"
-            :options="LayoutOptions"
-            placeholder="选择使用的布局类型"
-            @onChanged="privateOnLayoutSelectChanged"
-          />
-        </el-form-item>
-        <el-form-item
-          label="视图路径"
-          prop="viewPath"
-          v-if="currentSelectLayoutOption === PageLayoutViewPath.CUSTOM"
-        >
-          <el-input v-model="editForm.viewPath" placeholder="请输入视图路径" clearable />
-        </el-form-item>
-      </div>
-
       <in-form-group-title v-if="!isButton()" title="其他高级选项" v-model="moreOptionsFlag" />
       <div p-20px v-if="!isButton() && moreOptionsFlag">
         <el-form-item label="路由名称">
@@ -184,7 +182,14 @@
 import { ClickOutside as vClickOutside } from "element-plus";
 import type { PlatformMenu } from "@/models";
 import { TreeKeyAndProps } from "@/models";
-import { LayoutOptions, PageLayoutViewPath } from "@ingot/admin-core";
+import {
+  PageLayoutViewPath,
+  copyParams,
+  getDiff,
+  listRegisteredViews,
+  toDefaultMenuPath,
+} from "@ingot/admin-core";
+import type { TreeData } from "element-plus";
 import {
   AccessModeEnum,
   CommonStatus,
@@ -196,8 +201,6 @@ import {
   useMenuTypeEnum,
 } from "@/models/enums";
 import { CreateAppMenuAPI, RemoveAppMenuAPI, UpdateAppMenuAPI } from "@/api/platform/config/app";
-import { copyParams, getDiff } from "@ingot/admin-core";
-import type { TreeData } from "element-plus";
 
 const props = defineProps<{
   appId: string;
@@ -215,7 +218,22 @@ const rules = {
   linkType: [{ required: true, message: "请选择链接类型", trigger: "blur" }],
   linkUrl: [{ required: true, message: "请输入链接 URL", trigger: "blur" }],
   accessMode: [{ required: true, message: "请选择访问模式", trigger: "change" }],
-  viewPath: [{ required: true, message: "请输入视图路径", trigger: "blur" }],
+  viewPath: [
+    {
+      trigger: "change",
+      validator: (_rule: unknown, value: string | undefined, callback: (error?: Error) => void) => {
+        if (isButton() || !isDefaultLink()) {
+          callback();
+          return;
+        }
+        if (!value) {
+          callback(new Error("请选择绑定视图"));
+          return;
+        }
+        callback();
+      },
+    },
+  ],
 };
 
 const defaultEditForm: PlatformMenu = {
@@ -226,7 +244,7 @@ const defaultEditForm: PlatformMenu = {
   accessMode: AccessModeEnum.Permission,
   permissionCode: undefined,
   routeName: undefined,
-  customViewPath: false,
+  customViewPath: true,
   viewPath: undefined,
   redirect: undefined,
   icon: undefined,
@@ -247,8 +265,8 @@ const accessModeEnum = useAccessModeEnum();
 const statusEnum = useEnum(CommonStatusEnumExtArray);
 const message = useMessage();
 
-const currentSelectLayoutOption = ref(LayoutOptions[0].value);
 const moreOptionsFlag = ref(false);
+const lastAutoPath = ref<string | undefined>();
 const editFormRef = ref();
 const iconButtonRef = ref();
 const iconPopoverRef = ref();
@@ -259,6 +277,33 @@ const title = ref("");
 const edit = ref(false);
 const canEditPid = ref(false);
 const visible = ref(false);
+
+const viewOptionGroups = computed(() => {
+  const views = listRegisteredViews();
+  const groups: Array<{ label: string; options: Array<{ label: string; value: string }> }> = [];
+  const layouts = views.filter((view) => view.kind === "layout");
+  if (layouts.length > 0) {
+    groups.push({
+      label: "布局",
+      options: layouts.map((view) => ({ label: view.key, value: view.key })),
+    });
+  }
+  const pagesByPlugin = new Map<string, string[]>();
+  views
+    .filter((view) => view.kind === "page")
+    .forEach((view) => {
+      const keys = pagesByPlugin.get(view.pluginId) ?? [];
+      keys.push(view.key);
+      pagesByPlugin.set(view.pluginId, keys);
+    });
+  pagesByPlugin.forEach((keys, pluginId) => {
+    groups.push({
+      label: `页面 · ${pluginId}`,
+      options: keys.map((key) => ({ label: key, value: key })),
+    });
+  });
+  return groups;
+});
 
 const confirmDelete = useConfirmDelete(
   transformDeleteAPI((id: string) => RemoveAppMenuAPI(props.appId, id)),
@@ -275,6 +320,24 @@ const isDefaultLink = (): boolean => editForm.linkType === MenuLinkType.Default;
 
 const privateOnMenuTypeChange = (): void => {
   editForm.linkType = MenuLinkType.Default;
+  if (isDirectory() && editForm.path === lastAutoPath.value) {
+    editForm.path = undefined;
+  } else if (isMenu() && editForm.viewPath && (!editForm.path || editForm.path === lastAutoPath.value)) {
+    const nextPath = toDefaultMenuPath(editForm.viewPath);
+    lastAutoPath.value = nextPath;
+    editForm.path = nextPath;
+  }
+};
+
+const privateOnViewPathChange = (value: string): void => {
+  if (!value) {
+    return;
+  }
+  if (isMenu() && (!editForm.path || editForm.path === lastAutoPath.value)) {
+    const nextPath = toDefaultMenuPath(value);
+    lastAutoPath.value = nextPath;
+    editForm.path = nextPath;
+  }
 };
 
 const privateOnIconSelect = (name: string): void => {
@@ -284,14 +347,6 @@ const privateOnIconSelect = (name: string): void => {
 
 const privateOnIconPopoverClose = (): void => {
   unref(iconPopoverRef)?.popperRef?.delayHide?.();
-};
-
-const privateOnLayoutSelectChanged = (value: string): void => {
-  if (value === PageLayoutViewPath.CUSTOM) {
-    editForm.viewPath = undefined;
-  } else {
-    editForm.viewPath = value;
-  }
 };
 
 const privateOnRemove = (): void => {
@@ -315,6 +370,8 @@ const privateOnConfirm = (): void => {
           editForm.viewPath = PageLayoutViewPath.EXTERNAL;
           break;
       }
+    } else if (!isButton()) {
+      editForm.customViewPath = true;
     }
 
     let request: Promise<unknown>;
@@ -351,6 +408,7 @@ defineExpose({
     moreOptionsFlag.value = false;
     copyParams(editForm, defaultEditForm);
     copyParams(rawForm, defaultEditForm);
+    lastAutoPath.value = undefined;
     nextTick(() => {
       unref(editFormRef)?.clearValidate();
     });

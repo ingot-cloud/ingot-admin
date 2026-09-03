@@ -257,6 +257,7 @@ export const createOfficialPluginAliasEntries = (plugins: InResolvedOfficialPlug
  * - 仅对仍声明 `sourceAliases` 的插件解析 `@base` 等兼容别名
  * - `server.fs.allow` 放行官方插件目录
  * - 排除预构建，避免把 Vue SFC 打进 optimizeDeps
+ * - 同时排除 `@ingot/admin-core`，避免预构建改写 `import.meta.glob` 路径键（布局/系统页扫不到）
  *
  * `@/` 必须在此插件中解析，不能做成 Rolldown 原生 alias：原生 alias 不分 importer，
  * 会把业务插件的 `@/` 错误地指到宿主 src。
@@ -306,7 +307,7 @@ export const createOfficialSourcePlugin = (
           dedupe: ["vue", "vue-router", "pinia", "element-plus", "@vue/shared", "@vueuse/core"],
         },
         optimizeDeps: {
-          exclude: plugins.map((plugin) => plugin.packageName),
+          exclude: [...plugins.map((plugin) => plugin.packageName), "@ingot/admin-core"],
         },
         server: {
           fs: {

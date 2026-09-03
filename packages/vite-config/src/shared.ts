@@ -129,7 +129,7 @@ export const createSharedViteConfig = (
     Components({
       dts: "./components.d.ts",
       dtsTsx: false,
-      dirs: options.componentDirs ?? ["./src/components", "./src/layouts"],
+      dirs: options.componentDirs ?? ["./src/components", "./src/layouts/widgets"],
       resolvers: [
         ElementPlusResolver(),
         IconsResolver({

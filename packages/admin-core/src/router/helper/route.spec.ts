@@ -2,7 +2,12 @@ import { defineComponent } from "vue";
 import { describe, expect, it } from "vitest";
 import { MenuType } from "@/models/enums";
 import type { MenuTreeNode } from "@/models";
-import { configurePageResolver, isPageRegistered } from "@/router/constants";
+import {
+  PLUGIN_UNAVAILABLE_PAGE_KEY,
+  PageLayoutViewPath,
+  configurePageResolver,
+  isPageRegistered,
+} from "@/router/constants";
 import { transformMenu } from "./route";
 
 const dashboard = defineComponent({ name: "DashboardPage", template: "<div />" });
@@ -12,45 +17,35 @@ const dashboardLoader = async () => dashboard;
 const unavailableLoader = async () => unavailable;
 
 describe("transformMenu", () => {
-  it("解析稳定页面键与旧 viewPath 别名", () => {
+  it("按 canonical viewPath 解析页面", () => {
     configurePageResolver("ingot-admin", (pageKey) => {
-      if (pageKey === "ingot.base.dashboard" || pageKey === "@/pages/dashboard/IndexPage.vue") {
+      if (pageKey === "platform.dashboard") {
         return dashboardLoader;
       }
-      if (pageKey === "ingot.common.plugin-unavailable") {
+      if (pageKey === PLUGIN_UNAVAILABLE_PAGE_KEY) {
         return unavailableLoader;
       }
       return undefined;
     });
 
-    const stableMenu: MenuTreeNode = {
+    const menu: MenuTreeNode = {
       name: "仪表盘",
       path: "/dashboard",
       routeName: "Dashboard",
       menuType: MenuType.Menu,
-      viewPath: "ingot.base.dashboard",
-    };
-    const legacyMenu: MenuTreeNode = {
-      name: "仪表盘旧路径",
-      path: "/dashboard-legacy",
-      routeName: "DashboardLegacy",
-      menuType: MenuType.Menu,
-      viewPath: "@/pages/dashboard/IndexPage.vue",
+      viewPath: "platform.dashboard",
     };
 
-    const routes = transformMenu([stableMenu, legacyMenu]);
-    const stableRoute = routes.find((route) => route.path === "/dashboard");
-    const legacyRoute = routes.find((route) => route.path === "/dashboard-legacy");
+    const routes = transformMenu([menu]);
+    const route = routes.find((item) => item.path === "/dashboard");
 
-    expect(isPageRegistered("ingot.base.dashboard")).toBe(true);
-    expect(isPageRegistered("@/pages/dashboard/IndexPage.vue")).toBe(true);
-    expect(stableRoute?.component).toBe(dashboardLoader);
-    expect(legacyRoute?.component).toBe(dashboardLoader);
+    expect(isPageRegistered("platform.dashboard")).toBe(true);
+    expect(route?.component).toBe(dashboardLoader);
   });
 
   it("未知页面绑定受控错误页并传入诊断信息", () => {
     configurePageResolver("ingot-admin", (pageKey) => {
-      if (pageKey === "ingot.common.plugin-unavailable") {
+      if (pageKey === PLUGIN_UNAVAILABLE_PAGE_KEY) {
         return unavailableLoader;
       }
       return undefined;
@@ -78,7 +73,7 @@ describe("transformMenu", () => {
     const simpleLayout = defineComponent({ name: "SimpleLayout", template: "<router-view />" });
     const simpleLoader = async () => simpleLayout;
     configurePageResolver("target-project", (pageKey) => {
-      if (pageKey === "@/layouts/InSimpleLayout.vue" || pageKey === "ingot.common.plugin-unavailable") {
+      if (pageKey === PageLayoutViewPath.SIMPLE || pageKey === PLUGIN_UNAVAILABLE_PAGE_KEY) {
         return simpleLoader;
       }
       return undefined;
@@ -97,4 +92,3 @@ describe("transformMenu", () => {
     expect(directoryRoute?.props).toBeUndefined();
   });
 });
-

@@ -1,10 +1,17 @@
 import type { Component, Directive, Plugin as VuePlugin } from "vue";
 import type { RouteRecordName, RouteRecordRaw } from "vue-router";
 import { InAdminPluginError } from "./error";
-import type { AsyncComponentLoader, InAdminPlugin, PageKey } from "./types";
+import type {
+  AsyncComponentLoader,
+  InAdminPlugin,
+  PageKey,
+  RegisteredView,
+  RegisteredViewKind,
+} from "./types";
 
 interface InOwnedResource<T> {
   ownerPluginId: string;
+  kind?: RegisteredViewKind;
   value: T;
 }
 
@@ -19,16 +26,8 @@ export class AdminPluginRegistry {
 
   public collect(plugin: InAdminPlugin): void {
     this.assertMutable();
-    Object.entries(plugin.pages ?? {}).forEach(([key, loader]) => {
-      this.registerUnique(
-        this.pages,
-        key,
-        loader,
-        plugin.id,
-        "DUPLICATE_PAGE_KEY",
-        "页面键",
-      );
-    });
+    this.collectViews(plugin.pages, plugin.id, "page");
+    this.collectViews(plugin.layouts, plugin.id, "layout");
     Object.entries(plugin.components ?? {}).forEach(([name, component]) => {
       this.registerUnique(
         this.components,
@@ -66,6 +65,14 @@ export class AdminPluginRegistry {
     return this.pages.get(pageKey)?.value;
   }
 
+  public listViews(): RegisteredView[] {
+    return Array.from(this.pages, ([key, resource]) => ({
+      key,
+      kind: resource.kind ?? "page",
+      pluginId: resource.ownerPluginId,
+    }));
+  }
+
   public getComponents(): ReadonlyArray<readonly [string, Component]> {
     return Array.from(this.components, ([name, resource]) => [name, resource.value] as const);
   }
@@ -80,6 +87,24 @@ export class AdminPluginRegistry {
 
   public getStaticRoutes(): RouteRecordRaw[] {
     return [...this.staticRoutes];
+  }
+
+  private collectViews(
+    views: Record<PageKey, AsyncComponentLoader> | undefined,
+    pluginId: string,
+    kind: RegisteredViewKind,
+  ): void {
+    Object.entries(views ?? {}).forEach(([key, loader]) => {
+      this.registerUnique(
+        this.pages,
+        key,
+        loader,
+        pluginId,
+        "DUPLICATE_PAGE_KEY",
+        kind === "layout" ? "布局键" : "页面键",
+        kind,
+      );
+    });
   }
 
   private collectRoute(route: RouteRecordRaw, pluginId: string): void {
@@ -110,6 +135,7 @@ export class AdminPluginRegistry {
       | "DUPLICATE_COMPONENT_NAME"
       | "DUPLICATE_DIRECTIVE_NAME",
     resourceLabel: string,
+    kind?: RegisteredViewKind,
   ): void {
     const existing = target.get(key);
     if (existing) {
@@ -122,7 +148,7 @@ export class AdminPluginRegistry {
         },
       );
     }
-    target.set(key, { ownerPluginId: pluginId, value });
+    target.set(key, { ownerPluginId: pluginId, value, kind });
   }
 
   private assertMutable(): void {

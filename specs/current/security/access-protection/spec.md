@@ -11,7 +11,7 @@
 ### In Scope
 
 - 页面 `pages/access-protection`（源码在 security 插件；菜单既有，不新增子菜单）
-- canonical viewPath `ingot.security.access.protection`；兼容 `ingot.admin.platform.security.access.protection`、`ingot.base.platform.security.access.protection`、`@/pages/platform/security/access-protection/IndexPage.vue`
+- canonical viewPath `security.access.protection`
 - Tab：挑战策略（列表 + 抽屉 CRUD）
 - 权限共用 `platform:security:policy:*`
 - 页头既有「强制刷新策略」（全域广播）
@@ -54,7 +54,7 @@
 **验收标准：**
 
 - [x] 源码在 `plugins/security/src/pages/access-protection/`，面板 `ChallengePolicyPanel`
-- [x] canonical viewPath `ingot.security.access.protection`，兼容旧 semantic / 文件键
+- [x] canonical viewPath `security.access.protection`
 - [x] 权限共用 `platform:security:policy:*`
 
 ### REQ-002：分组与路径二选一

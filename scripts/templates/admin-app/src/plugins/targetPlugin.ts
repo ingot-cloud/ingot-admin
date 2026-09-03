@@ -1,9 +1,9 @@
 import type { Component } from "vue";
 import {
-  INGOT_ADMIN_PLUGIN_API_VERSION,
   MenuType,
+  defineAppLocalPlugin,
   defineStaticMenus,
-  type AsyncComponentLoader,
+  toViewPrefix,
   type InAdminPlugin,
 } from "@ingot/admin-core";
 import BizTargetDemoBadge from "@/components/BizTargetDemoBadge.vue";
@@ -13,49 +13,41 @@ interface InPageModule {
   default: Component;
 }
 
-const pageModules = import.meta.glob<InPageModule>("../pages/demo/**/IndexPage.vue");
+export const createTargetPlugin = (appCode: string): InAdminPlugin => {
+  const prefix = toViewPrefix(appCode);
+  const overviewKey = `${prefix}.demo.overview`;
 
-const pageKeyByFile: Record<string, string> = {
-  "../pages/demo/overview/IndexPage.vue": "{{pageKeyPrefix}}.demo.overview",
-};
-
-const pages: Record<string, AsyncComponentLoader> = {};
-Object.entries(pageModules).forEach(([path, loader]) => {
-  const pageKey = pageKeyByFile[path];
-  if (!pageKey) {
-    return;
-  }
-  pages[pageKey] = async () => (await loader()).default;
-});
-
-export const targetPlugin: InAdminPlugin = {
-  id: "{{pluginId}}",
-  apiVersion: INGOT_ADMIN_PLUGIN_API_VERSION,
-  dependsOn: ["ingot-admin-core"],
-  pages,
-  components: {
-    BizTargetDemoBadge,
-  },
-  directives: {
-    "demo-highlight": demoHighlightDirective,
-  },
-  staticMenus: defineStaticMenus([
-    {
-      name: "本地 Demo",
-      path: "/demo",
-      routeName: "{{pluginId}}-demo-root",
-      menuType: MenuType.Directory,
-      children: [
-        {
-          name: "概览",
-          path: "/demo/overview",
-          routeName: "{{pluginId}}-demo-overview",
-          menuType: MenuType.Menu,
-          viewPath: "{{pageKeyPrefix}}.demo.overview",
-        },
-      ],
+  return defineAppLocalPlugin({
+    appCode,
+    id: "{{pluginId}}",
+    pageModules: import.meta.glob<InPageModule>("../pages/**/*.vue"),
+    pageSourceRoot: "../pages",
+    layoutModules: import.meta.glob<InPageModule>("../layouts/**/*.vue"),
+    layoutSourceRoot: "../layouts",
+    components: {
+      BizTargetDemoBadge,
     },
-  ]),
+    directives: {
+      "demo-highlight": demoHighlightDirective,
+    },
+    staticMenus: defineStaticMenus([
+      {
+        name: "本地 Demo",
+        path: "/demo",
+        routeName: "{{pluginId}}-demo-root",
+        menuType: MenuType.Directory,
+        children: [
+          {
+            name: "概览",
+            path: "/demo/overview",
+            routeName: "{{pluginId}}-demo-overview",
+            menuType: MenuType.Menu,
+            viewPath: overviewKey,
+          },
+        ],
+      },
+    ]),
+  });
 };
 
 declare module "vue" {

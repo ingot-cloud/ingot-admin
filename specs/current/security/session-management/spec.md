@@ -12,7 +12,7 @@
 
 - 页面 `/platform/security/onlinetoken`（菜单权限 `platform:security:onlinetoken`；路由与菜单 path 未改）
 - 源码 `plugins/security/src/pages/sessions`
-- canonical viewPath `ingot.security.sessions`；兼容 `ingot.admin.platform.security.sessions`、`ingot.base.platform.security.sessions`、`@/pages/platform/security/sessions/IndexPage.vue`
+- canonical viewPath `security.sessions`
 - Tab：在线会话、并发策略
 - 按 sid / 按用户强制下线
 - 并发策略 GLOBAL / CLIENT / USER_TYPE 的查看与维护
@@ -104,4 +104,4 @@
 - [x] 在线会话查询、详情、按 sid / 用户下线可用
 - [x] 并发策略列表与新增/编辑/删除（GLOBAL 除外）可用
 - [x] 路由与菜单 path 未改
-- [x] canonical viewPath `ingot.security.sessions`，兼容旧 semantic / 文件键
+- [x] canonical viewPath `security.sessions`

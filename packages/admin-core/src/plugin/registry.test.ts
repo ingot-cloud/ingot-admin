@@ -43,6 +43,21 @@ describe("AdminPluginRegistry", () => {
     );
   });
 
+  it("列出页面与布局并带上 kind", () => {
+    const registry = new AdminPluginRegistry();
+    registry.collect(
+      createPlugin("demo-plugin", {
+        pages: { "demo.home": async () => component },
+        layouts: { "demo.layout.shell": async () => component },
+      }),
+    );
+
+    expect(registry.listViews()).toEqual([
+      { key: "demo.home", kind: "page", pluginId: "demo-plugin" },
+      { key: "demo.layout.shell", kind: "layout", pluginId: "demo-plugin" },
+    ]);
+  });
+
   it("冻结后只允许读取已注册页面", async () => {
     const registry = new AdminPluginRegistry();
     registry.collect(

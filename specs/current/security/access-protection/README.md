@@ -19,3 +19,4 @@
 |------|---------|------|
 | 2026-08-29 | [20260827-security-challenge-verification](../../../changes/archive/2026/20260827-security-challenge-verification/) | 访问防护增加「挑战策略」Tab；策略 id 按字符串传递 |
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.access.protection`，兼容旧 semantic / 文件键 |
+| 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | canonical 改为 `security.access.protection`，去掉 legacy 别名 |

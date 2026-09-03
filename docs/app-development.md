@@ -62,7 +62,9 @@ export const adminPlugins: InAdminPlugin[] = [
 
 ## App 私有插件
 
-create-app 可以生成仅属于该 App 的本地插件。官方 admin 保持严格 composition root，不在自身堆积业务页面。本地插件需要被多个 App 复用时，再提升到 `plugins/`。
+create-app 可以生成仅属于该 App 的本地插件。用 `defineAppLocalPlugin(appCode)`，prefix 与 `main.ts` 的 appCode 相同。官方 admin 保持 composition root，不在自身堆积业务页面。本地插件需要被多个 App 复用时，再提升到 `plugins/`。
+
+菜单 `view_path` 约定见 [菜单 view_path](./menu-view-path.md)。
 
 ## 构建、Docker 与 CI
 

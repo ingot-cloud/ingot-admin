@@ -18,8 +18,6 @@ export const securityPlugin: InAdminPlugin = {
   pages: definePluginPages({
     modules,
     sourceRoot: "./pages",
-    canonicalPrefix: "ingot.security",
-    legacySemanticPrefix: "platform.security",
-    legacyFilePrefix: "@/pages/platform/security",
+    canonicalPrefix: "security",
   }),
 };

@@ -18,6 +18,15 @@ export interface InAdminPluginContext {
   pinia: Pinia;
   router: Router;
   resolvePage: (pageKey: PageKey) => AsyncComponentLoader | undefined;
+  listViews: () => RegisteredView[];
+}
+
+export type RegisteredViewKind = "page" | "layout";
+
+export interface RegisteredView {
+  key: PageKey;
+  kind: RegisteredViewKind;
+  pluginId: string;
 }
 
 /**
@@ -30,8 +39,10 @@ export interface InAdminPlugin {
   apiVersion: typeof INGOT_ADMIN_PLUGIN_API_VERSION;
   /** 必须先于本插件加载的插件 ID；官方业务插件需包含 `ingot-admin-core` */
   dependsOn?: string[];
-  /** 稳定页面键 → 异步组件。推荐 `ingot.{domain}.*`，兼容期可同时注册 `ingot.admin.*`、`ingot.base.*` 与 `@/pages/**` */
+  /** 稳定页面键 → 异步组件。官方用 `{domain}.*`，App 本地用 appCode 转点号 */
   pages?: Record<PageKey, AsyncComponentLoader>;
+  /** 布局键 → 异步组件。core 为 `layout.*`，App 本地为 `{appPrefix}.layout.*` */
+  layouts?: Record<PageKey, AsyncComponentLoader>;
   components?: Record<string, Component>;
   directives?: Record<string, Directive>;
   vuePlugins?: VuePlugin[];

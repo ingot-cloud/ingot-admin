@@ -106,6 +106,7 @@ ingot-admin/
 - [开发模式](./development-model.md)
 - [插件开发](./plugin-development.md)
 - [App 开发](./app-development.md)
+- [菜单 view_path](./menu-view-path.md)
 - [添加新 Package](./add-new-package.md)
 - [TypeScript 配置模板](./typescript-config-template.md)
 - [Monorepo 构建优化](./monorepo-build-optimization.md)

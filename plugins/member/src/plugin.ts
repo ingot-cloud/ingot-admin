@@ -18,8 +18,6 @@ export const memberPlugin: InAdminPlugin = {
   pages: definePluginPages({
     modules,
     sourceRoot: "./pages",
-    canonicalPrefix: "ingot.member",
-    legacySemanticPrefix: "platform.member",
-    legacyFilePrefix: "@/pages/platform/member",
+    canonicalPrefix: "member",
   }),
 };

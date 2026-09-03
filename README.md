@@ -79,6 +79,7 @@ pnpm clean:plugins            # 仅清理插件
 
 - [开发模式](./docs/development-model.md) — 三层职责、依赖规则和入口选择
 - [插件开发](./docs/plugin-development.md) — 源码插件结构、页面、菜单、注册和测试
+- [菜单 view_path](./docs/menu-view-path.md) — 页面/布局编码与菜单数据迁移
 - [App 开发](./docs/app-development.md) — bootstrap、裁剪插件、构建和部署
 - [运行时参考](./docs/composable-admin-runtime.md) — 插件排序、页面键、菜单合并
 - [create-app](./docs/create-app.md) — 何时创建独立 App
