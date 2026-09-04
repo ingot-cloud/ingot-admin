@@ -8,6 +8,7 @@
 
 - [plugins/security/src/pages/sessions](../../../../plugins/security/src/pages/sessions)
 - [plugins/security/src/api/security/session.ts](../../../../plugins/security/src/api/security/session.ts)
+- [plugins/security/src/api/security/session.query.ts](../../../../plugins/security/src/api/security/session.query.ts)
 - [plugins/security/src/api/security/concurrencyPolicy.ts](../../../../plugins/security/src/api/security/concurrencyPolicy.ts)
 
 ## 对接接口
@@ -21,3 +22,4 @@
 | 2026-08-20 | [20260820-security-session-management](../../../changes/archive/2026/20260820-security-session-management/) | 对接会话查询/下线与并发策略，替代旧 `/auth/token/**` |
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.sessions`，兼容旧 semantic / 文件键 |
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | canonical 改为 `security.sessions`，去掉 legacy 别名 |
+| 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | 会话列表/详情与并发策略迁 Query；`staleTime: 0`；下线后按 Key 失效 |

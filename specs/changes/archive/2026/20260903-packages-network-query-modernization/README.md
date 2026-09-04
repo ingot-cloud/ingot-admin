@@ -1,6 +1,6 @@
 # 20260903-packages-network-query-modernization
 
-> 状态：draft
+> 状态：completed
 
 ## 协作模式
 
@@ -76,8 +76,8 @@ keepalive。协议优化必须与前端服务端状态治理分层处理，不�
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-09-04
 - 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
+- 更新的 current capability：`packages/network-query`；并更新 `packages/app-plugins-shared-scaffold`、`security/session-management`、`security/access-protection`、`security/account-protection`
+- 与原设计的差异：含手机号的用户列表仍用命令式 `usePaging`；命令式读缓存使用 `queryAdminData`（`QueryClient.query`）；公网 HTTP/2 依赖外层 TLS 代理，不阻塞归档
 - 取消原因：

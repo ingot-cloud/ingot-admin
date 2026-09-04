@@ -205,7 +205,7 @@ Browser -- HTTPS/h2 --> External TLS Proxy
 | API 层 | ✅ | 保持具名 `XxxAPI` 与显式 `Promise<R<T>>`。 |
 | 类型安全 | ✅ | 新公共接口使用 `unknown` 和具体泛型，禁止 `any/as any`。 |
 | 安全协议 | ✅ | 412 挑战、鉴权与 HYBRID 信封语义保持不变并增加测试。 |
-| 施工门禁 | ✅ | 当前只生成 draft spec，批准后才修改代码。 |
+| 施工门禁 | ✅ | 用户确认开工后由 `approved` 转为 `implementing`。 |
 | 真相单一 | ✅ | 本 change 不维护后端 API 副本；完成后只更新已上线行为规格。 |
 
 ## 备选方案

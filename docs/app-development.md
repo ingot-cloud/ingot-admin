@@ -68,7 +68,7 @@ src/directives/**/*.ts        # 文件名转 kebab-case，需 default 导出
 src/stores/**/*.ts            # AutoImport；与 core 同一 Pinia，persist 需显式声明
 ```
 
-`pages/**/components/` 仍是页面私有。`In*` / `El*` 与 `usePaging`、`useAppStore` 等保留名会在构建期失败；与官方插件全局组件重名会在启动时失败。
+`pages/**/components/` 仍是页面私有。`In*` / `El*` 与 `usePaging`、`useServerPaging`、`useAppStore` 等保留名会在构建期失败；与官方插件全局组件重名会在启动时失败。
 
 admin 仍是 composition root，不复制官方插件页面；本部署专属扩展放约定目录。要跨 App 复用再升到 `plugins/`。
 
@@ -87,5 +87,7 @@ pnpm preview:admin
 ```
 
 admin 的 Docker / `proxy.conf` / GitLab job 仍负责默认后台部署。插件源码变化必须能触发 admin 构建：CI `changes` 包含 `plugins/**/*`。
+
+浏览器 HTTPS 入口的 HTTP/2 由外层 TLS 代理负责。应用容器 `proxy.conf` 只配置到 `ingot-gateway` 的 HTTP/1.1 keepalive，镜像构建时执行 `nginx -t`。
 
 插件由 App 构建时直接编译，根 `build` 仍是 packages → apps，不会给插件单独打 dist。

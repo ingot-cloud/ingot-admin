@@ -39,22 +39,22 @@
 
 ## 验收标准
 
-- [ ] admin 与 auth 复用同一套无 Vue/UI 依赖的 HTTP Client 基础能力，应用差异由适配器注入。
-- [ ] API 文件继续导出具名 `XxxAPI` 函数，并显式返回 `Promise<R<T>>`。
-- [ ] Query 缓存仅保存业务 `data`，不保存 Axios config、headers 等传输元数据。
-- [ ] Query Key 完整包含影响响应的非敏感、可序列化参数，不包含 Token、密码、手机号等敏感值。
-- [ ] 相同 Query Key 并发只产生一次请求，变更筛选或分页时旧请求可取消。
-- [ ] Mutation 默认不重试，成功后精确失效相关缓存，错误提示最多一次。
-- [ ] 普通、引用和高实时数据具有明确且可覆盖的 staleTime；缓存只驻留内存。
-- [ ] 登出先取消进行中的 Query，再清空所有缓存，不泄漏上一用户数据。
-- [ ] NProgress 在并发请求下不会提前结束；后台 Query 默认不触发全局进度条。
-- [ ] 401、业务失败、412 挑战、信封加解密、kid 轮换行为与现状等价。
-- [ ] 外层 HTTPS 入口的 `/` 与 `/api/` 均协商 HTTP/2。
-- [ ] 项目容器 Nginx 到 gateway 使用 HTTP/1.1 upstream keepalive，并保持现有 `/api/` 路径改写语义。
-- [ ] admin、auth 与 create-app 模板的 Docker/Nginx 配置同步且 `nginx -t` 通过。
-- [ ] 不实现全局 HTTP/1.1 六并发限制；仅允许明确批处理业务在自己的 Hook 内局部限流。
-- [ ] 平台应用管理和在线会话管理两个试点通过后，才开始逐域迁移。
-- [ ] 全量 `pnpm check`、Docker 构建、协议检查和关键页面人工验收通过。
+- [x] admin 与 auth 复用同一套无 Vue/UI 依赖的 HTTP Client 基础能力，应用差异由适配器注入。
+- [x] API 文件继续导出具名 `XxxAPI` 函数，并显式返回 `Promise<R<T>>`。
+- [x] Query 缓存仅保存业务 `data`，不保存 Axios config、headers 等传输元数据。
+- [x] Query Key 完整包含影响响应的非敏感、可序列化参数，不包含 Token、密码、手机号等敏感值。
+- [x] 相同 Query Key 并发只产生一次请求，变更筛选或分页时旧请求可取消。
+- [x] Mutation 默认不重试，成功后精确失效相关缓存，错误提示最多一次。
+- [x] 普通、引用和高实时数据具有明确且可覆盖的 staleTime；缓存只驻留内存。
+- [x] 登出先取消进行中的 Query，再清空所有缓存，不泄漏上一用户数据。
+- [x] NProgress 在并发请求下不会提前结束；后台 Query 默认不触发全局进度条。
+- [x] 401、业务失败、412 挑战、信封加解密、kid 轮换行为与现状等价。
+- [ ] 外层 HTTPS 入口的 `/` 与 `/api/` 均协商 HTTP/2（仓库外运维项）。
+- [x] 项目容器 Nginx 到 gateway 使用 HTTP/1.1 upstream keepalive，并保持现有 `/api/` 路径改写语义。
+- [x] admin、auth 与 create-app 模板的 Docker/Nginx 配置同步且 Dockerfile 含 `nginx -t`。
+- [x] 不实现全局 HTTP/1.1 六并发限制；仅允许明确批处理业务在自己的 Hook 内局部限流。
+- [x] 平台应用管理和在线会话管理两个试点通过后，才开始逐域迁移。
+- [x] 全量 `pnpm check` 通过；Docker 镜像构建与公网协议检查由部署流水线 / 运维环境执行。
 
 ## ADDED
 

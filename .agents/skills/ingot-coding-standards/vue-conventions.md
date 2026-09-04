@@ -10,7 +10,9 @@
       :data="pageInfo.records"
       :loading="loading"
       :page="pageInfo"
-      @change="privateOnPageChange"
+      @refresh="fetchData"
+      @handleSizeChange="fetchData"
+      @handleCurrentChange="fetchData"
     />
     <edit-drawer v-model="visible" @success="privateOnSuccess" />
   </div>
@@ -21,21 +23,12 @@ import { tableHeaders } from "./table";
 import { useOps } from "./useOps";
 import EditDrawer from "./EditDrawer.vue";
 
-const { loading, pageInfo, fetchUserData } = useOps();
+const { loading, pageInfo, fetchData } = useOps();
 const visible = ref(false);
-
-const privateOnPageChange = () => {
-  fetchUserData();
-};
 
 const privateOnSuccess = () => {
   visible.value = false;
-  fetchUserData();
 };
-
-onMounted(() => {
-  fetchUserData();
-});
 </script>
 
 <style lang="postcss" scoped>
@@ -47,7 +40,7 @@ onMounted(() => {
 </style>
 ```
 
-**要点**：template 在前；UnoCSS 原子类布局；emit 监听用 kebab-case（`@change`、`@success`）。
+**要点**：template 在前；UnoCSS 原子类布局；列表 `:loading` 用 `fetching`；写操作成功后按 Query Key 失效，不必再 `onMounted` 拉列表。
 
 ---
 
@@ -128,7 +121,7 @@ const emits = defineEmits(["onChanged"]);
 
 ## 页面四件套
 
-以 `plugins/platform/src/pages/admin/user/` 为参考：
+以 `plugins/platform/src/pages/config/app/home/` 为参考：
 
 ### table.ts — 表头配置
 
@@ -146,31 +139,38 @@ export const tableHeaders: Array<TableHeaderRecord> = [
 ### useOps.ts — 业务逻辑
 
 ```typescript
-import type { PageChangeParams } from "@/models";
-import { UserPageAPI } from "@/api/platform/admin/user";
+import type { PageChangeParams, PlatformApp, PlatformAppFilterDTO } from "@/models";
+import { AppPageQueryOptions } from "@/api/platform/config/app.query";
+import { useServerPaging } from "@ingot/admin-core";
 
 export const useOps = () => {
-  const paging = usePaging(transformPageAPI(UserPageAPI));
+  const paging = useServerPaging<PlatformApp, PlatformAppFilterDTO>({
+    queryOptions: AppPageQueryOptions,
+  });
 
-  const resetFilter = () => {
-    paging.condition.phone = undefined;
-    paging.condition.email = undefined;
-    fetchUserData();
+  const resetFilter = (): void => {
+    paging.resetSubmitted({
+      name: undefined,
+    });
   };
 
-  const fetchUserData = (params?: PageChangeParams): void => {
-    paging.exec(params);
+  const fetchData = (params?: PageChangeParams): void => {
+    paging.fetchData(params);
   };
 
   return {
-    loading: paging.loading,
+    loading: paging.fetching,
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     resetFilter,
-    fetchUserData,
+    fetchData,
   };
 };
 ```
+
+`paging` 是普通对象，模板里 `paging.pageInfo` / `paging.fetching` 需要 `.value`；解构到顶层 ref 才会自动解包。列表 `:loading` 用 `fetching`。
+
+含手机号搜索的用户列表仍用 `usePaging(transformPageAPI(UserPageAPI))`。
 
 ### components/ — 页面私有组件
 
@@ -257,14 +257,9 @@ export const useLoginStore = defineStore(
 );
 ```
 
-### Store 命名（避免混淆）
+### Store 边界
 
-| 域 | 正确导出名 | Pinia id |
-|----|-----------|----------|
-| platform 部门 | `useDeptStore` | `"dept"` |
-| org 部门 | `useOrgDeptStore`（新代码） | `"org.dept"` |
-| platform 角色 | `useRoleStore` | `"role"` |
-| org 角色 | `useOrgRoleStore`（新代码） | `"org.role"` |
+列表、详情、树和选项走 Query，不要用 Pinia 转发只读 API Promise。Pinia 只保留客户端 UI、权限和登录态。跨域导出名仍须带域前缀，禁止新增同名导出。
 
 ---
 

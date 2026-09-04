@@ -14,6 +14,7 @@ plugins/{plugin}/src/api/
 
 ```typescript
 import request from "@/net";
+import type { RequestOptions } from "@ingot/admin-core";
 import type { SysUser, Page, AllOrgUserFilterDTO, UserDTO, R } from "@/models";
 import { filterParams } from "@/utils/object";
 
@@ -23,14 +24,19 @@ const PATH = "/api/pms/v1/platform/admin/user";
 export function UserPageAPI(
   page: Page,
   condition?: AllOrgUserFilterDTO,
+  options?: RequestOptions,
 ): Promise<R<Page<SysUser>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<SysUser>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<SysUser>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
 /** 创建用户 */
@@ -84,7 +90,7 @@ export interface R<T = unknown> extends AxiosResponse {
 ### 使用约定
 
 - API 函数返回 `Promise<R<T>>`，不在 API 层解包 `data`
-- 页面/hook 层通过 `transformPageAPI` 或 `.then(({ data }) => ...)` 取数据
+- 页面/hook 层通过 Query Options 或 `.then(({ data }) => ...)` 取数据；旧 `transformPageAPI` 仅用于含手机号的命令式列表
 - 成功码：`StatusCode.OK`（`"S0200"`），由拦截器统一判断
 
 ### 分页类型 Page\<T\>
@@ -99,54 +105,131 @@ export interface Page<T> {
 }
 ```
 
-### usePaging 集成
+### useServerPaging 集成
 
 ```typescript
-// hooks/biz/usePaging.ts
-export type FetchPageAPI<T, C> = (page: Page, condition?: C) => Promise<R<Page<T>>>;
-export type FetchPageFn<T, C> = (page: Page, condition?: C) => Promise<Page<T>>;
+import { useServerPaging } from "@ingot/admin-core";
+import { AppPageQueryOptions } from "@/api/platform/config/app.query";
 
-export const transformPageAPI = <T, C>(api: FetchPageAPI<T, C>): FetchPageFn<T, C> => {
-  return (page, condition) =>
-    api(page, condition).then((response) => response.data);
-};
+const paging = useServerPaging({
+  queryOptions: AppPageQueryOptions,
+});
 
-// 页面 useOps.ts
-const paging = usePaging(transformPageAPI(UserPageAPI));
+// 输入变化不立刻请求；无参 fetchData / search 提交条件并回到第一页
+paging.fetchData();
 ```
+
+列表 `:loading` 使用 `paging.fetching`。含手机号搜索的用户列表仍用已废弃的 `usePaging` + `transformPageAPI`，敏感字段不得进入 Query Key。
 
 ---
 
 ## Http 层
 
-单例类 + axios，默认导出：
+共享传输底座在 `@ingot/http-client`，admin / auth 通过适配器注入鉴权、提示与安全协议。页面仍使用：
 
 ```typescript
-// net/index.ts
-class Http {
-  private instance: AxiosInstance;
-  constructor() {
-    this.instance = axios.create({
-      baseURL: import.meta.env.VITE_APP_NET_BASE_URL,
-      timeout: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT || 10_000,
-    });
-    RequestInterceptor.install(this.instance);
-    ResponseInterceptor.install(this.instance);
-  }
-  get<T = unknown>(url: string, params?: Record<string, unknown>, config?: AxiosRequestConfig) { ... }
-  post<T = unknown>(url: string, data?: unknown, config?: AxiosRequestConfig) { ... }
-}
-export default new Http();
+import request from "@/net";
 ```
+
+API 第三参可传 `RequestOptions`：
+
+```typescript
+export function AppPageAPI(
+  page: Page,
+  condition?: PlatformAppFilterDTO,
+  options?: RequestOptions,
+): Promise<R<Page<PlatformApp>>> {
+  return request.get<Page<PlatformApp>>(`${PATH}/page`, { ...page, ...condition }, options);
+}
+```
+
+| 选项 | 含义 |
+|------|------|
+| `signal` | Query 传入的 AbortSignal，优先于 CancelManager |
+| `feedback: "silent"` | 不弹 Axios 全局提示，由 Query 最终错误处理 |
+| `progress: "silent"` | 不计入 NProgress 前台计数 |
+| `manualProcessingFailure` | **已废弃**，等价 `feedback: "silent"` |
+
+Query 缓存只保存 `R<T>.data`。错误类型为 `ApiError`，`error.code` 仍可用于业务码判断。
+
+---
+
+## Query Options
+
+资源 Query 与 API 同目录，Key 使用 `[domain, resource, operation, scope, params]`。参数必须先做不可变快照；Query 请求使用 `silentQueryRequest(signal)`（`feedback/progress: "silent"`）。
+
+分页优先用 `createPageQueryOptions`：
+
+```typescript
+import { createPageQueryOptions, createResourceQueryKeys } from "@ingot/admin-core";
+import { AppPageAPI } from "./app";
+
+export const appQueryKeys = createResourceQueryKeys("platform", "app");
+export const AppPageQueryOptions = createPageQueryOptions<PlatformApp, PlatformAppFilterDTO>(
+  appQueryKeys,
+  AppPageAPI,
+);
+```
+
+树、详情和嵌套资源手写 `queryOptions`：
+
+```typescript
+import { queryOptions } from "@tanstack/vue-query";
+import { toValue, type MaybeRefOrGetter } from "vue";
+import {
+  createResourceQueryKeys,
+  silentQueryRequest,
+  snapshotQueryParams,
+} from "@ingot/admin-core";
+import { AppPageAPI } from "./app";
+
+const resourceKeys = createResourceQueryKeys("platform", "app");
+
+export const appQueryKeys = {
+  ...resourceKeys,
+  menus: (appId: string) => [...resourceKeys.detail(appId), "menus"] as const,
+};
+
+export function AppPageQueryOptions(
+  input: MaybeRefOrGetter<{ current: number; size: number; condition?: PlatformAppFilterDTO }>,
+) {
+  const value = toValue(input);
+  return queryOptions({
+    queryKey: appQueryKeys.list(
+      snapshotQueryParams({
+        current: value.current,
+        size: value.size,
+        condition: value.condition,
+      }),
+    ),
+    queryFn: ({ signal }) =>
+      AppPageAPI(
+        { current: value.current, size: value.size },
+        { ...value.condition },
+        silentQueryRequest(signal),
+      ).then(({ data }) => data),
+  });
+}
+```
+
+嵌套 Key 不要调用不存在的 `resourceKeys.trees()`；应写 `[...resourceKeys.all, "tree", params]`。
+
+命令式 CUD 保持全局 feedback。`useMutation` 才用 silent，由 MutationCache 提示。
+
+选择器、远程搜索等需要命令式读缓存时，使用 `queryAdminData(XxxQueryOptions(...))`（内部是 `QueryClient.query`）。不要用已废弃的 `fetchQuery` / `prefetchQuery` / `ensureQueryData`。
+
+Token、密码、手机号不得进入 Query Key。登录、挑战、上传下载和敏感即时搜索保持命令式请求。
+
+`usePaging` / `transformPageAPI` / `useConfirm*` 已标记 deprecated，后续版本化 change 再删除公共导出。
 
 ### 请求 config 扩展
 
-通过 `declare module "axios"` 扩展（`net/axios-extend.d.ts`）：
+通过 `declare module "axios"` 扩展：
 
 | 字段 | 用途 |
 |------|------|
-| `manualProcessingFailure` | 业务失败时不弹 toast，由调用方处理 |
-| `manualProcessingAbort` | 取消请求时不弹 toast |
+| `feedback` / `progress` | 见上表；由 `@ingot/http-client` 声明 |
+| `manualProcessingFailure` | **已废弃**，等价 `feedback: "silent"` |
 | `refreshTokenAndRetry` | 401 时刷新 token 重试 |
 | `crypto` | 信封加密配置（请求/响应方向独立，见 `docs/envelope-crypto.md`） |
 
@@ -249,6 +332,7 @@ import { isObject, isString } from "@/utils/index";
 
 | 包 | 职责 | 使用 |
 |----|------|------|
+| `@ingot/http-client` | HTTP 传输底座 | admin / auth 适配器注入，页面不直接依赖 |
 | `@ingot/shared` | 指纹、下载、挑战契约 | 跨 app 通用 |
 | `@ingot/shared/crypto` | 信封加密 | 敏感字段 / HYBRID |
 | `@ingot/shared/hooks` | `useStateResettable` | 优先于 app 内重复实现 |
@@ -263,7 +347,7 @@ import { isObject, isString } from "@/utils/index";
 
 ## 错误处理
 
-业务失败由 `net/interceptor/response/biz.ts` 统一处理：
+业务失败由 `@ingot/http-client` 归一化为 `ApiError`，admin 适配器按码处理：
 
 | code | 行为 |
 |------|------|
@@ -272,16 +356,19 @@ import { isObject, isString } from "@/utils/index";
 | `user_sign_out` | 签退确认弹窗 |
 | 其他 | `Message.warning(message)` + reject |
 
-调用方可通过 `manualProcessingFailure: true` 自行处理：
+Query / Mutation 使用 `silentQueryRequest()`，最终错误由 QueryCache/MutationCache 提示一次。命令式 CUD 保持默认全局 feedback。需要自行处理时传 `feedback: "silent"`：
 
 ```typescript
 try {
-  await SomeAPI();
-} catch (response) {
-  const r = response as R;
-  // 自定义错误处理
+  await SomeAPI(params, { feedback: "silent" });
+} catch (error) {
+  if (isApiError(error) && error.code === StatusCode.ILLEGAL_OPERATION) {
+    // 自定义错误处理
+  }
 }
 ```
+
+`manualProcessingFailure: true` 仍可用，但已废弃，等价 `feedback: "silent"`。
 
 ---
 
@@ -327,6 +414,6 @@ return arr.find((item) => item.value == value)?.oppositeValue || ("" as any);
 
 以下模块在两个 app 间几乎相同，新功能**不得再复制**，应上提到 `packages/`：
 
-- `src/net/`（Http 类、拦截器、R\<T\>、StatusCode）
+- `src/net/` 传输已上提到 `@ingot/http-client`；鉴权/信封/挑战仍由 admin 与 auth 适配器注入
 - `src/utils/object.ts`（equals、filterParams、omit）
 - `src/components/verifition/`（验证码组件）

@@ -44,7 +44,7 @@ plugins/{plugin}/src/       # 业务纵向切片
 ├── pages/                  # IndexPage + table.ts + useOps.ts + components/
 ├── stores/
 └── plugin.ts
-packages/                   # 无页面公共抽象（admin-core / admin-common / shared）
+packages/                   # 无页面公共抽象（http-client / admin-core / admin-common / shared）
 ```
 
 官方插件不得互相依赖；跨插件复用进入 `packages/`。App 全局组件必须 `Biz*`，禁止 `In*` / `El*`。页面示例见 `plugins/platform/src/pages/config/dict/`。
@@ -67,7 +67,7 @@ packages/                   # 无页面公共抽象（admin-core / admin-common 
 | --------------- | ------------------------------- |
 | `IndexPage.vue` | 路由入口，编排表格/筛选/抽屉    |
 | `table.ts`      | 表头 `TableHeaderRecord[]` 配置 |
-| `useOps.ts`     | 筛选 + `usePaging` 分页逻辑     |
+| `useOps.ts`     | 筛选 + `useServerPaging` 分页逻辑（含手机号搜索仍用 `usePaging`） |
 | `components/`   | 页面私有子组件                  |
 
 ### 多页面模块目录
@@ -104,7 +104,7 @@ pages/platform/base/app/
 - 函数命名：`动词 + 名词 + API`（如 `UserPageAPI`），**禁止**漏掉 `API` 后缀
 - 显式返回 `Promise<R<T>>`；类型来自 `@/models`
 - 写操作/查询前对 condition 调用 `filterParams()`
-- Http 单例统一：`import Http from "@/net"`
+- Http 单例统一：`import request from "@/net"`；API 第三参可选 `options?: RequestOptions`
 
 ### 样式
 
@@ -117,7 +117,7 @@ pages/platform/base/app/
 
 - 放 `src/hooks/{biz,web,components}/`
 - Vue/Pinia/VueRouter/VueUse 由 auto-import 提供，无需显式 import
-- 分页逻辑复用 `usePaging` + `transformPageAPI`
+- 分页逻辑复用 `useServerPaging`；含手机号等敏感即时搜索的列表仍用 `usePaging`
 
 ### 命名语言
 

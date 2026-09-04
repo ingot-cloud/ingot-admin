@@ -76,3 +76,11 @@ export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
 ```
 
 `main.ts` 里 `appCode` 与 `createAppPlugins(appCode)` 必须是同一份值，本地页面/布局才会用 appCode 当 prefix。约定插件默认 `dependsOn: ["ingot-admin-core"]`。关闭 Demo 时仍会注册 `createAppLocalPlugin(appCode)`。菜单编码见 [菜单 view_path](./menu-view-path.md)。更多约定见 [App 开发](./app-development.md) 与 [运行时](./composable-admin-runtime.md)。
+
+## Docker 与协议边界
+
+模板 `Dockerfile` / `proxy.conf` 与 admin、auth 对齐：
+
+- 容器 `listen 3000` 明文 HTTP/1.1，构建时 `nginx -t`，不 `EXPOSE 443`
+- `upstream ingot_gateway` + `keepalive 32`；`/api/` 保持 HTTP/1.1、空 Connection 与路径改写
+- 公网 HTTP/2 由外层 TLS 终止代理负责，不要在应用容器配证书或明文 h2c

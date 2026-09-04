@@ -4,7 +4,8 @@
 
 | 位置 | 职责 |
 |------|------|
-| `@ingot/admin-core` | 启动器、插件契约、壳层、公共错误页、Pinia、net、`In*` 组件、静态+动态菜单合并 |
+| `@ingot/http-client` | 无 UI 的 HTTP Client：响应归一化、错误分类、取消 |
+| `@ingot/admin-core` | 启动器、插件契约、壳层、公共错误页、Pinia、Query、net、`In*` 组件、静态+动态菜单合并 |
 | `@ingot/admin-common` | 跨插件无页面能力：只读租户/Client 选择器与共用管理枚举 |
 | `@ingot/shared` | 通用工具 / 信封加密 / 轻量 hooks |
 | `@ingot/vite-config` | App、library、源码插件 Vite 配置；官方插件 alias、`fs.allow`、Vue 单实例 dedupe |
@@ -95,6 +96,10 @@ export const examplePlugin: InAdminPlugin = {
 
 可复制示例见 [examples/admin-plugin](../examples/admin-plugin/README.md)。
 
+## 服务端状态
+
+admin 通过 TanStack Vue Query 管理列表、详情、树和选项。页面使用相邻 `*.query.ts` 与 `useServerPaging` / `useQuery`；写操作成功后按 Query Key 失效。登录、412 挑战、上传下载和含手机号的即时搜索保持命令式请求。HTTP 传输在 `@ingot/http-client`，鉴权与信封由 admin/auth 适配器注入。
+
 ## 创建新 App
 
 普通项目使用 `apps/admin`。独立运行/部署需求见 [create-app.md](./create-app.md)。
@@ -106,9 +111,9 @@ pnpm create:app:cli      # 交互式 CLI
 
 ## 独立仓库消费
 
-1. 安装 `@ingot/admin-core` / `@ingot/shared` / `@ingot/vite-config`
+1. 安装 `@ingot/admin-core` / `@ingot/http-client` / `@ingot/shared` / `@ingot/vite-config`
 2. 若需要官方业务页，workspace/path 依赖对应 `@ingot/*-plugin` 源码
-3. peer 安装与 catalog 对齐的 `vue`、`vue-router`、`pinia`、`element-plus`
+3. peer 安装与 catalog 对齐的 `vue`、`vue-router`、`pinia`、`element-plus`、`@tanstack/vue-query`
 4. 使用 `defineInAppConfig`，入口调用 `bootstrapAdminApp`
 5. `import "@ingot/admin-core/style.css"` 与 `import "uno.css"`（后者由 App 的 UnoCSS 插件生成 App / 插件原子类）
 
@@ -118,6 +123,9 @@ pnpm create:app:cli      # 交互式 CLI
 
 - `apps/admin/Dockerfile` + `proxy.conf`：Nginx SPA + `/api` 反代
 - 根 `.gitlab-ci.yml`：`build-admin` / `docker-admin` / `deploy-admin`，`changes` 包含 `plugins/**/*`
+
+协议边界：浏览器到公网 TLS 终止代理使用 HTTP/2；应用容器继续 `listen 3000` 明文 HTTP/1.1。容器 Nginx 通过 `upstream ingot_gateway { keepalive 32; }` 复用到 gateway 的 HTTP/1.1 连接，`/api/` 仍使用 `proxy_http_version 1.1` 与空 `Connection` header。不要在应用容器配置证书或明文 h2c。
+
 
 ## 版本升级注意
 
