@@ -48,6 +48,7 @@ apps ─────→ plugins ─────→ packages
 
 - [插件开发](./plugin-development.md)
 - [App 开发](./app-development.md)
+- [网络请求](./network.md)
 - [运行时参考](./composable-admin-runtime.md)
 - [菜单 view_path](./menu-view-path.md)
 - [create-app](./create-app.md)

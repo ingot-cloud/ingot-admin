@@ -11,8 +11,14 @@ export * from "./corePlugin";
 export * from "./plugin";
 export { getAdminRuntimeConfig, getAdminRouter, resetAdminRuntime } from "./runtime";
 export { mergeMenuTrees, defineStaticMenus } from "./router/helper/menus";
-export { Http, request } from "./net";
-export type { RequestOptions, HttpRequestConfig } from "./net";
+export {
+  Http,
+  request,
+  defineRequestInterceptor,
+  defineResponseInterceptor,
+  AdminNetInterceptorOrder,
+} from "./net";
+export type { RequestOptions, HttpRequestConfig, PreFilter, PostFilter } from "./net";
 export { ApiError, isApiError } from "@ingot/http-client";
 export * from "./router";
 export * from "./models";
@@ -23,7 +29,6 @@ export * from "./utils/object";
 export * from "./hooks/biz/useEnum";
 export * from "./hooks/biz/useGlobalLoading";
 export * from "./hooks/biz/useLogin";
-export * from "./hooks/biz/usePaging";
 export * from "./query";
 export * from "./hooks/web/useMessage";
 export * from "./hooks/web/useRouter";

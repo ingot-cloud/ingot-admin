@@ -1,5 +1,5 @@
 import type { InternalAxiosRequestConfig, AxiosError } from "axios";
-import type { PreFilter } from "@ingot/http-client";
+import { defineRequestInterceptor, InterceptorOrder } from "@ingot/http-client";
 import { generateFingerprint } from "@ingot/shared";
 import { createEnvelopeSession, applyEncryptedRequest } from "@ingot/shared/crypto";
 import { useAppStore } from "@/stores/modules/app";
@@ -49,10 +49,9 @@ export const onRequestRejected = (error: AxiosError): Promise<void> => {
   return Promise.reject(error);
 };
 
-const RequestInterceptor: PreFilter = {
-  order: () => 25,
+export default defineRequestInterceptor({
+  name: "auth-request",
+  order: InterceptorOrder.request.envelope,
   resolved: onRequestFulfilled,
   rejected: onRequestRejected,
-};
-
-export default RequestInterceptor;
+});

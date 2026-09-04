@@ -21,6 +21,6 @@ export function reqCheck(
     headers,
     skipChallenge: true,
     permit: true,
-    manualProcessingFailure: true,
+    feedback: "silent",
   });
 }

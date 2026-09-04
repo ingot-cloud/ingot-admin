@@ -1,29 +1,26 @@
-import type { PageChangeParams, } from "@/models";
-import { UserPageAPI, } from "@/api/platform/admin/user";
+import type { AllOrgUserFilterDTO, PageChangeParams, SysUser } from "@/models";
+import { PlatformAdminUserPageQueryOptions } from "@/api/platform/admin/user.query";
+import { useServerPaging } from "@ingot/admin-core";
 
 export const useOps = () => {
-  const paging = usePaging(transformPageAPI(UserPageAPI));
+  const paging = useServerPaging<SysUser, AllOrgUserFilterDTO>({
+    queryOptions: PlatformAdminUserPageQueryOptions,
+  });
 
-  /**
-   * 重置过滤条件
-   */
-  const resetFilter = () => {
-    paging.condition.phone = undefined;
-    paging.condition.email = undefined;
-    paging.condition.nickname = undefined;
-    fetchUserData();
+  const resetFilter = (): void => {
+    paging.resetSubmitted({
+      phone: undefined,
+      email: undefined,
+      nickname: undefined,
+    });
   };
 
-  /**
-   * 获取用户数据
-   */
   const fetchUserData = (params?: PageChangeParams): void => {
-    paging.exec(params);
+    paging.fetchData(params);
   };
-
 
   return {
-    loading: paging.loading,
+    loading: paging.fetching,
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     resetFilter,

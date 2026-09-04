@@ -1,7 +1,6 @@
 import type { AxiosResponse, AxiosError } from "axios";
 import axios from "axios";
-import type { PostFilter } from "@ingot/http-client";
-import { isApiError } from "@ingot/http-client";
+import { defineResponseInterceptor, InterceptorOrder, isApiError } from "@ingot/http-client";
 import { Message } from "@/utils/message";
 import type { R } from "@/models";
 import {
@@ -86,14 +85,15 @@ const processEnvelope = async (response: AxiosResponse<R>): Promise<AxiosRespons
   return response;
 };
 
-export const EnvelopeInterceptor: PostFilter = {
-  order: () => 5,
+export const EnvelopeInterceptor = defineResponseInterceptor({
+  name: "envelope",
+  order: InterceptorOrder.response.envelope,
   resolved: processEnvelope,
-  rejected: (error: AxiosError) => Promise.reject(error),
-};
+});
 
-export const ChallengeInterceptor: PostFilter = {
-  order: () => 15,
+export const ChallengeInterceptor = defineResponseInterceptor({
+  name: "challenge",
+  order: InterceptorOrder.response.challenge,
   resolved: (response: AxiosResponse<R>) => response,
   async rejected(error: AxiosError<R>): Promise<R> {
     if (!axios.isAxiosError(error) || isApiError(error)) {
@@ -112,4 +112,4 @@ export const ChallengeInterceptor: PostFilter = {
     }
     return Promise.reject(error);
   },
-};
+});

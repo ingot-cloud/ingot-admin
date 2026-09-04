@@ -2,6 +2,7 @@ import type { Pinia } from "pinia";
 import type { QueryClient } from "@tanstack/vue-query";
 import type { App, Component, Directive, Plugin as VuePlugin } from "vue";
 import type { RouteRecordRaw, Router } from "vue-router";
+import type { PostFilter, PreFilter } from "@ingot/http-client";
 import type { MenuTreeNode } from "../models/menu";
 
 /** 插件契约版本。不兼容的版本会在启动时拒绝加载。 */
@@ -72,10 +73,20 @@ export interface InLoginConfig {
   fingerprintEnabled: boolean;
 }
 
+export interface InNetInterceptors {
+  request?: PreFilter[];
+  response?: PostFilter[];
+}
+
 export interface InNetConfig {
   baseURL?: string;
   timeout?: number;
   timeoutErrorMessage?: string;
+  /**
+   * App 追加的拦截器，与 core 拦截器按 order 合并。
+   * 不能替换 Header / Envelope / Challenge 或 failure hooks。
+   */
+  interceptors?: InNetInterceptors;
 }
 
 export interface InStorageConfig {

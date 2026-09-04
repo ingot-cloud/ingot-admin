@@ -21,14 +21,6 @@ describe("CancelManager", () => {
     expect(manager.size()).toBe(0);
   });
 
-  it("manualProcessingAbort 时不纳入 CancelManager", () => {
-    const manager = new CancelManager();
-    const config = { method: "get", url: "/a", manualProcessingAbort: true };
-    manager.addRequest(config);
-    expect(config.signal).toBeUndefined();
-    expect(manager.size()).toBe(0);
-  });
-
   it("abort 会中断已登记请求", () => {
     const manager = new CancelManager();
     const config = { method: "get", url: "/a" };

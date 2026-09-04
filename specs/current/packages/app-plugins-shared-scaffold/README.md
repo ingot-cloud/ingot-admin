@@ -43,3 +43,4 @@
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | 去掉 `@/` 与 `ingot.` 前缀；布局扫描 `layout.*`；菜单编辑下拉选视图；create-app 与 appCode 同源 |
 | 2026-09-03 | [20260903-packages-app-convention-local-plugin](../../../changes/archive/2026/20260903-packages-app-convention-local-plugin/) | App 约定目录本地插件；组件/hook 自动注入；重名失败 |
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | `@ingot/http-client` 与 TanStack Query；服务端状态见 [network-query](../network-query/) |
+| 2026-09-04 | [20260904-packages-net-interceptor-extension](../../../changes/archive/2026/20260904-packages-net-interceptor-extension/) | 删除 `usePaging` 公共导出；列表统一 `useServerPaging` |

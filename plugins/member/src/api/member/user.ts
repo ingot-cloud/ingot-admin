@@ -16,14 +16,22 @@ const PATH = "/api/member/v1/platform/member/user";
 /**
  * 用户分页信息
  */
-export function UserPageAPI(page: Page, condition?: MemberUserDTO): Promise<R<Page<MemberUser>>> {
+export function UserPageAPI(
+  page: Page,
+  condition?: MemberUserDTO,
+  options?: RequestOptions,
+): Promise<R<Page<MemberUser>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<MemberUser>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<MemberUser>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
 /**

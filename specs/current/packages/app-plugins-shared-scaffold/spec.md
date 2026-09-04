@@ -76,7 +76,7 @@
 - **角色**：后台项目开发者
 - **前置条件**：使用 `apps/admin` 或 create-app 生成的后台
 - **步骤**：在 `src/pages` / `components` / `hooks` / `stores` 新增文件，不改 `app-plugin.ts`
-- **预期结果**：页面进入 registry；`Biz*` 组件与 hook/store 可直接使用；`InButton`、`usePaging` / `useServerPaging` 仍可用；`In*` 或保留导出名构建失败
+- **预期结果**：页面进入 registry；`Biz*` 组件与 hook/store 可直接使用；`InButton`、`useServerPaging` 仍可用；`In*` 或保留导出名构建失败
 
 ## 功能需求
 

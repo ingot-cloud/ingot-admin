@@ -62,20 +62,24 @@ export interface HttpClientHooks {
 }
 
 export interface PreFilter {
-  order(): number;
+  name?: string;
+  /** 越小越先执行。官方槽位见 `InterceptorOrder.request`。 */
+  order: number;
   resolved(
     config: InternalAxiosRequestConfig,
   ): InternalAxiosRequestConfig | Promise<InternalAxiosRequestConfig>;
-  rejected(error: AxiosError): Promise<unknown>;
+  rejected?(error: AxiosError): Promise<unknown>;
   options?: AxiosInterceptorOptions;
 }
 
 export interface PostFilter {
-  order(): number;
+  name?: string;
+  /** 越小越先执行（与请求相同，不是越大越先）。官方槽位见 `InterceptorOrder.response`。 */
+  order: number;
   resolved(
     response: AxiosResponse<R>,
   ): AxiosResponse<R> | R | Promise<AxiosResponse<R> | R>;
-  rejected(error: AxiosError): Promise<unknown>;
+  rejected?(error: AxiosError): Promise<unknown>;
 }
 
 export interface HttpClientOptions {
@@ -105,13 +109,5 @@ declare module "axios" {
      * 进度条：global 计入前台请求，silent 不触发全局进度。
      */
     progress?: "global" | "silent";
-    /**
-     * @deprecated 使用 `feedback: "silent"`
-     */
-    manualProcessingFailure?: boolean;
-    /**
-     * @deprecated 传入 `signal` 或由调用方自行取消
-     */
-    manualProcessingAbort?: boolean;
   }
 }

@@ -98,7 +98,7 @@ export const examplePlugin: InAdminPlugin = {
 
 ## 服务端状态
 
-admin 通过 TanStack Vue Query 管理列表、详情、树和选项。页面使用相邻 `*.query.ts` 与 `useServerPaging` / `useQuery`；写操作成功后按 Query Key 失效。登录、412 挑战、上传下载和含手机号的即时搜索保持命令式请求。HTTP 传输在 `@ingot/http-client`，鉴权与信封由 admin/auth 适配器注入。
+admin 通过 TanStack Vue Query 管理列表、详情、树和选项。页面使用相邻 `*.query.ts` 与 `useServerPaging` / `useQuery`；写操作成功后按 Query Key 失效。含手机号搜索同样走 Query，Key 使用敏感指纹而非明文。登录、412 挑战、上传下载保持命令式请求。HTTP 传输与 App 追加拦截器见 [网络请求](./network.md)。
 
 ## 创建新 App
 

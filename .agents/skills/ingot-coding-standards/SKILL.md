@@ -67,7 +67,7 @@ packages/                   # 无页面公共抽象（http-client / admin-core /
 | --------------- | ------------------------------- |
 | `IndexPage.vue` | 路由入口，编排表格/筛选/抽屉    |
 | `table.ts`      | 表头 `TableHeaderRecord[]` 配置 |
-| `useOps.ts`     | 筛选 + `useServerPaging` 分页逻辑（含手机号搜索仍用 `usePaging`） |
+| `useOps.ts`     | 筛选 + `useServerPaging` 分页逻辑 |
 | `components/`   | 页面私有子组件                  |
 
 ### 多页面模块目录
@@ -117,7 +117,7 @@ pages/platform/base/app/
 
 - 放 `src/hooks/{biz,web,components}/`
 - Vue/Pinia/VueRouter/VueUse 由 auto-import 提供，无需显式 import
-- 分页逻辑复用 `useServerPaging`；含手机号等敏感即时搜索的列表仍用 `usePaging`
+- 分页逻辑复用 `useServerPaging`（含手机号搜索同样走 Query，Key 用敏感指纹）
 
 ### 命名语言
 

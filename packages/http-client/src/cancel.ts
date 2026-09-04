@@ -8,7 +8,7 @@ export class CancelManager {
     if (!config) {
       return;
     }
-    if (config.signal || config.manualProcessingAbort) {
+    if (config.signal) {
       return;
     }
     this.removeRequest(config);

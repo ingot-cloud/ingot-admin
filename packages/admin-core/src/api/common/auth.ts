@@ -7,6 +7,6 @@ import type { R } from "@/models";
  */
 export function LogoutAPI(): Promise<R> {
   return Http.delete<void>("/api/bff/auth/logout", null, {
-    manualProcessingFailure: true,
+    feedback: "silent",
   });
 }

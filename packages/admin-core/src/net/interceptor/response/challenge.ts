@@ -1,20 +1,16 @@
-import type { AxiosResponse, AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import axios from "axios";
-import type { PostFilter } from "@/net/types";
+import { defineResponseInterceptor, InterceptorOrder, isApiError } from "@ingot/http-client";
 import type { R } from "@/models/net";
 import { Message } from "@/utils/message";
-import { isApiError } from "@ingot/http-client";
 import { tryHandleGatewayChallenge } from "@/net/challenge";
 
-class ChallengeInterceptor implements PostFilter {
-  order(): number {
-    return 15;
-  }
-
+export default defineResponseInterceptor({
+  name: "challenge",
+  order: InterceptorOrder.response.challenge,
   resolved(response: AxiosResponse<R>): AxiosResponse<R> {
     return response;
-  }
-
+  },
   async rejected(error: AxiosError<R>): Promise<R> {
     if (!axios.isAxiosError(error) || isApiError(error)) {
       return Promise.reject(error);
@@ -31,7 +27,5 @@ class ChallengeInterceptor implements PostFilter {
       return Promise.reject(challengeError);
     }
     return Promise.reject(error);
-  }
-}
-
-export default new ChallengeInterceptor();
+  },
+});

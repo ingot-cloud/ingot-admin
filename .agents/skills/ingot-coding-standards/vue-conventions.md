@@ -170,7 +170,7 @@ export const useOps = () => {
 
 `paging` 是普通对象，模板里 `paging.pageInfo` / `paging.fetching` 需要 `.value`；解构到顶层 ref 才会自动解包。列表 `:loading` 用 `fetching`。
 
-含手机号搜索的用户列表仍用 `usePaging(transformPageAPI(UserPageAPI))`。
+含手机号搜索的用户列表同样用 `useServerPaging`；Query Key 不含明文手机号。
 
 ### components/ — 页面私有组件
 

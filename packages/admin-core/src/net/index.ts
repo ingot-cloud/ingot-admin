@@ -8,10 +8,7 @@ import {
 import type { InNetConfig } from "@/plugin";
 import NProgress from "@/components/nprogress";
 import CancelManager from "./cancel";
-import HeaderInterceptor from "./interceptor/request/header";
-import EnvelopeRequestInterceptor from "./interceptor/request/envelope";
-import EnvelopeResponseInterceptor from "./interceptor/response/envelope";
-import ChallengeInterceptor from "./interceptor/response/challenge";
+import { mergeAdminNetInterceptors } from "./core-interceptors";
 import { bindChallengeRetry } from "./challenge";
 import {
   handleAdminBusinessFailure,
@@ -23,80 +20,83 @@ import {
 
 const progress = new ProgressCounter(NProgress);
 
-class InHttpClient {
-  private readonly client: HttpClient;
+const createAdminHttpClient = (net?: InNetConfig): HttpClient => {
+  const client = createHttpClient({
+    baseURL: net?.baseURL,
+    timeout: net?.timeout ?? 10_000,
+    timeoutErrorMessage: net?.timeoutErrorMessage,
+    cancelManager: CancelManager,
+    interceptors: mergeAdminNetInterceptors(net?.interceptors),
+    hooks: {
+      onStart: () => progress.start(),
+      onEnd: () => progress.done(),
+      onBusinessFailure: handleAdminBusinessFailure,
+      onUnauthorized: handleAdminUnauthorized,
+      onHttpError: handleAdminHttpError,
+      isUnauthorized: isAdminUnauthorized,
+      shouldBypassError: shouldBypassAdminError,
+    },
+  });
+  bindChallengeRetry((config) => client.rawRequest(config));
+  return client;
+};
 
-  constructor() {
-    this.client = createHttpClient({
-      timeout: 10_000,
-      cancelManager: CancelManager,
-      interceptors: {
-        request: [HeaderInterceptor, EnvelopeRequestInterceptor],
-        response: [EnvelopeResponseInterceptor, ChallengeInterceptor],
-      },
-      hooks: {
-        onStart: () => progress.start(),
-        onEnd: () => progress.done(),
-        onBusinessFailure: handleAdminBusinessFailure,
-        onUnauthorized: handleAdminUnauthorized,
-        onHttpError: handleAdminHttpError,
-        isUnauthorized: isAdminUnauthorized,
-        shouldBypassError: shouldBypassAdminError,
-      },
-    });
-    bindChallengeRetry((config) => this.client.rawRequest(config));
+class InHttpClient {
+  private client: HttpClient | undefined;
+
+  private resolveClient(): HttpClient {
+    if (!this.client) {
+      this.client = createAdminHttpClient();
+    }
+    return this.client;
   }
 
   configure(net: InNetConfig): void {
-    this.client.configure({
-      baseURL: net.baseURL,
-      timeout: net.timeout,
-      timeoutErrorMessage: net.timeoutErrorMessage,
-    });
+    this.client = createAdminHttpClient(net);
   }
 
   rawRequest<T = unknown>(config: HttpRequestConfig): Promise<R<T>> {
-    return this.client.rawRequest(config);
+    return this.resolveClient().rawRequest(config);
   }
 
   get<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.get(url, params, config);
+    return this.resolveClient().get(url, params, config);
   }
 
   delete<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.delete(url, params, config);
+    return this.resolveClient().delete(url, params, config);
   }
 
   post<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.post(url, params, config);
+    return this.resolveClient().post(url, params, config);
   }
 
   put<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.put(url, params, config);
+    return this.resolveClient().put(url, params, config);
   }
 
   patch<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.patch(url, params, config);
+    return this.resolveClient().patch(url, params, config);
   }
 
   head<T = unknown>(url: string, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.head(url, config);
+    return this.resolveClient().head(url, config);
   }
 
   options<T = unknown>(url: string, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.options(url, config);
+    return this.resolveClient().options(url, config);
   }
 
   postForm<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.postForm(url, params, config);
+    return this.resolveClient().postForm(url, params, config);
   }
 
   putForm<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.putForm(url, params, config);
+    return this.resolveClient().putForm(url, params, config);
   }
 
   patchForm<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.client.patchForm(url, params, config);
+    return this.resolveClient().patchForm(url, params, config);
   }
 }
 
@@ -105,4 +105,14 @@ export const request = Http;
 
 export default Http;
 export type { HttpRequestConfig, R };
-export type { RequestOptions } from "@ingot/http-client";
+export type { PostFilter, PreFilter, RequestOptions } from "@ingot/http-client";
+export {
+  defineRequestInterceptor,
+  defineResponseInterceptor,
+  InterceptorOrder as AdminNetInterceptorOrder,
+} from "@ingot/http-client";
+export {
+  CORE_REQUEST_INTERCEPTORS,
+  CORE_RESPONSE_INTERCEPTORS,
+  mergeAdminNetInterceptors,
+} from "./core-interceptors";

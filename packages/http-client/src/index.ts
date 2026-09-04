@@ -15,6 +15,12 @@ export type { ApiErrorKind } from "./error";
 export { CancelManager } from "./cancel";
 export { ProgressCounter } from "./progress";
 export type { ProgressController } from "./progress";
-export { applyRequestOptions, resolveFeedback, resolveProgress, withSilentFeedback } from "./options";
+export { applyRequestOptions, resolveFeedback, resolveProgress } from "./options";
 export { createHttpClient } from "./client";
-export { installRequestInterceptors, installResponseInterceptors } from "./interceptors";
+export { InterceptorOrder } from "./order";
+export {
+  defineRequestInterceptor,
+  defineResponseInterceptor,
+  installRequestInterceptors,
+  installResponseInterceptors,
+} from "./interceptors";

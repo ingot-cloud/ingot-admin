@@ -23,6 +23,7 @@ export interface InResolvedNetConfig {
   baseURL?: string;
   timeout: number;
   timeoutErrorMessage?: string;
+  interceptors?: InNetConfig["interceptors"];
 }
 
 export interface InResolvedSettingsConfig {
@@ -113,6 +114,7 @@ const resolveNet = (net?: InNetConfig): InResolvedNetConfig => ({
   baseURL: net?.baseURL,
   timeout: net?.timeout ?? 10_000,
   timeoutErrorMessage: net?.timeoutErrorMessage,
+  interceptors: net?.interceptors,
 });
 
 const resolveStorage = (storage?: InStorageConfig): InStorageConfig => ({

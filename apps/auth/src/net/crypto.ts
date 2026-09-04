@@ -27,7 +27,7 @@ export const keyStore = new KeyStore({
   fetcher: async () => {
     const res = await Http.get<PublicKeyInfo[]>(PUBLIC_KEYS_PATH, null, {
       permit: true,
-      manualProcessingFailure: true,
+      feedback: "silent",
     });
     return res.data;
   },

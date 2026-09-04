@@ -10,6 +10,7 @@ import {
   type ApiError,
 } from "./error";
 import { installRequestInterceptors, installResponseInterceptors } from "./interceptors";
+import { InterceptorOrder } from "./order";
 import { resolveFeedback, resolveProgress } from "./options";
 import type {
   HttpClient,
@@ -122,7 +123,8 @@ const createLifecycleRequestInterceptor = (
   cancelManager: CancelManager,
   hooks: HttpClientHooks,
 ): PreFilter => ({
-  order: () => 1,
+  name: "lifecycle",
+  order: InterceptorOrder.request.lifecycle,
   resolved(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
     if (resolveProgress(config) === "global") {
       hooks.onStart?.(config);
@@ -143,7 +145,8 @@ const createLifecycleResponseInterceptor = (
   cancelManager: CancelManager,
   hooks: HttpClientHooks,
 ): PostFilter => ({
-  order: () => 1,
+  name: "lifecycle",
+  order: InterceptorOrder.response.lifecycle,
   resolved(response: AxiosResponse<R>): AxiosResponse<R> {
     if (resolveProgress(response.config) === "global") {
       hooks.onEnd?.(response.config);
@@ -161,7 +164,8 @@ const createLifecycleResponseInterceptor = (
 });
 
 const createNormalizeInterceptor = (successCode: string, hooks: HttpClientHooks): PostFilter => ({
-  order: () => 10,
+  name: "normalize",
+  order: InterceptorOrder.response.normalize,
   resolved(response: AxiosResponse<R>): R | Promise<R> {
     const data = response.data;
     if (data?.code === successCode) {

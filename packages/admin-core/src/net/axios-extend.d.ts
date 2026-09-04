@@ -6,16 +6,6 @@ import type { CryptoOption, EnvelopeContext } from "@ingot/shared/crypto";
 declare module "axios" {
   interface AxiosRequestConfig {
     /**
-     * @deprecated 使用 `feedback: "silent"`
-     */
-    manualProcessingFailure?: boolean;
-
-    /**
-     * @deprecated 传入 `signal` 跳过 CancelManager
-     */
-    manualProcessingAbort?: boolean;
-
-    /**
      * 是否为刷新token后的请求重试
      */
     refreshTokenAndRetry?: boolean;

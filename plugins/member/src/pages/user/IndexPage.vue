@@ -30,9 +30,9 @@
 
     <in-table
       :loading="ops.loading.value"
-      :data="ops.pageInfo.records"
+      :data="ops.pageInfo.value.records"
       :headers="tableHeaders"
-      :page="ops.pageInfo"
+      :page="ops.pageInfo.value"
       ref="tableRef"
       @refresh="ops.fetchUserData"
       @handleSizeChange="ops.fetchUserData"
@@ -66,7 +66,7 @@
           :userId="item.id"
           :enabled="item.enabled"
           :locked="item.locked"
-          @success="ops.fetchUserData"
+          @success="refreshList"
           :enableAccountAPI="EnableAccountAPI"
           :disableAccountAPI="DisableAccountAPI"
           :lockAccountAPI="LockAccountAPI"
@@ -82,8 +82,8 @@
     </in-table>
   </in-filter-container>
 
-  <CreateDrawer ref="CreateDrawerRef" @success="ops.fetchUserData" />
-  <EditDrawer ref="EditDrawerRef" @success="ops.fetchUserData" />
+  <CreateDrawer ref="CreateDrawerRef" @success="refreshList" />
+  <EditDrawer ref="EditDrawerRef" @success="refreshList" />
   <ResetPwdDialog ref="ResetPwdDialogRef" />
 </template>
 
@@ -102,8 +102,11 @@ import {
   LockAccountAPI,
   UnlockAccountAPI,
 } from "@/api/member/user";
+import { memberUserQueryKeys } from "@/api/member/user.query";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const ops = useOps();
+const queryClient = useQueryClient();
 
 const CreateDrawerRef = ref();
 const EditDrawerRef = ref();
@@ -129,7 +132,7 @@ const handleResetPwdUser = (params: MemberUser): void => {
   });
 };
 
-onMounted(() => {
-  ops.fetchUserData();
-});
+const refreshList = (): void => {
+  void queryClient.invalidateQueries({ queryKey: memberUserQueryKeys.lists() });
+};
 </script>

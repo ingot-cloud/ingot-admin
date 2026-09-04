@@ -31,14 +31,19 @@ export function SearchByPhoneAPI(phone: string): Promise<R<Array<SimpleUserWithP
 export function UserPageAPI(
   page: Page,
   condition?: AllOrgUserFilterDTO,
+  options?: RequestOptions,
 ): Promise<R<Page<SysUser>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<SysUser>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<SysUser>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
 /**

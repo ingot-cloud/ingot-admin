@@ -13,7 +13,12 @@ describe("createResourceQueryKeys", () => {
 
   it("列表 Key 使用不可变快照参数", () => {
     const keys = createResourceQueryKeys("security", "session");
-    const params = snapshotQueryParams({ current: 1, userId: "u1", password: "secret" });
-    expect(keys.list(params)).toEqual(["security", "session", "list", { current: 1, userId: "u1" }]);
+    const params = snapshotQueryParams({ current: 1, userId: "u1", password: "secret" }) as Record<
+      string,
+      unknown
+    >;
+    expect(params.password).toBeUndefined();
+    expect(typeof params._sensitive).toBe("string");
+    expect(keys.list(params)).toEqual(["security", "session", "list", params]);
   });
 });

@@ -55,6 +55,8 @@ export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
 
 登录应用是 `apps/auth`，不属于管理台插件体系。
 
+网络请求、App 追加拦截器与 `useServerPaging` 见 [网络请求](./network.md)。
+
 ## App 约定本地插件
 
 每个管理台 App（含 `apps/admin`）都有一份冻结的 `src/app-plugin.ts`，用 glob 扫描约定目录。新增文件不必改注册逻辑。
@@ -68,7 +70,7 @@ src/directives/**/*.ts        # 文件名转 kebab-case，需 default 导出
 src/stores/**/*.ts            # AutoImport；与 core 同一 Pinia，persist 需显式声明
 ```
 
-`pages/**/components/` 仍是页面私有。`In*` / `El*` 与 `usePaging`、`useServerPaging`、`useAppStore` 等保留名会在构建期失败；与官方插件全局组件重名会在启动时失败。
+`pages/**/components/` 仍是页面私有。`In*` / `El*` 与 `useServerPaging`、`useAppStore` 等保留名会在构建期失败；与官方插件全局组件重名会在启动时失败。
 
 admin 仍是 composition root，不复制官方插件页面；本部署专属扩展放约定目录。要跨 App 复用再升到 `plugins/`。
 

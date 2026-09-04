@@ -30,9 +30,9 @@
 
     <in-table
       :loading="ops.loading.value"
-      :data="ops.pageInfo.records"
+      :data="ops.pageInfo.value.records"
       :headers="tableHeaders"
-      :page="ops.pageInfo"
+      :page="ops.pageInfo.value"
       ref="tableRef"
       @refresh="ops.fetchUserData"
       @handleSizeChange="ops.fetchUserData"
@@ -68,7 +68,7 @@
           :userId="item.id"
           :enabled="item.enabled"
           :locked="item.locked"
-          @success="ops.fetchUserData"
+          @success="refreshList"
           :enableAccountAPI="EnableAccountAPI"
           :disableAccountAPI="DisableAccountAPI"
           :lockAccountAPI="LockAccountAPI"
@@ -85,7 +85,7 @@
   </in-filter-container>
 
   <CreateDrawer ref="CreateDrawerRef" @success="handleCreateSuccessEvt" />
-  <EditDrawer ref="EditDrawerRef" @success="ops.fetchUserData" />
+  <EditDrawer ref="EditDrawerRef" @success="refreshList" />
   <ResetPwdDialog ref="ResetPwdDialogRef" />
 </template>
 
@@ -104,8 +104,11 @@ import {
   LockAccountAPI,
   UnlockAccountAPI,
 } from "@/api/platform/admin/user";
+import { platformAdminUserQueryKeys } from "@/api/platform/admin/user.query";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const ops = useOps();
+const queryClient = useQueryClient();
 
 const CreateDrawerRef = ref();
 const EditDrawerRef = ref();
@@ -131,12 +134,12 @@ const handleResetPwdUser = (params: SysUser): void => {
   });
 };
 
-const handleCreateSuccessEvt = (userVo: ResetPwdVO) => {
-  ops.fetchUserData();
-  ResetPwdDialogRef.value.show(userVo.random);
+const refreshList = (): void => {
+  void queryClient.invalidateQueries({ queryKey: platformAdminUserQueryKeys.lists() });
 };
 
-onMounted(() => {
-  ops.fetchUserData();
-});
+const handleCreateSuccessEvt = (userVo: ResetPwdVO) => {
+  refreshList();
+  ResetPwdDialogRef.value.show(userVo.random);
+};
 </script>

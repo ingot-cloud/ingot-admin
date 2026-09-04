@@ -39,13 +39,13 @@ describe("collectAppConventionViolations", () => {
   it("拒绝 In* 组件与保留 hook/store 导出名", () => {
     const rootDir = makeApp({
       "src/components/InButton.vue": "<template><button /></template>",
-      "src/hooks/usePaging.ts": "export const usePaging = () => undefined;\n",
+      "src/hooks/useServerPaging.ts": "export const useServerPaging = () => undefined;\n",
       "src/stores/useAppStore.ts": "export const useAppStore = () => undefined;\n",
     });
 
     const violations = collectAppConventionViolations({ rootDir });
     expect(violations.some((item) => item.includes("InButton"))).toBe(true);
-    expect(violations.some((item) => item.includes("usePaging"))).toBe(true);
+    expect(violations.some((item) => item.includes("useServerPaging"))).toBe(true);
     expect(violations.some((item) => item.includes("useAppStore"))).toBe(true);
   });
 });

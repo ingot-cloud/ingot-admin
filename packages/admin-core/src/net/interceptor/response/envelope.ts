@@ -1,5 +1,5 @@
-import type { AxiosResponse, AxiosError } from "axios";
-import type { PostFilter } from "@/net/types";
+import type { AxiosResponse } from "axios";
+import { defineResponseInterceptor, InterceptorOrder } from "@ingot/http-client";
 import type { R } from "@/models/net";
 import {
   createEnvelopeSession,
@@ -32,14 +32,12 @@ async function decryptEnvelope(
 }
 
 /**
- * 信封加密响应拦截器：在 biz 展开 data 之前解密（FULL 模式 code 也是密文，必须早于 biz）。
+ * 信封加密响应拦截器：在业务码展开之前解密（FULL 模式 code 也是密文，必须早于 normalize）。
  * 同时被动感知密钥轮换，并在 kid 失效时刷新公钥重试一次。
  */
-class EnvelopeInterceptor implements PostFilter {
-  order(): number {
-    return 5;
-  }
-
+export default defineResponseInterceptor({
+  name: "envelope",
+  order: InterceptorOrder.response.envelope,
   async resolved(response: AxiosResponse<R>): Promise<AxiosResponse<R>> {
     const config = response.config;
     const option = config.crypto;
@@ -94,11 +92,5 @@ class EnvelopeInterceptor implements PostFilter {
       await decryptEnvelope(response, option.response, config.__cryptoCtx);
     }
     return response;
-  }
-
-  rejected(error: AxiosError): Promise<void> {
-    return Promise.reject(error);
-  }
-}
-
-export default new EnvelopeInterceptor();
+  },
+});

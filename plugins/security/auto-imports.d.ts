@@ -119,9 +119,6 @@ declare global {
   const toRef: typeof import('vue').toRef
   const toRefs: typeof import('vue').toRefs
   const toValue: typeof import('vue').toValue
-  const transformDeleteAPI: typeof import('@ingot/admin-core').transformDeleteAPI
-  const transformPageAPI: typeof import('@ingot/admin-core').transformPageAPI
-  const transformUpdateAPI: typeof import('@ingot/admin-core').transformUpdateAPI
   const triggerRef: typeof import('vue').triggerRef
   const tryOnBeforeMount: typeof import('@vueuse/core').tryOnBeforeMount
   const tryOnBeforeUnmount: typeof import('@vueuse/core').tryOnBeforeUnmount
@@ -160,11 +157,7 @@ declare global {
   const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
   const useCloned: typeof import('@vueuse/core').useCloned
   const useColorMode: typeof import('@vueuse/core').useColorMode
-  const useConfirmDelete: typeof import('@ingot/admin-core').useConfirmDelete
   const useConfirmDialog: typeof import('@vueuse/core').useConfirmDialog
-  const useConfirmStatus: typeof import('@ingot/admin-core').useConfirmStatus
-  const useConfirmStatus2: typeof import('@ingot/admin-core').useConfirmStatus2
-  const useConfirmUpdate: typeof import('@ingot/admin-core').useConfirmUpdate
   const useCountdown: typeof import('@vueuse/core').useCountdown
   const useCounter: typeof import('@vueuse/core').useCounter
   const useCssModule: typeof import('vue').useCssModule
@@ -240,7 +233,6 @@ declare global {
   const useOffsetPagination: typeof import('@vueuse/core').useOffsetPagination
   const useOnline: typeof import('@vueuse/core').useOnline
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
-  const usePaging: typeof import('@ingot/admin-core').usePaging
   const useParallax: typeof import('@vueuse/core').useParallax
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
@@ -454,9 +446,6 @@ declare module 'vue' {
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
-    readonly transformDeleteAPI: UnwrapRef<typeof import('@ingot/admin-core')['transformDeleteAPI']>
-    readonly transformPageAPI: UnwrapRef<typeof import('@ingot/admin-core')['transformPageAPI']>
-    readonly transformUpdateAPI: UnwrapRef<typeof import('@ingot/admin-core')['transformUpdateAPI']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly tryOnBeforeMount: UnwrapRef<typeof import('@vueuse/core')['tryOnBeforeMount']>
     readonly tryOnBeforeUnmount: UnwrapRef<typeof import('@vueuse/core')['tryOnBeforeUnmount']>
@@ -495,11 +484,7 @@ declare module 'vue' {
     readonly useClipboardItems: UnwrapRef<typeof import('@vueuse/core')['useClipboardItems']>
     readonly useCloned: UnwrapRef<typeof import('@vueuse/core')['useCloned']>
     readonly useColorMode: UnwrapRef<typeof import('@vueuse/core')['useColorMode']>
-    readonly useConfirmDelete: UnwrapRef<typeof import('@ingot/admin-core')['useConfirmDelete']>
     readonly useConfirmDialog: UnwrapRef<typeof import('@vueuse/core')['useConfirmDialog']>
-    readonly useConfirmStatus2: UnwrapRef<typeof import('@ingot/admin-core')['useConfirmStatus2']>
-    readonly useConfirmStatus: UnwrapRef<typeof import('@ingot/admin-core')['useConfirmStatus']>
-    readonly useConfirmUpdate: UnwrapRef<typeof import('@ingot/admin-core')['useConfirmUpdate']>
     readonly useCountdown: UnwrapRef<typeof import('@vueuse/core')['useCountdown']>
     readonly useCounter: UnwrapRef<typeof import('@vueuse/core')['useCounter']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
@@ -575,7 +560,6 @@ declare module 'vue' {
     readonly useOffsetPagination: UnwrapRef<typeof import('@vueuse/core')['useOffsetPagination']>
     readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly usePageLeave: UnwrapRef<typeof import('@vueuse/core')['usePageLeave']>
-    readonly usePaging: UnwrapRef<typeof import('@ingot/admin-core')['usePaging']>
     readonly useParallax: UnwrapRef<typeof import('@vueuse/core')['useParallax']>
     readonly useParentElement: UnwrapRef<typeof import('@vueuse/core')['useParentElement']>
     readonly usePerformanceObserver: UnwrapRef<typeof import('@vueuse/core')['usePerformanceObserver']>

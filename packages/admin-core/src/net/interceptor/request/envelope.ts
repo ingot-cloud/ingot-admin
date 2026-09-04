@@ -1,5 +1,5 @@
-import type { InternalAxiosRequestConfig, AxiosError } from "axios";
-import type { PreFilter } from "@/net/types";
+import type { InternalAxiosRequestConfig } from "axios";
+import { defineRequestInterceptor, InterceptorOrder } from "@ingot/http-client";
 import { createEnvelopeSession, applyEncryptedRequest } from "@ingot/shared/crypto";
 import { keyStore, cryptoHeaderNames } from "@/net/crypto";
 
@@ -7,11 +7,9 @@ import { keyStore, cryptoHeaderNames } from "@/net/crypto";
  * 信封加密请求拦截器：按 config.crypto 握手、写协议头，并按请求方向模式加密。
  * query 模式加密 config.params（GET），whole/field 模式加密 config.data。
  */
-class EnvelopeInterceptor implements PreFilter {
-  order(): number {
-    return 25;
-  }
-
+export default defineRequestInterceptor({
+  name: "envelope",
+  order: InterceptorOrder.request.envelope,
   async resolved(config: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> {
     const option = config.crypto;
     if (!option || (!option.request && !option.response)) {
@@ -42,11 +40,5 @@ class EnvelopeInterceptor implements PreFilter {
     }
 
     return config;
-  }
-
-  rejected(error: AxiosError): Promise<void> {
-    return Promise.reject(error);
-  }
-}
-
-export default new EnvelopeInterceptor();
+  },
+});

@@ -90,7 +90,7 @@ export interface R<T = unknown> extends AxiosResponse {
 ### 使用约定
 
 - API 函数返回 `Promise<R<T>>`，不在 API 层解包 `data`
-- 页面/hook 层通过 Query Options 或 `.then(({ data }) => ...)` 取数据；旧 `transformPageAPI` 仅用于含手机号的命令式列表
+- 页面/hook 层通过 Query Options 或 `.then(({ data }) => ...)` 取数据
 - 成功码：`StatusCode.OK`（`"S0200"`），由拦截器统一判断
 
 ### 分页类型 Page\<T\>
@@ -119,7 +119,7 @@ const paging = useServerPaging({
 paging.fetchData();
 ```
 
-列表 `:loading` 使用 `paging.fetching`。含手机号搜索的用户列表仍用已废弃的 `usePaging` + `transformPageAPI`，敏感字段不得进入 Query Key。
+列表 `:loading` 使用 `paging.fetching`。含手机号搜索同样用 `useServerPaging`；`snapshotQueryParams` 剥掉明文敏感字段并写入 `_sensitive` 指纹。
 
 ---
 
@@ -148,7 +148,6 @@ export function AppPageAPI(
 | `signal` | Query 传入的 AbortSignal，优先于 CancelManager |
 | `feedback: "silent"` | 不弹 Axios 全局提示，由 Query 最终错误处理 |
 | `progress: "silent"` | 不计入 NProgress 前台计数 |
-| `manualProcessingFailure` | **已废弃**，等价 `feedback: "silent"` |
 
 Query 缓存只保存 `R<T>.data`。错误类型为 `ApiError`，`error.code` 仍可用于业务码判断。
 
@@ -218,9 +217,9 @@ export function AppPageQueryOptions(
 
 选择器、远程搜索等需要命令式读缓存时，使用 `queryAdminData(XxxQueryOptions(...))`（内部是 `QueryClient.query`）。不要用已废弃的 `fetchQuery` / `prefetchQuery` / `ensureQueryData`。
 
-Token、密码、手机号不得进入 Query Key。登录、挑战、上传下载和敏感即时搜索保持命令式请求。
+Token、密码、手机号不得以明文进入 Query Key（由 `snapshotQueryParams` 写成指纹）。登录、挑战、上传下载保持命令式请求。列表分页只用 `useServerPaging`。
 
-`usePaging` / `transformPageAPI` / `useConfirm*` 已标记 deprecated，后续版本化 change 再删除公共导出。
+网络分层、App 追加拦截器与 order 表见 [docs/network.md](../../../docs/network.md)。
 
 ### 请求 config 扩展
 
@@ -229,7 +228,6 @@ Token、密码、手机号不得进入 Query Key。登录、挑战、上传下�
 | 字段 | 用途 |
 |------|------|
 | `feedback` / `progress` | 见上表；由 `@ingot/http-client` 声明 |
-| `manualProcessingFailure` | **已废弃**，等价 `feedback: "silent"` |
 | `refreshTokenAndRetry` | 401 时刷新 token 重试 |
 | `crypto` | 信封加密配置（请求/响应方向独立，见 `docs/envelope-crypto.md`） |
 
@@ -367,8 +365,6 @@ try {
   }
 }
 ```
-
-`manualProcessingFailure: true` 仍可用，但已废弃，等价 `feedback: "silent"`。
 
 ---
 

@@ -1,6 +1,6 @@
 # 信封加密（Envelope Crypto）前端对接
 
-本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/shared/crypto` 包，`ingot-admin` 与 `ingot-login` 通过各自的 axios 拦截器接入，对业务代码透明。
+本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/shared/crypto` 包，`admin-core` 与登录应用 `apps/auth` 通过各自的 axios 拦截器接入，对业务代码透明。网络分层见 [network.md](./network.md)。
 
 ## 1. 背景与原理
 
@@ -173,8 +173,8 @@ flowchart TD
 
 应用接入：
 
-- `ingot-admin`：`src/net/crypto.ts`（KeyStore/头名/原始实例）、`src/net/interceptor/request/envelope.ts`、`src/net/interceptor/response/envelope.ts`。
-- `ingot-login`：`src/net/crypto.ts`、`src/net/interceptor/request.ts`、`src/net/interceptor/response.ts`。
+- 管理台：`packages/admin-core/src/net/crypto.ts`、`packages/admin-core/src/net/interceptor/request/envelope.ts`、`packages/admin-core/src/net/interceptor/response/envelope.ts`。
+- 登录应用：`apps/auth/src/net/crypto.ts`、`apps/auth/src/net/interceptor/request.ts`、`apps/auth/src/net/interceptor/response.ts`。
 
 公钥端点：`GET /crypto/public-keys`（匿名可访问），返回 `active=true` 的 `{kid, publicKey}` 并缓存。
 

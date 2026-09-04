@@ -92,20 +92,6 @@ describe("createHttpClient", () => {
     expect(onBusinessFailure).not.toHaveBeenCalled();
   });
 
-  it("manualProcessingFailure 映射为 silent feedback", async () => {
-    const onBusinessFailure = vi.fn();
-    const http = createHttpClient({
-      adapter: jsonAdapter(() => ({
-        data: { code: "S0002", message: "非法操作", data: {} },
-      })),
-      hooks: { onBusinessFailure },
-    });
-    await expect(http.get("/api/app", null, { manualProcessingFailure: true })).rejects.toBeInstanceOf(
-      ApiError,
-    );
-    expect(onBusinessFailure).not.toHaveBeenCalled();
-  });
-
   it("未授权业务码走 onUnauthorized", async () => {
     const onUnauthorized = vi.fn();
     const onBusinessFailure = vi.fn();
@@ -209,7 +195,7 @@ describe("createHttpClient", () => {
       interceptors: {
         response: [
           {
-            order: () => 15,
+            order: 15,
             resolved: (response) => response,
             rejected: async () => challenge(),
           },
@@ -231,27 +217,85 @@ describe("createHttpClient", () => {
       interceptors: {
         request: [
           {
-            order: () => 10,
+            name: "header",
+            order: 10,
             resolved: (config) => {
               seen.push("header");
               config.headers = AxiosHeaders.from(config.headers || {});
               config.headers.set("X-Trace", "h");
               return config;
             },
-            rejected: (error) => Promise.reject(error),
           },
           {
-            order: () => 25,
+            name: "envelope",
+            order: 25,
             resolved: (config) => {
               seen.push("envelope");
               return config;
             },
-            rejected: (error) => Promise.reject(error),
           },
         ],
       },
     });
     await http.get("/api/me");
     expect(seen).toEqual(["header", "envelope", "adapter:h"]);
+  });
+
+  it("同 order 时保持传入顺序（先 core 后 App）", async () => {
+    const seen: string[] = [];
+    const http = createHttpClient({
+      adapter: jsonAdapter(() => ({ data: okBody() })),
+      interceptors: {
+        request: [
+          {
+            name: "core",
+            order: 12,
+            resolved: (config) => {
+              seen.push("core");
+              return config;
+            },
+          },
+          {
+            name: "app",
+            order: 12,
+            resolved: (config) => {
+              seen.push("app");
+              return config;
+            },
+          },
+        ],
+      },
+    });
+    await http.get("/api/me");
+    expect(seen).toEqual(["core", "app"]);
+  });
+
+  it("响应拦截器也是 order 越小越先执行", async () => {
+    const seen: string[] = [];
+    const http = createHttpClient({
+      adapter: jsonAdapter(() => ({ data: okBody() })),
+      interceptors: {
+        response: [
+          {
+            name: "late",
+            order: 15,
+            resolved: (response) => {
+              seen.push("late");
+              return response;
+            },
+          },
+          {
+            name: "early",
+            order: 5,
+            resolved: (response) => {
+              seen.push("early");
+              return response;
+            },
+          },
+        ],
+      },
+    });
+    await http.get("/api/me");
+    expect(seen).toEqual(["early", "late"]);
   });
 });

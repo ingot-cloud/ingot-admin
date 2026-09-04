@@ -15,8 +15,6 @@ declare global {
   const $ref: typeof import('vue/macros').$ref
   const $shallowRef: typeof import('vue/macros').$shallowRef
   const $toRef: typeof import('vue/macros').$toRef
-  const C: typeof import('./src/hooks/biz/usePaging').C
-  const Condition: typeof import('./src/hooks/biz/usePaging').Condition
   const EffectScope: typeof import('vue').EffectScope
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
@@ -127,9 +125,6 @@ declare global {
   const toRef: typeof import('vue').toRef
   const toRefs: typeof import('vue').toRefs
   const toValue: typeof import('vue').toValue
-  const transformDeleteAPI: typeof import('./src/hooks/biz/usePaging').transformDeleteAPI
-  const transformPageAPI: typeof import('./src/hooks/biz/usePaging').transformPageAPI
-  const transformUpdateAPI: typeof import('./src/hooks/biz/usePaging').transformUpdateAPI
   const triggerRef: typeof import('vue').triggerRef
   const tryOnBeforeMount: typeof import('@vueuse/core').tryOnBeforeMount
   const tryOnBeforeUnmount: typeof import('@vueuse/core').tryOnBeforeUnmount
@@ -168,11 +163,7 @@ declare global {
   const useCloned: typeof import('@vueuse/core').useCloned
   const useColorMode: typeof import('@vueuse/core').useColorMode
   const useCommandComponent: typeof import('./src/hooks/biz/useCommandComponent').useCommandComponent
-  const useConfirmDelete: typeof import('./src/hooks/biz/usePaging').useConfirmDelete
   const useConfirmDialog: typeof import('@vueuse/core').useConfirmDialog
-  const useConfirmStatus: typeof import('./src/hooks/biz/usePaging').useConfirmStatus
-  const useConfirmStatus2: typeof import('./src/hooks/biz/usePaging').useConfirmStatus2
-  const useConfirmUpdate: typeof import('./src/hooks/biz/usePaging').useConfirmUpdate
   const useCountdown: typeof import('@vueuse/core').useCountdown
   const useCounter: typeof import('@vueuse/core').useCounter
   const useCssModule: typeof import('vue').useCssModule
@@ -255,7 +246,6 @@ declare global {
   const useOnline: typeof import('@vueuse/core').useOnline
   const useOrderedChildren: typeof import('./src/hooks/components/useOrderedChildren').useOrderedChildren
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
-  const usePaging: typeof import('./src/hooks/biz/usePaging').usePaging
   const useParallax: typeof import('@vueuse/core').useParallax
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
@@ -353,9 +343,6 @@ declare global {
   // @ts-ignore
   export type { Options, CommandComponent } from './src/hooks/biz/useCommandComponent'
   import('./src/hooks/biz/useCommandComponent')
-  // @ts-ignore
-  export type { FetchPageAPI, RecordId, DeleteRecordAPI, UpdateRecordAPI, FetchPageFn, DeleteRecordFn, UpdateRecordFn, ActionCallbackFn, StatusRecord } from './src/hooks/biz/usePaging'
-  import('./src/hooks/biz/usePaging')
 }
 
 // for vue template auto import
@@ -363,8 +350,6 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
-    readonly C: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['C']>
-    readonly Condition: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['Condition']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
@@ -475,9 +460,6 @@ declare module 'vue' {
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
     readonly toRefs: UnwrapRef<typeof import('vue')['toRefs']>
     readonly toValue: UnwrapRef<typeof import('vue')['toValue']>
-    readonly transformDeleteAPI: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['transformDeleteAPI']>
-    readonly transformPageAPI: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['transformPageAPI']>
-    readonly transformUpdateAPI: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['transformUpdateAPI']>
     readonly triggerRef: UnwrapRef<typeof import('vue')['triggerRef']>
     readonly tryOnBeforeMount: UnwrapRef<typeof import('@vueuse/core')['tryOnBeforeMount']>
     readonly tryOnBeforeUnmount: UnwrapRef<typeof import('@vueuse/core')['tryOnBeforeUnmount']>
@@ -516,11 +498,7 @@ declare module 'vue' {
     readonly useCloned: UnwrapRef<typeof import('@vueuse/core')['useCloned']>
     readonly useColorMode: UnwrapRef<typeof import('@vueuse/core')['useColorMode']>
     readonly useCommandComponent: UnwrapRef<typeof import('./src/hooks/biz/useCommandComponent')['useCommandComponent']>
-    readonly useConfirmDelete: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['useConfirmDelete']>
     readonly useConfirmDialog: UnwrapRef<typeof import('@vueuse/core')['useConfirmDialog']>
-    readonly useConfirmStatus2: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['useConfirmStatus2']>
-    readonly useConfirmStatus: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['useConfirmStatus']>
-    readonly useConfirmUpdate: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['useConfirmUpdate']>
     readonly useCountdown: UnwrapRef<typeof import('@vueuse/core')['useCountdown']>
     readonly useCounter: UnwrapRef<typeof import('@vueuse/core')['useCounter']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
@@ -603,7 +581,6 @@ declare module 'vue' {
     readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
     readonly useOrderedChildren: UnwrapRef<typeof import('./src/hooks/components/useOrderedChildren')['useOrderedChildren']>
     readonly usePageLeave: UnwrapRef<typeof import('@vueuse/core')['usePageLeave']>
-    readonly usePaging: UnwrapRef<typeof import('./src/hooks/biz/usePaging')['usePaging']>
     readonly useParallax: UnwrapRef<typeof import('@vueuse/core')['useParallax']>
     readonly useParentElement: UnwrapRef<typeof import('@vueuse/core')['useParentElement']>
     readonly usePerformanceObserver: UnwrapRef<typeof import('@vueuse/core')['usePerformanceObserver']>

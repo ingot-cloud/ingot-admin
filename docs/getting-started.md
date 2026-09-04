@@ -104,6 +104,7 @@ ingot-admin/
 ## 相关文档
 
 - [开发模式](./development-model.md)
+- [网络请求](./network.md)
 - [插件开发](./plugin-development.md)
 - [App 开发](./app-development.md)
 - [菜单 view_path](./menu-view-path.md)

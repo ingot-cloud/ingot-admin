@@ -15,7 +15,7 @@ export function SessionAuthorizeAPI(): Promise<R<PreAuthorizeResult>> {
       pre_grant_type,
       ...parameter,
     },
-    manualProcessingFailure: true,
+    feedback: "silent",
   });
 }
 
