@@ -201,6 +201,9 @@ import {
   useMenuTypeEnum,
 } from "@/models/enums";
 import { CreateAppMenuAPI, RemoveAppMenuAPI, UpdateAppMenuAPI } from "@/api/platform/config/app";
+import { appQueryKeys } from "@/api/platform/config/app.query";
+import { invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const props = defineProps<{
   appId: string;
@@ -264,6 +267,8 @@ const menuLinkTypeEnum = useMenuLinkTypeEnum();
 const accessModeEnum = useAccessModeEnum();
 const statusEnum = useEnum(CommonStatusEnumExtArray);
 const message = useMessage();
+const confirm = useMessageConfirm();
+const queryClient = useQueryClient();
 
 const moreOptionsFlag = ref(false);
 const lastAutoPath = ref<string | undefined>();
@@ -272,11 +277,28 @@ const iconButtonRef = ref();
 const iconPopoverRef = ref();
 const editForm = reactive<PlatformMenu>({ ...defaultEditForm });
 const rawForm = reactive<PlatformMenu>({});
-const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const canEditPid = ref(false);
 const visible = ref(false);
+
+const invalidateMenus = (): Promise<void> =>
+  invalidateQueriesByKeys(queryClient, [
+    appQueryKeys.menus(props.appId),
+    appQueryKeys.detail(props.appId),
+  ]);
+
+const saveMutation = useMutation({
+  mutationFn: (request: Promise<unknown>) => request,
+  onSuccess: () => invalidateMenus(),
+});
+
+const removeMutation = useMutation({
+  mutationFn: (menuId: string) => RemoveAppMenuAPI(props.appId, menuId, silentQueryRequest()),
+  onSuccess: () => invalidateMenus(),
+});
+
+const loading = computed(() => saveMutation.isPending.value || removeMutation.isPending.value);
 
 const viewOptionGroups = computed(() => {
   const views = listRegisteredViews();
@@ -304,14 +326,6 @@ const viewOptionGroups = computed(() => {
   });
   return groups;
 });
-
-const confirmDelete = useConfirmDelete(
-  transformDeleteAPI((id: string) => RemoveAppMenuAPI(props.appId, id)),
-  () => {
-    visible.value = false;
-    emit("success");
-  },
-);
 
 const isDirectory = (): boolean => editForm.menuType === MenuType.Directory;
 const isMenu = (): boolean => editForm.menuType === MenuType.Menu;
@@ -350,7 +364,13 @@ const privateOnIconPopoverClose = (): void => {
 };
 
 const privateOnRemove = (): void => {
-  confirmDelete.exec(editForm.id!, `是否删除菜单(${editForm.name})`, "删除成功");
+  confirm.warning(`是否删除菜单(${editForm.name})`).then(() => {
+    removeMutation.mutateAsync(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emit("success");
+    });
+  });
 };
 
 const privateOnConfirm = (): void => {
@@ -381,24 +401,19 @@ const privateOnConfirm = (): void => {
         message.warning("未改变数据");
         return;
       }
-      request = UpdateAppMenuAPI(props.appId, rawForm.id!, params);
+      request = UpdateAppMenuAPI(props.appId, rawForm.id!, params, silentQueryRequest());
     } else {
       const payload = { ...toRaw(editForm) };
       if (!payload.pid) {
         payload.pid = "0";
       }
-      request = CreateAppMenuAPI(props.appId, payload);
+      request = CreateAppMenuAPI(props.appId, payload, silentQueryRequest());
     }
-    loading.value = true;
-    request
-      .then(() => {
-        message.success("操作成功");
-        visible.value = false;
-        emit("success");
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    saveMutation.mutateAsync(request).then(() => {
+      message.success("操作成功");
+      visible.value = false;
+      emit("success");
+    });
   });
 };
 

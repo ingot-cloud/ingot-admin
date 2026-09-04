@@ -24,7 +24,7 @@
               value-field="id"
               label-field="name"
               placeholder="请选择应用"
-              :load-data="loadAppData"
+              :load-data="loadAppOptions"
               @change="refreshTree"
             />
           </div>
@@ -51,16 +51,16 @@
       />
     </template>
 
-    <in-table
-      :loading="paging.loading.value"
-      :data="paging.pageInfo.records"
-      :page="paging.pageInfo"
+        <in-table
+      :loading="paging.fetching.value"
+      :data="paging.pageInfo.value.records"
+      :page="paging.pageInfo.value"
       :headers="tableHeaders"
       ref="tableRef"
       row-key="id"
-      @refresh="paging.exec"
-      @handleSizeChange="paging.exec"
-      @handleCurrentChange="paging.exec"
+      @refresh="paging.fetchData"
+      @handleSizeChange="paging.fetchData"
+      @handleCurrentChange="paging.fetchData"
     >
       <template #title>
         <div v-if="currentType" class="title-wrap">
@@ -103,7 +103,7 @@
             @on-changed="handleSearch"
           />
         </in-with-label>
-        <in-button type="primary" :loading="paging.loading.value" @click="handleSearch">
+        <in-button type="primary" :loading="paging.fetching.value" @click="handleSearch">
           搜索
         </in-button>
       </template>
@@ -157,14 +157,7 @@
   <ItemEditDrawer ref="itemEditDrawerRef" @success="handleEditSuccess" />
 </template>
 <script lang="ts" setup>
-import type {
-  PlatformDict,
-  DictTreeNodeVO,
-  DictQueryDTO,
-  ApplicationPageItemVO,
-  Page,
-} from "@/models";
-import type { LoadDataParams } from "@ingot/admin-core";
+import type { PlatformDict, DictTreeNodeVO, DictQueryDTO } from "@/models";
 import type { TableAPI } from "@ingot/admin-core";
 import {
   CommonStatus,
@@ -173,15 +166,18 @@ import {
   DictScope,
   useDictScopeEnum,
 } from "@/models/enums";
-import { GetDictPageAPI, ChangeDictStatusAPI, RemoveDictAPI } from "@/api/platform/config/dict.ts";
-import { GetAppPageAPI } from "@/api/platform/config/app.ts";
+import { ChangeDictStatusAPI, RemoveDictAPI } from "@/api/platform/config/dict.ts";
+import { DictPageQueryOptions, dictQueryKeys } from "@/api/platform/config/dict.query";
+import { loadAppOptions } from "@/api/platform/config/app.query";
 import { TenantSelect } from "@ingot/admin-common";
 import LeftContent from "./components/LeftContent.vue";
 import TypeEditDrawer, { type TypeEditDrawerAPI } from "./TypeEditDrawer.vue";
 import ItemEditDrawer, { type ItemEditDrawerAPI } from "./ItemEditDrawer.vue";
 import { tableHeaders } from "./table";
-import { Confirm, Message } from "@ingot/admin-core";
+import { Confirm, Message, silentQueryRequest, useServerPaging } from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
+const queryClient = useQueryClient();
 const dictScopeEnums = useDictScopeEnum();
 const statusEnumExt = useEnum(CommonStatusEnumExtArray);
 
@@ -221,14 +217,14 @@ const canCreateType = computed(() => {
   return true;
 });
 
-// 分页
-const fetchPageFn = transformPageAPI<PlatformDict, DictQueryDTO>(GetDictPageAPI);
-const paging = usePaging<PlatformDict, DictQueryDTO>(fetchPageFn);
+const paging = useServerPaging<PlatformDict, DictQueryDTO>({
+  queryOptions: DictPageQueryOptions,
+  queryWhen: (submitted) => Boolean(submitted.code),
+});
 
 const refreshTable = (): void => {
   if (!currentType.value) {
-    paging.pageInfo.records = [];
-    paging.pageInfo.total = 0;
+    paging.resetSubmitted({} as DictQueryDTO);
     return;
   }
   paging.condition.code = currentType.value.code;
@@ -236,7 +232,7 @@ const refreshTable = (): void => {
   paging.condition.scopeType = scopeFilter.scopeType;
   paging.condition.tenantId = scopeFilter.tenantId;
   paging.condition.appId = scopeFilter.appId;
-  paging.exec({ type: "current", value: 1 });
+  paging.search();
 };
 
 const handleNodeClick = (node?: DictTreeNodeVO): void => {
@@ -266,14 +262,6 @@ const handleResetScope = (): void => {
 
 const handleSearch = (): void => {
   refreshTable();
-};
-
-const loadAppData = async (params: LoadDataParams): Promise<Page<ApplicationPageItemVO>> => {
-  const result = await GetAppPageAPI(
-    { current: params.current, size: params.size },
-    { name: params.query },
-  );
-  return result.data;
 };
 
 // 新建 / 编辑：字典类型 与 字典项
@@ -308,18 +296,32 @@ const handleEditCurrentType = (node?: DictTreeNodeVO): void => {
 
 const handleEditSuccess = (): void => {
   leftRef.value?.refresh();
+  void queryClient.invalidateQueries({ queryKey: dictQueryKeys.all });
   refreshTable();
 };
 
-// 状态切换
+const statusMutation = useMutation({
+  mutationFn: (vars: { id: string; status: CommonStatus }) =>
+    ChangeDictStatusAPI(vars.id, vars.status, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: dictQueryKeys.lists() });
+  },
+});
+
+const removeMutation = useMutation({
+  mutationFn: (id: string) => RemoveDictAPI(id, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: dictQueryKeys.lists() });
+  },
+});
+
 const handleToggleStatus = (record: PlatformDict): void => {
   if (!record.id || !record.status) return;
   const next = record.status === CommonStatus.Enable ? CommonStatus.Lock : CommonStatus.Enable;
   const action = next === CommonStatus.Enable ? "启用" : "禁用";
   Confirm.warning(`是否${action}字典(${record.label || record.name})`).then(() => {
-    ChangeDictStatusAPI(record.id!, next).then(() => {
+    statusMutation.mutateAsync({ id: record.id!, status: next }).then(() => {
       Message.success("操作成功");
-      refreshTable();
     });
   });
 };
@@ -331,9 +333,8 @@ const handleRemove = (record: PlatformDict): void => {
     return;
   }
   Confirm.warning(`是否删除字典项(${record.label || record.name})`).then(() => {
-    RemoveDictAPI(record.id!).then(() => {
+    removeMutation.mutateAsync(record.id!).then(() => {
       Message.success("删除成功");
-      refreshTable();
     });
   });
 };

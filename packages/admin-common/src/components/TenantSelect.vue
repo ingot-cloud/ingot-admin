@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { loadTenantOptions } from "../api/tenant";
+import { loadTenantOptions } from "../api/tenant.query";
 
 const valueField = "id";
 const labelField = "name";

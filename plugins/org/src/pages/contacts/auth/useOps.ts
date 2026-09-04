@@ -1,32 +1,24 @@
-import type { RoleTreeNodeVO, PermissionTreeNode } from "@/models";
+import type { RoleTreeNodeVO } from "@/models";
 import { copyParams } from "@ingot/admin-core";
-import { useOrgRoleStore } from "@/stores/modules/role";
+import { OrgRoleBindAuthoritiesQueryOptions, orgRoleQueryKeys } from "@/api/org/role.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const roleStore = useOrgRoleStore();
 export const useOps = () => {
-  const loading = ref(false);
-  const records = ref<Array<PermissionTreeNode>>([]);
+  const queryClient = useQueryClient();
   const currentNode = reactive<RoleTreeNodeVO>({ id: "", name: "" });
+  const query = useQuery(() => OrgRoleBindAuthoritiesQueryOptions(() => currentNode.id ?? ""));
+  const records = computed(() => query.data.value ?? []);
+  const loading = computed(() => query.isFetching.value);
 
   const fetchData = (): void => {
-    loading.value = true;
-    roleStore
-      .getBindAuthorities(currentNode.id!)
-      .then((data) => {
-        records.value = data;
-        loading.value = false;
-      })
-      .catch(() => {
-        loading.value = false;
-      });
+    if (!currentNode.id) {
+      return;
+    }
+    void queryClient.invalidateQueries({ queryKey: orgRoleQueryKeys.permissions(currentNode.id) });
   };
 
-  /**
-   * 处理节点点击事件
-   */
   const handleTreeNodeClick = (node: RoleTreeNodeVO): void => {
     copyParams(currentNode, node);
-    fetchData();
   };
 
   return {

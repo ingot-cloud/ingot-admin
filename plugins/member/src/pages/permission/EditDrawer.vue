@@ -54,8 +54,7 @@ export interface API {
 <script lang="ts" setup>
 import type { MemberPermission } from "@/models";
 import { TreeKeyAndProps } from "@/models";
-import { useOrgTypeEnums } from "@/models/enums";
-import { Message } from "@ingot/admin-core";
+import { Confirm, Message } from "@ingot/admin-core";
 import { copyParams, copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
 import {
   CreateAuthorityAPI,
@@ -96,14 +95,14 @@ const edit = ref(false);
 const isAddChild = ref(false);
 const visible = ref(false);
 
-const orgTypeEnums = useOrgTypeEnums();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveAuthorityAPI), () => {
-  visible.value = false;
-  emits("success");
-});
-
 const handleRemoveClick = () => {
-  confirmDelete.exec(editForm.id!, `是否删除权限(${editForm.name})`, "删除成功");
+  Confirm.warning(`是否删除权限(${editForm.name})`).then(() => {
+    RemoveAuthorityAPI(editForm.id!).then(() => {
+      Message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
 const handleConfirmClick = () => {

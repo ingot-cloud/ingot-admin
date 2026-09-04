@@ -74,7 +74,8 @@ import {
   useAccessModeEnum,
   AccessModeEnum,
 } from "@/models/enums";
-import { AppMenuTreeAPI } from "@/api/platform/config/app.ts";
+import { AppMenuTreeQueryOptions } from "@/api/platform/config/app.query";
+import { useQuery } from "@tanstack/vue-query";
 import { menuTableHeaders } from "./menuTable";
 import MenuEditDrawer from "./MenuEditDrawer.vue";
 
@@ -85,22 +86,13 @@ const props = defineProps<{
 const menuTypeEnum = useMenuTypeEnum();
 const accessModeEnum = useAccessModeEnum();
 
-const loading = ref(false);
-const menuData = ref<Array<MenuTreeNode>>([]);
+const menuQuery = useQuery(() => AppMenuTreeQueryOptions(() => props.appId));
+const menuData = computed(() => menuQuery.data.value ?? []);
+const loading = computed(() => menuQuery.isFetching.value);
 const menuEditDrawerRef = ref<InstanceType<typeof MenuEditDrawer>>();
 
 const privateFetchData = (): void => {
-  if (!props.appId) {
-    return;
-  }
-  loading.value = true;
-  AppMenuTreeAPI(props.appId)
-    .then((response) => {
-      menuData.value = response.data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  void menuQuery.refetch();
 };
 
 const privateOnCreate = (): void => {
@@ -114,14 +106,6 @@ const privateOnAddChild = (pid: string): void => {
 const privateOnEdit = (item: MenuTreeNode): void => {
   menuEditDrawerRef.value?.show(item);
 };
-
-watch(
-  () => props.appId,
-  () => {
-    privateFetchData();
-  },
-  { immediate: true },
-);
 
 defineExpose({
   refresh: privateFetchData,

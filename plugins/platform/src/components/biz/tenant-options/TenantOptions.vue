@@ -22,10 +22,9 @@
   </el-select>
 </template>
 <script lang="ts" setup>
-import { usePlatformTenantStore } from "@/stores/modules/tenant";
+import { searchTenants } from "@/api/platform/org/tenant.query";
 import type { SysTenant } from "@/models";
 
-const tenantStore = usePlatformTenantStore();
 const loading = ref(false);
 const options = ref<Array<SysTenant>>([]);
 
@@ -34,8 +33,7 @@ const emits = defineEmits(["onChanged"]);
 const remoteMethod = (query: string) => {
   if (query) {
     loading.value = true;
-    tenantStore
-      .search(query)
+    searchTenants(query)
       .then((data) => {
         loading.value = false;
         options.value = data;

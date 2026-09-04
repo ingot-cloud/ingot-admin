@@ -56,16 +56,14 @@
       <common-status-button
         v-if="isEdit"
         :status="editForm.status"
-        @click="
-          confirmStatus.exec(editForm.id!, editForm.status!, `角色(${editForm.name})`, '操作成功')
-        "
+        @click="handleStatusClick"
       >
       </common-status-button>
       <in-button v-if="isEdit" type="danger" @click="handleRemoveClick"> 删除 </in-button>
       <in-button type="primary" @click="handleActionButton">确定</in-button>
     </template>
   </in-drawer>
-  <BindAuthDialog ref="bindAuthDialogRef" @success="fetchBindAuthorities" />
+  <BindAuthDialog ref="bindAuthDialogRef" @success="privateOnBindSuccess" />
 </template>
 <script setup lang="ts">
 import type { PropType } from "vue";
@@ -73,17 +71,21 @@ import {
   TreeKeyAndProps,
   type MemberRoleTreeNodeVO,
   type MemberRole,
-  type MemberPermissionTreeNodeVO,
 } from "@/models";
-import { Message } from "@ingot/admin-core";
+import { Confirm, Message, getCommonStatusActionDesc, getCommonStatusToggle } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
+import type { CommonStatus } from "@/models/enums";
 import {
-  GetBindAuthoritiesAPI,
   CreateRoleAPI,
   UpdateRoleAPI,
   DeleteRoleAPI,
 } from "@/api/member/role";
+import {
+  MemberRoleBindAuthoritiesQueryOptions,
+  memberRoleQueryKeys,
+} from "@/api/member/role.query";
 import BindAuthDialog from "./BindAuthDialog.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 const rawForm: MemberRole = {
   id: undefined,
   pid: undefined,
@@ -102,10 +104,15 @@ const loading = ref(false);
 const isEdit = ref(false);
 const isAddChild = ref(false);
 
-const id = ref();
+const id = ref("");
 const editForm = reactive(Object.assign({}, rawForm));
 const rawEditForm = Object.assign({}, rawForm);
-const bindAuthorities = ref<Array<MemberPermissionTreeNodeVO>>([]);
+const queryClient = useQueryClient();
+const bindQuery = useQuery(() => ({
+  ...MemberRoleBindAuthoritiesQueryOptions(() => id.value),
+  enabled: show.value && isEdit.value && Boolean(id.value),
+}));
+const bindAuthorities = computed(() => bindQuery.data.value ?? []);
 const rules = {
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
   code: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
@@ -121,14 +128,26 @@ defineProps({
   },
 });
 
-const confirmStatus = useConfirmStatus(transformUpdateAPI(UpdateRoleAPI), () => {
-  show.value = false;
-  emits("success");
-});
-const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteRoleAPI), () => {
-  show.value = false;
-  emits("success");
-});
+const handleRemoveClick = () => {
+  Confirm.warning(`是否删除角色(${editForm.name})`).then(() => {
+    DeleteRoleAPI(editForm.id!).then(() => {
+      Message.success("删除成功");
+      show.value = false;
+      emits("success");
+    });
+  });
+};
+
+const handleStatusClick = () => {
+  const next = getCommonStatusToggle(editForm.status as CommonStatus);
+  Confirm.warning(`是否${getCommonStatusActionDesc(next)}角色(${editForm.name})`).then(() => {
+    UpdateRoleAPI({ id: editForm.id, status: next }).then(() => {
+      Message.success("操作成功");
+      show.value = false;
+      emits("success");
+    });
+  });
+};
 
 const stretch = (tree: Array<any>): Array<string> => {
   let ids: Array<string> = [];
@@ -146,10 +165,6 @@ const stretch = (tree: Array<any>): Array<string> => {
 const handleBindCommand = (): void => {
   const roleId = editForm.id;
   bindAuthDialogRef.value.show(roleId, editForm.name, stretch(bindAuthorities.value));
-};
-
-const handleRemoveClick = () => {
-  confirmDelete.exec(editForm.id!, `是否删除角色(${editForm.name})`, "删除成功");
 };
 
 const handleActionButton = () => {
@@ -184,10 +199,8 @@ const handleActionButton = () => {
   });
 };
 
-const fetchBindAuthorities = () => {
-  GetBindAuthoritiesAPI(id.value).then((res) => {
-    bindAuthorities.value = res.data;
-  });
+const privateOnBindSuccess = (): void => {
+  void queryClient.invalidateQueries({ queryKey: memberRoleQueryKeys.permissions(id.value) });
 };
 
 defineExpose({
@@ -204,6 +217,7 @@ defineExpose({
         if (isAddChildValue) {
           title.value = "新增角色";
           isEdit.value = false;
+          id.value = "";
           editForm.pid = data?.id! as string;
         } else {
           title.value = "编辑角色";
@@ -211,11 +225,11 @@ defineExpose({
           id.value = data?.id!;
           copyParamsWithKeys(editForm, data!, keys);
           copyParamsWithKeys(rawEditForm, data!, keys);
-          fetchBindAuthorities();
         }
       } else {
         title.value = "新增角色";
         isEdit.value = false;
+        id.value = "";
       }
     });
   },

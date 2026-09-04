@@ -23,13 +23,15 @@
     "pinia": "catalog:",
     "pinia-plugin-persistedstate": "catalog:",
     "vue": "catalog:",
-    "vue-router": "catalog:"
+    "vue-router": "catalog:",
+    "@tanstack/vue-query": "catalog:"
   },
   "devDependencies": {
     "@iconify-json/carbon": "catalog:",
     "@iconify-json/ep": "catalog:",
     "@iconify-json/mdi": "catalog:",
     "@iconify/vue": "catalog:",
-    "@ingot/vite-config": "workspace:*"
+    "@ingot/vite-config": "workspace:*",
+    "@tanstack/eslint-plugin-query": "catalog:"
   }
 }

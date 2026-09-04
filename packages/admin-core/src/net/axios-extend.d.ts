@@ -6,15 +6,12 @@ import type { CryptoOption, EnvelopeContext } from "@ingot/shared/crypto";
 declare module "axios" {
   interface AxiosRequestConfig {
     /**
-     * 是否手动处理失败流程
-     * 默认自动交由公共失败处理器处理
+     * @deprecated 使用 `feedback: "silent"`
      */
     manualProcessingFailure?: boolean;
 
     /**
-     * 是否手动处理中断。
-     * 默认情况下，所有请求会自动加入到CancelManager中，可以统一中断所有请求，
-     * 如果手动
+     * @deprecated 传入 `signal` 跳过 CancelManager
      */
     manualProcessingAbort?: boolean;
 

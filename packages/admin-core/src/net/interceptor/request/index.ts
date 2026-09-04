@@ -1,17 +1,14 @@
 import type { PreFilter } from "@/net/types";
 import HeaderInterceptor from "./header";
 import EnvelopeInterceptor from "./envelope";
-import GlobalInterceptor from "./global";
 import type { AxiosInstance } from "axios";
 
 class RequestInterceptor {
   private interceptors: PreFilter[] = [];
 
   public constructor() {
-    this.interceptors.push(GlobalInterceptor);
     this.interceptors.push(HeaderInterceptor);
     this.interceptors.push(EnvelopeInterceptor);
-    // 倒序排列，因为axios拦截器，后配置的先执行
     this.interceptors.sort((a, b) => b.order() - a.order());
   }
 
@@ -23,6 +20,10 @@ class RequestInterceptor {
         interceptor.options,
       );
     });
+  }
+
+  public list(): PreFilter[] {
+    return this.interceptors;
   }
 }
 

@@ -1,11 +1,11 @@
 <template>
   <div class="p-10px">
     <in-table
-      :loading="loading"
+      :loading="eventQuery.isFetching.value"
       :data="tableData"
       :headers="blockEventTableHeaders"
       row-key="id"
-      @refresh="privateFetchData"
+      @refresh="privateRefresh"
     >
       <template #title>
         <div class="title-wrap">
@@ -32,33 +32,24 @@
 </template>
 
 <script setup lang="ts">
-import type { GatewayBlacklistEvent } from "@/models";
 import { useIpListKeyTypeEnum, useIpListSourceEnum } from "@/models/enums";
-import { GetBlockEventsAPI } from "@/api/security/policy";
+import { BlockEventListQueryOptions, blockEventQueryKeys } from "@/api/security/policy.query";
 import { blockEventTableHeaders } from "../table/blockEventTable";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const loading = ref(false);
-const tableData = ref<Array<GatewayBlacklistEvent>>([]);
+const queryClient = useQueryClient();
+const eventQuery = useQuery(() => BlockEventListQueryOptions());
+const tableData = computed(() => eventQuery.data.value ?? []);
 
 const ipListKeyTypeEnum = useIpListKeyTypeEnum();
 const ipListSourceEnum = useIpListSourceEnum();
 
-const privateFetchData = async (): Promise<void> => {
-  loading.value = true;
-  try {
-    const response = await GetBlockEventsAPI();
-    tableData.value = response.data;
-  } finally {
-    loading.value = false;
-  }
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: blockEventQueryKeys.lists() });
 };
 
-onMounted(() => {
-  privateFetchData();
-});
-
 defineExpose({
-  refresh: privateFetchData,
+  refresh: privateRefresh,
 });
 </script>
 

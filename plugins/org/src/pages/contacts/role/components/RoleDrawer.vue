@@ -53,11 +53,13 @@
 import type { PropType } from "vue";
 import type { RoleTreeNodeVO, Option } from "@/models";
 import { RoleTypeEnums } from "@/models/enums";
-import { useOrgRoleStore } from "@/stores/modules/role";
 import { Message } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
+import { CreateRoleAPI, UpdateRoleAPI } from "@/api/org/role";
+import { orgRoleQueryKeys } from "@/api/org/role.query";
 import { useDataScopeTypeEnum, DataScopeTypeEnum } from "@/models/enums";
 import BizDeptSelect from "@/components/biz/dept-select/BizDeptSelect.vue";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const rawForm = {
   id: undefined,
@@ -90,7 +92,7 @@ defineProps({
   },
 });
 
-const roleStore = useOrgRoleStore();
+const queryClient = useQueryClient();
 const useDataScope = useDataScopeTypeEnum();
 
 const editFormRef = ref();
@@ -112,15 +114,16 @@ const handleActionButton = () => {
       let request;
       if (isEdit.value) {
         params.id = id.value;
-        request = roleStore.updateRole(params);
+        request = UpdateRoleAPI(params);
       } else {
-        request = roleStore.createRole(params);
+        request = CreateRoleAPI(params);
       }
 
       loading.value = true;
       request
         .then(() => {
           Message.success("操作成功");
+          void queryClient.invalidateQueries({ queryKey: orgRoleQueryKeys.all });
           emits("success");
           loading.value = false;
           show.value = false;

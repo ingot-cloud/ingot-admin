@@ -30,7 +30,7 @@
             value-field="id"
             label-field="name"
             placeholder="请选择应用"
-            :load-data="loadAppData"
+            :load-data="loadAppOptions"
             :disabled="edit && editForm.systemFlag === true"
           />
         </el-form-item>
@@ -124,12 +124,11 @@ export interface TypeShowPayload {
 }
 </script>
 <script lang="ts" setup>
-import type { Page, PlatformDict, ApplicationPageItemVO } from "@/models";
-import type { LoadDataParams } from "@ingot/admin-core";
+import type { PlatformDict } from "@/models";
 import { CommonStatus, DictType, DictScope } from "@/models/enums";
 import { CreateDictAPI, UpdateDictAPI, RemoveDictAPI } from "@/api/platform/config/dict";
-import { GetAppPageAPI } from "@/api/platform/config/app";
-import { Message } from "@ingot/admin-core";
+import { loadAppOptions } from "@/api/platform/config/app.query";
+import { Confirm, Message } from "@ingot/admin-core";
 import { copyParams, getDiff } from "@ingot/admin-core";
 import { TenantSelect } from "@ingot/admin-common";
 
@@ -202,14 +201,6 @@ const rules = computed(() => ({
   remark: [{ max: 255, message: "备注长度不能超过 255", trigger: "blur" }],
 }));
 
-const loadAppData = async (params: LoadDataParams): Promise<Page<ApplicationPageItemVO>> => {
-  const result = await GetAppPageAPI(
-    { current: params.current, size: params.size },
-    { name: params.query },
-  );
-  return result.data;
-};
-
 const privateOnScopeTypeChange = (val: string | number | boolean | undefined): void => {
   const scope = val as DictScope;
   if (scope === DictScope.Platform) {
@@ -225,14 +216,15 @@ const privateOnScopeTypeChange = (val: string | number | boolean | undefined): v
   });
 };
 
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveDictAPI), () => {
-  visible.value = false;
-  emits("success");
-});
-
 const privateOnRemoveClick = (): void => {
   if (!editForm.id) return;
-  confirmDelete.exec(editForm.id, `是否删除字典类型(${editForm.name})`, "删除成功");
+  Confirm.warning(`是否删除字典类型(${editForm.name})`).then(() => {
+    RemoveDictAPI(editForm.id!).then(() => {
+      Message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
 const buildExtra = (): Record<string, unknown> | null | undefined => {

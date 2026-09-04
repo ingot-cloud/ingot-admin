@@ -1,15 +1,24 @@
 import type { PageChangeParams, PlatformSessionVO, PlatformSessionQueryDTO } from "@/models";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import {
-  SessionPageAPI,
-  RevokeSessionBySidAPI,
-  RevokeSessionsByUserAPI,
-} from "@/api/security/session";
+  invalidateQueriesByKeys,
+  silentQueryRequest,
+  useServerPaging,
+} from "@ingot/admin-core";
+import {
+  hasSessionQueryConstraint,
+  SessionPageQueryOptions,
+  sessionQueryKeys,
+} from "@/api/security/session.query";
+import { RevokeSessionBySidAPI, RevokeSessionsByUserAPI } from "@/api/security/session";
 import { displaySessionUser } from "./sessionDisplay";
 
 export const useOps = () => {
-  const paging = usePaging<PlatformSessionVO, PlatformSessionQueryDTO>(
-    transformPageAPI(SessionPageAPI),
-  );
+  const queryClient = useQueryClient();
+  const paging = useServerPaging<PlatformSessionVO, PlatformSessionQueryDTO>({
+    queryOptions: SessionPageQueryOptions,
+    queryWhen: hasSessionQueryConstraint,
+  });
   const message = useMessage();
   const confirm = useMessageConfirm();
 
@@ -31,33 +40,48 @@ export const useOps = () => {
   };
 
   const resetFilter = (): void => {
-    paging.condition.tenantId = undefined;
-    paging.condition.clientId = undefined;
-    paging.condition.userId = undefined;
-    paging.condition.ipAddress = undefined;
-    paging.pageInfo.records = [];
-    paging.pageInfo.total = 0;
+    paging.resetSubmitted({
+      tenantId: undefined,
+      clientId: undefined,
+      userId: undefined,
+      ipAddress: undefined,
+    });
   };
 
   const fetchData = (params?: PageChangeParams): void => {
-    if (!canQuery()) {
+    if (!params && !canQuery()) {
       return;
     }
-    paging.exec(params);
+    paging.fetchData(params);
   };
+
+  const revokeBySidMutation = useMutation({
+    mutationFn: (sid: string) =>
+      RevokeSessionBySidAPI(sid, silentQueryRequest()).then(({ data }) => data),
+    onSuccess: (_online, sid) => {
+      void invalidateQueriesByKeys(queryClient, [sessionQueryKeys.lists(), sessionQueryKeys.detail(sid)]);
+    },
+  });
+
+  const revokeByUserMutation = useMutation({
+    mutationFn: (vars: { userId: string | number; clientId?: string; tenantId?: string | number }) =>
+      RevokeSessionsByUserAPI(vars, silentQueryRequest()).then(({ data }) => data),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: sessionQueryKeys.lists() });
+    },
+  });
 
   const revokeBySid = (session: PlatformSessionVO): void => {
     if (!session.sid) {
       return;
     }
     confirm.warning(`是否强制下线会话(${session.sid})?`).then(() => {
-      RevokeSessionBySidAPI(session.sid!).then((response) => {
-        if (response.data === false) {
+      revokeBySidMutation.mutateAsync(session.sid!).then((online) => {
+        if (online === false) {
           message.warning("会话已不在线");
         } else {
           message.success("操作成功");
         }
-        fetchData();
       });
     });
   };
@@ -68,19 +92,20 @@ export const useOps = () => {
     }
     const name = displaySessionUser(session);
     confirm.warning(`是否强制下线用户(${name})的会话?`).then(() => {
-      RevokeSessionsByUserAPI({
-        userId: session.userId,
-        clientId: paging.condition.clientId,
-        tenantId: paging.condition.tenantId ?? session.tenantId,
-      }).then((response) => {
-        message.success(`已下线 ${response.data ?? 0} 个会话`);
-        fetchData();
-      });
+      revokeByUserMutation
+        .mutateAsync({
+          userId: session.userId!,
+          clientId: paging.condition.clientId,
+          tenantId: paging.condition.tenantId ?? session.tenantId,
+        })
+        .then((count) => {
+          message.success(`已下线 ${count ?? 0} 个会话`);
+        });
     });
   };
 
   return {
-    loading: paging.loading,
+    loading: paging.fetching,
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     isClientOnlyQuery,

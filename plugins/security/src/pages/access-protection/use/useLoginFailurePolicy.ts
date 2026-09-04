@@ -1,8 +1,10 @@
 import type { LoginFailureProtectionPolicyVO } from "@/models";
+import { UpdateLoginFailurePolicyAPI } from "@/api/security/loginFailurePolicy";
 import {
-  GetLoginFailurePoliciesAPI,
-  UpdateLoginFailurePolicyAPI,
-} from "@/api/security/loginFailurePolicy";
+  LoginFailurePolicyListQueryOptions,
+  loginFailurePolicyQueryKeys,
+} from "@/api/security/loginFailurePolicy.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 export type LoginFailurePolicyMap = Record<string, LoginFailureProtectionPolicyVO | undefined>;
 
@@ -22,19 +24,14 @@ function pickPolicyMap(list: Array<LoginFailureProtectionPolicyVO>): LoginFailur
 }
 
 export function useLoginFailurePolicy() {
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const query = useQuery(() => LoginFailurePolicyListQueryOptions());
   const saving = ref(false);
-  const policyMap = ref<LoginFailurePolicyMap>({});
+  const policyMap = computed(() => pickPolicyMap(query.data.value ?? []));
   const message = useMessage();
 
   const loadAll = async (): Promise<void> => {
-    loading.value = true;
-    try {
-      const response = await GetLoginFailurePoliciesAPI();
-      policyMap.value = pickPolicyMap(response.data);
-    } finally {
-      loading.value = false;
-    }
+    await query.refetch();
   };
 
   const savePolicy = async (policy: LoginFailureProtectionPolicyVO): Promise<void> => {
@@ -42,14 +39,14 @@ export function useLoginFailurePolicy() {
     try {
       await UpdateLoginFailurePolicyAPI(policy);
       message.success(POLICY_EFFECT_MESSAGE);
-      await loadAll();
+      await queryClient.invalidateQueries({ queryKey: loginFailurePolicyQueryKeys.lists() });
     } finally {
       saving.value = false;
     }
   };
 
   return {
-    loading,
+    loading: computed(() => query.isFetching.value),
     saving,
     policyMap,
     loadAll,

@@ -124,7 +124,7 @@ import {
   useChallengeTriggerEnum,
   useChallengeTypeEnum,
 } from "@/models/enums";
-import { copyParams } from "@ingot/admin-core";
+import { Confirm, copyParams } from "@ingot/admin-core";
 import {
   CreateChallengePolicyAPI,
   DeleteChallengePolicyAPI,
@@ -177,10 +177,19 @@ const edit = ref(false);
 const visible = ref(false);
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteChallengePolicyAPI), () => {
-  visible.value = false;
-  emits("success");
-});
+
+const privateOnRemoveClick = (): void => {
+  if (!editForm.id) {
+    return;
+  }
+  Confirm.warning(`是否删除挑战策略(${editForm.code})`).then(() => {
+    DeleteChallengePolicyAPI(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
+};
 
 const groupOptions = computed(() =>
   props.groups
@@ -264,13 +273,6 @@ const rules = {
     { required: true, type: "number", min: 1, message: "剩余次数必须大于 0", trigger: "change" },
   ],
   patternList: [{ validator: validatePatternList, trigger: "change" }],
-};
-
-const privateOnRemoveClick = (): void => {
-  if (!editForm.id) {
-    return;
-  }
-  confirmDelete.exec(editForm.id, `是否删除挑战策略(${editForm.code})`, "删除成功");
 };
 
 const privateOnConfirmClick = (): void => {

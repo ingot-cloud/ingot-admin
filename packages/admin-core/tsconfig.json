@@ -18,12 +18,16 @@
       "@models/*": ["./src/models/*"],
       "@ingot/shared": ["../shared/src/index.ts"],
       "@ingot/shared/crypto": ["../shared/src/crypto/index.ts"],
-      "@ingot/shared/hooks": ["../shared/src/hooks/index.ts"]
+      "@ingot/shared/hooks": ["../shared/src/hooks/index.ts"],
+      "@ingot/http-client": ["../http-client/src/index.ts"]
     }
   },
   "references": [
     {
       "path": "../shared"
+    },
+    {
+      "path": "../http-client"
     }
   ]
 }

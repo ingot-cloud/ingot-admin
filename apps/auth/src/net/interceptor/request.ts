@@ -1,4 +1,5 @@
 import type { InternalAxiosRequestConfig, AxiosError } from "axios";
+import type { PreFilter } from "@ingot/http-client";
 import { generateFingerprint } from "@ingot/shared";
 import { createEnvelopeSession, applyEncryptedRequest } from "@ingot/shared/crypto";
 import { useAppStore } from "@/stores/modules/app";
@@ -15,7 +16,6 @@ export const onRequestFulfilled = async (
     }
   }
 
-  // 信封加密：按 config.crypto 握手、写协议头，并按请求方向模式加密请求体
   const option = config.crypto;
   if (option && (option.request || option.response)) {
     const session = await createEnvelopeSession(keyStore, cryptoHeaderNames);
@@ -42,9 +42,17 @@ export const onRequestFulfilled = async (
     }
   }
 
-  return Promise.resolve(config);
+  return config;
 };
 
 export const onRequestRejected = (error: AxiosError): Promise<void> => {
   return Promise.reject(error);
 };
+
+const RequestInterceptor: PreFilter = {
+  order: () => 25,
+  resolved: onRequestFulfilled,
+  rejected: onRequestRejected,
+};
+
+export default RequestInterceptor;

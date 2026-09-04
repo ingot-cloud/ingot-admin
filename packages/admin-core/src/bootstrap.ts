@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
+import { VueQueryPlugin } from "@tanstack/vue-query";
 import InAdminRoot from "./app/InAdminRoot.vue";
 import { adminAppOptionsKey } from "./config";
 import { adminCorePlugin } from "./corePlugin";
@@ -8,6 +9,11 @@ import { rebindKeyStore } from "./net/crypto";
 import { AdminPluginRegistry, validateAndSortPlugins } from "./plugin";
 import { bindAdminRouter, configureAdminRuntime } from "./runtime";
 import { createAdminPinia } from "./stores";
+import {
+  adminVueQueryPluginOptions,
+  bindAdminQueryClient,
+  createAdminQueryClient,
+} from "./query";
 import type {
   InAdminAppOptions,
   InAdminPluginContext,
@@ -44,6 +50,7 @@ export const bootstrapAdminApp = async (
   registry.freeze();
 
   const pinia = createAdminPinia();
+  const queryClient = bindAdminQueryClient(createAdminQueryClient());
   const router = createRouter({
     history: createWebHistory(),
     routes: registry.getStaticRoutes(),
@@ -55,6 +62,7 @@ export const bootstrapAdminApp = async (
   app.provide(adminAppOptionsKey, readonlyOptions);
   app.use(pinia);
   app.use(router);
+  app.use(VueQueryPlugin, adminVueQueryPluginOptions(queryClient));
   registry.getVuePlugins().forEach((vuePlugin) => app.use(vuePlugin));
   registry.getComponents().forEach(([name, component]) => app.component(name, component));
   registry.getDirectives().forEach(([name, directive]) => app.directive(name, directive));
@@ -64,6 +72,7 @@ export const bootstrapAdminApp = async (
     appCode: options.appCode,
     pinia,
     router,
+    queryClient,
     resolvePage: (pageKey: PageKey) => registry.resolvePage(pageKey),
     listViews: () => registry.listViews(),
   });
@@ -72,5 +81,5 @@ export const bootstrapAdminApp = async (
   }
 
   app.mount(options.mountTarget ?? "#app");
-  return { app, pinia, router };
+  return { app, pinia, router, queryClient };
 };

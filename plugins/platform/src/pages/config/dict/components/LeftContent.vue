@@ -4,7 +4,7 @@
       <div class="rect" />
       <div class="title">字典类型</div>
       <div class="actions">
-        <in-refresh-icon size="18" @refresh="fetchData" />
+        <in-refresh-icon size="18" @refresh="privateRefresh" />
       </div>
     </div>
 
@@ -46,9 +46,10 @@
 </template>
 <script setup lang="ts">
 import { Search } from "@element-plus/icons-vue";
+import { useQuery } from "@tanstack/vue-query";
 import { TreeKeyAndProps, type DictTreeNodeVO, type DictQueryDTO } from "@/models";
 import { DictType } from "@/models/enums";
-import { GetDictTreeAPI } from "@/api/platform/config/dict";
+import { DictTreeQueryOptions } from "@/api/platform/config/dict.query";
 
 const props = defineProps<{
   query?: DictQueryDTO;
@@ -58,11 +59,16 @@ const emits = defineEmits<{
   (e: "onNodeEditClick", data?: DictTreeNodeVO): void;
 }>();
 
-const loading = ref(false);
 const searchValue = ref("");
 const treeRef = ref();
-const treeData = ref<Array<DictTreeNodeVO>>([]);
 const defaultExpandedKeys = ref<Array<string>>([]);
+
+const dictTreeQuery = useQuery(() =>
+  DictTreeQueryOptions(() => Object.assign({}, props.query, { type: DictType.Type })),
+);
+
+const treeData = computed(() => dictTreeQuery.data.value ?? []);
+const loading = computed(() => dictTreeQuery.isFetching.value);
 
 watch(searchValue, (val) => {
   treeRef.value!.filter(val);
@@ -77,45 +83,39 @@ const privateOnNodeClick = (value: DictTreeNodeVO) => {
   emits("onNodeClick", value);
 };
 
-const fetchData = (): void => {
-  loading.value = true;
-  // 树仅用于展示字典类型，过滤掉字典项
-  const params = Object.assign({}, props.query, { type: DictType.Type });
-  GetDictTreeAPI(params)
-    .then((response) => {
-      loading.value = false;
-      treeData.value = response.data || [];
-      defaultExpandedKeys.value = treeData.value.map((item) => item.id!);
-
-      nextTick(() => {
-        const first = treeData.value[0];
-        if (first) {
-          const node = treeRef.value.getNode(first);
-          node?.store.setCurrentNode(node);
-          emits("onNodeClick", first);
-        } else {
-          emits("onNodeClick", undefined);
-        }
-      });
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+const selectFirstNode = (): void => {
+  const data = treeData.value;
+  defaultExpandedKeys.value = data.map((item) => item.id!);
+  nextTick(() => {
+    const first = data[0];
+    if (first) {
+      const node = treeRef.value?.getNode(first);
+      node?.store.setCurrentNode(node);
+      emits("onNodeClick", first);
+    } else {
+      emits("onNodeClick", undefined);
+    }
+  });
 };
 
 watch(
-  () => props.query,
-  () => fetchData(),
-  { deep: true },
+  () => dictTreeQuery.dataUpdatedAt.value,
+  (updatedAt) => {
+    if (!updatedAt) {
+      return;
+    }
+    selectFirstNode();
+  },
+  { immediate: true },
 );
 
-onMounted(() => {
-  fetchData();
+defineExpose({
+  refresh: () => dictTreeQuery.refetch(),
 });
 
-defineExpose({
-  refresh: fetchData,
-});
+const privateRefresh = (): void => {
+  void dictTreeQuery.refetch();
+};
 </script>
 <style scoped lang="postcss">
 .dict-type-filter {

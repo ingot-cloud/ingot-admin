@@ -17,6 +17,7 @@
       "@ingot/shared": ["../../packages/shared/src/index.ts"],
       "@ingot/shared/crypto": ["../../packages/shared/src/crypto/index.ts"],
       "@ingot/shared/hooks": ["../../packages/shared/src/hooks/index.ts"],
+      "@ingot/http-client": ["../../packages/http-client/src/index.ts"],
       "@ingot/admin-common": ["../../packages/admin-common/src/index.ts"]
     }
   }

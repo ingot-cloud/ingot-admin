@@ -15,21 +15,23 @@
           <in-button
             @click="
               filter.orgType = undefined;
-              fetchData();
+              privateOnSearch();
             "
           >
             重置
           </in-button>
-          <in-button type="primary" @in-click="fetchData" :loading="loading"> 搜索 </in-button>
+          <in-button type="primary" @in-click="privateOnSearch" :loading="treeQuery.isFetching.value">
+            搜索
+          </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="loading"
+      :loading="treeQuery.isFetching.value"
       :data="menuData"
       :headers="tableHeaders"
       ref="tableRef"
-      @refresh="fetchData"
+      @refresh="privateOnRefresh"
     >
       <template #title> 菜单管理 </template>
       <template #name="{ item }">
@@ -112,8 +114,9 @@ import {
 } from "@/models/enums";
 import { tableHeaders } from "./table";
 import type { MenuTreeNode, PlatformMenu } from "@/models";
-import { GetMenuTreeAPI } from "@/api/platform/config/menu.ts";
+import { PlatformMenuTreeQueryOptions, platformMenuQueryKeys } from "@/api/platform/config/menu.query";
 import type { TableAPI } from "@ingot/admin-core";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const menuTypeEnums = useMenuTypeEnum();
 const orgTypeEnums = useOrgTypeEnums();
@@ -124,19 +127,18 @@ const message = useMessage();
 const go = useGo();
 
 const tableRef = ref<TableAPI>();
-const loading = ref(false);
-const menuData = ref<Array<MenuTreeNode>>([]);
+const queryClient = useQueryClient();
 const filter = ref<PlatformMenu>({});
+const submitted = ref<PlatformMenu>({});
+const treeQuery = useQuery(() => PlatformMenuTreeQueryOptions(() => submitted.value));
+const menuData = computed(() => treeQuery.data.value ?? []);
 
-const fetchData = (): void => {
-  loading.value = true;
-  GetMenuTreeAPI(filter.value)
-    .then((response) => {
-      menuData.value = response.data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+const privateOnSearch = (): void => {
+  submitted.value = { ...filter.value };
+};
+
+const privateOnRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: platformMenuQueryKeys.trees() });
 };
 
 const privateGoAppDetail = (item: MenuTreeNode): void => {
@@ -146,8 +148,4 @@ const privateGoAppDetail = (item: MenuTreeNode): void => {
   }
   go({ path: `/platform/config/app/detail/${item.appId}`, query: { tab: "menu" } });
 };
-
-onMounted(() => {
-  fetchData();
-});
 </script>

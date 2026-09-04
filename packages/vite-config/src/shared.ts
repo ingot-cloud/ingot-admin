@@ -51,13 +51,19 @@ const resolveCryptoJsBundle = (rootDir: string): string | undefined => {
   return undefined;
 };
 
-const resolveWorkspaceSharedSrc = (rootDir: string): string | undefined => {
-  const sharedSrc = path.resolve(rootDir, "../../packages/shared/src");
-  if (fs.existsSync(path.join(sharedSrc, "index.ts"))) {
-    return sharedSrc;
+const resolveWorkspacePackageSrc = (rootDir: string, packageDir: string): string | undefined => {
+  const packageSrc = path.resolve(rootDir, `../../packages/${packageDir}/src`);
+  if (fs.existsSync(path.join(packageSrc, "index.ts"))) {
+    return packageSrc;
   }
   return undefined;
 };
+
+const resolveWorkspaceSharedSrc = (rootDir: string): string | undefined =>
+  resolveWorkspacePackageSrc(rootDir, "shared");
+
+const resolveWorkspaceHttpClientSrc = (rootDir: string): string | undefined =>
+  resolveWorkspacePackageSrc(rootDir, "http-client");
 
 const flattenAliases = (aliases?: AliasOptions): Alias[] => {
   if (!aliases) {
@@ -97,6 +103,7 @@ export const createSharedViteConfig = (
   const cryptoJsBundle = resolveCryptoJsBundle(options.rootDir);
   const officialPlugins = resolveOfficialPlugins(options.rootDir, options.officialPlugins);
   const sharedSrc = resolveWorkspaceSharedSrc(options.rootDir);
+  const httpClientSrc = resolveWorkspaceHttpClientSrc(options.rootDir);
   const hostAliases = flattenAliases(options.aliases);
   const hostAt = hostAliases.find((alias) => isHostAtAlias(alias.find));
   const hostSrcDir =
@@ -192,6 +199,9 @@ export const createSharedViteConfig = (
                 },
                 { find: "@ingot/shared", replacement: path.join(sharedSrc, "index.ts") },
               ] satisfies Alias[])
+            : []),
+          ...(httpClientSrc
+            ? ([{ find: "@ingot/http-client", replacement: path.join(httpClientSrc, "index.ts") }] satisfies Alias[])
             : []),
           ...hostAliases.filter((alias) => !isHostAtAlias(alias.find)),
           ...(cryptoJsBundle

@@ -65,10 +65,12 @@
 import { CommonStatus, CommonStatusEnumExtArray } from "@/models/enums";
 import { TreeKeyAndProps } from "@/models";
 import type { DeptTreeNodeWithManagerVO, SimpleUserVO, DeptWithManagerDTO } from "@/models";
-import { useOrgDeptStore } from "@/stores/modules/dept";
+import { CreateDeptAPI, UpdateDeptAPI } from "@/api/org/dept";
+import { orgDeptQueryKeys } from "@/api/org/dept.query";
 import { UserPageAPI } from "@/api/org/user";
 import { Message } from "@ingot/admin-core";
 import { copyParams, getDiff } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 import type { TreeData } from "element-plus";
 
 interface DeptWithManager extends DeptWithManagerDTO {
@@ -104,7 +106,7 @@ const loading = ref(false);
 const queryLoading = ref(false);
 
 const statusEnum = useEnum(CommonStatusEnumExtArray);
-const deptStore = useOrgDeptStore();
+const queryClient = useQueryClient();
 const editFormRef = ref();
 
 const title = ref("");
@@ -121,11 +123,11 @@ const handleConfirmClick = () => {
         const params = getDiff<DeptWithManagerDTO>(rawForm, editForm);
         params.id = rawForm.id;
         params.managerUserIds = editForm.managerUsers?.map((item) => item.id!);
-        request = deptStore.updateDept(params);
+        request = UpdateDeptAPI(params);
       } else {
         const params = Object.assign({}, toRaw(editForm));
         params.managerUserIds = editForm.managerUsers?.map((item) => item.id!);
-        request = deptStore.createDept(params);
+        request = CreateDeptAPI(params);
       }
 
       loading.value = true;
@@ -134,6 +136,7 @@ const handleConfirmClick = () => {
           loading.value = false;
           Message.success("操作成功");
           visible.value = false;
+          void queryClient.invalidateQueries({ queryKey: orgDeptQueryKeys.all });
           emits("success");
         })
         .catch(() => {

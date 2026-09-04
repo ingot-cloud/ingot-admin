@@ -1,11 +1,11 @@
 <template>
   <div class="p-10px">
     <in-table
-      :loading="loading"
+      :loading="groupQuery.isFetching.value"
       :data="tableData"
       :headers="endpointGroupTableHeaders"
       row-key="id"
-      @refresh="privateFetchData"
+      @refresh="privateRefresh"
     >
       <template #toolbar>
         <in-button type="primary" @click="privateOnCreate">
@@ -38,28 +38,24 @@
         </in-button>
       </template>
     </in-table>
-    <EndpointGroupDrawer ref="drawerRef" @success="privateFetchData" />
+    <EndpointGroupDrawer ref="drawerRef" @success="privateRefresh" />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { GatewayEndpointGroup } from "@/models";
-import { GetEndpointGroupsAPI } from "@/api/security/policy";
+import { EndpointGroupListQueryOptions, endpointGroupQueryKeys } from "@/api/security/policy.query";
 import { endpointGroupTableHeaders } from "../table/endpointGroupTable";
 import EndpointGroupDrawer from "./EndpointGroupDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const loading = ref(false);
-const tableData = ref<Array<GatewayEndpointGroup>>([]);
+const queryClient = useQueryClient();
+const groupQuery = useQuery(() => EndpointGroupListQueryOptions());
+const tableData = computed(() => groupQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof EndpointGroupDrawer>>();
 
-const privateFetchData = async (): Promise<void> => {
-  loading.value = true;
-  try {
-    const response = await GetEndpointGroupsAPI();
-    tableData.value = response.data;
-  } finally {
-    loading.value = false;
-  }
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: endpointGroupQueryKeys.lists() });
 };
 
 const privateOnCreate = (): void => {
@@ -70,11 +66,7 @@ const privateOnEdit = (item: GatewayEndpointGroup): void => {
   drawerRef.value?.show(item);
 };
 
-onMounted(() => {
-  privateFetchData();
-});
-
 defineExpose({
-  refresh: privateFetchData,
+  refresh: privateRefresh,
 });
 </script>

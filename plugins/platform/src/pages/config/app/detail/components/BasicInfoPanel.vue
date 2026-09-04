@@ -100,8 +100,10 @@
 <script setup lang="ts">
 import { ClickOutside as vClickOutside } from "element-plus";
 import type { PlatformAppDetailVO, PlatformAppUpdateDTO } from "@/models";
-import { AppDetailAPI, UpdateAppAPI } from "@/api/platform/config/app";
-import { getDiff } from "@ingot/admin-core";
+import { AppDetailQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
+import { UpdateAppAPI } from "@/api/platform/config/app";
+import { getDiff, invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const props = defineProps<{
   appId: string;
@@ -118,12 +120,38 @@ const rules = {
   intro: [{ required: true, message: "请输入应用描述", trigger: "blur" }],
 };
 
-const loading = ref(false);
+const queryClient = useQueryClient();
 const formRef = ref();
 const iconButtonRef = ref();
 const iconPopoverRef = ref();
 const form = reactive<PlatformAppDetailVO>({});
 const rawForm = reactive<PlatformAppDetailVO>({});
+
+const detailQuery = useQuery(() => AppDetailQueryOptions(() => props.appId));
+const updateMutation = useMutation({
+  mutationFn: (vars: { appId: string; diff: PlatformAppUpdateDTO }) =>
+    UpdateAppAPI(vars.appId, vars.diff, silentQueryRequest()),
+  onSuccess: (_data, vars) => {
+    void invalidateQueriesByKeys(queryClient, [appQueryKeys.detail(vars.appId), appQueryKeys.lists()]);
+  },
+});
+
+const loading = computed(() => detailQuery.isFetching.value || updateMutation.isPending.value);
+
+watch(
+  () => detailQuery.data.value,
+  (data) => {
+    if (!data) {
+      return;
+    }
+    Object.assign(rawForm, data);
+    if (!editing.value) {
+      Object.assign(form, data);
+    }
+    emit("loaded", { ...data });
+  },
+  { immediate: true },
+);
 
 const privateOnIconSelect = (name: string): void => {
   form.icon = name;
@@ -134,17 +162,8 @@ const privateOnIconPopoverClose = (): void => {
   unref(iconPopoverRef)?.popperRef?.delayHide?.();
 };
 
-const loadData = (appId: string): Promise<void> => {
-  loading.value = true;
-  return AppDetailAPI(appId)
-    .then((response) => {
-      Object.assign(form, response.data);
-      Object.assign(rawForm, response.data);
-      emit("loaded", { ...response.data });
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+const loadData = (_appId: string): Promise<void> => {
+  return detailQuery.refetch().then(() => undefined);
 };
 
 const cancelEdit = (): void => {
@@ -180,31 +199,18 @@ const save = (): Promise<void> => {
         reject(new Error("no changes"));
         return;
       }
-      loading.value = true;
-      UpdateAppAPI(form.id!, diff)
+      updateMutation
+        .mutateAsync({ appId: form.id ?? props.appId, diff })
         .then(() => {
           Object.assign(rawForm, form);
           editing.value = false;
           emit("loaded", { ...form });
           resolve();
         })
-        .catch(reject)
-        .finally(() => {
-          loading.value = false;
-        });
+        .catch(reject);
     });
   });
 };
-
-watch(
-  () => props.appId,
-  (id) => {
-    if (id) {
-      loadData(id);
-    }
-  },
-  { immediate: true },
-);
 
 defineExpose({
   loadData,

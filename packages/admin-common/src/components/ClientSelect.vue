@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { loadClientOptions } from "../api/client";
+import { loadClientOptions } from "../api/client.query";
 
 const props = withDefaults(
   defineProps<{

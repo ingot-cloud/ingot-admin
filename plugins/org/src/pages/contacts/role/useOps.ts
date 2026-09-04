@@ -1,16 +1,41 @@
-import type { PageChangeParams, RoleTreeNodeVO, UserPageItemVO } from "@/models";
-import { UserPageAPI, UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
-import { copyParams } from "@ingot/admin-core";
+import type { UserDTO, PageChangeParams, RoleTreeNodeVO, UserPageItemVO, UserQueryDTO } from "@/models";
+import type { CommonStatus } from "@/models/enums";
+import { UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
+import { OrgUserPageQueryOptions, orgUserQueryKeys } from "@/api/org/user.query";
+import {
+  Confirm,
+  Message,
+  copyParams,
+  getCommonStatusActionDesc,
+  getCommonStatusToggle,
+  silentQueryRequest,
+  useServerPaging,
+} from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 export const useOps = () => {
-  const paging = usePaging(transformPageAPI(UserPageAPI));
-  const confirmStatus = useConfirmStatus(transformUpdateAPI(UpdateUserAPI), paging.exec);
-  const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveUserAPI), paging.exec);
+  const queryClient = useQueryClient();
+  const paging = useServerPaging<UserPageItemVO, UserQueryDTO>({
+    queryOptions: OrgUserPageQueryOptions,
+    queryWhen: (submitted) => Boolean(submitted.roleId),
+  });
   const currentNode = reactive<RoleTreeNodeVO>({});
 
-  /**
-   * 重置过滤条件
-   */
+  const statusMutation = useMutation({
+    mutationFn: (params: { id: string; status: CommonStatus }) =>
+      UpdateUserAPI({ id: params.id, status: params.status } as UserDTO, silentQueryRequest()),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: orgUserQueryKeys.lists() });
+    },
+  });
+
+  const removeMutation = useMutation({
+    mutationFn: (id: string) => RemoveUserAPI(id, silentQueryRequest()),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: orgUserQueryKeys.lists() });
+    },
+  });
+
   const resetFilter = () => {
     paging.condition.roleId = undefined;
     paging.condition.username = undefined;
@@ -18,39 +43,35 @@ export const useOps = () => {
     fetchUserData();
   };
 
-  /**
-   * 获取用户数据
-   */
   const fetchUserData = (params?: PageChangeParams): void => {
-    paging.exec(params);
+    paging.fetchData(params);
   };
 
-  /**
-   * 处理节点点击事件
-   * @param node 角色树节点
-   */
   const handleTreeNodeClick = (node: RoleTreeNodeVO): void => {
     copyParams(currentNode, node);
     paging.condition.roleId = node.id;
     fetchUserData();
   };
 
-  /**
-   * 删除用户
-   */
   const handleDeleteUser = (params: UserPageItemVO): void => {
-    confirmDelete.exec(params.userId, `是否删除用户(${params.username})`, "删除成功");
+    Confirm.warning(`是否删除用户(${params.username})`).then(() => {
+      removeMutation.mutateAsync(params.userId).then(() => {
+        Message.success("删除成功");
+      });
+    });
   };
 
-  /**
-   * 禁用、启用
-   */
   const handleDisableUser = (params: UserPageItemVO): void => {
-    confirmStatus.exec(params.userId, params.status!, `用户(${params.username})`, "操作成功");
+    const next = getCommonStatusToggle(params.status!);
+    Confirm.warning(`是否${getCommonStatusActionDesc(next)}用户(${params.username})`).then(() => {
+      statusMutation.mutateAsync({ id: params.userId, status: next }).then(() => {
+        Message.success("操作成功");
+      });
+    });
   };
 
   return {
-    loading: paging.loading,
+    loading: paging.fetching,
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     currentNode,

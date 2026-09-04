@@ -24,6 +24,9 @@
       "path": "./packages/shared"
     },
     {
+      "path": "./packages/http-client"
+    },
+    {
       "path": "./packages/vite-config"
     },
     {

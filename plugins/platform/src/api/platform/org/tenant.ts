@@ -1,65 +1,77 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type { SysTenant, PlatformApp, CreateOrgDTO, AppEnabledDTO, Page, R } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
 const PATH = "/api/pms/v1/platform/org/tenant";
 
-/**
- * 列表
- */
-export function TenantSearchAPI(name?: string): Promise<R<Array<SysTenant>>> {
-  return request.get<Array<SysTenant>>(`${PATH}/search`, {
-    name,
-  });
+export function TenantSearchAPI(name?: string, options?: RequestOptions): Promise<R<Array<SysTenant>>> {
+  return request.get<Array<SysTenant>>(
+    `${PATH}/search`,
+    {
+      name,
+    },
+    options,
+  );
 }
 
-/**
- * 租户信息
- */
-export function TenantInfoAPI(id?: string): Promise<R<SysTenant>> {
-  return request.get<SysTenant>(`${PATH}/${id}`);
+export function TenantInfoAPI(id?: string, options?: RequestOptions): Promise<R<SysTenant>> {
+  return request.get<SysTenant>(`${PATH}/${id}`, undefined, options);
 }
 
-/**
- * 租户分页信息
- */
-export function TenantPageAPI(page: Page, condition?: SysTenant): Promise<R<Page<SysTenant>>> {
+export function TenantPageAPI(
+  page: Page,
+  condition?: SysTenant,
+  options?: RequestOptions,
+): Promise<R<Page<SysTenant>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<SysTenant>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<SysTenant>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
-export function TenantCreateAPI(params: CreateOrgDTO): Promise<R<void>> {
+export function TenantCreateAPI(params: CreateOrgDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.post<void>(`${PATH}`, params);
+  return request.post<void>(`${PATH}`, params, options);
 }
 
-export function TenantUpdateAPI(params: SysTenant): Promise<R<void>> {
+export function TenantUpdateAPI(params: SysTenant, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params);
+  return request.put<void>(`${PATH}`, params, options);
 }
 
-export function TenantRemoveAPI(id: string): Promise<R<void>> {
-  return request.delete<void>(`${PATH}/${id}`);
+export function TenantRemoveAPI(id: string, options?: RequestOptions): Promise<R<void>> {
+  return request.delete<void>(`${PATH}/${id}`, null, options);
 }
 
-export function TenantOrgAppsAPI(tenantId: string): Promise<R<Array<PlatformApp>>> {
+export function TenantOrgAppsAPI(
+  tenantId: string,
+  options?: RequestOptions,
+): Promise<R<Array<PlatformApp>>> {
   return request.get<Array<PlatformApp>>(`${PATH}/apps`, null, {
+    ...options,
     headers: {
       Tenant: tenantId,
-    }
+    },
   });
 }
 
-export function TenantOrgAppEnabledAPI(tenantId: string, params: AppEnabledDTO): Promise<R<void>> {
+export function TenantOrgAppEnabledAPI(
+  tenantId: string,
+  params: AppEnabledDTO,
+  options?: RequestOptions,
+): Promise<R<void>> {
   filterParams(params);
   return request.put<void>(`${PATH}/app/status`, params, {
+    ...options,
     headers: {
       Tenant: tenantId,
-    }
+    },
   });
 }

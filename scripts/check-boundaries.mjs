@@ -294,6 +294,7 @@ const checkPluginManifestAlignment = () => {
 
 checkNoAtBase("packages/admin-common");
 checkNoAtBase("packages/admin-core");
+checkNoAtBase("packages/http-client");
 for (const plugin of OFFICIAL_PLUGINS) {
   checkNoAtBase(plugin.dir);
   checkNoLegacyAppPackages(plugin.dir);

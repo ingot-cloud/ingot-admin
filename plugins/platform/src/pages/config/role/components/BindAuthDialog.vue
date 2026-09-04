@@ -24,21 +24,28 @@
 <script lang="ts" setup>
 import { TreeKeyAndProps, type PermissionTreeNode } from "@/models";
 import { BindAuthorityAPI } from "@/api/platform/config/role";
-import { GetAuthorityTreeAPI } from "@/api/platform/config/authority";
+import { PlatformAuthorityTreeQueryOptions } from "@/api/platform/config/authority.query";
 import { OrgTypeEnums } from "@/models/enums";
+import { useQuery } from "@tanstack/vue-query";
 
 const emit = defineEmits(["success"]);
 
 const treeRef = ref();
 const isShow = ref(false);
-const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
 const orgType = ref<OrgTypeEnums>();
-const data = ref<Array<PermissionTreeNode>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
+const treeQuery = useQuery(() => ({
+  ...PlatformAuthorityTreeQueryOptions(() => ({
+    orgType: orgType.value === OrgTypeEnums.System ? undefined : orgType.value,
+  })),
+  enabled: isShow.value,
+}));
+const data = computed(() => treeQuery.data.value ?? []);
+const loading = computed(() => treeQuery.isFetching.value);
 
 const message = useMessage();
 
@@ -51,17 +58,6 @@ const onCheckChange = (
   selectedIds.value = isChecked
     ? [...selectedIds.value, selectId]
     : selectedIds.value.filter((id) => id !== selectId);
-};
-const fetchData = () => {
-  loading.value = true;
-  GetAuthorityTreeAPI({ orgType: orgType.value == OrgTypeEnums.System ? undefined : orgType.value })
-    .then((res) => {
-      data.value = res.data;
-      loading.value = false;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
 };
 
 const handleActionButton = () => {
@@ -101,9 +97,6 @@ defineExpose({
     title.value = titleIn;
     selectedIds.value = selectedIdsIn;
     defaultSelectedIds.value = selectedIdsIn;
-    nextTick(() => {
-      fetchData();
-    });
   },
 });
 </script>

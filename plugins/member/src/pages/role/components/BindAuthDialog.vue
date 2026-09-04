@@ -24,42 +24,35 @@
 <script lang="ts" setup>
 import { TreeKeyAndProps, type MemberPermissionTreeNodeVO } from "@/models";
 import { BindAuthorityAPI } from "@/api/member/role";
-import { GetAuthorityTreeAPI } from "@/api/member/permission";
+import { MemberPermissionTreeQueryOptions } from "@/api/member/permission.query";
+import { useQuery } from "@tanstack/vue-query";
 
 const emit = defineEmits(["success"]);
 
 const treeRef = ref();
 const isShow = ref(false);
-const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<MemberPermissionTreeNodeVO>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
+const treeQuery = useQuery(() => ({
+  ...MemberPermissionTreeQueryOptions(() => undefined),
+  enabled: isShow.value,
+}));
+const data = computed(() => treeQuery.data.value ?? []);
+const loading = computed(() => treeQuery.isFetching.value);
 
 const message = useMessage();
 
 const onCheckChange = (
   node: MemberPermissionTreeNodeVO,
   isChecked: boolean,
-  // childChecked: boolean
-) => {
+): void => {
   const selectId = node.id!;
   selectedIds.value = isChecked
     ? [...selectedIds.value, selectId]
-    : selectedIds.value.filter((id) => id !== selectId);
-};
-const fetchData = () => {
-  loading.value = true;
-  GetAuthorityTreeAPI()
-    .then((res) => {
-      data.value = res.data;
-      loading.value = false;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+    : selectedIds.value.filter((item) => item !== selectId);
 };
 
 const handleActionButton = () => {
@@ -98,9 +91,6 @@ defineExpose({
     title.value = titleIn;
     selectedIds.value = selectedIdsIn;
     defaultSelectedIds.value = selectedIdsIn;
-    nextTick(() => {
-      fetchData();
-    });
   },
 });
 </script>

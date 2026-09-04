@@ -11,23 +11,18 @@
           ></el-input>
         </in-with-label>
         <template #rightActions>
-          <in-button
-            @click="
-              filter.name = undefined;
-              fetchData();
-            "
-          >
-            重置
+          <in-button @click="privateOnReset">重置</in-button>
+          <in-button type="primary" @in-click="refreshData" :loading="treeQuery.isFetching.value">
+            搜索
           </in-button>
-          <in-button type="primary" @in-click="fetchData" :loading="loading"> 搜索 </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="loading"
+      :loading="treeQuery.isFetching.value"
       :data="treeData"
       :headers="tableHeaders"
-      @refresh="fetchData"
+      @refresh="refreshData"
       ref="tableRef"
     >
       <template #title> 权限管理 </template>
@@ -58,45 +53,66 @@
           text
           link
           :status="item.status"
-          @click="confirmStatus.exec(item.id, item.status, `权限(${item.name})`, '操作成功')"
+          @click="handleToggleStatus(item)"
         />
       </template>
     </in-table>
   </in-filter-container>
-  <EditDrawer ref="EditDrawerRef" :selectData="selectData" @success="fetchData" />
+  <EditDrawer ref="EditDrawerRef" :selectData="treeData" @success="refreshData" />
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";
 import type { MemberPermission, MemberPermissionTreeNodeVO } from "@/models";
-import { useAuthorityTypeEnums } from "@/models/enums";
+import type { CommonStatus } from "@/models/enums";
+import { useAuthorityTypeEnums, getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
 import EditDrawer from "./EditDrawer.vue";
 import type { TableAPI } from "@ingot/admin-core";
-import { GetAuthorityTreeAPI, UpdateAuthorityAPI } from "@/api/member/permission";
-
-onMounted(() => {
-  fetchData();
-});
+import { UpdateAuthorityAPI } from "@/api/member/permission";
+import {
+  MemberPermissionTreeQueryOptions,
+  memberPermissionQueryKeys,
+} from "@/api/member/permission.query";
+import { Confirm, Message, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const authorityTypeEnums = useAuthorityTypeEnums();
-const loading = ref(false);
 const EditDrawerRef = ref();
 const tableRef = ref<TableAPI>();
-const treeData = ref<Array<MemberPermissionTreeNodeVO>>([]);
-const selectData = ref([] as Array<MemberPermissionTreeNodeVO>);
-const filter = ref<MemberPermission>({});
+const queryClient = useQueryClient();
 
-const fetchData = (): void => {
-  loading.value = true;
-  GetAuthorityTreeAPI(filter.value)
-    .then((response) => {
-      loading.value = false;
-      treeData.value = response.data;
-      selectData.value = response.data;
-    })
-    .catch(() => (loading.value = false));
+const filter = reactive<MemberPermission>({});
+const submitted = ref<MemberPermission>({});
+const treeQuery = useQuery(() => MemberPermissionTreeQueryOptions(() => submitted.value));
+const treeData = computed(() => treeQuery.data.value ?? []);
+
+const refreshData = (): void => {
+  submitted.value = { ...filter };
+  void queryClient.invalidateQueries({ queryKey: memberPermissionQueryKeys.lists() });
 };
 
-const confirmStatus = useConfirmStatus(transformUpdateAPI(UpdateAuthorityAPI), fetchData);
+const privateOnReset = (): void => {
+  filter.name = undefined;
+  refreshData();
+};
+
+const statusMutation = useMutation({
+  mutationFn: (params: MemberPermission) => UpdateAuthorityAPI(params, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: memberPermissionQueryKeys.lists() });
+  },
+});
+
+const handleToggleStatus = (item: MemberPermissionTreeNodeVO): void => {
+  if (!item.id || !item.status) {
+    return;
+  }
+  const next = getCommonStatusToggle(item.status as CommonStatus);
+  Confirm.warning(`是否${getCommonStatusActionDesc(next)}权限(${item.name})`).then(() => {
+    statusMutation.mutateAsync({ id: item.id, status: next }).then(() => {
+      Message.success("操作成功");
+    });
+  });
+};
 
 const handleCreate = (): void => {
   EditDrawerRef.value?.show();
@@ -105,4 +121,8 @@ const handleCreate = (): void => {
 const handleEdit = (params: MemberPermission | string): void => {
   EditDrawerRef.value?.show(params);
 };
+
+onMounted(() => {
+  refreshData();
+});
 </script>

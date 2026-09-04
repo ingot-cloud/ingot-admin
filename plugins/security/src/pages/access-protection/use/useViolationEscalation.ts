@@ -1,25 +1,22 @@
 import type { ViolationEscalationConfig } from "@/models";
+import { UpdateViolationEscalationAPI } from "@/api/security/policy";
 import {
-  GetViolationEscalationAPI,
-  UpdateViolationEscalationAPI,
-} from "@/api/security/policy";
+  ViolationEscalationQueryOptions,
+  violationEscalationQueryKeys,
+} from "@/api/security/policy.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
 
 export function useViolationEscalation() {
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const query = useQuery(() => ViolationEscalationQueryOptions());
   const saving = ref(false);
-  const config = ref<ViolationEscalationConfig>();
+  const config = computed(() => query.data.value);
   const message = useMessage();
 
   const load = async (): Promise<void> => {
-    loading.value = true;
-    try {
-      const response = await GetViolationEscalationAPI();
-      config.value = response.data;
-    } finally {
-      loading.value = false;
-    }
+    await query.refetch();
   };
 
   const save = async (payload: ViolationEscalationConfig): Promise<void> => {
@@ -27,14 +24,16 @@ export function useViolationEscalation() {
     try {
       await UpdateViolationEscalationAPI(payload);
       message.success(POLICY_EFFECT_MESSAGE);
-      await load();
+      await queryClient.invalidateQueries({
+        queryKey: violationEscalationQueryKeys.detail("current"),
+      });
     } finally {
       saving.value = false;
     }
   };
 
   return {
-    loading,
+    loading: computed(() => query.isFetching.value),
     saving,
     config,
     load,

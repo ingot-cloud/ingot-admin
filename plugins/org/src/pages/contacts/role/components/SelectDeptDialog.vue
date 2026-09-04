@@ -21,14 +21,13 @@
 </template>
 <script setup lang="ts">
 import { TreeKeyAndProps, type DeptTreeNode } from "@/models";
-import { useOrgDeptStore } from "@/stores/modules/dept";
+import { fetchOrgDeptSimpleTree } from "@/api/org/dept.query";
 
 const loading = ref(false);
 const title = ref("选择部门");
 const visible = ref(false);
 const deptTree = ref<Array<DeptTreeNode>>([]);
 const defaultExpandedKeys = ref<Array<string>>([]);
-const deptStore = useOrgDeptStore();
 
 const emits = defineEmits(["onNodeClick"]);
 const privateOnNodeClick = (value: DeptTreeNode) => {
@@ -42,8 +41,8 @@ const privateOnNodeClick = (value: DeptTreeNode) => {
 defineExpose({
   show: () => {
     visible.value = true;
-    deptStore
-      .fetchDeptSimpleTree()
+    loading.value = true;
+    fetchOrgDeptSimpleTree()
       .then((data) => {
         loading.value = false;
         deptTree.value = data;

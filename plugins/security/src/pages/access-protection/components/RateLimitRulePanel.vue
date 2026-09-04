@@ -1,11 +1,11 @@
 <template>
   <div class="p-10px">
     <in-table
-      :loading="loading"
+      :loading="rulesQuery.isFetching.value"
       :data="tableData"
       :headers="rateLimitTableHeaders"
       row-key="id"
-      @refresh="privateFetchData"
+      @refresh="privateRefresh"
     >
       <template #toolbar>
         <in-button type="primary" @click="privateOnCreate">
@@ -38,36 +38,33 @@
         </in-button>
       </template>
     </in-table>
-    <RateLimitRuleDrawer ref="drawerRef" :groups="groups" @success="privateFetchData" />
+    <RateLimitRuleDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { GatewayEndpointGroup, GatewayRateLimitRule } from "@/models";
+import type { GatewayRateLimitRule } from "@/models";
 import { useRateLimitDimensionEnum } from "@/models/enums";
-import { GetEndpointGroupsAPI, GetRateLimitRulesAPI } from "@/api/security/policy";
+import {
+  EndpointGroupListQueryOptions,
+  RateLimitRuleListQueryOptions,
+  rateLimitRuleQueryKeys,
+} from "@/api/security/policy.query";
 import { rateLimitTableHeaders } from "../table/rateLimitTable";
 import RateLimitRuleDrawer from "./RateLimitRuleDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const loading = ref(false);
-const tableData = ref<Array<GatewayRateLimitRule>>([]);
-const groups = ref<Array<GatewayEndpointGroup>>([]);
+const queryClient = useQueryClient();
+const rulesQuery = useQuery(() => RateLimitRuleListQueryOptions());
+const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
+const tableData = computed(() => rulesQuery.data.value ?? []);
+const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof RateLimitRuleDrawer>>();
 
 const rateLimitDimensionEnum = useRateLimitDimensionEnum();
 
-const privateFetchData = async (): Promise<void> => {
-  loading.value = true;
-  try {
-    const [rulesResponse, groupsResponse] = await Promise.all([
-      GetRateLimitRulesAPI(),
-      GetEndpointGroupsAPI(),
-    ]);
-    tableData.value = rulesResponse.data;
-    groups.value = groupsResponse.data;
-  } finally {
-    loading.value = false;
-  }
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: rateLimitRuleQueryKeys.lists() });
 };
 
 const privateOnCreate = (): void => {
@@ -78,11 +75,7 @@ const privateOnEdit = (item: GatewayRateLimitRule): void => {
   drawerRef.value?.show(item);
 };
 
-onMounted(() => {
-  privateFetchData();
-});
-
 defineExpose({
-  refresh: privateFetchData,
+  refresh: privateRefresh,
 });
 </script>

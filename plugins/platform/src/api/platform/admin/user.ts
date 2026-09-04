@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   SysUser,
   Page,
@@ -45,8 +45,11 @@ export function UserPageAPI(
  * 用户简介信息
  * @param id 用户ID
  */
-export function UserProfileAPI(id: string): Promise<R<UserProfileVO>> {
-  return request.get<UserProfileVO>(`${PATH}/profile/${id}`);
+export function UserProfileAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<UserProfileVO>> {
+  return request.get<UserProfileVO>(`${PATH}/profile/${id}`, undefined, options);
 }
 
 /**
@@ -77,8 +80,11 @@ export function RemoveUserAPI(id: string): Promise<R<void>> {
 /**
  * 用户组织信息
  */
-export function UserOrgInfoAPI(id: string) {
-  return request.get<Array<UserOrgInfoVO>>(`${PATH}/orgInfo/${id}`);
+export function UserOrgInfoAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<Array<UserOrgInfoVO>>> {
+  return request.get<Array<UserOrgInfoVO>>(`${PATH}/orgInfo/${id}`, undefined, options);
 }
 
 /**

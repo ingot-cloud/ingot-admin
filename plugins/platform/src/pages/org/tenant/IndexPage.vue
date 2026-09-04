@@ -12,21 +12,21 @@
           ></el-input>
         </in-with-label>
         <template #rightActions>
-          <in-button @click="paging.condition.name = undefined"> 重置 </in-button>
-          <in-button type="primary" @in-click="refreshData" :loading="paging.loading.value">
+          <in-button @click="paging.resetSubmitted({ name: undefined })"> 重置 </in-button>
+          <in-button type="primary" @in-click="refreshData" :loading="paging.fetching.value">
             搜索
           </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="paging.loading.value"
-      :data="paging.pageInfo.records"
-      :page="paging.pageInfo"
+      :loading="paging.fetching.value"
+      :data="paging.pageInfo.value.records"
+      :page="paging.pageInfo.value"
       ref="tableRef"
       :headers="tableHeaders"
-      @handleSizeChange="paging.exec"
-      @handleCurrentChange="paging.exec"
+      @handleSizeChange="paging.fetchData"
+      @handleCurrentChange="paging.fetchData"
       @refresh="refreshData"
     >
       <template #title> 组织管理 </template>
@@ -67,7 +67,7 @@
           :status="item.status"
           text
           link
-          @click="confirmStatus.exec(item.id, item.status, `组织(${item.name})`, '操作成功')"
+          @click="handleToggleStatus(item)"
         />
       </template>
     </in-table>
@@ -78,22 +78,34 @@
 </template>
 <script lang="ts" setup>
 import type { SysTenant } from "@/models";
+import type { CommonStatus } from "@/models/enums";
 import { tableHeaders } from "./table";
 import EditDrawer from "./components/EditDrawer.vue";
-import { usePlatformTenantStore } from "@/stores/modules/tenant";
 import CreateDrawer from "./components/CreateDrawer.vue";
-import { useOrgTypeEnums } from "@/models/enums";
+import { useOrgTypeEnums, getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
+import { TenantUpdateAPI } from "@/api/platform/org/tenant";
+import { TenantPageQueryOptions, tenantQueryKeys } from "@/api/platform/org/tenant.query";
+import { Confirm, Message, silentQueryRequest, useServerPaging } from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const orgTypeEnums = useOrgTypeEnums();
 const CreateDrawerRef = ref();
 const EditDrawerRef = ref();
+const queryClient = useQueryClient();
 
-const tenantStore = usePlatformTenantStore();
-const paging = usePaging(transformPageAPI(tenantStore.fetchTenantPage));
-const confirmStatus = useConfirmStatus(tenantStore.updateTenant, paging.exec);
+const paging = useServerPaging<SysTenant, SysTenant>({
+  queryOptions: TenantPageQueryOptions,
+});
+
+const statusMutation = useMutation({
+  mutationFn: (params: SysTenant) => TenantUpdateAPI(params, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: tenantQueryKeys.lists() });
+  },
+});
 
 const refreshData = () => {
-  paging.exec();
+  paging.search();
 };
 
 const handleCreate = (): void => {
@@ -104,7 +116,15 @@ const handleEdit = (params: SysTenant): void => {
   EditDrawerRef.value?.show(params);
 };
 
-onMounted(() => {
-  refreshData();
-});
+const handleToggleStatus = (item: SysTenant): void => {
+  if (!item.id || !item.status) {
+    return;
+  }
+  const next = getCommonStatusToggle(item.status as CommonStatus);
+  Confirm.warning(`是否${getCommonStatusActionDesc(next)}组织(${item.name})`).then(() => {
+    statusMutation.mutateAsync({ id: item.id, status: next }).then(() => {
+      Message.success("操作成功");
+    });
+  });
+};
 </script>

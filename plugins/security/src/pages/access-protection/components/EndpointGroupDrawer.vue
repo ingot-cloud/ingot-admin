@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import type { GatewayEndpointGroup, GatewayEndpointPattern } from "@/models";
 import { HttpMethodEnum } from "@/models/enums";
-import { copyParams } from "@ingot/admin-core";
+import { Confirm, copyParams } from "@ingot/admin-core";
 import {
   CreateEndpointGroupAPI,
   DeleteEndpointGroupAPI,
@@ -72,10 +72,18 @@ const edit = ref(false);
 const visible = ref(false);
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteEndpointGroupAPI), () => {
-  visible.value = false;
-  emits("success");
-});
+const privateOnRemoveClick = (): void => {
+  if (!editForm.id) {
+    return;
+  }
+  Confirm.warning(`是否删除分组(${editForm.code})`).then(() => {
+    DeleteEndpointGroupAPI(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
+};
 
 const rules = {
   code: [
@@ -88,13 +96,6 @@ const rules = {
   ],
   name: [{ required: true, message: "请输入名称", trigger: "blur" }],
   patternList: [{ required: true, message: "请至少添加一条路径规则", trigger: "change" }],
-};
-
-const privateOnRemoveClick = (): void => {
-  if (!editForm.id) {
-    return;
-  }
-  confirmDelete.exec(editForm.id, `是否删除分组(${editForm.code})`, "删除成功");
 };
 
 const privateOnConfirmClick = (): void => {

@@ -71,8 +71,9 @@
 <script setup lang="ts">
 import type { PlatformSessionVO } from "@/models";
 import { useSessionUserTypeEnum, useTokenAuthMethodEnum } from "@/models/enums";
-import { GetSessionAPI } from "@/api/security/session";
+import { SessionDetailQueryOptions } from "@/api/security/session.query";
 import { displaySessionTenant, displaySessionUser, formatSessionTime } from "../sessionDisplay";
+import { useQuery } from "@tanstack/vue-query";
 
 const emits = defineEmits<{
   missing: [];
@@ -80,30 +81,37 @@ const emits = defineEmits<{
 
 const title = "会话详情";
 const visible = ref(false);
-const loading = ref(false);
-const session = ref<PlatformSessionVO>({});
+const activeSid = ref("");
 const message = useMessage();
 const tokenAuthMethodEnum = useTokenAuthMethodEnum();
 const sessionUserTypeEnum = useSessionUserTypeEnum();
 
+const detailQuery = useQuery(() => ({
+  ...SessionDetailQueryOptions(activeSid),
+  enabled: visible.value && Boolean(activeSid.value),
+}));
+
+const loading = computed(() => detailQuery.isFetching.value);
+const session = computed<PlatformSessionVO>(() => detailQuery.data.value ?? {});
+
+watch(
+  () => [visible.value, detailQuery.isSuccess.value, detailQuery.data.value] as const,
+  ([opened, success, data]) => {
+    if (!opened || !success) {
+      return;
+    }
+    if (!data) {
+      message.warning("会话已不存在");
+      visible.value = false;
+      emits("missing");
+    }
+  },
+);
+
 defineExpose({
   show(sid: string) {
+    activeSid.value = sid;
     visible.value = true;
-    session.value = {};
-    loading.value = true;
-    GetSessionAPI(sid)
-      .then((response) => {
-        if (!response.data) {
-          message.warning("会话已不存在");
-          visible.value = false;
-          emits("missing");
-          return;
-        }
-        session.value = response.data;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
   },
 });
 </script>

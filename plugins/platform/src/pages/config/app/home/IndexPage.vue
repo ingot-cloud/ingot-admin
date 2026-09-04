@@ -104,16 +104,29 @@
 import type { PlatformApp } from "@/models";
 import type { TableAPI } from "@ingot/admin-core";
 import type { CommonStatus } from "@/models/enums";
-import { CommonStatusEnumExtArray, useAppTypeEnum } from "@/models/enums";
+import {
+  CommonStatusEnumExtArray,
+  getCommonStatusActionDesc,
+  getCommonStatusToggle,
+  useAppTypeEnum,
+} from "@/models/enums";
 import { PatchAppStatusAPI, RemoveAppAPI } from "@/api/platform/config/app.ts";
+import { appQueryKeys } from "@/api/platform/config/app.query";
 import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
 import CreateDrawer from "./components/CreateDrawer.vue";
-import { useUserInfoStore } from "@ingot/admin-core";
-import { StatusCode } from "@ingot/admin-core";
+import {
+  invalidateQueriesByKeys,
+  isApiError,
+  silentQueryRequest,
+  StatusCode,
+  useUserInfoStore,
+} from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const { getIsSystemAdmin } = storeToRefs(useUserInfoStore());
 const { loading, condition, pageInfo, resetFilter, fetchData } = useOps();
+const queryClient = useQueryClient();
 
 const appTypeEnum = useAppTypeEnum();
 const statusEnum = useEnum(CommonStatusEnumExtArray);
@@ -124,11 +137,21 @@ const go = useGo();
 const createDrawerRef = ref<InstanceType<typeof CreateDrawer>>();
 const tableRef = ref<TableAPI>();
 
-const patchAppStatus = (record: { id: string; status: CommonStatus | string }) => {
-  return PatchAppStatusAPI(record.id, record.status);
-};
+const statusMutation = useMutation({
+  mutationFn: (vars: { id: string; status: CommonStatus | string }) =>
+    PatchAppStatusAPI(vars.id, vars.status, silentQueryRequest()),
+  onSuccess: (_data, vars) => {
+    void invalidateQueriesByKeys(queryClient, [appQueryKeys.lists(), appQueryKeys.detail(vars.id)]);
+  },
+});
 
-const confirmStatus = useConfirmStatus(transformUpdateAPI(patchAppStatus), () => fetchData());
+const removeMutation = useMutation({
+  mutationFn: (vars: { id: string; force?: boolean }) =>
+    RemoveAppAPI(vars.id, vars.force, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: appQueryKeys.all });
+  },
+});
 
 const privateOnSearch = (): void => {
   fetchData();
@@ -157,32 +180,32 @@ const privateGoDetail = (appId: string): void => {
 };
 
 const privateOnStatusChange = (app: PlatformApp): void => {
-  confirmStatus.exec(app.id!, app.status as CommonStatus, `应用(${app.name})`, "操作成功");
+  const next = getCommonStatusToggle(app.status as CommonStatus);
+  confirm.warning(`是否${getCommonStatusActionDesc(next)}应用(${app.name})`).then(() => {
+    statusMutation.mutateAsync({ id: app.id!, status: next }).then(() => {
+      message.success("操作成功");
+    });
+  });
 };
 
 const privateOnRemove = (app: PlatformApp): void => {
   confirm.warning(`是否删除应用(${app.name})?`).then(() => {
-    RemoveAppAPI(app.id!)
+    removeMutation
+      .mutateAsync({ id: app.id! })
       .then(() => {
         message.success("操作成功");
-        fetchData();
       })
-      .catch((error) => {
-        if (getIsSystemAdmin.value && error.code === StatusCode.ILLEGAL_OPERATION) {
+      .catch((error: unknown) => {
+        if (getIsSystemAdmin.value && isApiError(error) && error.code === StatusCode.ILLEGAL_OPERATION) {
           confirm
             .warning(`应用存在子菜单或子权限或已经授权给其他租户，是否强制删除应用(${app.name})?`)
             .then(() => {
-              RemoveAppAPI(app.id!, true).then(() => {
+              removeMutation.mutateAsync({ id: app.id!, force: true }).then(() => {
                 message.success("操作成功");
-                fetchData();
               });
             });
         }
       });
   });
 };
-
-onMounted(() => {
-  fetchData();
-});
 </script>

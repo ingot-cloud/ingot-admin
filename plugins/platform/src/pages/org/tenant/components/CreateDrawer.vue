@@ -25,9 +25,11 @@
 </template>
 <script setup lang="ts">
 import BizSearchUserByPhone from "@/components/biz/search-user-by-phone/BizSearchUserByPhone.vue";
-import { usePlatformTenantStore } from "@/stores/modules/tenant";
+import { TenantCreateAPI } from "@/api/platform/org/tenant";
+import { tenantQueryKeys } from "@/api/platform/org/tenant.query";
 import { Message } from "@ingot/admin-core";
 import { copyParamsWithKeys } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const rawForm = {
   avatar: undefined,
@@ -48,7 +50,7 @@ const rules = {
 
 const emits = defineEmits(["success"]);
 
-const tenantStore = usePlatformTenantStore();
+const queryClient = useQueryClient();
 const editFormRef = ref();
 const editForm = reactive(Object.assign({}, rawForm));
 const rawEditForm = Object.assign({}, rawForm);
@@ -59,10 +61,10 @@ const handleActionButton = () => {
   form.validate((valid: boolean) => {
     if (valid) {
       loading.value = true;
-      tenantStore
-        .createTenant(editForm)
+      TenantCreateAPI(editForm)
         .then(() => {
           Message.success("操作成功");
+          void queryClient.invalidateQueries({ queryKey: tenantQueryKeys.lists() });
           emits("success");
           loading.value = false;
           show.value = false;

@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   R,
   GatewayEndpointGroup,
@@ -11,8 +11,10 @@ import type {
 
 const PATH = "/api/security/platform/security/policy";
 
-export function GetEndpointGroupsAPI(): Promise<R<Array<GatewayEndpointGroup>>> {
-  return request.get<Array<GatewayEndpointGroup>>(`${PATH}/groups`);
+export function GetEndpointGroupsAPI(
+  options?: RequestOptions,
+): Promise<R<Array<GatewayEndpointGroup>>> {
+  return request.get<Array<GatewayEndpointGroup>>(`${PATH}/groups`, undefined, options);
 }
 
 export function CreateEndpointGroupAPI(
@@ -31,8 +33,10 @@ export function DeleteEndpointGroupAPI(id: number): Promise<R<void>> {
   return request.delete<void>(`${PATH}/groups/${id}`);
 }
 
-export function GetRateLimitRulesAPI(): Promise<R<Array<GatewayRateLimitRule>>> {
-  return request.get<Array<GatewayRateLimitRule>>(`${PATH}/rules`);
+export function GetRateLimitRulesAPI(
+  options?: RequestOptions,
+): Promise<R<Array<GatewayRateLimitRule>>> {
+  return request.get<Array<GatewayRateLimitRule>>(`${PATH}/rules`, undefined, options);
 }
 
 export function CreateRateLimitRuleAPI(rule: GatewayRateLimitRule): Promise<R<void>> {
@@ -47,8 +51,8 @@ export function DeleteRateLimitRuleAPI(id: number): Promise<R<void>> {
   return request.delete<void>(`${PATH}/rules/${id}`);
 }
 
-export function GetIpListAPI(): Promise<R<Array<GatewayIpList>>> {
-  return request.get<Array<GatewayIpList>>(`${PATH}/ip-list`);
+export function GetIpListAPI(options?: RequestOptions): Promise<R<Array<GatewayIpList>>> {
+  return request.get<Array<GatewayIpList>>(`${PATH}/ip-list`, undefined, options);
 }
 
 export function CreateIpListAPI(item: GatewayIpList): Promise<R<void>> {
@@ -63,8 +67,10 @@ export function DeleteIpListAPI(id: number): Promise<R<void>> {
   return request.delete<void>(`${PATH}/ip-list/${id}`);
 }
 
-export function GetViolationEscalationAPI(): Promise<R<ViolationEscalationConfig>> {
-  return request.get<ViolationEscalationConfig>(`${PATH}/violation-escalation`);
+export function GetViolationEscalationAPI(
+  options?: RequestOptions,
+): Promise<R<ViolationEscalationConfig>> {
+  return request.get<ViolationEscalationConfig>(`${PATH}/violation-escalation`, undefined, options);
 }
 
 export function UpdateViolationEscalationAPI(
@@ -73,16 +79,21 @@ export function UpdateViolationEscalationAPI(
   return request.put<void>(`${PATH}/violation-escalation`, config);
 }
 
-export function GetBlockEventsAPI(limit = 100): Promise<R<Array<GatewayBlacklistEvent>>> {
-  return request.get<Array<GatewayBlacklistEvent>>(`${PATH}/events`, { params: { limit } });
+export function GetBlockEventsAPI(
+  limit = 100,
+  options?: RequestOptions,
+): Promise<R<Array<GatewayBlacklistEvent>>> {
+  return request.get<Array<GatewayBlacklistEvent>>(`${PATH}/events`, { params: { limit } }, options);
 }
 
 export function BroadcastPolicyInvalidationAPI(): Promise<R<void>> {
   return request.post<void>(`${PATH}/broadcast-invalidation`);
 }
 
-export function GetChallengePoliciesAPI(): Promise<R<Array<GatewayChallengePolicy>>> {
-  return request.get<Array<GatewayChallengePolicy>>(`${PATH}/challenges`);
+export function GetChallengePoliciesAPI(
+  options?: RequestOptions,
+): Promise<R<Array<GatewayChallengePolicy>>> {
+  return request.get<Array<GatewayChallengePolicy>>(`${PATH}/challenges`, undefined, options);
 }
 
 export function CreateChallengePolicyAPI(

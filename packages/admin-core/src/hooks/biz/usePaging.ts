@@ -1,3 +1,10 @@
+/**
+ * 分页与确认框兼容层。
+ *
+ * @deprecated 新页面使用 `useServerPaging()` 与确认框/Mutation。
+ * 含手机号搜索的用户列表仍使用 `usePaging`（敏感参数不得进入 Query Key）。
+ * 其余业务调用清零后，由后续版本化 change 删除本文件公共导出，本次不直接移除。
+ */
 import type { R, Page, PageChangeParams, EnumObj } from "@/models";
 import type { CommonStatus } from "@/models/enums";
 import { getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
@@ -40,6 +47,9 @@ export type UpdateRecordFn<T> = (record: T) => Promise<void>;
  */
 export type ActionCallbackFn = (params?: PageChangeParams) => void;
 
+/**
+ * @deprecated 新页面使用 `useServerPaging()`，本函数在调用清零前保留。后续版本化 change 删除。
+ */
 export const transformPageAPI = <T, C>(api: FetchPageAPI<T, C>): FetchPageFn<T, C> => {
   return (page: Page, condition?: C) => {
     return new Promise((resolve, reject) => {
@@ -52,6 +62,9 @@ export const transformPageAPI = <T, C>(api: FetchPageAPI<T, C>): FetchPageFn<T, 
   };
 };
 
+/**
+ * @deprecated 配合 `useConfirmDelete` 使用；新页面直接调用删除 API。后续版本化 change 删除。
+ */
 export const transformDeleteAPI = <Id extends RecordId>(
   api: DeleteRecordAPI<Id>,
 ): DeleteRecordFn<Id> => {
@@ -66,6 +79,9 @@ export const transformDeleteAPI = <Id extends RecordId>(
   };
 };
 
+/**
+ * @deprecated 配合 `useConfirmStatus` 使用；新页面直接调用更新 API。后续版本化 change 删除。
+ */
 export const transformUpdateAPI = <T>(api: UpdateRecordAPI<T>): UpdateRecordFn<T> => {
   return (record: T) => {
     return new Promise((resolve, reject) => {
@@ -80,6 +96,8 @@ export const transformUpdateAPI = <T>(api: UpdateRecordAPI<T>): UpdateRecordFn<T
 
 /**
  * 分页
+ *
+ * @deprecated 新页面使用 `useServerPaging()`。含手机号搜索的用户列表仍使用本 Hook；其余调用清零后由后续版本化 change 删除。
  */
 export const usePaging = <Record, Condition>(fetchPageFn: FetchPageFn<Record, Condition>) => {
   const loading = ref<boolean>(false);
@@ -124,6 +142,8 @@ export const usePaging = <Record, Condition>(fetchPageFn: FetchPageFn<Record, Co
 
 /**
  * 确认删除
+ *
+ * @deprecated 新页面使用确认框 + 写操作 API / Mutation。后续版本化 change 删除。
  */
 export const useConfirmDelete = <Id extends RecordId>(
   deleteRecord: DeleteRecordFn<Id>,
@@ -149,6 +169,8 @@ export const useConfirmDelete = <Id extends RecordId>(
 
 /**
  * 确认更新
+ *
+ * @deprecated 新页面使用确认框 + 写操作 API / Mutation。后续版本化 change 删除。
  */
 export const useConfirmUpdate = <Record>(
   updateRecord: UpdateRecordFn<Record>,
@@ -179,6 +201,8 @@ export interface StatusRecord<T> {
 
 /**
  * 确认修改状态
+ *
+ * @deprecated 新页面使用确认框 + 写操作 API / Mutation。后续版本化 change 删除。
  */
 export const useConfirmStatus = (
   updateRecord: UpdateRecordFn<StatusRecord<CommonStatus>>,
@@ -209,6 +233,11 @@ export const useConfirmStatus = (
   };
 };
 
+/**
+ * 确认修改状态（字符串枚举）
+ *
+ * @deprecated 新页面使用确认框 + 写操作 API / Mutation。后续版本化 change 删除。
+ */
 export const useConfirmStatus2 = (
   updateRecord: UpdateRecordFn<StatusRecord<string>>,
   callback?: ActionCallbackFn,

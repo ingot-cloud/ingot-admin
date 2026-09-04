@@ -1,7 +1,9 @@
 import type { AxiosResponse, AxiosError } from "axios";
+import axios from "axios";
 import type { PostFilter } from "@/net/types";
 import type { R } from "@/models/net";
 import { Message } from "@/utils/message";
+import { isApiError } from "@ingot/http-client";
 import { tryHandleGatewayChallenge } from "@/net/challenge";
 
 class ChallengeInterceptor implements PostFilter {
@@ -14,6 +16,9 @@ class ChallengeInterceptor implements PostFilter {
   }
 
   async rejected(error: AxiosError<R>): Promise<R> {
+    if (!axios.isAxiosError(error) || isApiError(error)) {
+      return Promise.reject(error);
+    }
     try {
       const retried = await tryHandleGatewayChallenge(error);
       if (retried) {

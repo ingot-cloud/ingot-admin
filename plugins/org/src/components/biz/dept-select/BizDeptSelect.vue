@@ -9,18 +9,15 @@
 </template>
 <script setup lang="ts">
 import { TreeKeyAndProps } from "@/models";
-import { useOrgDeptStore } from "@/stores/modules/dept";
+import { useQuery } from "@tanstack/vue-query";
+import { OrgDeptTreeQueryOptions } from "@/api/org/dept.query";
 
-const deptStore = useOrgDeptStore();
-const { deptTree } = storeToRefs(deptStore);
-
-onMounted(() => {
-  deptStore.fetchDeptTree();
-});
+const deptQuery = useQuery(() => OrgDeptTreeQueryOptions());
+const deptTree = computed(() => deptQuery.data.value ?? []);
 
 defineExpose({
   fetchData() {
-    deptStore.fetchDeptTree();
+    void deptQuery.refetch();
   },
 });
 </script>

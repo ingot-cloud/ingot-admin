@@ -36,13 +36,15 @@
       </div>
     </template>
   </in-drawer>
-  <BindRoleDialog ref="bindRoleDialogRef" @success="fetchData" />
+  <BindRoleDialog ref="bindRoleDialogRef" @success="privateOnBindSuccess" />
 </template>
 <script lang="ts" setup>
 import type { MemberUser, MemberUserProfileVO } from "@/models";
-import { RemoveUserAPI, UserProfileAPI, UpdateUserAPI } from "@/api/member/user";
-import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
+import { RemoveUserAPI, UpdateUserAPI } from "@/api/member/user";
+import { MemberUserProfileQueryOptions, memberUserQueryKeys } from "@/api/member/user.query";
+import { Confirm, copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
 import BindRoleDialog from "./BindRoleDialog.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const defaultEditForm: MemberUserProfileVO = {
   phone: undefined,
@@ -59,11 +61,17 @@ const bindRoleDialogRef = ref();
 
 const user = ref<MemberUser>({});
 const visible = ref(false);
-const loading = ref(false);
+const saving = ref(false);
 const editFlag = ref(false);
 const FormRef = ref();
 const editForm = reactive(Object.assign({}, defaultEditForm));
 const rawForm = reactive(Object.assign({}, defaultEditForm));
+const queryClient = useQueryClient();
+const profileQuery = useQuery(() => ({
+  ...MemberUserProfileQueryOptions(() => user.value.id ?? ""),
+  enabled: visible.value && Boolean(user.value.id),
+}));
+const loading = computed(() => profileQuery.isFetching.value || saving.value);
 
 const rules = {
   phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
@@ -71,10 +79,6 @@ const rules = {
 };
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveUserAPI), () => {
-  visible.value = false;
-  emits("success");
-});
 
 const handleBindCommand = (): void => {
   bindRoleDialogRef.value.show(
@@ -102,36 +106,44 @@ const handleConfirmClick = () => {
     }
     result.id = user.value.id!;
 
-    loading.value = true;
+    saving.value = true;
     UpdateUserAPI(result)
       .then(() => {
-        loading.value = false;
+        saving.value = false;
         visible.value = false;
         message.success("操作成功");
         emits("success");
       })
       .catch(() => {
-        loading.value = false;
+        saving.value = false;
       });
   });
 };
 
 const handleRemoveClick = () => {
-  confirmDelete.exec(user.value.id!, `是否删除用户(${user.value.nickname})`, "删除成功");
+  Confirm.warning(`是否删除用户(${user.value.nickname})`).then(() => {
+    RemoveUserAPI(user.value.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
-const fetchData = () => {
-  loading.value = true;
-  UserProfileAPI(user.value.id!)
-    .then((response) => {
-      loading.value = false;
-      copyParamsWithKeys(editForm, response.data, keys);
-      copyParamsWithKeys(rawForm, response.data, keys);
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+const privateOnBindSuccess = (): void => {
+  void queryClient.invalidateQueries({ queryKey: memberUserQueryKeys.detail(user.value.id!) });
 };
+
+watch(
+  () => profileQuery.data.value,
+  (value) => {
+    if (!value) {
+      return;
+    }
+    copyParamsWithKeys(editForm, value, keys);
+    copyParamsWithKeys(rawForm, value, keys);
+  },
+);
 
 defineExpose({
   show(params: MemberUser) {
@@ -144,8 +156,6 @@ defineExpose({
       const form = unref(FormRef);
       form.clearValidate();
     });
-
-    fetchData();
   },
 });
 </script>

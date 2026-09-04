@@ -30,6 +30,7 @@
     "tinymce": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
+    "@ingot/http-client": "workspace:*",
     "@ingot/shared": "workspace:*"
   },
   "devDependencies": {

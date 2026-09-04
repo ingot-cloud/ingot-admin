@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   UserPageItemVO,
   Page,
@@ -10,70 +10,59 @@ import type {
 } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
-/**
- * 用户分页信息
- */
 export function UserPageAPI(
   page: Page,
   condition?: UserQueryDTO,
+  options?: RequestOptions,
 ): Promise<R<Page<UserPageItemVO>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<UserPageItemVO>>("/api/pms/v1/org/user/page", {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<UserPageItemVO>>(
+    "/api/pms/v1/org/user/page",
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
 export function UserPageWithBindRoleStatusAPI(
   page: Page,
   condition?: UserQueryDTO,
+  options?: RequestOptions,
 ): Promise<R<Page<UserPageItemWithBindRoleStatusVO>>> {
-  // condition不传roleId
   const roleId = condition?.roleId;
-  if (condition) {
-    filterParams(condition);
-    delete condition.roleId;
+  const query = condition ? { ...condition } : undefined;
+  if (query) {
+    filterParams(query);
+    delete query.roleId;
   }
   return request.get<Page<UserPageItemWithBindRoleStatusVO>>(
     `/api/pms/v1/org/user/role/${roleId}/page`,
     {
       ...page,
-      ...condition,
+      ...query,
     },
+    options,
   );
 }
 
-/**
- * 用户简介信息
- * @param id 用户ID
- */
-export function UserProfileAPI(id: string): Promise<R<OrgUserProfileVO>> {
-  return request.get<OrgUserProfileVO>(`/api/pms/v1/org/user/detail/${id}`);
+export function UserProfileAPI(id: string, options?: RequestOptions): Promise<R<OrgUserProfileVO>> {
+  return request.get<OrgUserProfileVO>(`/api/pms/v1/org/user/detail/${id}`, undefined, options);
 }
 
-/**
- * 创建用户
- * @param params 参数
- */
-export function CreateUserAPI(params: UserDTO): Promise<R<void>> {
+export function CreateUserAPI(params: UserDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.post<void>("/api/pms/v1/org/user", params);
+  return request.post<void>("/api/pms/v1/org/user", params, options);
 }
 
-/**
- * 更新用户信息
- * @param params 参数
- */
-export function UpdateUserAPI(params: UserDTO): Promise<R<void>> {
+export function UpdateUserAPI(params: UserDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>("/api/pms/v1/org/user", params);
+  return request.put<void>("/api/pms/v1/org/user", params, options);
 }
 
-/**
- * 删除用户
- */
-export function RemoveUserAPI(id: string): Promise<R<void>> {
-  return request.delete<void>(`/api/pms/v1/org/user/${id}`);
+export function RemoveUserAPI(id: string, options?: RequestOptions): Promise<R<void>> {
+  return request.delete<void>(`/api/pms/v1/org/user/${id}`, null, options);
 }

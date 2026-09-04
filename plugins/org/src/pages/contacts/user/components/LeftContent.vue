@@ -24,15 +24,16 @@
 <script setup lang="ts">
 import { TreeKeyAndProps } from "@/models";
 import { Search } from "@element-plus/icons-vue";
-import { useOrgDeptStore } from "@/stores/modules/dept";
+import { useQuery } from "@tanstack/vue-query";
+import { OrgDeptTreeQueryOptions } from "@/api/org/dept.query";
 import type { DeptTreeNode } from "@/models";
 
-const deptStore = useOrgDeptStore();
-const deptTree = ref<Array<DeptTreeNode>>([]);
+const deptQuery = useQuery(() => OrgDeptTreeQueryOptions());
+const deptTree = computed(() => deptQuery.data.value ?? []);
 const emits = defineEmits(["onNodeClick"]);
 
 const deptTreeRef = ref();
-const loading = ref(false);
+const loading = computed(() => deptQuery.isFetching.value);
 const searchValue = ref("");
 
 watch(searchValue, (val) => {
@@ -47,29 +48,21 @@ const privateFilterNode = (value: string, data: DeptTreeNode) => {
   return data.name.indexOf(value) > -1;
 };
 
-const fetchData = () => {
-  loading.value = true;
-  deptStore
-    .fetchDeptTree()
-    .then((data) => {
-      loading.value = false;
-      deptTree.value = data;
-
-      nextTick(() => {
-        const selectData = deptTree.value[0];
-        const node = deptTreeRef.value.getNode(deptTree.value[0]);
-        node.store.setCurrentNode(node);
-        privateOnNodeClick(selectData);
-      });
-    })
-    .catch(() => {
-      loading.value = false;
+watch(
+  () => deptQuery.dataUpdatedAt.value,
+  (updatedAt) => {
+    if (!updatedAt || deptTree.value.length === 0) {
+      return;
+    }
+    nextTick(() => {
+      const selectData = deptTree.value[0];
+      const node = deptTreeRef.value?.getNode(selectData);
+      node?.store.setCurrentNode(node);
+      privateOnNodeClick(selectData);
     });
-};
-
-onMounted(() => {
-  fetchData();
-});
+  },
+  { immediate: true },
+);
 </script>
 <style scoped lang="postcss">
 .dept-filter {

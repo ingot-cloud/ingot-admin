@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   R,
   Page,
@@ -19,11 +19,11 @@ const PATH = "/api/pms/v1/platform/config/dict";
  * 字典树（左侧导航）
  * @param query 查询条件，缺省作用域按平台 (scopeType='0')
  */
-export function GetDictTreeAPI(query?: DictQueryDTO): Promise<R<Array<DictTreeNodeVO>>> {
+export function GetDictTreeAPI(query?: DictQueryDTO, options?: RequestOptions): Promise<R<Array<DictTreeNodeVO>>> {
   if (query) {
     filterParams(query);
   }
-  return request.get<Array<DictTreeNodeVO>>(`${PATH}/tree`, query);
+  return request.get<Array<DictTreeNodeVO>>(`${PATH}/tree`, query, options);
 }
 
 /**
@@ -34,14 +34,19 @@ export function GetDictTreeAPI(query?: DictQueryDTO): Promise<R<Array<DictTreeNo
 export function GetDictPageAPI(
   page: Page,
   condition?: DictQueryDTO,
+  options?: RequestOptions,
 ): Promise<R<Page<PlatformDict>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<PlatformDict>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<PlatformDict>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
 /**
@@ -52,48 +57,39 @@ export function GetDictPageAPI(
 export function GetDictItemsAPI(
   code: string,
   query?: DictQueryDTO,
+  options?: RequestOptions,
 ): Promise<R<Array<DictItemVO>>> {
   if (query) {
     filterParams(query);
   }
-  return request.get<Array<DictItemVO>>(`${PATH}/items/${code}`, query);
+  return request.get<Array<DictItemVO>>(`${PATH}/items/${code}`, query, options);
 }
 
 /**
  * 新建字典节点（TYPE 或 ITEM）
  */
-export function CreateDictAPI(params: DictCreateDTO): Promise<R<void>> {
+export function CreateDictAPI(params: DictCreateDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.post<void>(`${PATH}`, params);
+  return request.post<void>(`${PATH}`, params, options);
 }
 
-/**
- * 更新字典节点（必须带 id）
- */
-export function UpdateDictAPI(params: DictUpdateDTO): Promise<R<void>> {
+export function UpdateDictAPI(params: DictUpdateDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params);
+  return request.put<void>(`${PATH}`, params, options);
 }
 
-/**
- * 启用 / 禁用单个字典节点
- * @param id 字典 ID
- * @param status "0" 启用 / "9" 禁用
- */
-export function ChangeDictStatusAPI(id: string, status: CommonStatus): Promise<R<void>> {
-  return request.patch<void>(`${PATH}/${id}/status/${status}`);
+export function ChangeDictStatusAPI(
+  id: string,
+  status: CommonStatus,
+  options?: RequestOptions,
+): Promise<R<void>> {
+  return request.patch<void>(`${PATH}/${id}/status/${status}`, undefined, options);
 }
 
-/**
- * 批量更新排序（用于拖拽排序后一次提交）
- */
-export function SortDictAPI(items: Array<DictSortDTO>): Promise<R<void>> {
-  return request.put<void>(`${PATH}/sort`, items);
+export function SortDictAPI(items: Array<DictSortDTO>, options?: RequestOptions): Promise<R<void>> {
+  return request.put<void>(`${PATH}/sort`, items, options);
 }
 
-/**
- * 删除字典节点
- */
-export function RemoveDictAPI(id: string): Promise<R<void>> {
-  return request.delete<void>(`${PATH}/${id}`);
+export function RemoveDictAPI(id: string, options?: RequestOptions): Promise<R<void>> {
+  return request.delete<void>(`${PATH}/${id}`, null, options);
 }

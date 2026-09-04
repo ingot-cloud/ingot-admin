@@ -111,7 +111,7 @@ export interface ItemShowPayload {
 import type { PlatformDict, DictTreeNodeVO } from "@/models";
 import { CommonStatus, DictType, DictScope } from "@/models/enums";
 import { CreateDictAPI, UpdateDictAPI, RemoveDictAPI } from "@/api/platform/config/dict";
-import { Message } from "@ingot/admin-core";
+import { Confirm, Message } from "@ingot/admin-core";
 import { copyParams, getDiff } from "@ingot/admin-core";
 
 const emits = defineEmits(["success"]);
@@ -173,14 +173,15 @@ const rules = {
   remark: [{ max: 255, message: "备注长度不能超过 255", trigger: "blur" }],
 };
 
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveDictAPI), () => {
-  visible.value = false;
-  emits("success");
-});
-
 const privateOnRemoveClick = (): void => {
   if (!editForm.id) return;
-  confirmDelete.exec(editForm.id, `是否删除字典项(${editForm.label || editForm.name})`, "删除成功");
+  Confirm.warning(`是否删除字典项(${editForm.label || editForm.name})`).then(() => {
+    RemoveDictAPI(editForm.id!).then(() => {
+      Message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
 const buildExtra = (): Record<string, unknown> | null | undefined => {

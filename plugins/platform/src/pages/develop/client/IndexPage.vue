@@ -4,32 +4,30 @@
       <div flex flex-row justify-between>
         <in-with-label title="客户端ID">
           <el-input
-            v-model="paging.condition.clientId"
+            v-model="condition.clientId"
             clearable
             style="width: 180px"
             placeholder="请输入客户端ID"
           ></el-input>
         </in-with-label>
         <div>
-          <in-button @click="paging.condition.clientId = undefined"> 重置 </in-button>
-          <in-button type="primary" :loading="paging.loading.value" @in-click="paging.exec">
-            搜索
-          </in-button>
+          <in-button @click="resetFilter">重置</in-button>
+          <in-button type="primary" :loading="loading" @in-click="fetchData">搜索</in-button>
         </div>
       </div>
     </template>
     <in-table
       stripe
-      :loading="paging.loading.value"
-      :data="paging.pageInfo.records"
+      :loading="loading"
+      :data="pageInfo.records"
       :headers="tableHeaders"
-      :page="paging.pageInfo"
-      @handleSizeChange="paging.exec"
-      @handleCurrentChange="paging.exec"
-      @refresh="paging.exec"
+      :page="pageInfo"
+      @handleSizeChange="fetchData"
+      @handleCurrentChange="fetchData"
+      @refresh="fetchData"
     >
       <template #toolbar>
-        <in-button type="primary" @click="handleCreate()"> 添加客户端 </in-button>
+        <in-button type="primary" @click="handleCreate()">添加客户端</in-button>
       </template>
       <template #requireProofKey="{ item }">
         <el-tag :type="item.requireProofKey ? 'primary' : 'danger'">
@@ -55,23 +53,35 @@
       </template>
     </in-table>
   </in-filter-container>
-  <EditDrawer ref="EditDrawerRef" @success="paging.exec" />
+  <EditDrawer ref="EditDrawerRef" @success="invalidateList" />
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";
 import type { OAuth2RegisteredClient } from "@/models";
 import { useTokenAuthMethodEnum } from "@/models/enums";
-import { ClientPageAPI } from "@/api/platform/dev/client";
+import { ClientPageQueryOptions, clientQueryKeys } from "@/api/platform/dev/client.query";
+import { useServerPaging } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 import EditDrawer from "./EditDrawer.vue";
 
-onMounted(() => {
-  paging.exec();
-});
-
+const queryClient = useQueryClient();
 const tokenAuthMethodEnum = useTokenAuthMethodEnum();
-
+const { condition, pageInfo, fetching, fetchData, resetSubmitted } = useServerPaging<
+  OAuth2RegisteredClient,
+  OAuth2RegisteredClient
+>({
+  queryOptions: ClientPageQueryOptions,
+});
+const loading = fetching;
 const EditDrawerRef = ref();
-const paging = usePaging(transformPageAPI(ClientPageAPI));
+
+const resetFilter = (): void => {
+  resetSubmitted({ clientId: undefined } as OAuth2RegisteredClient);
+};
+
+const invalidateList = (): void => {
+  void queryClient.invalidateQueries({ queryKey: clientQueryKeys.lists() });
+};
 
 const handleDetails = (item: OAuth2RegisteredClient): void => {
   EditDrawerRef.value?.show(item);

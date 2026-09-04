@@ -100,20 +100,8 @@
     </div>
 
     <template #footer>
-      <in-button
-        v-if="isEdit"
-        type="danger"
-        @click="confirmDelete.exec(id!, `是否删除客户端(${editForm.clientId})`, '删除成功')"
-      >
-        删除
-      </in-button>
-      <common-status-button
-        v-if="isEdit"
-        :status="editForm.status"
-        @click="
-          confirmStatus.exec(id!, editForm.status!, `客户端(${editForm.clientId})`, '操作成功')
-        "
-      />
+      <in-button v-if="isEdit" type="danger" @click="privateOnRemove">删除</in-button>
+      <common-status-button v-if="isEdit" :status="editForm.status" @click="privateOnStatusChange" />
       <in-button type="primary" @click="handleActionButton">确定</in-button>
     </template>
   </in-drawer>
@@ -127,14 +115,15 @@ import {
   AuthorizedGrantType,
   useClientAuthMethodEnum,
 } from "@/models/enums";
-import { Message } from "@ingot/admin-core";
-import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
+import { Message, copyParamsWithKeys, getDiffWithIgnore, silentQueryRequest } from "@ingot/admin-core";
 import {
   UpdateClientAPI,
   CreateClientAPI,
   RemoveClientAPI,
   ResetClientSecretAPI,
 } from "@/api/platform/dev/client";
+import type { CommonStatus } from "@/models/enums";
+import { getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
 import SecretDialog from "./SecretDialog.vue";
 
 const defaultEditForm: OAuth2RegisteredClient = {
@@ -156,15 +145,6 @@ const defaultEditForm: OAuth2RegisteredClient = {
   tokenAuthType: undefined,
   status: undefined,
 };
-
-const confirmStatus = useConfirmStatus(transformUpdateAPI(UpdateClientAPI), () => {
-  emits("success");
-});
-
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveClientAPI), () => {
-  emits("success");
-  show.value = false;
-});
 
 const authorizedGrantTypeEnum = useAuthorizedGrantTypeEnum();
 const tokenAuthMethodEnum = useTokenAuthMethodEnum();
@@ -223,9 +203,9 @@ const handleActionButton = () => {
       let request;
       if (isEdit.value) {
         params.id = id.value;
-        request = UpdateClientAPI(params);
+        request = UpdateClientAPI(params, silentQueryRequest());
       } else {
-        request = CreateClientAPI(params);
+        request = CreateClientAPI(params, silentQueryRequest());
       }
 
       loading.value = true;
@@ -252,8 +232,29 @@ const handleActionButton = () => {
 
 const handleResetSecret = () => {
   confirm.warning("是否重置该应用秘钥?").then(() => {
-    ResetClientSecretAPI(id.value).then((response) => {
+    ResetClientSecretAPI(id.value, silentQueryRequest()).then((response) => {
       SecretDialogRef.value.show(response.data.appId!, response.data.appSecret!);
+    });
+  });
+};
+
+const privateOnRemove = (): void => {
+  confirm.warning(`是否删除客户端(${editForm.clientId})`).then(() => {
+    RemoveClientAPI(id.value, silentQueryRequest()).then(() => {
+      Message.success("删除成功");
+      emits("success");
+      show.value = false;
+    });
+  });
+};
+
+const privateOnStatusChange = (): void => {
+  const next = getCommonStatusToggle(editForm.status as CommonStatus);
+  confirm.warning(`是否${getCommonStatusActionDesc(next)}客户端(${editForm.clientId})`).then(() => {
+    UpdateClientAPI({ id: id.value, status: next }, silentQueryRequest()).then(() => {
+      Message.success("操作成功");
+      editForm.status = next;
+      emits("success");
     });
   });
 };

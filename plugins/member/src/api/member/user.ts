@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   MemberUser,
   Page,
@@ -30,8 +30,11 @@ export function UserPageAPI(page: Page, condition?: MemberUserDTO): Promise<R<Pa
  * 用户简介信息
  * @param id 用户ID
  */
-export function UserProfileAPI(id: string): Promise<R<MemberUserProfileVO>> {
-  return request.get<MemberUserProfileVO>(`${PATH}/detail/${id}`);
+export function UserProfileAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<MemberUserProfileVO>> {
+  return request.get<MemberUserProfileVO>(`${PATH}/detail/${id}`, undefined, options);
 }
 
 /**

@@ -2,15 +2,15 @@
   <in-dialog :title="title" v-model="visible" width="800">
     <in-table
       hide-setting
-      :loading="paging.loading.value"
-      :data="paging.pageInfo.records"
+      :loading="paging.fetching.value"
+      :data="paging.pageInfo.value.records"
       :headers="tableHeaders"
-      :page="paging.pageInfo"
+      :page="paging.pageInfo.value"
       ref="AddMemberTableRef"
       row-key="userId"
-      @refresh="paging.exec"
-      @handleSizeChange="paging.exec"
-      @handleCurrentChange="paging.exec"
+      @refresh="paging.fetchData"
+      @handleSizeChange="paging.fetchData"
+      @handleCurrentChange="paging.fetchData"
       @selectionChange="onSelectChanged"
     >
       <template #toolbar>
@@ -28,7 +28,7 @@
               w-200px
               placeholder="请输入名称"
             ></el-input>
-            <in-button @click="paging.exec" type="primary">搜索</in-button>
+            <in-button @click="paging.search()" type="primary">搜索</in-button>
           </div>
         </div>
       </template>
@@ -46,19 +46,27 @@
   <SelectDeptDialog ref="SelectDeptDialogRef" @onNodeClick="onDeptNodeClick" />
 </template>
 <script lang="ts" setup>
-import { UserPageWithBindRoleStatusAPI } from "@/api/org/user";
 import type { TableHeaderRecord } from "@ingot/admin-core";
-import type { RoleTreeNodeVO, DeptTreeNode } from "@/models";
+import type {
+  RoleTreeNodeVO,
+  DeptTreeNode,
+  UserPageItemWithBindRoleStatusVO,
+  UserQueryDTO,
+} from "@/models";
 import { BindUserAPI } from "@/api/org/role";
+import { OrgUserRoleBindPageQueryOptions, orgUserQueryKeys } from "@/api/org/user.query";
+import { useServerPaging } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 import SelectDeptDialog from "./SelectDeptDialog.vue";
 
 const emits = defineEmits(["success"]);
+const queryClient = useQueryClient();
 
 const tableHeaders: Array<TableHeaderRecord> = [
   {
     type: "selection",
     width: "50",
-    selectable: (row: any) => row.canBind,
+    selectable: (row: { canBind?: boolean }) => Boolean(row.canBind),
   },
   {
     label: "名称",
@@ -70,8 +78,11 @@ const tableHeaders: Array<TableHeaderRecord> = [
   },
 ];
 const AddMemberTableRef = ref();
-const SelectDeptDialogRef = useTemplateRef<any>("SelectDeptDialogRef");
-const paging = usePaging(transformPageAPI(UserPageWithBindRoleStatusAPI));
+const SelectDeptDialogRef = useTemplateRef("SelectDeptDialogRef");
+const paging = useServerPaging<UserPageItemWithBindRoleStatusVO, UserQueryDTO>({
+  queryOptions: OrgUserRoleBindPageQueryOptions,
+  queryWhen: (submitted) => Boolean(submitted.roleId),
+});
 const visible = ref(false);
 const title = ref("");
 const id = ref("");
@@ -81,7 +92,7 @@ const bindIds = ref<Array<string>>([]);
 const confirmLoading = ref(false);
 const message = useMessage();
 
-const onSelectChanged = (value: Array<any>) => {
+const onSelectChanged = (value: Array<UserPageItemWithBindRoleStatusVO>) => {
   bindIds.value = value.map((item) => item.userId);
 };
 
@@ -114,6 +125,7 @@ const onConfirmClick = () => {
       message.success("操作成功");
       confirmLoading.value = false;
       visible.value = false;
+      void queryClient.invalidateQueries({ queryKey: orgUserQueryKeys.lists() });
       emits("success");
     })
     .catch(() => {
@@ -125,7 +137,7 @@ defineExpose({
   show: (params: RoleTreeNodeVO) => {
     currentNode.value = params;
     paging.condition.roleId = params.id;
-    paging.exec();
+    paging.search();
     id.value = params.id!;
     title.value = params.name!;
     visible.value = true;

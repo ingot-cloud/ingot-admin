@@ -23,28 +23,45 @@
 </template>
 <script lang="ts" setup>
 import { TreeKeyAndProps, type PermissionTreeNode } from "@/models";
-import { OrgAuthTreeAPI } from "@/api/org/auth";
-import { useOrgRoleStore } from "@/stores/modules/role";
+import { BindAuthorityAPI } from "@/api/org/role";
+import { OrgAuthTreeQueryOptions } from "@/api/org/auth.query";
+import { orgRoleQueryKeys } from "@/api/org/role.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 interface DataItem extends PermissionTreeNode {
   disabled?: boolean;
 }
 
-const roleStore = useOrgRoleStore();
+const queryClient = useQueryClient();
 const emit = defineEmits(["success"]);
 
 const treeRef = ref();
 const isShow = ref(false);
-const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<DataItem>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
 const readonlySelectedIds = ref<Array<string>>([]);
+const treeQuery = useQuery(() => ({
+  ...OrgAuthTreeQueryOptions(),
+  enabled: isShow.value,
+}));
 
 const message = useMessage();
+
+const markDisabled = (nodes: Array<DataItem>, readonlyIds: Array<string>): Array<DataItem> => {
+  return nodes.map((item) => ({
+    ...item,
+    disabled: readonlyIds.includes(item.id!),
+    children: item.children
+      ? markDisabled(item.children as Array<DataItem>, readonlyIds)
+      : item.children,
+  }));
+};
+
+const data = computed(() => markDisabled(treeQuery.data.value ?? [], readonlySelectedIds.value));
+const loading = computed(() => treeQuery.isFetching.value);
 
 const onCheckChange = (
   node: DataItem,
@@ -58,30 +75,6 @@ const onCheckChange = (
   selectedIds.value = isChecked
     ? [...selectedIds.value, selectId]
     : selectedIds.value.filter((id) => id !== selectId);
-};
-const fetchData = () => {
-  loading.value = true;
-  OrgAuthTreeAPI()
-    .then((res) => {
-      data.value = handleDisabled(res.data);
-      console.log(data.value, readonlySelectedIds.value);
-      loading.value = false;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
-};
-
-const handleDisabled = (data: Array<DataItem>) => {
-  data.forEach((item) => {
-    if (readonlySelectedIds.value.includes(item.id!)) {
-      item.disabled = true;
-    }
-    if (item.children) {
-      handleDisabled(item.children);
-    }
-  });
-  return data;
 };
 
 const handleActionButton = () => {
@@ -98,15 +91,15 @@ const handleActionButton = () => {
     });
   // 过滤权限，如果父节点是选中状态，那么不需要绑定当前节点，并且孙子节点等都不需要
   btnLoading.value = true;
-  roleStore
-    .bindAuthority({
-      id: id.value,
-      setIds: bindIds,
-    })
+  BindAuthorityAPI({
+    id: id.value,
+    setIds: bindIds,
+  })
     .then(() => {
       message.success("操作成功");
       btnLoading.value = false;
       isShow.value = false;
+      void queryClient.invalidateQueries({ queryKey: orgRoleQueryKeys.permissions(id.value) });
       emit("success");
     })
     .catch(() => {
@@ -127,9 +120,6 @@ defineExpose({
     title.value = titleIn;
     selectedIds.value = selectedIdsIn;
     defaultSelectedIds.value = selectedIdsIn;
-    nextTick(() => {
-      fetchData();
-    });
   },
 });
 </script>

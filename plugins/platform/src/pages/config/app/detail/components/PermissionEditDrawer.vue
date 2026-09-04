@@ -1,5 +1,5 @@
 <template>
-  <in-drawer :title="title" v-model="visible" width="480px" @close="loading = false">
+  <in-drawer :title="title" v-model="visible" width="480px">
     <el-alert
       v-if="showWildcardTip"
       type="warning"
@@ -71,7 +71,9 @@ import {
   RemoveAppPermissionAPI,
   UpdateAppPermissionAPI,
 } from "@/api/platform/config/app";
-import { copyParams, getDiffWithIgnore } from "@ingot/admin-core";
+import { appQueryKeys } from "@/api/platform/config/app.query";
+import { copyParams, getDiffWithIgnore, invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import type { TreeData } from "element-plus";
 
 const props = defineProps<{
@@ -106,12 +108,32 @@ const defaultEditForm: AppPermissionCreateDTO & { id?: string; remark?: string }
 const editFormRef = ref();
 const editForm = reactive({ ...defaultEditForm });
 const rawForm = reactive({ ...defaultEditForm });
-const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const isReadOnly = ref(false);
 const visible = ref(false);
 const message = useMessage();
+const confirm = useMessageConfirm();
+const queryClient = useQueryClient();
+
+const invalidatePermissions = (): Promise<void> =>
+  invalidateQueriesByKeys(queryClient, [
+    appQueryKeys.permissions(props.appId),
+    appQueryKeys.detail(props.appId),
+  ]);
+
+const saveMutation = useMutation({
+  mutationFn: (request: Promise<unknown>) => request,
+  onSuccess: () => invalidatePermissions(),
+});
+
+const removeMutation = useMutation({
+  mutationFn: (permissionId: string) =>
+    RemoveAppPermissionAPI(props.appId, permissionId, silentQueryRequest()),
+  onSuccess: () => invalidatePermissions(),
+});
+
+const loading = computed(() => saveMutation.isPending.value || removeMutation.isPending.value);
 
 const showWildcardTip = computed(
   () =>
@@ -147,20 +169,18 @@ const rules = {
   code: [{ validator: validateCode, trigger: "blur" }],
 };
 
-const confirmDelete = useConfirmDelete(
-  transformDeleteAPI((id: string) => RemoveAppPermissionAPI(props.appId, id)),
-  () => {
-    visible.value = false;
-    emit("success");
-  },
-);
-
 const privateOnNodeTypeChange = (): void => {
   editForm.code = undefined;
 };
 
 const privateOnRemove = (): void => {
-  confirmDelete.exec(editForm.id!, `是否删除权限(${editForm.name})`, "删除成功");
+  confirm.warning(`是否删除权限(${editForm.name})`).then(() => {
+    removeMutation.mutateAsync(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emit("success");
+    });
+  });
 };
 
 const privateOnConfirm = (): void => {
@@ -168,34 +188,30 @@ const privateOnConfirm = (): void => {
     if (!valid) {
       return;
     }
-    loading.value = true;
     if (edit.value) {
       const diff = getDiffWithIgnore(rawForm, editForm, ["name", "remark"]);
       if (Object.keys(diff).length === 0) {
         message.warning("未改变数据");
-        loading.value = false;
         return;
       }
-      UpdateAppPermissionAPI(props.appId, rawForm.id!, diff)
+      saveMutation
+        .mutateAsync(
+          UpdateAppPermissionAPI(props.appId, rawForm.id!, diff, silentQueryRequest()),
+        )
         .then(() => {
           message.success("操作成功");
           visible.value = false;
           emit("success");
-        })
-        .finally(() => {
-          loading.value = false;
         });
       return;
     }
 
-    CreateAppPermissionAPI(props.appId, { ...toRaw(editForm) })
+    saveMutation
+      .mutateAsync(CreateAppPermissionAPI(props.appId, { ...toRaw(editForm) }, silentQueryRequest()))
       .then(() => {
         message.success("操作成功");
         visible.value = false;
         emit("success");
-      })
-      .finally(() => {
-        loading.value = false;
       });
   });
 };

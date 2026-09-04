@@ -27,7 +27,7 @@
 </template>
 <script lang="ts" setup>
 import type { BizLeafAlloc } from "@/models";
-import { copyParams, getDiffWithIgnore } from "@ingot/admin-core";
+import { copyParams, getDiffWithIgnore, silentQueryRequest } from "@ingot/admin-core";
 import { CreateIdAPI, UpdateIdAPI, RemoveIdAPI } from "@/api/platform/dev/id";
 
 const rules = {
@@ -55,13 +55,16 @@ const edit = ref(false);
 const visible = ref(false);
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveIdAPI), () => {
-  visible.value = false;
-  emits("success");
-});
+const confirm = useMessageConfirm();
 
 const handleRemoveClick = () => {
-  confirmDelete.exec(editForm.bizTag!, `是否删除ID(${editForm.bizTag})`, "删除成功");
+  confirm.warning(`是否删除ID(${editForm.bizTag})`).then(() => {
+    RemoveIdAPI(editForm.bizTag!, silentQueryRequest()).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
 const handleConfirmClick = () => {
@@ -77,9 +80,9 @@ const handleConfirmClick = () => {
           return;
         }
         params.bizTag = editForm.bizTag;
-        request = UpdateIdAPI(params);
+        request = UpdateIdAPI(params, silentQueryRequest());
       } else {
-        request = CreateIdAPI(Object.assign({}, toRaw(editForm)));
+        request = CreateIdAPI(Object.assign({}, toRaw(editForm)), silentQueryRequest());
       }
 
       request

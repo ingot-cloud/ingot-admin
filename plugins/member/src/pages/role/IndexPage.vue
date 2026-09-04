@@ -12,12 +12,12 @@
         </in-with-label>
         <template #rightActions>
           <in-button @click="filter.name && (filter.name = undefined)"> 重置 </in-button>
-          <in-button type="primary" @in-click="refreshData" :loading="loading"> 搜索 </in-button>
+          <in-button type="primary" @in-click="refreshData" :loading="roleQuery.isFetching.value"> 搜索 </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="loading"
+      :loading="roleQuery.isFetching.value"
       :data="roleTree"
       ref="TableRef"
       :headers="tableHeaders"
@@ -69,26 +69,22 @@
 import { tableHeaders } from "./table";
 import type { MemberRoleTreeNodeVO, MemberRole } from "@/models";
 import type { TableAPI } from "@ingot/admin-core";
-import { RoleListAPI } from "@/api/member/role";
+import { MemberRoleTreeQueryOptions, memberRoleQueryKeys } from "@/api/member/role.query";
 import RoleDrawer from "./components/RoleDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const RoleDrawerRef = ref();
 const TableRef = ref<TableAPI>();
+const queryClient = useQueryClient();
 
-const filter = ref<MemberRole>({});
-const roleTree = ref<Array<MemberRoleTreeNodeVO>>([]);
+const filter = reactive<MemberRole>({});
+const submitted = ref<MemberRole>({});
+const roleQuery = useQuery(() => MemberRoleTreeQueryOptions(() => submitted.value));
+const roleTree = computed(() => roleQuery.data.value ?? []);
 
-const loading = ref(false);
 const refreshData = () => {
-  loading.value = true;
-  RoleListAPI(filter.value)
-    .then((response) => {
-      loading.value = false;
-      roleTree.value = response.data;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+  submitted.value = { ...filter };
+  void queryClient.invalidateQueries({ queryKey: memberRoleQueryKeys.lists() });
 };
 
 const handleCreate = (): void => {

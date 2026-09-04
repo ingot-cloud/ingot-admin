@@ -66,9 +66,9 @@ import type {
 import { UserOrgEditAPI, UserOrgLeaveAPI } from "@/api/platform/admin/user";
 import { TreeKeyAndProps } from "@/models";
 import { copyParams, getDiffWithIgnore } from "@ingot/admin-core";
-import { usePlatformRoleStore } from "@/stores/modules/role";
-import { usePlatformDeptStore } from "@/stores/modules/dept";
-import { usePlatformTenantStore } from "@/stores/modules/tenant";
+import { fetchTenantInfo } from "@/api/platform/org/tenant.query";
+import { fetchPlatformAdminDeptTree } from "@/api/platform/admin/dept.query";
+import { fetchPlatformAdminRoleTree } from "@/api/platform/admin/role.query";
 import { RoleTypeEnums } from "@/models/enums";
 
 const emits = defineEmits(["success"]);
@@ -102,9 +102,6 @@ const rawForm = reactive(Object.assign({}, defaultEditForm));
 
 const message = useMessage();
 const confirm = useMessageConfirm();
-const roleStore = usePlatformRoleStore();
-const deptStore = usePlatformDeptStore();
-const tenantStore = usePlatformTenantStore();
 const deptTree = ref<Array<DeptTreeNodeWithManagerVO>>([]);
 const roleOrgTree = ref<Array<RoleTreeNodeVO>>([]);
 
@@ -157,9 +154,9 @@ const handleDeleteClick = () => {
 const fetchData = (orgId: string) => {
   loading.value = true;
   Promise.all([
-    tenantStore.info(orgId),
-    roleStore.fetchRoleOrgTree(orgId),
-    deptStore.fetchOrgDeptTree(orgId),
+    fetchTenantInfo(orgId),
+    fetchPlatformAdminRoleTree(orgId),
+    fetchPlatformAdminDeptTree(orgId),
   ])
     .then((result) => {
       loading.value = false;

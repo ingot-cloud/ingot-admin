@@ -1,9 +1,12 @@
 import type { SessionConcurrencyPolicy } from "@/models";
 import { SessionConcurrencyScopeEnum } from "@/models/enums";
+import { DeleteConcurrencyPolicyAPI } from "@/api/security/concurrencyPolicy";
 import {
-  GetConcurrencyPoliciesAPI,
-  DeleteConcurrencyPolicyAPI,
-} from "@/api/security/concurrencyPolicy";
+  ConcurrencyPolicyListQueryOptions,
+  concurrencyPolicyQueryKeys,
+} from "@/api/security/concurrencyPolicy.query";
+import { Confirm, Message, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const SCOPE_ORDER: Record<string, number> = {
   [SessionConcurrencyScopeEnum.GLOBAL]: 0,
@@ -27,19 +30,19 @@ const sortPolicies = (list: Array<SessionConcurrencyPolicy>): Array<SessionConcu
 };
 
 export const useConcurrencyPolicy = () => {
-  const loading = ref(false);
-  const tableData = ref<Array<SessionConcurrencyPolicy>>([]);
-  const message = useMessage();
-  const confirm = useMessageConfirm();
+  const queryClient = useQueryClient();
+  const query = useQuery(() => ConcurrencyPolicyListQueryOptions());
+  const tableData = computed(() => sortPolicies(query.data.value ?? []));
+
+  const removeMutation = useMutation({
+    mutationFn: (id: number) => DeleteConcurrencyPolicyAPI(id, silentQueryRequest()),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: concurrencyPolicyQueryKeys.lists() });
+    },
+  });
 
   const loadAll = async (): Promise<void> => {
-    loading.value = true;
-    try {
-      const response = await GetConcurrencyPoliciesAPI();
-      tableData.value = sortPolicies(response.data ?? []);
-    } finally {
-      loading.value = false;
-    }
+    await query.refetch();
   };
 
   const removePolicy = (policy: SessionConcurrencyPolicy): void => {
@@ -47,19 +50,18 @@ export const useConcurrencyPolicy = () => {
       return;
     }
     if (policy.scope === SessionConcurrencyScopeEnum.GLOBAL) {
-      message.warning("全局兜底策略不可删除，可将最大会话数改为 0 以关闭限制");
+      Message.warning("全局兜底策略不可删除，可将最大会话数改为 0 以关闭限制");
       return;
     }
-    confirm.warning(`是否删除并发策略?`).then(() => {
-      DeleteConcurrencyPolicyAPI(policy.id!).then(() => {
-        message.success("删除成功");
-        loadAll();
+    Confirm.warning(`是否删除并发策略?`).then(() => {
+      removeMutation.mutateAsync(policy.id!).then(() => {
+        Message.success("删除成功");
       });
     });
   };
 
   return {
-    loading,
+    loading: computed(() => query.isFetching.value),
     tableData,
     loadAll,
     removePolicy,

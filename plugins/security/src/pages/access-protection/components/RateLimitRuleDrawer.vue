@@ -105,7 +105,7 @@ import {
   useControlBehaviorEnum,
   useRateLimitDimensionEnum,
 } from "@/models/enums";
-import { copyParams } from "@ingot/admin-core";
+import { Confirm, copyParams } from "@ingot/admin-core";
 import {
   CreateRateLimitRuleAPI,
   DeleteRateLimitRuleAPI,
@@ -152,10 +152,19 @@ const edit = ref(false);
 const visible = ref(false);
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteRateLimitRuleAPI), () => {
-  visible.value = false;
-  emits("success");
-});
+
+const privateOnRemoveClick = (): void => {
+  if (!editForm.id) {
+    return;
+  }
+  Confirm.warning(`是否删除限流规则(${editForm.code})`).then(() => {
+    DeleteRateLimitRuleAPI(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
+};
 
 const groupOptions = computed(() =>
   props.groups
@@ -214,13 +223,6 @@ const rules = {
   controlBehavior: [{ required: true, message: "请选择控制行为", trigger: "change" }],
   qps: [{ required: true, type: "number", min: 1, message: "QPS 必须大于 0", trigger: "change" }],
   patternList: [{ validator: validateScope, trigger: "change" }],
-};
-
-const privateOnRemoveClick = (): void => {
-  if (!editForm.id) {
-    return;
-  }
-  confirmDelete.exec(editForm.id, `是否删除限流规则(${editForm.code})`, "删除成功");
 };
 
 const privateOnConfirmClick = (): void => {

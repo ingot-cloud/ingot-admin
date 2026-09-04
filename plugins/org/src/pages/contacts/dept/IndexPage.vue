@@ -5,11 +5,12 @@
     </template>
 
     <in-table
+      :loading="deptQuery.isFetching.value"
       :data="deptTree"
       :headers="tableHeaders"
       ref="tableRef"
       :expandRowKeys="expandRowKeys"
-      @refresh="fetchData"
+      @refresh="privateRefresh"
     >
       <template #title>
         <div>{{ userInforStore.getCurrentOrg?.name }}</div>
@@ -51,7 +52,7 @@
           text
           link
           v-if="!item.mainFlag"
-          @click="confirmDelete.exec(item.id, `是否删除部门(${item.name})`, '删除成功')"
+          @click="handleRemove(item)"
         >
           <template #icon>
             <i-ep:delete />
@@ -63,48 +64,61 @@
     </in-table>
   </in-filter-container>
 
-  <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="fetchData" />
+  <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="privateRefresh" />
 </template>
 <script lang="ts" setup>
 import ContactsTabs from "@/pages/contacts/components/ContactsTabs.vue";
 import { tableHeaders } from "./table";
 import type { DeptTreeNodeWithManagerVO } from "@/models";
-import { useOrgDeptStore } from "@/stores/modules/dept";
-import { useUserInfoStore } from "@ingot/admin-core";
+import { RemoveDeptAPI } from "@/api/org/dept";
+import { OrgDeptTreeQueryOptions, orgDeptQueryKeys } from "@/api/org/dept.query";
+import { Confirm, Message, silentQueryRequest, useUserInfoStore } from "@ingot/admin-core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import EditDrawer from "./components/EditDrawer.vue";
 
-const loading = ref(false);
 const userInforStore = useUserInfoStore();
-const deptStore = useOrgDeptStore();
-const { deptTree } = storeToRefs(deptStore);
+const queryClient = useQueryClient();
+const deptQuery = useQuery(() => OrgDeptTreeQueryOptions());
+const deptTree = computed(() => deptQuery.data.value ?? []);
 const expandRowKeys = ref<Array<string>>([]);
+
+watch(
+  deptTree,
+  (data) => {
+    if (data.length > 0 && expandRowKeys.value.length === 0) {
+      expandRowKeys.value = [data[0].id!];
+    }
+  },
+  { immediate: true },
+);
 
 const EditDrawerRef = ref();
 
-const fetchData = () => {
-  loading.value = true;
-  deptStore
-    .fetchDeptTree()
-    .then((data: Array<DeptTreeNodeWithManagerVO>) => {
-      loading.value = false;
-      if (data && data.length > 0 && expandRowKeys.value.length === 0) {
-        expandRowKeys.value = [data[0].id!];
-      }
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+const removeMutation = useMutation({
+  mutationFn: (id: string) => RemoveDeptAPI(id, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: orgDeptQueryKeys.all });
+  },
+});
+
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: orgDeptQueryKeys.all });
 };
 
-const confirmDelete = useConfirmDelete(deptStore.removeDept, fetchData);
+const handleRemove = (item: DeptTreeNodeWithManagerVO): void => {
+  if (!item.id) {
+    return;
+  }
+  Confirm.warning(`是否删除部门(${item.name})`).then(() => {
+    removeMutation.mutateAsync(item.id!).then(() => {
+      Message.success("删除成功");
+    });
+  });
+};
 
 const handleEdit = (data?: DeptTreeNodeWithManagerVO | string) => {
   EditDrawerRef.value.show(data || deptTree.value[0].id);
 };
-
-onMounted(() => {
-  fetchData();
-});
 </script>
 <style scoped lang="postcss">
 :deep(.in-filter-container-header) {

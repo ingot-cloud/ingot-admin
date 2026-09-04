@@ -1,9 +1,11 @@
 import type { AccountLockoutPolicy } from "@/models";
+import { UpdateAccountLockoutPolicyAPI } from "@/api/security/accountLockoutPolicy";
 import {
-  GetAccountLockoutPoliciesAPI,
-  UpdateAccountLockoutPolicyAPI,
-} from "@/api/security/accountLockoutPolicy";
+  AccountLockoutPolicyListQueryOptions,
+  accountLockoutPolicyQueryKeys,
+} from "@/api/security/accountLockoutPolicy.query";
 import { LOCKOUT_EFFECT_MESSAGE } from "../constants";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 export type AccountLockoutPolicyMap = Record<string, AccountLockoutPolicy | undefined>;
 
@@ -21,19 +23,14 @@ function pickPolicyMap(list: Array<AccountLockoutPolicy>): AccountLockoutPolicyM
 }
 
 export function useLockoutPolicy() {
-  const loading = ref(false);
+  const queryClient = useQueryClient();
+  const query = useQuery(() => AccountLockoutPolicyListQueryOptions());
   const saving = ref(false);
-  const policyMap = ref<AccountLockoutPolicyMap>({});
+  const policyMap = computed(() => pickPolicyMap(query.data.value ?? []));
   const message = useMessage();
 
   const loadAll = async (): Promise<void> => {
-    loading.value = true;
-    try {
-      const response = await GetAccountLockoutPoliciesAPI();
-      policyMap.value = pickPolicyMap(response.data ?? []);
-    } finally {
-      loading.value = false;
-    }
+    await query.refetch();
   };
 
   const savePolicy: SaveLockoutPolicyFn = async (policy) => {
@@ -41,13 +38,14 @@ export function useLockoutPolicy() {
     try {
       await UpdateAccountLockoutPolicyAPI(policy);
       message.success(LOCKOUT_EFFECT_MESSAGE);
+      await queryClient.invalidateQueries({ queryKey: accountLockoutPolicyQueryKeys.lists() });
     } finally {
       saving.value = false;
     }
   };
 
   return {
-    loading,
+    loading: computed(() => query.isFetching.value),
     saving,
     policyMap,
     loadAll,

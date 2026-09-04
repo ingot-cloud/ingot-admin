@@ -36,10 +36,12 @@
 </template>
 <script setup lang="ts">
 import type { UserPageItemVO } from "@/models";
-import { UpdateUserAPI, UserProfileAPI, CreateUserAPI } from "@/api/org/user";
+import { UpdateUserAPI, CreateUserAPI } from "@/api/org/user";
+import { OrgUserProfileQueryOptions } from "@/api/org/user.query";
 import { Message } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
 import BizDeptSelect from "@/components/biz/dept-select/BizDeptSelect.vue";
+import { useQuery } from "@tanstack/vue-query";
 
 const rawForm = {
   id: undefined,
@@ -68,8 +70,13 @@ const emits = defineEmits(["success"]);
 const editFormRef = ref();
 const editForm = reactive(Object.assign({}, rawForm));
 const rawEditForm = Object.assign({}, rawForm);
-const loading = ref(false);
+const saving = ref(false);
 const isEdit = ref(false);
+const profileQuery = useQuery(() => ({
+  ...OrgUserProfileQueryOptions(() => userId.value ?? ""),
+  enabled: show.value && isEdit.value && Boolean(userId.value),
+}));
+const loading = computed(() => profileQuery.isFetching.value || saving.value);
 
 const handleActionButton = () => {
   const form = unref(editFormRef);
@@ -88,34 +95,31 @@ const handleActionButton = () => {
         request = CreateUserAPI(params);
       }
 
-      loading.value = true;
+      saving.value = true;
       request
         .then(() => {
           Message.success("操作成功");
           emits("success");
           show.value = false;
-          loading.value = false;
+          saving.value = false;
         })
         .catch(() => {
-          loading.value = false;
+          saving.value = false;
         });
     }
   });
 };
 
-const fetchData = (id: string) => {
-  loading.value = true;
-  UserProfileAPI(id)
-    .then((response) => {
-      loading.value = false;
-
-      copyParamsWithKeys(editForm, response.data, keys);
-      copyParamsWithKeys(rawEditForm, response.data, keys);
-    })
-    .catch(() => {
-      loading.value = false;
-    });
-};
+watch(
+  () => profileQuery.data.value,
+  (value) => {
+    if (!value) {
+      return;
+    }
+    copyParamsWithKeys(editForm, value, keys);
+    copyParamsWithKeys(rawEditForm, value, keys);
+  },
+);
 
 defineExpose({
   show(data?: UserPageItemVO) {
@@ -128,9 +132,9 @@ defineExpose({
       if (isEdit.value) {
         title.value = data?.nickname!;
         userId.value = data?.userId!;
-        fetchData(userId.value);
       } else {
         title.value = "添加成员";
+        userId.value = undefined;
         copyParamsWithKeys(editForm, rawForm, keys);
         copyParamsWithKeys(rawEditForm, rawForm, keys);
       }

@@ -60,7 +60,7 @@ import {
   useIpListKeyTypeEnum,
   useIpListTypeEnum,
 } from "@/models/enums";
-import { copyParams } from "@ingot/admin-core";
+import { Confirm, copyParams } from "@ingot/admin-core";
 import {
   CreateIpListAPI,
   DeleteIpListAPI,
@@ -94,22 +94,24 @@ const edit = ref(false);
 const visible = ref(false);
 
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(DeleteIpListAPI), () => {
-  visible.value = false;
-  emits("success");
-});
-
-const rules = {
-  listType: [{ required: true, message: "请选择名单类型", trigger: "change" }],
-  keyType: [{ required: true, message: "请选择 Key 类型", trigger: "change" }],
-  keyValue: [{ required: true, message: "请输入匹配值", trigger: "blur" }],
-};
 
 const privateOnRemoveClick = (): void => {
   if (!editForm.id) {
     return;
   }
-  confirmDelete.exec(editForm.id, `是否删除名单(${editForm.keyValue})`, "删除成功");
+  Confirm.warning(`是否删除名单(${editForm.keyValue})`).then(() => {
+    DeleteIpListAPI(editForm.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
+};
+
+const rules = {
+  listType: [{ required: true, message: "请选择名单类型", trigger: "change" }],
+  keyType: [{ required: true, message: "请选择 Key 类型", trigger: "change" }],
+  keyValue: [{ required: true, message: "请输入匹配值", trigger: "blur" }],
 };
 
 const privateOnConfirmClick = (): void => {

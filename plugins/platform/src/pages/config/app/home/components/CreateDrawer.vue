@@ -1,5 +1,5 @@
 <template>
-  <in-drawer :title="title" v-model="visible" width="480px" @close="loading = false">
+  <in-drawer :title="title" v-model="visible" width="480px" @close="createMutation.reset()">
     <in-form ref="editFormRef" class="form" :model="editForm" :rules="rules">
       <el-form-item label="应用编码" prop="code">
         <el-input
@@ -68,7 +68,7 @@
     </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
-      <in-button :loading="loading" type="primary" @click="privateOnConfirm">确定</in-button>
+      <in-button :loading="createMutation.isPending" type="primary" @click="privateOnConfirm">确定</in-button>
     </template>
   </in-drawer>
 </template>
@@ -78,6 +78,9 @@ import { ClickOutside as vClickOutside } from "element-plus";
 import type { PlatformAppCreateDTO } from "@/models";
 import { AppTypeEnum, useAppTypeEnum } from "@/models/enums";
 import { CreateAppAPI } from "@/api/platform/config/app";
+import { appQueryKeys } from "@/api/platform/config/app.query";
+import { silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const emit = defineEmits<{
   success: [appId?: string];
@@ -104,14 +107,22 @@ const defaultEditForm: PlatformAppCreateDTO = {
 
 const appTypeEnum = useAppTypeEnum();
 const message = useMessage();
+const queryClient = useQueryClient();
 
 const editFormRef = ref();
 const iconButtonRef = ref();
 const iconPopoverRef = ref();
 const editForm = reactive<PlatformAppCreateDTO>({ ...defaultEditForm });
-const loading = ref(false);
 const title = ref("添加应用");
 const visible = ref(false);
+
+const createMutation = useMutation({
+  mutationFn: (payload: PlatformAppCreateDTO) =>
+    CreateAppAPI(payload, silentQueryRequest()).then(({ data }) => data),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: appQueryKeys.lists() });
+  },
+});
 
 const privateOnIconSelect = (name: string): void => {
   editForm.icon = name;
@@ -127,17 +138,11 @@ const privateOnConfirm = (): void => {
     if (!valid) {
       return;
     }
-    loading.value = true;
-    CreateAppAPI({ ...toRaw(editForm) })
-      .then((response) => {
-        loading.value = false;
-        message.success("操作成功");
-        visible.value = false;
-        emit("success", response.data);
-      })
-      .catch(() => {
-        loading.value = false;
-      });
+    createMutation.mutateAsync({ ...toRaw(editForm) }).then((appId) => {
+      message.success("操作成功");
+      visible.value = false;
+      emit("success", appId);
+    });
   });
 };
 

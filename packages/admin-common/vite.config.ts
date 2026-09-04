@@ -17,6 +17,8 @@ export default defineInLibraryConfig({
   external: [
     "@ingot/admin-core",
     /^@ingot\/admin-core(?:\/|$)/,
+    "@tanstack/vue-query",
+    /^@tanstack\/vue-query(?:\/|$)/,
     /^element-plus(?:\/|$)/,
     /^vue(?:\/|$)/,
   ],

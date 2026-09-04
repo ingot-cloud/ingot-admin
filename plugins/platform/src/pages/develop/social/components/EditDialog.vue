@@ -34,6 +34,7 @@ import { useSocialTypeEnumsEnum } from "@/models/enums";
 import { Message } from "@ingot/admin-core";
 import { copyParams, getDiff } from "@ingot/admin-core";
 import { CreateSocialAPI, UpdateSocialAPI } from "@/api/platform/dev/social";
+import { silentQueryRequest } from "@ingot/admin-core";
 
 const rules = {
   appId: [{ required: true, message: "请输入AppID", trigger: "blur" }],
@@ -97,9 +98,9 @@ const handleConfirmClick = () => {
           return;
         }
         params.id = rawForm.id;
-        request = UpdateSocialAPI(params);
+        request = UpdateSocialAPI(params, silentQueryRequest());
       } else {
-        request = CreateSocialAPI(Object.assign({}, toRaw(editForm)));
+        request = CreateSocialAPI(Object.assign({}, toRaw(editForm)), silentQueryRequest());
       }
 
       request

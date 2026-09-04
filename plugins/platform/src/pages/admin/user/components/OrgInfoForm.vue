@@ -7,51 +7,56 @@
         :user-id="userId"
         :org="org"
         ref="OrgInfoFormItemRef"
-        @success="fetchData"
+        @success="privateRefresh"
       />
     </div>
     <el-empty v-else description="暂无组织" />
   </div>
-  <OrgInfoCreateDialog ref="CreateDialogRef" @success="fetchData" />
+  <OrgInfoCreateDialog ref="CreateDialogRef" @success="privateRefresh" />
 </template>
 <script setup lang="ts">
-import type { UserOrgInfoVO } from "@/models";
-import { UserOrgInfoAPI } from "@/api/platform/admin/user";
+import { PlatformAdminUserOrgInfoQueryOptions, platformAdminUserQueryKeys } from "@/api/platform/admin/user.query";
 import OrgInfoFormItem from "./OrgInfoFormItem.vue";
 import OrgInfoCreateDialog from "./OrgInfoCreateDialog.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const CreateDialogRef = ref();
 const OrgInfoFormItemRef = ref();
-const loading = ref(false);
+const queryClient = useQueryClient();
 const userId = ref("");
-const orgList = ref<Array<UserOrgInfoVO>>([]);
+const orgQuery = useQuery(() => ({
+  ...PlatformAdminUserOrgInfoQueryOptions(() => userId.value),
+  enabled: Boolean(userId.value),
+}));
+const loading = computed(() => orgQuery.isFetching.value);
+const orgList = computed(() => orgQuery.data.value ?? []);
 
-const fetchData = () => {
-  loading.value = true;
-  UserOrgInfoAPI(userId.value)
-    .then((response) => {
-      loading.value = false;
-      orgList.value = response.data;
-      if (orgList.value.length > 0) {
-        nextTick(() => {
-          OrgInfoFormItemRef.value.forEach((itemRef: any) => {
-            itemRef.refresh();
-          });
-        });
-      }
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+const privateRefresh = (): void => {
+  if (!userId.value) {
+    return;
+  }
+  void queryClient.invalidateQueries({ queryKey: platformAdminUserQueryKeys.orgs(userId.value) });
 };
+
+watch(orgList, (list) => {
+  if (list.length === 0) {
+    return;
+  }
+  nextTick(() => {
+    const refs = OrgInfoFormItemRef.value;
+    const list = Array.isArray(refs) ? refs : refs ? [refs] : [];
+    list.forEach((itemRef: { refresh?: () => void }) => {
+      itemRef.refresh?.();
+    });
+  });
+});
 
 defineExpose({
   setData(id: string) {
     userId.value = id;
-    fetchData();
   },
-  addOrg(userId: string) {
-    CreateDialogRef.value.show(userId);
+  addOrg(id: string) {
+    CreateDialogRef.value.show(id);
   },
 });
 </script>

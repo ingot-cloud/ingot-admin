@@ -14,20 +14,22 @@
           <in-button
             @click="
               filter.orgType = undefined;
-              fetchData();
+              privateOnSearch();
             "
           >
             重置
           </in-button>
-          <in-button type="primary" @in-click="fetchData" :loading="loading"> 搜索 </in-button>
+          <in-button type="primary" @in-click="privateOnSearch" :loading="treeQuery.isFetching.value">
+            搜索
+          </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="loading"
+      :loading="treeQuery.isFetching.value"
       :data="treeData"
       :headers="tableHeaders"
-      @refresh="fetchData"
+      @refresh="privateOnRefresh"
       ref="tableRef"
     >
       <template #title> 权限管理 </template>
@@ -59,27 +61,30 @@ import { tableHeaders } from "./table";
 import type { PlatformPermission, PermissionTreeNode } from "@/models";
 import { useOrgTypeEnums, useAuthorityTypeEnums } from "@/models/enums";
 import type { TableAPI } from "@ingot/admin-core";
-import { GetAuthorityTreeAPI } from "@/api/platform/config/authority.ts";
+import {
+  PlatformAuthorityTreeQueryOptions,
+  platformPermissionQueryKeys,
+} from "@/api/platform/config/authority.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const orgTypeEnums = useOrgTypeEnums();
 const authorityTypeEnums = useAuthorityTypeEnums();
 const message = useMessage();
 const go = useGo();
 
-const loading = ref(false);
 const tableRef = ref<TableAPI>();
-const treeData = ref<Array<PermissionTreeNode>>([]);
+const queryClient = useQueryClient();
 const filter = ref<PlatformPermission>({});
+const submitted = ref<PlatformPermission>({});
+const treeQuery = useQuery(() => PlatformAuthorityTreeQueryOptions(() => submitted.value));
+const treeData = computed(() => treeQuery.data.value ?? []);
 
-const fetchData = (): void => {
-  loading.value = true;
-  GetAuthorityTreeAPI(filter.value)
-    .then((response) => {
-      treeData.value = response.data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+const privateOnSearch = (): void => {
+  submitted.value = { ...filter.value };
+};
+
+const privateOnRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: platformPermissionQueryKeys.trees() });
 };
 
 const privateGoAppDetail = (item: PermissionTreeNode): void => {
@@ -89,8 +94,4 @@ const privateGoAppDetail = (item: PermissionTreeNode): void => {
   }
   go({ path: `/platform/config/app/detail/${item.appId}`, query: { tab: "permission" } });
 };
-
-onMounted(() => {
-  fetchData();
-});
 </script>

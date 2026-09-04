@@ -1,11 +1,11 @@
 <template>
   <div class="p-10px">
     <in-table
-      :loading="loading"
+      :loading="policyQuery.isFetching.value"
       :data="tableData"
       :headers="challengePolicyTableHeaders"
       row-key="id"
-      @refresh="privateFetchData"
+      @refresh="privateRefresh"
     >
       <template #toolbar>
         <in-button type="primary" @click="privateOnCreate">
@@ -41,20 +41,27 @@
         </in-button>
       </template>
     </in-table>
-    <ChallengePolicyDrawer ref="drawerRef" :groups="groups" @success="privateFetchData" />
+    <ChallengePolicyDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
   </div>
 </template>
 
 <script setup lang="ts">
-import type { GatewayChallengePolicy, GatewayEndpointGroup } from "@/models";
+import type { GatewayChallengePolicy } from "@/models";
 import { useChallengeTriggerEnum, useChallengeTypeEnum } from "@/models/enums";
-import { GetChallengePoliciesAPI, GetEndpointGroupsAPI } from "@/api/security/policy";
+import {
+  ChallengePolicyListQueryOptions,
+  EndpointGroupListQueryOptions,
+  challengePolicyQueryKeys,
+} from "@/api/security/policy.query";
 import { challengePolicyTableHeaders } from "../table/challengePolicyTable";
 import ChallengePolicyDrawer from "./ChallengePolicyDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const loading = ref(false);
-const tableData = ref<Array<GatewayChallengePolicy>>([]);
-const groups = ref<Array<GatewayEndpointGroup>>([]);
+const queryClient = useQueryClient();
+const policyQuery = useQuery(() => ChallengePolicyListQueryOptions());
+const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
+const tableData = computed(() => policyQuery.data.value ?? []);
+const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof ChallengePolicyDrawer>>();
 
 const challengeTriggerEnum = useChallengeTriggerEnum();
@@ -72,18 +79,8 @@ const privateFormatTarget = (item: GatewayChallengePolicy): string => {
   return "-";
 };
 
-const privateFetchData = async (): Promise<void> => {
-  loading.value = true;
-  try {
-    const [policyResponse, groupsResponse] = await Promise.all([
-      GetChallengePoliciesAPI(),
-      GetEndpointGroupsAPI(),
-    ]);
-    tableData.value = policyResponse.data;
-    groups.value = groupsResponse.data;
-  } finally {
-    loading.value = false;
-  }
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: challengePolicyQueryKeys.lists() });
 };
 
 const privateOnCreate = (): void => {
@@ -94,11 +91,7 @@ const privateOnEdit = (item: GatewayChallengePolicy): void => {
   drawerRef.value?.show(item);
 };
 
-onMounted(() => {
-  privateFetchData();
-});
-
 defineExpose({
-  refresh: privateFetchData,
+  refresh: privateRefresh,
 });
 </script>

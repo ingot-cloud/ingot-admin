@@ -19,7 +19,10 @@
 </template>
 <script lang="ts" setup>
 import type { SysTenant } from "@/models";
-import { usePlatformTenantStore } from "@/stores/modules/tenant";
+import { TenantRemoveAPI, TenantUpdateAPI } from "@/api/platform/org/tenant";
+import { fetchTenantOrgApps, tenantQueryKeys } from "@/api/platform/org/tenant.query";
+import { Confirm } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 import BaseInfoForm from "./BaseInfoForm.vue";
 import AppInfo from "./AppInfo.vue";
 
@@ -36,16 +39,18 @@ const tenant = ref<SysTenant>({});
 const loading = ref(false);
 const title = ref("编辑组织");
 const visible = ref(false);
-const tenantStore = usePlatformTenantStore();
+const queryClient = useQueryClient();
 const message = useMessage();
 
-const confirmDelete = useConfirmDelete(tenantStore.removeTenant, () => {
-  visible.value = false;
-  emits("success");
-});
-
 const handleRemoveClick = () => {
-  confirmDelete.exec(tenant.value.id!, `是否删除组织(${tenant.value.name})`, "删除成功");
+  Confirm.warning(`是否删除组织(${tenant.value.name})`).then(() => {
+    TenantRemoveAPI(tenant.value.id!).then(() => {
+      visible.value = false;
+      void queryClient.invalidateQueries({ queryKey: tenantQueryKeys.all });
+      message.success("删除成功");
+      emits("success");
+    });
+  });
 };
 
 const handleConfirmClick = () => {
@@ -55,12 +60,12 @@ const handleConfirmClick = () => {
         .getData()
         .then((params: SysTenant) => {
           loading.value = true;
-          tenantStore
-            .updateTenant(params)
+          TenantUpdateAPI(params)
             .then(() => {
               loading.value = false;
               visible.value = false;
               message.success("操作成功");
+              void queryClient.invalidateQueries({ queryKey: tenantQueryKeys.all });
               emits("success");
             })
             .catch(() => {
@@ -80,8 +85,7 @@ const handleConfirmClick = () => {
 
 const fetchData = (data: SysTenant) => {
   loading.value = true;
-  tenantStore
-    .fetchTenantOrgApps(data.id!)
+  fetchTenantOrgApps(data.id!)
     .then((response) => {
       loading.value = false;
       nextTick(() => {

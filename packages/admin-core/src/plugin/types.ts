@@ -1,4 +1,5 @@
 import type { Pinia } from "pinia";
+import type { QueryClient } from "@tanstack/vue-query";
 import type { App, Component, Directive, Plugin as VuePlugin } from "vue";
 import type { RouteRecordRaw, Router } from "vue-router";
 import type { MenuTreeNode } from "../models/menu";
@@ -17,6 +18,7 @@ export interface InAdminPluginContext {
   appCode: string;
   pinia: Pinia;
   router: Router;
+  queryClient: QueryClient;
   resolvePage: (pageKey: PageKey) => AsyncComponentLoader | undefined;
   listViews: () => RegisteredView[];
 }
@@ -129,4 +131,5 @@ export interface InAdminRuntime {
   app: App;
   pinia: Pinia;
   router: Router;
+  queryClient: QueryClient;
 }

@@ -1,67 +1,57 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type { R, Page, OAuth2RegisteredClient, AppSecretVO } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
 const PATH = "/api/auth/client";
 
-/**
- * 获取分页信息
- * @returns
- */
 export function ClientPageAPI(
   page: Page,
   condition?: OAuth2RegisteredClient,
+  options?: RequestOptions,
 ): Promise<R<Page<OAuth2RegisteredClient>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Page<OAuth2RegisteredClient>>(`${PATH}/page`, {
-    ...page,
-    ...condition,
-  });
+  return request.get<Page<OAuth2RegisteredClient>>(
+    `${PATH}/page`,
+    {
+      ...page,
+      ...condition,
+    },
+    options,
+  );
 }
 
-/**
- * 获取客户端信息
- * @param id ID
- * @returns
- */
-export function GetClientInfoAPI(id: string): Promise<R<OAuth2RegisteredClient>> {
-  return request.get<OAuth2RegisteredClient>(`${PATH}/${id}`);
+export function GetClientInfoAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<OAuth2RegisteredClient>> {
+  return request.get<OAuth2RegisteredClient>(`${PATH}/${id}`, undefined, options);
 }
 
-/**
- * 创建客户端
- * @param params 参数
- * @returns
- */
-export function CreateClientAPI(params: OAuth2RegisteredClient): Promise<R<AppSecretVO>> {
+export function CreateClientAPI(
+  params: OAuth2RegisteredClient,
+  options?: RequestOptions,
+): Promise<R<AppSecretVO>> {
   filterParams(params);
-  return request.post<AppSecretVO>(`${PATH}`, params);
+  return request.post<AppSecretVO>(`${PATH}`, params, options);
 }
 
-/**
- * 更新客户端信息
- * @param params 参数
- * @returns
- */
-export function UpdateClientAPI(params: OAuth2RegisteredClient): Promise<R<void>> {
+export function UpdateClientAPI(
+  params: OAuth2RegisteredClient,
+  options?: RequestOptions,
+): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params);
+  return request.put<void>(`${PATH}`, params, options);
 }
 
-/**
- * 删除客户端
- * @param clientId clientId
- * @returns
- */
-export function RemoveClientAPI(clientId: string): Promise<R<void>> {
-  return request.delete<void>(`${PATH}/${clientId}`);
+export function RemoveClientAPI(clientId: string, options?: RequestOptions): Promise<R<void>> {
+  return request.delete<void>(`${PATH}/${clientId}`, null, options);
 }
 
-/**
- * 重置秘钥
- */
-export function ResetClientSecretAPI(clientId: string): Promise<R<AppSecretVO>> {
-  return request.put<AppSecretVO>(`${PATH}/secret/${clientId}`);
+export function ResetClientSecretAPI(
+  clientId: string,
+  options?: RequestOptions,
+): Promise<R<AppSecretVO>> {
+  return request.put<AppSecretVO>(`${PATH}/secret/${clientId}`, undefined, options);
 }

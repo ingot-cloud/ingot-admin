@@ -24,7 +24,8 @@
 <script lang="ts" setup>
 import { TreeKeyAndProps, type MemberRoleTreeNodeVO } from "@/models";
 import { SetUserRoleAPI } from "@/api/member/user";
-import { RoleListAPI } from "@/api/member/role";
+import { MemberRoleTreeQueryOptions } from "@/api/member/role.query";
+import { useQuery } from "@tanstack/vue-query";
 
 const emit = defineEmits(["success"]);
 
@@ -35,13 +36,17 @@ const treeProps = {
 
 const treeRef = ref();
 const isShow = ref(false);
-const loading = ref(false);
 const btnLoading = ref(false);
 const title = ref("");
 const id = ref("");
-const data = ref<Array<MemberRoleTreeNodeVO>>([]);
 const selectedIds = ref<Array<string>>([]);
 const defaultSelectedIds = ref<Array<string>>([]);
+const treeQuery = useQuery(() => ({
+  ...MemberRoleTreeQueryOptions(() => undefined),
+  enabled: isShow.value,
+}));
+const data = computed(() => treeQuery.data.value ?? []);
+const loading = computed(() => treeQuery.isFetching.value);
 
 const message = useMessage();
 
@@ -54,17 +59,6 @@ const onCheckChange = (
   selectedIds.value = isChecked
     ? [...selectedIds.value, selectId]
     : selectedIds.value.filter((id) => id !== selectId);
-};
-const fetchData = () => {
-  loading.value = true;
-  RoleListAPI()
-    .then((res) => {
-      data.value = res.data;
-      loading.value = false;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
 };
 
 const handleActionButton = () => {
@@ -91,9 +85,6 @@ defineExpose({
     title.value = titleIn;
     selectedIds.value = selectedIdsIn;
     defaultSelectedIds.value = selectedIdsIn;
-    nextTick(() => {
-      fetchData();
-    });
   },
 });
 </script>

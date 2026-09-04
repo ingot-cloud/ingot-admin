@@ -43,10 +43,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { DeptTreeNode } from "@/models";
-import { DeptTree2API } from "@/api/org/dept";
+import type { DeptTreeNodeWithManagerVO } from "@/models";
+import { OrgDeptTree2QueryOptions } from "@/api/org/dept.query";
+import { useQuery } from "@tanstack/vue-query";
 
-// 定义org组件key-value定义
 const props = reactive({
   id: "id",
   pid: "pid",
@@ -54,42 +54,16 @@ const props = reactive({
   expand: "expand",
   children: "children",
 });
-const data = ref<DeptTreeNode>({});
-const stretchList = ref<Array<DeptTreeNode>>([]);
+const treeQuery = useQuery(() => OrgDeptTree2QueryOptions());
+const data = computed<DeptTreeNodeWithManagerVO>(() => treeQuery.data.value?.[0] ?? {});
 const defineMenus = reactive([]);
 
 const cloneNodeDrag = ref(true);
 const collapsable = ref(false);
-const expandLevel = ref(2); //默认展开层级
+const expandLevel = ref(2);
 const horizontal = ref(false);
 const onlyOneNode = ref(false);
 const treeOrgRef = ref();
-
-const stretch = (tree: Array<any>): Array<DeptTreeNode> => {
-  let result: Array<DeptTreeNode> = [];
-
-  tree.forEach((item) => {
-    result.push(item);
-    if (item.children) {
-      result = result.concat(stretch(item.children));
-    }
-  });
-
-  return result;
-};
-
-const fetchData = () => {
-  DeptTree2API()
-    .then((response) => {
-      data.value = response.data[0];
-      stretchList.value = stretch(response.data);
-    })
-    .catch(() => {});
-};
-
-onMounted(() => {
-  fetchData();
-});
 </script>
 <style lang="postcss" scoped>
 .dept-box {

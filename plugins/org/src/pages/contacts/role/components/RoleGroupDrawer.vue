@@ -20,9 +20,11 @@
 <script setup lang="ts">
 import type { RoleTreeNodeVO } from "@/models";
 import { RoleTypeEnums } from "@/models/enums";
-import { useOrgRoleStore } from "@/stores/modules/role";
+import { CreateRoleAPI, UpdateRoleAPI } from "@/api/org/role";
+import { orgRoleQueryKeys } from "@/api/org/role.query";
 import { Message } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
+import { useQueryClient } from "@tanstack/vue-query";
 
 const rawForm = {
   id: undefined,
@@ -42,7 +44,7 @@ const rules = {
 
 const emits = defineEmits(["success"]);
 
-const roleStore = useOrgRoleStore();
+const queryClient = useQueryClient();
 
 const editFormRef = ref();
 const editForm = reactive(Object.assign({}, rawForm));
@@ -64,15 +66,16 @@ const handleActionButton = () => {
       let request;
       if (isEdit.value) {
         params.id = id.value;
-        request = roleStore.updateRole(params);
+        request = UpdateRoleAPI(params);
       } else {
-        request = roleStore.createRole(params);
+        request = CreateRoleAPI(params);
       }
 
       loading.value = true;
       request
         .then(() => {
           Message.success("操作成功");
+          void queryClient.invalidateQueries({ queryKey: orgRoleQueryKeys.all });
           emits("success");
           loading.value = false;
           show.value = false;

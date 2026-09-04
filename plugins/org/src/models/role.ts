@@ -29,6 +29,7 @@ export interface TenantRolePrivate {
 export interface RoleTreeNodeVO extends TenantRolePrivate {
   children?: Array<RoleTreeNodeVO>;
   custom?: boolean;
+  isGroup?: boolean;
   typeText?: string;
   orgTypeText?: string;
   scopeTypeText?: string;

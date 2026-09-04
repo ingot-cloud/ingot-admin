@@ -13,7 +13,13 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 
-const PACKAGES = ["@ingot/shared", "@ingot/vite-config", "@ingot/admin-core", "@ingot/admin-common"];
+const PACKAGES = [
+  "@ingot/shared",
+  "@ingot/http-client",
+  "@ingot/vite-config",
+  "@ingot/admin-core",
+  "@ingot/admin-common",
+];
 
 const run = (command, cwd = rootDir) => {
   console.log(`\n> ${command}`);

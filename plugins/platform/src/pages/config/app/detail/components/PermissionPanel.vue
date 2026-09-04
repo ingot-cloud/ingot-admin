@@ -68,8 +68,15 @@
 <script setup lang="ts">
 import type { AppPermissionTreeNodeVO } from "@/models";
 import type { CommonStatus } from "@/models/enums";
-import { usePermissionNodeTypeEnum } from "@/models/enums";
-import { AppPermissionTreeAPI, UpdateAppPermissionAPI } from "@/api/platform/config/app.ts";
+import {
+  getCommonStatusActionDesc,
+  getCommonStatusToggle,
+  usePermissionNodeTypeEnum,
+} from "@/models/enums";
+import { UpdateAppPermissionAPI } from "@/api/platform/config/app.ts";
+import { AppPermissionTreeQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
+import { invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { permissionTableHeaders } from "./permissionTable";
 import PermissionEditDrawer from "./PermissionEditDrawer.vue";
 
@@ -79,31 +86,28 @@ const props = defineProps<{
 }>();
 
 const nodeTypeEnum = usePermissionNodeTypeEnum();
+const queryClient = useQueryClient();
+const message = useMessage();
+const confirm = useMessageConfirm();
 
-const loading = ref(false);
-const treeData = ref<Array<AppPermissionTreeNodeVO>>([]);
+const permissionQuery = useQuery(() => AppPermissionTreeQueryOptions(() => props.appId));
+const treeData = computed(() => permissionQuery.data.value ?? []);
+const loading = computed(() => permissionQuery.isFetching.value);
 const permissionEditDrawerRef = ref<InstanceType<typeof PermissionEditDrawer>>();
 
-const patchPermissionStatus = (record: { id: string; status: CommonStatus | string }) => {
-  return UpdateAppPermissionAPI(props.appId, record.id, { status: record.status as CommonStatus });
-};
-
-const confirmStatus = useConfirmStatus(transformUpdateAPI(patchPermissionStatus), () =>
-  privateFetchData(),
-);
+const statusMutation = useMutation({
+  mutationFn: (vars: { id: string; status: CommonStatus | string }) =>
+    UpdateAppPermissionAPI(props.appId, vars.id, { status: vars.status as CommonStatus }, silentQueryRequest()),
+  onSuccess: () => {
+    void invalidateQueriesByKeys(queryClient, [
+      appQueryKeys.permissions(props.appId),
+      appQueryKeys.detail(props.appId),
+    ]);
+  },
+});
 
 const privateFetchData = (): void => {
-  if (!props.appId) {
-    return;
-  }
-  loading.value = true;
-  AppPermissionTreeAPI(props.appId)
-    .then((response) => {
-      treeData.value = response.data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+  void permissionQuery.refetch();
 };
 
 const privateOnCreate = (): void => {
@@ -119,16 +123,13 @@ const privateOnEdit = (item: AppPermissionTreeNodeVO): void => {
 };
 
 const privateOnStatusChange = (item: AppPermissionTreeNodeVO): void => {
-  confirmStatus.exec(item.id!, item.status!, `权限(${item.name})`, "操作成功");
+  const next = getCommonStatusToggle(item.status as CommonStatus);
+  confirm.warning(`是否${getCommonStatusActionDesc(next)}权限(${item.name})`).then(() => {
+    statusMutation.mutateAsync({ id: item.id!, status: next }).then(() => {
+      message.success("操作成功");
+    });
+  });
 };
-
-watch(
-  () => props.appId,
-  () => {
-    privateFetchData();
-  },
-  { immediate: true },
-);
 
 defineExpose({
   refresh: privateFetchData,

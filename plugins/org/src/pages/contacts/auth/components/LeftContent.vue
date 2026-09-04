@@ -50,18 +50,20 @@
 <script setup lang="ts">
 import { TreeKeyAndProps } from "@/models";
 import { Search } from "@element-plus/icons-vue";
-import { useOrgRoleStore } from "@/stores/modules/role";
-import type { RoleTreeNodeVO, Option } from "@/models";
+import type { RoleTreeNodeVO } from "@/models";
 import { RoleTypeEnums } from "@/models/enums";
+import { RoleSortAPI } from "@/api/org/role";
+import { OrgRoleTreeQueryOptions, orgRoleQueryKeys } from "@/api/org/role.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
-const roleStore = useOrgRoleStore();
-const roleTree = ref<Array<RoleTreeNodeVO>>([]);
+const queryClient = useQueryClient();
+const roleQuery = useQuery(() => OrgRoleTreeQueryOptions());
+const roleTree = computed(() => roleQuery.data.value ?? []);
+const loading = computed(() => roleQuery.isFetching.value);
 const emits = defineEmits(["onNodeClick"]);
 
 const roleTreeRef = ref();
-const loading = ref(false);
 const searchValue = ref("");
-const groupList = ref<Array<Option>>([]);
 const defaultExpandedKeys = ref<Array<string>>([]);
 
 watch(searchValue, (val) => {
@@ -69,7 +71,7 @@ watch(searchValue, (val) => {
 });
 
 const privateOnNodeClick = (value: RoleTreeNodeVO) => {
-  if (value.type == RoleTypeEnums.GROUP) {
+  if (value.type === RoleTypeEnums.GROUP) {
     return;
   }
   emits("onNodeClick", value);
@@ -77,27 +79,6 @@ const privateOnNodeClick = (value: RoleTreeNodeVO) => {
 const privateFilterNode = (value: string, data: RoleTreeNodeVO) => {
   if (!value || !data.name) return true;
   return data.name.indexOf(value) > -1;
-};
-
-const fetchData = () => {
-  loading.value = true;
-  roleStore
-    .fetchRoleTree()
-    .then((data) => {
-      loading.value = false;
-      roleTree.value = data;
-      groupList.value = roleTree.value
-        .filter((item) => item.custom && item.type == RoleTypeEnums.GROUP)
-        .map((item) => {
-          return {
-            value: item.id!,
-            label: item.name!,
-          };
-        });
-    })
-    .catch(() => {
-      loading.value = false;
-    });
 };
 
 const privateHandleRoleCollapseAction = (value: boolean) => {
@@ -115,28 +96,34 @@ const privateHandleExpanded = (list: Array<RoleTreeNodeVO>, value: boolean) => {
     }
   });
 };
-const privateAllowDrag = (node: any) => {
-  return node.data.isGroup;
+const privateAllowDrag = (node: { data: RoleTreeNodeVO }) => {
+  return Boolean(node.data.isGroup);
 };
-const privateAllowDrop = (draggingNode: any, dropNode: any, type: string) => {
-  return dropNode.data.isGroup && type !== "inner";
+const privateAllowDrop = (
+  _draggingNode: { data: RoleTreeNodeVO },
+  dropNode: { data: RoleTreeNodeVO },
+  type: string,
+) => {
+  return Boolean(dropNode.data.isGroup) && type !== "inner";
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const privateOnDropSuccess = (node: any) => {
+const privateOnDropSuccess = () => {
   const ids = roleTree.value.map((item) => item.id!);
-  roleStore.sortRole(ids);
+  RoleSortAPI(ids).then(() => {
+    void queryClient.invalidateQueries({ queryKey: orgRoleQueryKeys.lists() });
+  });
 };
-const privateOnNodeExpand = (data: any) => {
-  defaultExpandedKeys.value.push(data.id);
+const privateOnNodeExpand = (data: RoleTreeNodeVO) => {
+  if (data.id) {
+    defaultExpandedKeys.value.push(data.id);
+  }
 };
-const privateOnNodeCollapse = (data: any) => {
+const privateOnNodeCollapse = (data: RoleTreeNodeVO) => {
+  if (!data.id) {
+    return;
+  }
   defaultExpandedKeys.value.splice(defaultExpandedKeys.value.indexOf(data.id), 1);
 };
-
-onMounted(() => {
-  fetchData();
-});
 </script>
 <style scoped lang="postcss">
 .role-filter {

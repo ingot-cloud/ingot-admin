@@ -1,112 +1,105 @@
-import axios, { AxiosError } from "axios";
-import type {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
-import { onRequestFulfilled, onRequestRejected } from "./interceptor/request";
-import { onResponseFulfilled, onResponseRejected } from "./interceptor/response";
-import type { R } from "@/models";
+import axios from "axios";
+import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import {
+  createHttpClient,
+  ProgressCounter,
+  type HttpClient,
+  type HttpRequestConfig,
+  type R,
+} from "@ingot/http-client";
 import NProgress from "@/components/nprogress";
 import CancelManager from "./cancel";
+import RequestInterceptor from "./interceptor/request";
+import { EnvelopeInterceptor, ChallengeInterceptor } from "./interceptor/response";
 import { bindChallengeRetry } from "./challenge";
+import {
+  handleAuthBusinessFailure,
+  handleAuthHttpError,
+  handleAuthUnauthorized,
+  isAuthUnauthorized,
+  shouldBypassAuthError,
+} from "./failure";
+
+const progress = new ProgressCounter(NProgress);
 
 class Http {
-  private instance: AxiosInstance;
-  private origin: AxiosInstance;
-  public constructor() {
+  private readonly origin: AxiosInstance;
+  private readonly client: HttpClient;
+
+  constructor() {
     this.origin = axios.create({
       baseURL: import.meta.env.VITE_APP_NET_BASE_URL || undefined,
       timeout: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT || 10_000,
       timeoutErrorMessage: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,
     });
-    this.instance = axios.create({
+    this.client = createHttpClient({
       baseURL: import.meta.env.VITE_APP_NET_BASE_URL || undefined,
       timeout: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT || 10_000,
       timeoutErrorMessage: import.meta.env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,
+      cancelManager: CancelManager,
+      interceptors: {
+        request: [RequestInterceptor],
+        response: [EnvelopeInterceptor, ChallengeInterceptor],
+      },
+      hooks: {
+        onStart: () => progress.start(),
+        onEnd: () => progress.done(),
+        onBusinessFailure: handleAuthBusinessFailure,
+        onUnauthorized: handleAuthUnauthorized,
+        onHttpError: handleAuthHttpError,
+        isUnauthorized: isAuthUnauthorized,
+        shouldBypassError: shouldBypassAuthError,
+      },
     });
-
-    // default interceptors
-    this.instance.interceptors.request.use(
-      (config: InternalAxiosRequestConfig) => {
-        NProgress.start();
-        CancelManager.addRequest(config);
-        return onRequestFulfilled(config);
-      },
-      (error: AxiosError) => {
-        return onRequestRejected(error);
-      },
-    );
-    this.instance.interceptors.response.use(
-      (response: AxiosResponse<R>) => {
-        NProgress.done();
-        CancelManager.removeRequest(response.config);
-        return onResponseFulfilled(response);
-      },
-      (error: AxiosError<R>) => {
-        NProgress.done();
-        CancelManager.removeRequest(error.config);
-        return onResponseRejected(error);
-      },
-    );
-    bindChallengeRetry((config) => this.instance.request(config));
+    bindChallengeRetry((config) => this.client.rawRequest(config));
   }
 
   getOrigin() {
     return this.origin;
   }
 
-  rawRequest<T = any>(config: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.request(config);
+  rawRequest<T = unknown>(config: HttpRequestConfig): Promise<R<T>> {
+    return this.client.rawRequest(config);
   }
 
-  get<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    config = config || {};
-    if (params) {
-      config.params = Object.assign({}, config.params, params);
-    }
-    return this.instance.get<T, R<T>>(url, config);
+  get<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.get(url, params, config);
   }
 
-  delete<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    config = config || {};
-    if (params) {
-      config.data = Object.assign({}, config.data, params);
-    }
-    return this.instance.delete<T, R<T>>(url, config);
+  delete<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.delete(url, params, config);
   }
 
-  post<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.post<T, R<T>>(url, params, config);
+  post<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.post(url, params, config);
   }
 
-  put<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.put<T, R<T>>(url, params, config);
+  put<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.put(url, params, config);
   }
 
-  patch<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.patch<T, R<T>>(url, params, config);
+  patch<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.patch(url, params, config);
   }
 
-  head<T = any>(url: string, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.head<T, R<T>>(url, config);
+  head<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.head(url, config);
   }
 
-  options<T = any>(url: string, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.options<T, R<T>>(url, config);
+  options<T = unknown>(url: string, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.options(url, config);
   }
 
-  postForm<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.postForm(url, params, config);
+  postForm<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.postForm(url, params, config);
   }
 
-  putForm<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.putForm(url, params, config);
+  putForm<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.putForm(url, params, config);
   }
 
-  patchForm<T = any>(url: string, params?: any, config?: AxiosRequestConfig): Promise<R<T>> {
-    return this.instance.patchForm(url, params, config);
+  patchForm<T = unknown>(url: string, params?: unknown, config?: AxiosRequestConfig): Promise<R<T>> {
+    return this.client.patchForm(url, params, config);
   }
 }
 

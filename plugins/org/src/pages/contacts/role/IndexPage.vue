@@ -18,9 +18,9 @@
       v-else
       hide-setting
       :loading="ops.loading.value"
-      :data="ops.pageInfo.records"
+      :data="ops.pageInfo.value.records"
       :headers="tableHeaders"
-      :page="ops.pageInfo"
+      :page="ops.pageInfo.value"
       ref="tableRef"
       @refresh="ops.fetchUserData"
       @handleSizeChange="ops.fetchUserData"
@@ -55,20 +55,24 @@ import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
 import AddMemberDialog from "./components/AddMemberDialog.vue";
 import { BindUserAPI } from "@/api/org/role";
+import { orgUserQueryKeys } from "@/api/org/user.query";
+import { useQueryClient } from "@tanstack/vue-query";
+import type { UserPageItemVO } from "@/models";
 
 const AddMemberDialogRef = ref();
 const ops = useOps();
 const confirm = useMessageConfirm();
+const queryClient = useQueryClient();
 const privateAddMember = () => {
   AddMemberDialogRef.value.show(ops.currentNode);
 };
-const privateHandleDelete = (item: any) => {
+const privateHandleDelete = (item: UserPageItemVO) => {
   confirm.warning(`是否将成员(${item.nickname})移除角色(${ops.currentNode.name})`).then(() => {
     BindUserAPI({
       id: ops.currentNode.id,
       unassignIds: [item.userId],
     }).then(() => {
-      ops.fetchUserData();
+      void queryClient.invalidateQueries({ queryKey: orgUserQueryKeys.lists() });
     });
   });
 };

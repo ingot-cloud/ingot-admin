@@ -1,22 +1,26 @@
 import type { PageChangeParams, PlatformApp, PlatformAppFilterDTO } from "@/models";
-import { AppPageAPI } from "@/api/platform/config/app";
-import { AppTypeEnum } from "@/models/enums";
+import { AppPageQueryOptions } from "@/api/platform/config/app.query";
+import { useServerPaging } from "@ingot/admin-core";
 
 export const useOps = () => {
-  const paging = usePaging<PlatformApp, PlatformAppFilterDTO>(transformPageAPI(AppPageAPI));
+  const paging = useServerPaging<PlatformApp, PlatformAppFilterDTO>({
+    queryOptions: AppPageQueryOptions,
+  });
 
   const resetFilter = (): void => {
-    paging.condition.status = undefined;
-    paging.condition.name = undefined;
-    fetchData();
+    paging.resetSubmitted({
+      appType: undefined,
+      status: undefined,
+      name: undefined,
+    });
   };
 
   const fetchData = (params?: PageChangeParams): void => {
-    paging.exec(params);
+    paging.fetchData(params);
   };
 
   return {
-    loading: paging.loading,
+    loading: paging.fetching,
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     resetFilter,

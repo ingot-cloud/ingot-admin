@@ -12,9 +12,9 @@
 
     <in-table
       :loading="userOps.loading.value"
-      :data="userOps.pageInfo.records"
+      :data="userOps.pageInfo.value.records"
       :headers="tableHeaders"
-      :page="userOps.pageInfo"
+      :page="userOps.pageInfo.value"
       ref="tableRef"
       row-key="userId"
       @refresh="userOps.fetchUserData"

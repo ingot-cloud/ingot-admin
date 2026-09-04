@@ -1,12 +1,9 @@
-import type {
-  AxiosResponse,
-  AxiosError,
-  AxiosRequestConfig,
-  InternalAxiosRequestConfig,
-} from "axios";
+import type { AxiosResponse, AxiosError } from "axios";
+import axios from "axios";
+import type { PostFilter } from "@ingot/http-client";
+import { isApiError } from "@ingot/http-client";
 import { Message } from "@/utils/message";
 import type { R } from "@/models";
-import { StatusCode } from "@/net/status-code";
 import {
   createEnvelopeSession,
   applyEncryptedRequest,
@@ -24,65 +21,6 @@ import {
 } from "@/net/crypto";
 import { tryHandleGatewayChallenge } from "@/net/challenge";
 
-/**
- * 未知响应实体
- */
-const UnknownResponse: R = {
-  code: StatusCode.Unknown,
-  message: "网络异常，请稍后重试",
-  data: {},
-  status: Number(StatusCode.Unknown),
-  statusText: "网络异常，请稍后重试",
-  headers: {},
-  config: {} as InternalAxiosRequestConfig,
-};
-
-const axiosResponseToR = (response?: AxiosResponse<R>): R => {
-  if (!response || !response.data) {
-    return UnknownResponse;
-  }
-  const body = response.data as R & { msg?: string };
-  const result = Object.assign({}, response, {
-    data: body.data,
-    message: body.message || body.msg || "",
-    code: body.code,
-  });
-  return result;
-};
-
-/**
- * 业务失败公共处理器
- * @param config
- * @param response
- */
-const bizResponseFailureHandler = (
-  config: AxiosRequestConfig,
-  response = UnknownResponse,
-): Promise<R> => {
-  // 如果手动处理，则直接返回
-  if (config.manualProcessingFailure) {
-    return Promise.reject(response);
-  }
-
-  const code = response.code;
-  switch (code) {
-    case StatusCode.TokenInvalid:
-      if (config.refreshTokenAndRetry) {
-        return Promise.reject(response);
-      }
-      return new Promise<R>(() => {});
-    case StatusCode.TokenSignBack:
-      break;
-    default:
-      Message.warning(response.message, { showClose: true });
-      break;
-  }
-  return Promise.reject(response);
-};
-
-/**
- * 若响应为信封加密，按响应方向模式解密并回填 response.data
- */
 const decryptEnvelope = async (
   response: AxiosResponse<R>,
   option: CryptoResponseOption,
@@ -94,10 +32,6 @@ const decryptEnvelope = async (
   response.data = (await decryptResponseBody(response.data, option, context)) as R;
 };
 
-/**
- * 信封加密响应处理：解密、被动感知密钥轮换、kid 失效重试一次。
- * 需在 axiosResponseToR 拍平前完成（FULL 模式 code 也是密文）。
- */
 const processEnvelope = async (response: AxiosResponse<R>): Promise<AxiosResponse<R>> => {
   const config = response.config;
   const option = config.crypto;
@@ -152,34 +86,30 @@ const processEnvelope = async (response: AxiosResponse<R>): Promise<AxiosRespons
   return response;
 };
 
-/**
- * 响应完成拦截器
- * @param response
- */
-export const onResponseFulfilled = async (response: AxiosResponse<R>): Promise<R> => {
-  const processed = await processEnvelope(response);
-  const data = processed.data;
-  if (data.code === StatusCode.OK) {
-    return Promise.resolve(axiosResponseToR(processed));
-  }
-  return bizResponseFailureHandler(processed.config, axiosResponseToR(processed));
+export const EnvelopeInterceptor: PostFilter = {
+  order: () => 5,
+  resolved: processEnvelope,
+  rejected: (error: AxiosError) => Promise.reject(error),
 };
 
-/**
- * 响应拒绝拦截器
- * @param error
- */
-export const onResponseRejected = async (error: AxiosError<R>): Promise<R> => {
-  try {
-    const retried = await tryHandleGatewayChallenge(error);
-    if (retried) {
-      return retried;
+export const ChallengeInterceptor: PostFilter = {
+  order: () => 15,
+  resolved: (response: AxiosResponse<R>) => response,
+  async rejected(error: AxiosError<R>): Promise<R> {
+    if (!axios.isAxiosError(error) || isApiError(error)) {
+      return Promise.reject(error);
     }
-  } catch (challengeError) {
-    if (challengeError instanceof Error) {
-      Message.warning(challengeError.message, { showClose: true });
+    try {
+      const retried = await tryHandleGatewayChallenge(error);
+      if (retried) {
+        return retried;
+      }
+    } catch (challengeError) {
+      if (challengeError instanceof Error) {
+        Message.warning(challengeError.message, { showClose: true });
+      }
+      return Promise.reject(challengeError);
     }
-    return Promise.reject(challengeError);
-  }
-  return bizResponseFailureHandler(error.config || {}, axiosResponseToR(error.response));
+    return Promise.reject(error);
+  },
 };

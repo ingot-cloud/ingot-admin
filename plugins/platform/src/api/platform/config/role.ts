@@ -1,4 +1,4 @@
-import { request } from "@ingot/admin-core";
+import { request, type RequestOptions } from "@ingot/admin-core";
 import type { RoleTreeNodeVO, PlatformRole, SetDTO, R, PermissionTreeNode, Option } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
@@ -8,13 +8,14 @@ export function RoleOptionsAPI() {
   return request.get<Array<Option<string>>>(`${PATH}/options`);
 }
 
-export function RoleListAPI(condition?: PlatformRole): Promise<R<Array<RoleTreeNodeVO>>> {
+export function RoleListAPI(
+  condition?: PlatformRole,
+  options?: RequestOptions,
+): Promise<R<Array<RoleTreeNodeVO>>> {
   if (condition) {
     filterParams(condition);
   }
-  return request.get<Array<RoleTreeNodeVO>>(`${PATH}/list`, {
-    ...condition,
-  });
+  return request.get<Array<RoleTreeNodeVO>>(`${PATH}/list`, { ...condition }, options);
 }
 
 export function CreateRoleAPI(params: PlatformRole): Promise<R<void>> {
@@ -35,6 +36,9 @@ export function BindAuthorityAPI(params: SetDTO): Promise<R<void>> {
   return request.put<void>(`${PATH}/${params.id}/permissions`, params);
 }
 
-export function GetBindAuthoritiesAPI(id: string): Promise<R<Array<PermissionTreeNode>>> {
-  return request.get<Array<PermissionTreeNode>>(`${PATH}/${id}/permissions`);
+export function GetBindAuthoritiesAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<Array<PermissionTreeNode>>> {
+  return request.get<Array<PermissionTreeNode>>(`${PATH}/${id}/permissions`, undefined, options);
 }

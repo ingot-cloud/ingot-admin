@@ -37,11 +37,11 @@
     </in-filter-item>
 
     <in-table
-      :loading="loading"
+      :loading="ipQuery.isFetching.value"
       :data="filteredData"
       :headers="ipListTableHeaders"
       row-key="id"
-      @refresh="privateFetchData"
+      @refresh="privateRefresh"
     >
       <template #toolbar>
         <in-button type="primary" @click="privateOnCreate">
@@ -84,7 +84,7 @@
         </in-button>
       </template>
     </in-table>
-    <IpListDrawer ref="drawerRef" @success="privateFetchData" />
+    <IpListDrawer ref="drawerRef" @success="privateRefresh" />
   </div>
 </template>
 
@@ -95,9 +95,10 @@ import {
   useIpListSourceEnum,
   useIpListTypeEnum,
 } from "@/models/enums";
-import { GetIpListAPI } from "@/api/security/policy";
+import { IpListQueryOptions, ipListQueryKeys } from "@/api/security/policy.query";
 import { ipListTableHeaders } from "../table/ipListTable";
 import IpListDrawer from "./IpListDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 interface IpListFilter {
   listType?: string;
@@ -105,8 +106,9 @@ interface IpListFilter {
   enabled?: boolean;
 }
 
-const loading = ref(false);
-const tableData = ref<Array<GatewayIpList>>([]);
+const queryClient = useQueryClient();
+const ipQuery = useQuery(() => IpListQueryOptions());
+const tableData = computed(() => ipQuery.data.value ?? []);
 const filter = reactive<IpListFilter>({
   listType: undefined,
   keyType: undefined,
@@ -138,14 +140,8 @@ const filteredData = computed(() =>
   }),
 );
 
-const privateFetchData = async (): Promise<void> => {
-  loading.value = true;
-  try {
-    const response = await GetIpListAPI();
-    tableData.value = response.data;
-  } finally {
-    loading.value = false;
-  }
+const privateRefresh = (): void => {
+  void queryClient.invalidateQueries({ queryKey: ipListQueryKeys.lists() });
 };
 
 const privateOnResetFilter = (): void => {
@@ -162,12 +158,8 @@ const privateOnEdit = (item: GatewayIpList): void => {
   drawerRef.value?.show(item);
 };
 
-onMounted(() => {
-  privateFetchData();
-});
-
 defineExpose({
-  refresh: privateFetchData,
+  refresh: privateRefresh,
 });
 </script>
 

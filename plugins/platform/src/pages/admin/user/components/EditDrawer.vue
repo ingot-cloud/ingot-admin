@@ -22,9 +22,12 @@
 </template>
 <script lang="ts" setup>
 import type { UserDTO, SysUser } from "@/models";
-import { RemoveUserAPI, UserProfileAPI, UpdateUserAPI } from "@/api/platform/admin/user";
+import { RemoveUserAPI, UpdateUserAPI } from "@/api/platform/admin/user";
+import { PlatformAdminUserProfileQueryOptions } from "@/api/platform/admin/user.query";
+import { Confirm } from "@ingot/admin-core";
 import BaseInfoForm from "./BaseInfoForm.vue";
 import OrgInfoForm from "./OrgInfoForm.vue";
+import { useQuery } from "@tanstack/vue-query";
 
 const emits = defineEmits(["success"]);
 
@@ -37,12 +40,13 @@ const OrgInfoFormRef = ref();
 
 const user = ref<SysUser>({});
 const visible = ref(false);
-const loading = ref(false);
+const saving = ref(false);
 const message = useMessage();
-const confirmDelete = useConfirmDelete(transformDeleteAPI(RemoveUserAPI), () => {
-  visible.value = false;
-  emits("success");
-});
+const profileQuery = useQuery(() => ({
+  ...PlatformAdminUserProfileQueryOptions(() => user.value.id ?? ""),
+  enabled: visible.value && Boolean(user.value.id),
+}));
+const loading = computed(() => profileQuery.isFetching.value || saving.value);
 
 const handleAddOrgClick = () => {
   OrgInfoFormRef.value.addOrg(user.value.id!);
@@ -54,16 +58,16 @@ const handleConfirmClick = () => {
       BaseInfoFormRef.value
         .getData()
         .then((data: UserDTO) => {
-          loading.value = true;
+          saving.value = true;
           UpdateUserAPI(data)
             .then(() => {
-              loading.value = false;
+              saving.value = false;
               visible.value = false;
               message.success("操作成功");
               emits("success");
             })
             .catch(() => {
-              loading.value = false;
+              saving.value = false;
             });
         })
         .catch(() => {
@@ -74,32 +78,34 @@ const handleConfirmClick = () => {
 };
 
 const handleRemoveClick = () => {
-  confirmDelete.exec(user.value.id!, `是否删除用户(${user.value.nickname})`, "删除成功");
+  Confirm.warning(`是否删除用户(${user.value.nickname})`).then(() => {
+    RemoveUserAPI(user.value.id!).then(() => {
+      message.success("删除成功");
+      visible.value = false;
+      emits("success");
+    });
+  });
 };
 
-const fetchData = () => {
-  loading.value = true;
-  UserProfileAPI(user.value.id!)
-    .then((response) => {
-      loading.value = false;
-      nextTick(() => {
-        BaseInfoFormRef.value.setData(user.value.id!, response.data);
-        OrgInfoFormRef.value.setData(user.value.id!, response.data);
-      });
-    })
-    .catch(() => {
-      loading.value = false;
-    });
-};
+watch(
+  () => profileQuery.data.value,
+  (value) => {
+    if (!value || !user.value.id) {
+      return;
+    }
+    BaseInfoFormRef.value?.setData(user.value.id!, value);
+  },
+  { flush: "post" },
+);
 
 defineExpose({
   show(params: SysUser) {
     user.value = params;
     visible.value = true;
     currentTab.value = TabNameBase;
-    fetchData();
     nextTick(() => {
       BaseInfoFormRef.value.init();
+      OrgInfoFormRef.value.setData(params.id!);
     });
   },
 });

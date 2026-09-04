@@ -12,12 +12,12 @@
         </in-with-label>
         <template #rightActions>
           <in-button @click="filter.name && (filter.name = undefined)"> 重置 </in-button>
-          <in-button type="primary" @in-click="refreshData" :loading="loading"> 搜索 </in-button>
+          <in-button type="primary" @in-click="refreshData" :loading="roleQuery.isFetching.value"> 搜索 </in-button>
         </template>
       </in-filter-item>
     </template>
     <in-table
-      :loading="loading"
+      :loading="roleQuery.isFetching.value"
       :data="roleTree"
       ref="TableRef"
       :headers="tableHeaders"
@@ -70,30 +70,26 @@
 import { tableHeaders } from "./table";
 import type { RoleTreeNodeVO, PlatformRole } from "@/models";
 import type { TableAPI } from "@ingot/admin-core";
-import { RoleListAPI } from "@/api/platform/config/role.ts";
+import { PlatformRoleTreeQueryOptions, platformRoleQueryKeys } from "@/api/platform/config/role.query";
 import { useOrgTypeEnums, useRoleTypeEnums } from "@/models/enums";
 import RoleDrawer from "./components/RoleDrawer.vue";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const RoleDrawerRef = ref();
 const TableRef = ref<TableAPI>();
+const queryClient = useQueryClient();
 
-const filter = ref<PlatformRole>({});
-const roleTree = ref<Array<RoleTreeNodeVO>>([]);
+const filter = reactive<PlatformRole>({});
+const submitted = ref<PlatformRole>({});
+const roleQuery = useQuery(() => PlatformRoleTreeQueryOptions(() => submitted.value));
+const roleTree = computed(() => roleQuery.data.value ?? []);
 
-const loading = ref(false);
 const orgTypeEnums = useOrgTypeEnums();
 const roleTypeEnums = useRoleTypeEnums();
 
 const refreshData = () => {
-  loading.value = true;
-  RoleListAPI(filter.value)
-    .then((response) => {
-      loading.value = false;
-      roleTree.value = response.data;
-    })
-    .catch(() => {
-      loading.value = false;
-    });
+  submitted.value = { ...filter };
+  void queryClient.invalidateQueries({ queryKey: platformRoleQueryKeys.lists() });
 };
 
 const handleCreate = (): void => {

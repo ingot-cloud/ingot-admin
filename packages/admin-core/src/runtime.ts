@@ -9,6 +9,7 @@ import type {
   InStaticMenuNode,
   InStorageConfig,
 } from "./plugin";
+import { resetAdminQueryClient } from "./query";
 import { mergeMenuTrees } from "./router/helper/menus";
 
 export interface InResolvedBrandingConfig {
@@ -165,6 +166,7 @@ export const getAdminRouter = (): Router => {
 };
 
 export const resetAdminRuntime = (): void => {
+  resetAdminQueryClient();
   runtimeConfig = {
     ...DEFAULT_CONFIG,
     branding: { ...DEFAULT_CONFIG.branding },

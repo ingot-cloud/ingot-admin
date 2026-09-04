@@ -1,9 +1,10 @@
 import type { CredentialPolicyConfig } from "@/models";
+import { CreatePolicyConfig, UpdatePolicyConfig } from "@/api/security/credential";
 import {
-  CreatePolicyConfig,
-  GetPolicyConfigList,
-  UpdatePolicyConfig,
-} from "@/api/security/credential";
+  CredentialPolicyListQueryOptions,
+  credentialPolicyQueryKeys,
+} from "@/api/security/credential.query";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 export type PolicyMap = Record<string, CredentialPolicyConfig | undefined>;
 
@@ -33,18 +34,13 @@ function pickConfigByType(list: CredentialPolicyConfig[]): PolicyMap {
 }
 
 export function useCredentialPolicy() {
-  const loading = ref(false);
-  const policyMap = ref<PolicyMap>({});
+  const queryClient = useQueryClient();
+  const query = useQuery(() => CredentialPolicyListQueryOptions());
+  const policyMap = computed(() => pickConfigByType(query.data.value ?? []));
   const message = useMessage();
 
   const loadAll = async (): Promise<void> => {
-    loading.value = true;
-    try {
-      const response = await GetPolicyConfigList();
-      policyMap.value = pickConfigByType(response.data);
-    } finally {
-      loading.value = false;
-    }
+    await query.refetch();
   };
 
   const savePolicy: SavePolicyFn = async (policyType, meta, policyConfig) => {
@@ -63,10 +59,11 @@ export function useCredentialPolicy() {
     }
 
     message.success("保存成功");
+    await queryClient.invalidateQueries({ queryKey: credentialPolicyQueryKeys.lists() });
   };
 
   return {
-    loading,
+    loading: computed(() => query.isFetching.value),
     policyMap,
     loadAll,
     savePolicy,
