@@ -17,7 +17,8 @@
 | `InTabs` | 全局路由 Tab | 与页内 Tab 视觉分离，默认可关闭 | 行为不变 |
 | `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条 | `v-model`、`title`、`#header`/`#footer`、`loading` |
 | `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger` | `v-model`、`title`、`#footer` |
-| `InButton` | 按钮 | `in-click` 为长期节流 API；原生 `click` 不节流 | `type`/`loading` 等继续透传 |
+| `InAvatar` | 姓名/头像 | 32px 圆圈；无图时用姓名最后两字；`showAvatar` 默认 true，为 false 时只显示文本；颜色默认主题色，可用 `color` 覆盖；`src` / `avatar` 别名 | 新组件 |
+| `InCommonStatusTag` | 公共状态 | 正常：蓝底成功图标；锁定：橙底暂停图标，文案「已锁定」；按内容撑开不截断 | 不再使用 Element Plus Tag 的 success/danger 色 |
 
 ## 类型
 

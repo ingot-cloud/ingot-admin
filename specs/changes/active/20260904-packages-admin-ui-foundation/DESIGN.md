@@ -329,6 +329,18 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - 主标题与说明超长时单行省略：`display: -webkit-box`、`-webkit-line-clamp: 1`、`word-break: break-all`。
 - `#tabs` 仅用于设置/详情等页内局部 Tab，不用于在独立菜单路由之间切换。
 
+## InAvatar
+
+- 默认 32px 圆形；无 `src`/`avatar` 时圆圈内显示姓名，超过两个字取最后两个字。
+- `showAvatar` 默认 true；为 false 时只渲染姓名文本。
+- 圆圈背景默认 `--in-color-primary`，可用 `color` 覆盖。
+
+## InCommonStatusTag
+
+- 「正常」使用 info 色（`#245bdb` 文案，主题蓝 20% 底）和成功实心图标。
+- 「锁定」展示为「已锁定」，使用 warning 色（`#de7802` 文案，`#ff8800` 20% 底）和暂停实心图标。
+- 标签高 24px、圆角 4px，按内容撑开，不截断文案；`InTable` 对 `status` 列补齐最小宽度 132px。
+
 ## 对接映射
 
 本 change 无后端接口变化，见 [API.md](./API.md)。
@@ -339,6 +351,8 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 | components/container/InContainer.vue       | plain 默认透明；可覆盖背景/边框               |
 | components/InPageFrame.vue                 | page 模式滚动尽头保留画布沟槽                 |
 | components/InPageHeader.vue                | 默认标题取菜单名；无说明不占位；有说明约 80px；主标题 16/500、说明 14/400 |
+| components/avatar/InAvatar.vue             | 无图姓名缩写圆圈；可隐藏头像只留文本                     |
+| components/status/InCommonStatusTag.vue    | 正常/已锁定带图标状态标签                               |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
 | components/table/InTableActions.vue        | 固定操作与配置型 action 原子组自适应收纳      |
 | components/table/InColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |

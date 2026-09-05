@@ -34,6 +34,7 @@ describe("admin UI visual fixtures", () => {
     expect(table).not.toContain("h(ElTable");
     expect(table).toContain("element-plus/theme-chalk/el-table.css");
     expect(table).toMatch(/\.in-table__body \{[\s\S]*?overflow: hidden;/);
+    expect(table).toContain(".el-table .cell:has(.in-status-tag)");
     expect(pageFrame).toMatch(/\.in-page-frame__body\.is-page \{[\s\S]*?padding-bottom: var\(--in-page-gutter\);/);
     const pageHeader = readFileSync(resolve(root, "../InPageHeader.vue"), "utf8");
     expect(pageHeader).toContain("font-size: var(--in-font-size-section-title)");
@@ -46,6 +47,17 @@ describe("admin UI visual fixtures", () => {
     expect(pageHeader).not.toMatch(
       /\.in-page-header \{[^}]*min-height: var\(--in-page-header-min-height\);/,
     );
+    const avatar = readFileSync(resolve(root, "../avatar/InAvatar.vue"), "utf8");
+    expect(avatar).toContain("width: var(--in-avatar-size)");
+    expect(avatar).toContain("border-radius: 50%");
+    expect(avatar).toContain("showAvatar");
+    const statusTag = readFileSync(resolve(root, "../status/InCommonStatusTag.vue"), "utf8");
+    expect(statusTag).toContain("in-status-tag");
+    expect(statusTag).toContain("已锁定");
+    expect(statusTag).toContain("width: max-content");
+    expect(statusTag).not.toContain("text-overflow: ellipsis");
+    expect(statusTag).toContain("--in-status-tag-info-color");
+    expect(statusTag).toContain("--in-status-tag-warning-color");
   });
 
   it("顶栏与侧栏尺寸 Token 已对齐验收值", () => {

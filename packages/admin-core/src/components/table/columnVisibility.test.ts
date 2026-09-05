@@ -15,6 +15,15 @@ describe("columnVisibility", () => {
     expect(withTableHeaderDefaults({ prop: "actions" }).fixed).toBe("right");
   });
 
+  it("状态列补齐最小宽度，过窄的 width 一并抬升", () => {
+    expect(withTableHeaderDefaults({ prop: "status" }).minWidth).toBe(132);
+    expect(withTableHeaderDefaults({ prop: "status", width: "80" })).toMatchObject({
+      minWidth: 132,
+      width: 132,
+    });
+    expect(withTableHeaderDefaults({ prop: "status", width: "180" }).width).toBe("180");
+  });
+
   it("锁定列即使未选中也保持可见", () => {
     const headers = [
       { type: "selection" as const, prop: "selection" },

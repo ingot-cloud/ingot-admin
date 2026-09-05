@@ -37,7 +37,7 @@
         <in-copy-tag :text="item.code" />
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <in-common-status-tag :status="item.status" />
       </template>
       <template #type="{ item }">
         <in-tag :value="authorityTypeEnums.getTagText(item.type)" />

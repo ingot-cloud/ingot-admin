@@ -2,11 +2,12 @@ import { describe, expect, it } from "vitest";
 import { coreGlobalComponents } from "./coreComponents";
 
 const movedComponentNames = [
+  "InAvatar",
   "InInputTag",
   "InTag",
   "InTagEnum",
   "CommonStatusButton",
-  "CommonStatusTag",
+  "InCommonStatusTag",
   "InStatusButton",
   "AccountStatusEditButton",
   "AccountStatusView",

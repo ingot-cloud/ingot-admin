@@ -16,6 +16,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "状态",
     prop: "status",
+    minWidth: "132",
   },
   {
     label: "操作",

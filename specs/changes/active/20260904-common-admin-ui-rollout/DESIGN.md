@@ -68,7 +68,7 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 | org      | `pages/contacts/dept/IndexPage.vue`      | Split List | 去掉页内路由 Tab；部门上下文、表格、编辑抽屉   |
 | org      | `pages/contacts/role/IndexPage.vue`      | Split List | 去掉页内路由 Tab；角色组、成员、部门选择弹窗   |
 | org      | `pages/contacts/structure/IndexPage.vue` | Split List | 去掉页内路由 Tab；组织树和结构浏览             |
-| org      | `pages/contacts/user/IndexPage.vue`      | Split List | 去掉页内路由 Tab；组织树、用户列表、编辑抽屉   |
+| org      | `pages/contacts/user/IndexPage.vue`      | Split List | 去掉页内路由 Tab；姓名列 `InAvatar`；状态用优化后的 `InCommonStatusTag` |
 | member   | `pages/permission/IndexPage.vue`         | List       | 权限列表和编辑抽屉                      |
 | member   | `pages/role/IndexPage.vue`               | List       | 角色列表和授权弹窗                      |
 | member   | `pages/user/IndexPage.vue`               | List       | 用户筛选、表格、创建/编辑/绑定/重置浮层 |
@@ -167,3 +167,4 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 
 - `org/contacts/user` 现有业务只有「添加成员」、行内详情/启停/删除，没有邀请成员、批量导入/导出、批量变更部门或批量操作离职接口。试点只把已有「添加成员」映射为 `overflow: never` 的固定主操作，不为对齐飞书采样新增无接口按钮。
 - 通讯录五个页面不再使用页内路由 Tab；各页均使用 `InPageFrame` + `InPageHeader`（菜单名）+ `InSplitLayout`。表格 title 仅保留部门/角色等选择上下文。
+- `org/contacts/user` 姓名列使用 `InAvatar`：无头像时圆圈内显示姓名最后两字；`InCommonStatusTag` 正常/已锁定改为带图标的 info/warning 标签。枚举值和启停接口不变。

@@ -283,6 +283,10 @@ defineExpose<TableAPI<TableRow>>({
   border-bottom-color: var(--in-border-color);
 }
 
+:deep(.el-table .cell:has(.in-status-tag)) {
+  overflow: visible;
+}
+
 :deep(th.el-table__cell.is-leaf) {
   border-bottom: none;
 }

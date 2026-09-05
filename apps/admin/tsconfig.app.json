@@ -6,6 +6,7 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "paths": {
       "@/*": ["./src/*"],
+      "@ingot/admin-core": ["../../packages/admin-core/src/index.ts"],
       "@ingot/platform-plugin": ["./platform-plugin.d.ts"],
       "@ingot/security-plugin": ["./security-plugin.d.ts"],
       "@ingot/org-plugin": ["./org-plugin.d.ts"],

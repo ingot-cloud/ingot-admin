@@ -33,7 +33,7 @@
         <el-tag v-else type="info"> 暂无 </el-tag>
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <in-common-status-tag :status="item.status" />
       </template>
       <template #actions="{ item }">
         <in-button v-if="!item.mainFlag" type="primary" text link @click="handleEdit(item.id)">

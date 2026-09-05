@@ -8,6 +8,8 @@ export interface UserPageItemVO {
   email?: string;
   avatar?: string;
   status?: CommonStatus;
+  enabled?: boolean;
+  locked?: boolean;
   createdAt: string;
 }
 

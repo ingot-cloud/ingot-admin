@@ -95,7 +95,7 @@
         <in-tag-enum :value="item.orgType" :enumObj="orgTypeEnums" />
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <in-common-status-tag :status="item.status" />
       </template>
       <template #actions="{ item }">
         <in-button type="primary" text link @click="privateGoAppDetail(item)">

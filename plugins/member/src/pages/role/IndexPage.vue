@@ -48,7 +48,7 @@
         </el-tag>
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status"></common-status-tag>
+        <in-common-status-tag :status="item.status"></in-common-status-tag>
       </template>
       <template #actions="{ item }">
         <in-button type="success" text link @click="handleEdit(item, true)">

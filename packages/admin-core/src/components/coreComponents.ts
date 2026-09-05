@@ -1,4 +1,5 @@
 import type { Component } from "vue";
+import InAvatar from "./avatar/InAvatar.vue";
 import InButton from "./button/InButton.vue";
 import InButtonDelete from "./button/InButtonDelete.vue";
 import InButtonEdit from "./button/InButtonEdit.vue";
@@ -40,12 +41,13 @@ import InInputTag from "./tag/InInputTag.vue";
 import InTag from "./tag/InTag.vue";
 import InTagEnum from "./tag/InTagEnum.vue";
 import CommonStatusButton from "./status/CommonStatusButton.vue";
-import CommonStatusTag from "./status/CommonStatusTag.vue";
+import InCommonStatusTag from "./status/InCommonStatusTag.vue";
 import InStatusButton from "./status/InStatusButton.vue";
 import AccountStatusEditButton from "./user/AccountStatusEditButton.vue";
 import AccountStatusView from "./user/AccountStatusView.vue";
 
 export const coreGlobalComponents: Record<string, Component> = {
+  InAvatar,
   InButton,
   InButtonDelete,
   InButtonEdit,
@@ -87,7 +89,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InTag,
   InTagEnum,
   CommonStatusButton,
-  CommonStatusTag,
+  InCommonStatusTag,
   InStatusButton,
   AccountStatusEditButton,
   AccountStatusView,
@@ -95,6 +97,7 @@ export const coreGlobalComponents: Record<string, Component> = {
 
 declare module "vue" {
   export interface GlobalComponents {
+    InAvatar: typeof InAvatar;
     InButton: typeof InButton;
     InButtonDelete: typeof InButtonDelete;
     InButtonEdit: typeof InButtonEdit;
@@ -136,7 +139,7 @@ declare module "vue" {
     InTag: typeof InTag;
     InTagEnum: typeof InTagEnum;
     CommonStatusButton: typeof CommonStatusButton;
-    CommonStatusTag: typeof CommonStatusTag;
+    InCommonStatusTag: typeof InCommonStatusTag;
     InStatusButton: typeof InStatusButton;
     AccountStatusEditButton: typeof AccountStatusEditButton;
     AccountStatusView: typeof AccountStatusView;

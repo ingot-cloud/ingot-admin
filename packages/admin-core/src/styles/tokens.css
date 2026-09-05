@@ -5,6 +5,7 @@
 :root {
   /* —— 基础：颜色阶 —— */
   --in-blue-500: #3370ff;
+  --in-blue-600: #245bdb;
   --in-blue-400: color-mix(in srgb, var(--in-blue-500) 80%, white);
   --in-gray-950: #1f2329;
   --in-gray-900: #2b2f36;
@@ -19,6 +20,7 @@
   --in-danger-500: #f54a45;
   --in-success-500: #34c724;
   --in-warning-500: #ff8800;
+  --in-warning-600: #de7802;
   --in-info-500: #8f959e;
 
   /* —— 基础：间距（4px 基线） —— */
@@ -154,6 +156,13 @@
   --in-breadcrumb-height: 24px;
   --in-page-breadcrumb-height: 46px;
   --in-page-header-min-height: 80px;
+  --in-avatar-size: 32px;
+  --in-status-tag-height: 24px;
+  --in-status-tag-radius: 4px;
+  --in-status-tag-info-color: var(--in-blue-600);
+  --in-status-tag-info-bg: color-mix(in srgb, var(--in-blue-500) 20%, transparent);
+  --in-status-tag-warning-color: var(--in-warning-600);
+  --in-status-tag-warning-bg: color-mix(in srgb, var(--in-warning-500) 20%, transparent);
   --in-copyright-height: 32px;
   --in-tabs-height: 32px;
   --in-tabs-font-size: var(--in-font-size-caption);

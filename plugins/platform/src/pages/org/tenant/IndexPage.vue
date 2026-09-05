@@ -66,7 +66,7 @@
           <el-tag v-else>无限期</el-tag>
         </template>
         <template #status="{ item }">
-          <common-status-tag :status="item.status" />
+          <in-common-status-tag :status="item.status" />
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />

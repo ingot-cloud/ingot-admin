@@ -104,6 +104,7 @@ export const createSharedViteConfig = (
   const officialPlugins = resolveOfficialPlugins(options.rootDir, options.officialPlugins);
   const sharedSrc = resolveWorkspaceSharedSrc(options.rootDir);
   const httpClientSrc = resolveWorkspaceHttpClientSrc(options.rootDir);
+  const adminCoreSrc = resolveWorkspacePackageSrc(options.rootDir, "admin-core");
   const hostAliases = flattenAliases(options.aliases);
   const hostAt = hostAliases.find((alias) => isHostAtAlias(alias.find));
   const hostSrcDir =
@@ -202,6 +203,9 @@ export const createSharedViteConfig = (
             : []),
           ...(httpClientSrc
             ? ([{ find: "@ingot/http-client", replacement: path.join(httpClientSrc, "index.ts") }] satisfies Alias[])
+            : []),
+          ...(adminCoreSrc
+            ? ([{ find: "@ingot/admin-core", replacement: path.join(adminCoreSrc, "index.ts") }] satisfies Alias[])
             : []),
           ...hostAliases.filter((alias) => !isHostAtAlias(alias.find)),
           ...(cryptoJsBundle

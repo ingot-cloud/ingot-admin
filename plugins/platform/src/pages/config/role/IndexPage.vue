@@ -43,7 +43,7 @@
         </el-tag>
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status"></common-status-tag>
+        <in-common-status-tag :status="item.status"></in-common-status-tag>
       </template>
       <template #type="{ item }">
         <in-tag-enum :value="item.type" :enumObj="roleTypeEnums" />

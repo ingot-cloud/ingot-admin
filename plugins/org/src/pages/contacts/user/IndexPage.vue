@@ -33,15 +33,12 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #avatar="{ item }">
-          <div flex flex-row items-center gap-2>
-            <el-image v-if="item.avatar" class="w-30px h-30px" :src="item.avatar" fit="cover" />
-            <in-button link text @click="handleDetailUser(item)">
-              {{ item.nickname }}
-            </in-button>
-          </div>
+          <in-button link text @click="handleDetailUser(item)">
+            <in-avatar :src="item.avatar" :name="item.nickname" />
+          </in-button>
         </template>
         <template #status="{ item }">
-          <common-status-tag :status="item.status" />
+          <in-common-status-tag :status="statusOf(item)" />
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -54,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { InTableAction } from "@ingot/admin-core";
+import { InCommonStatusTag, resolveCommonStatus, type InTableAction } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
 import LeftContent from "./components/LeftContent.vue";
 import { useUserOps } from "./useUserOps";
@@ -93,6 +90,9 @@ const rowActionsOf = (item: UserPageItemVO): Array<InTableAction<UserPageItemVO>
     onToggleStatus: userOps.handleDisableUser,
     onDelete: userOps.handleDeleteUser,
   });
+
+const statusOf = (item: UserPageItemVO) =>
+  resolveCommonStatus(item.status, { enabled: item.enabled, locked: item.locked });
 
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;

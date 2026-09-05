@@ -7,14 +7,16 @@ export const ORG_USER_SPLIT_KEY = "org-contacts-user";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
-    label: "名称",
+    label: "姓名",
     prop: "avatar",
     required: true,
+    minWidth: "200",
   },
   {
-    label: "昵称",
-    prop: "nickname",
-    hide: true,
+    label: "状态",
+    prop: "status",
+    width: "100",
+    required: true,
   },
   {
     label: "手机号",
@@ -24,10 +26,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "email",
     prop: "email",
     transform: (v) => v || "-",
-  },
-  {
-    label: "状态",
-    prop: "status",
+    hide: true,
   },
   {
     label: "注册时间",

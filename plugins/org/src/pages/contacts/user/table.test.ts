@@ -51,11 +51,13 @@ describe("org contacts user table contract", () => {
     expect(rows).toHaveLength(200);
   });
 
-  it("字段选择保留名称和操作列", () => {
+  it("字段选择保留姓名和操作列", () => {
     const visible = applyColumnSelection(tableHeaders, ["phone"]);
     expect(visible.find((item) => item.prop === "avatar")?.hide).toBe(false);
     expect(visible.find((item) => item.prop === "actions")?.hide).toBe(false);
     expect(visible.find((item) => item.prop === "phone")?.hide).toBe(false);
     expect(visible.find((item) => item.prop === "email")?.hide).toBe(true);
+    expect(tableHeaders.find((item) => item.prop === "status")?.minWidth).toBe("132");
+    expect(tableHeaders.find((item) => item.prop === "status")?.required).toBe(true);
   });
 });

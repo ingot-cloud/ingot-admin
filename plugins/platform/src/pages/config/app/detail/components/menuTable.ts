@@ -22,7 +22,7 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "状态",
     prop: "status",
-    width: "80",
+    minWidth: "132",
   },
   {
     label: "备注",

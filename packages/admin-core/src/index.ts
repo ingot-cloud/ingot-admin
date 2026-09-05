@@ -50,6 +50,9 @@ export type {
 } from "./components/types";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
 export { coreGlobalComponents } from "./components/coreComponents";
+export { default as InAvatar } from "./components/avatar/InAvatar.vue";
+export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";
+export { resolveCommonStatus } from "./components/status/resolveCommonStatus";
 export type {
   DisableAccountAPI,
   EnableAccountAPI,

@@ -36,7 +36,7 @@
         <in-copy-tag :text="item.path" />
       </template>
       <template #status="{ item }">
-        <common-status-tag :status="item.status" />
+        <in-common-status-tag :status="item.status" />
       </template>
       <template #actions="{ item }">
         <div flex flex-row items-center justify-center gap-8px>
