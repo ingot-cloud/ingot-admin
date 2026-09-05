@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <title>ingot in monogram — light theme</title>
+  <path fill="#171A1F" d="M45 84h34v48l38-36h29c39 0 65 25 65 64v49h-34v-45c0-22-11-35-30-35-20 0-34 15-34 38v42H79v-36l-34 31V84Z"/>
+  <rect x="49" y="43" width="27" height="27" rx="6" transform="rotate(45 49 43)" fill="#3370FF"/>
+</svg>

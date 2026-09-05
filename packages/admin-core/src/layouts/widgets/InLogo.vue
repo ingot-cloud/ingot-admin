@@ -7,12 +7,18 @@
   </div>
 </template>
 <script setup lang="ts">
-import defaultLogo from "@/assets/logo.png";
+import { useDark } from "@vueuse/core";
 import { useAppStore } from "@/stores/modules/app";
 import { getAdminRuntimeConfig } from "@/runtime";
+import { resolveAppBarLogo } from "./resolveAppBarLogo";
+
+defineOptions({
+  name: "InLogo",
+});
 
 const { app } = useAppStore();
-const logoSrc = computed(() => getAdminRuntimeConfig().branding.logo ?? defaultLogo);
+const isDark = useDark();
+const logoSrc = computed(() => resolveAppBarLogo(getAdminRuntimeConfig().branding.logo, isDark.value));
 </script>
 <style scoped lang="postcss">
 .in-logo {
@@ -21,6 +27,7 @@ const logoSrc = computed(() => getAdminRuntimeConfig().branding.logo ?? defaultL
   & .logo-image {
     height: 28px;
     width: 28px;
+    flex: none;
   }
 
   & .title {

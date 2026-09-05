@@ -129,6 +129,7 @@ describe("admin UI visual fixtures", () => {
   it("顶栏按品牌/导航/搜索/操作四区划分，搜索靠右", () => {
     const bar = readFileSync(resolve(root, "../../layouts/widgets/InAppBar.vue"), "utf8");
     const search = readFileSync(resolve(root, "../../layouts/widgets/search/InAppBarSearch.vue"), "utf8");
+    const logo = readFileSync(resolve(root, "../../layouts/widgets/InLogo.vue"), "utf8");
     expect(bar).toContain("in-app-bar__brand");
     expect(bar).toContain("in-app-bar__nav");
     expect(bar).toContain("in-app-bar__search-pane");
@@ -138,5 +139,10 @@ describe("admin UI visual fixtures", () => {
     expect(bar).toContain("max-width: var(--in-app-bar-actions-max)");
     expect(bar).toMatch(/\.in-app-bar__actions \{[\s\S]*?flex: none;/);
     expect(search).toContain("var(--in-app-bar-search-width)");
+    expect(logo).toContain("resolveAppBarLogo");
+    expect(logo).toContain("useDark");
+    const logoResolver = readFileSync(resolve(root, "../../layouts/widgets/resolveAppBarLogo.ts"), "utf8");
+    expect(logoResolver).toContain("in-light-framed.svg");
+    expect(logoResolver).toContain("in-dark-framed.svg");
   });
 });
