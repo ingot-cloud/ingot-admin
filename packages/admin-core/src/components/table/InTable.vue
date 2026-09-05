@@ -49,16 +49,16 @@
         </el-table-column>
         <template #empty>
           <slot v-if="feedback === 'error'" name="error">
-            <el-empty description="加载失败" />
+            <el-empty :image="emptyIllustration" description="加载失败" />
           </slot>
           <slot v-else-if="feedback === 'unauthorized'" name="unauthorized">
-            <el-empty description="无访问权限" />
+            <el-empty :image="emptyIllustration" description="无访问权限" />
           </slot>
           <slot v-else-if="feedback === 'no-result'" name="empty">
-            <el-empty description="无搜索结果" />
+            <el-empty :image="emptyIllustration" description="无搜索结果" />
           </slot>
           <slot v-else name="empty">
-            <el-empty description="暂无数据" />
+            <el-empty :image="emptyIllustration" description="暂无数据" />
           </slot>
         </template>
       </el-table>
@@ -83,6 +83,7 @@
 import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { visibleHeaderProps } from "./columnVisibility";
+import { emptyIllustration } from "./emptyIllustration";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";

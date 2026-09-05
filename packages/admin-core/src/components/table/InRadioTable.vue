@@ -63,7 +63,7 @@
         </template>
       </el-table-column>
       <template #empty>
-        <el-empty />
+        <el-empty :image="emptyIllustration" description="暂无数据" />
       </template>
     </el-table>
   </el-radio-group>
@@ -85,6 +85,7 @@
 <script lang="ts" setup>
 import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
+import { emptyIllustration } from "./emptyIllustration";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";

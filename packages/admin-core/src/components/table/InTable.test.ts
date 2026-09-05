@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import InTable from "./InTable.vue";
+import { emptyIllustration } from "./emptyIllustration";
 
 const stubs = {
   ElTable: {
@@ -12,11 +13,28 @@ const stubs = {
     template: '<div class="el-table-stub" :data-height="height"><slot /><slot name="empty" /></div>',
   },
   ElTableColumn: true,
-  ElEmpty: { props: ["description"], template: '<div class="empty">{{ description }}</div>' },
+  ElEmpty: {
+    props: ["description", "image"],
+    template: '<div class="empty" :data-image="image">{{ description }}</div>',
+  },
   ElPagination: { template: '<div class="pager" />' },
 };
 
 describe("InTable", () => {
+  it("暂无数据使用 no_data 插图", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [],
+      },
+      global: { stubs },
+    });
+    expect(wrapper.get(".empty").text()).toBe("暂无数据");
+    expect(wrapper.get(".empty").attributes("data-image")).toBe(emptyIllustration);
+    wrapper.unmount();
+  });
+
   it("区分空数据与无搜索结果反馈", () => {
     setActivePinia(createPinia());
     const wrapper = mount(InTable, {
@@ -28,6 +46,7 @@ describe("InTable", () => {
       global: { stubs },
     });
     expect(wrapper.get(".empty").text()).toBe("无搜索结果");
+    expect(wrapper.get(".empty").attributes("data-image")).toBe(emptyIllustration);
     expect(wrapper.find("[aria-label='刷新']").exists()).toBe(false);
     expect(wrapper.findComponent({ name: "InColumnSetting" }).exists()).toBe(false);
     wrapper.unmount();
@@ -116,5 +135,7 @@ describe("InTable", () => {
     expect(source).toContain(".in-table__body");
     expect(source).toMatch(/\.in-table__body \{[\s\S]*?overflow: hidden;/);
     expect(source).toContain(".hidden-columns");
+    expect(source).toContain("emptyIllustration");
+    expect(source).toContain("暂无数据");
   });
 });

@@ -8,7 +8,7 @@
 | `InPageHeader` | 页面标题区 | 约 80px、白底、底部分隔；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InFilterContainer` | 筛选+主从布局 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏 260→0px，19×32 折叠柄；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
-| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置 | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
+| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置 | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
 | `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
 | `InMenu` | 全局左侧导航 | 菜单滚动视口与底部「收起导航」控制为兄弟区域；滚动条隐藏；控制区上方 1px 分隔线并与按钮间隔 8px；图标固定 20px；带图标/无图标分色，选中叶子 `#2b2f36`；展开/收起图标为 `ic_expand` / `ic_close`；236/52px；收缩态无二级浮层 | 桌面折叠入口只在侧栏底部；`InMenuToggle` 仅 overlay |
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav` |
