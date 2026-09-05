@@ -9,7 +9,7 @@ describe("admin UI visual fixtures", () => {
   it("主布局不再使用框架级 overflow-x-hidden", () => {
     const layout = readFileSync(resolve(root, "../../layouts/main/IndexPage.vue"), "utf8");
     const container = readFileSync(resolve(root, "../container/InContainer.vue"), "utf8");
-    const filter = readFileSync(resolve(root, "../container/InFilterContainer.vue"), "utf8");
+    const filter = readFileSync(resolve(root, "../container/InSplitLayout.vue"), "utf8");
     expect(layout).not.toContain("overflow-x-hidden");
     expect(container).not.toContain("overflow-x-hidden");
     expect(filter).not.toContain("overflow-x-hidden");
@@ -79,7 +79,7 @@ describe("admin UI visual fixtures", () => {
 
   it("容器默认直角无边框，双栏折叠带宽度过渡", () => {
     const container = readFileSync(resolve(root, "../container/InContainer.vue"), "utf8");
-    const filter = readFileSync(resolve(root, "../container/InFilterContainer.vue"), "utf8");
+    const filter = readFileSync(resolve(root, "../container/InSplitLayout.vue"), "utf8");
     expect(container).toContain("variant: \"plain\"");
     expect(container).toContain("background: var(--in-container-bg)");
     expect(container).toContain("border-radius: var(--in-container-radius)");
@@ -94,7 +94,7 @@ describe("admin UI visual fixtures", () => {
     expect(filter).toContain("border-left: 0");
     expect(filter).toContain("padding: var(--in-section-padding)");
     expect(filter).toContain("gap: var(--in-space-3)");
-    expect(filter).toContain("var(--in-filter-left-bg, var(--in-container-bg))");
+    expect(filter).toContain("var(--in-split-left-bg, var(--in-container-bg))");
     expect(filter).toContain("leftBackground");
   });
 

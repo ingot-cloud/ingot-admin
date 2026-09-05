@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container left-collapsible>
+  <in-split-layout left-collapsible>
     <template #header>
       <ContactsTabs select-tab="成员" />
     </template>
@@ -52,7 +52,7 @@
         <in-button-delete @click="userOps.handleDeleteUser(item)" />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <EditDrawer ref="EditDrawerRef" @success="userOps.fetchUserData()" />
 </template>
@@ -75,7 +75,7 @@ const handleDetailUser = (item: UserPageItemVO) => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 </style>

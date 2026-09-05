@@ -2,7 +2,7 @@ import type { User } from "@/models/security";
 
 export const UI_PREFERENCE_BROWSER_SCOPE = "browser";
 export const COLUMN_SETTING_STORAGE_PREFIX = "in-column-setting";
-export const FILTER_LEFT_STORAGE_PREFIX = "in-filter-left-open";
+export const SPLIT_LEFT_STORAGE_PREFIX = "in-split-left-open";
 
 export const resolveUiUserKey = (user?: User): string => {
   return user?.phone || user?.nickname || user?.email || UI_PREFERENCE_BROWSER_SCOPE;

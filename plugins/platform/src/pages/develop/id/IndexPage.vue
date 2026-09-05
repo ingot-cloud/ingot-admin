@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="业务标签">
@@ -41,7 +41,7 @@
         </in-button>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <EditDrawer ref="EditDrawerRef" @success="invalidateList" />
 </template>

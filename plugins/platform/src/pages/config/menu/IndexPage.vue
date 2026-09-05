@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="组织类型">
@@ -100,7 +100,7 @@
         </in-button>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";

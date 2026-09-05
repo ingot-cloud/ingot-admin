@@ -1,7 +1,7 @@
 <template>
   <div
     ref="rootRef"
-    class="in-filter-container"
+    class="in-split-layout"
     :class="[
       `is-${variant}`,
       `is-${density}`,
@@ -17,27 +17,27 @@
   >
     <div
       v-if="slot.header"
-      class="in-filter-container-header"
+      class="in-split-layout__header"
       :class="{ 'sticky-header': stickyHeader }"
     >
       <slot name="header"></slot>
     </div>
 
-    <div class="in-filter-container-left-right">
+    <div class="in-split-layout__body">
       <div
         v-if="isOverlay && overlayOpen"
-        class="in-filter-container__mask"
+        class="in-split-layout__mask"
         aria-hidden="true"
         @click="privateCloseOverlay"
       />
 
       <aside
         v-if="slot.left"
-        class="left-filter"
+        class="in-split-layout__left"
         :class="{ 'is-collapsed': !leftVisible }"
         :aria-hidden="!leftVisible"
       >
-        <div class="left-filter__scroll">
+        <div class="in-split-layout__left-scroll">
           <slot name="left"></slot>
         </div>
       </aside>
@@ -50,17 +50,17 @@
       >
         <button
           type="button"
-          class="in-filter-container__collapse"
+          class="in-split-layout__collapse"
           :class="{ 'is-collapsed': !leftVisible }"
           :aria-label="collapseLabel"
           @click="privateToggleLeft"
         >
-          <in-icon name="ep:arrow-left" class="in-filter-container__collapse-icon" />
+          <in-icon name="ep:arrow-left" class="in-split-layout__collapse-icon" />
         </button>
       </el-tooltip>
 
-      <el-container class="in-filter-container-right">
-        <div class="top-filter" v-if="slot.top">
+      <el-container class="in-split-layout__right">
+        <div class="in-split-layout__top" v-if="slot.top">
           <slot name="top"></slot>
         </div>
 
@@ -84,14 +84,14 @@ import { SHELL_BREAKPOINT_NARROW } from "@/layouts/main/types";
 import { useUserInfoStore } from "@/stores/modules/auth";
 import {
   buildUiPreferenceKey,
-  FILTER_LEFT_STORAGE_PREFIX,
+  SPLIT_LEFT_STORAGE_PREFIX,
   readUiPreference,
   resolveUiUserKey,
   writeUiPreference,
 } from "@/utils/uiPreference";
 
 defineOptions({
-  name: "InFilterContainer",
+  name: "InSplitLayout",
 });
 
 const props = withDefaults(
@@ -166,7 +166,7 @@ const storageKey = computed(() => {
     return "";
   }
   return buildUiPreferenceKey(
-    FILTER_LEFT_STORAGE_PREFIX,
+    SPLIT_LEFT_STORAGE_PREFIX,
     resolveUiUserKey(userStore.userInfo.user),
     props.persistenceKey,
   );
@@ -174,7 +174,7 @@ const storageKey = computed(() => {
 
 const rootStyle = computed(() => {
   const style: Record<string, string> = {
-    "--in-filter-left-width": `${props.leftWidth}px`,
+    "--in-split-left-width": `${props.leftWidth}px`,
   };
   if (props.radius) {
     style["--in-container-radius"] = props.radius;
@@ -183,7 +183,7 @@ const rootStyle = computed(() => {
     style["--in-container-bg"] = props.background;
   }
   if (props.leftBackground) {
-    style["--in-filter-left-bg"] = props.leftBackground;
+    style["--in-split-left-bg"] = props.leftBackground;
   }
   if (props.borderColor) {
     style["--in-container-border-color"] = props.borderColor;
@@ -280,7 +280,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="postcss" scoped>
-.in-filter-container {
+.in-split-layout {
   @apply w-full flex flex-col min-w-0;
   height: 100%;
   min-height: 0;
@@ -298,16 +298,16 @@ onBeforeUnmount(() => {
     --in-container-border-width: 1px;
   }
 
-  & .in-filter-container-header {
+  & .in-split-layout__header {
     flex: none;
-    min-height: var(--in-filter-header-min-height);
-    padding: var(--in-filter-header-padding);
+    min-height: var(--in-split-header-min-height);
+    padding: var(--in-split-header-padding);
     background: var(--in-bg-color-surface);
     border-bottom: 1px solid var(--in-border-color);
     box-sizing: border-box;
   }
 
-  & .in-filter-container-left-right {
+  & .in-split-layout__body {
     @apply flex flex-row min-w-0;
     flex: 1;
     min-height: 0;
@@ -315,50 +315,50 @@ onBeforeUnmount(() => {
     position: relative;
   }
 
-  & .left-filter {
+  & .in-split-layout__left {
     flex: none;
     box-sizing: border-box;
     min-width: 0;
     min-height: 0;
     height: 100%;
-    width: var(--in-filter-left-width);
+    width: var(--in-split-left-width);
     overflow: hidden;
-    background: var(--in-filter-left-bg, var(--in-container-bg));
+    background: var(--in-split-left-bg, var(--in-container-bg));
     border-right: 1px solid var(--in-border-color);
     transition: width var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
-  & .left-filter.is-collapsed {
+  & .in-split-layout__left.is-collapsed {
     width: 0;
     border-right-width: 0;
   }
 
-  & .left-filter__scroll {
+  & .in-split-layout__left-scroll {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: var(--in-space-3);
     height: 100%;
     min-height: 0;
-    width: var(--in-filter-left-width);
+    width: var(--in-split-left-width);
     overflow: auto;
     padding: var(--in-section-padding);
   }
 
-  & .left-filter__scroll > :deep(*) {
+  & .in-split-layout__left-scroll > :deep(*) {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
     max-width: 100%;
   }
 
-  &.is-left-overlay .left-filter {
+  &.is-left-overlay .in-split-layout__left {
     position: absolute;
     top: 0;
     left: 0;
     bottom: 0;
     z-index: 20;
-    width: var(--in-filter-left-width);
+    width: var(--in-split-left-width);
     transform: translateX(-100%);
     box-shadow: var(--in-shadow-overlay);
     border-right: 1px solid var(--in-border-color);
@@ -367,25 +367,25 @@ onBeforeUnmount(() => {
       width var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
-  &.is-left-overlay .left-filter.is-collapsed {
-    width: var(--in-filter-left-width);
+  &.is-left-overlay .in-split-layout__left.is-collapsed {
+    width: var(--in-split-left-width);
   }
 
-  &.is-left-overlay-open .left-filter {
+  &.is-left-overlay-open .in-split-layout__left {
     transform: translateX(0);
   }
 
-  & .in-filter-container__mask {
+  & .in-split-layout__mask {
     position: absolute;
     inset: 0;
     z-index: 10;
     background: var(--in-overlay-mask);
   }
 
-  & .in-filter-container__collapse {
+  & .in-split-layout__collapse {
     position: absolute;
     top: 50%;
-    left: var(--in-filter-left-width);
+    left: var(--in-split-left-width);
     z-index: 21;
     display: inline-flex;
     align-items: center;
@@ -407,44 +407,44 @@ onBeforeUnmount(() => {
       transform var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
-  & .in-filter-container__collapse-icon {
+  & .in-split-layout__collapse-icon {
     width: 12px;
     height: 12px;
     transition: transform var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
-  & .in-filter-container__collapse:hover {
+  & .in-split-layout__collapse:hover {
     color: var(--in-text-color);
   }
 
-  & .in-filter-container__collapse:focus-visible {
+  & .in-split-layout__collapse:focus-visible {
     outline: 2px solid var(--in-focus-ring-color);
     outline-offset: 2px;
   }
 
-  & .in-filter-container__collapse.is-collapsed {
+  & .in-split-layout__collapse.is-collapsed {
     left: 0;
   }
 
-  & .in-filter-container__collapse.is-collapsed .in-filter-container__collapse-icon {
+  & .in-split-layout__collapse.is-collapsed .in-split-layout__collapse-icon {
     transform: rotate(180deg);
   }
 
-  &.is-left-overlay .in-filter-container__collapse {
+  &.is-left-overlay .in-split-layout__collapse {
     left: 0;
   }
 
-  &.is-left-overlay-open .in-filter-container__collapse {
-    left: var(--in-filter-left-width);
+  &.is-left-overlay-open .in-split-layout__collapse {
+    left: var(--in-split-left-width);
   }
 
-  & .in-filter-container-right {
+  & .in-split-layout__right {
     @apply flex flex-col min-w-0 flex-1;
     min-height: 0;
     overflow: hidden;
     background: var(--in-bg-color-surface);
 
-    & .top-filter {
+    & .in-split-layout__top {
       flex: none;
       padding: var(--in-space-5);
     }

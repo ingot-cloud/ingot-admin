@@ -21,8 +21,8 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 | 页面原型   | 页面框架                       | 页面头                    | 主容器                     | 列表与操作                   | 局部 Tab / 浮层          |
 | ---------- | ------------------------------ | ------------------------- | -------------------------- | ---------------------------- | ------------------------ |
 | Overview   | `InPageFrame mode="page"`      | `InPageHeader`            | `InContainer`              | —                            | 可选 `InBizTabs`         |
-| List       | `InPageFrame mode="contained"` | `InPageHeader`            | `InFilterContainer`        | `InTable` + `InTableActions` | `InDrawer` / `InDialog`  |
-| Split List | `InPageFrame mode="contained"` | `InPageHeader`            | 可折叠 `InFilterContainer` | `InTable` + `InTableActions` | `InDrawer`               |
+| List       | `InPageFrame mode="contained"` | `InPageHeader`            | `InSplitLayout`        | `InTable` + `InTableActions` | `InDrawer` / `InDialog`  |
+| Split List | `InPageFrame mode="contained"` | `InPageHeader`            | 可折叠 `InSplitLayout` | `InTable` + `InTableActions` | `InDrawer`               |
 | Settings   | `InPageFrame mode="page"`      | `InPageHeader` `#tabs`    | `InContainer`              | 策略表用 `InTable`           | `InBizTabs` / `InDrawer` |
 | Detail     | `InPageFrame mode="page"`      | `InPageHeader` `showBack` | `InContainer`              | —                            | `InBizTabs` / `InDrawer` |
 

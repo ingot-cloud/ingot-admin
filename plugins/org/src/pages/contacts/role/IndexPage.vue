@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <ContactsTabs select-tab="角色" />
     </template>
@@ -42,7 +42,7 @@
         <in-button-delete @click="privateHandleDelete(item)" />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <AddMemberDialog ref="AddMemberDialogRef" @success="ops.fetchUserData" />
 </template>
@@ -76,7 +76,7 @@ const privateHandleDelete = (item: UserPageItemVO) => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 .title {

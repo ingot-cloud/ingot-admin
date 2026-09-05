@@ -1,6 +1,6 @@
 <template>
   <in-dialog :title="title" v-model="isShow">
-    <in-filter-container :showBacktop="false">
+    <in-split-layout :showBacktop="false">
       <div class="auth-content">
         <in-tree
           ref="treeRef"
@@ -14,7 +14,7 @@
           @check-change="onCheckChange"
         />
       </div>
-    </in-filter-container>
+    </in-split-layout>
     <template #footer>
       <in-button @click="isShow = false"> 取消 </in-button>
       <in-button type="primary" :loading="btnLoading" @click="handleActionButton"> 确定 </in-button>

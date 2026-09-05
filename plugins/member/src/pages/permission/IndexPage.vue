@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #top>
       <in-filter-item>
         <in-with-label title="组织类型">
@@ -57,7 +57,7 @@
         />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
   <EditDrawer ref="EditDrawerRef" :selectData="treeData" @success="refreshData" />
 </template>
 <script lang="ts" setup>

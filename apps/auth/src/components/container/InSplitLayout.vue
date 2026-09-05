@@ -1,10 +1,10 @@
 <template>
-  <div class="in-filter-container">
-    <div class="left-filter" v-if="slot.left">
+  <div class="in-split-layout">
+    <div class="in-split-layout__left" v-if="slot.left">
       <slot name="left"> </slot>
     </div>
     <el-container class="right-container">
-      <div class="top-filter" v-if="slot.top">
+      <div class="in-split-layout__top" v-if="slot.top">
         <slot name="top"> </slot>
       </div>
       <div class="inner-container">
@@ -29,14 +29,14 @@ defineProps({
 const slot = useSlots();
 </script>
 <style lang="postcss" scoped>
-.in-filter-container {
+.in-split-layout {
   @apply w-full h-full flex flex-row;
-  & .left-filter {
+  & .in-split-layout__left {
     @apply m-r-[var(--in-common-margin)] p-[var(--in-common-padding)] bg-[var(--in-bg-color)];
   }
   & .right-container {
     @apply flex flex-col;
-    & .top-filter {
+    & .in-split-layout__top {
       @apply m-b-[var(--in-common-margin)] p-[var(--in-common-padding)] bg-[var(--in-bg-color)];
     }
     & .inner-container {

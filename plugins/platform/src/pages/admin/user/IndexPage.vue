@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="姓名">
@@ -82,7 +82,7 @@
         </in-button>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <CreateDrawer ref="CreateDrawerRef" @success="handleCreateSuccessEvt" />
   <EditDrawer ref="EditDrawerRef" @success="refreshList" />

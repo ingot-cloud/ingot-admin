@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <div class="access-protection-header">
         <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
@@ -42,7 +42,7 @@
         v-show="activeTab === AccessProtectionTabEnum.BLOCK_EVENT"
       />
     </div>
-  </in-filter-container>
+  </in-split-layout>
 </template>
 
 <script setup lang="ts">
@@ -82,7 +82,7 @@ const privateOnBroadcastClick = async (): Promise<void> => {
 </script>
 
 <style lang="postcss" scoped>
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 

@@ -3,7 +3,7 @@ import InButton from "./button/InButton.vue";
 import InButtonDelete from "./button/InButtonDelete.vue";
 import InButtonEdit from "./button/InButtonEdit.vue";
 import InContainer from "./container/InContainer.vue";
-import InFilterContainer from "./container/InFilterContainer.vue";
+import InSplitLayout from "./container/InSplitLayout.vue";
 import InFilterItem from "./container/InFilterItem.vue";
 import InCopyTag from "./InCopyTag.vue";
 import InDialog from "./InDialog.vue";
@@ -50,7 +50,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InButtonDelete,
   InButtonEdit,
   InContainer,
-  InFilterContainer,
+  InSplitLayout,
   InFilterItem,
   InCopyTag,
   InDialog,
@@ -99,7 +99,7 @@ declare module "vue" {
     InButtonDelete: typeof InButtonDelete;
     InButtonEdit: typeof InButtonEdit;
     InContainer: typeof InContainer;
-    InFilterContainer: typeof InFilterContainer;
+    InSplitLayout: typeof InSplitLayout;
     InFilterItem: typeof InFilterItem;
     InCopyTag: typeof InCopyTag;
     InDialog: typeof InDialog;

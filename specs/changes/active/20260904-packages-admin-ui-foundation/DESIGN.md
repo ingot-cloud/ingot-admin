@@ -6,7 +6,7 @@
 
 本轮 Phase 06 只处理飞书“成员”页面红框内容工作区对应的两个核心组件：
 
-- InFilterContainer：固定 header、260px 左侧部门栏、分隔线折叠按钮、窄宽度自动收起和左右滚动边界。
+- InSplitLayout：固定 header、260px 左侧部门栏、分隔线折叠按钮、窄宽度自动收起和左右滚动边界。
 - InTable：标题/摘要、可组合 tools、移除刷新、按需字段设置、自适应操作收纳、紧凑表格、固定操作列和分页。
 
 新增 Phase 07 只处理主布局左侧导航：
@@ -149,15 +149,15 @@
 
 - 面包屑「实际渲染」才占用顶栏：设置关闭、或 `breadcrumbList.length <= 1`（仅一层）时不显示，内容顶距与左右沟槽对齐。
 - 无版权时，contained 列表/双栏工作面贴视口底，不出现底部灰色条。
-- 页面滚动（`InPageFrame` `mode="page"`，以及未使用 PageFrame / FilterContainer 的遗留溢出根）滑到内容尽头时，滚动内容底部补与 top/right 相同的 `--in-page-gutter`。
+- 页面滚动（`InPageFrame` `mode="page"`，以及未使用 PageFrame / SplitLayout 的遗留溢出根）滑到内容尽头时，滚动内容底部补与 top/right 相同的 `--in-page-gutter`。
 - 有版权时版权占据底部，上述顶部/左右/滚动尽头规则不变。
-- `InContainer` 默认 `plain` 背景透明、无边框；可用 `background` / `borderColor` / `borderWidth` / `radius` 覆盖。`InFilterContainer` 仍是全高白色工作面，同样允许覆盖背景和边框色。
+- `InContainer` 默认 `plain` 背景透明、无边框；可用 `background` / `borderColor` / `borderWidth` / `radius` 覆盖。`InSplitLayout` 仍是全高白色工作面，同样允许覆盖背景和边框色。
 
-## InFilterContainer
+## InSplitLayout
 
 ### 结构
 
-    InFilterContainer (height: 100%, overflow: hidden)
+    InSplitLayout (height: 100%, overflow: hidden)
     ├── HeaderSlot (flex: none)
     └── SplitBody (flex: 1, min-height: 0)
         ├── LeftPane (260px / 0px)
@@ -200,7 +200,7 @@
 - 根、SplitBody、RightPane 均设置 min-height: 0。
 - HeaderSlot 和 TopSlot 不参与纵向滚动。
 - LeftScrollArea 与右侧表格数据区分别滚动。
-- InFilterContainer 不再默认把所有内容包进同一个 overflow: auto。
+- InSplitLayout 不再默认把所有内容包进同一个 overflow: auto。
 
 ## InTable
 
@@ -314,7 +314,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 
 ## 前端类型
 
-- InFilterContainer 新增的 prop/model/emit 使用严格类型。
+- InSplitLayout 新增的 prop/model/emit 使用严格类型。
 - InTableProps 增加 density，保留必要的 Element Plus 透传，但触碰到的 any 必须替换为具体类型或 unknown。
 - TableHeaderRecord 增加 required?: boolean、configurable?: boolean。
 - InTableActions 使用 InTableAction<Row> 泛型并保留现有 onSelect 回调契约；本阶段不强制迁移为新的事件协议。
@@ -326,7 +326,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 
 | 前端路径                                   | 变更                                          |
 | ------------------------------------------ | --------------------------------------------- |
-| components/container/InFilterContainer.vue | 固定 header、左栏折叠、自动收起和滚动边界     |
+| components/container/InSplitLayout.vue | 固定 header、左栏折叠、自动收起和滚动边界     |
 | components/container/InContainer.vue       | plain 默认透明；可覆盖背景/边框               |
 | components/InPageFrame.vue                 | page 模式滚动尽头保留画布沟槽                 |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
@@ -343,7 +343,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 ## 兼容与迁移
 
 - 本阶段不修改业务页面、路由、权限、API、Query 或 canonical viewPath。
-- left-collapsible 沿用当前默认开启；显式关闭的 InFilterContainer 不出现折叠柄，既有 persistence-key 继续可用。
+- left-collapsible 沿用当前默认开启；显式关闭的 InSplitLayout 不出现折叠柄，既有 persistence-key 继续可用。
 - toolbar 与旧字段设置行为提供明确兼容期；rollout 时逐页迁移到 tools 插槽和按需组件。
 - refresh emit 仅作为无触发入口的类型兼容层保留；rollout 清理现有 `@refresh` 监听后再移除声明。
 - 自动收纳只接受 action 配置，不尝试解析或移动任意 slot VNode。
@@ -379,7 +379,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 
 ## 已确认决策
 
-- [x] Phase 06 只修改 InFilterContainer 与 InTable 相关组件，不继续扩大到全局顶栏和侧栏。
+- [x] Phase 06 只修改 InSplitLayout 与 InTable 相关组件，不继续扩大到全局顶栏和侧栏。
 - [x] 左栏沿用默认可折叠，展开 260px、收起 0px；临时自动收起不覆盖用户手动状态。
 - [x] InTable 移除内置刷新；字段设置变为按需导入的独立按钮。
 - [x] tools 支持任意自定义组件，但只有配置型 action 参与自动溢出收纳。

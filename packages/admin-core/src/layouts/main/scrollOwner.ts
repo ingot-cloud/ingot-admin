@@ -1,6 +1,6 @@
 const PAGE_SCROLL_SELECTOR = ".in-page-frame__body.is-page";
 const TABLE_SCROLL_SELECTOR = ".in-table__body";
-const FILTER_SCROLL_SELECTOR = ".in-filter-container .inner-container";
+const SPLIT_SCROLL_SELECTOR = ".in-split-layout .inner-container";
 
 export const resolveScrollOwner = (root?: HTMLElement | null): HTMLElement | undefined => {
   if (!root) {
@@ -9,7 +9,7 @@ export const resolveScrollOwner = (root?: HTMLElement | null): HTMLElement | und
   return (
     root.querySelector<HTMLElement>(PAGE_SCROLL_SELECTOR) ??
     root.querySelector<HTMLElement>(TABLE_SCROLL_SELECTOR) ??
-    root.querySelector<HTMLElement>(FILTER_SCROLL_SELECTOR) ??
+    root.querySelector<HTMLElement>(SPLIT_SCROLL_SELECTOR) ??
     root
   );
 };

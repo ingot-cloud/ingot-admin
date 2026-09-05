@@ -31,7 +31,7 @@
 - `plugins/member/src/pages/` 下 3 个 `IndexPage.vue` 页面及其私有组件。
 - `plugins/security/src/pages/` 下 4 个 `IndexPage.vue` 页面及其私有组件。
 - 页面级布局、文案层级、筛选区、表格、页内 Tab、抽屉、弹窗和状态反馈迁移。
-- `InPageFrame` page/contained 模式、`InTableActions`、可折叠 `InFilterContainer` 和 `InColumnSetting` 的业务页面接入。
+- `InPageFrame` page/contained 模式、`InTableActions`、可折叠 `InSplitLayout` 和 `InColumnSetting` 的业务页面接入。
 - 试点页面和全量页面的截图基线、键盘检查及关键行为回归。
 - 对已触碰页面中与新共享组件冲突的局部样式进行清理。
 

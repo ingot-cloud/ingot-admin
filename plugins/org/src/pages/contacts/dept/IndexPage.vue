@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <ContactsTabs select-tab="部门" />
     </template>
@@ -62,7 +62,7 @@
         <in-icon v-if="item.mainFlag" name="mingcute:department-line" />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="privateRefresh" />
 </template>
@@ -121,7 +121,7 @@ const handleEdit = (data?: DeptTreeNodeWithManagerVO | string) => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 </style>

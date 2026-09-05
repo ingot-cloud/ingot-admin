@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="组织名称">
@@ -71,7 +71,7 @@
         />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <EditDrawer ref="EditDrawerRef" @success="refreshData" />
   <CreateDrawer ref="CreateDrawerRef" @success="refreshData" />

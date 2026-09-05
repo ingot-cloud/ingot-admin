@@ -4,9 +4,9 @@
 
 - [x] 用户明确确认 Phase 06 可以开工；change 延续既有 `implementing` 状态，本次 spec 修订本身不视为业务代码开工授权。
 - [x] 只读取本 change 的 `API.md`、`REQUIREMENTS.md` 与 `DESIGN.md`，不重新扩大到全局顶栏和侧栏。
-- [x] 记录 `InFilterContainer`、`InTable`、`InColumnSetting` 当前公开属性、插槽、事件和调用点。
+- [x] 记录 `InSplitLayout`、`InTable`、`InColumnSetting` 当前公开属性、插槽、事件和调用点。
 
-## InFilterContainer
+## InSplitLayout
 
 - [x] 将根、SplitBody、RightPane 调整为固定高度和 `min-height: 0` 链路，header/top 不参与内容滚动。
 - [x] 保留 `left-width`、`left-collapsible`、`v-model:left-open` 与 `persistence-key`，新增 `auto-collapse`、`min-right-width` 类型化契约。

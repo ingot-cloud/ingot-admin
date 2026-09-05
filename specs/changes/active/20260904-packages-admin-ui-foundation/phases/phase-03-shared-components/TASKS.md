@@ -1,7 +1,7 @@
 # Phase 03：共享组件
 
 - [x] 扩展 `InPageHeader` 的标题、说明、操作和局部 Tab 契约。
-- [x] 统一 `InContainer` 与 `InFilterContainer` 的边框、内边距和滚动边界。
+- [x] 统一 `InContainer` 与 `InSplitLayout` 的边框、内边距和滚动边界。
 - [x] 重构 `InTable` 的表头、行高、工具栏、内部横向滚动、分页和状态插槽。
 - [x] 统一 `InBizTabs` 的活动态、键盘行为和懒挂载兼容。
 - [x] 统一 `InDrawer` 与 `InDialog` 的标题、内容、固定操作区和关闭行为。

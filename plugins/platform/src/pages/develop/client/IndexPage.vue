@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <div flex flex-row justify-between>
         <in-with-label title="客户端ID">
@@ -52,7 +52,7 @@
         </in-button>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
   <EditDrawer ref="EditDrawerRef" @success="invalidateList" />
 </template>
 <script lang="ts" setup>

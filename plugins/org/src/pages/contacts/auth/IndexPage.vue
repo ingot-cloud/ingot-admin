@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <ContactsTabs select-tab="权限" />
     </template>
@@ -40,7 +40,7 @@
         </div>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <AddAuthDrawer ref="AddAuthDrawerRef" @success="ops.fetchData" />
 </template>
@@ -85,7 +85,7 @@ const privateAddAuth = () => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 .title {

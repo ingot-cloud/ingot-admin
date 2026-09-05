@@ -18,7 +18,7 @@
 
 ## 双栏、表格与操作
 
-- [x] 扩展 `InFilterContainer` 的 260px 左栏、折叠柄、`v-model:left-open`、持久化与窄屏覆盖层。
+- [x] 扩展 `InSplitLayout` 的 260px 左栏、折叠柄、`v-model:left-open`、持久化与窄屏覆盖层。
 - [x] 确保左树、右侧数据区和宽表格分别拥有正确滚动边界。
 - [x] 将 `InTable` 改为全高 flex：工具栏固定、数据区滚动、表头 sticky、分页固定。
 - [x] 补齐固定操作列及横向滚动分隔状态。

@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="角色名称">
@@ -63,7 +63,7 @@
     </in-table>
 
     <RoleDrawer ref="RoleDrawerRef" :roleList="roleTree" @success="refreshData" />
-  </in-filter-container>
+  </in-split-layout>
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";

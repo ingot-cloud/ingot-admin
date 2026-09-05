@@ -19,7 +19,7 @@
 ### 场景 3：使用共享列表与筛选组件
 
 - **角色**：业务页面开发者和后台管理员。
-- **入口**：使用 `InFilterContainer` 与 `InTable` 的列表页。
+- **入口**：使用 `InSplitLayout` 与 `InTable` 的列表页。
 - **步骤**：填写筛选条件、执行查询、使用按需表格工具、浏览宽表格、设置列和分页。
 - **预期结果**：左栏折叠、工具区、表头、紧凑行高、字段显示设置、空态和分页一致；宽表格仅在表格数据区域滚动。
 
@@ -64,7 +64,7 @@ MainLayout
     │   ├── MenuScrollViewport
     │   └── NavigationControl (fixed at bottom)
     └── ContentViewport
-        └── InFilterContainer (height: 100%)
+        └── InSplitLayout (height: 100%)
             ├── Header (fixed)
             └── SplitBody (min-height: 0)
                 ├── LeftPane (260px / 0px, independently scrollable)
@@ -155,7 +155,7 @@ MainLayout
 
 ### REQ-A006：成员式可折叠筛选容器
 
-系统 SHALL 让 `InFilterContainer` 支持飞书成员页式的固定 header、260px 左侧筛选栏、分隔线折叠按钮和右侧全高内容区。
+系统 SHALL 让 `InSplitLayout` 支持飞书成员页式的固定 header、260px 左侧筛选栏、分隔线折叠按钮和右侧全高内容区。
 
 **验收标准：**
 
@@ -183,7 +183,7 @@ MainLayout
 - [ ] action 配置保留现有 `key`、`label`、`kind`、`permission`、`group`、`confirm`、`disabled`、`disabledReason` 与 `onSelect`，新增 `icon`、`priority`、`overflow` 和 `overflowGroup`；quick 主操作默认 `overflow: never`。
 - [ ] row 变体继续遵守“详情 + 至多一个高频快捷操作 + …”，不因操作列变宽而展开全部低频项。
 - [ ] 成员页式 toolbar 的“邀请成员”“添加成员”始终直出；三个批量操作同组收纳，展开态为 3 个批量按钮 + 2 个固定按钮，收纳态为“…” + 2 个固定按钮。
-- [ ] 收起或展开 `InFilterContainer` 左栏后，工具栏必须随 ToolsEnd 的实际宽度自动重新计算，无需页面手动 refresh/resize，且动画结束后不得抖动。
+- [ ] 收起或展开 `InSplitLayout` 左栏后，工具栏必须随 ToolsEnd 的实际宽度自动重新计算，无需页面手动 refresh/resize，且动画结束后不得抖动。
 - [ ] 成员页式批量菜单依次显示“批量导入/导出”“批量变更部门”“批量操作离职”；未选成员时后两项可见但禁用。
 - [ ] 为防止 VNode 状态、焦点和 Popover 被复制或移动，只有配置型 action 自动收纳；复杂自定义工具必须放在 tools 插槽并自行提供窄宽度方案。
 - [ ] `InColumnSetting` 使用约 213×426px 的普通复选列表；提供“全部”半选、必选列禁用、即时生效、Esc/点击外部关闭和焦点返回。
@@ -208,7 +208,7 @@ MainLayout
 **验收标准：**
 
 - [ ] 在 1440×900、1280×800、1024×768 下无框架级内容遮挡。
-- [ ] 使用至少 200 行数据验证 `InFilterContainer` header、表格工具栏、表头和分页固定，左右与表格数据区滚动边界正确。
+- [ ] 使用至少 200 行数据验证 `InSplitLayout` header、表格工具栏、表头和分页固定，左右与表格数据区滚动边界正确。
 - [ ] 通过改变组件容器宽度验证 action 自动收纳和恢复，不以浏览器 viewport 断点代替容器测量。
 - [ ] 小于 1024px 时侧栏可覆盖式打开/关闭，主内容宽度不被固定侧栏挤压。
 - [ ] 在 1280×500 或等效短视口制造长菜单滚动，验证菜单视口发生滚动而底部“收起导航”控制的坐标不变。

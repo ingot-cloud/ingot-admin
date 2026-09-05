@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="作用域">
@@ -151,7 +151,7 @@
         <in-button-delete v-if="!item.systemFlag" @click="handleRemove(item)" />
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <TypeEditDrawer ref="typeEditDrawerRef" @success="handleEditSuccess" />
   <ItemEditDrawer ref="itemEditDrawerRef" @success="handleEditSuccess" />

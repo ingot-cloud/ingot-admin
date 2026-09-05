@@ -182,7 +182,7 @@ onBeforeUnmount(() => {
   max-height: 100%;
 }
 
-.in-content-viewport__host > :deep(:not(.in-page-frame):not(.in-filter-container)) {
+.in-content-viewport__host > :deep(:not(.in-page-frame):not(.in-split-layout)) {
   overflow: auto;
   padding-bottom: var(--in-page-gutter);
   box-sizing: border-box;

@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
@@ -10,7 +10,7 @@
         v-show="activeTab === AccountProtectionTabEnum.LOCKOUT"
       />
     </div>
-  </in-filter-container>
+  </in-split-layout>
 </template>
 
 <script setup lang="ts">
@@ -37,7 +37,7 @@ const tabs = computed(() =>
 </script>
 
 <style lang="postcss" scoped>
-:deep(.in-filter-container-header) {
+:deep(.in-split-layout__header) {
   padding: 0 !important;
 }
 

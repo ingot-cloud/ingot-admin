@@ -141,8 +141,8 @@
   --in-split-collapse-width: 16px;
   --in-split-collapse-height: 32px;
   --in-split-collapse-radius: 8px;
-  --in-filter-header-min-height: 79px;
-  --in-filter-header-padding: 12px 20px;
+  --in-split-header-min-height: 79px;
+  --in-split-header-padding: 12px 20px;
   --in-control-height: 32px;
   --in-control-height-small: 28px;
   --in-table-header-height: 48px;

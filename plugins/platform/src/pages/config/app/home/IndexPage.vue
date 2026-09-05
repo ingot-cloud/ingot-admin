@@ -1,5 +1,5 @@
 <template>
-  <in-filter-container>
+  <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="应用类型">
@@ -95,7 +95,7 @@
         </div>
       </template>
     </in-table>
-  </in-filter-container>
+  </in-split-layout>
 
   <CreateDrawer ref="createDrawerRef" @success="privateOnCreateSuccess" />
 </template>
