@@ -15,7 +15,7 @@ import { Search } from "@element-plus/icons-vue";
 defineProps({
   placeholder: {
     type: String,
-    default: "搜索功能",
+    default: "搜索功能导航",
   },
 });
 
