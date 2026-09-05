@@ -48,49 +48,74 @@
       </el-tooltip>
     </template>
 
-    <div v-if="ranked.showMore" class="in-table-actions__more">
+    <div
+      v-if="ranked.showMore"
+      class="in-table-actions__more"
+      @pointerenter="privateOnMoreEnter"
+      @pointerleave="privateOnMoreLeave"
+    >
       <button
         ref="triggerRef"
         type="button"
         class="in-table-actions__more-btn"
-        :class="{ 'is-toolbar': variant === 'toolbar' }"
+        :class="{ 'is-toolbar': variant === 'toolbar', 'is-open': menuOpen }"
         aria-label="更多"
         :aria-expanded="menuOpen"
         aria-haspopup="menu"
-        @click="privateToggleMenu"
+        @click="privateOnTriggerClick"
         @keydown="privateOnTriggerKeydown"
       >
-        <in-icon name="ep:more" />
-      </button>
-      <div
-        v-if="menuOpen"
-        ref="menuRef"
-        class="in-table-actions__menu"
-        role="menu"
-        @keydown="privateOnMenuKeydown"
-      >
-        <button
-          v-for="(action, index) in ranked.menu"
-          :key="action.key"
-          type="button"
-          class="in-table-actions__item"
-          :class="{
-            'is-danger': action.kind === 'danger',
-            'is-disabled': action.disabled,
-            'is-active': index === activeIndex,
-          }"
-          role="menuitem"
-          :tabindex="index === activeIndex ? 0 : -1"
-          :disabled="action.disabled"
-          :title="action.disabled ? action.disabledReason : undefined"
-          :aria-label="action.disabled && action.disabledReason ? `${action.label}，${action.disabledReason}` : action.label"
-          @click="privateOnSelect(action)"
-          @mouseenter="activeIndex = index"
+        <svg
+          class="in-table-actions__more-icon"
+          width="1em"
+          height="1em"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
         >
-          <in-icon v-if="action.icon" :name="action.icon" class="in-table-actions__icon" />
-          {{ action.label }}
-        </button>
-      </div>
+          <path
+            d="M5.5 11.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.225 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.275 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Z"
+            fill="currentColor"
+          />
+        </svg>
+      </button>
+      <Teleport to="body">
+        <div
+          v-if="menuOpen"
+          ref="menuRef"
+          class="in-table-actions__menu"
+          role="menu"
+          :style="menuStyle"
+          @pointerenter="privateOnMoreEnter"
+          @pointerleave="privateOnMoreLeave"
+          @keydown="privateOnMenuKeydown"
+        >
+          <div class="in-table-actions__menu-list">
+            <button
+              v-for="(action, index) in ranked.menu"
+              :key="action.key"
+              type="button"
+              class="in-table-actions__item"
+              :class="{
+                'is-danger': action.kind === 'danger',
+                'is-disabled': action.disabled,
+                'is-active': index === activeIndex,
+              }"
+              role="menuitem"
+              :tabindex="index === activeIndex ? 0 : -1"
+              :disabled="action.disabled"
+              :title="action.disabled ? action.disabledReason : undefined"
+              :aria-label="action.disabled && action.disabledReason ? `${action.label}，${action.disabledReason}` : action.label"
+              @click="privateOnSelect(action)"
+              @mouseenter="activeIndex = index"
+            >
+              <in-icon v-if="action.icon" :name="action.icon" class="in-table-actions__icon" />
+              {{ action.label }}
+            </button>
+          </div>
+        </div>
+      </Teleport>
     </div>
   </div>
 </template>
@@ -133,7 +158,9 @@ const measureRef = ref<HTMLElement>();
 const triggerRef = ref<HTMLButtonElement>();
 const menuRef = ref<HTMLElement>();
 const menuOpen = ref(false);
+const menuStyle = ref<Record<string, string>>({});
 const activeIndex = ref(0);
+let hoverCloseTimer = 0;
 const measuring = ref(true);
 const toolbarRanked = ref<RankedTableActions<Row>>({
   inline: [],
@@ -233,9 +260,14 @@ watch(
 watch(menuOpen, (open) => {
   if (open) {
     document.addEventListener("mousedown", privateOnDocumentPointer);
+    window.addEventListener("scroll", privatePlaceMenu, true);
+    window.addEventListener("resize", privatePlaceMenu);
+    nextTick(privatePlaceMenu);
     return;
   }
   document.removeEventListener("mousedown", privateOnDocumentPointer);
+  window.removeEventListener("scroll", privatePlaceMenu, true);
+  window.removeEventListener("resize", privatePlaceMenu);
 });
 
 onMounted(async () => {
@@ -259,11 +291,40 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  window.clearTimeout(hoverCloseTimer);
   resizeObserver?.disconnect();
   document.removeEventListener("mousedown", privateOnDocumentPointer);
+  window.removeEventListener("scroll", privatePlaceMenu, true);
+  window.removeEventListener("resize", privatePlaceMenu);
 });
 
+const privatePlaceMenu = () => {
+  const trigger = triggerRef.value;
+  if (!trigger) {
+    return;
+  }
+  const rect = trigger.getBoundingClientRect();
+  menuStyle.value = {
+    top: `${Math.round(rect.bottom)}px`,
+    right: `${Math.round(window.innerWidth - rect.right)}px`,
+  };
+};
+
+const privateOpenMenu = (focusFirst = false) => {
+  menuOpen.value = true;
+  activeIndex.value = 0;
+  nextTick(() => {
+    privatePlaceMenu();
+    if (!focusFirst) {
+      return;
+    }
+    const items = menuRef.value?.querySelectorAll<HTMLButtonElement>("[role='menuitem']");
+    items?.[0]?.focus();
+  });
+};
+
 const privateCloseMenu = (restoreFocus = false) => {
+  window.clearTimeout(hoverCloseTimer);
   menuOpen.value = false;
   activeIndex.value = 0;
   if (restoreFocus) {
@@ -271,15 +332,28 @@ const privateCloseMenu = (restoreFocus = false) => {
   }
 };
 
-const privateToggleMenu = () => {
-  menuOpen.value = !menuOpen.value;
+const privateOnTriggerClick = () => {
   if (menuOpen.value) {
-    activeIndex.value = 0;
-    nextTick(() => {
-      const items = menuRef.value?.querySelectorAll<HTMLButtonElement>("[role='menuitem']");
-      items?.[0]?.focus();
-    });
+    return;
   }
+  privateOpenMenu(true);
+};
+
+const privateOnMoreEnter = (event: PointerEvent) => {
+  if (event.pointerType === "touch") {
+    return;
+  }
+  window.clearTimeout(hoverCloseTimer);
+  privateOpenMenu(false);
+};
+
+const privateOnMoreLeave = (event: PointerEvent) => {
+  if (event.pointerType === "touch") {
+    return;
+  }
+  hoverCloseTimer = window.setTimeout(() => {
+    privateCloseMenu();
+  }, 160);
 };
 
 const privateOnSelect = async (action: InTableAction<Row>) => {
@@ -298,7 +372,7 @@ const privateOnTriggerKeydown = (event: KeyboardEvent) => {
   if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
     event.preventDefault();
     if (!menuOpen.value) {
-      privateToggleMenu();
+      privateOpenMenu(true);
     }
   }
   if (event.key === "Escape") {
@@ -453,7 +527,8 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   background: var(--in-bg-color-surface);
 }
 
-.in-table-actions__more-btn:hover {
+.in-table-actions__more-btn:hover,
+.in-table-actions__more-btn.is-open {
   background: var(--in-bg-color-hover);
   color: var(--in-text-color);
 }
@@ -463,33 +538,48 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   outline-offset: 2px;
 }
 
+.in-table-actions__more-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  font-size: 16px;
+}
+
 .in-table-actions__menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
+  position: fixed;
   z-index: var(--in-z-dropdown);
-  min-width: 112px;
+  box-sizing: border-box;
+  min-width: 128px;
+  padding-top: 4px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.in-table-actions__menu-list {
   max-height: 320px;
   overflow: auto;
-  padding: var(--in-space-2) var(--in-space-1);
+  padding: var(--in-space-2) 0;
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-control);
   background: var(--in-bg-color-surface);
-  box-shadow: var(--in-shadow-overlay);
+  box-shadow: var(--in-shadow-md);
 }
 
 .in-table-actions__item {
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 30px;
-  height: 32px;
-  padding: 0 var(--in-space-2);
+  min-height: 36px;
+  padding: 0 var(--in-space-3);
   border: 0;
-  border-radius: 4px;
+  border-radius: 0;
   background: transparent;
   color: var(--in-text-color);
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-line-height-body);
   text-align: left;
+  white-space: nowrap;
   cursor: pointer;
 }
 

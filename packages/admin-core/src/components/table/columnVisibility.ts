@@ -1,6 +1,6 @@
 import type { TableHeaderRecord } from "./types";
 
-/** 容纳 InCommonStatusTag「已锁定」（约 72px）+ 单元格内边距，避免被表头字宽挤没。 */
+/** 容纳 InCommonStatusTag「已暂停」（约 72px）+ 单元格内边距，避免被表头字宽挤没。 */
 export const IN_TABLE_STATUS_MIN_WIDTH = 132;
 
 export const isTableHeaderLocked = (item: TableHeaderRecord): boolean => {

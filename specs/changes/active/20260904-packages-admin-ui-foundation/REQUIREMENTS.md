@@ -137,7 +137,8 @@ MainLayout
 - [ ] 面包屑为辅助导航，不与页面标题重复制造两层强标题。
 - [ ] 页内 Tab 与全局路由 Tab 视觉和语义分离；默认配置继续允许关闭全局路由 Tab。
 - [ ] `InAvatar` 默认 32px 圆圈；无图时显示姓名，超过两个字取最后两个字；`showAvatar=false` 时只显示文本。
-- [ ] `InCommonStatusTag`「正常」为蓝底成功图标，「锁定」展示为「已锁定」并使用橙底暂停图标；标签按内容完整展示不截断；不改变枚举值和写操作语义。
+- [ ] `InCommonStatusTag`「正常」为蓝底成功图标，「暂停」展示为「已暂停」并使用橙底暂停图标；只根据 `status` 判断；标签按内容完整展示不截断；不改变枚举值和写操作语义。
+- [ ] `InAccountStatusTag`：`enabled === true` 且 `locked === false` 为「正常」；`enabled === false` 为「已暂停」；否则「已锁定」并使用 `#f54a45`。
 
 ### REQ-A005：统一列表、筛选与表格
 
@@ -184,6 +185,7 @@ MainLayout
 - [ ] 空间恢复且能容纳整个折叠组后，该组一次性全部重新显示；`…` 仅在至少有一个折叠组或 `always` 操作时出现，计算宽度时预留其 32px 和相邻 gap。
 - [ ] action 配置保留现有 `key`、`label`、`kind`、`permission`、`group`、`confirm`、`disabled`、`disabledReason` 与 `onSelect`，新增 `icon`、`priority`、`overflow` 和 `overflowGroup`；quick 主操作默认 `overflow: never`。
 - [ ] row 变体继续遵守“详情 + 至多一个高频快捷操作 + …”，不因操作列变宽而展开全部低频项。
+- [ ] 更多菜单默认悬停打开，离开触发器与菜单后关闭；同时保留点击、Enter/Space 打开与 Esc / 点外部关闭，触屏不把悬停作为唯一打开方式。
 - [ ] 成员页式 toolbar 的“邀请成员”“添加成员”始终直出；三个批量操作同组收纳，展开态为 3 个批量按钮 + 2 个固定按钮，收纳态为“…” + 2 个固定按钮。
 - [ ] 收起或展开 `InSplitLayout` 左栏后，工具栏必须随 ToolsEnd 的实际宽度自动重新计算，无需页面手动 refresh/resize，且动画结束后不得抖动。
 - [ ] 成员页式批量菜单依次显示“批量导入/导出”“批量变更部门”“批量操作离职”；未选成员时后两项可见但禁用。

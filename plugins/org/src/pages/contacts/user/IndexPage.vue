@@ -38,7 +38,7 @@
           </in-button>
         </template>
         <template #status="{ item }">
-          <in-common-status-tag :status="statusOf(item)" />
+          <in-account-status-tag :enabled="item.enabled" :locked="item.locked" />
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts" setup>
-import { InCommonStatusTag, resolveCommonStatus, type InTableAction } from "@ingot/admin-core";
+import type { InTableAction } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
 import LeftContent from "./components/LeftContent.vue";
 import { useUserOps } from "./useUserOps";
@@ -87,12 +87,9 @@ const toolbarActions = computed(() => createOrgUserToolbarActions(handleCreateUs
 const rowActionsOf = (item: UserPageItemVO): Array<InTableAction<UserPageItemVO>> =>
   createOrgUserRowActions(item, {
     onDetail: handleDetailUser,
-    onToggleStatus: userOps.handleDisableUser,
+    onToggleEnabled: userOps.handleDisableUser,
     onDelete: userOps.handleDeleteUser,
   });
-
-const statusOf = (item: UserPageItemVO) =>
-  resolveCommonStatus(item.status, { enabled: item.enabled, locked: item.locked });
 
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;

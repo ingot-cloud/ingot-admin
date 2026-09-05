@@ -283,7 +283,8 @@ defineExpose<TableAPI<TableRow>>({
   border-bottom-color: var(--in-border-color);
 }
 
-:deep(.el-table .cell:has(.in-status-tag)) {
+:deep(.el-table .cell:has(.in-status-tag)),
+:deep(.el-table .cell:has(.in-table-actions)) {
   overflow: visible;
 }
 

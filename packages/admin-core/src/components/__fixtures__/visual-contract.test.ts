@@ -51,13 +51,19 @@ describe("admin UI visual fixtures", () => {
     expect(avatar).toContain("width: var(--in-avatar-size)");
     expect(avatar).toContain("border-radius: 50%");
     expect(avatar).toContain("showAvatar");
-    const statusTag = readFileSync(resolve(root, "../status/InCommonStatusTag.vue"), "utf8");
+    const statusTag = readFileSync(resolve(root, "../status/StatusTag.vue"), "utf8");
+    const commonStatusTag = readFileSync(resolve(root, "../status/InCommonStatusTag.vue"), "utf8");
+    const accountStatus = readFileSync(resolve(root, "../status/InAccountStatusTag.vue"), "utf8");
     expect(statusTag).toContain("in-status-tag");
-    expect(statusTag).toContain("已锁定");
     expect(statusTag).toContain("width: max-content");
     expect(statusTag).not.toContain("text-overflow: ellipsis");
     expect(statusTag).toContain("--in-status-tag-info-color");
     expect(statusTag).toContain("--in-status-tag-warning-color");
+    expect(statusTag).toContain("--in-status-tag-danger-color");
+    expect(commonStatusTag).toContain("已暂停");
+    expect(commonStatusTag).not.toContain("已锁定");
+    expect(accountStatus).toContain("已暂停");
+    expect(accountStatus).toContain("已锁定");
   });
 
   it("顶栏与侧栏尺寸 Token 已对齐验收值", () => {

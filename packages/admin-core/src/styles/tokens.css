@@ -163,6 +163,8 @@
   --in-status-tag-info-bg: color-mix(in srgb, var(--in-blue-500) 20%, transparent);
   --in-status-tag-warning-color: var(--in-warning-600);
   --in-status-tag-warning-bg: color-mix(in srgb, var(--in-warning-500) 20%, transparent);
+  --in-status-tag-danger-color: var(--in-danger-500);
+  --in-status-tag-danger-bg: color-mix(in srgb, var(--in-danger-500) 20%, transparent);
   --in-copyright-height: 32px;
   --in-tabs-height: 32px;
   --in-tabs-font-size: var(--in-font-size-caption);

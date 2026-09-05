@@ -44,7 +44,7 @@
 
 复测确认“邀请成员”“添加成员”是始终直接显示的固定操作，不进入更多菜单。三个批量操作组成原子折叠组：右侧空间不足时整组替换为固定操作左侧的“…”；空间足够时“…”消失，三个批量按钮一次性全部展开，不采用逐个按钮收纳。展开左侧部门栏时可触发窄状态，收起部门栏扩大右侧空间后可触发宽状态；算法仍应按工具栏容器实际宽度计算，不能把某个页面视口宽度写死为断点。
 
-“…”已验证支持点击打开；规范要求同时支持 Enter/Space，hover 只提供视觉反馈，不把悬停设为唯一打开方式。菜单内“批量导入/导出”可直接使用，“批量变更部门”“批量操作离职”在未选择成员时保持可见但禁用。
+“…”默认悬停即弹出菜单，离开触发器与菜单后关闭；同时保留点击与 Enter/Space 打开，以及 Esc / 点外部关闭，触屏和不支持 hover 的指针不把悬停作为唯一打开方式。菜单内“批量导入/导出”可直接使用，“批量变更部门”“批量操作离职”在未选择成员时保持可见但禁用。
 
 ## Phase 07 浏览器复核：全局左侧导航
 
@@ -294,11 +294,11 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
 
 ### 更多菜单
 
-- “…”为 32×32px 描边按钮，仅存在折叠组或 always 操作时显示，并紧邻固定操作左侧。
-- 菜单最小宽度以内容为准；成员页参考宽度 112px、圆角 6px、边框 #dee0e3、轻量浮层阴影、垂直内边距 8px。
-- 菜单项高度 30px、水平内边距 8px、圆角 4px，支持 disabled、disabled reason、danger、分组分隔。
-- 支持 Enter/Space 打开、方向键移动、Esc 关闭，并将焦点返回“…”。
-- hover 只改变按钮视觉状态；不得依赖 hover 才能打开菜单。
+- “…”为 32×32px 按钮，图标使用 MoreOutlined 三点 SVG；行内默认透明，悬停或展开时使用浅中性底和 6px 圆角。仅存在折叠组或 always 操作时显示，并紧邻固定操作左侧。
+- 指针悬停触发器即打开菜单；离开触发器与菜单后约 160ms 关闭。点击、Enter/Space 仍可打开；Esc 与点外部关闭，并将焦点返回“…”。触屏不依赖 hover。
+- 菜单传送到 `body` 以避免表格固定列裁切；右对齐贴在按钮下方 4px，白底、1px `#dee0e3` 边框、6px 圆角、`--in-shadow-md` 阴影。
+- 菜单最小宽度 128px、垂直内边距 8px；菜单项 36px 高、水平内边距 12px、左对齐 14px 正文色，支持 disabled、disabled reason、danger、分组分隔。
+- 打开后支持方向键移动、Enter 执行。
 
 ## 字段显示设置
 
@@ -337,9 +337,17 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 
 ## InCommonStatusTag
 
+- 只根据 `status` 判断，不读取 `enabled` / `locked`。
 - 「正常」使用 info 色（`#245bdb` 文案，主题蓝 20% 底）和成功实心图标。
-- 「锁定」展示为「已锁定」，使用 warning 色（`#de7802` 文案，`#ff8800` 20% 底）和暂停实心图标。
+- 「暂停」展示为「已暂停」，使用 warning 色（`#de7802` 文案，`#ff8800` 20% 底）和暂停实心图标。
 - 标签高 24px、圆角 4px，按内容撑开，不截断文案；`InTable` 对 `status` 列补齐最小宽度 132px。
+
+## InAccountStatusTag
+
+- 用于账号 `enabled` 与 `locked`，出现在通讯录成员、平台管理员用户和会员用户列表。
+- `enabled === true` 且 `locked === false`：正常（info）。
+- 否则 `enabled === false`：已暂停（warning）。
+- 其余（可用但已锁定）：已锁定，使用 danger 色（`#f54a45` 文案，同色 20% 底）和锁图标。
 
 ## 对接映射
 
@@ -352,7 +360,9 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 | components/InPageFrame.vue                 | page 模式滚动尽头保留画布沟槽                 |
 | components/InPageHeader.vue                | 默认标题取菜单名；无说明不占位；有说明约 80px；主标题 16/500、说明 14/400 |
 | components/avatar/InAvatar.vue             | 无图姓名缩写圆圈；可隐藏头像只留文本                     |
-| components/status/InCommonStatusTag.vue    | 正常/已锁定带图标状态标签                               |
+| components/status/InCommonStatusTag.vue    | 正常/已暂停带图标状态标签                               |
+| components/status/StatusTag.vue            | 状态标签视觉：info / warning / danger                   |
+| components/status/InAccountStatusTag.vue   | enabled/locked 合成正常、已暂停或已锁定                 |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
 | components/table/InTableActions.vue        | 固定操作与配置型 action 原子组自适应收纳      |
 | components/table/InColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |

@@ -28,10 +28,11 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain("in-avatar");
     expect(source).toContain(":src=\"item.avatar\"");
     expect(source).toContain(":name=\"item.nickname\"");
-    expect(source).toContain("in-common-status-tag");
-    expect(source).toContain("InCommonStatusTag");
-    expect(source).toContain("resolveCommonStatus");
-    expect(source).toContain("statusOf(item)");
+    expect(source).toContain("in-account-status-tag");
+    expect(source).toContain(':enabled="item.enabled"');
+    expect(source).toContain(':locked="item.locked"');
+    expect(source).not.toContain("in-common-status-tag");
+    expect(source).not.toContain("item.status");
   });
 
   it("左树向页面发出 kebab-case 选择事件", () => {

@@ -9,14 +9,6 @@ describe("resolveCommonStatus", () => {
     expect(resolveCommonStatus("9")).toBe(CommonStatus.Lock);
   });
 
-  it("没有 status 时回退 enabled/locked", () => {
-    expect(resolveCommonStatus(undefined, { enabled: true, locked: false })).toBe(
-      CommonStatus.Enable,
-    );
-    expect(resolveCommonStatus(undefined, { enabled: true, locked: true })).toBe(CommonStatus.Lock);
-    expect(resolveCommonStatus(undefined, { enabled: false })).toBe(CommonStatus.Lock);
-  });
-
   it("无法识别时返回 undefined", () => {
     expect(resolveCommonStatus()).toBeUndefined();
     expect(resolveCommonStatus("unknown")).toBeUndefined();

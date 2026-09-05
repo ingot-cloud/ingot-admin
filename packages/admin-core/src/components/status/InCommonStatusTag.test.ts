@@ -14,12 +14,12 @@ describe("InCommonStatusTag", () => {
     wrapper.unmount();
   });
 
-  it("锁定状态使用 warning 标签并显示已锁定", () => {
+  it("暂停状态使用 warning 标签并显示已暂停", () => {
     const wrapper = mount(InCommonStatusTag, {
       props: { status: CommonStatus.Lock },
     });
     expect(wrapper.get(".in-status-tag").classes()).toContain("is-warning");
-    expect(wrapper.get(".in-status-tag__content").text()).toBe("已锁定");
+    expect(wrapper.get(".in-status-tag__content").text()).toBe("已暂停");
     wrapper.unmount();
   });
 

@@ -1,6 +1,5 @@
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
-import { getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
 
 export const ORG_USER_TABLE_ID = "org-contacts-user";
 export const ORG_USER_SPLIT_KEY = "org-contacts-user";
@@ -15,7 +14,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "状态",
     prop: "status",
-    width: "100",
+    minWidth: "132",
     required: true,
   },
   {
@@ -35,7 +34,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "160",
+    width: "220",
     prop: "actions",
     fixed: "right",
   },
@@ -80,13 +79,12 @@ export function createOrgUserRowActions(
   row: UserPageItemVO,
   handlers: {
     onDetail: (row: UserPageItemVO) => void;
-    onToggleStatus: (row: UserPageItemVO) => void;
+    onToggleEnabled: (row: UserPageItemVO) => void;
     onDelete: (row: UserPageItemVO) => void;
   },
 ): Array<InTableAction<UserPageItemVO>> {
-  const canToggle = Boolean(row.userId && row.status);
-  const next = row.status ? getCommonStatusToggle(row.status) : undefined;
-  const actionDesc = next ? getCommonStatusActionDesc(next) : "切换状态";
+  const canToggle = Boolean(row.userId && typeof row.enabled === "boolean");
+  const actionDesc = row.enabled ? "暂停账号" : "恢复账号";
   return [
     {
       key: "detail",
@@ -95,13 +93,13 @@ export function createOrgUserRowActions(
       onSelect: handlers.onDetail,
     },
     {
-      key: "toggle-status",
+      key: "toggle-enabled",
       label: actionDesc,
-      kind: "quick",
+      kind: "default",
       disabled: !canToggle,
-      disabledReason: canToggle ? undefined : "缺少用户状态，无法切换",
-      confirm: canToggle ? `是否${actionDesc}用户(${row.username})` : undefined,
-      onSelect: handlers.onToggleStatus,
+      disabledReason: canToggle ? undefined : "缺少账号可用状态，无法切换",
+      confirm: canToggle ? `是否${actionDesc}(${row.username})` : undefined,
+      onSelect: handlers.onToggleEnabled,
     },
     {
       key: "delete",

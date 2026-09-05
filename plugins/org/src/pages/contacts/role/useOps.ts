@@ -1,13 +1,10 @@
-import type { UserDTO, PageChangeParams, RoleTreeNodeVO, UserPageItemVO, UserQueryDTO } from "@/models";
-import type { CommonStatus } from "@/models/enums";
+import type { PageChangeParams, RoleTreeNodeVO, UserPageItemVO, UserQueryDTO } from "@/models";
 import { UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
 import { OrgUserPageQueryOptions, orgUserQueryKeys } from "@/api/org/user.query";
 import {
   Confirm,
   Message,
   copyParams,
-  getCommonStatusActionDesc,
-  getCommonStatusToggle,
   silentQueryRequest,
   useServerPaging,
 } from "@ingot/admin-core";
@@ -22,8 +19,8 @@ export const useOps = () => {
   const currentNode = reactive<RoleTreeNodeVO>({});
 
   const statusMutation = useMutation({
-    mutationFn: (params: { id: string; status: CommonStatus }) =>
-      UpdateUserAPI({ id: params.id, status: params.status } as UserDTO, silentQueryRequest()),
+    mutationFn: (params: { id: string; enabled: boolean }) =>
+      UpdateUserAPI({ id: params.id, enabled: params.enabled }, silentQueryRequest()),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: orgUserQueryKeys.lists() });
     },
@@ -62,9 +59,12 @@ export const useOps = () => {
   };
 
   const handleDisableUser = (params: UserPageItemVO): void => {
-    const next = getCommonStatusToggle(params.status!);
-    Confirm.warning(`是否${getCommonStatusActionDesc(next)}用户(${params.username})`).then(() => {
-      statusMutation.mutateAsync({ id: params.userId, status: next }).then(() => {
+    if (!params.userId || typeof params.enabled !== "boolean") {
+      return;
+    }
+    const actionDesc = params.enabled ? "暂停账号" : "恢复账号";
+    Confirm.warning(`是否${actionDesc}(${params.username})`).then(() => {
+      void statusMutation.mutateAsync({ id: params.userId, enabled: !params.enabled }).then(() => {
         Message.success("操作成功");
       });
     });

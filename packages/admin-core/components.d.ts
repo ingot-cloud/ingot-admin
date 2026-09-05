@@ -12,7 +12,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./src/components/user/AccountStatusEditButton.vue')['default']
-    AccountStatusView: typeof import('./src/components/user/AccountStatusView.vue')['default']
     ChallengeHost: typeof import('./src/components/challenge/ChallengeHost.vue')['default']
     CommonStatusButton: typeof import('./src/components/status/CommonStatusButton.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
@@ -70,6 +69,7 @@ declare module 'vue' {
     'ILineMd:arrowCloseLeft': typeof import('~icons/line-md/arrow-close-left')['default']
     'ILineMd:arrowCloseRight': typeof import('~icons/line-md/arrow-close-right')['default']
     'IMaterialSymbols:verticalAlignTopRounded': typeof import('~icons/material-symbols/vertical-align-top-rounded')['default']
+    InAccountStatusTag: typeof import('./src/components/status/InAccountStatusTag.vue')['default']
     InAppBar: typeof import('./src/layouts/widgets/InAppBar.vue')['default']
     InAppBarSearch: typeof import('./src/layouts/widgets/search/InAppBarSearch.vue')['default']
     InAvatar: typeof import('./src/components/avatar/InAvatar.vue')['default']
@@ -128,6 +128,7 @@ declare module 'vue' {
     InWithLabel: typeof import('./src/components/InWithLabel.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StatusTag: typeof import('./src/components/status/StatusTag.vue')['default']
     Verify: typeof import('./src/components/verifition/Verify.vue')['default']
     VerifyPoints: typeof import('./src/components/verifition/verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./src/components/verifition/verify/VerifySlide.vue')['default']

@@ -1,5 +1,3 @@
-import type { CommonStatus } from "./enums";
-
 export interface UserPageItemVO {
   userId: string;
   username: string;
@@ -7,7 +5,6 @@ export interface UserPageItemVO {
   phone?: string;
   email?: string;
   avatar?: string;
-  status?: CommonStatus;
   enabled?: boolean;
   locked?: boolean;
   createdAt: string;
@@ -24,6 +21,8 @@ export interface UserDTO {
   nickname?: string;
   email?: string;
   avatar?: string;
+  enabled?: boolean;
+  locked?: boolean;
 }
 
 export interface OrgUserProfileVO {

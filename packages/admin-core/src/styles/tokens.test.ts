@@ -89,6 +89,8 @@ const REQUIRED_VALUES: Record<string, string> = {
   "--in-status-tag-height": "24px",
   "--in-status-tag-info-color": "var(--in-blue-600)",
   "--in-status-tag-warning-color": "var(--in-warning-600)",
+  "--in-status-tag-danger-color": "var(--in-danger-500)",
+  "--in-danger-500": "#f54a45",
   "--in-control-height": "32px",
   "--in-radius-control": "6px",
   "--in-motion-duration-sidebar": "300ms",

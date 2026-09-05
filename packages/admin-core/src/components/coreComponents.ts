@@ -42,9 +42,9 @@ import InTag from "./tag/InTag.vue";
 import InTagEnum from "./tag/InTagEnum.vue";
 import CommonStatusButton from "./status/CommonStatusButton.vue";
 import InCommonStatusTag from "./status/InCommonStatusTag.vue";
+import InAccountStatusTag from "./status/InAccountStatusTag.vue";
 import InStatusButton from "./status/InStatusButton.vue";
 import AccountStatusEditButton from "./user/AccountStatusEditButton.vue";
-import AccountStatusView from "./user/AccountStatusView.vue";
 
 export const coreGlobalComponents: Record<string, Component> = {
   InAvatar,
@@ -90,9 +90,9 @@ export const coreGlobalComponents: Record<string, Component> = {
   InTagEnum,
   CommonStatusButton,
   InCommonStatusTag,
+  InAccountStatusTag,
   InStatusButton,
   AccountStatusEditButton,
-  AccountStatusView,
 };
 
 declare module "vue" {
@@ -140,8 +140,8 @@ declare module "vue" {
     InTagEnum: typeof InTagEnum;
     CommonStatusButton: typeof CommonStatusButton;
     InCommonStatusTag: typeof InCommonStatusTag;
+    InAccountStatusTag: typeof InAccountStatusTag;
     InStatusButton: typeof InStatusButton;
     AccountStatusEditButton: typeof AccountStatusEditButton;
-    AccountStatusView: typeof AccountStatusView;
   }
 }

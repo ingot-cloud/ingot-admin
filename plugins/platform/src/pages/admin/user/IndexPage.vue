@@ -58,7 +58,7 @@
         <in-copy-tag :text="item.username" />
       </template>
       <template #status="{ item }">
-        <account-status-view :enabled="item.enabled" :locked="item.locked" />
+        <in-account-status-tag :enabled="item.enabled" :locked="item.locked" />
       </template>
       <template #actions="{ item }">
         <in-button link text type="primary" @click="handleDetailUser(item)">
