@@ -322,7 +322,8 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 
 ## InPageHeader
 
-- 页面头保持约 80px 最小高度、白底、底部分隔。
+- 未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；显式 `title` 仍可覆盖，供详情页等使用。
+- 页面头白底、底部分隔；有说明时最小高度约 80px，无说明时高度随主标题收缩，不预留副标题占位。
 - 主标题使用 `--in-font-size-section-title` / `--in-font-weight-section-title`（16/24px、500）和 `--in-text-color`（`#1f2329`）。
 - 说明使用正文 Token（14/22px、400）和 `--in-text-color-secondary`（`#646a73`）。
 - 主标题与说明超长时单行省略：`display: -webkit-box`、`-webkit-line-clamp: 1`、`word-break: break-all`。
@@ -337,7 +338,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 | components/container/InSplitLayout.vue | 固定 header、左栏折叠、自动收起和滚动边界     |
 | components/container/InContainer.vue       | plain 默认透明；可覆盖背景/边框               |
 | components/InPageFrame.vue                 | page 模式滚动尽头保留画布沟槽                 |
-| components/InPageHeader.vue                | 主标题 16/500、说明 14/400，超长单行省略      |
+| components/InPageHeader.vue                | 默认标题取菜单名；无说明不占位；有说明约 80px；主标题 16/500、说明 14/400 |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
 | components/table/InTableActions.vue        | 固定操作与配置型 action 原子组自适应收纳      |
 | components/table/InColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |

@@ -31,6 +31,7 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 ## 原型滚动与工作面
 
 - 所有页面由壳层固定全局顶栏和面包屑，`InPageFrame` 固定页面头。
+- 所有业务页使用 `InPageHeader`；主标题默认取当前菜单名（`route.meta.title`），页面不硬编码菜单文案。`InTable` `#title` 只保留左树或局部 Tab 的选择上下文。
 - Overview、Settings、Detail 和 Tool 使用 page 模式，只滚动 PageBody。
 - List 和 Split List 使用 contained 模式；筛选/工具栏固定，表格数据区纵横滚动，分页固定。
 - Split List 的 `InPageHeader` 放在 `InPageFrame` `#header`，不放进 `InSplitLayout` `#header`，避免两层内边距和底部分隔叠在一起。
@@ -165,4 +166,4 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 ## 试点已知偏差
 
 - `org/contacts/user` 现有业务只有「添加成员」、行内详情/启停/删除，没有邀请成员、批量导入/导出、批量变更部门或批量操作离职接口。试点只把已有「添加成员」映射为 `overflow: never` 的固定主操作，不为对齐飞书采样新增无接口按钮。
-- 通讯录五个页面不再使用页内路由 Tab；成员页保持 `InPageFrame` + `InPageHeader` + `InSplitLayout`，其余四页先去掉 Tab 后继续直接使用 `InSplitLayout`。
+- 通讯录五个页面不再使用页内路由 Tab；各页均使用 `InPageFrame` + `InPageHeader`（菜单名）+ `InSplitLayout`。表格 title 仅保留部门/角色等选择上下文。

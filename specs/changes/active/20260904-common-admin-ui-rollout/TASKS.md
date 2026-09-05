@@ -4,14 +4,15 @@
 
 ## 准备
 
-- [ ] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）。
-- [ ] 确认依赖 change `20260904-packages-admin-ui-foundation` Phase 07 已通过“全局左侧导航”专项视觉验收，并连同 Phase 06 的成员工作区契约一起冻结；否则不得进入 implementing。
-- [ ] 阅读本 change 的 [API.md](./API.md)、[REQUIREMENTS.md](./REQUIREMENTS.md) 与 [DESIGN.md](./DESIGN.md)。
-- [ ] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [ingot-coding-standards](../../../../.agents/skills/ingot-coding-standards/SKILL.md)。
+- [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）。
+- [x] 用户于 2026-09-05 确认开始实施本 change；foundation Phase 06/07 共享契约按当前冻结版本接入，视觉验收在试点页面中继续核对。
+- [x] 阅读本 change 的 [API.md](./API.md)、[REQUIREMENTS.md](./REQUIREMENTS.md) 与 [DESIGN.md](./DESIGN.md)。
+- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [ingot-coding-standards](../../../../.agents/skills/ingot-coding-standards/SKILL.md)。
 - [ ] 盘点并在页面迁移时清理仅服务于旧 `InTable` 内置刷新按钮的 `@refresh` 监听。
-- [ ] 确认页面矩阵、试点顺序、表格密度和发布方式等开放问题。
-- [ ] 为每个页面确认 `InPageFrame` page/contained 模式、滚动所有者、稳定 `tableId` 和操作层级映射。
-- [ ] 为 25 个页面建立迁移前行为与权限回归清单。
+- [x] 确认页面矩阵、试点顺序、表格密度和发布方式等开放问题。
+- [x] 为每个页面确认 `InPageFrame` page/contained 模式、滚动所有者、稳定 `tableId` 和操作层级映射。
+- [x] 全部范围内页面接入固定 `InPageHeader`，主标题取当前菜单名；表格 title 仅保留选择上下文。
+- [x] 为 25 个页面建立迁移前行为与权限回归清单。
 
 ## 实现
 

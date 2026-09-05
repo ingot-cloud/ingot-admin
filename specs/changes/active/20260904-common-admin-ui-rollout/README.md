@@ -1,6 +1,6 @@
 # 20260904-common-admin-ui-rollout
 
-> 状态：draft
+> 状态：implementing
 
 ## 协作模式
 
