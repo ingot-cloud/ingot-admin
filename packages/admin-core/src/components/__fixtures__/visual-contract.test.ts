@@ -15,6 +15,7 @@ describe("admin UI visual fixtures", () => {
     expect(filter).not.toContain("overflow-x-hidden");
     expect(layout).toContain("in-content-viewport");
     expect(layout).toContain("has-breadcrumb");
+    expect(layout).toContain("breadcrumbVisible");
     expect(layout).toContain("has-copyright");
     expect(layout).toContain("padding: 0 var(--in-page-gutter);");
     expect(layout).toContain("padding-top: var(--in-page-gutter);");

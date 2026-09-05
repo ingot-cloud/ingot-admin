@@ -19,12 +19,12 @@
         direction="vertical"
         class="in-shell-main"
         :class="{
-          'has-breadcrumb': Boolean(appStateStore.getShowBreadcrumb),
+          'has-breadcrumb': breadcrumbVisible,
           'has-copyright': Boolean(appStateStore.getShowCopyright),
         }"
       >
         <in-tabs v-if="appStateStore.getShowTabs" />
-        <in-breadcrumb v-if="appStateStore.getShowBreadcrumb" class="in-shell-breadcrumb" />
+        <in-breadcrumb v-if="breadcrumbVisible" class="in-shell-breadcrumb" />
         <el-main :ref="setContentRef" class="in-content-viewport">
           <div class="in-content-viewport__host">
             <router-view v-slot="{ Component }">
@@ -43,13 +43,18 @@
 <script lang="ts" setup>
 import { useRouterStore } from "@/stores/modules/router";
 import { useAppStateStore } from "@/stores/modules/app";
+import { isBreadcrumbVisible } from "@/layouts/widgets/breadcrumb/buildBreadcrumbList";
 import { shellLayoutKey } from "./types";
 import { useShellLayout } from "./useShellLayout";
 import { useContentScroll } from "./useContentScroll";
 
+const route = useRoute();
 const appStateStore = useAppStateStore();
 const { cacheNames } = storeToRefs(useRouterStore());
 const shell = useShellLayout();
+const breadcrumbVisible = computed(() =>
+  isBreadcrumbVisible(appStateStore.getShowBreadcrumb, route.matched),
+);
 const { isOverlay, overlayOpen, navigationMode, closeOverlay } = shell;
 provide(shellLayoutKey, shell);
 
