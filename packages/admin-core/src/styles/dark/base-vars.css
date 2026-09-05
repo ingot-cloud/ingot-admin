@@ -1,3 +1,1 @@
-html.dark {
-  --in-bg-color-mute: #2c2c2c;
-}
+@import "./tokens.css";

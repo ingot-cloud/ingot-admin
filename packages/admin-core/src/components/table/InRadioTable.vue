@@ -23,8 +23,8 @@
         </el-tooltip>
         <el-tooltip content="设置" effect="light" placement="top">
           <in-column-setting
-            size="22"
             :data="props.headers"
+            :table-id="props.tableId"
             @onSelectionChange="privateOnHeaderChanged"
           />
         </el-tooltip>
@@ -33,10 +33,11 @@
   </div>
 
   <el-radio-group v-model="radioValue" w-full>
-    <component
-      :is="h(ElTable, { ...$attrs, ...props, ref: tableRef })"
+    <el-table
+      v-bind="{ ...$attrs, ...props }"
+      :ref="tableRef"
       v-loading="loading"
-      @rowClick="privateRowClick"
+      @row-click="privateRowClick"
     >
       <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
         <template #default="scope">
@@ -64,7 +65,7 @@
       <template #empty>
         <el-empty />
       </template>
-    </component>
+    </el-table>
   </el-radio-group>
 
   <div v-if="page && page.total" m-t-20px flex flex-row justify-end items-start>
@@ -86,6 +87,7 @@ import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
+import "element-plus/theme-chalk/el-table.css";
 import type { ComponentPublicInstance } from "vue";
 
 defineOptions({
@@ -167,16 +169,22 @@ defineExpose<TableAPI<TableRow>>({
 </script>
 <style lang="postcss" scoped>
 :deep(th.el-table__cell) {
-  --el-table-header-bg-color: #f8f8f8;
-  color: black;
-  padding: 10px 0;
+  height: var(--in-table-header-height);
+  padding: 0 12px;
+  color: var(--in-text-color-secondary);
+  background: var(--in-table-header-bg);
+}
+:deep(td.el-table__cell) {
+  height: var(--in-table-row-height);
+  padding: 0 12px;
 }
 :deep(th.el-table__cell.is-leaf) {
   border-bottom: none;
 }
 .title {
-  color: #171a1d;
-  font-weight: 600;
-  font-size: 17px;
+  color: var(--in-text-color);
+  font-weight: var(--in-font-weight-section-title);
+  font-size: var(--in-font-size-section-title);
+  line-height: var(--in-line-height-section-title);
 }
 </style>

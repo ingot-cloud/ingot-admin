@@ -11,4 +11,4 @@
 
 登录后的人工视口核对清单见 [VIEWPORTS.md](../../../../../../packages/admin-core/src/components/__fixtures__/VIEWPORTS.md)。
 
-> 2026-09-04 第二轮人工视觉验收未通过。本阶段勾选项仅代表旧设计基线下的自动化与 fixture 工作已经完成；Phase 05 记录首轮视觉修订历史，当前针对成员工作区的最终验收以 [Phase 06](../phase-06-member-workspace/TASKS.md) 为准。
+> 2026-09-04 第二轮人工视觉验收未通过。本阶段勾选项仅代表旧设计基线下的自动化与 fixture 工作已经完成；Phase 05 记录首轮视觉修订历史，成员工作区验收以 [Phase 06](../phase-06-member-workspace/TASKS.md) 为准。2026-09-05 新增的全局侧栏验收另见 [Phase 07](../phase-07-sidebar-navigation/TASKS.md)。

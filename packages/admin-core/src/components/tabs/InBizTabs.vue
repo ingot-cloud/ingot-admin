@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="in-biz-tabs">
     <in-biz-tabs-header v-model="headerValue" :tabs="tabs" />
     <div class="inner-container">
       <slot />
@@ -8,11 +8,18 @@
 </template>
 <script setup lang="ts">
 import type { TabItem } from "./types";
+import type { InBizTabPanelContext } from "./constants";
 import { tabsRootContextKey } from "./constants";
 import { useOrderedChildren } from "@/hooks/components/useOrderedChildren";
 
+defineOptions({
+  name: "InBizTabs",
+});
+
 const model = defineModel<string>({ required: true });
-const emits = defineEmits(["change"]);
+const emits = defineEmits<{
+  change: [value: string];
+}>();
 
 const tabs = ref<Array<TabItem>>([]);
 const headerValue = computed<string>({
@@ -29,7 +36,7 @@ const {
   children: panes,
   addChild: registerPane,
   removeChild: unregisterPane,
-} = useOrderedChildren<any>(getCurrentInstance()!, "InBizTabPanel");
+} = useOrderedChildren<InBizTabPanelContext>(getCurrentInstance()!, "InBizTabPanel");
 
 provide(tabsRootContextKey, {
   currentName: model,
@@ -40,13 +47,17 @@ provide(tabsRootContextKey, {
 watch(panes, (value) => {
   tabs.value = value.map((item) => {
     return {
-      id: item.paneName,
-      title: item.paneTitle,
+      id: item.paneName.value,
+      title: item.paneTitle.value,
     };
   });
 });
 </script>
 <style lang="postcss" scoped>
+.in-biz-tabs {
+  min-width: 0;
+}
+
 .inner-container {
   border-top: 1px solid var(--in-border-color);
 }

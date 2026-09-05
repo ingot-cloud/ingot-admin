@@ -4,58 +4,91 @@
     :close-on-press-escape="false"
     draggable
     class="in-dialog"
+    :class="{ 'is-danger': tone === 'danger' }"
   >
     <template #header>
       <div v-if="slots.header">
         <slot name="header" />
       </div>
       <div v-else class="in-custom-title">
-        <div class="rect" />
         <div class="title">{{ title }}</div>
+        <p v-if="description" class="description">{{ description }}</p>
       </div>
     </template>
 
     <slot />
 
     <template #footer>
-      <div flex flex-row justify-end items-center gap-4>
+      <div class="in-dialog__footer">
         <slot name="footer"> </slot>
       </div>
     </template>
   </el-dialog>
 </template>
 <script setup lang="ts">
-const slots = useSlots();
-defineProps({
-  title: {
-    type: String,
-  },
+import type { InDialogTone } from "./types";
+
+defineOptions({
+  name: "InDialog",
 });
+
+const slots = useSlots();
+withDefaults(
+  defineProps<{
+    title?: string;
+    description?: string;
+    tone?: InDialogTone;
+  }>(),
+  {
+    tone: "default",
+  },
+);
 </script>
 <style lang="postcss">
 .in-dialog {
   & .el-dialog__header {
     border-bottom: 1px solid var(--in-border-color);
     margin-right: 0;
+    padding: var(--in-space-4) var(--in-section-padding-relaxed);
+  }
+
+  & .el-dialog__footer {
+    border-top: 1px solid var(--in-border-color);
+    padding: var(--in-space-3) var(--in-section-padding-relaxed);
+    background: var(--in-bg-color);
+  }
+
+  & .in-dialog__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--in-space-2);
   }
 
   & .in-custom-title {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    grid-gap: 10px;
-    & .rect {
-      width: 4px;
-      height: 14px;
-      background: var(--in-color-primary);
-      border-radius: 2px;
-    }
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--in-space-1);
+
     & .title {
-      font-weight: bold;
-      color: #192f48;
-      font-size: 18px;
+      font-weight: var(--in-font-weight-section-title);
+      color: var(--in-text-color);
+      font-size: var(--in-font-size-section-title);
+      line-height: var(--in-line-height-section-title);
     }
+
+    & .description {
+      margin: 0;
+      color: var(--in-text-color-secondary);
+      font-size: var(--in-font-size-body);
+      line-height: var(--in-line-height-body);
+    }
+  }
+
+  &.is-danger .in-custom-title .title {
+    color: var(--in-color-danger);
   }
 }
 </style>

@@ -27,25 +27,21 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "作用域",
     prop: "scopeType",
     width: "120",
-    align: "center",
   },
   {
     label: "排序",
     prop: "sort",
     width: "80",
-    align: "center",
   },
   {
     label: "标记",
     prop: "systemFlag",
     width: "80",
-    align: "center",
   },
   {
     label: "状态",
     prop: "status",
     width: "80",
-    align: "center",
   },
   {
     label: "备注",
@@ -58,7 +54,6 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "更新时间",
     prop: "updatedAt",
     width: "170",
-    align: "center",
     hide: true,
   },
   {
@@ -66,6 +61,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "260",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

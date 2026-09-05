@@ -5,11 +5,11 @@
         v-if="singleRoute.icon"
         :name="singleRoute.icon"
         class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-        :class="{ 'mr-2': getMenuOpened }"
+        :class="{ 'mr-2': showTitle }"
       />
     </el-icon>
     <template #title>
-      <span v-if="singleRoute.title">
+      <span v-if="showTitle && singleRoute.title">
         {{ singleRoute.title }}
       </span>
     </template>
@@ -21,10 +21,10 @@
           v-if="route.icon"
           :name="route.icon"
           class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-          :class="{ 'mr-2': getMenuOpened }"
+          :class="{ 'mr-2': showTitle }"
         />
       </el-icon>
-      <span v-if="route.title">
+      <span v-if="showTitle && route.title">
         {{ route.title }}
       </span>
     </template>
@@ -36,6 +36,11 @@
 import type { PropType } from "vue";
 import type { MenuRouteRecord } from "@/layouts";
 import { useAppStateStore } from "@/stores/modules/app";
+import { shellLayoutKey } from "@/layouts/main/types";
+
+defineOptions({
+  name: "InSubmenu",
+});
 
 const props = defineProps({
   route: {
@@ -45,6 +50,8 @@ const props = defineProps({
 });
 
 const { getMenuOpened } = storeToRefs(useAppStateStore());
+const shell = inject(shellLayoutKey);
+const showTitle = computed(() => shell?.isOverlay.value || Boolean(getMenuOpened.value));
 
 const isSingle = computed(() => {
   const children = props.route.children;
@@ -52,13 +59,14 @@ const isSingle = computed(() => {
 });
 
 const singleRoute = computed(() => {
-  // 如果只有一个child，那么标题使用父标题如果存在的话
   const children = props.route.children;
   if (children && children.length !== 0) {
-    const route = children[0];
-    route.title = props.route.title || route.title;
-    route.icon = props.route.icon || route.icon;
-    return route;
+    const child = children[0];
+    return {
+      ...child,
+      title: props.route.title || child.title,
+      icon: props.route.icon || child.icon,
+    };
   }
   return props.route;
 });

@@ -48,6 +48,13 @@ const PwdDialogRef = ref();
 const { getUsername, getAvatar } = storeToRefs(useUserInfoStore());
 const handleMenuCommand = (command: UserDropdownCommand): void => {
   switch (command.action) {
+    case "switchOrg":
+      useMessageConfirm()
+        .warning("是否切换组织")
+        .then(() => {
+          useLogin().go();
+        });
+      break;
     case "fixPwd":
       PwdDialogRef.value.show();
       break;
@@ -72,8 +79,8 @@ const handleMenuCommand = (command: UserDropdownCommand): void => {
   padding-right: 5px;
 }
 .avatar-arrow {
-  color: var(--in-color-primary);
-  margin-left: 12px;
+  color: var(--in-text-color-secondary);
+  margin-left: 8px;
 }
 .user-dropdown {
   padding: 8px;
@@ -95,7 +102,7 @@ const handleMenuCommand = (command: UserDropdownCommand): void => {
       font-size: 16px;
       font-weight: 700;
       line-height: 1.5;
-      color: #171a1d;
+      color: var(--in-text-color);
     }
   }
 
@@ -104,7 +111,7 @@ const handleMenuCommand = (command: UserDropdownCommand): void => {
     height: 30px;
     font-size: 14px;
     font-weight: 400;
-    color: rgba(0, 0, 0, 0.85);
+    color: var(--in-text-color-secondary);
 
     & .icon {
       margin-right: 5px;

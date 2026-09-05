@@ -5,7 +5,6 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "序号",
     type: "index",
-    align: "center",
     width: "80",
   },
   {
@@ -49,6 +48,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "210",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

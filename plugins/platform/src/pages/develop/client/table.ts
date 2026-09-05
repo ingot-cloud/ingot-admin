@@ -20,7 +20,6 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "状态",
     prop: "status",
-    align: "center",
   },
   {
     label: "创建时间",
@@ -33,6 +32,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "210",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

@@ -15,19 +15,16 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "类型",
     prop: "appType",
     width: "100",
-    align: "center",
   },
   {
     label: "排序",
     prop: "sort",
     width: "80",
-    align: "center",
   },
   {
     label: "状态",
     prop: "status",
     width: "100",
-    align: "center",
   },
   {
     label: "应用描述",
@@ -40,6 +37,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "260",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

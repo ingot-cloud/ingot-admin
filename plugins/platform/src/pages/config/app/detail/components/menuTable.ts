@@ -4,7 +4,6 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "图标",
     prop: "menuType",
-    align: "center",
     minWidth: "80",
   },
   {
@@ -19,13 +18,11 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "权限",
     prop: "accessMode",
-    align: "center",
   },
   {
     label: "状态",
     prop: "status",
     width: "80",
-    align: "center",
   },
   {
     label: "备注",
@@ -36,6 +33,5 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
     width: "280",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

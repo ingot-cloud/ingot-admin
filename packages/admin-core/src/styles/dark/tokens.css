@@ -1,0 +1,56 @@
+/**
+ * 暗色主题覆盖同一套语义 Token，不另建业务主题分支。
+ */
+html.dark {
+  color-scheme: dark;
+
+  --in-gray-950: #e5eaf3;
+  --in-gray-700: #cfd3dc;
+  --in-gray-500: #a3a6ad;
+  --in-gray-400: #6c6e72;
+  --in-gray-300: #4c4d4f;
+  --in-gray-200: #262727;
+  --in-gray-100: #0a0a0a;
+  --in-white: #141414;
+  --in-black: #ffffff;
+
+  --in-color-primary: #3d7eff;
+  --in-color-success: #67c23a;
+  --in-color-warning: #e6a23c;
+  --in-color-danger: #f56c6c;
+  --in-color-info: #909399;
+
+  --in-text-color: #e5eaf3;
+  --in-text-color-secondary: #cfd3dc;
+  --in-text-color-placeholder: #a3a6ad;
+  --in-text-color-disabled: var(--in-gray-400);
+  --in-text-color-inverse: #141414;
+  --in-bg-color-canvas: #0a0a0a;
+  --in-bg-color-sidebar: #0a0a0a;
+  --in-bg-color-surface: #141414;
+  --in-bg-color-muted: #262727;
+  --in-bg-color-subtle: #1b1b1b;
+  --in-bg-color: var(--in-bg-color-surface);
+  --in-bg-color-page: var(--in-bg-color-canvas);
+  --in-bg-color-mute: var(--in-bg-color-muted);
+  --in-bg-color-hover: rgba(229, 234, 243, 0.05);
+  --in-bg-color-active: rgba(229, 234, 243, 0.05);
+  --in-bg-color-menu-hover: rgba(229, 234, 243, 0.06);
+  --in-bg-color-control-hover: rgba(229, 234, 243, 0.08);
+  --in-border-color: #4c4d4f;
+  --in-border-color-light: #414243;
+  --in-overlay-mask: rgba(0, 0, 0, 0.72);
+
+  --in-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --in-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.48);
+  --in-shadow-overlay:
+    0 8px 24px 8px rgba(0, 0, 0, 0.16),
+    0 6px 12px 0 rgba(0, 0, 0, 0.2),
+    0 4px 8px -8px rgba(0, 0, 0, 0.28);
+
+  --in-app-bar-bg: var(--in-bg-color-surface);
+  --in-app-bar-text: var(--in-text-color);
+  --in-menu-bg-color: var(--in-bg-color-sidebar);
+  --in-table-header-bg: var(--in-bg-color-muted);
+  --in-color-info-light-5: color-mix(in srgb, var(--in-color-info) 50%, var(--in-bg-color));
+}

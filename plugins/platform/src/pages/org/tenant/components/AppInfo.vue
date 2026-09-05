@@ -29,13 +29,11 @@ const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "应用",
     prop: "app",
-    align: "center",
   },
   {
     label: "操作",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];
 

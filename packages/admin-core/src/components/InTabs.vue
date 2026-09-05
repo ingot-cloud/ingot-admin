@@ -148,7 +148,7 @@ const handleAction = (action: Action) => {
 </script>
 <style lang="postcss">
 .in-tabs {
-  @apply flex items-center bg-[var(--in-bg-color)] b-b b-b-[var(--in-border-color)] b-l b-l-[var(--in-border-color)];
+  @apply flex items-center bg-[var(--in-bg-color)] b-b b-b-[var(--in-border-color)];
   & .tabs-action {
     @apply h-full flex;
     & .btn {

@@ -21,13 +21,11 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "客户端缺省",
     prop: "authType",
     width: "120",
-    align: "center",
   },
   {
     label: "用户类型",
     prop: "userType",
     width: "110",
-    align: "center",
   },
   {
     label: "登录 IP",
@@ -43,7 +41,6 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "设备",
     prop: "deviceType",
     width: "90",
-    align: "center",
   },
   {
     label: "颁发时间",
@@ -93,6 +90,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     prop: "actions",
     width: "260",
     fixed: "right",
-    align: "center",
   },
 ];

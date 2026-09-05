@@ -5,7 +5,6 @@ export const policyTableHeaders: Array<TableHeaderRecord> = [
     label: "生效范围",
     prop: "scope",
     width: "120",
-    align: "center",
   },
   {
     label: "客户端",
@@ -16,31 +15,26 @@ export const policyTableHeaders: Array<TableHeaderRecord> = [
     label: "用户类型",
     prop: "userType",
     width: "110",
-    align: "center",
   },
   {
     label: "最大会话数",
     prop: "maxSessions",
     width: "120",
-    align: "center",
   },
   {
     label: "超出处置",
     prop: "overflow",
     minWidth: "130",
-    align: "center",
   },
   {
     label: "管理用户单会话",
     prop: "adminForbidConcurrent",
     width: "130",
-    align: "center",
   },
   {
     label: "状态",
     prop: "enabled",
     width: "90",
-    align: "center",
   },
   {
     label: "备注",
@@ -57,6 +51,5 @@ export const policyTableHeaders: Array<TableHeaderRecord> = [
     prop: "actions",
     width: "160",
     fixed: "right",
-    align: "center",
   },
 ];

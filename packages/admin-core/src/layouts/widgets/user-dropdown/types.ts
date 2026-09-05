@@ -1,5 +1,5 @@
 export interface UserDropdownCommand {
-  action: "fixPwd" | "logout" | "user";
+  action: "fixPwd" | "logout" | "user" | "switchOrg";
   params: string;
 }
 
@@ -12,12 +12,12 @@ export interface UserDropdownMenuItem {
 }
 
 export const menuList: Array<UserDropdownMenuItem> = [
-  // {
-  //   divided: false,
-  //   command: { action: "user", params: "" },
-  //   icon: "ep-user",
-  //   title: "个人信息",
-  // },
+  {
+    divided: true,
+    command: { action: "switchOrg", params: "" },
+    icon: "icon-park:switch",
+    title: "切换组织",
+  },
   {
     divided: true,
     command: { action: "fixPwd", params: "" },

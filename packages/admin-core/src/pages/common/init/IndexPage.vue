@@ -1,6 +1,6 @@
 <template>
   <el-container w-full h-full>
-    <el-header>
+    <el-header class="in-shell-header">
       <in-app-bar />
     </el-header>
 
@@ -8,7 +8,6 @@
       <el-main>
         <div class="content-box">
           <div class="header">
-            <div class="rect" />
             <div class="title">初始化密码</div>
           </div>
 
@@ -115,59 +114,44 @@ onMounted(() => {
 });
 </script>
 <style lang="postcss" scoped>
-.el-header {
-  --el-header-padding: var(--in-app-bar-padding);
-  --el-header-height: var(--in-app-bar-height);
-  @apply flex items-center justify-between box-border dark:bg-[var(--in-bg-color)];
-  @apply b-b b-b-[var(--in-app-bar-bg)] dark:b-b-[var(--in-border-color)];
-  background: var(--in-app-bar-bg);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.16);
-  color: white;
-}
-
 .el-container {
   @apply bg-[var(--in-bg-color-page)];
 }
 
 .el-main {
-  @apply flex items-center justify-center bg-[var(--in-bg-color-page)] box-border p-[var(--in-common-padding)] overflow-x-hidden;
+  @apply flex items-center justify-center bg-[var(--in-bg-color-page)] box-border p-[var(--in-page-gutter)] overflow-auto;
   &::-webkit-scrollbar {
     @apply bg-[var(--in-bg-color-page)];
   }
 }
 
 .content-box {
-  @apply box-border overflow-x-hidden shadow-sm bg-[var(--in-bg-color)];
-  border-radius: var(--in-common-border-radius);
+  @apply box-border bg-[var(--in-bg-color)];
+  border: 1px solid var(--in-border-color);
+  border-radius: var(--in-radius-card);
   width: 40%;
-  padding: 20px;
+  padding: var(--in-section-padding-relaxed);
   & .header {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
-    grid-gap: 10px;
-    & .rect {
-      width: 4px;
-      height: 14px;
-      background: var(--in-color-primary);
-      border-radius: 2px;
-    }
     & .title {
-      font-weight: bold;
-      color: #192f48;
-      font-size: 18px;
+      font-weight: 600;
+      color: var(--in-text-color);
+      font-size: var(--in-font-size-page-title);
+      line-height: var(--in-line-height-page-title);
     }
   }
   & .tips {
-    font-size: 14px;
-    line-height: 34px;
+    font-size: var(--in-font-size-body);
+    line-height: var(--in-line-height-body);
     font-weight: 400;
-    color: rgba(23, 26, 29, 0.6);
+    color: var(--in-text-color-secondary);
+    margin-top: var(--in-space-2);
   }
 
   & .form-box {
-    margin-top: 20px;
+    margin-top: var(--in-space-5);
   }
 }
 </style>

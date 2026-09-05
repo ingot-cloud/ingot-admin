@@ -1,9 +1,10 @@
-import type { ComputedRef, InjectionKey, Ref } from "vue";
+import type { ComputedRef, InjectionKey, Ref, VNode } from "vue";
 
 export interface InBizTabPanelContext {
   uid: number;
   paneName: ComputedRef<string>;
   paneTitle: ComputedRef<string>;
+  getVnode: () => VNode;
 }
 
 export interface InBizTabRootContext {

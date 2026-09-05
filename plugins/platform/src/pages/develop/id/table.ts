@@ -26,6 +26,5 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "210",
     prop: "actions",
     fixed: "right",
-    align: "center",
   },
 ];

@@ -42,14 +42,15 @@ watch(active, (val) => {
   if (val) loaded.value = true;
 });
 
-const pane = reactive<InBizTabPanelContext>({
+const pane: InBizTabPanelContext = {
   uid: instance.uid,
   paneName,
   paneTitle,
-});
+  getVnode: () => instance.vnode,
+};
 
 onMounted(() => {
-  tabsRoot.registerPane(pane as any);
+  tabsRoot.registerPane(pane);
 });
 
 onUnmounted(() => {

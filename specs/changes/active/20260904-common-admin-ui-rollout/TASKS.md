@@ -5,7 +5,7 @@
 ## 准备
 
 - [ ] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）。
-- [ ] 确认依赖 change `20260904-packages-admin-ui-foundation` Phase 06 已通过“成员工作区”专项视觉验收并冻结契约；否则不得进入 implementing。
+- [ ] 确认依赖 change `20260904-packages-admin-ui-foundation` Phase 07 已通过“全局左侧导航”专项视觉验收，并连同 Phase 06 的成员工作区契约一起冻结；否则不得进入 implementing。
 - [ ] 阅读本 change 的 [API.md](./API.md)、[REQUIREMENTS.md](./REQUIREMENTS.md) 与 [DESIGN.md](./DESIGN.md)。
 - [ ] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [ingot-coding-standards](../../../../.agents/skills/ingot-coding-standards/SKILL.md)。
 - [ ] 盘点并在页面迁移时清理仅服务于旧 `InTable` 内置刷新按钮的 `@refresh` 监听。

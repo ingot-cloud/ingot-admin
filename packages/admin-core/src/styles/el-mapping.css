@@ -1,0 +1,62 @@
+/**
+ * Element Plus 变量单向映射：只允许 --el-* 读取 --in-*，禁止反向依赖。
+ * 使用 :root:root 提高优先级，避免被组件按需 CSS 覆盖。
+ */
+:root:root {
+  --el-color-primary: var(--in-color-primary);
+  --el-color-primary-rgb: 51, 112, 255;
+  --el-color-primary-light-3: color-mix(in srgb, var(--in-color-primary) 70%, white);
+  --el-color-primary-light-5: color-mix(in srgb, var(--in-color-primary) 50%, white);
+  --el-color-primary-light-7: color-mix(in srgb, var(--in-color-primary) 30%, white);
+  --el-color-primary-light-8: color-mix(in srgb, var(--in-color-primary) 20%, white);
+  --el-color-primary-light-9: color-mix(in srgb, var(--in-color-primary) 10%, white);
+  --el-color-primary-dark-2: color-mix(in srgb, var(--in-color-primary) 80%, black);
+
+  --el-color-success: var(--in-color-success);
+  --el-color-warning: var(--in-color-warning);
+  --el-color-danger: var(--in-color-danger);
+  --el-color-error: var(--in-color-danger);
+  --el-color-info: var(--in-color-info);
+
+  --el-text-color-primary: var(--in-text-color);
+  --el-text-color-regular: var(--in-text-color-secondary);
+  --el-text-color-secondary: var(--in-text-color-placeholder);
+  --el-text-color-placeholder: var(--in-text-color-placeholder);
+  --el-text-color-disabled: var(--in-text-color-disabled);
+
+  --el-bg-color: var(--in-bg-color-surface);
+  --el-bg-color-page: var(--in-bg-color-canvas);
+  --el-bg-color-overlay: var(--in-bg-color);
+  --el-fill-color-blank: var(--in-bg-color);
+  --el-fill-color-light: var(--in-bg-color-mute);
+  --el-fill-color-lighter: var(--in-bg-color-page);
+
+  --el-border-color: var(--in-border-color);
+  --el-border-color-light: var(--in-border-color-light);
+  --el-border-color-lighter: var(--in-border-color-light);
+  --el-border-color-extra-light: var(--in-bg-color-mute);
+
+  --el-border-radius-base: var(--in-radius-control);
+  --el-border-radius-small: var(--in-radius-control);
+  --el-border-radius-round: 20px;
+  --el-component-size: var(--in-control-height);
+  --el-component-size-small: var(--in-control-height-small);
+  --el-component-size-large: 40px;
+  --el-font-size-base: var(--in-font-size-body);
+  --el-font-size-extra-small: var(--in-font-size-caption);
+  --el-font-line-height-primary: var(--in-line-height-body);
+
+  --el-box-shadow: var(--in-shadow-overlay);
+  --el-box-shadow-light: var(--in-shadow-md);
+  --el-box-shadow-lighter: var(--in-shadow-sm);
+  --el-box-shadow-dark: var(--in-shadow-overlay);
+
+  --el-mask-color: var(--in-overlay-mask);
+  --el-transition-duration: var(--in-motion-duration);
+
+  --el-menu-item-height: var(--in-menu-item-height);
+  --el-menu-sub-item-height: var(--in-menu-item-height);
+  --el-menu-icon-width: var(--in-menu-icon-size);
+  --el-menu-base-level-padding: var(--in-menu-base-level-padding);
+  --el-menu-level-padding: var(--in-menu-level-padding);
+}

@@ -1,6 +1,8 @@
 <template>
-  <div class="in-global-setting" cursor-pointer @click="onClick">
-    <in-icon name="icon-park-outline:setting-config" class="icon" />
+  <div class="in-global-setting">
+    <button type="button" class="in-icon-button" aria-label="打开配置" @click="onClick">
+      <in-icon name="icon-park-outline:setting-config" class="icon" />
+    </button>
   </div>
   <in-drawer v-model="drawer" title="配置" size="300px">
     <div class="in-global-setting-list">
@@ -64,10 +66,8 @@ watch(
 </script>
 <style scoped lang="postcss">
 .in-global-setting {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
   & .icon {
-    color: white;
+    color: var(--in-text-color-secondary);
     width: var(--in-app-bar-icon-size);
     height: var(--in-app-bar-icon-size);
   }

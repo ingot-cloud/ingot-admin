@@ -5,23 +5,26 @@
         <slot name="header" />
       </div>
       <div v-else class="in-custom-title">
-        <div class="rect" />
         <div class="title">{{ title }}</div>
       </div>
     </template>
 
-    <div :style="`padding: ${padding}`" v-loading="loading">
+    <div class="in-drawer__body" :style="`padding: ${padding}`" v-loading="loading">
       <slot />
     </div>
 
     <template #footer>
-      <div flex flex-row justify-end items-center>
+      <div class="in-drawer__footer">
         <slot name="footer"> </slot>
       </div>
     </template>
   </el-drawer>
 </template>
 <script lang="ts" setup>
+defineOptions({
+  name: "InDrawer",
+});
+
 const slots = useSlots();
 defineProps({
   title: {
@@ -29,7 +32,7 @@ defineProps({
   },
   padding: {
     type: String,
-    default: "20px",
+    default: "var(--in-section-padding-relaxed)",
   },
   loading: {
     type: Boolean,
@@ -44,30 +47,38 @@ defineProps({
   & .el-drawer__header {
     border-bottom: 1px solid var(--in-border-color);
     margin-bottom: 0;
-    padding: 20px;
+    padding: var(--in-space-4) var(--in-section-padding-relaxed);
+  }
+
+  & .el-drawer__body {
+    overflow: auto;
   }
 
   & .el-drawer__footer {
-    padding: 20px;
-    box-shadow: 0px 6px 8px 6px rgba(0, 0, 0, 0.08);
+    padding: var(--in-space-3) var(--in-section-padding-relaxed);
+    border-top: 1px solid var(--in-border-color);
+    background: var(--in-bg-color);
+    box-shadow: none;
+  }
+
+  & .in-drawer__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--in-space-2);
   }
 
   & .in-custom-title {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
-    grid-gap: 10px;
-    & .rect {
-      width: 4px;
-      height: 14px;
-      background: var(--in-color-primary);
-      border-radius: 2px;
-    }
+
     & .title {
-      font-weight: bold;
-      color: #192f48;
-      font-size: 18px;
+      font-weight: var(--in-font-weight-section-title);
+      color: var(--in-text-color);
+      font-size: var(--in-font-size-section-title);
+      line-height: var(--in-line-height-section-title);
     }
   }
 }

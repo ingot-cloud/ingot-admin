@@ -1,5 +1,5 @@
 <template>
-  <in-container ref="ContainerRef">
+  <in-container ref="ContainerRef" class="h-full overflow-auto" backtop-target=".in-container">
     <div class="in-frame-layout">
       <div w-full h-full v-for="item in urlArray" :key="item.path" class="in-frame-box">
         <iframe

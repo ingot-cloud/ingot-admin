@@ -5,6 +5,11 @@ body,
   height: 100%;
   padding: 0;
   margin: 0;
+  overflow: hidden;
+  background: var(--in-bg-color-canvas);
+  color: var(--in-text-color);
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-line-height-body);
 }
 
 ::-webkit-scrollbar {
@@ -14,4 +19,69 @@ body,
 ::-webkit-scrollbar-thumb {
   @apply b-rd-6;
   background-color: var(--in-color-info-light-5);
+}
+
+.in-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--in-icon-button-size);
+  height: var(--in-icon-button-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--in-radius-control);
+  background: transparent;
+  color: var(--in-text-color-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--in-motion-duration) var(--in-motion-ease),
+    color var(--in-motion-duration) var(--in-motion-ease);
+}
+
+.in-icon-button:hover {
+  background: var(--in-bg-color-hover);
+  color: var(--in-text-color);
+}
+
+.in-icon-button:active {
+  background: var(--in-bg-color-active);
+}
+
+.in-icon-button:focus-visible,
+.el-button:focus-visible,
+.el-menu-item:focus-visible,
+.el-sub-menu__title:focus-visible {
+  outline: 2px solid var(--in-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.in-shell-header {
+  --el-header-padding: var(--in-app-bar-padding);
+  --el-header-height: var(--in-app-bar-height);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--in-app-bar-height);
+  background: var(--in-app-bar-bg);
+  color: var(--in-app-bar-text);
+  border-bottom: 1px solid var(--in-app-bar-border);
+  box-shadow: var(--in-shadow-none);
+  z-index: var(--in-z-header);
+}
+
+.el-button {
+  --el-border-radius-base: var(--in-radius-control);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in-anim-fade-in,
+  .fade-transform-leave-active,
+  .fade-transform-enter-active,
+  .breadcrumb-enter-active,
+  .breadcrumb-leave-active {
+    animation: none !important;
+    transition: none !important;
+  }
 }

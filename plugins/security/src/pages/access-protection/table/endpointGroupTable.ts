@@ -20,7 +20,6 @@ export const endpointGroupTableHeaders: Array<TableHeaderRecord> = [
     label: "状态",
     prop: "enabled",
     width: "90",
-    align: "center",
   },
   {
     label: "备注",
@@ -32,6 +31,5 @@ export const endpointGroupTableHeaders: Array<TableHeaderRecord> = [
     prop: "actions",
     width: "160",
     fixed: "right",
-    align: "center",
   },
 ];

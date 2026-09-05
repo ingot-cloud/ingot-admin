@@ -5,13 +5,11 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
     label: "名单类型",
     prop: "listType",
     width: "100",
-    align: "center",
   },
   {
     label: "Key 类型",
     prop: "keyType",
     width: "110",
-    align: "center",
   },
   {
     label: "匹配值",
@@ -27,7 +25,6 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
     label: "来源",
     prop: "source",
     width: "90",
-    align: "center",
   },
   {
     label: "生效时间",
@@ -43,13 +40,11 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
     label: "状态",
     prop: "enabled",
     width: "90",
-    align: "center",
   },
   {
     label: "操作",
     prop: "actions",
     width: "160",
     fixed: "right",
-    align: "center",
   },
 ];

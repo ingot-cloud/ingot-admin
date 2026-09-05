@@ -1,4 +1,5 @@
 import type { TableHeaderRecord, TablePage } from "./types";
+import type { InDensity, InTableFeedback } from "../types";
 import { TreeListKeyAndProps } from "@/models";
 
 // 简化的 treeProps 类型定义
@@ -12,9 +13,13 @@ export interface ExtendTableProps {
   page?: TablePage;
   loading?: boolean;
   radioKey?: string;
+  /** @deprecated InTable 不再自动渲染字段设置；页面请按需放入 InColumnSetting。 */
   hideSetting?: boolean;
+  density?: InDensity;
+  feedback?: InTableFeedback;
   pageSize?: Array<number>;
   pageLayout?: string;
+  tableId?: string;
 }
 
 // 手动定义所有需要的表格属性，避免复杂的类型继承
@@ -62,7 +67,9 @@ export interface InTableProps extends ExtendTableProps {
 
 export const DefaultProps = {
   loading: false,
-  hideSetting: false,
+  hideSetting: true,
+  density: "default" as InDensity,
+  feedback: "none" as InTableFeedback,
   headers: () => [],
   page: () => ({
     current: 1,
@@ -71,6 +78,7 @@ export const DefaultProps = {
   }),
   pageSize: () => [20, 30, 40, 50],
   pageLayout: () => "total, sizes, prev, pager, next, jumper",
+  tableId: "",
   // ElTable
   data: () => [],
   stripe: false,

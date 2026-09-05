@@ -1,64 +1,82 @@
 <template>
-  <div
-    class="in-menu"
-    :class="[getMenuOpened ? 'w-[var(--in-menu-show)]' : 'w-[var(--in-menu-hide)]']"
+  <nav
+    class="in-menu select-none"
+    :class="{
+      'is-collapsed': !sidebarExpanded,
+      'is-overlay': isOverlay,
+    }"
+    aria-label="主导航"
   >
-    <div class="menu-header" @click="switchOrg">
-      <img class="logo-image" :src="userInforStore.getCurrentOrg?.avatar" />
-      <div class="right-box" v-if="getMenuOpened">
-        <div class="title">{{ userInforStore.getCurrentOrg?.name }}</div>
-        <div class="auth-box" :class="{ authenticated: isAuth }">
-          <in-icon v-if="!isAuth" name="ph:seal-question-duotone" class="icon"></in-icon>
-          <in-icon v-else name="bx:shield" class="icon"></in-icon>
-          <div class="auth">{{ isAuth ? "已认证" : "未认证" }}</div>
-        </div>
-      </div>
-      <in-icon v-if="getMenuOpened" name="icon-park:switch" />
-    </div>
-    <el-scrollbar>
-      <el-menu
-        class="overflow-x-hidden b-r-none!"
-        :collapse="!getMenuOpened"
-        :default-active="activePath"
-        :collapse-transition="false"
-        :unique-opened="true"
-        router
-      >
-        <in-submenu v-for="route in getMenus" :key="route.path" :route="route" />
-      </el-menu>
-    </el-scrollbar>
     <div
-      class="menu-control"
-      :class="[getMenuOpened ? 'w-[var(--in-menu-show)]' : 'w-[var(--in-menu-hide)]']"
-      @click="toggle"
+      class="in-menu__scroll"
+      data-testid="menu-scroll-viewport"
+      @click.capture="privateOnMenuClick"
     >
-      <div class="content">
-        <in-icon v-if="getMenuOpened" name="line-md:arrow-left" class="icon" />
-        <in-icon v-else name="line-md:arrow-right" class="icon" />
-        <div v-if="getMenuOpened" class="title">收起菜单</div>
-      </div>
+      <el-scrollbar class="in-menu__scrollbar">
+        <el-menu
+          class="in-menu__list"
+          :default-active="activePath"
+          :collapse="false"
+          :collapse-transition="false"
+          :unique-opened="false"
+          router
+        >
+          <in-submenu v-for="route in getMenus" :key="route.path" :route="route" />
+        </el-menu>
+      </el-scrollbar>
     </div>
-  </div>
+    <div class="in-menu__clearance" aria-hidden="true"></div>
+    <div class="in-menu__divider" aria-hidden="true"></div>
+    <div class="in-menu__divider-gap" aria-hidden="true"></div>
+    <button
+      type="button"
+      class="in-menu__control"
+      :aria-label="controlLabel"
+      :aria-expanded="sidebarExpanded || isOverlay"
+      @click="privateToggle"
+    >
+      <in-icon :name="controlIcon" class="in-menu__control-icon" />
+      <span v-if="showControlText" class="in-menu__control-text">{{ controlText }}</span>
+    </button>
+  </nav>
 </template>
 
 <script lang="ts" setup>
 import { useAppStateStore } from "@/stores/modules/app";
-import { useUserInfoStore } from "@/stores/modules/auth";
 import { useRouterStore } from "@/stores/modules/router";
+import { shellLayoutKey } from "@/layouts/main/types";
 
-// 现在只显示已认证状态
-const isAuth = ref(true);
+defineOptions({
+  name: "InMenu",
+});
+
 const router = useRouter();
 const appStateStore = useAppStateStore();
-const userInforStore = useUserInfoStore();
+const shell = inject(shellLayoutKey);
 const { getMenuOpened } = storeToRefs(appStateStore);
+
+const isOverlay = computed(() => shell?.isOverlay.value ?? false);
+const sidebarExpanded = computed(() => {
+  if (isOverlay.value) {
+    return true;
+  }
+  return Boolean(getMenuOpened.value);
+});
+const showControlText = computed(() => isOverlay.value || sidebarExpanded.value);
+const controlLabel = computed(() => {
+  if (isOverlay.value) {
+    return "关闭导航";
+  }
+  return sidebarExpanded.value ? "收起导航" : "展开导航";
+});
+const controlText = computed(() => (isOverlay.value ? "关闭导航" : "收起导航"));
+const controlIcon = computed(() =>
+  sidebarExpanded.value || isOverlay.value ? "ep:arrow-left" : "ep:arrow-right",
+);
+
 let lastActivePath = "/";
 const activePath = computed(() => {
   const route = router.currentRoute.value;
-
-  // 如果当前路由需要隐藏菜单
-  // 1.展示其父path
-  // 2.如果不存在父path，那么展示上一个激活的路由
   if (route.meta.hideMenu) {
     const matched = route.matched;
     if (matched.length > 1) {
@@ -72,154 +90,212 @@ const activePath = computed(() => {
 });
 
 const { getMenus } = storeToRefs(useRouterStore());
-const toggle = () => {
+
+const privateToggle = () => {
+  if (shell) {
+    if (isOverlay.value) {
+      shell.closeOverlay();
+      return;
+    }
+    shell.toggleSidebar();
+    return;
+  }
   appStateStore.toggleMenu();
 };
 
-const switchOrg = () => {
-  useMessageConfirm()
-    .warning("是否切换组织")
-    .then(() => {
-      useLogin().go();
-    });
+const privateOnMenuClick = (event: MouseEvent) => {
+  if (sidebarExpanded.value || isOverlay.value) {
+    return;
+  }
+  const target = event.target;
+  if (!(target instanceof Element)) {
+    return;
+  }
+  const groupTitle = target.closest(".el-sub-menu__title");
+  if (groupTitle && !target.closest(".el-menu-item")) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
 };
 </script>
 
 <style lang="postcss" scoped>
 .in-menu {
-  @apply flex flex-col h-full transition-width transition-ease transition-duration-300;
-  height: calc(100% - var(--in-app-bar-height));
-  padding: 8px 8px 0;
-
-  --menu-header-height: 70px;
-  --menu-header-bottom: 12px;
-  --menu-control-height: 40px;
-  --scrollbar-height: calc(
-    100vh - var(--in-app-bar-height) - var(--menu-header-height) - var(--menu-header-bottom) -
-      var(--menu-control-height)
-  );
-
-  & .menu-header {
-    @apply flex flex-row items-center box-border cursor-pointer;
-    height: var(--menu-header-height);
-    border-bottom: 1px solid var(--in-border-color);
-    margin-bottom: var(--menu-header-bottom);
-
-    & .logo-image {
-      height: 30px;
-      width: 30px;
-      margin-left: 12px;
-    }
-    & .right-box {
-      @apply flex flex-col items-start;
-      margin-left: 12px;
-      & .title {
-        font-size: 14px;
-        color: #171a1d;
-        margin-bottom: 2px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        line-height: 1.6;
-        width: 140px;
-      }
-      & .auth-box {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 2px;
-        grid-gap: 2px;
-        min-height: 18px;
-        border: 1px solid rgba(126, 134, 142, 0.16);
-        border-radius: 4px;
-        padding: 0 4px;
-        cursor: default;
-
-        &.authenticated {
-          border: 1px solid var(--in-color-primary);
-          & .icon {
-            color: var(--in-color-primary);
-          }
-
-          & .auth {
-            color: var(--in-color-primary);
-          }
-        }
-
-        & .icon {
-          color: rgba(23, 26, 29, 0.6);
-        }
-
-        & .auth {
-          line-height: 16px;
-          font-size: 10px;
-          color: rgba(23, 26, 29, 0.6);
-        }
-      }
-    }
-  }
-
-  & .el-menu {
-    --el-menu-bg-color: var(--in-menu-bg-color);
-    --el-menu-hover-bg-color: var(--in-menu-bg-hover-color);
-    --el-menu-text-color: var(--in-menu-text-color);
-    --el-menu-active-color: var(--in-menu-text-active-color);
-    --el-menu-base-level-padding: var(--in-menu-base-level-padding);
-    --el-menu-item-font-size: var(--in-menu-item-font-size);
-  }
-  & .el-scrollbar {
-    height: var(--scrollbar-height);
-  }
-
-  & .menu-control {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    cursor: pointer;
-    padding: 0 8px;
-    color: rgba(23, 26, 29, 0.6);
-    & .content {
-      @apply flex flex-row items-center justify-center gap-4;
-      border-top: 1px solid var(--in-border-color);
-      height: var(--menu-control-height);
-      width: 100%;
-
-      & .title {
-        font-size: 12px;
-      }
-      & .icon {
-        font-size: 14px;
-      }
-    }
-  }
+  display: grid;
+  grid-template-rows:
+    minmax(0, 1fr) var(--in-menu-footer-clearance) 1px var(--in-menu-divider-gap)
+    var(--in-menu-control-height) var(--in-sidebar-gutter);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--in-bg-color-sidebar);
+  user-select: none;
 }
 
-:deep(.el-menu-item) {
-  font-weight: bold;
+.in-menu__scroll {
+  min-height: 0;
+  overflow: hidden;
 }
-:deep(.el-sub-menu) {
-  font-weight: bold;
-  & .el-menu-item {
-    font-weight: 1;
-  }
+
+.in-menu__scrollbar {
+  height: 100%;
 }
-:deep(.el-menu-item.is-active) {
-  background: var(--in-menu-bg-hover-color);
-  border-radius: 4px;
-  /* &::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 4px;
-    content: "";
-    background: var(--in-color-primary);
-  } */
+
+.in-menu__scrollbar :deep(.el-scrollbar__bar) {
+  display: none;
 }
-:deep(.el-menu-item:hover) {
-  border-radius: 4px;
+
+.in-menu__scrollbar :deep(.el-scrollbar__wrap) {
+  scrollbar-width: none;
 }
-:deep(.el-sub-menu:hover) {
-  border-radius: 4px !important;
+
+.in-menu__scrollbar :deep(.el-scrollbar__wrap)::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.in-menu__list {
+  --el-menu-bg-color: var(--in-menu-bg-color);
+  --el-menu-hover-bg-color: var(--in-menu-bg-hover-color);
+  --el-menu-text-color: var(--in-menu-text-color);
+  --el-menu-active-color: var(--in-menu-text-active-color);
+  --el-menu-base-level-padding: var(--in-menu-base-level-padding);
+  --el-menu-level-padding: var(--in-menu-level-padding);
+  --el-menu-item-font-size: var(--in-menu-item-font-size);
+  --el-menu-item-height: var(--in-menu-item-height);
+  --el-menu-icon-width: var(--in-menu-icon-size);
+  border-right: none;
+  background: transparent;
+  width: 100%;
+  padding-top: var(--in-menu-content-padding-top);
+}
+
+.in-menu__clearance {
+  min-height: var(--in-menu-footer-clearance);
+}
+
+.in-menu__divider {
+  height: 1px;
+  margin: 0 var(--in-space-2);
+  background: var(--in-border-color);
+}
+
+.in-menu__divider-gap {
+  min-height: var(--in-menu-divider-gap);
+}
+
+.in-menu__control {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--in-menu-control-height);
+  margin: 0;
+  padding: 0 var(--in-space-2);
+  border: 0;
+  border-radius: var(--in-menu-control-radius);
+  background: transparent;
+  color: var(--in-text-color-secondary);
+  cursor: pointer;
+  gap: var(--in-space-3);
+  justify-content: flex-start;
+}
+
+.in-menu.is-collapsed .in-menu__control {
+  justify-content: center;
+  padding: 0;
+}
+
+.in-menu__control-icon {
+  width: var(--in-menu-icon-size);
+  height: var(--in-menu-icon-size);
+  flex: none;
+}
+
+.in-menu__control-text {
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-menu-line-height);
+  font-weight: 400;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.in-menu__control:hover {
+  background: var(--in-bg-color-control-hover);
+}
+
+.in-menu__control:active {
+  background: var(--in-bg-color-active);
+}
+
+.in-menu__control:focus-visible {
+  outline: 2px solid var(--in-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.in-menu__control:disabled {
+  color: var(--in-text-color-disabled);
+  cursor: not-allowed;
+}
+
+:deep(.el-menu-item),
+:deep(.el-sub-menu__title) {
+  height: var(--in-menu-item-height);
+  line-height: var(--in-menu-line-height);
+  font-size: var(--in-menu-item-font-size);
+  font-weight: 400;
+  color: var(--in-menu-text-color);
+  border-radius: var(--in-menu-item-radius);
+  margin-bottom: var(--in-menu-item-gap);
+  user-select: none;
+}
+
+:deep(.el-menu-item span),
+:deep(.el-sub-menu__title > span) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:deep(.el-menu-item.is-active),
+:deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+  background: var(--in-bg-color-active);
+  color: var(--in-menu-text-active-color);
+  font-weight: 500;
+}
+
+:deep(.el-menu-item:hover),
+:deep(.el-sub-menu__title:hover) {
+  background: var(--in-bg-color-menu-hover);
+}
+
+.is-collapsed :deep(.el-menu-item span),
+.is-collapsed :deep(.el-sub-menu__title > span),
+.is-collapsed :deep(.el-sub-menu__icon-arrow),
+.is-collapsed :deep(.el-badge),
+.is-collapsed :deep(.el-sub-menu .el-menu) {
+  visibility: hidden;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.is-collapsed :deep(.el-sub-menu .el-menu) {
+  display: none;
+}
+
+.is-collapsed :deep(.el-sub-menu__title) {
+  pointer-events: none;
+}
+
+.is-collapsed :deep(.el-menu-item) {
+  pointer-events: auto;
+}
+
+.is-collapsed :deep(.in-menu__divider) {
+  background: transparent !important;
 }
 </style>

@@ -1,39 +1,76 @@
 <template>
-  <!-- 过滤容器主结构 -->
-  <div class="in-filter-container">
-    <!-- 顶部标题区域 -->
+  <div
+    ref="rootRef"
+    class="in-filter-container"
+    :class="[
+      `is-${variant}`,
+      `is-${density}`,
+      {
+        'has-left': Boolean(slot.left),
+        'is-left-open': leftVisible,
+        'is-left-collapsed': Boolean(slot.left) && !leftVisible,
+        'is-left-overlay': isOverlay,
+        'is-left-overlay-open': isOverlay && overlayOpen,
+      },
+    ]"
+    :style="rootStyle"
+  >
     <div
+      v-if="slot.header"
       class="in-filter-container-header"
       :class="{ 'sticky-header': stickyHeader }"
-      v-if="slot.header"
     >
       <slot name="header"></slot>
     </div>
 
-    <!-- 左右布局容器 -->
     <div class="in-filter-container-left-right">
-      <!-- 左侧边栏区域 -->
-      <div class="left-filter" v-if="slot.left">
-        <slot name="left"></slot>
-      </div>
+      <div
+        v-if="isOverlay && overlayOpen"
+        class="in-filter-container__mask"
+        aria-hidden="true"
+        @click="privateCloseOverlay"
+      />
 
-      <!-- 右侧主要内容区域 -->
+      <aside
+        v-if="slot.left"
+        class="left-filter"
+        :class="{ 'is-collapsed': !leftVisible }"
+        :aria-hidden="!leftVisible"
+      >
+        <div class="left-filter__scroll">
+          <slot name="left"></slot>
+        </div>
+      </aside>
+
+      <el-tooltip
+        v-if="slot.left && leftCollapsible"
+        :content="collapseLabel"
+        effect="light"
+        placement="right"
+      >
+        <button
+          type="button"
+          class="in-filter-container__collapse"
+          :class="{ 'is-collapsed': !leftVisible }"
+          :aria-label="collapseLabel"
+          @click="privateToggleLeft"
+        >
+          <in-icon name="ep:arrow-left" class="in-filter-container__collapse-icon" />
+        </button>
+      </el-tooltip>
+
       <el-container class="in-filter-container-right">
-        <!-- 顶部过滤条件区域 -->
         <div class="top-filter" v-if="slot.top">
           <slot name="top"></slot>
         </div>
 
-        <!-- 内部滚动容器 -->
         <div class="inner-container">
-          <!-- 默认插槽放置主要内容 -->
           <slot />
         </div>
       </el-container>
     </div>
 
-    <!-- 返回顶部按钮 -->
-    <el-backtop v-if="showBacktop" target=".in-filter-container" :right="60" :bottom="60">
+    <el-backtop v-if="showBacktop" :target="backtopTarget" :right="60" :bottom="60">
       <div flex items-center justify-center>
         <i-material-symbols:vertical-align-top-rounded />
       </div>
@@ -42,69 +79,379 @@
 </template>
 
 <script lang="ts" setup>
-// 组件属性定义
-defineProps({
-  // 是否显示返回顶部按钮
-  showBacktop: {
-    type: Boolean,
-    default: true,
-  },
-  stickyHeader: {
-    type: Boolean,
-    default: true,
-  },
+import type { InDensity, InSurfaceVariant } from "../types";
+import { SHELL_BREAKPOINT_NARROW } from "@/layouts/main/types";
+import { useUserInfoStore } from "@/stores/modules/auth";
+import {
+  buildUiPreferenceKey,
+  FILTER_LEFT_STORAGE_PREFIX,
+  readUiPreference,
+  resolveUiUserKey,
+  writeUiPreference,
+} from "@/utils/uiPreference";
+
+defineOptions({
+  name: "InFilterContainer",
 });
 
-// 插槽检测，用于条件渲染插槽区域
+const props = withDefaults(
+  defineProps<{
+    showBacktop?: boolean;
+    stickyHeader?: boolean;
+    variant?: InSurfaceVariant;
+    density?: InDensity;
+    backtopTarget?: string;
+    leftWidth?: number;
+    leftCollapsible?: boolean;
+    autoCollapse?: boolean;
+    minRightWidth?: number;
+    persistenceKey?: string;
+    radius?: string;
+    background?: string;
+    borderColor?: string;
+    borderWidth?: string;
+  }>(),
+  {
+    showBacktop: false,
+    stickyHeader: true,
+    variant: "plain",
+    density: "default",
+    backtopTarget: ".in-table__body",
+    leftWidth: 260,
+    leftCollapsible: true,
+    autoCollapse: true,
+    minRightWidth: 680,
+  },
+);
+
+const leftOpen = defineModel<boolean>("leftOpen", { default: true });
 const slot = useSlots();
+const userStore = useUserInfoStore();
+const overlayQuery = useMediaQuery(`(max-width: ${SHELL_BREAKPOINT_NARROW - 1}px)`);
+const overlayOpen = ref(false);
+const rootRef = ref<HTMLElement>();
+const containerWidth = ref(Number.POSITIVE_INFINITY);
+const userForcedOpen = ref(false);
+
+const isOverlay = computed(() => Boolean(slot.left) && props.leftCollapsible && overlayQuery.value);
+const autoShouldCollapse = computed(() => {
+  if (!props.leftCollapsible || !props.autoCollapse || isOverlay.value || !slot.left) {
+    return false;
+  }
+  return containerWidth.value < props.leftWidth + props.minRightWidth;
+});
+const leftVisible = computed(() => {
+  if (!slot.left) {
+    return false;
+  }
+  if (!props.leftCollapsible) {
+    return true;
+  }
+  if (isOverlay.value) {
+    return overlayOpen.value;
+  }
+  if (!leftOpen.value) {
+    return false;
+  }
+  if (autoShouldCollapse.value && !userForcedOpen.value) {
+    return false;
+  }
+  return true;
+});
+const collapseLabel = computed(() => (leftVisible.value ? "收起筛选" : "展开筛选"));
+
+const storageKey = computed(() => {
+  if (!props.persistenceKey) {
+    return "";
+  }
+  return buildUiPreferenceKey(
+    FILTER_LEFT_STORAGE_PREFIX,
+    resolveUiUserKey(userStore.userInfo.user),
+    props.persistenceKey,
+  );
+});
+
+const rootStyle = computed(() => {
+  const style: Record<string, string> = {
+    "--in-filter-left-width": `${props.leftWidth}px`,
+  };
+  if (props.radius) {
+    style["--in-container-radius"] = props.radius;
+  }
+  if (props.background) {
+    style["--in-container-bg"] = props.background;
+  }
+  if (props.borderColor) {
+    style["--in-container-border-color"] = props.borderColor;
+  }
+  if (props.borderWidth) {
+    style["--in-container-border-width"] = props.borderWidth;
+  } else if (props.borderColor) {
+    style["--in-container-border-width"] = "1px";
+  }
+  return style;
+});
+
+const persistDesktop = (open: boolean) => {
+  if (!storageKey.value || isOverlay.value) {
+    return;
+  }
+  writeUiPreference(storageKey.value, open);
+};
+
+const privateToggleLeft = () => {
+  if (isOverlay.value) {
+    overlayOpen.value = !overlayOpen.value;
+    return;
+  }
+  if (!props.leftCollapsible) {
+    return;
+  }
+  if (leftVisible.value) {
+    leftOpen.value = false;
+    userForcedOpen.value = false;
+    persistDesktop(false);
+    return;
+  }
+  leftOpen.value = true;
+  persistDesktop(true);
+  userForcedOpen.value = autoShouldCollapse.value;
+};
+
+const privateCloseOverlay = () => {
+  overlayOpen.value = false;
+};
+
+watch(
+  () => [storageKey.value, overlayQuery.value],
+  () => {
+    if (!storageKey.value || overlayQuery.value) {
+      return;
+    }
+    leftOpen.value = readUiPreference(storageKey.value, leftOpen.value);
+  },
+  { immediate: true },
+);
+
+watch(isOverlay, (overlay) => {
+  if (overlay) {
+    overlayOpen.value = false;
+    userForcedOpen.value = false;
+  }
+});
+
+watch(autoShouldCollapse, (shouldCollapse) => {
+  if (!shouldCollapse) {
+    userForcedOpen.value = false;
+  }
+});
+
+let resizeObserver: ResizeObserver | undefined;
+
+const privateApplyWidth = (width: number) => {
+  if (width <= 0) {
+    return;
+  }
+  containerWidth.value = width;
+};
+
+onMounted(() => {
+  const el = rootRef.value;
+  if (!el || typeof ResizeObserver === "undefined") {
+    return;
+  }
+  resizeObserver = new ResizeObserver((entries) => {
+    const width = entries[0]?.contentRect.width;
+    if (typeof width === "number") {
+      privateApplyWidth(width);
+    }
+  });
+  resizeObserver.observe(el);
+  privateApplyWidth(el.getBoundingClientRect().width);
+});
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+});
 </script>
 
 <style lang="postcss" scoped>
 .in-filter-container {
-  @apply w-full h-full flex flex-col bg-[var(--in-bg-color)] overflow-x-hidden;
-  border-radius: var(--in-common-border-radius);
+  @apply w-full flex flex-col min-w-0;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
   position: relative;
+  background: var(--in-container-bg);
+  border-radius: var(--in-container-radius);
+  border: var(--in-container-border-width) solid var(--in-container-border-color);
 
-  /* 头部样式 */
-  & .in-filter-container-header {
-    @apply p-[var(--in-common-padding)] bg-[var(--in-bg-color)];
-    border-bottom: 1px solid var(--in-border-color); /* 底部分割线 */
+  &.is-plain {
+    --in-container-border-width: 0px;
   }
-  & .in-filter-container-header.sticky-header {
-    position: sticky;
+
+  &.is-bordered {
+    --in-container-border-width: 1px;
+  }
+
+  & .in-filter-container-header {
+    flex: none;
+    min-height: var(--in-filter-header-min-height);
+    padding: var(--in-filter-header-padding);
+    background: var(--in-bg-color-surface);
+    border-bottom: 1px solid var(--in-border-color);
+    box-sizing: border-box;
+  }
+
+  & .in-filter-container-left-right {
+    @apply flex flex-row min-w-0;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  & .left-filter {
+    flex: none;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    width: var(--in-filter-left-width);
+    overflow: hidden;
+    border-right: 1px solid var(--in-border-color);
+    transition: width var(--in-motion-duration-split) var(--in-motion-ease);
+  }
+
+  & .left-filter.is-collapsed {
+    width: 0;
+    border-right-color: transparent;
+  }
+
+  & .left-filter__scroll {
+    height: 100%;
+    min-height: 0;
+    width: var(--in-filter-left-width);
+    overflow: auto;
+    padding: var(--in-section-padding);
+  }
+
+  &.is-left-overlay .left-filter {
+    position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    z-index: 100;
+    bottom: 0;
+    z-index: 20;
+    width: var(--in-filter-left-width);
+    transform: translateX(-100%);
+    box-shadow: var(--in-shadow-overlay);
+    border-right: 1px solid var(--in-border-color);
+    transition:
+      transform var(--in-motion-duration-split) var(--in-motion-ease),
+      width var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
-  /* 左右布局容器样式 */
-  & .in-filter-container-left-right {
-    @apply flex flex-row;
-    flex: 1; /* 撑满剩余空间 */
+  &.is-left-overlay .left-filter.is-collapsed {
+    width: var(--in-filter-left-width);
+    background: var(--in-bg-color-subtle);
   }
 
-  /* 左侧边栏样式 */
-  & .left-filter {
-    @apply p-[var(--in-common-padding)];
-    border-right: 1px solid var(--in-border-color); /* 右侧分割线 */
+  &.is-left-overlay-open .left-filter {
+    transform: translateX(0);
   }
 
-  /* 右侧内容区域 */
+  & .in-filter-container__mask {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: var(--in-overlay-mask);
+  }
+
+  & .in-filter-container__collapse {
+    position: absolute;
+    top: var(--in-split-collapse-offset-top);
+    left: var(--in-filter-left-width);
+    z-index: 21;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--in-split-collapse-width);
+    height: var(--in-split-collapse-height);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--in-border-color);
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+    background: var(--in-bg-color-surface);
+    color: var(--in-text-color-secondary);
+    cursor: pointer;
+    transform: translateX(-100%);
+    transition:
+      left var(--in-motion-duration-split) var(--in-motion-ease),
+      transform var(--in-motion-duration-split) var(--in-motion-ease);
+  }
+
+  & .in-filter-container__collapse-icon {
+    width: 12px;
+    height: 12px;
+    transition: transform var(--in-motion-duration-split) var(--in-motion-ease);
+  }
+
+  & .in-filter-container__collapse:hover {
+    color: var(--in-text-color);
+  }
+
+  & .in-filter-container__collapse:focus-visible {
+    outline: 2px solid var(--in-focus-ring-color);
+    outline-offset: 2px;
+  }
+
+  & .in-filter-container__collapse.is-collapsed {
+    left: 0;
+    transform: none;
+  }
+
+  & .in-filter-container__collapse.is-collapsed .in-filter-container__collapse-icon {
+    transform: rotate(180deg);
+  }
+
+  &.is-left-overlay .in-filter-container__collapse {
+    left: 0;
+    transform: none;
+  }
+
+  &.is-left-overlay-open .in-filter-container__collapse {
+    left: var(--in-filter-left-width);
+    transform: translateX(-100%);
+  }
+
   & .in-filter-container-right {
-    @apply flex flex-col;
+    @apply flex flex-col min-w-0 flex-1;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--in-bg-color-surface);
 
-    /* 顶部过滤条件样式 */
     & .top-filter {
-      @apply p-[var(--in-common-padding)];
-      border-bottom: 1px solid var(--in-border-color); /* 底部分割线 */
+      flex: none;
+      padding: var(--in-space-5);
     }
 
-    /* 内部滚动容器 */
     & .inner-container {
-      @apply flex-1 box-border overflow-x-hidden p-[var(--in-common-padding)];
-      /* 弹性布局撑满空间 + 内边距 */
+      @apply flex flex-col box-border min-w-0;
+      flex: 1;
+      min-height: 0;
+      padding: 0;
+      overflow: hidden;
     }
+
+    & .inner-container > :deep(*) {
+      flex: 1;
+      min-height: 0;
+      max-height: 100%;
+    }
+  }
+
+  &.is-compact {
+    --in-section-padding: var(--in-space-3);
   }
 }
 </style>

@@ -34,6 +34,20 @@ export * from "./hooks/web/useMessage";
 export * from "./hooks/web/useRouter";
 export * from "./hooks/web/useTitle";
 export * from "./components/table";
+export type {
+  InDensity,
+  InSurfaceVariant,
+  InNavigationMode,
+  InTableFeedback,
+  InDialogTone,
+  InPageScrollMode,
+  InPageSurface,
+  InTableActionKind,
+  InTableActionOverflow,
+  InTableAction,
+  InTableActionConfirm,
+  InAppBarUtilityAction,
+} from "./components/types";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
 export { coreGlobalComponents } from "./components/coreComponents";
 export type {

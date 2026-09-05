@@ -23,24 +23,32 @@ const searchValue = ref("");
 </script>
 <style lang="postcss" scoped>
 .in-app-bar-search {
-  width: 440px;
-  color: white;
+  width: var(--in-app-bar-search-width);
+  max-width: 100%;
+  flex: none;
+  color: var(--in-text-color);
 
   & .in-input {
-    --el-input-placeholder-color: hsla(0, 0%, 100%, 0.4);
-    --el-input-icon-color: hsla(0, 0%, 100%, 0.4);
-    --el-input-border-radius: 4px;
-    --el-input-border-color: rgba(126, 134, 142, 0.16);
-    --el-input-hover-border-color: #00000000;
-    --el-input-focus-border-color: #00000000;
-    --el-input-bg-color: hsla(0, 0%, 100%, 0.16);
-    --el-input-text-color: white;
+    --el-input-placeholder-color: var(--in-text-color-placeholder);
+    --el-input-icon-color: var(--in-text-color-placeholder);
+    --el-input-border-radius: var(--in-radius-control);
+    --el-input-border-color: var(--in-border-color);
+    --el-input-hover-border-color: var(--in-border-color);
+    --el-input-focus-border-color: var(--in-color-primary);
+    --el-input-bg-color: var(--in-bg-color-mute);
+    --el-input-text-color: var(--in-text-color);
   }
 }
-:deep(.el-input__wrapper:hover) {
-  background-color: hsla(0, 0%, 100%, 0.24);
+
+@media (max-width: 1279px) {
+  .in-app-bar-search {
+    width: 200px;
+  }
 }
-:deep(.el-input__wrapper.is-focus) {
-  background-color: hsla(0, 0%, 100%, 0.24);
+
+@media (max-width: 1023px) {
+  .in-app-bar-search {
+    width: 140px;
+  }
 }
 </style>

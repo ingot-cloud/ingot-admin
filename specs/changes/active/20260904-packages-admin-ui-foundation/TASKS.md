@@ -18,6 +18,7 @@
 - [x] 阶段 4：完成 [验证与文档](./phases/phase-04-validation/TASKS.md)。
 - [x] 阶段 5：完成 [第二轮视觉复核补强](./phases/phase-05-visual-corrections/TASKS.md)。
 - [x] 阶段 6：完成 [成员工作区与表格工具补强](./phases/phase-06-member-workspace/TASKS.md)。
+- [x] 阶段 7：完成 [全局左侧导航补强](./phases/phase-07-sidebar-navigation/TASKS.md)。
 
 ## 验证
 
@@ -33,10 +34,13 @@
 - [ ] 验证 `InFilterContainer` 左栏 260/0px 手动收缩、容器窄宽度自动收起以及宽度恢复后的用户状态。
 - [ ] 验证 `InTable` 无内置刷新、tools 按需组合、字段设置按钮和批量 action 组的原子收纳/恢复。
 - [ ] 验证成员式 48px 表头、44px 数据行、固定操作列、数据区滚动和右下分页。
+- [ ] 验证侧栏 236/52px、主内容偏移 244/60px、菜单层级、收缩态内容裁剪和 300ms 同步动效。
+- [ ] 使用短视口滚动长菜单，验证“收起导航”控制高 44px、距底部 8px，且不随菜单滚动。
+- [ ] 验证桌面导航偏好与窄屏 overlay 状态隔离，桌面无重复折叠入口。
 
 ## 收尾
 
 - [ ] 新建并更新 `specs/current/packages/admin-ui-foundation/spec.md`，只记录已上线行为。
 - [ ] 在 capability README 记录本 change ID，并链到归档后的 `API.md`。
-- [ ] 确认关联 rollout change 可依赖的组件契约已经稳定。
+- [ ] 确认 Phase 07 通过用户视觉验收，关联 rollout change 可依赖的组件契约已经稳定。
 - [ ] README 状态改为 `completed`，将变更目录移至 `specs/changes/archive/2026/20260904-packages-admin-ui-foundation/`。
