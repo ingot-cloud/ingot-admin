@@ -118,6 +118,7 @@ describe("admin UI visual fixtures", () => {
     expect(menu).toContain("展开导航");
     expect(menu).toContain("ic_close");
     expect(menu).toContain("ic_expand");
+    expect(menu).toContain("padding: 0 var(--in-menu-base-level-padding)");
     expect(menu).not.toContain("ep:arrow-left");
     expect(menu).not.toContain("ep:arrow-right");
     expect(menu).not.toContain("收起菜单");

@@ -194,7 +194,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
   width: 100%;
   height: var(--in-menu-control-height);
   margin: 0;
-  padding: 0 var(--in-space-2);
+  padding: 0 var(--in-menu-base-level-padding);
   border: 0;
   border-radius: var(--in-menu-control-radius);
   background: transparent;
