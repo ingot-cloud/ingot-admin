@@ -156,3 +156,4 @@ pages/platform/base/app/
 
 - Vue 组件/页面/Store/样式示例 → [vue-conventions.md](vue-conventions.md)
 - API/TypeScript/Net 层示例 → [api-conventions.md](api-conventions.md)
+- Git 提交信息 → [ingot-conventional-commits](../ingot-conventional-commits/SKILL.md)

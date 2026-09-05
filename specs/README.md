@@ -36,7 +36,7 @@ specs/
 | `AGENTS.md` | Agent 施工门禁 |
 | `docs/` | 工程/运维指南（构建、CI、TS 配置） |
 | `specs/` | 前端变更规格与接口投递 |
-| `.agents/skills/` | AI 编码规范（实现层约束） |
+| `.agents/skills/` | AI 编码规范与提交规范（实现层约束） |
 | `apps/admin/src/pages/platform/*/README.md` | 源码目录导航（可链接到 `current/`） |
 
 接口真相在后端仓库；本仓库的 `API.md` 是本次前端对接用的副本，不维护独立契约库。

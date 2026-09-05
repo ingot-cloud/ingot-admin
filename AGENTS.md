@@ -14,6 +14,7 @@
 
 - 用户同一句话要求「根据 inbox 生成并实现」：先产出 `draft` spec，**停下来等确认**。用户明确说可以开工后，再将状态改为 `approved` → `implementing` 并改代码。
 - 实现只读该 change 目录（`API.md`、`REQUIREMENTS.md`、`DESIGN.md`），不要再读已清空的 inbox。
+- 提交信息必须遵循 Conventional Commits：`<type>[optional scope][optional !]: <中文摘要>`；摘要聚焦 why，句末不加句号。常用 type：`feat` / `fix` / `refactor` / `docs` / `test` / `chore`。创建或修改 commit 前阅读 [ingot-conventional-commits](./.agents/skills/ingot-conventional-commits/SKILL.md)。
 
 架构分层（详情见 [docs/development-model.md](./docs/development-model.md)）：
 
