@@ -196,7 +196,11 @@ const privateOnRemove = (app: PlatformApp): void => {
         message.success("操作成功");
       })
       .catch((error: unknown) => {
-        if (getIsSystemAdmin.value && isApiError(error) && error.code === StatusCode.ILLEGAL_OPERATION) {
+        if (
+          getIsSystemAdmin.value &&
+          isApiError(error) &&
+          error.code === StatusCode.ILLEGAL_OPERATION
+        ) {
           confirm
             .warning(`应用存在子菜单或子权限或已经授权给其他租户，是否强制删除应用(${app.name})?`)
             .then(() => {
