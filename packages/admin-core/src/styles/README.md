@@ -32,7 +32,8 @@
 | `--in-app-bar-nav-max` / `--in-app-bar-actions-max` / `--in-app-bar-search-width` | `560px` / `360px` / `240px` |
 | `--in-sidebar-gutter` | `8px` |
 | `--in-sidebar-panel-expanded` / `--in-sidebar-panel-collapsed` | `236px` / `52px` |
-| `--in-menu-item-height` / `--in-menu-icon-size` | `40px` / `20px` |
+| `--in-menu-item-height` / `--in-menu-icon-size` / `--in-menu-icon-gap` | `40px` / `20px` / `8px` |
+| `--in-menu-nested-indent` / `--in-menu-text-plain-color` / `--in-menu-text-active-color` | `20px` / `#1f2329` / `#2b2f36` |
 | `--in-menu-control-height` / `--in-menu-footer-clearance` / `--in-menu-divider-gap` | `44px` / `18px` / `8px` |
 | `--in-motion-duration-sidebar` / `--in-motion-ease-sidebar` | `300ms` / `cubic-bezier(0.25, 0.1, 0.05, 1)` |
 | `--in-container-bg` | `var(--in-bg-color-surface)` |

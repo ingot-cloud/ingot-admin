@@ -44,6 +44,7 @@
 <script lang="ts" setup>
 import { useAppStateStore } from "@/stores/modules/app";
 import { useRouterStore } from "@/stores/modules/router";
+import { getAdminRuntimeConfig } from "@/runtime";
 import { shellLayoutKey } from "@/layouts/main/types";
 
 defineOptions({
@@ -70,9 +71,10 @@ const controlLabel = computed(() => {
   return sidebarExpanded.value ? "收起导航" : "展开导航";
 });
 const controlText = computed(() => (isOverlay.value ? "关闭导航" : "收起导航"));
-const controlIcon = computed(() =>
-  sidebarExpanded.value || isOverlay.value ? "ep:arrow-left" : "ep:arrow-right",
-);
+const controlIcon = computed(() => {
+  const prefix = getAdminRuntimeConfig().branding.symbol;
+  return sidebarExpanded.value || isOverlay.value ? `${prefix}:ic_close` : `${prefix}:ic_expand`;
+});
 
 let lastActivePath = "/";
 const activePath = computed(() => {
@@ -165,6 +167,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
   --el-menu-item-font-size: var(--in-menu-item-font-size);
   --el-menu-item-height: var(--in-menu-item-height);
   --el-menu-icon-width: var(--in-menu-icon-size);
+  --in-menu-depth: 0;
   border-right: none;
   background: transparent;
   width: 100%;
@@ -210,6 +213,8 @@ const privateOnMenuClick = (event: MouseEvent) => {
   width: var(--in-menu-icon-size);
   height: var(--in-menu-icon-size);
   flex: none;
+  color: inherit;
+  fill: currentColor;
 }
 
 .in-menu__control-text {
@@ -243,11 +248,40 @@ const privateOnMenuClick = (event: MouseEvent) => {
   height: var(--in-menu-item-height);
   line-height: var(--in-menu-line-height);
   font-size: var(--in-menu-item-font-size);
-  font-weight: 400;
-  color: var(--in-menu-text-color);
+  font-weight: var(--in-menu-item-font-weight);
+  color: var(--in-menu-text-plain-color);
   border-radius: var(--in-menu-item-radius);
   margin-bottom: var(--in-menu-item-gap);
   user-select: none;
+  padding-left: calc(
+    var(--in-menu-base-level-padding) + min(1, var(--in-menu-depth, 0)) *
+      (var(--in-menu-icon-size) + var(--in-menu-icon-gap)) + max(0, calc(var(--in-menu-depth, 0) - 1)) *
+      var(--in-menu-nested-indent)
+  ) !important;
+}
+
+:deep(.in-menu-node.has-icon:not(.is-active)),
+:deep(.in-menu-node.has-icon:not(.is-active) > .el-sub-menu__title) {
+  color: var(--in-menu-text-color);
+}
+
+:deep(.in-menu-node__icon),
+:deep(.el-menu-item > .el-icon:not(.el-sub-menu__icon-arrow)),
+:deep(.el-sub-menu__title > .el-icon:not(.el-sub-menu__icon-arrow)) {
+  width: var(--in-menu-icon-size);
+  height: var(--in-menu-icon-size);
+  font-size: var(--in-menu-icon-size);
+  margin-right: var(--in-menu-icon-gap);
+  color: inherit;
+  flex: none;
+}
+
+:deep(.in-menu-node__icon svg),
+:deep(.el-menu-item .el-icon svg),
+:deep(.el-sub-menu__title > .el-icon:not(.el-sub-menu__icon-arrow) svg) {
+  width: var(--in-menu-icon-size);
+  height: var(--in-menu-icon-size);
+  display: block;
 }
 
 :deep(.el-menu-item span),
@@ -257,16 +291,31 @@ const privateOnMenuClick = (event: MouseEvent) => {
   white-space: nowrap;
 }
 
-:deep(.el-menu-item.is-active),
-:deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+:deep(.el-menu-item.is-active) {
   background: var(--in-bg-color-active);
   color: var(--in-menu-text-active-color);
-  font-weight: 500;
+  font-weight: var(--in-menu-item-font-weight-active);
+}
+
+:deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+  background: transparent;
+  font-weight: var(--in-menu-item-font-weight);
+  color: var(--in-menu-text-plain-color);
+}
+
+:deep(.el-sub-menu.has-icon.is-active > .el-sub-menu__title) {
+  color: var(--in-menu-text-color);
 }
 
 :deep(.el-menu-item:hover),
 :deep(.el-sub-menu__title:hover) {
   background: var(--in-bg-color-menu-hover);
+}
+
+.is-collapsed :deep(.in-menu-node__icon),
+.is-collapsed :deep(.el-menu-item > .el-icon),
+.is-collapsed :deep(.el-sub-menu__title > .el-icon:not(.el-sub-menu__icon-arrow)) {
+  margin-right: 0;
 }
 
 .is-collapsed :deep(.el-menu-item span),

@@ -17,7 +17,7 @@ const group = {
 };
 
 describe("InSubmenu", () => {
-  it("收起态隐藏标签且不修改原始路由对象", () => {
+  const mountSubmenu = (options?: { collapsed?: boolean; route?: typeof group }) => {
     const pinia = createPinia();
     setActivePinia(pinia);
     configureAdminRuntime({
@@ -26,9 +26,9 @@ describe("InSubmenu", () => {
       login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
       plugins: [],
     });
-    useAppStateStore().menuOpenStatus = false;
-    const wrapper = mount(InSubmenu, {
-      props: { route: group },
+    useAppStateStore().menuOpenStatus = options?.collapsed ? false : true;
+    return mount(InSubmenu, {
+      props: { route: options?.route ?? group },
       global: {
         plugins: [pinia],
         provide: {
@@ -37,17 +37,35 @@ describe("InSubmenu", () => {
           },
         },
         stubs: {
-          ElMenuItem: { template: "<div class='item'><slot /><slot name='title' /></div>" },
-          ElSubMenu: { template: "<div class='group'><slot name='title' /><slot /></div>" },
-          ElIcon: { template: "<i><slot /></i>" },
+          ElMenuItem: { template: "<div class='el-menu-item'><slot /><slot name='title' /></div>" },
+          ElSubMenu: { template: "<div class='el-sub-menu'><slot name='title' /><slot /></div>" },
+          ElIcon: { template: "<i class='el-icon'><slot /></i>" },
           InIcon: true,
         },
       },
     });
+  };
+
+  it("收起态隐藏标签且不修改原始路由对象", () => {
+    const wrapper = mountSubmenu({ collapsed: true });
     expect(wrapper.text()).not.toContain("组织");
     expect(wrapper.text()).not.toContain("成员");
     expect(group.title).toBe("组织");
     expect(group.children?.[0]?.title).toBe("成员");
+    wrapper.unmount();
+    resetAdminRuntime();
+  });
+
+  it("有图标的分组带 has-icon，子级不渲染空图标占位", () => {
+    const wrapper = mountSubmenu();
+    expect(wrapper.get(".el-sub-menu").classes()).toContain("in-menu-node");
+    expect(wrapper.get(".el-sub-menu").classes()).toContain("has-icon");
+    expect(wrapper.get(".el-sub-menu").attributes("style") ?? "").toContain("--in-menu-depth: 0");
+    expect(wrapper.findAll(".in-menu-node__icon")).toHaveLength(1);
+    const children = wrapper.findAll(".el-menu-item");
+    expect(children).toHaveLength(2);
+    expect(children[0].classes()).not.toContain("has-icon");
+    expect(children[0].attributes("style") ?? "").toContain("--in-menu-depth: 1");
     wrapper.unmount();
     resetAdminRuntime();
   });

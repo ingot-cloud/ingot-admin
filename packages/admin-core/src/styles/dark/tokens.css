@@ -5,6 +5,7 @@ html.dark {
   color-scheme: dark;
 
   --in-gray-950: #e5eaf3;
+  --in-gray-900: #eceff4;
   --in-gray-700: #cfd3dc;
   --in-gray-500: #a3a6ad;
   --in-gray-400: #6c6e72;
@@ -51,6 +52,8 @@ html.dark {
   --in-app-bar-bg: var(--in-bg-color-surface);
   --in-app-bar-text: var(--in-text-color);
   --in-menu-bg-color: var(--in-bg-color-sidebar);
+  --in-menu-text-plain-color: var(--in-text-color);
+  --in-menu-text-active-color: var(--in-gray-900);
   --in-table-header-bg: var(--in-bg-color-muted);
   --in-color-info-light-5: color-mix(in srgb, var(--in-color-info) 50%, var(--in-bg-color));
 }

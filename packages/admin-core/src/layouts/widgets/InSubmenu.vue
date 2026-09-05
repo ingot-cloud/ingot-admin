@@ -1,39 +1,41 @@
 <template>
-  <el-menu-item v-if="isSingle" :index="singleRoute.path">
-    <el-icon>
-      <in-icon
-        v-if="singleRoute.icon"
-        :name="singleRoute.icon"
-        class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-        :class="{ 'mr-2': showTitle }"
-      />
+  <el-menu-item
+    v-if="isSingle"
+    :index="singleRoute.path"
+    class="in-menu-node"
+    :class="{ 'has-icon': Boolean(itemIcon) }"
+    :style="depthStyle"
+  >
+    <el-icon v-if="itemIcon" class="in-menu-node__icon">
+      <in-icon :name="itemIcon" />
     </el-icon>
     <template #title>
-      <span v-if="showTitle && singleRoute.title">
-        {{ singleRoute.title }}
-      </span>
+      <span v-if="showTitle && singleRoute.title">{{ singleRoute.title }}</span>
     </template>
   </el-menu-item>
-  <el-sub-menu v-else :index="route.path">
+  <el-sub-menu
+    v-else
+    :index="route.path"
+    class="in-menu-node"
+    :class="{ 'has-icon': Boolean(route.icon) }"
+    :style="depthStyle"
+  >
     <template #title>
-      <el-icon>
-        <in-icon
-          v-if="route.icon"
-          :name="route.icon"
-          class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-          :class="{ 'mr-2': showTitle }"
-        />
+      <el-icon v-if="route.icon" class="in-menu-node__icon">
+        <in-icon :name="route.icon" />
       </el-icon>
-      <span v-if="showTitle && route.title">
-        {{ route.title }}
-      </span>
+      <span v-if="showTitle && route.title">{{ route.title }}</span>
     </template>
-    <in-submenu v-for="child in route.children" :key="child.path" :route="child" />
+    <in-submenu
+      v-for="child in route.children"
+      :key="child.path"
+      :route="child"
+      :level="level + 1"
+    />
   </el-sub-menu>
 </template>
 
 <script lang="ts" setup>
-import type { PropType } from "vue";
 import type { MenuRouteRecord } from "@/layouts";
 import { useAppStateStore } from "@/stores/modules/app";
 import { shellLayoutKey } from "@/layouts/main/types";
@@ -42,16 +44,22 @@ defineOptions({
   name: "InSubmenu",
 });
 
-const props = defineProps({
-  route: {
-    type: Object as PropType<MenuRouteRecord>,
-    default: null,
+const props = withDefaults(
+  defineProps<{
+    route: MenuRouteRecord;
+    level?: number;
+  }>(),
+  {
+    level: 0,
   },
-});
+);
 
 const { getMenuOpened } = storeToRefs(useAppStateStore());
 const shell = inject(shellLayoutKey);
 const showTitle = computed(() => shell?.isOverlay.value || Boolean(getMenuOpened.value));
+const depthStyle = computed(() => ({
+  "--in-menu-depth": String(props.level),
+}));
 
 const isSingle = computed(() => {
   const children = props.route.children;
@@ -70,4 +78,6 @@ const singleRoute = computed(() => {
   }
   return props.route;
 });
+
+const itemIcon = computed(() => (isSingle.value ? singleRoute.value.icon : props.route.icon));
 </script>

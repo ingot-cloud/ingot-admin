@@ -104,6 +104,7 @@ describe("InMenu", () => {
     expect(wrapper.get(".in-menu__divider-gap").exists()).toBe(true);
     expect(wrapper.get(".in-menu").classes()).toContain("select-none");
     expect(control.attributes("aria-label")).toBe("收起导航");
+    expect(wrapper.get(".in-menu__control-icon").attributes("name")).toBe("ingot:ic_close");
     wrapper.unmount();
   });
 
@@ -129,6 +130,7 @@ describe("InMenu", () => {
     const { wrapper } = await mountMenu({ collapsed: true });
     expect(wrapper.get(".in-menu").classes()).toContain("is-collapsed");
     expect(wrapper.get(".in-menu__control").attributes("aria-label")).toBe("展开导航");
+    expect(wrapper.get(".in-menu__control-icon").attributes("name")).toBe("ingot:ic_expand");
     expect(wrapper.find(".in-menu__control-text").exists()).toBe(false);
     wrapper.unmount();
   });
@@ -136,6 +138,7 @@ describe("InMenu", () => {
   it("overlay 控制文案为关闭导航，不改写桌面展开偏好", async () => {
     const { wrapper } = await mountMenu({ overlay: true });
     expect(wrapper.get(".in-menu__control").text()).toContain("关闭导航");
+    expect(wrapper.get(".in-menu__control-icon").attributes("name")).toBe("ingot:ic_close");
     expect(useAppStateStore().menuOpenStatus).toBe(true);
     await wrapper.get(".in-menu__control").trigger("click");
     expect(useAppStateStore().menuOpenStatus).toBe(true);
