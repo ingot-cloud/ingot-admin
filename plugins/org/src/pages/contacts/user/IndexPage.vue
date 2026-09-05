@@ -1,13 +1,11 @@
 <template>
-  <in-filter-container>
+  <in-filter-container left-collapsible>
     <template #header>
       <ContactsTabs select-tab="成员" />
     </template>
 
     <template #left>
-      <div w-260px>
-        <LeftContent @onNodeClick="userOps.handleTreeNodeClick" />
-      </div>
+      <LeftContent @onNodeClick="userOps.handleTreeNodeClick" />
     </template>
 
     <in-table

@@ -130,6 +130,42 @@ describe("InFilterContainer", () => {
     wrapper.unmount();
   });
 
+  it("左栏插槽渲染在带内边距的滚动区内", () => {
+    const wrapper = mount(InFilterContainer, {
+      slots: {
+        left: "<div class='tree'>tree</div>",
+        default: "<div class='table'>table</div>",
+      },
+      global: { stubs },
+    });
+    expect(wrapper.get(".left-filter__scroll .tree").text()).toBe("tree");
+    expect(wrapper.get(".in-filter-container__collapse").classes()).not.toContain("is-collapsed");
+    wrapper.unmount();
+  });
+
+  it("左栏默认跟随容器背景，left-background 可单独覆盖", () => {
+    const def = mount(InFilterContainer, {
+      slots: {
+        left: "<div class='tree'>tree</div>",
+        default: "<div class='table'>table</div>",
+      },
+      global: { stubs },
+    });
+    expect(def.get(".in-filter-container").attributes("style") ?? "").not.toContain("--in-filter-left-bg");
+    def.unmount();
+
+    const wrapper = mount(InFilterContainer, {
+      props: { leftBackground: "#fbfbfb" },
+      slots: {
+        left: "<div class='tree'>tree</div>",
+        default: "<div class='table'>table</div>",
+      },
+      global: { stubs },
+    });
+    expect(wrapper.get(".in-filter-container").attributes("style")).toContain("--in-filter-left-bg: #fbfbfb");
+    wrapper.unmount();
+  });
+
   it("left-collapsible=false 时不渲染折叠柄且左栏保持展开", () => {
     const wrapper = mount(InFilterContainer, {
       props: { leftCollapsible: false },

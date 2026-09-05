@@ -5,9 +5,7 @@
     </template>
 
     <template #left>
-      <div w-260px>
-        <LeftContent @onNodeClick="ops.handleTreeNodeClick" />
-      </div>
+      <LeftContent @onNodeClick="ops.handleTreeNodeClick" />
     </template>
 
     <div class="default-role-bg-container" v-if="!ops.currentNode.name">

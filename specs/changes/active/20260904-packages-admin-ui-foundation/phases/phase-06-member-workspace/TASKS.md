@@ -11,7 +11,7 @@
 - [x] 将根、SplitBody、RightPane 调整为固定高度和 `min-height: 0` 链路，header/top 不参与内容滚动。
 - [x] 保留 `left-width`、`left-collapsible`、`v-model:left-open` 与 `persistence-key`，新增 `auto-collapse`、`min-right-width` 类型化契约。
 - [x] 实现 260px → 0px 的左栏收缩和右栏无重建扩展。
-- [x] 实现 19×32px 分隔线折叠按钮、箭头翻转、Tooltip、键盘和 focus-visible 状态。
+- [x] 实现分隔线中线 16×32px 右侧圆角折叠标签、箭头翻转、Tooltip、键盘和 focus-visible 状态。
 - [x] 使用容器 `ResizeObserver` 实现临时自动收起，并在宽度恢复后还原用户手动状态。
 - [x] 确保左栏和右侧表格数据区独立滚动；旧页面未启用 `left-collapsible` 时保持兼容。
 

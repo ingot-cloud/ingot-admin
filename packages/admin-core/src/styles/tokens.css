@@ -138,9 +138,9 @@
   --in-container-border-color: var(--in-border-color);
   --in-split-left-width: 260px;
   --in-split-rail-width: 0px;
-  --in-split-collapse-width: 19px;
+  --in-split-collapse-width: 16px;
   --in-split-collapse-height: 32px;
-  --in-split-collapse-offset-top: 22px;
+  --in-split-collapse-radius: 8px;
   --in-filter-header-min-height: 79px;
   --in-filter-header-padding: 12px 20px;
   --in-control-height: 32px;

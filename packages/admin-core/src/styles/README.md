@@ -40,7 +40,7 @@
 | `--in-container-radius` | `0px` |
 | `--in-split-left-width` | `260px` |
 | `--in-split-rail-width` | `0px` |
-| `--in-split-collapse-width` / `--in-split-collapse-height` | `19px` / `32px` |
+| `--in-split-collapse-width` / `--in-split-collapse-height` / `--in-split-collapse-radius` | `16px` / `32px` / `8px` |
 | `--in-motion-duration-split` | `180ms` |
 | `--in-table-header-height` / `--in-table-row-height-compact` | `48px` / `44px` |
 | `--in-page-gutter` | `12px`（`--in-space-3`） |

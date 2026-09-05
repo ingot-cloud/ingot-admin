@@ -55,8 +55,9 @@ describe("admin UI visual fixtures", () => {
     expect(tokens).toContain("--in-container-radius: 0px");
     expect(tokens).toContain("--in-container-bg: var(--in-bg-color-surface)");
     expect(tokens).toContain("--in-split-rail-width: 0px");
-    expect(tokens).toContain("--in-split-collapse-width: 19px");
+    expect(tokens).toContain("--in-split-collapse-width: 16px");
     expect(tokens).toContain("--in-split-collapse-height: 32px");
+    expect(tokens).toContain("--in-split-collapse-radius: 8px");
     expect(tokens).toContain("--in-table-row-height-compact: 44px");
     expect(tokens).toContain("--in-motion-duration-split: 180ms");
     expect(tokens).toContain("--in-bg-color-subtle: #fbfbfb");
@@ -89,6 +90,12 @@ describe("admin UI visual fixtures", () => {
     expect(filter).toContain("minRightWidth: 680");
     expect(filter).toContain("width var(--in-motion-duration-split)");
     expect(filter).toContain("left var(--in-motion-duration-split)");
+    expect(filter).toContain("translate(-1px, -50%)");
+    expect(filter).toContain("border-left: 0");
+    expect(filter).toContain("padding: var(--in-section-padding)");
+    expect(filter).toContain("gap: var(--in-space-3)");
+    expect(filter).toContain("var(--in-filter-left-bg, var(--in-container-bg))");
+    expect(filter).toContain("leftBackground");
   });
 
   it("侧栏滚动视口与底部控制分离，无 collapse popper", () => {

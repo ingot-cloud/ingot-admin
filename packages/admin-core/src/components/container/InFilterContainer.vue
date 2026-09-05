@@ -108,6 +108,7 @@ const props = withDefaults(
     persistenceKey?: string;
     radius?: string;
     background?: string;
+    leftBackground?: string;
     borderColor?: string;
     borderWidth?: string;
   }>(),
@@ -180,6 +181,9 @@ const rootStyle = computed(() => {
   }
   if (props.background) {
     style["--in-container-bg"] = props.background;
+  }
+  if (props.leftBackground) {
+    style["--in-filter-left-bg"] = props.leftBackground;
   }
   if (props.borderColor) {
     style["--in-container-border-color"] = props.borderColor;
@@ -313,26 +317,39 @@ onBeforeUnmount(() => {
 
   & .left-filter {
     flex: none;
+    box-sizing: border-box;
     min-width: 0;
     min-height: 0;
     height: 100%;
     width: var(--in-filter-left-width);
     overflow: hidden;
+    background: var(--in-filter-left-bg, var(--in-container-bg));
     border-right: 1px solid var(--in-border-color);
     transition: width var(--in-motion-duration-split) var(--in-motion-ease);
   }
 
   & .left-filter.is-collapsed {
     width: 0;
-    border-right-color: transparent;
+    border-right-width: 0;
   }
 
   & .left-filter__scroll {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--in-space-3);
     height: 100%;
     min-height: 0;
     width: var(--in-filter-left-width);
     overflow: auto;
     padding: var(--in-section-padding);
+  }
+
+  & .left-filter__scroll > :deep(*) {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   &.is-left-overlay .left-filter {
@@ -352,7 +369,6 @@ onBeforeUnmount(() => {
 
   &.is-left-overlay .left-filter.is-collapsed {
     width: var(--in-filter-left-width);
-    background: var(--in-bg-color-subtle);
   }
 
   &.is-left-overlay-open .left-filter {
@@ -368,7 +384,7 @@ onBeforeUnmount(() => {
 
   & .in-filter-container__collapse {
     position: absolute;
-    top: var(--in-split-collapse-offset-top);
+    top: 50%;
     left: var(--in-filter-left-width);
     z-index: 21;
     display: inline-flex;
@@ -379,12 +395,13 @@ onBeforeUnmount(() => {
     margin: 0;
     padding: 0;
     border: 1px solid var(--in-border-color);
-    border-right: 0;
-    border-radius: 4px 0 0 4px;
+    border-left: 0;
+    border-radius: 0 var(--in-split-collapse-radius) var(--in-split-collapse-radius) 0;
     background: var(--in-bg-color-surface);
     color: var(--in-text-color-secondary);
+    box-shadow: 2px 0 6px rgba(31, 35, 41, 0.08);
     cursor: pointer;
-    transform: translateX(-100%);
+    transform: translate(-1px, -50%);
     transition:
       left var(--in-motion-duration-split) var(--in-motion-ease),
       transform var(--in-motion-duration-split) var(--in-motion-ease);
@@ -407,7 +424,6 @@ onBeforeUnmount(() => {
 
   & .in-filter-container__collapse.is-collapsed {
     left: 0;
-    transform: none;
   }
 
   & .in-filter-container__collapse.is-collapsed .in-filter-container__collapse-icon {
@@ -416,12 +432,10 @@ onBeforeUnmount(() => {
 
   &.is-left-overlay .in-filter-container__collapse {
     left: 0;
-    transform: none;
   }
 
   &.is-left-overlay-open .in-filter-container__collapse {
     left: var(--in-filter-left-width);
-    transform: translateX(-100%);
   }
 
   & .in-filter-container-right {

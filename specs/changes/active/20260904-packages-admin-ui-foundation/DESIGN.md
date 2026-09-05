@@ -24,9 +24,9 @@
 | 内容工作区    | 1200px 宽、白色、无外层圆角和阴影                                      |
 | 工作区 header | 79px，白底，内边距 12px 20px                                           |
 | SplitBody     | 539px 高；左栏 260px，右栏 940px                                       |
-| 左栏          | #fbfbfb；搜索框 32px、圆角 6px、边框 #d0d3d6                           |
+| 左栏          | 默认与容器同色；搜索框 32px、圆角 6px、边框 #d0d3d6                    |
 | 左树行        | 40px；选中背景 #f0f4ff，文字 #3370ff                                   |
-| 折叠柄        | 19×32px，距 SplitBody 顶部 22px，白底，边框 #dee0e3                    |
+| 折叠柄        | 16×32px 右侧圆角标签，贴分隔线向右伸出，无左边框，与分割线融合         |
 | 折叠结果      | 左栏直接变为 0，右栏扩展到工作区全宽，箭头旋转 180°                    |
 | 右侧内边距    | 20px                                                                   |
 | 右侧标题行    | 24px；标题、总数摘要同一行                                             |
@@ -176,16 +176,24 @@
 - auto-collapse?: boolean，仅在 left-collapsible 时生效，默认 true。
 - min-right-width?: number，默认 680；容器宽度小于 leftWidth + minRightWidth 时进入临时自动收起。
 - 保留 persistence-key、radius、background、border-color、border-width、sticky-header 和 show-backtop 等既有属性；持久化键只记录手动桌面状态。
+- left-background?: string，仅覆盖左栏背景；未传时与容器 `background` / `--in-container-bg` 相同。
 - 手动状态和临时自动收起分开保存；宽度恢复后回到用户之前的手动状态。
 
 ### 折叠按钮
 
-- 使用原生 button，尺寸 19×32px，绝对定位在左右分隔线上，距 SplitBody 顶部 22px。
-- 展开态位于左栏右边界；收起态位于容器左边界，不保留额外导轨宽度。
-- 白色背景，顶部/底部/左侧 1px #dee0e3，右侧无边框，圆角 4px 0 0 4px。
+- 使用原生 button，尺寸 16×32px，绝对定位在左右分隔线垂直中点。
+- 形状为向右伸出的标签：无左边框、右侧 8px 圆角、右侧轻阴影，左边贴齐分隔线（展开时左缘覆盖 1px 分割线），与边框融合而不是悬浮在线上的独立胶囊。
+- 展开态整颗落在右栏、左边贴分隔线；收起态同样以标签贴齐容器左缘向右伸出，不保留额外导轨宽度。
+- 白色背景，上/右/下 1px `#dee0e3`。
 - 图标为 12px 左箭头；收起态旋转 180°。
 - aria-label 在“收起筛选”和“展开筛选”之间切换，支持 Enter、Space、focus-visible 与 Tooltip。
 - 宽度变化使用 160–200ms Token 动效；prefers-reduced-motion 下接近即时完成。
+
+### 左栏内容
+
+- LeftScrollArea 默认 `padding: var(--in-section-padding)`（16px，compact 为 12px），子项纵向 `gap: 12px`。
+- 左栏子节点被约束为 `width: 100%; min-width: 0`，不得撑破右边界；页面不要再给 `#left` 包一层 `w-260px`。
+- 左栏背景默认与容器一致（`--in-container-bg`）；页面需要区分时传 `left-background`。
 
 ### 滚动
 

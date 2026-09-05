@@ -119,7 +119,7 @@ const privateRefresh = (): void => {
 </script>
 <style scoped lang="postcss">
 .dict-type-filter {
-  @apply flex flex-col gap-10px w-260px;
+  @apply flex flex-col gap-10px w-full;
 
   & .in-custom-title {
     @apply flex flex-row items-center gap-2;

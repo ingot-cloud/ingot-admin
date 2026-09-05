@@ -66,7 +66,7 @@ watch(
 </script>
 <style scoped lang="postcss">
 .dept-filter {
-  @apply flex flex-col;
+  @apply flex flex-col min-w-0 w-full;
 
   & .member-dept-tree {
     @apply m-t-[var(--in-common-margin)];
@@ -85,7 +85,7 @@ watch(
 
     & .text {
       flex: 1;
-      max-width: 160px;
+      min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

@@ -127,7 +127,7 @@ const privateOnNodeCollapse = (data: RoleTreeNodeVO) => {
 </script>
 <style scoped lang="postcss">
 .role-filter {
-  @apply flex flex-col;
+  @apply flex flex-col min-w-0 w-full;
 
   & .action-box {
     @apply flex flex-row items-center justify-between;
