@@ -320,6 +320,14 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - InTableActions 使用 InTableAction<Row> 泛型并保留现有 onSelect 回调契约；本阶段不强制迁移为新的事件协议。
 - InColumnSetting 将旧 onSelectionChange 兼容映射到类型化 change，文档给出迁移期。
 
+## InPageHeader
+
+- 页面头保持约 80px 最小高度、白底、底部分隔。
+- 主标题使用 `--in-font-size-section-title` / `--in-font-weight-section-title`（16/24px、500）和 `--in-text-color`（`#1f2329`）。
+- 说明使用正文 Token（14/22px、400）和 `--in-text-color-secondary`（`#646a73`）。
+- 主标题与说明超长时单行省略：`display: -webkit-box`、`-webkit-line-clamp: 1`、`word-break: break-all`。
+- `#tabs` 仅用于设置/详情等页内局部 Tab，不用于在独立菜单路由之间切换。
+
 ## 对接映射
 
 本 change 无后端接口变化，见 [API.md](./API.md)。
@@ -329,6 +337,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 | components/container/InSplitLayout.vue | 固定 header、左栏折叠、自动收起和滚动边界     |
 | components/container/InContainer.vue       | plain 默认透明；可覆盖背景/边框               |
 | components/InPageFrame.vue                 | page 模式滚动尽头保留画布沟槽                 |
+| components/InPageHeader.vue                | 主标题 16/500、说明 14/400，超长单行省略      |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
 | components/table/InTableActions.vue        | 固定操作与配置型 action 原子组自适应收纳      |
 | components/table/InColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |

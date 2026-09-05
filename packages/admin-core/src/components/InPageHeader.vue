@@ -91,12 +91,23 @@ const privateOnBack = () => {
   gap: var(--in-space-1);
 }
 
+.in-page-header__title,
+.in-page-header__description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
 .in-page-header__title {
   margin: 0;
   color: var(--in-text-color);
-  font-size: var(--in-font-size-page-title);
-  line-height: var(--in-line-height-page-title);
-  font-weight: var(--in-font-weight-page-title);
+  font-size: var(--in-font-size-section-title);
+  line-height: var(--in-line-height-section-title);
+  font-weight: var(--in-font-weight-section-title);
 }
 
 .in-page-header__description {
@@ -104,6 +115,7 @@ const privateOnBack = () => {
   color: var(--in-text-color-secondary);
   font-size: var(--in-font-size-body);
   line-height: var(--in-line-height-body);
+  font-weight: var(--in-font-weight-body);
 }
 
 .in-page-header__actions {

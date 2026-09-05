@@ -35,6 +35,12 @@ describe("admin UI visual fixtures", () => {
     expect(table).toContain("element-plus/theme-chalk/el-table.css");
     expect(table).toMatch(/\.in-table__body \{[\s\S]*?overflow: hidden;/);
     expect(pageFrame).toMatch(/\.in-page-frame__body\.is-page \{[\s\S]*?padding-bottom: var\(--in-page-gutter\);/);
+    const pageHeader = readFileSync(resolve(root, "../InPageHeader.vue"), "utf8");
+    expect(pageHeader).toContain("font-size: var(--in-font-size-section-title)");
+    expect(pageHeader).toContain("font-weight: var(--in-font-weight-section-title)");
+    expect(pageHeader).toContain("font-weight: var(--in-font-weight-body)");
+    expect(pageHeader).toContain("-webkit-line-clamp: 1");
+    expect(pageHeader).toContain("word-break: break-all");
   });
 
   it("顶栏与侧栏尺寸 Token 已对齐验收值", () => {
