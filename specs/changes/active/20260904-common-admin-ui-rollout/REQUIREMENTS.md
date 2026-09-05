@@ -43,7 +43,7 @@
 
 - **Overview**：`InPageFrame page` + 固定页面头 + 可滚动摘要/指标/快捷入口。
 - **List**：`InPageFrame contained` + 固定页面头/筛选/操作栏 + 可滚动表格数据区 + 固定分页。
-- **Split List**：`InPageFrame contained` + 固定页面头 + 可折叠左树 + 右侧固定工具栏/可滚动表格。
+- **Split List**：`InPageFrame contained` + 固定页面头 + 可折叠左树 + 右侧固定工具栏/可滚动表格。通讯录各页为独立菜单路由，不在页面头放置路由 Tab。
 - **Settings**：`InPageFrame page` + 固定页面头/局部 Tab + 可滚动信息区块和编辑区。
 - **Detail**：`InPageFrame page` + 返回/面包屑 + 固定标题摘要 + 可滚动分组内容。
 - **Tool**：`InPageFrame page` + 固定页面头 + 可滚动单一任务区和帮助信息。

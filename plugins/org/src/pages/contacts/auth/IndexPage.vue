@@ -1,9 +1,5 @@
 <template>
   <in-split-layout>
-    <template #header>
-      <ContactsTabs select-tab="权限" />
-    </template>
-
     <template #left>
       <LeftContent @onNodeClick="ops.handleTreeNodeClick" />
     </template>
@@ -45,7 +41,6 @@
   <AddAuthDrawer ref="AddAuthDrawerRef" @success="ops.fetchData" />
 </template>
 <script lang="ts" setup>
-import ContactsTabs from "@/pages/contacts/components/ContactsTabs.vue";
 import LeftContent from "./components/LeftContent.vue";
 import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
@@ -85,9 +80,6 @@ const privateAddAuth = () => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
 .title {
   flex: 1;
   color: #171a1d;

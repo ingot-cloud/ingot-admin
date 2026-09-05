@@ -30,7 +30,9 @@ import type { DeptTreeNode } from "@/models";
 
 const deptQuery = useQuery(() => OrgDeptTreeQueryOptions());
 const deptTree = computed(() => deptQuery.data.value ?? []);
-const emits = defineEmits(["onNodeClick"]);
+const emits = defineEmits<{
+  "node-click": [value: DeptTreeNode];
+}>();
 
 const deptTreeRef = ref();
 const loading = computed(() => deptQuery.isFetching.value);
@@ -41,7 +43,7 @@ watch(searchValue, (val) => {
 });
 
 const privateOnNodeClick = (value: DeptTreeNode) => {
-  emits("onNodeClick", value);
+  emits("node-click", value);
 };
 const privateFilterNode = (value: string, data: DeptTreeNode) => {
   if (!value || !data.name) return true;
@@ -66,10 +68,10 @@ watch(
 </script>
 <style scoped lang="postcss">
 .dept-filter {
-  @apply flex flex-col min-w-0 w-full;
+  @apply flex flex-col min-w-0 w-full h-full min-h-0 overflow-hidden;
 
   & .member-dept-tree {
-    @apply m-t-[var(--in-common-margin)];
+    @apply m-t-[var(--in-common-margin)] flex-1 min-h-0 overflow-auto;
   }
 
   & .dept-item {

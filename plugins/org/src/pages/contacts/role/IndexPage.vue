@@ -1,9 +1,5 @@
 <template>
   <in-split-layout>
-    <template #header>
-      <ContactsTabs select-tab="角色" />
-    </template>
-
     <template #left>
       <LeftContent @onNodeClick="ops.handleTreeNodeClick" />
     </template>
@@ -47,7 +43,6 @@
   <AddMemberDialog ref="AddMemberDialogRef" @success="ops.fetchUserData" />
 </template>
 <script lang="ts" setup>
-import ContactsTabs from "@/pages/contacts/components/ContactsTabs.vue";
 import LeftContent from "./components/LeftContent.vue";
 import { useOps } from "./useOps";
 import { tableHeaders } from "./table";
@@ -76,9 +71,6 @@ const privateHandleDelete = (item: UserPageItemVO) => {
 };
 </script>
 <style scoped lang="postcss">
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
 .title {
   flex: 1;
   color: #171a1d;

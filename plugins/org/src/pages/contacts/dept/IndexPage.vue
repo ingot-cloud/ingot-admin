@@ -1,9 +1,5 @@
 <template>
   <in-split-layout>
-    <template #header>
-      <ContactsTabs select-tab="部门" />
-    </template>
-
     <in-table
       :loading="deptQuery.isFetching.value"
       :data="deptTree"
@@ -47,13 +43,7 @@
           </template>
           编辑
         </in-button>
-        <in-button
-          type="danger"
-          text
-          link
-          v-if="!item.mainFlag"
-          @click="handleRemove(item)"
-        >
+        <in-button type="danger" text link v-if="!item.mainFlag" @click="handleRemove(item)">
           <template #icon>
             <i-ep:delete />
           </template>
@@ -67,7 +57,6 @@
   <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="privateRefresh" />
 </template>
 <script lang="ts" setup>
-import ContactsTabs from "@/pages/contacts/components/ContactsTabs.vue";
 import { tableHeaders } from "./table";
 import type { DeptTreeNodeWithManagerVO } from "@/models";
 import { RemoveDeptAPI } from "@/api/org/dept";
@@ -120,8 +109,3 @@ const handleEdit = (data?: DeptTreeNodeWithManagerVO | string) => {
   EditDrawerRef.value.show(data || deptTree.value[0].id);
 };
 </script>
-<style scoped lang="postcss">
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
-</style>

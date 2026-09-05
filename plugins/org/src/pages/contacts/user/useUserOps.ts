@@ -1,12 +1,16 @@
-import type { UserDTO, DeptTreeNode, PageChangeParams, UserPageItemVO, UserQueryDTO } from "@/models";
+import type {
+  UserDTO,
+  DeptTreeNode,
+  PageChangeParams,
+  UserPageItemVO,
+  UserQueryDTO,
+} from "@/models";
 import type { CommonStatus } from "@/models/enums";
 import { UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
 import { OrgUserPageQueryOptions, orgUserQueryKeys } from "@/api/org/user.query";
 import {
-  Confirm,
   Message,
   copyParams,
-  getCommonStatusActionDesc,
   getCommonStatusToggle,
   silentQueryRequest,
   useServerPaging,
@@ -57,19 +61,18 @@ export const useUserOps = () => {
   };
 
   const handleDeleteUser = (params: UserPageItemVO): void => {
-    Confirm.warning(`是否删除用户(${params.username})`).then(() => {
-      removeMutation.mutateAsync(params.userId).then(() => {
-        Message.success("删除成功");
-      });
+    void removeMutation.mutateAsync(params.userId).then(() => {
+      Message.success("删除成功");
     });
   };
 
   const handleDisableUser = (params: UserPageItemVO): void => {
-    const next = getCommonStatusToggle(params.status!);
-    Confirm.warning(`是否${getCommonStatusActionDesc(next)}用户(${params.username})`).then(() => {
-      statusMutation.mutateAsync({ id: params.userId, status: next }).then(() => {
-        Message.success("操作成功");
-      });
+    if (!params.status) {
+      return;
+    }
+    const next = getCommonStatusToggle(params.status);
+    void statusMutation.mutateAsync({ id: params.userId, status: next }).then(() => {
+      Message.success("操作成功");
     });
   };
 

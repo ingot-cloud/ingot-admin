@@ -33,8 +33,10 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 - 所有页面由壳层固定全局顶栏和面包屑，`InPageFrame` 固定页面头。
 - Overview、Settings、Detail 和 Tool 使用 page 模式，只滚动 PageBody。
 - List 和 Split List 使用 contained 模式；筛选/工具栏固定，表格数据区纵横滚动，分页固定。
+- Split List 的 `InPageHeader` 放在 `InPageFrame` `#header`，不放进 `InSplitLayout` `#header`，避免两层内边距和底部分隔叠在一起。
 - Split List 左侧默认 260px，可从分隔线折叠；左树和右表独立滚动，小于 1024px 时左侧转覆盖层。
 - 列表和双栏使用全高白色工作面，不再为页面根补圆角、边框或卡片阴影；卡片只用于页面内部的信息区块。
+- `org/contacts/*` 各页是独立菜单路由，不使用页内路由 Tab；未完成迁移的通讯录页可直接使用 `InSplitLayout`。
 
 ## 列表交互映射
 
@@ -61,11 +63,11 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 | platform | `pages/develop/qrcode/IndexPage.vue`     | Tool       | 单一任务区、结果和说明                  |
 | platform | `pages/develop/social/IndexPage.vue`     | List       | 社交配置列表与编辑弹窗                  |
 | platform | `pages/org/tenant/IndexPage.vue`         | List       | 组织筛选、表格、创建/详情抽屉           |
-| org      | `pages/contacts/auth/IndexPage.vue`      | Split List | 左侧范围、授权列表、添加抽屉            |
-| org      | `pages/contacts/dept/IndexPage.vue`      | Split List | 部门上下文、表格、编辑抽屉              |
-| org      | `pages/contacts/role/IndexPage.vue`      | Split List | 角色组、成员、部门选择弹窗              |
-| org      | `pages/contacts/structure/IndexPage.vue` | Split List | 组织树和结构浏览                        |
-| org      | `pages/contacts/user/IndexPage.vue`      | Split List | 组织树、用户列表、编辑抽屉              |
+| org      | `pages/contacts/auth/IndexPage.vue`      | Split List | 去掉页内路由 Tab；左侧范围、授权列表、添加抽屉 |
+| org      | `pages/contacts/dept/IndexPage.vue`      | Split List | 去掉页内路由 Tab；部门上下文、表格、编辑抽屉   |
+| org      | `pages/contacts/role/IndexPage.vue`      | Split List | 去掉页内路由 Tab；角色组、成员、部门选择弹窗   |
+| org      | `pages/contacts/structure/IndexPage.vue` | Split List | 去掉页内路由 Tab；组织树和结构浏览             |
+| org      | `pages/contacts/user/IndexPage.vue`      | Split List | 去掉页内路由 Tab；组织树、用户列表、编辑抽屉   |
 | member   | `pages/permission/IndexPage.vue`         | List       | 权限列表和编辑抽屉                      |
 | member   | `pages/role/IndexPage.vue`               | List       | 角色列表和授权弹窗                      |
 | member   | `pages/user/IndexPage.vue`               | List       | 用户筛选、表格、创建/编辑/绑定/重置浮层 |
@@ -137,7 +139,7 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 | Vue 3 + TypeScript strict      | ✅   | 新代码禁止 `any`，事件和属性使用类型签名。                |
 | UnoCSS 与 Token                | ✅   | 通用布局用 UnoCSS，颜色和外观使用 `--in-*`。              |
 | 响应式                         | ✅   | 页面矩阵覆盖桌面、窄桌面和窄窗口降级。                    |
-| 施工门禁                       | ✅   | 当前状态为 `draft`，foundation 未完成前不得实施。         |
+| 施工门禁                       | ✅   | 用户于 2026-09-05 确认开工，状态为 `implementing`。       |
 | current 真相单一               | ✅   | 实施期间不修改 current，验收后再合并页面行为。            |
 
 ## 备选方案
@@ -156,6 +158,11 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 
 ## 开放问题
 
-- [ ] 四个试点页面的最终验收顺序是否保持 Dashboard → 租户 → 组织用户 → 账号保护。
+- [x] 四个试点页面的最终验收顺序保持 Dashboard → 租户 → 组织用户 → 账号保护。
 - [x] 本 change 不提供“紧凑表格”用户偏好；默认数据行使用 foundation 的 48px，业务确需差异时单独更新 spec。
-- [ ] 25 个页面是否允许分批上线，还是必须在统一版本一次上线。
+- [x] 允许按阶段独立验收和发布；Phase 01 须先通过用户视觉确认，再进入批量迁移。
+
+## 试点已知偏差
+
+- `org/contacts/user` 现有业务只有「添加成员」、行内详情/启停/删除，没有邀请成员、批量导入/导出、批量变更部门或批量操作离职接口。试点只把已有「添加成员」映射为 `overflow: never` 的固定主操作，不为对齐飞书采样新增无接口按钮。
+- 通讯录五个页面不再使用页内路由 Tab；成员页保持 `InPageFrame` + `InPageHeader` + `InSplitLayout`，其余四页先去掉 Tab 后继续直接使用 `InSplitLayout`。
