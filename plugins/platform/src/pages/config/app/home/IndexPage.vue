@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="应用类型">
@@ -47,7 +52,6 @@
       @handleSizeChange="fetchData"
       @handleCurrentChange="fetchData"
     >
-      <template #title>应用管理</template>
       <template #toolbar>
         <in-button type="primary" @click="privateOnCreate">
           <template #icon>
@@ -95,7 +99,8 @@
         </div>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <CreateDrawer ref="createDrawerRef" @success="privateOnCreateSuccess" />
 </template>

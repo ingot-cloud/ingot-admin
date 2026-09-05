@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <in-table
       :loading="deptQuery.isFetching.value"
       :data="deptTree"
@@ -52,7 +57,8 @@
         <in-icon v-if="item.mainFlag" name="mingcute:department-line" />
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="privateRefresh" />
 </template>

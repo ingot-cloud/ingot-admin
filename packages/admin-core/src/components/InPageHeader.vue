@@ -1,5 +1,5 @@
 <template>
-  <div class="in-page-header">
+  <div class="in-page-header" :class="{ 'has-description': hasDescription }">
     <div class="in-page-header__row">
       <button
         v-if="showBack"
@@ -12,7 +12,7 @@
       </button>
       <div class="in-page-header__titles">
         <h1 class="in-page-header__title">
-          <slot name="title">{{ title }}</slot>
+          <slot name="title">{{ resolvedTitle }}</slot>
         </h1>
         <p v-if="hasDescription" class="in-page-header__description">
           <slot name="description">{{ resolvedDescription }}</slot>
@@ -57,6 +57,8 @@ const emits = defineEmits<{
   back: [];
 }>();
 
+const route = useRoute();
+const resolvedTitle = computed(() => props.title || route.meta.title || "");
 const resolvedDescription = computed(() => props.description || props.subtitle);
 const hasDescription = computed(
   () => Boolean(resolvedDescription.value) || Boolean(slots.description),
@@ -70,19 +72,26 @@ const privateOnBack = () => {
 .in-page-header {
   @apply flex flex-col min-w-0;
   gap: var(--in-space-3);
-  min-height: var(--in-page-header-min-height);
   padding: var(--in-space-4) var(--in-space-5);
   background: var(--in-bg-color-surface);
   border-bottom: 1px solid var(--in-border-color);
   box-sizing: border-box;
 }
 
+.in-page-header.has-description {
+  min-height: var(--in-page-header-min-height);
+}
+
 .in-page-header__row {
-  @apply flex items-start min-w-0;
+  @apply flex items-center min-w-0;
   gap: var(--in-space-3);
 }
 
-.in-page-header__back {
+.in-page-header.has-description .in-page-header__row {
+  align-items: flex-start;
+}
+
+.in-page-header.has-description .in-page-header__back {
   margin-top: 2px;
 }
 

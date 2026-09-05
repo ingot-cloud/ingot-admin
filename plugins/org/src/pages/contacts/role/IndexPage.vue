@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #left>
       <LeftContent @onNodeClick="ops.handleTreeNodeClick" />
     </template>
@@ -38,7 +43,8 @@
         <in-button-delete @click="privateHandleDelete(item)" />
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <AddMemberDialog ref="AddMemberDialogRef" @success="ops.fetchUserData" />
 </template>

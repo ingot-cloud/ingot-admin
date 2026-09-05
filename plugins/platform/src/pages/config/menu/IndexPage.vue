@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="组织类型">
@@ -33,7 +38,6 @@
       ref="tableRef"
       @refresh="privateOnRefresh"
     >
-      <template #title> 菜单管理 </template>
       <template #name="{ item }">
         <in-button text link type="primary" @click="privateGoAppDetail(item)">
           {{ item.name }}
@@ -100,7 +104,8 @@
         </in-button>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";

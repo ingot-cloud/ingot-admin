@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="社交名称">
@@ -48,7 +53,8 @@
         </in-button>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <EditDialog ref="editDialog" @success="invalidateList" />
 </template>

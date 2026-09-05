@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="角色名称">
@@ -24,7 +29,6 @@
       :expandRowKeys="roleTree.map((item) => item.id!)"
       @refresh="refreshData"
     >
-      <template #title> 角色管理 </template>
       <template #toolbar>
         <in-button type="primary" @click="handleCreate()"> 添加角色 </in-button>
       </template>
@@ -65,6 +69,7 @@
 
     <RoleDrawer ref="RoleDrawerRef" :roleList="roleTree" @success="refreshData" />
   </in-split-layout>
+  </in-page-frame>
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";

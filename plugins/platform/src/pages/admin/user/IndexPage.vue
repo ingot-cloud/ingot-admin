@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="姓名">
@@ -38,7 +43,6 @@
       @handleSizeChange="ops.fetchUserData"
       @handleCurrentChange="ops.fetchUserData"
     >
-      <template #title> 用户管理 </template>
       <template #toolbar>
         <in-button type="primary" @click="handleCreateUser"> 添加用户 </in-button>
       </template>
@@ -82,7 +86,8 @@
         </in-button>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <CreateDrawer ref="CreateDrawerRef" @success="handleCreateSuccessEvt" />
   <EditDrawer ref="EditDrawerRef" @success="refreshList" />

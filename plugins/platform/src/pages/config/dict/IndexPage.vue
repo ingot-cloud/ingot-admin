@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <in-filter-item>
         <in-with-label title="作用域">
@@ -151,7 +156,8 @@
         <in-button-delete v-if="!item.systemFlag" @click="handleRemove(item)" />
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 
   <TypeEditDrawer ref="typeEditDrawerRef" @success="handleEditSuccess" />
   <ItemEditDrawer ref="itemEditDrawerRef" @success="handleEditSuccess" />

@@ -24,6 +24,7 @@ describe("org contacts user IndexPage", () => {
     expect(source).not.toContain("@refresh");
     expect(source).not.toContain("ContactsTabs");
     expect(source).not.toContain("in-biz-tabs-header");
+    expect(source).not.toContain('title="成员"');
   });
 
   it("左树向页面发出 kebab-case 选择事件", () => {

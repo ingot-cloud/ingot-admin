@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="page">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #left>
       <div class="qrcode-config">
         <div class="in-custom-title">
@@ -99,7 +104,8 @@
         <in-button type="primary" @click="handleDownload(false)"> 下载图片 </in-button>
       </div>
     </div>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 </template>
 <script setup lang="ts">
 import {

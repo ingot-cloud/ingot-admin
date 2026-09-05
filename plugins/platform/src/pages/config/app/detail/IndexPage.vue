@@ -1,58 +1,37 @@
 <template>
-  <in-container v-loading="loading" padding="0" :show-backtop="false">
-    <div class="app-detail">
-      <div class="detail-header">
-        <div class="detail-header__left">
-          <in-button text @click="privateOnBack">
-            <template #icon>
-              <i-ep:arrow-left />
+  <in-page-frame v-loading="loading" mode="page">
+    <template #header>
+      <in-page-header show-back :description="detail.name" @back="privateOnBack">
+        <template #action>
+          <template v-if="currentTab === TabNameBase">
+            <template v-if="editing">
+              <in-button @click="privateOnCancel">取消</in-button>
+              <in-button type="primary" :loading="loading" @click="privateOnConfirm">确定</in-button>
             </template>
-            返回
-          </in-button>
-
-          <el-divider direction="vertical" />
-
-          <in-icon
-            v-if="detail.icon"
-            :name="detail.icon"
-            class="w-[var(--in-menu-icon-size)] h-[var(--in-menu-icon-size)]"
-          />
-
-          <span class="detail-header__name">{{ detail.name || "应用详情" }}</span>
-        </div>
-        <div v-if="currentTab === TabNameBase" class="detail-header__right">
-          <template v-if="editing">
-            <in-button @click="privateOnCancel">取消</in-button>
-            <in-button type="primary" :loading="loading" @click="privateOnConfirm">确定</in-button>
+            <in-button v-else type="primary" @click="privateOnEdit">编辑</in-button>
           </template>
-          <template v-else>
-            <in-button type="primary" @click="privateOnEdit">编辑</in-button>
-          </template>
-        </div>
-      </div>
+        </template>
+        <template #tabs>
+          <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
+        </template>
+      </in-page-header>
+    </template>
 
-      <div class="detail-tabs">
-        <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
-      </div>
-
-      <div class="detail-panel">
-        <BasicInfoPanel
-          v-show="currentTab === TabNameBase"
-          ref="basicInfoPanelRef"
-          v-model:editing="editing"
-          :app-id="appId"
-          @loaded="privateOnDetailLoaded"
-        />
-        <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" />
-        <PermissionPanel
-          v-if="currentTab === TabNamePermission"
-          ref="permissionPanelRef"
-          :app-id="appId"
-          :app-code="detail.code"
-        />
-      </div>
-    </div>
-  </in-container>
+    <BasicInfoPanel
+      v-show="currentTab === TabNameBase"
+      ref="basicInfoPanelRef"
+      v-model:editing="editing"
+      :app-id="appId"
+      @loaded="privateOnDetailLoaded"
+    />
+    <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" />
+    <PermissionPanel
+      v-if="currentTab === TabNamePermission"
+      ref="permissionPanelRef"
+      :app-id="appId"
+      :app-code="detail.code"
+    />
+  </in-page-frame>
 </template>
 
 <script setup lang="ts">
@@ -125,33 +104,3 @@ const privateOnConfirm = (): void => {
   });
 };
 </script>
-
-<style lang="postcss" scoped>
-.app-detail {
-  @apply h-full flex flex-col;
-}
-
-.detail-header {
-  @apply flex-none flex flex-row items-center justify-between px-16px py-12px border-b border-[var(--in-border-color)] border-b-solid;
-
-  & .detail-header__left {
-    @apply flex flex-row items-center gap-2 flex-1;
-  }
-
-  & .detail-header__right {
-    @apply flex flex-row items-center gap-2;
-  }
-
-  & .detail-header__name {
-    @apply text-16px font-500 text-[var(--in-text-color-primary)];
-  }
-}
-
-.detail-tabs {
-  @apply flex-none border-b border-[var(--in-border-color)] border-b-solid;
-}
-
-.detail-panel {
-  @apply flex-1 min-h-0 overflow-y-auto;
-}
-</style>

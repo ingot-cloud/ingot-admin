@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header title="成员" description="按部门查看和组织成员，维护成员资料。" />
+      <in-page-header description="按部门查看和组织成员，维护成员资料。" />
     </template>
 
     <in-split-layout left-collapsible :persistence-key="ORG_USER_SPLIT_KEY">

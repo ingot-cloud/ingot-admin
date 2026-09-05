@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #top>
       <in-filter-item>
         <in-with-label title="组织类型">
@@ -32,7 +37,6 @@
       @refresh="privateOnRefresh"
       ref="tableRef"
     >
-      <template #title> 权限管理 </template>
       <template #code="{ item }">
         <in-button text link type="primary" @click="privateGoAppDetail(item)">
           <in-copy-tag :text="item.code" />
@@ -54,7 +58,8 @@
         </in-button>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
 </template>
 <script lang="ts" setup>
 import { tableHeaders } from "./table";

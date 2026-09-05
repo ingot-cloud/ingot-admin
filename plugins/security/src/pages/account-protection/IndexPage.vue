@@ -1,7 +1,11 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="page">
     <template #header>
-      <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
+      <in-page-header description="分别维护管理员与会员的登录失败锁定策略。">
+        <template #tabs>
+          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
+        </template>
+      </in-page-header>
     </template>
 
     <div class="account-protection-page">
@@ -10,7 +14,7 @@
         v-show="activeTab === AccountProtectionTabEnum.LOCKOUT"
       />
     </div>
-  </in-split-layout>
+  </in-page-frame>
 </template>
 
 <script setup lang="ts">
@@ -37,11 +41,8 @@ const tabs = computed(() =>
 </script>
 
 <style lang="postcss" scoped>
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
-
 .account-protection-page {
   @apply min-h-0;
+  padding: var(--in-space-5);
 }
 </style>

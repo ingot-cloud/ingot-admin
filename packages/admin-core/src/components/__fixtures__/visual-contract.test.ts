@@ -41,6 +41,11 @@ describe("admin UI visual fixtures", () => {
     expect(pageHeader).toContain("font-weight: var(--in-font-weight-body)");
     expect(pageHeader).toContain("-webkit-line-clamp: 1");
     expect(pageHeader).toContain("word-break: break-all");
+    expect(pageHeader).toContain("route.meta.title");
+    expect(pageHeader).toContain(".in-page-header.has-description {");
+    expect(pageHeader).not.toMatch(
+      /\.in-page-header \{[^}]*min-height: var\(--in-page-header-min-height\);/,
+    );
   });
 
   it("顶栏与侧栏尺寸 Token 已对齐验收值", () => {

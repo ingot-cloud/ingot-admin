@@ -44,7 +44,7 @@
 | `--in-motion-duration-split` | `180ms` |
 | `--in-table-header-height` / `--in-table-row-height-compact` | `48px` / `44px` |
 | `--in-page-gutter` | `12px`（`--in-space-3`） |
-| `--in-page-breadcrumb-height` / `--in-page-header-min-height` | `46px` / `80px` |
+| `--in-page-breadcrumb-height` / `--in-page-header-min-height` | `46px` / `80px`（仅有说明时作为页面头最小高度） |
 | `--in-control-height` | `32px` |
 | `--in-radius-control` / `--in-radius-card` | `6px` / `8px` |
 

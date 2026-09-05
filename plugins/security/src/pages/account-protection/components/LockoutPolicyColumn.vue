@@ -1,5 +1,5 @@
 <template>
-  <div class="lockout-column">
+  <in-container variant="bordered" class="lockout-column">
     <div class="lockout-column__header">
       <div class="lockout-column__title-wrap">
         <div class="lockout-column__title">{{ title }}</div>
@@ -80,7 +80,7 @@
       </el-form-item>
       <div v-if="form.updatedAt" class="lockout-column__meta">最近更新：{{ form.updatedAt }}</div>
     </in-form>
-  </div>
+  </in-container>
 </template>
 
 <script setup lang="ts">
@@ -302,8 +302,7 @@ watch(
 
 <style lang="postcss" scoped>
 .lockout-column {
-  @apply h-full flex flex-col border border-solid border-[var(--in-border-color)] p-16px;
-  border-radius: var(--in-common-border-radius);
+  @apply h-full flex flex-col;
 
   & .lockout-column__header {
     @apply flex flex-row items-start justify-between gap-3 mb-16px;

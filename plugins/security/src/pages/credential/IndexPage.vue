@@ -1,7 +1,11 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="page">
     <template #header>
-      <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
+      <in-page-header>
+        <template #tabs>
+          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
+        </template>
+      </in-page-header>
     </template>
 
     <div v-loading="loading" class="credential-policy-page">
@@ -15,7 +19,7 @@
         @saved="loadAll"
       />
     </div>
-  </in-split-layout>
+  </in-page-frame>
 </template>
 <script lang="ts" setup>
 import { CredentialPolicyTypeEnum, useCredentialPolicyTypeEnum } from "@/models/enums";
@@ -40,10 +44,6 @@ onMounted(() => {
 });
 </script>
 <style lang="postcss" scoped>
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
-
 .credential-policy-page {
   padding: 8px 12px 16px;
 }

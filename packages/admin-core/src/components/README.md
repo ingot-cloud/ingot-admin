@@ -5,7 +5,7 @@
 | 组件 | 用途 | 主要新增/约定 | 兼容说明 |
 |------|------|----------------|----------|
 | `InPageFrame` | 页面高度、表面与滚动契约 | `mode: page \| contained`，`surface: plain \| workspace`；page 模式滑到底保留 `--in-page-gutter`；`#header` / `#tabs` / default | 新组件；普通页用 `page`，列表/双栏用 `contained` + `workspace` |
-| `InPageHeader` | 页面标题区 | 约 80px、白底、底部分隔；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
+| `InPageHeader` | 页面标题区 | 白底、底部分隔；有说明时约 80px，无说明时高度随主标题收缩、不预留副标题占位；未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InSplitLayout` | 可选 header + 左右分栏工作面 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏默认与容器同色，可用 `left-background` 单独覆盖；左栏 260→0px，分隔线中线 16×32 右侧圆角折叠标签（贴线向右伸出）；左栏默认 16px 内边距且子项不超出；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
 | `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置 | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |

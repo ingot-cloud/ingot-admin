@@ -1,5 +1,10 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header />
+    </template>
+
+    <in-split-layout>
     <template #header>
       <div flex flex-row justify-between>
         <in-with-label title="客户端ID">
@@ -52,7 +57,8 @@
         </in-button>
       </template>
     </in-table>
-  </in-split-layout>
+    </in-split-layout>
+  </in-page-frame>
   <EditDrawer ref="EditDrawerRef" @success="invalidateList" />
 </template>
 <script lang="ts" setup>

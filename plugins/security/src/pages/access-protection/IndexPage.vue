@@ -1,15 +1,16 @@
 <template>
-  <in-split-layout>
+  <in-page-frame mode="page">
     <template #header>
-      <div class="access-protection-header">
-        <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
-        <in-button
-          :loading="broadcasting"
-          @click="privateOnBroadcastClick"
-        >
-          强制刷新策略
-        </in-button>
-      </div>
+      <in-page-header>
+        <template #action>
+          <in-button :loading="broadcasting" @click="privateOnBroadcastClick">
+            强制刷新策略
+          </in-button>
+        </template>
+        <template #tabs>
+          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
+        </template>
+      </in-page-header>
     </template>
 
     <div class="access-protection-page">
@@ -42,7 +43,7 @@
         v-show="activeTab === AccessProtectionTabEnum.BLOCK_EVENT"
       />
     </div>
-  </in-split-layout>
+  </in-page-frame>
 </template>
 
 <script setup lang="ts">
@@ -82,14 +83,6 @@ const privateOnBroadcastClick = async (): Promise<void> => {
 </script>
 
 <style lang="postcss" scoped>
-:deep(.in-split-layout__header) {
-  padding: 0 !important;
-}
-
-.access-protection-header {
-  @apply flex flex-row items-center justify-between gap-3 pr-12px;
-}
-
 .access-protection-page {
   @apply min-h-0;
 }
