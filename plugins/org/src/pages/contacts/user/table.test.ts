@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  accountStatusOptions,
   createOrgUserRowActions,
   createOrgUserToolbarActions,
   ORG_USER_SPLIT_KEY,
   ORG_USER_TABLE_ID,
+  resolveOrgUserEnabledFilter,
   tableHeaders,
+  toOrgUserEnabledPickerValue,
 } from "./table";
 
 const handlers = {
@@ -25,6 +28,16 @@ const row = (
 });
 
 describe("org contacts user table contract", () => {
+  it("账号状态筛选映射到 enabled 查询参数", () => {
+    expect(accountStatusOptions.map((item) => item.label)).toEqual(["全部", "正常", "已暂停"]);
+    expect(resolveOrgUserEnabledFilter("")).toBeUndefined();
+    expect(resolveOrgUserEnabledFilter(true)).toBe(true);
+    expect(resolveOrgUserEnabledFilter(false)).toBe(false);
+    expect(toOrgUserEnabledPickerValue(undefined)).toBe("");
+    expect(toOrgUserEnabledPickerValue(true)).toBe(true);
+    expect(toOrgUserEnabledPickerValue(false)).toBe(false);
+  });
+
   it("提供稳定 tableId 与双栏持久化键", () => {
     expect(ORG_USER_TABLE_ID).toBe("org-contacts-user");
     expect(ORG_USER_SPLIT_KEY).toBe("org-contacts-user");

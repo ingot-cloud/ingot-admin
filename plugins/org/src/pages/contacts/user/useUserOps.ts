@@ -7,6 +7,7 @@ import type {
 import { UpdateUserAPI, RemoveUserAPI } from "@/api/org/user";
 import { OrgUserPageQueryOptions, orgUserQueryKeys } from "@/api/org/user.query";
 import { Message, copyParams, silentQueryRequest, useServerPaging } from "@ingot/admin-core";
+import { resolveOrgUserEnabledFilter, toOrgUserEnabledPickerValue } from "./table";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 export const useUserOps = () => {
@@ -31,9 +32,18 @@ export const useUserOps = () => {
     },
   });
 
+  const enabledFilter = computed({
+    get: (): string | boolean => toOrgUserEnabledPickerValue(paging.condition.enabled),
+    set: (value: string | number | boolean | null) => {
+      paging.condition.enabled = resolveOrgUserEnabledFilter(value);
+      fetchUserData();
+    },
+  });
+
   const resetFilter = () => {
     paging.condition.deptId = undefined;
     paging.condition.username = undefined;
+    paging.condition.enabled = undefined;
     copyParams(currentDeptNode, { name: undefined, id: undefined });
     fetchUserData();
   };
@@ -70,6 +80,7 @@ export const useUserOps = () => {
   return {
     loading: paging.fetching,
     condition: paging.condition,
+    enabledFilter,
     pageInfo: paging.pageInfo,
     currentDeptNode,
     resetFilter,

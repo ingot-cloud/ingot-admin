@@ -1,8 +1,21 @@
-import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { InPickerOption, InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
 
 export const ORG_USER_TABLE_ID = "org-contacts-user";
 export const ORG_USER_SPLIT_KEY = "org-contacts-user";
+
+export const accountStatusOptions: Array<InPickerOption> = [
+  { value: "", label: "全部" },
+  { value: true, label: "正常" },
+  { value: false, label: "已暂停" },
+];
+
+export const resolveOrgUserEnabledFilter = (
+  value: string | number | boolean | null,
+): boolean | undefined => (typeof value === "boolean" ? value : undefined);
+
+export const toOrgUserEnabledPickerValue = (enabled: boolean | undefined): string | boolean =>
+  enabled ?? "";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {

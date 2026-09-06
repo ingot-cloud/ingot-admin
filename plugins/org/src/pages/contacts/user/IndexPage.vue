@@ -25,6 +25,11 @@
           <span class="in-table__count">共 {{ userOps.pageInfo.value.total ?? 0 }} 人</span>
         </template>
         <template #tools-start>
+          <in-picker
+            v-model="enabledFilter"
+            label="账号状态"
+            :options="accountStatusOptions"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="ORG_USER_TABLE_ID"
@@ -58,6 +63,7 @@ import type { UserPageItemVO } from "@/models";
 import LeftContent from "./components/LeftContent.vue";
 import { useUserOps } from "./useUserOps";
 import {
+  accountStatusOptions,
   createOrgUserRowActions,
   createOrgUserToolbarActions,
   ORG_USER_SPLIT_KEY,
@@ -68,6 +74,7 @@ import EditDrawer from "./components/EditDrawer.vue";
 
 const EditDrawerRef = ref();
 const userOps = useUserOps();
+const enabledFilter = userOps.enabledFilter;
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow = { userId: "", username: "", createdAt: "" } satisfies UserPageItemVO;
 

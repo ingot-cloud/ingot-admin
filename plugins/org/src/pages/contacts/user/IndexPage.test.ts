@@ -19,6 +19,10 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain("left-collapsible");
     expect(source).toContain("ORG_USER_SPLIT_KEY");
     expect(source).toContain("in-table-column-setting");
+    expect(source).toContain("in-picker");
+    expect(source).toContain('label="账号状态"');
+    expect(source).toContain("accountStatusOptions");
+    expect(source.indexOf("in-picker")).toBeLessThan(source.indexOf("in-table-column-setting"));
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");
     expect(source).toContain('density="compact"');

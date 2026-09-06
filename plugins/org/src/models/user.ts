@@ -44,6 +44,7 @@ export interface UserQueryDTO {
   email?: string;
   roleId?: string;
   deptId?: string;
+  enabled?: boolean;
 }
 
 export interface SimpleUserVO {
