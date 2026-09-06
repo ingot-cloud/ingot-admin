@@ -22,7 +22,7 @@
 
 ## 前端注意
 
-- 查询条件、分页参数、排序、Query Key、`enabled` 条件和缓存失效范围保持不变。
+- 查询条件、分页参数、排序、Query Key 和缓存失效范围保持不变。组织成员列表新增可选查询字段 `UserQueryDTO.enabled`：不传表示全部，`true` 为正常，`false` 为已暂停。`filterParams` 会保留布尔 `false`，不得把已暂停筛掉。
 - 组织成员列表 `UserPageItemVO` 不再包含 `status`；状态列使用 `InAccountStatusTag` 根据 `enabled` / `locked` 展示正常、已暂停或已锁定。暂停/恢复账号只更新 `enabled`，不提交 `status` 或 `locked`。
 - 页面级简单筛选是否即时查询，必须以本 change 的页面映射和原业务语义为准；不得统一改成每次输入即请求。
 - 安全页面未访问 Tab 不发请求的行为必须保留。

@@ -4,7 +4,7 @@
 - [x] 为四个试点标记 `InPageFrame` page/contained 模式、滚动所有者、稳定 `tableId` 和操作分类。
 - [x] 迁移 `platform/dashboard`，验证 Overview、卡片与信息层级。
 - [x] 迁移 `platform/org/tenant`，验证 contained List、固定页面头/工具栏/分页、表格数据滚动和创建/编辑抽屉。
-- [x] 迁移 `org/contacts/user`，验证 260px 可折叠 Split List、左右独立滚动、宽表格、字段设置、行内更多菜单和编辑抽屉。现有业务无邀请/批量导入导出/变更部门/离职接口，工具栏只映射「添加成员」。
+- [x] 迁移 `org/contacts/user`，验证 260px 可折叠 Split List、左右独立滚动、宽表格、字段设置、行内更多菜单和编辑抽屉。现有业务无邀请/批量导入导出/变更部门/离职接口，工具栏只映射「添加成员」。`#tools-start` 在字段设置左侧增加账号状态 `InPicker`，查询 `UserQueryDTO.enabled`。
 - [x] 迁移 `security/account-protection`，验证 Settings、局部 Tab、双栏和独立编辑。
 - [x] [P] 为每个试点补充关键行为和组件集成测试。
 - [ ] [P] 生成 1440×900、1280×800、1024×768 视觉基线。

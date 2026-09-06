@@ -38,6 +38,13 @@
 - [x] 更多菜单支持 disabled reason、danger、分组、键盘导航、Esc 和焦点返回。
 - [x] 防止初次测量闪烁、ResizeObserver 循环和动态文案导致的顺序抖动。
 
+## InPicker
+
+- [x] 新增工具栏/筛选区紧凑单选 `InPicker`：可选 label、32px 触发器、展开勾选当前项。
+- [x] 相邻实例默认间隔 12px；表格 tools 区已有 gap 时不再叠加。
+- [x] 浮层 Teleport 到 body；Esc / 点击外部关闭；导出类型 `InPickerOption` 并注册到 `coreGlobalComponents`。
+- [x] [P] 补充有/无 label、选中勾选、v-model/change、Esc 与视觉契约测试。
+
 ## 自动化与视觉验收
 
 - [x] [P] 为 260/0px 手动折叠、自动收起、宽度恢复和减少动效补充测试。

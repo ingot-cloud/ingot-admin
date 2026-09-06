@@ -238,7 +238,7 @@ InTable 不再默认渲染刷新和字段设置：
 - 提供 tools-start 和 tools-end 插槽。
 - 旧 toolbar 插槽在兼容期映射到 tools-start，文档标记废弃。
 - hideSetting 标记废弃；旧页面迁移前可以保留兼容适配，但新页面必须显式插入字段设置按钮。
-- 表格能力以独立组件导出，页面按需导入，例如 InTableColumnSetting、InTableActions。
+- 表格能力以独立组件导出，页面按需导入，例如 InTableColumnSetting、InTableActions、InPicker。
 - 任意复杂业务工具可直接放入 tools 插槽；共享表格不读取业务权限或调用 API。
 
 建议用法：
@@ -252,6 +252,23 @@ InTable 不再默认渲染刷新和字段设置：
         <in-table-actions :actions="actions" :row="toolbarContext" variant="toolbar" />
       </template>
     </in-table>
+
+### InPicker
+
+工具栏/筛选区的紧凑单选，不替代表单 `InSelect`。
+
+    interface InPickerOption {
+      value: string | number | boolean;
+      label: string;
+      disabled?: boolean;
+    }
+
+- `label` 可选；未传时触发器只显示当前选项。
+- `v-model` 为选中值；`options` 提供选项；`change` 在选择后发出。
+- 触发器 32px、圆角 6px、默认边框 `#d0d3d6`；悬停与展开时边框 `#3370ff`；展开后当前项 `#3370ff` 并带勾选。
+- 相邻 `InPicker` 默认间隔 `--in-space-3`（12px）。
+- 放在 `InTable` 的 `tools-start` / `tools-end` 时沿用工具栏已有 12px gap，不再叠加相邻 margin。
+- 浮层 Teleport 到 `body`，避免被表格 `overflow` 裁切。
 
 ## 自适应操作收纳
 
@@ -431,3 +448,4 @@ InTableColumnSetting（原 InColumnSetting）从“图标包裹嵌套表格”�
 - [x] 收缩态不使用二级浮层或临时展开；完整菜单层级通过底部“展开导航”恢复。
 - [x] 无面包屑（开关关闭或仅一层未渲染）时内容顶距与侧栏到工作面的 `--in-page-gutter` 对齐；无版权时工作面贴底，页面滚动尽头再补同等沟槽。
 - [x] 顶栏 Logo 默认使用 framed 浅色/暗色资源，并随主题切换。
+- [x] 工具栏/筛选区使用 `InPicker` 做紧凑单选：可选 label、32px 触发器、展开后勾选当前项；相邻实例默认间隔 12px。不替代表单 `InSelect`。

@@ -17,7 +17,7 @@
 | platform | develop/qrcode | Tool | 二维码工具权限 | 无列表 | 单次生成，不改路由 |
 | platform | develop/social | List | 社交配置权限 | 社交列表 | 编辑弹窗成功后刷新 |
 | platform | org/tenant | List | 组织管理权限 | 组织分页，搜索才提交名称 | 创建/编辑/启停后失效租户列表 |
-| org | contacts/user | Split List | 组织成员权限 | 部门树 + 成员分页 | 添加/详情/启停/删除后刷新成员列表 |
+| org | contacts/user | Split List | 组织成员权限 | 部门树 + 成员分页；账号状态筛选传 `enabled` | 添加/详情/启停/删除后刷新成员列表 |
 | org | contacts/dept | Split List | 部门权限 | 部门树/列表 | 编辑抽屉成功后刷新 |
 | org | contacts/role | Split List | 组织角色权限 | 角色组 + 成员 | 绑定/删除后刷新当前组 |
 | org | contacts/auth | Split List | 组织授权权限 | 范围树 + 授权列表 | 添加抽屉成功后刷新 |
