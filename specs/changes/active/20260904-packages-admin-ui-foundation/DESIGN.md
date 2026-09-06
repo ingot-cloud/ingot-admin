@@ -208,7 +208,7 @@
 
     InTable (height: 100%, min-height: 0)
     ├── MetaRow
-    │   ├── Title
+    │   ├── Title（可内嵌 `.in-table__count`，与标题同行、间隔 12px，沿用 Summary 次要正文样式）
     │   └── Summary
     ├── ToolsRow
     │   ├── ToolsStartSlot
@@ -220,6 +220,7 @@
 - MetaRow、ToolsRow 和 Pagination 固定；数据区由 `ElTable` 承担滚动，视口本身不得 `overflow: auto`，避免与表格内部滚动条叠出两条。
 - 必须在模板中使用 `<el-table>` 并加载 `el-table.css`，以隐藏 Element Plus 的 `.hidden-columns` 测量节点；禁止再用 `h(ElTable)` 绕过按需样式。
 - 右侧内容内边距默认 20px；MetaRow → ToolsRow、ToolsRow → TableDataViewport 的垂直间距均为 20px。
+- `#title` 内 `.in-table__count` 与标题同一行、基线对齐、间隔 `--in-space-3`（12px）；字号/行高/颜色与 `#summary` 相同（14/22px、400、次级文字），不继承标题字重。有表格标题时，人数放在标题右侧，不要再用 `#summary` 单独占一行；仅有人数、没有标题时仍可用 `#summary`。
 - ToolsStart/ToolsEnd 内部 gap 默认 12px；ToolsStart 按内容占位，ToolsEnd 以 `flex: 1; min-width: 0` 获得剩余宽度并靠右。
 - 表头 48px，紧凑成员式数据行 44px；继续保留 default 48px 密度，新增或复用 density: compact | default。
 - 表格宽度不足时由 `ElTable` 在数据区内唯一横向滚动；选择列可固定左侧，操作列可固定右侧并显示轻量分隔。视口不叠加第二层 overflow。
@@ -294,7 +295,7 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
 
 ### 更多菜单
 
-- “…”为 32×32px 按钮，图标使用 MoreOutlined 三点 SVG；行内默认透明，悬停或展开时使用浅中性底和 6px 圆角。仅存在折叠组或 always 操作时显示，并紧邻固定操作左侧。
+- “…”为 32×32px 按钮；工具栏使用竖向三点，行内使用横向三点。行内默认透明，悬停或展开时使用浅中性底和 6px 圆角。仅存在折叠组或 always 操作时显示，并紧邻固定操作左侧：可折叠组（若直出）→ … → 邀请/添加。
 - 指针悬停触发器即打开菜单；离开触发器与菜单后约 160ms 关闭。点击、Enter/Space 仍可打开；Esc 与点外部关闭，并将焦点返回“…”。触屏不依赖 hover。
 - 菜单传送到 `body` 以避免表格固定列裁切；右对齐贴在按钮下方 4px，白底、1px `#dee0e3` 边框、6px 圆角、`--in-shadow-md` 阴影。
 - 菜单最小宽度 128px、垂直内边距 8px；菜单项 36px 高、水平内边距 12px、左对齐 14px 正文色，支持 disabled、disabled reason、danger、分组分隔。
@@ -304,13 +305,13 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
 
 InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的完整按钮组件：
 
-- 触发器为 32×32px 描边按钮，图标约 16px，Tooltip 为“设置显示字段”。
-- 浮层宽约 213px、最大高 426px、圆角 8px、边框 #dee0e3。
-- 内容使用普通复选列表，行节奏 36px；第一项“全部”支持选中/半选。
+- 触发器为 32×32px 描边按钮，图标使用表格设置 SVG（非齿轮），Tooltip 为「按需自定义展示或隐藏字段」。
+- 浮层传送到 `body` 并 `position: fixed`，避免被 `InTable` / 工具栏裁切；宽约 213px、最大高 426px、圆角 8px、边框 `#dee0e3`。
+- 顶部说明「请选择列表中要展示的信息」；其下「全部」支持选中/半选；列项 36px 行高，必选列复选框禁用。
+- 除选择列和操作列外，列项右侧提供六点拖拽柄，可调整列顺序；选择列固定最左、操作列固定最右。
 - required 列选中且禁用；选择列、操作列默认 configurable: false。
-- 切换立即生效，无保存按钮；点击外部或 Esc 关闭并返回焦点。
-- table-id 必填，按 user + tableId 前端持久化；不新增后端接口。
-- 本阶段不实现拖拽排序。
+- 切换与排序立即生效，无保存按钮；Esc / 点击外部关闭并返回焦点。
+- table-id 必填，按 user + tableId 前端持久化 `{ selected, order }`；兼容旧的 `string[]` 选中列表。
 
 ## 前端类型
 
@@ -419,7 +420,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - [x] tools 支持任意自定义组件，但只有配置型 action 参与自动溢出收纳。
 - [x] 成员页式工具栏使用“固定操作 + 原子折叠组”；邀请/添加始终直出，三个批量操作整组展开或进入“…”菜单。
 - [x] 成员式紧凑表格使用 48px 表头和 44px 数据行。
-- [x] 本阶段不修改业务页面，也不实现字段拖拽排序。
+- [x] 本阶段不修改业务页面；字段拖拽排序已纳入 InColumnSetting。
 - [x] Phase 07 只补强全局左侧导航，不重新调整顶栏、面包屑、页面工作区或业务页面。
 - [x] 侧栏面板与页面画布同色；展开/收起为 236px / 52px，外层含 8px 沟槽后为 244px / 60px。
 - [x] 菜单滚动视口与底部控制为兄弟区域；“收起导航”固定在距底部 8px 的 44px 控制区，不随菜单滚动。
