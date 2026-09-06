@@ -80,13 +80,12 @@
 </template>
 
 <script lang="ts" setup>
-import type { InTableAction } from "@ingot/admin-core";
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SysTenant } from "@/models";
 import { useOrgTypeEnums } from "@/models/enums";
 import EditDrawer from "./components/EditDrawer.vue";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import {
-  applyColumnSelection,
   createTenantRowActions,
   createTenantToolbarActions,
   tableHeaders,

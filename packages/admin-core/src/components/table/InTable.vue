@@ -293,10 +293,23 @@ defineExpose<TableAPI<TableRow>>({
 }
 
 .title {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  gap: var(--in-space-3);
   color: var(--in-text-color);
   font-weight: var(--in-font-weight-section-title);
   font-size: var(--in-font-size-section-title);
   line-height: var(--in-line-height-section-title);
+}
+
+.title :slotted(.in-table__count) {
+  flex: none;
+  color: var(--in-text-color-secondary);
+  font-size: var(--in-font-size-body);
+  font-weight: var(--in-font-weight-body);
+  line-height: var(--in-line-height-body);
+  white-space: nowrap;
 }
 
 .subtitle {

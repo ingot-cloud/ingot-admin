@@ -19,6 +19,7 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain("left-collapsible");
     expect(source).toContain("ORG_USER_SPLIT_KEY");
     expect(source).toContain("in-column-setting");
+    expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");
     expect(source).toContain('density="compact"');
     expect(source).not.toContain("@refresh");
@@ -33,6 +34,9 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain(':locked="item.locked"');
     expect(source).not.toContain("in-common-status-tag");
     expect(source).not.toContain("item.status");
+    expect(source).toContain("in-table__count");
+    expect(source).toContain("共 {{ userOps.pageInfo.value.total ?? 0 }} 人");
+    expect(source).not.toContain("#summary");
   });
 
   it("左树向页面发出 kebab-case 选择事件", () => {

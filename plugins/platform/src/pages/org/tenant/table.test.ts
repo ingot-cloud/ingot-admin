@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
 import {
-  applyColumnSelection,
   createTenantRowActions,
   createTenantToolbarActions,
   tableHeaders,
@@ -56,13 +55,5 @@ describe("platform tenant table contract", () => {
         onToggleStatus: () => undefined,
       })[1]?.label,
     ).toBe("启用");
-  });
-
-  it("字段选择不隐藏必选列", () => {
-    const visible = applyColumnSelection(tableHeaders, ["code"]);
-    expect(visible.find((item) => item.prop === "name")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "actions")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "code")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "orgType")?.hide).toBe(true);
   });
 });

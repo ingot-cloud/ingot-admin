@@ -162,4 +162,118 @@ describe("InTableActions", () => {
     expect(wrapper.get("[aria-label='批量操作离职']").attributes("disabled")).toBeDefined();
     wrapper.unmount();
   });
+
+  it("toolbar 收纳后更多在固定操作左侧，宽度足够时整组直出", async () => {
+    const widths: Record<string, number> = {
+      leave: 108,
+      dept: 108,
+      import: 112,
+      invite: 98,
+      add: 98,
+    };
+    const toolbarActions: Array<InTableAction<typeof row>> = [
+      {
+        key: "leave",
+        label: "批量操作离职",
+        kind: "danger",
+        overflow: "auto",
+        overflowGroup: "batch",
+        priority: 10,
+        onSelect: noop,
+      },
+      {
+        key: "dept",
+        label: "批量变更部门",
+        kind: "default",
+        overflow: "auto",
+        overflowGroup: "batch",
+        priority: 20,
+        onSelect: noop,
+      },
+      {
+        key: "import",
+        label: "批量导入/导出",
+        kind: "default",
+        overflow: "auto",
+        overflowGroup: "batch",
+        priority: 30,
+        onSelect: noop,
+      },
+      {
+        key: "invite",
+        label: "邀请成员",
+        kind: "default",
+        overflow: "never",
+        priority: 40,
+        onSelect: noop,
+      },
+      {
+        key: "add",
+        label: "添加成员",
+        kind: "quick",
+        overflow: "never",
+        priority: 50,
+        onSelect: noop,
+      },
+    ];
+    const original = Element.prototype.getBoundingClientRect;
+    const mockRect = (width: number) =>
+      ({
+        width,
+        height: 32,
+        top: 0,
+        left: 0,
+        bottom: 32,
+        right: width,
+        x: 0,
+        y: 0,
+        toJSON: () => undefined,
+      }) as DOMRect;
+
+    const visibleLabels = (wrapper: ReturnType<typeof mount>) =>
+      [...wrapper.element.querySelectorAll("button")]
+        .map((item) => item.getAttribute("aria-label"))
+        .filter((item): item is string => Boolean(item));
+
+    Element.prototype.getBoundingClientRect = function mockRectForLayout(this: Element) {
+      if (this.classList.contains("in-table-actions")) {
+        return mockRect(360);
+      }
+      const key = (this as HTMLElement).dataset.actionKey;
+      return mockRect(key ? (widths[key] ?? 98) : 32);
+    };
+
+    const wrapper = mount(InTableActions, {
+      props: { actions: toolbarActions, row, variant: "toolbar" },
+      global: { stubs },
+    });
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    expect(visibleLabels(wrapper)).toEqual(["更多", "邀请成员", "添加成员"]);
+    wrapper.unmount();
+
+    Element.prototype.getBoundingClientRect = function mockWideRect(this: Element) {
+      if (this.classList.contains("in-table-actions")) {
+        return mockRect(1200);
+      }
+      const key = (this as HTMLElement).dataset.actionKey;
+      return mockRect(key ? (widths[key] ?? 98) : 32);
+    };
+
+    const wide = mount(InTableActions, {
+      props: { actions: toolbarActions, row, variant: "toolbar" },
+      global: { stubs },
+    });
+    await wide.vm.$nextTick();
+    await wide.vm.$nextTick();
+    expect(visibleLabels(wide)).toEqual([
+      "批量操作离职",
+      "批量变更部门",
+      "批量导入/导出",
+      "邀请成员",
+      "添加成员",
+    ]);
+    wide.unmount();
+    Element.prototype.getBoundingClientRect = original;
+  });
 });

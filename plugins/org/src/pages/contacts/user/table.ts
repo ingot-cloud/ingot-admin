@@ -34,31 +34,11 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "220",
+    width: "140",
     prop: "actions",
     fixed: "right",
   },
 ];
-
-export function applyColumnSelection(
-  headers: Array<TableHeaderRecord>,
-  selected: string[],
-): Array<TableHeaderRecord> {
-  if (selected.length === 0) {
-    return headers;
-  }
-  return headers.map((item) => {
-    const locked =
-      item.prop === "actions" ||
-      item.type === "selection" ||
-      item.required === true ||
-      item.configurable === false;
-    return {
-      ...item,
-      hide: locked ? false : !selected.includes(String(item.prop ?? "")),
-    };
-  });
-}
 
 export function createOrgUserToolbarActions(
   onCreate: () => void,

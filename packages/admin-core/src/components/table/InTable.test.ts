@@ -127,6 +127,23 @@ describe("InTable", () => {
     wrapper.unmount();
   });
 
+  it("标题右侧人数使用 count 样式且不走 summary", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [],
+      },
+      slots: {
+        title: `<span>研发</span><span class="in-table__count">共 3 人</span>`,
+      },
+      global: { stubs },
+    });
+    expect(wrapper.get(".title .in-table__count").text()).toBe("共 3 人");
+    expect(wrapper.find(".subtitle").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it("使用模板 ElTable 并让表格自身滚动，避免露出 hidden-columns 和双滚动条", () => {
     const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InTable.vue"), "utf8");
     expect(source).toContain("<el-table");

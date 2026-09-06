@@ -21,10 +21,11 @@
       </span>
     </div>
 
-    <template v-for="action in ranked.inline" :key="action.key">
+    <template v-for="item in renderItems" :key="item.key">
       <el-tooltip
-        :disabled="!action.disabled || !action.disabledReason"
-        :content="action.disabledReason"
+        v-if="item.action"
+        :disabled="!item.action.disabled || !item.action.disabledReason"
+        :content="item.action.disabledReason"
         effect="light"
         placement="top"
       >
@@ -33,29 +34,28 @@
           class="in-table-actions__inline"
           :class="{
             'is-toolbar': variant === 'toolbar',
-            'is-primary': isPrimary(action),
-            'is-danger': action.kind === 'danger',
-            'is-disabled': action.disabled,
+            'is-primary': isPrimary(item.action),
+            'is-danger': item.action.kind === 'danger',
+            'is-disabled': item.action.disabled,
           }"
-          :disabled="action.disabled"
-          :aria-label="action.label"
-          :title="action.disabled ? action.disabledReason : undefined"
-          @click="privateOnSelect(action)"
+          :disabled="item.action.disabled"
+          :aria-label="item.action.label"
+          :title="item.action.disabled ? item.action.disabledReason : undefined"
+          @click="privateOnSelect(item.action)"
         >
-          <in-icon v-if="action.icon" :name="action.icon" class="in-table-actions__icon" />
-          {{ action.label }}
+          <in-icon v-if="item.action.icon" :name="item.action.icon" class="in-table-actions__icon" />
+          {{ item.action.label }}
         </button>
       </el-tooltip>
-    </template>
 
-    <div
-      v-if="ranked.showMore"
-      class="in-table-actions__more"
-      @pointerenter="privateOnMoreEnter"
-      @pointerleave="privateOnMoreLeave"
-    >
+      <div
+        v-else
+        class="in-table-actions__more"
+        @pointerenter="privateOnMoreEnter"
+        @pointerleave="privateOnMoreLeave"
+      >
       <button
-        ref="triggerRef"
+        :ref="privateSetTriggerRef"
         type="button"
         class="in-table-actions__more-btn"
         :class="{ 'is-toolbar': variant === 'toolbar', 'is-open': menuOpen }"
@@ -75,6 +75,12 @@
           aria-hidden="true"
         >
           <path
+            v-if="variant === 'toolbar'"
+            d="M12 5.5a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Zm0 8.225a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Zm0 8.275a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Z"
+            fill="currentColor"
+          />
+          <path
+            v-else
             d="M5.5 11.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.225 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.275 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Z"
             fill="currentColor"
           />
@@ -83,7 +89,7 @@
       <Teleport to="body">
         <div
           v-if="menuOpen"
-          ref="menuRef"
+          :ref="privateSetMenuRef"
           class="in-table-actions__menu"
           role="menu"
           :style="menuStyle"
@@ -116,7 +122,8 @@
           </div>
         </div>
       </Teleport>
-    </div>
+      </div>
+    </template>
   </div>
 </template>
 <script lang="ts" setup generic="Row">
@@ -190,6 +197,26 @@ const rowRanked = computed(() =>
 const ranked = computed(() =>
   props.variant === "toolbar" ? toolbarRanked.value : rowRanked.value,
 );
+
+type RenderItem = {
+  key: string;
+  action?: InTableAction<Row>;
+};
+
+const renderItems = computed((): Array<RenderItem> => {
+  const more: RenderItem = { key: "__more" };
+  if (props.variant !== "toolbar") {
+    const items = ranked.value.inline.map((action) => ({ key: action.key, action }));
+    return ranked.value.showMore ? [...items, more] : items;
+  }
+  const fluid = ranked.value.inline
+    .filter((action) => resolveActionOverflow(action) !== "never")
+    .map((action) => ({ key: action.key, action }));
+  const pinned = ranked.value.inline
+    .filter((action) => resolveActionOverflow(action) === "never")
+    .map((action) => ({ key: action.key, action }));
+  return ranked.value.showMore ? [...fluid, more, ...pinned] : [...fluid, ...pinned];
+});
 
 const isPrimary = (action: InTableAction<Row>) => {
   if (props.variant !== "toolbar") {
@@ -298,6 +325,22 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", privatePlaceMenu);
 });
 
+const privateSetTriggerRef = (el: Element | { $el?: unknown } | null) => {
+  triggerRef.value = el instanceof HTMLButtonElement ? el : null;
+};
+
+const privateSetMenuRef = (el: Element | { $el?: unknown } | null) => {
+  menuRef.value = el instanceof HTMLElement ? el : null;
+};
+
+const privateMenuItems = () => {
+  const menu = menuRef.value;
+  if (!menu || typeof menu.querySelectorAll !== "function") {
+    return [];
+  }
+  return [...menu.querySelectorAll<HTMLButtonElement>("[role='menuitem']")];
+};
+
 const privatePlaceMenu = () => {
   const trigger = triggerRef.value;
   if (!trigger) {
@@ -318,8 +361,8 @@ const privateOpenMenu = (focusFirst = false) => {
     if (!focusFirst) {
       return;
     }
-    const items = menuRef.value?.querySelectorAll<HTMLButtonElement>("[role='menuitem']");
-    items?.[0]?.focus();
+    const items = privateMenuItems();
+    items[0]?.focus();
   });
 };
 
@@ -391,7 +434,7 @@ const privateOnMenuKeydown = (event: KeyboardEvent) => {
     event.preventDefault();
     activeIndex.value = (activeIndex.value + 1) % items.length;
     nextTick(() => {
-      menuRef.value?.querySelectorAll<HTMLButtonElement>("[role='menuitem']")[activeIndex.value]?.focus();
+      privateMenuItems()[activeIndex.value]?.focus();
     });
     return;
   }
@@ -399,7 +442,7 @@ const privateOnMenuKeydown = (event: KeyboardEvent) => {
     event.preventDefault();
     activeIndex.value = (activeIndex.value - 1 + items.length) % items.length;
     nextTick(() => {
-      menuRef.value?.querySelectorAll<HTMLButtonElement>("[role='menuitem']")[activeIndex.value]?.focus();
+      privateMenuItems()[activeIndex.value]?.focus();
     });
     return;
   }
@@ -417,7 +460,7 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   if (!(target instanceof Node)) {
     return;
   }
-  if (triggerRef.value?.contains(target) || menuRef.value?.contains(target)) {
+  if (triggerRef.value?.contains?.(target) || menuRef.value?.contains?.(target)) {
     return;
   }
   privateCloseMenu();
@@ -435,6 +478,7 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   justify-content: flex-end;
   gap: var(--in-space-3);
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .in-table-actions.is-measuring .in-table-actions__inline,
@@ -444,7 +488,10 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
 }
 
 .in-table-actions__measure {
-  position: absolute;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transform: translateY(-100vh);
   visibility: hidden;
   pointer-events: none;
   display: flex;

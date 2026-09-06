@@ -20,8 +20,10 @@
         @handleSizeChange="userOps.fetchUserData"
         @handleCurrentChange="userOps.fetchUserData"
       >
-        <template #title>{{ userOps.currentDeptNode.name || "成员" }}</template>
-        <template #summary>共 {{ userOps.pageInfo.value.total ?? 0 }} 人</template>
+        <template #title>
+          <span>{{ userOps.currentDeptNode.name || "成员" }}</span>
+          <span class="in-table__count">共 {{ userOps.pageInfo.value.total ?? 0 }} 人</span>
+        </template>
         <template #tools-start>
           <in-column-setting
             :headers="tableHeaders"
@@ -51,12 +53,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { InTableAction } from "@ingot/admin-core";
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
 import LeftContent from "./components/LeftContent.vue";
 import { useUserOps } from "./useUserOps";
 import {
-  applyColumnSelection,
   createOrgUserRowActions,
   createOrgUserToolbarActions,
   ORG_USER_SPLIT_KEY,

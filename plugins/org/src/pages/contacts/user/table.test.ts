@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  applyColumnSelection,
   createOrgUserRowActions,
   createOrgUserToolbarActions,
   ORG_USER_SPLIT_KEY,
@@ -74,13 +73,10 @@ describe("org contacts user table contract", () => {
     expect(missing[1]?.disabledReason).toBe("缺少账号可用状态，无法切换");
   });
 
-  it("字段选择保留姓名和操作列", () => {
-    const visible = applyColumnSelection(tableHeaders, ["phone"]);
-    expect(visible.find((item) => item.prop === "avatar")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "actions")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "phone")?.hide).toBe(false);
-    expect(visible.find((item) => item.prop === "email")?.hide).toBe(true);
-    expect(tableHeaders.find((item) => item.prop === "status")?.minWidth).toBe("132");
+  it("姓名、状态和操作列为字段设置必选", () => {
+    expect(tableHeaders.find((item) => item.prop === "avatar")?.required).toBe(true);
     expect(tableHeaders.find((item) => item.prop === "status")?.required).toBe(true);
+    expect(tableHeaders.find((item) => item.prop === "status")?.minWidth).toBe("132");
+    expect(tableHeaders.some((item) => item.prop === "actions")).toBe(true);
   });
 });

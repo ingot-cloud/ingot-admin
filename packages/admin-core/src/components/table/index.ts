@@ -5,4 +5,4 @@ export type {
   InTableActionKind,
   InTableActionOverflow,
 } from "../types";
-export { IN_TABLE_STATUS_MIN_WIDTH } from "./columnVisibility";
+export { IN_TABLE_STATUS_MIN_WIDTH, applyColumnSelection } from "./columnVisibility";

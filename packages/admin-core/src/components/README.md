@@ -8,11 +8,11 @@
 | `InPageHeader` | 页面标题区 | 白底、底部分隔；有说明时约 80px，无说明时高度随主标题收缩、不预留副标题占位；未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InSplitLayout` | 可选 header + 左右分栏工作面 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏默认与容器同色，可用 `left-background` 单独覆盖；左栏 260→0px，分隔线中线 16×32 右侧圆角折叠标签（贴线向右伸出）；左栏默认 16px 内边距且子项不超出；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
-| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置 | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
-| `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多按钮使用 MoreOutlined SVG，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
+| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置；`#title` 内 `.in-table__count` 使用 summary 次要正文样式，与标题间隔 12px | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
+| `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多在固定操作左侧，工具栏为竖向三点、行内为横向三点，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
 | `InMenu` | 全局左侧导航 | 菜单滚动视口与底部「收起导航」控制为兄弟区域；滚动条隐藏；控制区上方 1px 分隔线并与按钮间隔 8px；图标固定 20px；带图标/无图标分色，选中叶子 `#2b2f36`；展开/收起图标为 `ic_expand` / `ic_close`；236/52px；收缩态无二级浮层 | 桌面折叠入口只在侧栏底部；`InMenuToggle` 仅 overlay |
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位；默认 framed Logo 随 dark 切换 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav`；`branding.logo` 可覆盖默认 Logo |
-| `InColumnSetting` | 字段显示设置 | 32×32 描边按钮、约 213×426 复选列表、“全部”半选、必选列禁用、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化 |
+| `InColumnSetting` | 字段显示设置 | 32×32 描边按钮、表格设置 SVG、说明「请选择列表中要展示的信息」、约 213×426 复选列表、“全部”半选、必选列禁用、右侧拖拽调序、浮层 Teleport 到 body、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化；`change` 按显示顺序返回选中列 |
 | `InBizTabs` | 页内 Tab | 键盘方向键，懒挂载 `InBizTabPanel` | `v-model` + `change` |
 | `InTabs` | 全局路由 Tab | 与页内 Tab 视觉分离，默认可关闭 | 行为不变 |
 | `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条 | `v-model`、`title`、`#header`/`#footer`、`loading` |

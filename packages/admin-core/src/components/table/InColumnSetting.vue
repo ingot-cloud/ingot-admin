@@ -1,6 +1,6 @@
 <template>
   <span class="in-column-setting">
-    <el-tooltip :disabled="open" content="设置显示字段" effect="light" placement="top">
+    <el-tooltip :disabled="open" content="按需自定义展示或隐藏字段" effect="dark" placement="top">
       <button
         ref="triggerRef"
         type="button"
@@ -10,56 +10,98 @@
         @click="privateToggle"
         @keydown="privateOnTriggerKeydown"
       >
-        <in-icon name="ep:setting" class="in-column-setting__icon" />
+        <svg
+          class="in-column-setting__icon"
+          width="1em"
+          height="1em"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path
+            d="M12.5 3.5h-4v14h1v2H2.545A2.045 2.045 0 0 1 .5 17.456V3.545A2.045 2.045 0 0 1 2.545 1.5h15.91A2.045 2.045 0 0 1 20.5 3.545v5.151l-2-1.155V3.545a.04.04 0 0 0-.003-.016.049.049 0 0 0-.025-.026.04.04 0 0 0-.017-.002H14.5v4.958l-2 1.155V3.5Zm-9.956 0a.04.04 0 0 0-.016.002.048.048 0 0 0-.025.026.04.04 0 0 0-.003.017v13.91c0 .01.002.014.002.017l.011.014a.039.039 0 0 0 .014.01.039.039 0 0 0 .018.004H6.5v-14H2.545ZM17.5 11.31l4.062 2.345v4.69L17.5 20.69l-4.062-2.345v-4.691L17.5 11.31Zm.5-2.021a1 1 0 0 0-1 0l-5.062 2.922a1 1 0 0 0-.5.867v5.845a1 1 0 0 0 .5.866L17 22.71a1 1 0 0 0 1 0l5.062-2.922a1 1 0 0 0 .5-.867v-5.845a1 1 0 0 0-.5-.866L18 9.29ZM19.5 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"
+            fill="currentColor"
+          />
+        </svg>
       </button>
     </el-tooltip>
-    <div
-      v-if="open"
-      ref="panelRef"
-      class="in-column-setting__panel"
-      role="dialog"
-      aria-label="字段显示设置"
-      @keydown="privateOnPanelKeydown"
-    >
-      <label class="in-column-setting__item is-all">
-        <input
-          type="checkbox"
-          :checked="allChecked"
-          :indeterminate.prop="allIndeterminate"
-          @change="privateOnToggleAll"
-        />
-        <span>全部</span>
-      </label>
-      <div class="in-column-setting__list">
-        <label
-          v-for="item in configurableHeaders"
-          :key="String(item.prop)"
-          class="in-column-setting__item"
-          :class="{ 'is-locked': isTableHeaderLocked(item) }"
-        >
+    <Teleport to="body">
+      <div
+        v-if="open"
+        ref="panelRef"
+        class="in-column-setting__panel"
+        role="dialog"
+        aria-label="字段显示设置"
+        :style="panelStyle"
+        @keydown="privateOnPanelKeydown"
+      >
+        <p class="in-column-setting__hint">请选择列表中要展示的信息</p>
+        <label class="in-column-setting__item is-all">
           <input
             type="checkbox"
-            :checked="selectedProps.includes(String(item.prop))"
-            :disabled="isTableHeaderLocked(item)"
-            @change="privateOnToggle(String(item.prop))"
+            :checked="allChecked"
+            :indeterminate.prop="allIndeterminate"
+            @change="privateOnToggleAll"
           />
-          <span>{{ item.label }}</span>
+          <span>全部</span>
         </label>
+        <div class="in-column-setting__list">
+          <label
+            v-for="item in orderedHeaders"
+            :key="String(item.prop)"
+            class="in-column-setting__item"
+            :class="{
+              'is-locked': isTableHeaderLocked(item),
+              'is-over': dragOverProp === String(item.prop),
+              'is-dragging': draggingProp === String(item.prop),
+            }"
+            @dragover="privateOnDragOver(String(item.prop), $event)"
+            @drop="privateOnDrop(String(item.prop), $event)"
+            @dragleave="privateOnDragLeave(String(item.prop))"
+          >
+            <input
+              type="checkbox"
+              :checked="selectedProps.includes(String(item.prop))"
+              :disabled="isTableHeaderLocked(item)"
+              @change="privateOnToggle(String(item.prop))"
+            />
+            <span class="in-column-setting__label">{{ item.label }}</span>
+            <span
+              v-if="canReorderTableHeader(item)"
+              class="in-column-setting__handle"
+              draggable="true"
+              role="button"
+              aria-label="调整顺序"
+              @click.stop
+              @dragstart="privateOnDragStart(String(item.prop), $event)"
+              @dragend="privateOnDragEnd"
+            >
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <circle cx="5" cy="3" r="1.15" />
+                <circle cx="11" cy="3" r="1.15" />
+                <circle cx="5" cy="8" r="1.15" />
+                <circle cx="11" cy="8" r="1.15" />
+                <circle cx="5" cy="13" r="1.15" />
+                <circle cx="11" cy="13" r="1.15" />
+              </svg>
+            </span>
+          </label>
+        </div>
       </div>
-    </div>
+    </Teleport>
   </span>
 </template>
 <script lang="ts" setup>
 import type { TableHeaderRecord } from "./types";
-import { isTableHeaderLocked } from "./columnVisibility";
-import { useUserInfoStore } from "@/stores/modules/auth";
-import {
-  buildUiPreferenceKey,
-  COLUMN_SETTING_STORAGE_PREFIX,
-  readUiPreference,
-  resolveUiUserKey,
-  writeUiPreference,
-} from "@/utils/uiPreference";
+import { canReorderTableHeader, isTableHeaderLocked } from "./columnVisibility";
+import { useColumnSetting } from "./useColumnSetting";
 
 defineOptions({
   name: "InColumnSetting",
@@ -83,172 +125,33 @@ const emits = defineEmits<{
   change: [value: string[]];
 }>();
 
-const userStore = useUserInfoStore();
-const triggerRef = ref<HTMLButtonElement>();
-const panelRef = ref<HTMLElement>();
-const open = ref(false);
-const selectedProps = ref<string[]>([]);
-
-const columns = computed(() => (props.headers.length > 0 ? props.headers : props.data));
-
-const storageKey = computed(() => {
-  if (!props.tableId) {
-    return "";
-  }
-  return buildUiPreferenceKey(
-    COLUMN_SETTING_STORAGE_PREFIX,
-    resolveUiUserKey(userStore.userInfo.user),
-    props.tableId,
-  );
-});
-
-const configurableHeaders = computed(() =>
-  columns.value.filter((item) => item.prop && item.type !== "expand"),
-);
-
-const unlockedHeaders = computed(() =>
-  configurableHeaders.value.filter((item) => !isTableHeaderLocked(item)),
-);
-
-const allChecked = computed(() => {
-  return (
-    unlockedHeaders.value.length > 0 &&
-    unlockedHeaders.value.every((item) => selectedProps.value.includes(String(item.prop)))
-  );
-});
-
-const allIndeterminate = computed(() => {
-  const selectedUnlocked = unlockedHeaders.value.filter((item) =>
-    selectedProps.value.includes(String(item.prop)),
-  );
-  return selectedUnlocked.length > 0 && selectedUnlocked.length < unlockedHeaders.value.length;
-});
-
-const defaultSelected = (): string[] => {
-  return configurableHeaders.value
-    .filter((item) => isTableHeaderLocked(item) || !item.hide)
-    .map((item) => String(item.prop));
-};
-
-const emitSelection = (value: string[]) => {
-  const selected = new Set(value);
-  const next = configurableHeaders.value
-    .filter((item) => isTableHeaderLocked(item) || selected.has(String(item.prop)))
-    .map((item) => String(item.prop));
-  selectedProps.value = next;
-  emits("onSelectionChange", next);
-  emits("change", next);
-  if (storageKey.value) {
-    writeUiPreference(storageKey.value, next);
-  }
-};
-
-const hydrate = () => {
-  const fallback = defaultSelected();
-  if (!storageKey.value) {
-    selectedProps.value = fallback;
-    emits("onSelectionChange", fallback);
-    emits("change", fallback);
-    return;
-  }
-  const stored = readUiPreference<string[]>(storageKey.value, fallback);
-  emitSelection(stored);
-};
-
-const privateClose = (restoreFocus = false) => {
-  open.value = false;
-  if (restoreFocus) {
-    triggerRef.value?.focus();
-  }
-};
-
-const privateToggle = () => {
-  open.value = !open.value;
-  if (open.value) {
-    nextTick(() => {
-      panelRef.value?.querySelector<HTMLInputElement>("input")?.focus();
-    });
-  } else {
-    triggerRef.value?.focus();
-  }
-};
-
-const privateOnToggle = (prop: string) => {
-  const header = configurableHeaders.value.find((item) => String(item.prop) === prop);
-  if (!header || isTableHeaderLocked(header)) {
-    return;
-  }
-  const next = selectedProps.value.includes(prop)
-    ? selectedProps.value.filter((item) => item !== prop)
-    : [...selectedProps.value, prop];
-  emitSelection(next);
-};
-
-const privateOnToggleAll = () => {
-  if (allChecked.value) {
-    emitSelection(
-      configurableHeaders.value
-        .filter((item) => isTableHeaderLocked(item))
-        .map((item) => String(item.prop)),
-    );
-    return;
-  }
-  emitSelection(configurableHeaders.value.map((item) => String(item.prop)));
-};
-
-const privateOnTriggerKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    privateClose(true);
-  }
-};
-
-const privateOnPanelKeydown = (event: KeyboardEvent) => {
-  if (event.key === "Escape") {
-    event.preventDefault();
-    privateClose(true);
-  }
-};
-
-const privateOnDocumentPointer = (event: MouseEvent) => {
-  const target = event.target;
-  if (!(target instanceof Node)) {
-    return;
-  }
-  if (triggerRef.value?.contains(target) || panelRef.value?.contains(target)) {
-    return;
-  }
-  privateClose();
-};
-
-watch(
-  () =>
-    [
-      props.tableId,
-      columns.value.map((item) => String(item.prop ?? "")).join(","),
-      resolveUiUserKey(userStore.userInfo.user),
-    ].join("|"),
-  () => {
-    hydrate();
-  },
-  { immediate: true },
-);
-
-watch(open, (visible) => {
-  if (visible) {
-    document.addEventListener("mousedown", privateOnDocumentPointer);
-    return;
-  }
-  document.removeEventListener("mousedown", privateOnDocumentPointer);
-});
-
-onBeforeUnmount(() => {
-  document.removeEventListener("mousedown", privateOnDocumentPointer);
-});
+const {
+  triggerRef,
+  panelRef,
+  open,
+  panelStyle,
+  selectedProps,
+  orderedHeaders,
+  allChecked,
+  allIndeterminate,
+  draggingProp,
+  dragOverProp,
+  privateToggle,
+  privateOnToggle,
+  privateOnToggleAll,
+  privateOnDragStart,
+  privateOnDragOver,
+  privateOnDragLeave,
+  privateOnDrop,
+  privateOnDragEnd,
+  privateOnTriggerKeydown,
+  privateOnPanelKeydown,
+} = useColumnSetting(props, emits);
 </script>
 <style lang="postcss" scoped>
 .in-column-setting {
-  position: relative;
   display: inline-flex;
+  overflow: visible;
 }
 
 .in-column-setting__trigger {
@@ -278,25 +181,35 @@ onBeforeUnmount(() => {
 }
 
 .in-column-setting__icon {
+  display: block;
   width: 16px;
   height: 16px;
 }
-
+</style>
+<style lang="postcss">
+/* 浮层 Teleport 到 body，样式不能依赖 scoped 父级，否则会被 InTable / Split 裁成一条窄白条 */
 .in-column-setting__panel {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
+  position: fixed;
   z-index: var(--in-z-dropdown);
-  width: 213px;
-  max-height: 426px;
-  overflow: hidden;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  padding: var(--in-space-2);
+  width: 213px;
+  min-width: 213px;
+  max-height: 426px;
+  padding: var(--in-space-2) 0;
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-card);
   background: var(--in-bg-color-surface);
-  box-shadow: var(--in-shadow-overlay);
+  box-shadow: var(--in-shadow-md);
+}
+
+.in-column-setting__hint {
+  margin: 0;
+  padding: var(--in-space-1) var(--in-space-3) var(--in-space-2);
+  color: var(--in-text-color-placeholder);
+  font-size: var(--in-font-size-caption);
+  line-height: var(--in-line-height-body);
 }
 
 .in-column-setting__list {
@@ -310,19 +223,64 @@ onBeforeUnmount(() => {
   align-items: center;
   gap: var(--in-space-2);
   min-height: 36px;
+  padding: 0 var(--in-space-3);
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
   cursor: pointer;
+  user-select: none;
+}
+
+.in-column-setting__item:hover,
+.in-column-setting__item.is-over {
+  background: var(--in-bg-color-hover);
+}
+
+.in-column-setting__item.is-dragging {
+  opacity: 0.6;
 }
 
 .in-column-setting__item.is-all {
   border-bottom: 1px solid var(--in-border-color);
   margin-bottom: var(--in-space-1);
-  padding-bottom: var(--in-space-1);
 }
 
 .in-column-setting__item.is-locked {
   color: var(--in-text-color-secondary);
   cursor: not-allowed;
+}
+
+.in-column-setting__item input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex: none;
+  accent-color: var(--in-color-primary);
+}
+
+.in-column-setting__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.in-column-setting__handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  color: var(--in-text-color-placeholder);
+  cursor: grab;
+}
+
+.in-column-setting__handle:active {
+  cursor: grabbing;
+}
+
+.in-column-setting__handle svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
 }
 </style>
