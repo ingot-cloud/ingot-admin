@@ -139,7 +139,7 @@
 
 ### REQ-A008：操作分层与字段偏好迁移
 
-系统 SHALL 将现有列表操作和列显示能力映射到 foundation 的 `InTableActions` 与 `InColumnSetting`，不在业务页面维护同义通用实现。
+系统 SHALL 将现有列表操作和列显示能力映射到 foundation 的 `InTableActions` 与 `InTableColumnSetting`，不在业务页面维护同义通用实现。
 
 **验收标准：**
 

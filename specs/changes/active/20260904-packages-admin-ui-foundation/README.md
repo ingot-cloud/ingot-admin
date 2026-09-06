@@ -38,7 +38,7 @@
 - `packages/admin-core/src/styles/` 的颜色、排版、间距、圆角、阴影、层级、动效和控件尺寸 Token。
 - Element Plus 变量映射及现有明暗主题兼容。
 - `layout.main` 的顶栏、侧栏、面包屑、内容滚动与响应式行为。
-- Phase 06 补强涉及 `InSplitLayout`、`InTable`、`InTableActions`、`InColumnSetting` 及其类型、fixture、测试和文档。
+- Phase 06 补强涉及 `InSplitLayout`、`InTable`、`InTableActions`、`InTableColumnSetting` 及其类型、fixture、测试和文档。
 - 新增 Phase 07 只涉及全局侧栏对应的 `layout.main`、`InMenu`、`InSubmenu`、侧栏 Token、偏好状态、fixture、测试和文档。
 - 全局加载、空态、错误态、禁用态、焦点态和减少动效模式。
 - `@ingot/admin-core` 单元测试、组件契约测试、视觉验收基线及开发文档。

@@ -23,7 +23,7 @@
 - [x] 将 `InTable` 改为全高 flex：工具栏固定、数据区滚动、表头 sticky、分页固定。
 - [x] 补齐固定操作列及横向滚动分隔状态。
 - [x] 新增类型化 `InTableActions`，实现详情、高频动作、`…`、批量上下文、禁用原因、危险确认与键盘交互。
-- [x] 重构 `InColumnSetting` 为普通复选列表，实现全部半选、必选列、即时应用、焦点返回与 `user + tableId` 持久化。
+- [x] 重构 `InTableColumnSetting` 为普通复选列表，实现全部半选、必选列、即时应用、焦点返回与 `user + tableId` 持久化。
 - [x] 更新公共导出、组件文档、fixture 和兼容迁移说明。
 
 ## 自动化验证
@@ -32,7 +32,7 @@
 - [x] [P] 为侧栏 244/60px 占位、双栏折叠和窄屏覆盖层补充组件测试。
 - [x] [P] 为 `InTable` 固定工具栏/分页、内部纵横滚动和固定操作列补充测试。
 - [x] [P] 为 `InTableActions` 的快捷数量、权限、禁用、危险确认和键盘行为补充测试。
-- [x] [P] 为 `InColumnSetting` 的半选、必选列、持久化、Esc 和 focus return 补充测试。
+- [x] [P] 为 `InTableColumnSetting` 的半选、必选列、持久化、Esc 和 focus return 补充测试。
 - [x] 运行 `pnpm build:packages`、admin-core type-check/test、admin app build、lint 和 boundaries 检查。
 
 ## 人工视觉验收

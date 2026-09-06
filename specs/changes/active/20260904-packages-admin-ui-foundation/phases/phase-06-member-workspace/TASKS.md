@@ -4,7 +4,7 @@
 
 - [x] 用户明确确认 Phase 06 可以开工；change 延续既有 `implementing` 状态，本次 spec 修订本身不视为业务代码开工授权。
 - [x] 只读取本 change 的 `API.md`、`REQUIREMENTS.md` 与 `DESIGN.md`，不重新扩大到全局顶栏和侧栏。
-- [x] 记录 `InSplitLayout`、`InTable`、`InColumnSetting` 当前公开属性、插槽、事件和调用点。
+- [x] 记录 `InSplitLayout`、`InTable`、`InTableColumnSetting` 当前公开属性、插槽、事件和调用点。
 
 ## InSplitLayout
 
@@ -20,7 +20,7 @@
 - [x] 移除内置刷新按钮、内部 handler 及默认 tools 占位；保留并废弃无自动触发入口的 `refresh` emit 类型，待 rollout 清理页面监听后再删除。
 - [x] 新增 `tools-start`、`tools-end` 插槽，并为旧 `toolbar` 提供有期限的兼容映射。
 - [x] 将字段设置改为按需导入的 32px 完整按钮，`InTable` 不再自动渲染。
-- [x] 重构 `InColumnSetting` 为约 213×426px 普通复选列表，支持全部半选、必选列、即时生效、持久化、Esc 和焦点返回。
+- [x] 重构 `InTableColumnSetting` 为约 213×426px 普通复选列表，支持全部半选、必选列、即时生效、持久化、Esc 和焦点返回。
 - [x] 实现 MetaRow、ToolsRow、TableDataViewport、Pagination 的固定/滚动边界。
 - [x] 增加成员式 compact 密度：48px 表头、44px 数据行、`#f2f3f5` 表头和 `#dee0e3` 行分隔。
 - [x] 验证固定选择列/操作列、表格内部横向滚动和右下分页。
@@ -43,7 +43,7 @@
 - [x] [P] 为 260/0px 手动折叠、自动收起、宽度恢复和减少动效补充测试。
 - [x] [P] 为 tools 插槽、无内置刷新、compact 表格、固定区域和 200 行数据补充测试。
 - [x] [P] 为 1200/940/700/520/360px actions 容器的整组收纳和恢复补充测试，断言不存在部分展开中间态。
-- [x] [P] 为 `InColumnSetting` 半选、必选列、持久化、Esc 和焦点返回补充测试。
+- [x] [P] 为 `InTableColumnSetting` 半选、必选列、持久化、Esc 和焦点返回补充测试。
 - [x] 更新组件 README、fixture、导出和旧 API 迁移说明。
 - [x] 运行 admin-core type-check/test、packages build、admin app build、lint 和 boundaries 检查。
 - [ ] 在 1280、1000、920、900、800px 视口完成成员式 fixture 视觉检查。

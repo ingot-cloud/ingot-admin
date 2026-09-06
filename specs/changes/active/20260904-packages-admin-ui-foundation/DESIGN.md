@@ -15,6 +15,10 @@
 - `InMenu`：菜单滚动视口、固定底部控制、收缩文案、宽度动画和焦点语义。
 - `InSubmenu`：40px 菜单行、层级缩进、活动/悬浮态、收缩态内容裁剪和原路由语义。
 
+## 源码模式编译约束
+
+管理台开发期把 `@ingot/admin-core` 指到 `packages/admin-core/src`。宿主 AutoImport 的 Vue/Pinia 预设仍会注入到这些文件，但自定义 hook（如 `useGlobalLoading`、`toEnumExtArray`）默认只扫 App 自己的 `src/hooks`。admin-core 内部必须写显式 import，不得依赖包自身 Vitest 的 auto-import；依赖 admin-core 的 Vite 额外扫描其 `hooks/**` 与 `stores/**` 作为漏网保护，query 辅助仍从包名注入，且不得从 `@ingot/admin-core` 再导入自己。布局壳层组件（`InAppBar`、`InMenu`、`InBreadcrumb`、`InCopyright` 及顶栏/侧栏子组件）必须进入 `coreGlobalComponents`，同时扫描 `components` 与 `layouts/widgets`，不得只靠 admin-core 自己的 Components 自动导入。不依赖 admin-core 的应用（如登录）不得扫描这些目录，以免与本地同名 hook 冲突。
+
 ## 浏览器复核结论
 
 在用户授权账号中，以 1280×720 视口复核成员页面；同时使用 1000、960、920、900、880、800px 临时视口检查响应行为。
@@ -234,7 +238,7 @@ InTable 不再默认渲染刷新和字段设置：
 - 提供 tools-start 和 tools-end 插槽。
 - 旧 toolbar 插槽在兼容期映射到 tools-start，文档标记废弃。
 - hideSetting 标记废弃；旧页面迁移前可以保留兼容适配，但新页面必须显式插入字段设置按钮。
-- 表格能力以独立组件导出，页面按需导入，例如 InColumnSetting、InTableActions。
+- 表格能力以独立组件导出，页面按需导入，例如 InTableColumnSetting、InTableActions。
 - 任意复杂业务工具可直接放入 tools 插槽；共享表格不读取业务权限或调用 API。
 
 建议用法：
@@ -242,7 +246,7 @@ InTable 不再默认渲染刷新和字段设置：
     <in-table :headers="headers" :data="data" table-id="org.members">
       <template #tools-start>
         <biz-member-filters />
-        <in-column-setting :headers="headers" table-id="org.members" />
+        <in-table-column-setting :headers="headers" table-id="org.members" />
       </template>
       <template #tools-end>
         <in-table-actions :actions="actions" :row="toolbarContext" variant="toolbar" />
@@ -303,7 +307,7 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
 
 ## 字段显示设置
 
-InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的完整按钮组件：
+InTableColumnSetting（原 InColumnSetting）从“图标包裹嵌套表格”改为可独立放入 tools 的完整按钮组件：
 
 - 触发器为 32×32px 描边按钮，图标使用表格设置 SVG（非齿轮），Tooltip 为「按需自定义展示或隐藏字段」。
 - 浮层传送到 `body` 并 `position: fixed`，避免被 `InTable` / 工具栏裁切；宽约 213px、最大高 426px、圆角 8px、边框 `#dee0e3`。
@@ -311,7 +315,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - 除选择列和操作列外，列项右侧提供六点拖拽柄，可调整列顺序；选择列固定最左、操作列固定最右。
 - required 列选中且禁用；选择列、操作列默认 configurable: false。
 - 切换与排序立即生效，无保存按钮；Esc / 点击外部关闭并返回焦点。
-- table-id 必填，按 user + tableId 前端持久化 `{ selected, order }`；兼容旧的 `string[]` 选中列表。
+- table-id 必填，按 user + tableId 前端持久化 `{ selected, order }`；兼容旧的 `string[]` 选中列表。持久化前缀仍为 `in-column-setting`，避免改名后丢失已保存偏好。
 
 ## 前端类型
 
@@ -319,7 +323,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - InTableProps 增加 density，保留必要的 Element Plus 透传，但触碰到的 any 必须替换为具体类型或 unknown。
 - TableHeaderRecord 增加 required?: boolean、configurable?: boolean。
 - InTableActions 使用 InTableAction<Row> 泛型并保留现有 onSelect 回调契约；本阶段不强制迁移为新的事件协议。
-- InColumnSetting 将旧 onSelectionChange 兼容映射到类型化 change，文档给出迁移期。
+- InTableColumnSetting 将旧 onSelectionChange 兼容映射到类型化 change，文档给出迁移期。
 
 ## InPageHeader
 
@@ -366,7 +370,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 | components/status/InAccountStatusTag.vue   | enabled/locked 合成正常、已暂停或已锁定                 |
 | components/table/InTable.vue               | 移除刷新、tools 插槽、固定区域和紧凑密度      |
 | components/table/InTableActions.vue        | 固定操作与配置型 action 原子组自适应收纳      |
-| components/table/InColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |
+| components/table/InTableColumnSetting.vue       | 独立按钮、普通复选列表和持久化                |
 | components/table/types.ts / props.ts       | 严格类型、密度、列设置和 action 契约          |
 | components/**fixtures**/                   | 成员式双栏、不同容器宽度和 200 行数据 fixture |
 | layouts/main/IndexPage.vue                 | 244px / 60px 侧栏占位、内容沟槽和 overlay 模式协调 |
@@ -420,7 +424,7 @@ InColumnSetting 从“图标包裹嵌套表格”改为可独立放入 tools 的
 - [x] tools 支持任意自定义组件，但只有配置型 action 参与自动溢出收纳。
 - [x] 成员页式工具栏使用“固定操作 + 原子折叠组”；邀请/添加始终直出，三个批量操作整组展开或进入“…”菜单。
 - [x] 成员式紧凑表格使用 48px 表头和 44px 数据行。
-- [x] 本阶段不修改业务页面；字段拖拽排序已纳入 InColumnSetting。
+- [x] 本阶段不修改业务页面；字段拖拽排序已纳入 InTableColumnSetting。
 - [x] Phase 07 只补强全局左侧导航，不重新调整顶栏、面包屑、页面工作区或业务页面。
 - [x] 侧栏面板与页面画布同色；展开/收起为 236px / 52px，外层含 8px 沟槽后为 244px / 60px。
 - [x] 菜单滚动视口与底部控制为兄弟区域；“收起导航”固定在距底部 8px 的 44px 控制区，不随菜单滚动。
