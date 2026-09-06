@@ -61,6 +61,7 @@ import type {
   LockAccountAPI,
   UnlockAccountAPI,
 } from "./types";
+import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
 
 const props = withDefaults(
   defineProps<{

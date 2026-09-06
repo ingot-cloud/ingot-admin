@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   KNOWN_OFFICIAL_PLUGINS,
   createOfficialSourcePlugin,
+  resolveAdminCoreAutoImportMaps,
   resolveOfficialPlugins,
 } from "./official-plugins";
 import type { InResolvedOfficialPlugin } from "./official-plugins";
@@ -230,6 +231,34 @@ describe("createOfficialSourcePlugin", () => {
     );
   });
 
+  it("admin-core importer 的 @/ 指回 core src，而不是宿主 src", () => {
+    const workspace = makeTempWorkspace();
+    const plugin = platformPlugin(workspace);
+    const hostDir = path.join(workspace, "apps/host");
+    const hostSrc = path.join(hostDir, "src");
+    const coreSrc = path.join(workspace, "packages/admin-core/src");
+    writePackage(
+      hostDir,
+      { name: "demo-host" },
+      { "src/main.ts": "export {};\n", "src/assets/no_data.svg": "<svg />\n" },
+    );
+    writePackage(
+      path.join(workspace, "packages/admin-core"),
+      { name: "@ingot/admin-core" },
+      {
+        "src/index.ts": "export {};\n",
+        "src/assets/no_data.svg": "<svg id='core' />\n",
+        "src/components/table/emptyIllustration.ts": "export {};\n",
+      },
+    );
+    const vitePlugin = createOfficialSourcePlugin([plugin], hostDir, hostSrc, [coreSrc]);
+    const importer = path.join(coreSrc, "components/table/emptyIllustration.ts");
+
+    expect(callResolveId(vitePlugin, "@/assets/no_data.svg", importer)).toBe(
+      path.join(coreSrc, "assets/no_data.svg"),
+    );
+  });
+
   it("新业务插件不解析 @base", () => {
     const workspace = makeTempWorkspace();
     const plugin = platformPlugin(workspace);
@@ -257,5 +286,27 @@ describe("createOfficialSourcePlugin", () => {
     expect(config.optimizeDeps?.exclude).toEqual(["@ingot/platform-plugin", "@ingot/admin-core"]);
     expect(config.server?.fs?.allow).toEqual(expect.arrayContaining([plugin.rootDir, hostDir]));
     expect(config.optimizeDeps?.exclude).not.toContain("@ingot/org-plugin");
+  });
+});
+
+describe("resolveAdminCoreAutoImportMaps", () => {
+  it("无依赖时不注入 admin-core", () => {
+    expect(resolveAdminCoreAutoImportMaps(false, "/tmp/admin-core/src")).toEqual([]);
+  });
+
+  it("工作区源码模式只从包名注入 query 辅助，hooks/stores 交给 dirs", () => {
+    expect(resolveAdminCoreAutoImportMaps(true, "/tmp/admin-core/src")).toEqual([
+      {
+        "@ingot/admin-core": ["useServerPaging", "snapshotQueryParams", "silentQueryRequest"],
+      },
+    ]);
+  });
+
+  it("无源码目录时注入完整包名清单", () => {
+    const maps = resolveAdminCoreAutoImportMaps(true, undefined);
+    expect(maps).toHaveLength(1);
+    expect(maps[0]?.["@ingot/admin-core"]).toEqual(
+      expect.arrayContaining(["useMessage", "useGlobalLoading", "useServerPaging"]),
+    );
   });
 });

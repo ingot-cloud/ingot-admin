@@ -1,4 +1,5 @@
 import { newEnumExt } from "@/models/common";
+import { useEnum } from "@/hooks/biz/useEnum";
 
 export { encodeData, rendererLine, rendererRound } from "beautify-qrcode";
 export type { Options, LineOptions, RoundOptions } from "beautify-qrcode";

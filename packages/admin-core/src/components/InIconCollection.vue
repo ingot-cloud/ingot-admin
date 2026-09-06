@@ -10,6 +10,8 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { useIconsCollection } from "@/hooks/web/useIcons";
+
 const emit = defineEmits<{ select: [item: string] }>();
 const icons = useIconsCollection();
 const privateOnItemClick = (item: string) => {

@@ -207,6 +207,12 @@ const resolveSourceFile = (base: string): string | undefined => {
   return indexFiles.find((file) => isFile(file));
 };
 
+const importerBelongsToSrc = (importer: string, srcDir: string): boolean => {
+  const normalized = importer.replace(/\\/g, "/");
+  const src = srcDir.replace(/\\/g, "/");
+  return normalized === src || normalized.startsWith(`${src}/`);
+};
+
 const importerBelongsTo = (
   importer: string | undefined,
   plugin: InResolvedOfficialPlugin,
@@ -215,12 +221,10 @@ const importerBelongsTo = (
     return false;
   }
   const normalized = importer.replace(/\\/g, "/");
-  const srcDir = plugin.srcDir.replace(/\\/g, "/");
   const rootDir = plugin.rootDir.replace(/\\/g, "/");
   return (
-    normalized === srcDir ||
+    importerBelongsToSrc(importer, plugin.srcDir) ||
     normalized === rootDir ||
-    normalized.startsWith(`${srcDir}/`) ||
     normalized.startsWith(`${rootDir}/`)
   );
 };
@@ -253,6 +257,7 @@ export const createOfficialPluginAliasEntries = (plugins: InResolvedOfficialPlug
 /**
  * 让组合方 Vite 能编译官方源码插件内的 Vue SFC / `import.meta.glob`：
  * - 按 importer 把 `@/` 指回该官方插件的 src（避免与宿主 `@` 冲突）
+ * - admin-core 等额外源码包的 importer 同样把 `@/` 指回自己的 src
  * - 宿主 importer 的 `@/` 落回宿主 src
  * - 仅对仍声明 `sourceAliases` 的插件解析 `@base` 等兼容别名
  * - `server.fs.allow` 放行官方插件目录
@@ -266,8 +271,10 @@ export const createOfficialSourcePlugin = (
   plugins: InResolvedOfficialPlugin[],
   rootDir: string,
   hostSrcDir = path.resolve(rootDir, "src"),
+  extraAtSrcDirs: string[] = [],
 ): Plugin => {
   const resolvedHostSrc = hostSrcDir.replace(/\/$/, "");
+  const extraSrcDirs = extraAtSrcDirs.map((dir) => dir.replace(/\/$/, ""));
   return {
     name: "ingot-official-source-plugins",
     enforce: "pre",
@@ -289,12 +296,15 @@ export const createOfficialSourcePlugin = (
       }
 
       if (id === "@" || id.startsWith("@/")) {
-        const owner = absImporter
+        const pluginOwner = absImporter
           ? plugins.find((plugin) => importerBelongsTo(absImporter, plugin))
+          : undefined;
+        const extraOwner = absImporter
+          ? extraSrcDirs.find((srcDir) => importerBelongsToSrc(absImporter, srcDir))
           : undefined;
         const rest = id === "@" ? "" : id.slice(2);
         const target = path.resolve(
-          (owner?.srcDir ?? resolvedHostSrc).replace(/\/$/, ""),
+          (pluginOwner?.srcDir ?? extraOwner ?? resolvedHostSrc).replace(/\/$/, ""),
           rest,
         );
         return resolveSourceFile(target);
@@ -323,10 +333,19 @@ export const createOfficialSourcePlugin = (
   };
 };
 
+/**
+ * 给 apps / 官方插件注入的 admin-core 常用 API。
+ * 不要指望这份清单覆盖 admin-core 自己的源码：管理台按源码编译这些文件时，
+ * 从 `@ingot/admin-core` 再导入会形成循环；admin-core 内部必须写显式 import。
+ * 工作区源码模式下 hooks/stores 改由 AutoImport dirs 扫描，这里只保留 query 辅助函数。
+ */
 export const ADMIN_CORE_AUTO_IMPORTS: ImportsMap = {
   "@ingot/admin-core": [
     "useEnum",
+    "toEnumExtArray",
     "useGo",
+    "useRedirect",
+    "useRefreshPage",
     "useMessage",
     "useMessageConfirm",
     "useServerPaging",
@@ -335,5 +354,23 @@ export const ADMIN_CORE_AUTO_IMPORTS: ImportsMap = {
     "usePermissions",
     "useUserInfoStore",
     "useAppStore",
+    "useGlobalLoading",
+    "useLogin",
+    "useInWebTitle",
   ],
+};
+
+const ADMIN_CORE_QUERY_AUTO_IMPORTS: ImportsMap = {
+  "@ingot/admin-core": ["useServerPaging", "snapshotQueryParams", "silentQueryRequest"],
+};
+
+/** 工作区有 admin-core 源码时改扫 dirs，避免与包名 auto-import 重名。 */
+export const resolveAdminCoreAutoImportMaps = (
+  hasDep: boolean,
+  adminCoreSrc: string | undefined,
+): ImportsMap[] => {
+  if (!hasDep) {
+    return [];
+  }
+  return [adminCoreSrc ? ADMIN_CORE_QUERY_AUTO_IMPORTS : ADMIN_CORE_AUTO_IMPORTS];
 };

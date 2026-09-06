@@ -1,5 +1,6 @@
 import type { NavigationGuardWithThis } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
+import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
 
 export class EndGuard extends BaseNavigationGuard {
   public order(): number {

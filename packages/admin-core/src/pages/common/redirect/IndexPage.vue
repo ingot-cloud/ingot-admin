@@ -4,6 +4,7 @@
 <script lang="ts" setup>
 import { RedirectPageField } from "@/router";
 import { Message } from "@/utils/message";
+import { useRedirect } from "@/hooks/web/useRouter";
 
 const props = defineProps({
   [`${RedirectPageField.PATH}`]: String,

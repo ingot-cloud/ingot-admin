@@ -326,11 +326,11 @@ onBeforeUnmount(() => {
 });
 
 const privateSetTriggerRef = (el: Element | { $el?: unknown } | null) => {
-  triggerRef.value = el instanceof HTMLButtonElement ? el : null;
+  triggerRef.value = el instanceof HTMLButtonElement ? el : undefined;
 };
 
 const privateSetMenuRef = (el: Element | { $el?: unknown } | null) => {
-  menuRef.value = el instanceof HTMLElement ? el : null;
+  menuRef.value = el instanceof HTMLElement ? el : undefined;
 };
 
 const privateMenuItems = () => {

@@ -14,6 +14,19 @@ const movedComponentNames = [
   "InPageFrame",
   "InTableActions",
   "InTableColumnSetting",
+  "InAppBar",
+  "InAppBarSearch",
+  "InLogo",
+  "InFullscreen",
+  "InGlobalSetting",
+  "InUserDropdown",
+  "InMenu",
+  "InSubmenu",
+  "InMenuToggle",
+  "InBreadcrumb",
+  "InCopyright",
+  "InSwitchDark",
+  "InCmpSize",
 ] as const;
 
 describe("coreGlobalComponents", () => {

@@ -56,6 +56,10 @@
 import { useAppStateStore } from "@/stores/modules/app";
 import { InitPwdAPI } from "@/api/common/password";
 import { useUserInfoStore } from "@/stores/modules/auth";
+import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
+import { useLogin } from "@/hooks/biz/useLogin";
+import { useMessage } from "@/hooks/web/useMessage";
+import { useGo } from "@/hooks/web/useRouter";
 
 const rules = {
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],

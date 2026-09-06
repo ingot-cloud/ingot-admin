@@ -1,6 +1,7 @@
 import type { NavigationGuardWithThis } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
 import { useUserInfoStore } from "@/stores/modules/auth";
+import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
 
 export class UserInfoGuard extends BaseNavigationGuard {
   public order(): number {

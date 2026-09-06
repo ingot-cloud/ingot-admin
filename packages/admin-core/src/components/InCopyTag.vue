@@ -4,6 +4,8 @@
   </el-tag>
 </template>
 <script setup lang="ts">
+import { useMessage } from "@/hooks/web/useMessage";
+
 const props = defineProps({
   text: {
     type: String,

@@ -1,6 +1,7 @@
 import type { TabItem } from "../types";
 import { PagePath } from "@/router";
 import { getAdminRouter } from "@/runtime";
+import { useGo, useRefreshPage } from "@/hooks/web/useRouter";
 
 export const useTabsStore = defineStore(
   "tabs",

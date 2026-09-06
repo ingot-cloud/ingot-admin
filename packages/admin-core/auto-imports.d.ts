@@ -19,6 +19,7 @@ declare global {
   const computedWithControl: typeof import('@vueuse/core').computedWithControl
   const controlledComputed: typeof import('@vueuse/core').controlledComputed
   const controlledRef: typeof import('@vueuse/core').controlledRef
+  const createAdminPinia: typeof import('./src/stores/index').createAdminPinia
   const createApp: typeof import('vue').createApp
   const createDisposableDirective: typeof import('@vueuse/core').createDisposableDirective
   const createEventHook: typeof import('@vueuse/core').createEventHook
@@ -129,6 +130,8 @@ declare global {
   const until: typeof import('@vueuse/core').until
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
   const useAnimate: typeof import('@vueuse/core').useAnimate
+  const useAppStateStore: typeof import('./src/stores/modules/app').useAppStateStore
+  const useAppStore: typeof import('./src/stores/modules/app').useAppStore
   const useArrayDifference: typeof import('@vueuse/core').useArrayDifference
   const useArrayEvery: typeof import('@vueuse/core').useArrayEvery
   const useArrayFilter: typeof import('@vueuse/core').useArrayFilter
@@ -144,6 +147,7 @@ declare global {
   const useAsyncQueue: typeof import('@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('@vueuse/core').useAsyncState
   const useAttrs: typeof import('vue').useAttrs
+  const useAuthStore: typeof import('./src/stores/modules/auth').useAuthStore
   const useBase64: typeof import('@vueuse/core').useBase64
   const useBattery: typeof import('@vueuse/core').useBattery
   const useBluetooth: typeof import('@vueuse/core').useBluetooth
@@ -217,6 +221,7 @@ declare global {
   const useLink: typeof import('vue-router').useLink
   const useLocalStorage: typeof import('@vueuse/core').useLocalStorage
   const useLogin: typeof import('./src/hooks/biz/useLogin').useLogin
+  const useLoginStore: typeof import('./src/stores/modules/login').useLoginStore
   const useMagicKeys: typeof import('@vueuse/core').useMagicKeys
   const useManualRefHistory: typeof import('@vueuse/core').useManualRefHistory
   const useMediaControls: typeof import('@vueuse/core').useMediaControls
@@ -243,6 +248,7 @@ declare global {
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
   const usePermission: typeof import('@vueuse/core').usePermission
+  const usePermissions: typeof import('./src/stores/modules/auth').usePermissions
   const usePointer: typeof import('@vueuse/core').usePointer
   const usePointerLock: typeof import('@vueuse/core').usePointerLock
   const usePointerSwipe: typeof import('@vueuse/core').usePointerSwipe
@@ -260,6 +266,7 @@ declare global {
   const useResizeObserver: typeof import('@vueuse/core').useResizeObserver
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
+  const useRouterStore: typeof import('./src/stores/modules/router').useRouterStore
   const useSSRWidth: typeof import('@vueuse/core').useSSRWidth
   const useScreenOrientation: typeof import('@vueuse/core').useScreenOrientation
   const useScreenSafeArea: typeof import('@vueuse/core').useScreenSafeArea
@@ -278,6 +285,7 @@ declare global {
   const useStyleTag: typeof import('@vueuse/core').useStyleTag
   const useSupported: typeof import('@vueuse/core').useSupported
   const useSwipe: typeof import('@vueuse/core').useSwipe
+  const useTabsStore: typeof import('./src/stores/modules/tabs').useTabsStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
   const useTextDirection: typeof import('@vueuse/core').useTextDirection
@@ -298,6 +306,7 @@ declare global {
   const useToggle: typeof import('@vueuse/core').useToggle
   const useTransition: typeof import('@vueuse/core').useTransition
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
+  const useUserInfoStore: typeof import('./src/stores/modules/auth').useUserInfoStore
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
   const useVModel: typeof import('@vueuse/core').useVModel
   const useVModels: typeof import('@vueuse/core').useVModels

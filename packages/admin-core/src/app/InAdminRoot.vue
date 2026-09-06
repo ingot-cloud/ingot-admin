@@ -9,6 +9,7 @@
 import { useAppStateStore } from "@/stores/modules/app";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import ChallengeHost from "@/components/challenge/ChallengeHost.vue";
+import { useInWebTitle } from "@/hooks/web/useTitle";
 import type { Component } from "vue";
 
 const { componentSize } = storeToRefs(useAppStateStore());

@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { ref } from "vue";
 import { mount } from "@vue/test-utils";
 import InButton from "./InButton.vue";
 
@@ -22,5 +23,21 @@ describe("InButton", () => {
     await wrapper.get("button").trigger("click");
     expect(wrapper.emitted("in-click")).toHaveLength(2);
     vi.useRealTimers();
+  });
+
+  it("把 Ref loading 解成 boolean 再传给按钮", () => {
+    const loading = ref(true);
+    const wrapper = mount(InButton, {
+      props: { loading },
+      global: {
+        stubs: {
+          ElButton: {
+            props: { loading: { type: Boolean, default: false } },
+            template: '<button :data-loading="String(loading)"><slot /></button>',
+          },
+        },
+      },
+    });
+    expect(wrapper.get("button").attributes("data-loading")).toBe("true");
   });
 });

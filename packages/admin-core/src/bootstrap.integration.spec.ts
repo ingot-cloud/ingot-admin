@@ -45,6 +45,10 @@ describe("bootstrap 集成", () => {
     expect(runtime.app.component("InContainer")).toBeTruthy();
     expect(runtime.app.component("InRefreshIcon")).toBeTruthy();
     expect(runtime.app.component("InBizTabsHeader")).toBeTruthy();
+    expect(runtime.app.component("InAppBar")).toBeTruthy();
+    expect(runtime.app.component("InMenu")).toBeTruthy();
+    expect(runtime.app.component("InBreadcrumb")).toBeTruthy();
+    expect(runtime.app.component("InCopyright")).toBeTruthy();
     expect(runtime.app.directive("auth")).toBeTruthy();
     expect(runtime.pinia).toBe(getActivePinia());
     expect(pluginPinia).toBe(runtime.pinia);

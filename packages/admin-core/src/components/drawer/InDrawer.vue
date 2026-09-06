@@ -9,7 +9,7 @@
       </div>
     </template>
 
-    <div class="in-drawer__body" :style="`padding: ${padding}`" v-loading="loading">
+    <div class="in-drawer__body" :style="`padding: ${padding}`" v-loading="isLoading">
       <slot />
     </div>
 
@@ -26,7 +26,7 @@ defineOptions({
 });
 
 const slots = useSlots();
-defineProps({
+const props = defineProps({
   title: {
     type: String,
   },
@@ -35,10 +35,10 @@ defineProps({
     default: "var(--in-section-padding-relaxed)",
   },
   loading: {
-    type: Boolean,
     default: false,
   },
 });
+const isLoading = computed(() => Boolean(unref(props.loading)));
 </script>
 <style lang="postcss">
 .in-drawer {

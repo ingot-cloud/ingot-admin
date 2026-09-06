@@ -14,8 +14,8 @@
 </template>
 <script setup lang="ts">
 import { useRouterStore } from "@/stores/modules/router";
-
 import { logoutAndReload } from "@/utils/security";
+import { useGo } from "@/hooks/web/useRouter";
 const { menus } = storeToRefs(useRouterStore());
 const buttonText = computed(() => {
   return menus.value.length > 0 ? "返回首页" : "重新登录";

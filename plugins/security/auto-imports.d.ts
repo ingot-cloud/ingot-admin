@@ -19,6 +19,7 @@ declare global {
   const computedWithControl: typeof import('@vueuse/core').computedWithControl
   const controlledComputed: typeof import('@vueuse/core').controlledComputed
   const controlledRef: typeof import('@vueuse/core').controlledRef
+  const createAdminPinia: typeof import('../../packages/admin-core/src/stores/index').createAdminPinia
   const createApp: typeof import('vue').createApp
   const createDisposableDirective: typeof import('@vueuse/core').createDisposableDirective
   const createEventHook: typeof import('@vueuse/core').createEventHook
@@ -114,6 +115,7 @@ declare global {
   const templateRef: typeof import('@vueuse/core').templateRef
   const throttledRef: typeof import('@vueuse/core').throttledRef
   const throttledWatch: typeof import('@vueuse/core').throttledWatch
+  const toEnumExtArray: typeof import('../../packages/admin-core/src/hooks/biz/useEnum').toEnumExtArray
   const toRaw: typeof import('vue').toRaw
   const toReactive: typeof import('@vueuse/core').toReactive
   const toRef: typeof import('vue').toRef
@@ -130,7 +132,8 @@ declare global {
   const until: typeof import('@vueuse/core').until
   const useActiveElement: typeof import('@vueuse/core').useActiveElement
   const useAnimate: typeof import('@vueuse/core').useAnimate
-  const useAppStore: typeof import('@ingot/admin-core').useAppStore
+  const useAppStateStore: typeof import('../../packages/admin-core/src/stores/modules/app').useAppStateStore
+  const useAppStore: typeof import('../../packages/admin-core/src/stores/modules/app').useAppStore
   const useArrayDifference: typeof import('@vueuse/core').useArrayDifference
   const useArrayEvery: typeof import('@vueuse/core').useArrayEvery
   const useArrayFilter: typeof import('@vueuse/core').useArrayFilter
@@ -146,6 +149,7 @@ declare global {
   const useAsyncQueue: typeof import('@vueuse/core').useAsyncQueue
   const useAsyncState: typeof import('@vueuse/core').useAsyncState
   const useAttrs: typeof import('vue').useAttrs
+  const useAuthStore: typeof import('../../packages/admin-core/src/stores/modules/auth').useAuthStore
   const useBase64: typeof import('@vueuse/core').useBase64
   const useBattery: typeof import('@vueuse/core').useBattery
   const useBluetooth: typeof import('@vueuse/core').useBluetooth
@@ -157,6 +161,7 @@ declare global {
   const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
   const useCloned: typeof import('@vueuse/core').useCloned
   const useColorMode: typeof import('@vueuse/core').useColorMode
+  const useCommandComponent: typeof import('../../packages/admin-core/src/hooks/biz/useCommandComponent').useCommandComponent
   const useConfirmDialog: typeof import('@vueuse/core').useConfirmDialog
   const useCountdown: typeof import('@vueuse/core').useCountdown
   const useCounter: typeof import('@vueuse/core').useCounter
@@ -185,7 +190,8 @@ declare global {
   const useElementOverflow: typeof import('@vueuse/core').useElementOverflow
   const useElementSize: typeof import('@vueuse/core').useElementSize
   const useElementVisibility: typeof import('@vueuse/core').useElementVisibility
-  const useEnum: typeof import('@ingot/admin-core').useEnum
+  const useEnum: typeof import('../../packages/admin-core/src/hooks/biz/useEnum').useEnum
+  const useEnum2: typeof import('../../packages/admin-core/src/hooks/biz/useEnum').useEnum2
   const useEventBus: typeof import('@vueuse/core').useEventBus
   const useEventListener: typeof import('@vueuse/core').useEventListener
   const useEventSource: typeof import('@vueuse/core').useEventSource
@@ -200,10 +206,14 @@ declare global {
   const useFullscreen: typeof import('@vueuse/core').useFullscreen
   const useGamepad: typeof import('@vueuse/core').useGamepad
   const useGeolocation: typeof import('@vueuse/core').useGeolocation
-  const useGo: typeof import('@ingot/admin-core').useGo
+  const useGlobalLoading: typeof import('../../packages/admin-core/src/hooks/biz/useGlobalLoading').useGlobalLoading
+  const useGo: typeof import('../../packages/admin-core/src/hooks/web/useRouter').useGo
+  const useIconsCollection: typeof import('../../packages/admin-core/src/hooks/web/useIcons').useIconsCollection
   const useId: typeof import('vue').useId
   const useIdle: typeof import('@vueuse/core').useIdle
   const useImage: typeof import('@vueuse/core').useImage
+  const useImageLoad: typeof import('../../packages/admin-core/src/hooks/components/useImageLoad').useImageLoad
+  const useInWebTitle: typeof import('../../packages/admin-core/src/hooks/web/useTitle').useInWebTitle
   const useInfiniteScroll: typeof import('@vueuse/core').useInfiniteScroll
   const useIntersectionObserver: typeof import('@vueuse/core').useIntersectionObserver
   const useInterval: typeof import('@vueuse/core').useInterval
@@ -212,14 +222,16 @@ declare global {
   const useLastChanged: typeof import('@vueuse/core').useLastChanged
   const useLink: typeof import('vue-router').useLink
   const useLocalStorage: typeof import('@vueuse/core').useLocalStorage
+  const useLogin: typeof import('../../packages/admin-core/src/hooks/biz/useLogin').useLogin
+  const useLoginStore: typeof import('../../packages/admin-core/src/stores/modules/login').useLoginStore
   const useMagicKeys: typeof import('@vueuse/core').useMagicKeys
   const useManualRefHistory: typeof import('@vueuse/core').useManualRefHistory
   const useMediaControls: typeof import('@vueuse/core').useMediaControls
   const useMediaQuery: typeof import('@vueuse/core').useMediaQuery
   const useMemoize: typeof import('@vueuse/core').useMemoize
   const useMemory: typeof import('@vueuse/core').useMemory
-  const useMessage: typeof import('@ingot/admin-core').useMessage
-  const useMessageConfirm: typeof import('@ingot/admin-core').useMessageConfirm
+  const useMessage: typeof import('../../packages/admin-core/src/hooks/web/useMessage').useMessage
+  const useMessageConfirm: typeof import('../../packages/admin-core/src/hooks/web/useMessage').useMessageConfirm
   const useModel: typeof import('vue').useModel
   const useMounted: typeof import('@vueuse/core').useMounted
   const useMouse: typeof import('@vueuse/core').useMouse
@@ -232,12 +244,13 @@ declare global {
   const useObjectUrl: typeof import('@vueuse/core').useObjectUrl
   const useOffsetPagination: typeof import('@vueuse/core').useOffsetPagination
   const useOnline: typeof import('@vueuse/core').useOnline
+  const useOrderedChildren: typeof import('../../packages/admin-core/src/hooks/components/useOrderedChildren').useOrderedChildren
   const usePageLeave: typeof import('@vueuse/core').usePageLeave
   const useParallax: typeof import('@vueuse/core').useParallax
   const useParentElement: typeof import('@vueuse/core').useParentElement
   const usePerformanceObserver: typeof import('@vueuse/core').usePerformanceObserver
   const usePermission: typeof import('@vueuse/core').usePermission
-  const usePermissions: typeof import('@ingot/admin-core').usePermissions
+  const usePermissions: typeof import('../../packages/admin-core/src/stores/modules/auth').usePermissions
   const usePointer: typeof import('@vueuse/core').usePointer
   const usePointerLock: typeof import('@vueuse/core').usePointerLock
   const usePointerSwipe: typeof import('@vueuse/core').usePointerSwipe
@@ -249,10 +262,13 @@ declare global {
   const usePreferredReducedTransparency: typeof import('@vueuse/core').usePreferredReducedTransparency
   const usePrevious: typeof import('@vueuse/core').usePrevious
   const useRafFn: typeof import('@vueuse/core').useRafFn
+  const useRedirect: typeof import('../../packages/admin-core/src/hooks/web/useRouter').useRedirect
   const useRefHistory: typeof import('@vueuse/core').useRefHistory
+  const useRefreshPage: typeof import('../../packages/admin-core/src/hooks/web/useRouter').useRefreshPage
   const useResizeObserver: typeof import('@vueuse/core').useResizeObserver
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
+  const useRouterStore: typeof import('../../packages/admin-core/src/stores/modules/router').useRouterStore
   const useSSRWidth: typeof import('@vueuse/core').useSSRWidth
   const useScreenOrientation: typeof import('@vueuse/core').useScreenOrientation
   const useScreenSafeArea: typeof import('@vueuse/core').useScreenSafeArea
@@ -272,6 +288,7 @@ declare global {
   const useStyleTag: typeof import('@vueuse/core').useStyleTag
   const useSupported: typeof import('@vueuse/core').useSupported
   const useSwipe: typeof import('@vueuse/core').useSwipe
+  const useTabsStore: typeof import('../../packages/admin-core/src/stores/modules/tabs').useTabsStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
   const useTextDirection: typeof import('@vueuse/core').useTextDirection
@@ -292,7 +309,7 @@ declare global {
   const useToggle: typeof import('@vueuse/core').useToggle
   const useTransition: typeof import('@vueuse/core').useTransition
   const useUrlSearchParams: typeof import('@vueuse/core').useUrlSearchParams
-  const useUserInfoStore: typeof import('@ingot/admin-core').useUserInfoStore
+  const useUserInfoStore: typeof import('../../packages/admin-core/src/stores/modules/auth').useUserInfoStore
   const useUserMedia: typeof import('@vueuse/core').useUserMedia
   const useVModel: typeof import('@vueuse/core').useVModel
   const useVModels: typeof import('@vueuse/core').useVModels
@@ -328,6 +345,12 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { Options, CommandComponent } from '../../packages/admin-core/src/hooks/biz/useCommandComponent'
+  import('../../packages/admin-core/src/hooks/biz/useCommandComponent')
+  // @ts-ignore
+  export type { NetConfig, LoginConfig, AppStore, TabItem } from '../../packages/admin-core/src/stores/types/index'
+  import('../../packages/admin-core/src/stores/types/index')
 }
 
 // for vue template auto import
@@ -346,6 +369,7 @@ declare module 'vue' {
     readonly computedWithControl: UnwrapRef<typeof import('@vueuse/core')['computedWithControl']>
     readonly controlledComputed: UnwrapRef<typeof import('@vueuse/core')['controlledComputed']>
     readonly controlledRef: UnwrapRef<typeof import('@vueuse/core')['controlledRef']>
+    readonly createAdminPinia: UnwrapRef<typeof import('../../packages/admin-core/src/stores/index')['createAdminPinia']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly createDisposableDirective: UnwrapRef<typeof import('@vueuse/core')['createDisposableDirective']>
     readonly createEventHook: UnwrapRef<typeof import('@vueuse/core')['createEventHook']>
@@ -441,6 +465,7 @@ declare module 'vue' {
     readonly templateRef: UnwrapRef<typeof import('@vueuse/core')['templateRef']>
     readonly throttledRef: UnwrapRef<typeof import('@vueuse/core')['throttledRef']>
     readonly throttledWatch: UnwrapRef<typeof import('@vueuse/core')['throttledWatch']>
+    readonly toEnumExtArray: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useEnum')['toEnumExtArray']>
     readonly toRaw: UnwrapRef<typeof import('vue')['toRaw']>
     readonly toReactive: UnwrapRef<typeof import('@vueuse/core')['toReactive']>
     readonly toRef: UnwrapRef<typeof import('vue')['toRef']>
@@ -457,7 +482,8 @@ declare module 'vue' {
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
-    readonly useAppStore: UnwrapRef<typeof import('@ingot/admin-core')['useAppStore']>
+    readonly useAppStateStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/app')['useAppStateStore']>
+    readonly useAppStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/app')['useAppStore']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>
     readonly useArrayEvery: UnwrapRef<typeof import('@vueuse/core')['useArrayEvery']>
     readonly useArrayFilter: UnwrapRef<typeof import('@vueuse/core')['useArrayFilter']>
@@ -473,6 +499,7 @@ declare module 'vue' {
     readonly useAsyncQueue: UnwrapRef<typeof import('@vueuse/core')['useAsyncQueue']>
     readonly useAsyncState: UnwrapRef<typeof import('@vueuse/core')['useAsyncState']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useAuthStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['useAuthStore']>
     readonly useBase64: UnwrapRef<typeof import('@vueuse/core')['useBase64']>
     readonly useBattery: UnwrapRef<typeof import('@vueuse/core')['useBattery']>
     readonly useBluetooth: UnwrapRef<typeof import('@vueuse/core')['useBluetooth']>
@@ -484,6 +511,7 @@ declare module 'vue' {
     readonly useClipboardItems: UnwrapRef<typeof import('@vueuse/core')['useClipboardItems']>
     readonly useCloned: UnwrapRef<typeof import('@vueuse/core')['useCloned']>
     readonly useColorMode: UnwrapRef<typeof import('@vueuse/core')['useColorMode']>
+    readonly useCommandComponent: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useCommandComponent')['useCommandComponent']>
     readonly useConfirmDialog: UnwrapRef<typeof import('@vueuse/core')['useConfirmDialog']>
     readonly useCountdown: UnwrapRef<typeof import('@vueuse/core')['useCountdown']>
     readonly useCounter: UnwrapRef<typeof import('@vueuse/core')['useCounter']>
@@ -512,7 +540,8 @@ declare module 'vue' {
     readonly useElementOverflow: UnwrapRef<typeof import('@vueuse/core')['useElementOverflow']>
     readonly useElementSize: UnwrapRef<typeof import('@vueuse/core')['useElementSize']>
     readonly useElementVisibility: UnwrapRef<typeof import('@vueuse/core')['useElementVisibility']>
-    readonly useEnum: UnwrapRef<typeof import('@ingot/admin-core')['useEnum']>
+    readonly useEnum2: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useEnum')['useEnum2']>
+    readonly useEnum: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useEnum')['useEnum']>
     readonly useEventBus: UnwrapRef<typeof import('@vueuse/core')['useEventBus']>
     readonly useEventListener: UnwrapRef<typeof import('@vueuse/core')['useEventListener']>
     readonly useEventSource: UnwrapRef<typeof import('@vueuse/core')['useEventSource']>
@@ -527,10 +556,14 @@ declare module 'vue' {
     readonly useFullscreen: UnwrapRef<typeof import('@vueuse/core')['useFullscreen']>
     readonly useGamepad: UnwrapRef<typeof import('@vueuse/core')['useGamepad']>
     readonly useGeolocation: UnwrapRef<typeof import('@vueuse/core')['useGeolocation']>
-    readonly useGo: UnwrapRef<typeof import('@ingot/admin-core')['useGo']>
+    readonly useGlobalLoading: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useGlobalLoading')['useGlobalLoading']>
+    readonly useGo: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useRouter')['useGo']>
+    readonly useIconsCollection: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useIcons')['useIconsCollection']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useIdle: UnwrapRef<typeof import('@vueuse/core')['useIdle']>
     readonly useImage: UnwrapRef<typeof import('@vueuse/core')['useImage']>
+    readonly useImageLoad: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useImageLoad')['useImageLoad']>
+    readonly useInWebTitle: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useTitle')['useInWebTitle']>
     readonly useInfiniteScroll: UnwrapRef<typeof import('@vueuse/core')['useInfiniteScroll']>
     readonly useIntersectionObserver: UnwrapRef<typeof import('@vueuse/core')['useIntersectionObserver']>
     readonly useInterval: UnwrapRef<typeof import('@vueuse/core')['useInterval']>
@@ -539,14 +572,16 @@ declare module 'vue' {
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
     readonly useLocalStorage: UnwrapRef<typeof import('@vueuse/core')['useLocalStorage']>
+    readonly useLogin: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useLogin')['useLogin']>
+    readonly useLoginStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/login')['useLoginStore']>
     readonly useMagicKeys: UnwrapRef<typeof import('@vueuse/core')['useMagicKeys']>
     readonly useManualRefHistory: UnwrapRef<typeof import('@vueuse/core')['useManualRefHistory']>
     readonly useMediaControls: UnwrapRef<typeof import('@vueuse/core')['useMediaControls']>
     readonly useMediaQuery: UnwrapRef<typeof import('@vueuse/core')['useMediaQuery']>
     readonly useMemoize: UnwrapRef<typeof import('@vueuse/core')['useMemoize']>
     readonly useMemory: UnwrapRef<typeof import('@vueuse/core')['useMemory']>
-    readonly useMessage: UnwrapRef<typeof import('@ingot/admin-core')['useMessage']>
-    readonly useMessageConfirm: UnwrapRef<typeof import('@ingot/admin-core')['useMessageConfirm']>
+    readonly useMessage: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useMessage')['useMessage']>
+    readonly useMessageConfirm: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useMessage')['useMessageConfirm']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
     readonly useMounted: UnwrapRef<typeof import('@vueuse/core')['useMounted']>
     readonly useMouse: UnwrapRef<typeof import('@vueuse/core')['useMouse']>
@@ -559,12 +594,13 @@ declare module 'vue' {
     readonly useObjectUrl: UnwrapRef<typeof import('@vueuse/core')['useObjectUrl']>
     readonly useOffsetPagination: UnwrapRef<typeof import('@vueuse/core')['useOffsetPagination']>
     readonly useOnline: UnwrapRef<typeof import('@vueuse/core')['useOnline']>
+    readonly useOrderedChildren: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useOrderedChildren')['useOrderedChildren']>
     readonly usePageLeave: UnwrapRef<typeof import('@vueuse/core')['usePageLeave']>
     readonly useParallax: UnwrapRef<typeof import('@vueuse/core')['useParallax']>
     readonly useParentElement: UnwrapRef<typeof import('@vueuse/core')['useParentElement']>
     readonly usePerformanceObserver: UnwrapRef<typeof import('@vueuse/core')['usePerformanceObserver']>
     readonly usePermission: UnwrapRef<typeof import('@vueuse/core')['usePermission']>
-    readonly usePermissions: UnwrapRef<typeof import('@ingot/admin-core')['usePermissions']>
+    readonly usePermissions: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['usePermissions']>
     readonly usePointer: UnwrapRef<typeof import('@vueuse/core')['usePointer']>
     readonly usePointerLock: UnwrapRef<typeof import('@vueuse/core')['usePointerLock']>
     readonly usePointerSwipe: UnwrapRef<typeof import('@vueuse/core')['usePointerSwipe']>
@@ -576,10 +612,13 @@ declare module 'vue' {
     readonly usePreferredReducedTransparency: UnwrapRef<typeof import('@vueuse/core')['usePreferredReducedTransparency']>
     readonly usePrevious: UnwrapRef<typeof import('@vueuse/core')['usePrevious']>
     readonly useRafFn: UnwrapRef<typeof import('@vueuse/core')['useRafFn']>
+    readonly useRedirect: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useRouter')['useRedirect']>
     readonly useRefHistory: UnwrapRef<typeof import('@vueuse/core')['useRefHistory']>
+    readonly useRefreshPage: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useRouter')['useRefreshPage']>
     readonly useResizeObserver: UnwrapRef<typeof import('@vueuse/core')['useResizeObserver']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
+    readonly useRouterStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/router')['useRouterStore']>
     readonly useSSRWidth: UnwrapRef<typeof import('@vueuse/core')['useSSRWidth']>
     readonly useScreenOrientation: UnwrapRef<typeof import('@vueuse/core')['useScreenOrientation']>
     readonly useScreenSafeArea: UnwrapRef<typeof import('@vueuse/core')['useScreenSafeArea']>
@@ -599,6 +638,7 @@ declare module 'vue' {
     readonly useStyleTag: UnwrapRef<typeof import('@vueuse/core')['useStyleTag']>
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
+    readonly useTabsStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/tabs')['useTabsStore']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>
@@ -619,7 +659,7 @@ declare module 'vue' {
     readonly useToggle: UnwrapRef<typeof import('@vueuse/core')['useToggle']>
     readonly useTransition: UnwrapRef<typeof import('@vueuse/core')['useTransition']>
     readonly useUrlSearchParams: UnwrapRef<typeof import('@vueuse/core')['useUrlSearchParams']>
-    readonly useUserInfoStore: UnwrapRef<typeof import('@ingot/admin-core')['useUserInfoStore']>
+    readonly useUserInfoStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['useUserInfoStore']>
     readonly useUserMedia: UnwrapRef<typeof import('@vueuse/core')['useUserMedia']>
     readonly useVModel: UnwrapRef<typeof import('@vueuse/core')['useVModel']>
     readonly useVModels: UnwrapRef<typeof import('@vueuse/core')['useVModels']>

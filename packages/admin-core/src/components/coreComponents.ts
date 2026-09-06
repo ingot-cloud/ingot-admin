@@ -45,6 +45,19 @@ import InCommonStatusTag from "./status/InCommonStatusTag.vue";
 import InAccountStatusTag from "./status/InAccountStatusTag.vue";
 import InStatusButton from "./status/InStatusButton.vue";
 import AccountStatusEditButton from "./user/AccountStatusEditButton.vue";
+import InAppBar from "../layouts/widgets/InAppBar.vue";
+import InAppBarSearch from "../layouts/widgets/search/InAppBarSearch.vue";
+import InLogo from "../layouts/widgets/InLogo.vue";
+import InFullscreen from "../layouts/widgets/InFullscreen.vue";
+import InGlobalSetting from "../layouts/widgets/InGlobalSetting.vue";
+import InUserDropdown from "../layouts/widgets/user-dropdown/InUserDropdown.vue";
+import InMenu from "../layouts/widgets/InMenu.vue";
+import InSubmenu from "../layouts/widgets/InSubmenu.vue";
+import InMenuToggle from "../layouts/widgets/InMenuToggle.vue";
+import InBreadcrumb from "../layouts/widgets/breadcrumb/InBreadcrumb.vue";
+import InCopyright from "../layouts/widgets/InCopyright.vue";
+import InSwitchDark from "../layouts/widgets/switch-dark/InSwitchDark.vue";
+import InCmpSize from "../layouts/widgets/cmp-size/InCmpSize.vue";
 
 export const coreGlobalComponents: Record<string, Component> = {
   InAvatar,
@@ -93,6 +106,19 @@ export const coreGlobalComponents: Record<string, Component> = {
   InAccountStatusTag,
   InStatusButton,
   AccountStatusEditButton,
+  InAppBar,
+  InAppBarSearch,
+  InLogo,
+  InFullscreen,
+  InGlobalSetting,
+  InUserDropdown,
+  InMenu,
+  InSubmenu,
+  InMenuToggle,
+  InBreadcrumb,
+  InCopyright,
+  InSwitchDark,
+  InCmpSize,
 };
 
 declare module "vue" {
@@ -143,5 +169,18 @@ declare module "vue" {
     InAccountStatusTag: typeof InAccountStatusTag;
     InStatusButton: typeof InStatusButton;
     AccountStatusEditButton: typeof AccountStatusEditButton;
+    InAppBar: typeof InAppBar;
+    InAppBarSearch: typeof InAppBarSearch;
+    InLogo: typeof InLogo;
+    InFullscreen: typeof InFullscreen;
+    InGlobalSetting: typeof InGlobalSetting;
+    InUserDropdown: typeof InUserDropdown;
+    InMenu: typeof InMenu;
+    InSubmenu: typeof InSubmenu;
+    InMenuToggle: typeof InMenuToggle;
+    InBreadcrumb: typeof InBreadcrumb;
+    InCopyright: typeof InCopyright;
+    InSwitchDark: typeof InSwitchDark;
+    InCmpSize: typeof InCmpSize;
   }
 }

@@ -42,6 +42,8 @@ import type { UserDropdownCommand } from "./types";
 import { menuList } from "./types";
 import { useUserInfoStore } from "@/stores/modules/auth";
 import { logoutAndReload } from "@/utils/security";
+import { useLogin } from "@/hooks/biz/useLogin";
+import { useMessageConfirm } from "@/hooks/web/useMessage";
 import FixPwdDrawer from "./FixPwdDrawer.vue";
 
 const PwdDialogRef = ref();
