@@ -13,7 +13,7 @@ const movedComponentNames = [
   "AccountStatusEditButton",
   "InPageFrame",
   "InTableActions",
-  "InColumnSetting",
+  "InTableColumnSetting",
 ] as const;
 
 describe("coreGlobalComponents", () => {

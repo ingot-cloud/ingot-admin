@@ -23,7 +23,7 @@ import InPageSelect from "./select/InPageSelect.vue";
 import InSpacer from "./InSpacer.vue";
 import InTable from "./table/InTable.vue";
 import InTableActions from "./table/InTableActions.vue";
-import InColumnSetting from "./table/InColumnSetting.vue";
+import InTableColumnSetting from "./table/InTableColumnSetting.vue";
 import InRadioTable from "./table/InRadioTable.vue";
 import InTabs from "./InTabs.vue";
 import InBizTabs from "./tabs/InBizTabs.vue";
@@ -71,7 +71,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InSpacer,
   InTable,
   InTableActions,
-  InColumnSetting,
+  InTableColumnSetting,
   InRadioTable,
   InTabs,
   InBizTabs,
@@ -121,7 +121,7 @@ declare module "vue" {
     InSpacer: typeof InSpacer;
     InTable: typeof InTable;
     InTableActions: typeof InTableActions;
-    InColumnSetting: typeof InColumnSetting;
+    InTableColumnSetting: typeof InTableColumnSetting;
     InRadioTable: typeof InRadioTable;
     InTabs: typeof InTabs;
     InBizTabs: typeof InBizTabs;

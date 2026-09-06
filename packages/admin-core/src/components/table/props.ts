@@ -13,7 +13,7 @@ export interface ExtendTableProps {
   page?: TablePage;
   loading?: boolean;
   radioKey?: string;
-  /** @deprecated InTable 不再自动渲染字段设置；页面请按需放入 InColumnSetting。 */
+  /** @deprecated InTable 不再自动渲染字段设置；页面请按需放入 InTableColumnSetting。 */
   hideSetting?: boolean;
   density?: InDensity;
   feedback?: InTableFeedback;

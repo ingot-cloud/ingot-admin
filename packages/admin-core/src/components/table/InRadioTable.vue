@@ -22,7 +22,7 @@
           <in-refresh-icon size="22" @refresh="privateOnRefreshClick" />
         </el-tooltip>
         <el-tooltip content="设置" effect="light" placement="top">
-          <in-column-setting
+          <in-table-column-setting
             :data="props.headers"
             :table-id="props.tableId"
             @onSelectionChange="privateOnHeaderChanged"

@@ -25,7 +25,7 @@
           <span class="in-table__count">共 {{ userOps.pageInfo.value.total ?? 0 }} 人</span>
         </template>
         <template #tools-start>
-          <in-column-setting
+          <in-table-column-setting
             :headers="tableHeaders"
             :table-id="ORG_USER_TABLE_ID"
             @change="privateOnColumnChange"

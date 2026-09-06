@@ -18,7 +18,7 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("left-collapsible");
     expect(source).toContain("ORG_USER_SPLIT_KEY");
-    expect(source).toContain("in-column-setting");
+    expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");
     expect(source).toContain('density="compact"');

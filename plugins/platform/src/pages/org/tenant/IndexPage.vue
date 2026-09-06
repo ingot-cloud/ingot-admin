@@ -36,7 +36,7 @@
       >
         <template #summary>共 {{ paging.pageInfo.value.total ?? 0 }} 个</template>
         <template #tools-start>
-          <in-column-setting
+          <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TENANT_TABLE_ID"
             @change="privateOnColumnChange"

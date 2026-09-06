@@ -15,7 +15,7 @@ describe("platform tenant IndexPage", () => {
     expect(source).toContain("in-page-header");
     expect(source).not.toContain('title="组织管理"');
     expect(source).not.toContain("<template #title>组织</template>");
-    expect(source).toContain("in-column-setting");
+    expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");
     expect(source).toContain("TENANT_TABLE_ID");

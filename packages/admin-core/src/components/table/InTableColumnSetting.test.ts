@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { DOMWrapper, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import InColumnSetting from "./InColumnSetting.vue";
+import InTableColumnSetting from "./InTableColumnSetting.vue";
 import { useUserInfoStore } from "@/stores/modules/auth";
 import { COLUMN_SETTING_STORAGE_PREFIX } from "@/utils/uiPreference";
 
@@ -18,7 +18,7 @@ const stubs = {
 };
 
 const openPanel = async (tableId = "member-list") => {
-  const wrapper = mount(InColumnSetting, {
+  const wrapper = mount(InTableColumnSetting, {
     props: { data: headers, tableId },
     attachTo: document.body,
     global: { stubs },
@@ -28,7 +28,7 @@ const openPanel = async (tableId = "member-list") => {
   return { wrapper, panel };
 };
 
-describe("InColumnSetting", () => {
+describe("InTableColumnSetting", () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     localStorage.clear();
@@ -54,7 +54,7 @@ describe("InColumnSetting", () => {
 
   it("Esc 关闭并恢复焦点，headers 别名可用", async () => {
     useUserInfoStore().userInfo.user = { nickname: "Ada" };
-    const wrapper = mount(InColumnSetting, {
+    const wrapper = mount(InTableColumnSetting, {
       props: { headers, tableId: "dept-list" },
       attachTo: document.body,
       global: { stubs },
@@ -77,7 +77,7 @@ describe("InColumnSetting", () => {
     expect(wrapper.find("[role='dialog']").exists()).toBe(false);
     const handles = [...(panel?.querySelectorAll("[aria-label='调整顺序']") ?? [])];
     expect(handles).toHaveLength(3);
-    const nameRow = panel?.querySelectorAll(".in-column-setting__item")[1];
+    const nameRow = panel?.querySelectorAll(".in-table-column-setting__item")[1];
     const dispatchDrag = (target: EventTarget | null | undefined, type: string) => {
       const event = new Event(type, { bubbles: true, cancelable: true });
       Object.defineProperty(event, "dataTransfer", {
@@ -97,7 +97,7 @@ describe("InColumnSetting", () => {
       `${COLUMN_SETTING_STORAGE_PREFIX}:browser:member-list`,
       JSON.stringify(["name", "actions"]),
     );
-    const wrapper = mount(InColumnSetting, {
+    const wrapper = mount(InTableColumnSetting, {
       props: { headers, tableId: "member-list" },
       attachTo: document.body,
       global: { stubs },

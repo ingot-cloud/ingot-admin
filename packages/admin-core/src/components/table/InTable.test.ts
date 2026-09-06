@@ -48,7 +48,7 @@ describe("InTable", () => {
     expect(wrapper.get(".empty").text()).toBe("无搜索结果");
     expect(wrapper.get(".empty").attributes("data-image")).toBe(emptyIllustration);
     expect(wrapper.find("[aria-label='刷新']").exists()).toBe(false);
-    expect(wrapper.findComponent({ name: "InColumnSetting" }).exists()).toBe(false);
+    expect(wrapper.findComponent({ name: "InTableColumnSetting" }).exists()).toBe(false);
     wrapper.unmount();
   });
 

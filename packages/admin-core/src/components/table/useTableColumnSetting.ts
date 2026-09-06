@@ -14,18 +14,21 @@ import {
   writeUiPreference,
 } from "@/utils/uiPreference";
 
-type ColumnSettingProps = {
+type TableColumnSettingProps = {
   data: Array<TableHeaderRecord>;
   headers: Array<TableHeaderRecord>;
   tableId: string;
 };
 
-type ColumnSettingEmits = {
+type TableColumnSettingEmits = {
   (event: "onSelectionChange", value: string[]): void;
   (event: "change", value: string[]): void;
 };
 
-export const useColumnSetting = (props: ColumnSettingProps, emits: ColumnSettingEmits) => {
+export const useTableColumnSetting = (
+  props: TableColumnSettingProps,
+  emits: TableColumnSettingEmits,
+) => {
   const userStore = useUserInfoStore();
   const triggerRef = ref<HTMLButtonElement>();
   const panelRef = ref<HTMLElement>();

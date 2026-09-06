@@ -1,6 +1,7 @@
 import type { User } from "@/models/security";
 
 export const UI_PREFERENCE_BROWSER_SCOPE = "browser";
+/** 字段设置持久化前缀。组件已改名为 InTableColumnSetting，key 保持旧值以免丢失已保存的显隐/顺序。 */
 export const COLUMN_SETTING_STORAGE_PREFIX = "in-column-setting";
 export const SPLIT_LEFT_STORAGE_PREFIX = "in-split-left-open";
 

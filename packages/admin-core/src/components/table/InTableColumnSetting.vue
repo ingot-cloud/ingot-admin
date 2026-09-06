@@ -1,17 +1,17 @@
 <template>
-  <span class="in-column-setting">
+  <span class="in-table-column-setting">
     <el-tooltip :disabled="open" content="按需自定义展示或隐藏字段" effect="dark" placement="top">
       <button
         ref="triggerRef"
         type="button"
-        class="in-column-setting__trigger"
+        class="in-table-column-setting__trigger"
         aria-label="设置显示字段"
         :aria-expanded="open"
         @click="privateToggle"
         @keydown="privateOnTriggerKeydown"
       >
         <svg
-          class="in-column-setting__icon"
+          class="in-table-column-setting__icon"
           width="1em"
           height="1em"
           viewBox="0 0 24 24"
@@ -30,14 +30,14 @@
       <div
         v-if="open"
         ref="panelRef"
-        class="in-column-setting__panel"
+        class="in-table-column-setting__panel"
         role="dialog"
         aria-label="字段显示设置"
         :style="panelStyle"
         @keydown="privateOnPanelKeydown"
       >
-        <p class="in-column-setting__hint">请选择列表中要展示的信息</p>
-        <label class="in-column-setting__item is-all">
+        <p class="in-table-column-setting__hint">请选择列表中要展示的信息</p>
+        <label class="in-table-column-setting__item is-all">
           <input
             type="checkbox"
             :checked="allChecked"
@@ -46,11 +46,11 @@
           />
           <span>全部</span>
         </label>
-        <div class="in-column-setting__list">
+        <div class="in-table-column-setting__list">
           <label
             v-for="item in orderedHeaders"
             :key="String(item.prop)"
-            class="in-column-setting__item"
+            class="in-table-column-setting__item"
             :class="{
               'is-locked': isTableHeaderLocked(item),
               'is-over': dragOverProp === String(item.prop),
@@ -66,10 +66,10 @@
               :disabled="isTableHeaderLocked(item)"
               @change="privateOnToggle(String(item.prop))"
             />
-            <span class="in-column-setting__label">{{ item.label }}</span>
+            <span class="in-table-column-setting__label">{{ item.label }}</span>
             <span
               v-if="canReorderTableHeader(item)"
-              class="in-column-setting__handle"
+              class="in-table-column-setting__handle"
               draggable="true"
               role="button"
               aria-label="调整顺序"
@@ -101,10 +101,10 @@
 <script lang="ts" setup>
 import type { TableHeaderRecord } from "./types";
 import { canReorderTableHeader, isTableHeaderLocked } from "./columnVisibility";
-import { useColumnSetting } from "./useColumnSetting";
+import { useTableColumnSetting } from "./useTableColumnSetting";
 
 defineOptions({
-  name: "InColumnSetting",
+  name: "InTableColumnSetting",
 });
 
 const props = withDefaults(
@@ -146,15 +146,15 @@ const {
   privateOnDragEnd,
   privateOnTriggerKeydown,
   privateOnPanelKeydown,
-} = useColumnSetting(props, emits);
+} = useTableColumnSetting(props, emits);
 </script>
 <style lang="postcss" scoped>
-.in-column-setting {
+.in-table-column-setting {
   display: inline-flex;
   overflow: visible;
 }
 
-.in-column-setting__trigger {
+.in-table-column-setting__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -170,17 +170,17 @@ const {
   cursor: pointer;
 }
 
-.in-column-setting__trigger:hover {
+.in-table-column-setting__trigger:hover {
   background: var(--in-bg-color-hover);
   color: var(--in-text-color);
 }
 
-.in-column-setting__trigger:focus-visible {
+.in-table-column-setting__trigger:focus-visible {
   outline: 2px solid var(--in-focus-ring-color);
   outline-offset: 2px;
 }
 
-.in-column-setting__icon {
+.in-table-column-setting__icon {
   display: block;
   width: 16px;
   height: 16px;
@@ -188,7 +188,7 @@ const {
 </style>
 <style lang="postcss">
 /* 浮层 Teleport 到 body，样式不能依赖 scoped 父级，否则会被 InTable / Split 裁成一条窄白条 */
-.in-column-setting__panel {
+.in-table-column-setting__panel {
   position: fixed;
   z-index: var(--in-z-dropdown);
   box-sizing: border-box;
@@ -204,7 +204,7 @@ const {
   box-shadow: var(--in-shadow-md);
 }
 
-.in-column-setting__hint {
+.in-table-column-setting__hint {
   margin: 0;
   padding: var(--in-space-1) var(--in-space-3) var(--in-space-2);
   color: var(--in-text-color-placeholder);
@@ -212,13 +212,13 @@ const {
   line-height: var(--in-line-height-body);
 }
 
-.in-column-setting__list {
+.in-table-column-setting__list {
   overflow: auto;
   min-height: 0;
   flex: 1;
 }
 
-.in-column-setting__item {
+.in-table-column-setting__item {
   display: flex;
   align-items: center;
   gap: var(--in-space-2);
@@ -230,26 +230,26 @@ const {
   user-select: none;
 }
 
-.in-column-setting__item:hover,
-.in-column-setting__item.is-over {
+.in-table-column-setting__item:hover,
+.in-table-column-setting__item.is-over {
   background: var(--in-bg-color-hover);
 }
 
-.in-column-setting__item.is-dragging {
+.in-table-column-setting__item.is-dragging {
   opacity: 0.6;
 }
 
-.in-column-setting__item.is-all {
+.in-table-column-setting__item.is-all {
   border-bottom: 1px solid var(--in-border-color);
   margin-bottom: var(--in-space-1);
 }
 
-.in-column-setting__item.is-locked {
+.in-table-column-setting__item.is-locked {
   color: var(--in-text-color-secondary);
   cursor: not-allowed;
 }
 
-.in-column-setting__item input {
+.in-table-column-setting__item input {
   width: 16px;
   height: 16px;
   margin: 0;
@@ -257,12 +257,12 @@ const {
   accent-color: var(--in-color-primary);
 }
 
-.in-column-setting__label {
+.in-table-column-setting__label {
   flex: 1;
   min-width: 0;
 }
 
-.in-column-setting__handle {
+.in-table-column-setting__handle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -273,11 +273,11 @@ const {
   cursor: grab;
 }
 
-.in-column-setting__handle:active {
+.in-table-column-setting__handle:active {
   cursor: grabbing;
 }
 
-.in-column-setting__handle svg {
+.in-table-column-setting__handle svg {
   display: block;
   width: 16px;
   height: 16px;
