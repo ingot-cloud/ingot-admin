@@ -49,6 +49,8 @@ export type {
   InAppBarUtilityAction,
 } from "./components/types";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
+export { default as InPicker } from "./components/select/InPicker.vue";
+export type { InPickerOption } from "./components/select/types";
 export { coreGlobalComponents } from "./components/coreComponents";
 export { default as InAvatar } from "./components/avatar/InAvatar.vue";
 export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";

@@ -184,4 +184,22 @@ describe("admin UI visual fixtures", () => {
     expect(logoResolver).toContain("in-light-framed.svg");
     expect(logoResolver).toContain("in-dark-framed.svg");
   });
+
+  it("InPicker 为紧凑单选：可选 label、32px 触发器、相邻 12px", () => {
+    const picker = readFileSync(resolve(root, "../select/InPicker.vue"), "utf8");
+    expect(picker).toContain("name: \"InPicker\"");
+    expect(picker).toContain("in-picker__label");
+    expect(picker).toContain("height: var(--in-control-height)");
+    expect(picker).toContain("border: 1px solid #d0d3d6");
+    expect(picker).toContain(".in-picker__trigger:hover:not(:disabled)");
+    expect(picker).toContain("color: var(--in-text-color-placeholder)");
+    expect(picker).toContain("color: var(--in-color-primary)");
+    expect(picker).toContain("in-picker__check");
+    expect(picker).toContain(".in-picker + .in-picker");
+    expect(picker).toContain("margin-inline-start: var(--in-space-3)");
+    expect(picker).toContain("Teleport to=\"body\"");
+    expect(picker).toContain(
+      "M4 11.293a1 1 0 0 1 1.414 0l4.072 4.07 9.07-9.07a1 1 0 0 1 1.415 0l.706.707a1 1 0 0 1 0 1.414L10.193 18.9a1 1 0 0 1-1.415 0l-5.485-5.485a1 1 0 0 1 0-1.414L4 11.293Z",
+    );
+  });
 });

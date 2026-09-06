@@ -2,6 +2,12 @@
  * InPageSelect 组件相关类型定义
  */
 
+export interface InPickerOption {
+  value: string | number | boolean;
+  label: string;
+  disabled?: boolean;
+}
+
 /**
  * 加载数据的参数
  */
@@ -23,4 +29,3 @@ export interface InPageSelectExpose {
   /** 手动加载更多数据 */
   loadMore: () => void;
 }
-

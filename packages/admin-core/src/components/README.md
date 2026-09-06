@@ -12,6 +12,7 @@
 | `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多在固定操作左侧，工具栏为竖向三点、行内为横向三点，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
 | `InMenu` | 全局左侧导航 | 菜单滚动视口与底部「收起导航」控制为兄弟区域；滚动条隐藏；控制区上方 1px 分隔线并与按钮间隔 8px；图标固定 20px；带图标/无图标分色，选中叶子 `#2b2f36`；展开/收起图标为 `ic_expand` / `ic_close`；236/52px；收缩态无二级浮层 | 桌面折叠入口只在侧栏底部；`InMenuToggle` 仅 overlay |
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位；默认 framed Logo 随 dark 切换 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav`；`branding.logo` 可覆盖默认 Logo |
+| `InPicker` | 紧凑单选（筛选/工具栏） | 可选 `label` 前缀；32px / 6px 圆角；默认边框 `#d0d3d6`，悬停/展开 `#3370ff`；展开后面板勾选当前项；相邻实例默认 12px 间距；`v-model` + `options` + `change` | 新组件；不替代表单 `InSelect` |
 | `InTableColumnSetting` | 字段显示设置 | 32×32 描边按钮、表格设置 SVG、说明「请选择列表中要展示的信息」、约 213×426 复选列表、“全部”半选、必选列禁用、右侧拖拽调序、浮层 Teleport 到 body、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 原名 `InColumnSetting`；继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化；`change` 按显示顺序返回选中列；持久化前缀仍为 `in-column-setting` |
 | `InBizTabs` | 页内 Tab | 键盘方向键，懒挂载 `InBizTabPanel` | `v-model` + `change` |
 | `InTabs` | 全局路由 Tab | 与页内 Tab 视觉分离，默认可关闭 | 行为不变 |
@@ -46,7 +47,7 @@ InPageFrame mode="contained" surface="workspace"
     #left  树/分组
     #top   筛选
     InTable table-id density="compact"
-      #tools-start  筛选控件 + InTableColumnSetting
+      #tools-start  InPicker + InTableColumnSetting
       #tools-end    InTableActions variant="toolbar"
       #actions      InTableActions
 InDrawer / InDialog

@@ -105,6 +105,7 @@ declare module 'vue' {
     InPageFrame: typeof import('./src/components/InPageFrame.vue')['default']
     InPageHeader: typeof import('./src/components/InPageHeader.vue')['default']
     InPageSelect: typeof import('./src/components/select/InPageSelect.vue')['default']
+    InPicker: typeof import('./src/components/select/InPicker.vue')['default']
     InQrcode: typeof import('./src/components/qrcode/InQrcode.vue')['default']
     InRadioTable: typeof import('./src/components/table/InRadioTable.vue')['default']
     InRefreshIcon: typeof import('./src/components/icons/InRefreshIcon.vue')['default']

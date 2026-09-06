@@ -19,6 +19,7 @@ import InPageHeader from "./InPageHeader.vue";
 import InPageFrame from "./InPageFrame.vue";
 import InQrcode from "./qrcode/InQrcode.vue";
 import InSelect from "./select/InSelect.vue";
+import InPicker from "./select/InPicker.vue";
 import InPageSelect from "./select/InPageSelect.vue";
 import InSpacer from "./InSpacer.vue";
 import InTable from "./table/InTable.vue";
@@ -80,6 +81,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InPageFrame,
   InQrcode,
   InSelect,
+  InPicker,
   InPageSelect,
   InSpacer,
   InTable,
@@ -143,6 +145,7 @@ declare module "vue" {
     InPageFrame: typeof InPageFrame;
     InQrcode: typeof InQrcode;
     InSelect: typeof InSelect;
+    InPicker: typeof InPicker;
     InPageSelect: typeof InPageSelect;
     InSpacer: typeof InSpacer;
     InTable: typeof InTable;
