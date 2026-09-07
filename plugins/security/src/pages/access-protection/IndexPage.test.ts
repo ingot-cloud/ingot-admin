@@ -31,6 +31,10 @@ describe("security access-protection IndexPage", () => {
       expect(panelSource).toContain('density="compact"');
       expect(panelSource).toContain("in-table-column-setting");
       expect(panelSource).toContain("applyColumnSelection");
+      if (panel.endsWith("IpListPanel.vue")) {
+        expect(panelSource).toContain("in-picker");
+        expect(panelSource).not.toContain("in-filter-item");
+      }
     }
   });
 });

@@ -13,7 +13,8 @@ describe("platform develop client IndexPage", () => {
     expect(source).toContain('mode="contained"');
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
-    expect(source).toContain("in-filter-item");
+    expect(source).not.toContain("in-filter-item");
+    expect(source).toContain('placeholder="搜索客户端 ID"');
     expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");

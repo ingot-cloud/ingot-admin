@@ -25,6 +25,10 @@ describe("platform config dict IndexPage", () => {
     expect(source).toContain("DICT_TABLE_ID");
     expect(source).toContain('density="compact"');
     expect(source).toContain("in-table__count");
+    expect(source).toContain("in-picker");
+    expect(source).toContain('label="作用域"');
+    expect(source).toContain('label="状态"');
+    expect(source).toContain('placeholder="搜索名称"');
     expect(source).not.toContain("#summary");
     expect(source).not.toContain("@refresh");
     expect(source).not.toContain("#toolbar");

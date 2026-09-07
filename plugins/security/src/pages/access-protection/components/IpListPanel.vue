@@ -1,41 +1,5 @@
 <template>
   <div class="ip-list-panel">
-    <in-filter-item class="ip-list-panel__filters">
-      <in-with-label title="名单类型">
-        <div class="filter-control">
-          <in-select
-            v-model="filter.listType"
-            clearable
-            :options="ipListTypeEnum.getOptions()"
-            placeholder="全部"
-          />
-        </div>
-      </in-with-label>
-      <in-with-label title="Key 类型">
-        <div class="filter-control">
-          <in-select
-            v-model="filter.keyType"
-            clearable
-            :options="ipListKeyTypeEnum.getOptions()"
-            placeholder="全部"
-          />
-        </div>
-      </in-with-label>
-      <in-with-label title="状态">
-        <div class="filter-control filter-control--status">
-          <in-select
-            v-model="filter.enabled"
-            clearable
-            :options="enabledOptions"
-            placeholder="全部"
-          />
-        </div>
-      </in-with-label>
-      <template #rightActions>
-        <in-button @click="privateOnResetFilter">重置</in-button>
-      </template>
-    </in-filter-item>
-
     <in-table
       :loading="ipQuery.isFetching.value"
       :data="filteredData"
@@ -45,6 +9,9 @@
       row-key="id"
     >
       <template #tools-start>
+        <in-picker v-model="listTypeFilter" label="名单类型" :options="listTypeFilterOptions" />
+        <in-picker v-model="keyTypeFilter" label="Key 类型" :options="keyTypeFilterOptions" />
+        <in-picker v-model="enabledFilter" label="状态" :options="enabledFilterOptions" />
         <in-table-column-setting
           :headers="ipListTableHeaders"
           :table-id="IP_LIST_TABLE_ID"
@@ -87,7 +54,13 @@
 </template>
 
 <script setup lang="ts">
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import {
+  applyColumnSelection,
+  resolveBooleanPickerFilter,
+  toBooleanPickerValue,
+  withAllPickerOption,
+  type InTableAction,
+} from "@ingot/admin-core";
 import type { GatewayIpList } from "@/models";
 import {
   useIpListKeyTypeEnum,
@@ -130,10 +103,33 @@ const ipListTypeEnum = useIpListTypeEnum();
 const ipListKeyTypeEnum = useIpListKeyTypeEnum();
 const ipListSourceEnum = useIpListSourceEnum();
 
-const enabledOptions = [
-  { label: "启用", value: true },
-  { label: "停用", value: false },
-];
+const listTypeFilterOptions = computed(() => withAllPickerOption(ipListTypeEnum.getOptions()));
+const keyTypeFilterOptions = computed(() => withAllPickerOption(ipListKeyTypeEnum.getOptions()));
+const enabledFilterOptions = computed(() =>
+  withAllPickerOption([
+    { label: "启用", value: true },
+    { label: "停用", value: false },
+  ]),
+);
+
+const listTypeFilter = computed({
+  get: (): string => filter.listType ?? "",
+  set: (value: string | number | boolean | null) => {
+    filter.listType = typeof value === "string" && value !== "" ? value : undefined;
+  },
+});
+const keyTypeFilter = computed({
+  get: (): string => filter.keyType ?? "",
+  set: (value: string | number | boolean | null) => {
+    filter.keyType = typeof value === "string" && value !== "" ? value : undefined;
+  },
+});
+const enabledFilter = computed({
+  get: (): string | boolean => toBooleanPickerValue(filter.enabled),
+  set: (value: string | number | boolean | null) => {
+    filter.enabled = resolveBooleanPickerFilter(value);
+  },
+});
 
 const filteredData = computed(() =>
   tableData.value.filter((item) => {
@@ -152,12 +148,6 @@ const filteredData = computed(() =>
 
 const privateRefresh = (): void => {
   void queryClient.invalidateQueries({ queryKey: ipListQueryKeys.lists() });
-};
-
-const privateOnResetFilter = (): void => {
-  filter.listType = undefined;
-  filter.keyType = undefined;
-  filter.enabled = undefined;
 };
 
 const privateOnCreate = (): void => {
@@ -187,17 +177,5 @@ defineExpose({
 <style lang="postcss" scoped>
 .ip-list-panel {
   @apply flex flex-col;
-
-  & .ip-list-panel__filters {
-    @apply px-12px pt-10px pb-12px mb-4;
-  }
-
-  & .filter-control {
-    @apply w-200px;
-  }
-
-  & .filter-control--status {
-    @apply w-160px;
-  }
 }
 </style>

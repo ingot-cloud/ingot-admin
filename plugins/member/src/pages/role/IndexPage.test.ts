@@ -14,7 +14,8 @@ describe("member role IndexPage", () => {
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="维护会员角色树。"');
-    expect(source).toContain("<template #top>");
+    expect(source).not.toContain("<template #top>");
+    expect(source).toContain('placeholder="搜索角色名"');
     expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");

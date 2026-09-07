@@ -5,25 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="组织类型">
-            <el-input
-              v-model="filter.name"
-              class="w-200px"
-              clearable
-              placeholder="请输入权限名称"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="privateOnReset">重置</in-button>
-            <in-button type="primary" :loading="treeQuery.isFetching.value" @in-click="refreshData">
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="treeQuery.isFetching.value"
         :data="treeData"
@@ -32,6 +13,15 @@
         density="compact"
       >
         <template #tools-start>
+          <el-input
+            v-model="filter.name"
+            class="w-200px!"
+            clearable
+            placeholder="搜索权限名"
+            :prefix-icon="Search"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="MEMBER_PERMISSION_TABLE_ID"
@@ -65,6 +55,7 @@ import { applyColumnSelection, Message, silentQueryRequest, type InTableAction }
 import type { MemberPermission, MemberPermissionTreeNodeVO } from "@/models";
 import type { CommonStatus } from "@/models/enums";
 import { useAuthorityTypeEnums, getCommonStatusToggle } from "@/models/enums";
+import { Search } from "@element-plus/icons-vue";
 import EditDrawer from "./EditDrawer.vue";
 import { UpdateAuthorityAPI } from "@/api/member/permission";
 import {
@@ -97,11 +88,6 @@ const visibleHeaders = computed(() =>
 const refreshData = (): void => {
   submitted.value = { ...filter };
   void queryClient.invalidateQueries({ queryKey: memberPermissionQueryKeys.lists() });
-};
-
-const privateOnReset = (): void => {
-  filter.name = undefined;
-  refreshData();
 };
 
 const statusMutation = useMutation({

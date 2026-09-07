@@ -14,7 +14,8 @@ describe("member permission IndexPage", () => {
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="维护会员权限树。"');
-    expect(source).toContain("<template #top>");
+    expect(source).not.toContain("<template #top>");
+    expect(source).toContain('placeholder="搜索权限名"');
     expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");

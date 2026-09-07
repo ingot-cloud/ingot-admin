@@ -5,25 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="角色名称">
-            <el-input
-              v-model="filter.name"
-              class="w-200px"
-              clearable
-              placeholder="请输入角色名称"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="filter.name && (filter.name = undefined)">重置</in-button>
-            <in-button type="primary" :loading="roleQuery.isFetching.value" @in-click="refreshData">
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="roleQuery.isFetching.value"
         :data="roleTree"
@@ -33,6 +14,15 @@
         density="compact"
       >
         <template #tools-start>
+          <el-input
+            v-model="filter.name"
+            class="w-200px!"
+            clearable
+            placeholder="搜索角色名"
+            :prefix-icon="Search"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="MEMBER_ROLE_TABLE_ID"
@@ -73,6 +63,7 @@
 <script lang="ts" setup>
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { MemberRole, MemberRoleTreeNodeVO } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import { MemberRoleTreeQueryOptions, memberRoleQueryKeys } from "@/api/member/role.query";
 import RoleDrawer from "./components/RoleDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";

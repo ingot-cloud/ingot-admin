@@ -6,3 +6,4 @@ export { default as InPicker } from "./InPicker.vue";
 export { default as InPageSelect } from "./InPageSelect.vue";
 export type { LoadDataParams } from './InPageSelect.vue';
 export * from './types';
+export * from "./pickerFilter";

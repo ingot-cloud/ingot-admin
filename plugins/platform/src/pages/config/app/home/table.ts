@@ -21,12 +21,6 @@ export const appStatusFilterOptions: Array<InPickerOption> = [
   { value: CommonStatus.Lock, label: "锁定" },
 ];
 
-export const resolveAppPickerFilter = (
-  value: string | number | boolean | null,
-): string | undefined => (typeof value === "string" && value !== "" ? value : undefined);
-
-export const toAppPickerValue = (value: string | undefined): string => value ?? "";
-
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "应用名称",

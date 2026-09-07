@@ -5,25 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="组织名称">
-            <el-input
-              v-model="paging.condition.name"
-              class="w-200px"
-              clearable
-              placeholder="请输入组织名称"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="paging.resetSubmitted({ name: undefined })">重置</in-button>
-            <in-button type="primary" :loading="paging.fetching.value" @in-click="refreshData">
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="paging.fetching.value"
         :data="paging.pageInfo.value.records"
@@ -36,6 +17,15 @@
       >
         <template #summary>共 {{ paging.pageInfo.value.total ?? 0 }} 个</template>
         <template #tools-start>
+          <el-input
+            v-model="paging.condition.name"
+            class="w-200px!"
+            clearable
+            placeholder="搜索组织名"
+            :prefix-icon="Search"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TENANT_TABLE_ID"
@@ -82,6 +72,7 @@
 <script lang="ts" setup>
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SysTenant } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import { useOrgTypeEnums } from "@/models/enums";
 import EditDrawer from "./components/EditDrawer.vue";
 import CreateDrawer from "./components/CreateDrawer.vue";

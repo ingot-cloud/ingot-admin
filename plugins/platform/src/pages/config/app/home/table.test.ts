@@ -5,9 +5,7 @@ import {
   appTypeFilterOptions,
   createAppHomeRowActions,
   createAppHomeToolbarActions,
-  resolveAppPickerFilter,
   tableHeaders,
-  toAppPickerValue,
 } from "./table";
 
 vi.mock("@/models/enums", () => ({
@@ -30,11 +28,8 @@ describe("platform config app home table contract", () => {
   it("应用类型与状态筛选映射到查询参数", () => {
     expect(appTypeFilterOptions.map((item) => item.label)).toEqual(["全部", "平台", "租户"]);
     expect(appStatusFilterOptions.map((item) => item.label)).toEqual(["全部", "正常", "锁定"]);
-    expect(resolveAppPickerFilter("")).toBeUndefined();
-    expect(resolveAppPickerFilter("0")).toBe("0");
-    expect(resolveAppPickerFilter("1")).toBe("1");
-    expect(toAppPickerValue(undefined)).toBe("");
-    expect(toAppPickerValue("0")).toBe("0");
+    expect(appTypeFilterOptions[0]?.value).toBe("");
+    expect(appStatusFilterOptions[0]?.value).toBe("");
   });
 
   it("提供稳定 tableId，名称列为必选", () => {

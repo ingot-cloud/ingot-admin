@@ -5,23 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="社交名称">
-            <el-input
-              v-model="condition.name"
-              class="w-200px"
-              clearable
-              placeholder="请输入社交名称"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="resetFilter">重置</in-button>
-            <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="loading"
         :data="pageInfo.records"
@@ -34,6 +17,15 @@
       >
         <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
         <template #tools-start>
+          <el-input
+            v-model="condition.name"
+            class="w-200px!"
+            clearable
+            placeholder="搜索社交名"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="SOCIAL_TABLE_ID"
@@ -59,6 +51,7 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SysSocialDetails } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import type { CommonStatus } from "@/models/enums";
 import { getCommonStatusToggle } from "@/models/enums";
 import {
@@ -75,7 +68,7 @@ import { invalidateQueriesByKeys, silentQueryRequest, useServerPaging } from "@i
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const queryClient = useQueryClient();
-const { condition, pageInfo, fetching, fetchData, resetSubmitted } = useServerPaging<
+const { condition, pageInfo, fetching, fetchData } = useServerPaging<
   SysSocialDetails,
   SysSocialDetails
 >({
@@ -106,8 +99,8 @@ const removeMutation = useMutation({
   onSuccess: () => invalidateQueriesByKeys(queryClient, [socialQueryKeys.lists()]),
 });
 
-const resetFilter = (): void => {
-  resetSubmitted({ name: undefined } as SysSocialDetails);
+const privateOnSearch = (): void => {
+  fetchData();
 };
 
 const handleCreate = (): void => {

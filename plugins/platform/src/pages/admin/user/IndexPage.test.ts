@@ -18,6 +18,10 @@ describe("platform admin user IndexPage", () => {
     expect(source).toContain("in-table-actions");
     expect(source).toContain("ADMIN_USER_TABLE_ID");
     expect(source).toContain('density="compact"');
+    expect(source).toContain('placeholder="搜索姓名"');
+    expect(source).toContain('placeholder="搜索手机号"');
+    expect(source).not.toContain("in-filter-item");
+    expect(source).not.toContain("in-with-label");
     expect(source).toContain("in-avatar");
     expect(source).toContain("in-account-status-tag");
     expect(source).not.toContain("@refresh");

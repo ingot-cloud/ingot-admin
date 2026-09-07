@@ -5,33 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="姓名">
-            <el-input
-              v-model="ops.condition.nickname"
-              class="w-200px"
-              clearable
-              placeholder="请输入姓名"
-            />
-          </in-with-label>
-          <in-with-label title="手机号">
-            <el-input
-              v-model="ops.condition.phone"
-              class="w-200px"
-              clearable
-              placeholder="请输入手机号"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="ops.resetFilter">重置</in-button>
-            <in-button type="primary" :loading="ops.loading.value" @click="() => ops.fetchUserData()">
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="ops.loading.value"
         :data="ops.pageInfo.value.records"
@@ -44,6 +17,24 @@
       >
         <template #summary>共 {{ ops.pageInfo.value.total ?? 0 }} 人</template>
         <template #tools-start>
+          <el-input
+            v-model="ops.condition.nickname"
+            class="w-200px!"
+            clearable
+            placeholder="搜索姓名"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
+          <el-input
+            v-model="ops.condition.phone"
+            class="w-200px!"
+            clearable
+            placeholder="搜索手机号"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="MEMBER_USER_TABLE_ID"
@@ -85,6 +76,7 @@
 <script lang="ts" setup>
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { MemberUser } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import { useOps } from "./useOps";
 import {
   MEMBER_USER_TABLE_ID,
@@ -120,6 +112,10 @@ const toolbarRow: MemberUser = {};
 const visibleHeaders = computed(() =>
   applyColumnSelection(tableHeaders, selectedColumnProps.value),
 );
+
+const privateOnSearch = (): void => {
+  ops.fetchUserData();
+};
 
 const handleCreateUser = (): void => {
   CreateDrawerRef.value?.show();

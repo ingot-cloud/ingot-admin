@@ -5,36 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="组织类型">
-            <in-select
-              class="w-200px"
-              v-model="filter.orgType"
-              placeholder="请选择类型"
-              :options="orgTypeEnums.getOptions()"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button
-              @click="
-                filter.orgType = undefined;
-                privateOnSearch();
-              "
-            >
-              重置
-            </in-button>
-            <in-button
-              type="primary"
-              @in-click="privateOnSearch"
-              :loading="treeQuery.isFetching.value"
-            >
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="treeQuery.isFetching.value"
         :data="treeData"
@@ -44,6 +14,7 @@
       >
         <template #summary>共 {{ treeData.length }} 个</template>
         <template #tools-start>
+          <in-picker v-model="orgTypeFilter" label="组织类型" :options="orgTypeFilterOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="PERMISSION_TABLE_ID"
@@ -73,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { applyColumnSelection, type InTableAction, withAllPickerOption } from "@ingot/admin-core";
 import type { PlatformPermission, PermissionTreeNode } from "@/models";
 import { useOrgTypeEnums, useAuthorityTypeEnums } from "@/models/enums";
 import { PlatformAuthorityTreeQueryOptions } from "@/api/platform/config/authority.query";
@@ -90,6 +61,14 @@ const submitted = ref<PlatformPermission>({});
 const treeQuery = useQuery(() => PlatformAuthorityTreeQueryOptions(() => submitted.value));
 const treeData = computed(() => treeQuery.data.value ?? []);
 const selectedColumnProps = ref<string[]>([]);
+const orgTypeFilterOptions = computed(() => withAllPickerOption(orgTypeEnums.getOptions()));
+const orgTypeFilter = computed({
+  get: (): string => filter.value.orgType ?? "",
+  set: (value: string | number | boolean | null) => {
+    filter.value.orgType = typeof value === "string" && value !== "" ? value : undefined;
+    privateOnSearch();
+  },
+});
 
 const visibleHeaders = computed(() =>
   applyColumnSelection(tableHeaders, selectedColumnProps.value),

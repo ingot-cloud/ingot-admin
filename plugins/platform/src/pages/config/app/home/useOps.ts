@@ -1,7 +1,10 @@
 import type { PageChangeParams, PlatformApp, PlatformAppFilterDTO } from "@/models";
 import { AppPageQueryOptions } from "@/api/platform/config/app.query";
-import { useServerPaging } from "@ingot/admin-core";
-import { resolveAppPickerFilter, toAppPickerValue } from "./table";
+import {
+  resolveStringPickerFilter,
+  toStringPickerValue,
+  useServerPaging,
+} from "@ingot/admin-core";
 
 export const useOps = () => {
   const paging = useServerPaging<PlatformApp, PlatformAppFilterDTO>({
@@ -13,17 +16,17 @@ export const useOps = () => {
   };
 
   const appTypeFilter = computed({
-    get: (): string => toAppPickerValue(paging.condition.appType),
+    get: (): string => toStringPickerValue(paging.condition.appType),
     set: (value: string | number | boolean | null) => {
-      paging.condition.appType = resolveAppPickerFilter(value);
+      paging.condition.appType = resolveStringPickerFilter(value);
       fetchData();
     },
   });
 
   const statusFilter = computed({
-    get: (): string => toAppPickerValue(paging.condition.status),
+    get: (): string => toStringPickerValue(paging.condition.status),
     set: (value: string | number | boolean | null) => {
-      paging.condition.status = resolveAppPickerFilter(value);
+      paging.condition.status = resolveStringPickerFilter(value);
       fetchData();
     },
   });

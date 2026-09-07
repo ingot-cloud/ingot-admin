@@ -11,22 +11,18 @@
           <ClientIdField v-model="condition.clientId" :default-select-index="0" />
         </div>
       </in-with-label>
-      <in-with-label title="用户 ID">
-        <el-input
-          v-model="condition.userId"
-          class="filter-control"
-          clearable
-          placeholder="跨客户端查询"
-        />
-      </in-with-label>
-      <in-with-label title="登录 IP">
-        <el-input
-          v-model="condition.ipAddress"
-          class="filter-control"
-          clearable
-          placeholder="需同时选择客户端"
-        />
-      </in-with-label>
+      <el-input
+        v-model="condition.userId"
+        class="filter-control"
+        clearable
+        placeholder="搜索用户 ID"
+      />
+      <el-input
+        v-model="condition.ipAddress"
+        class="filter-control"
+        clearable
+        placeholder="搜索登录 IP"
+      />
       <template #rightActions>
         <in-button @click="privateOnReset">重置</in-button>
         <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>

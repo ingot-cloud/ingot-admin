@@ -5,25 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="角色名称">
-            <el-input
-              v-model="filter.name"
-              class="w-200px"
-              clearable
-              placeholder="请输入角色名称"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="filter.name && (filter.name = undefined)">重置</in-button>
-            <in-button type="primary" @in-click="refreshData" :loading="roleQuery.isFetching.value">
-              搜索
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="roleQuery.isFetching.value"
         :data="roleTree"
@@ -34,6 +15,15 @@
       >
         <template #summary>共 {{ roleTree.length }} 个</template>
         <template #tools-start>
+          <el-input
+            v-model="filter.name"
+            class="w-200px!"
+            clearable
+            placeholder="搜索角色名"
+            :prefix-icon="Search"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="ROLE_TABLE_ID"
@@ -75,6 +65,7 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { RoleTreeNodeVO, PlatformRole } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import {
   PlatformRoleTreeQueryOptions,
   platformRoleQueryKeys,

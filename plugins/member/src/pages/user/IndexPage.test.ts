@@ -20,6 +20,9 @@ describe("member user IndexPage", () => {
     expect(source).toContain('density="compact"');
     expect(source).toContain("in-avatar");
     expect(source).toContain("in-account-status-tag");
+    expect(source).toContain('placeholder="搜索姓名"');
+    expect(source).not.toContain("in-filter-item");
+    expect(source).not.toContain("in-with-label");
     expect(source).not.toContain("@refresh");
     expect(source).not.toContain("#toolbar");
     expect(source).not.toContain("account-status-edit-button");

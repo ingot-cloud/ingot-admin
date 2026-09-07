@@ -13,6 +13,9 @@ describe("platform config permission IndexPage", () => {
     expect(source).toContain('mode="contained"');
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
+    expect(source).toContain("in-picker");
+    expect(source).toContain('label="组织类型"');
+    expect(source).not.toContain("in-filter-item");
     expect(source).toContain("in-table-column-setting");
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");

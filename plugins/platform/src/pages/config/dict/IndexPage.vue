@@ -7,14 +7,12 @@
     <in-split-layout left-collapsible :persistence-key="DICT_SPLIT_KEY">
       <template #top>
         <in-filter-item>
-          <in-with-label title="作用域">
-            <in-select
-              class="w-160px"
-              v-model="scopeFilter.scopeType"
-              :options="dictScopeEnums.getOptions()"
-              @on-changed="handleScopeChange"
-            />
-          </in-with-label>
+          <in-picker
+            v-model="scopeFilter.scopeType"
+            label="作用域"
+            :options="dictScopeEnums.getOptions()"
+            @change="handleScopeChange"
+          />
 
           <in-with-label v-if="isTenantScope" title="租户">
             <div class="w-220px">
@@ -81,33 +79,21 @@
           </div>
         </template>
         <template #tools-start>
+          <el-input
+            v-model="paging.condition.keyword"
+            class="w-200px!"
+            clearable
+            placeholder="搜索名称"
+            :prefix-icon="Search"
+            @keyup.enter="handleSearch"
+            @clear="handleSearch"
+          />
+          <in-picker v-model="statusFilter" label="状态" :options="statusFilterOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="DICT_TABLE_ID"
             @change="privateOnColumnChange"
           />
-          <in-with-label title="名称">
-            <el-input
-              v-model="paging.condition.keyword"
-              class="w-180px"
-              clearable
-              placeholder="名称前缀匹配"
-              @keyup.enter="handleSearch"
-              @clear="handleSearch"
-            />
-          </in-with-label>
-          <in-with-label title="状态">
-            <in-select
-              v-model="paging.condition.status"
-              class="w-120px"
-              clearable
-              :options="statusEnumExt.getOptions()"
-              @on-changed="handleSearch"
-            />
-          </in-with-label>
-          <in-button type="primary" :loading="paging.fetching.value" @click="handleSearch">
-            搜索
-          </in-button>
         </template>
         <template #tools-end>
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
@@ -162,6 +148,7 @@ import {
   Message,
   silentQueryRequest,
   useServerPaging,
+  withAllPickerOption,
   type InTableAction,
 } from "@ingot/admin-core";
 import type { PlatformDict, DictTreeNodeVO, DictQueryDTO } from "@/models";
@@ -176,6 +163,7 @@ import { ChangeDictStatusAPI, RemoveDictAPI } from "@/api/platform/config/dict.t
 import { DictPageQueryOptions, dictQueryKeys } from "@/api/platform/config/dict.query";
 import { loadAppOptions } from "@/api/platform/config/app.query";
 import { TenantSelect } from "@ingot/admin-common";
+import { Search } from "@element-plus/icons-vue";
 import LeftContent from "./components/LeftContent.vue";
 import TypeEditDrawer, { type TypeEditDrawerAPI } from "./TypeEditDrawer.vue";
 import ItemEditDrawer, { type ItemEditDrawerAPI } from "./ItemEditDrawer.vue";
@@ -279,6 +267,15 @@ const handleResetScope = (): void => {
 const handleSearch = (): void => {
   refreshTable();
 };
+
+const statusFilterOptions = computed(() => withAllPickerOption(statusEnumExt.getOptions()));
+const statusFilter = computed({
+  get: (): string => paging.condition.status ?? "",
+  set: (value: string | number | boolean | null) => {
+    paging.condition.status = typeof value === "string" && value !== "" ? value : undefined;
+    handleSearch();
+  },
+});
 
 // 新建 / 编辑：字典类型 与 字典项
 const handleCreateType = (): void => {

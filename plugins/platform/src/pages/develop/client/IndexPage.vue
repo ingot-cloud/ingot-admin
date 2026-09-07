@@ -5,23 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="客户端ID">
-            <el-input
-              v-model="condition.clientId"
-              class="w-200px"
-              clearable
-              placeholder="请输入客户端ID"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="resetFilter">重置</in-button>
-            <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="loading"
         :data="pageInfo.records"
@@ -34,6 +17,15 @@
       >
         <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
         <template #tools-start>
+          <el-input
+            v-model="condition.clientId"
+            class="w-200px!"
+            clearable
+            placeholder="搜索客户端 ID"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="CLIENT_TABLE_ID"
@@ -70,6 +62,7 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction, useServerPaging } from "@ingot/admin-core";
 import type { OAuth2RegisteredClient } from "@/models";
+import { Search } from "@element-plus/icons-vue";
 import { useTokenAuthMethodEnum } from "@/models/enums";
 import { ClientPageQueryOptions, clientQueryKeys } from "@/api/platform/dev/client.query";
 import { useQueryClient } from "@tanstack/vue-query";
@@ -83,7 +76,7 @@ import {
 
 const queryClient = useQueryClient();
 const tokenAuthMethodEnum = useTokenAuthMethodEnum();
-const { condition, pageInfo, fetching, fetchData, resetSubmitted } = useServerPaging<
+const { condition, pageInfo, fetching, fetchData } = useServerPaging<
   OAuth2RegisteredClient,
   OAuth2RegisteredClient
 >({
@@ -98,8 +91,8 @@ const visibleHeaders = computed(() =>
   applyColumnSelection(tableHeaders, selectedColumnProps.value),
 );
 
-const resetFilter = (): void => {
-  resetSubmitted({ clientId: undefined } as OAuth2RegisteredClient);
+const privateOnSearch = (): void => {
+  fetchData();
 };
 
 const invalidateList = (): void => {
