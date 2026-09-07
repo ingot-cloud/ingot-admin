@@ -1,10 +1,5 @@
 <template>
   <div class="dict-type-filter">
-    <div class="dict-type-heading">
-      <div class="dict-type-heading__title">字典类型</div>
-      <in-refresh-icon size="18" @refresh="privateRefresh" />
-    </div>
-
     <el-input
       class="dict-search"
       v-model="searchValue"
@@ -109,29 +104,17 @@ watch(
 defineExpose({
   refresh: () => dictTreeQuery.refetch(),
 });
-
-const privateRefresh = (): void => {
-  void dictTreeQuery.refetch();
-};
 </script>
 <style scoped lang="postcss">
 .dict-type-filter {
   @apply flex flex-col gap-10px w-full;
-
-  & .dict-type-heading {
-    @apply flex flex-row items-center gap-2;
-    padding-bottom: var(--in-common-padding);
-    border-bottom: var(--in-border-style);
-  }
-
-  & .dict-type-heading__title {
-    flex: 1;
-    font-weight: bold;
-    font-size: 16px;
-  }
+  flex: 1;
+  min-height: 0;
 
   & .dict-type-tree {
-    @apply m-t-[var(--in-common-margin)];
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
   }
 
   & .dict-type-item {

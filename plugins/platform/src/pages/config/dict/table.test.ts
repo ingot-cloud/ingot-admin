@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   createDictItemRowActions,
-  createDictItemToolbarActions,
+  createDictToolbarActions,
   DICT_SPLIT_KEY,
   DICT_TABLE_ID,
   tableHeaders,
@@ -28,11 +28,22 @@ describe("platform config dict table contract", () => {
     expect(tableHeaders.some((item) => item.prop === "actions")).toBe(true);
   });
 
-  it("工具栏新建字典项始终直出，未选类型时禁用", () => {
-    const enabled = createDictItemToolbarActions(() => undefined);
+  it("工具栏新建类型描边、新建项实心，均直出", () => {
+    const enabled = createDictToolbarActions({
+      onCreateType: () => undefined,
+      onCreateItem: () => undefined,
+    });
     expect(enabled).toEqual([
       expect.objectContaining({
-        key: "create",
+        key: "create-type",
+        label: "新建字典类型",
+        kind: "primary",
+        icon: "ep:plus",
+        overflow: "never",
+        disabled: false,
+      }),
+      expect.objectContaining({
+        key: "create-item",
         label: "新建字典项",
         kind: "quick",
         icon: "ep:plus",
@@ -41,9 +52,18 @@ describe("platform config dict table contract", () => {
       }),
     ]);
 
-    const disabled = createDictItemToolbarActions(() => undefined, { disabled: true });
+    const disabled = createDictToolbarActions(
+      { onCreateType: () => undefined, onCreateItem: () => undefined },
+      {
+        typeDisabled: true,
+        typeDisabledReason: "请先选择租户",
+        itemDisabled: true,
+      },
+    );
     expect(disabled[0]?.disabled).toBe(true);
-    expect(disabled[0]?.disabledReason).toBe("请先选择字典类型");
+    expect(disabled[0]?.disabledReason).toBe("请先选择租户");
+    expect(disabled[1]?.disabled).toBe(true);
+    expect(disabled[1]?.disabledReason).toBe("请先选择字典类型");
   });
 
   it("行内展示编辑、启停和删除，200 行映射保持稳定", () => {

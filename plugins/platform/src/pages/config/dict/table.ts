@@ -38,11 +38,12 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "排序",
     prop: "sort",
     width: "80",
+    hide: true
   },
   {
     label: "标记",
     prop: "systemFlag",
-    width: "80",
+    width: "120",
   },
   {
     label: "状态",
@@ -70,22 +71,41 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
 ];
 
-export function createDictItemToolbarActions(
-  onCreate: () => void,
-  options?: { disabled?: boolean },
+export function createDictToolbarActions(
+  handlers: {
+    onCreateType: () => void;
+    onCreateItem: () => void;
+  },
+  options?: {
+    typeDisabled?: boolean;
+    typeDisabledReason?: string;
+    itemDisabled?: boolean;
+  },
 ): Array<InTableAction<PlatformDict>> {
-  const disabled = Boolean(options?.disabled);
+  const typeDisabled = Boolean(options?.typeDisabled);
+  const itemDisabled = Boolean(options?.itemDisabled);
   return [
     {
-      key: "create",
+      key: "create-type",
+      label: "新建字典类型",
+      kind: "primary",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 40,
+      disabled: typeDisabled,
+      disabledReason: typeDisabled ? options?.typeDisabledReason : undefined,
+      onSelect: handlers.onCreateType,
+    },
+    {
+      key: "create-item",
       label: "新建字典项",
       kind: "quick",
       icon: "ep:plus",
       overflow: "never",
       priority: 50,
-      disabled,
-      disabledReason: disabled ? "请先选择字典类型" : undefined,
-      onSelect: () => onCreate(),
+      disabled: itemDisabled,
+      disabledReason: itemDisabled ? "请先选择字典类型" : undefined,
+      onSelect: handlers.onCreateItem,
     },
   ];
 }

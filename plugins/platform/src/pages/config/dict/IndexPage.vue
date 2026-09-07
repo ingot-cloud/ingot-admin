@@ -5,53 +5,38 @@
     </template>
 
     <in-split-layout left-collapsible :persistence-key="DICT_SPLIT_KEY">
-      <template #top>
-        <in-filter-item>
+      <template #left>
+        <div class="dict-left">
           <in-picker
             v-model="scopeFilter.scopeType"
             label="作用域"
             :options="dictScopeEnums.getOptions()"
             @change="handleScopeChange"
           />
-
-          <in-with-label v-if="isTenantScope" title="租户">
-            <div class="w-220px">
-              <tenant-select v-model="scopeFilter.tenantId" @change="refreshTree" />
-            </div>
-          </in-with-label>
-
-          <in-with-label v-if="isAppScope" title="应用">
-            <div class="w-220px">
-              <in-page-select
-                v-model="scopeFilter.appId"
-                value-field="id"
-                label-field="name"
-                placeholder="请选择应用"
-                :load-data="loadAppOptions"
-                @change="refreshTree"
-              />
-            </div>
-          </in-with-label>
-
-          <template #rightActions>
-            <in-button @click="handleResetScope"> 重置 </in-button>
-            <in-button type="primary" :disabled="!canCreateType" @click="handleCreateType">
-              <template #icon>
-                <i-ep:plus />
-              </template>
-              新建字典类型
-            </in-button>
-          </template>
-        </in-filter-item>
-      </template>
-
-      <template #left>
-        <LeftContent
-          ref="leftRef"
-          :query="treeQuery"
-          @node-click="handleNodeClick"
-          @node-edit-click="handleEditCurrentType"
-        />
+          <tenant-select
+            v-if="isTenantScope"
+            v-model="scopeFilter.tenantId"
+            class="w-full"
+            @change="refreshTree"
+          />
+          <in-page-select
+            v-if="isAppScope"
+            v-model="scopeFilter.appId"
+            class="w-full"
+            value-field="id"
+            label-field="name"
+            placeholder="请选择应用"
+            :load-data="loadAppOptions"
+            @change="refreshTree"
+          />
+          <LeftContent
+            ref="leftRef"
+            class="dict-left__tree"
+            :query="treeQuery"
+            @node-click="handleNodeClick"
+            @node-edit-click="handleEditCurrentType"
+          />
+        </div>
       </template>
 
       <in-table
@@ -146,7 +131,9 @@
 import {
   applyColumnSelection,
   Message,
+  resolveStringPickerFilter,
   silentQueryRequest,
+  toStringPickerValue,
   useServerPaging,
   withAllPickerOption,
   type InTableAction,
@@ -169,7 +156,7 @@ import TypeEditDrawer, { type TypeEditDrawerAPI } from "./TypeEditDrawer.vue";
 import ItemEditDrawer, { type ItemEditDrawerAPI } from "./ItemEditDrawer.vue";
 import {
   createDictItemRowActions,
-  createDictItemToolbarActions,
+  createDictToolbarActions,
   DICT_SPLIT_KEY,
   DICT_TABLE_ID,
   tableHeaders,
@@ -221,6 +208,16 @@ const canCreateType = computed(() => {
   return true;
 });
 
+const createTypeDisabledReason = computed(() => {
+  if (isTenantScope.value && !scopeFilter.tenantId) {
+    return "请先选择租户";
+  }
+  if (isAppScope.value && !scopeFilter.appId) {
+    return "请先选择应用";
+  }
+  return undefined;
+});
+
 const paging = useServerPaging<PlatformDict, DictQueryDTO>({
   queryOptions: DictPageQueryOptions,
   queryWhen: (submitted) => Boolean(submitted.code),
@@ -257,22 +254,17 @@ const handleScopeChange = (): void => {
   refreshTree();
 };
 
-const handleResetScope = (): void => {
-  scopeFilter.scopeType = DictScope.Platform;
-  scopeFilter.tenantId = undefined;
-  scopeFilter.appId = undefined;
-  refreshTree();
-};
-
 const handleSearch = (): void => {
   refreshTable();
 };
 
 const statusFilterOptions = computed(() => withAllPickerOption(statusEnumExt.getOptions()));
 const statusFilter = computed({
-  get: (): string => paging.condition.status ?? "",
+  get: (): string => toStringPickerValue(paging.condition.status),
   set: (value: string | number | boolean | null) => {
-    paging.condition.status = typeof value === "string" && value !== "" ? value : undefined;
+    const next = resolveStringPickerFilter(value);
+    paging.condition.status =
+      next === CommonStatus.Enable || next === CommonStatus.Lock ? next : undefined;
     handleSearch();
   },
 });
@@ -348,7 +340,14 @@ const handleRemove = (record: PlatformDict): void => {
 };
 
 const toolbarActions = computed(() =>
-  createDictItemToolbarActions(handleCreateItem, { disabled: !currentType.value }),
+  createDictToolbarActions(
+    { onCreateType: handleCreateType, onCreateItem: handleCreateItem },
+    {
+      typeDisabled: !canCreateType.value,
+      typeDisabledReason: createTypeDisabledReason.value,
+      itemDisabled: !currentType.value,
+    },
+  ),
 );
 
 const rowActionsOf = (item: PlatformDict): Array<InTableAction<PlatformDict>> =>
@@ -364,6 +363,28 @@ const privateOnColumnChange = (value: string[]): void => {
 </script>
 
 <style scoped lang="postcss">
+.dict-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--in-space-3);
+  min-height: 0;
+  flex: 1;
+}
+
+.dict-left :deep(.in-picker) {
+  display: flex;
+  width: 100%;
+}
+
+.dict-left :deep(.in-picker__trigger) {
+  width: 100%;
+}
+
+.dict-left__tree {
+  flex: 1;
+  min-height: 0;
+}
+
 .code {
   color: var(--in-text-color-secondary);
   font-weight: normal;

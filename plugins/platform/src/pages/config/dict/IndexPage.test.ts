@@ -29,6 +29,11 @@ describe("platform config dict IndexPage", () => {
     expect(source).toContain('label="作用域"');
     expect(source).toContain('label="状态"');
     expect(source).toContain('placeholder="搜索名称"');
+    expect(source).toContain("createDictToolbarActions");
+    expect(source).toContain("#left");
+    expect(source).not.toContain("#top");
+    expect(source).not.toContain("in-filter-item");
+    expect(source).not.toContain("in-with-label");
     expect(source).not.toContain("#summary");
     expect(source).not.toContain("@refresh");
     expect(source).not.toContain("#toolbar");
@@ -40,6 +45,8 @@ describe("platform config dict IndexPage", () => {
     expect(leftSource).toContain('"node-edit-click"');
     expect(source).toContain("@node-click");
     expect(source).toContain("@node-edit-click");
+    expect(leftSource).not.toContain("dict-type-heading");
+    expect(leftSource).not.toContain("in-refresh-icon");
     expect(leftSource).not.toContain(".rect");
     expect(leftSource).not.toContain("#192f48");
   });
