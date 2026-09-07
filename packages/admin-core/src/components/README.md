@@ -9,7 +9,7 @@
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InSplitLayout` | 可选 header + 左右分栏工作面 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏默认与容器同色，可用 `left-background` 单独覆盖；左栏 260→0px，分隔线中线 16×32 右侧圆角折叠标签（贴线向右伸出）；左栏默认 16px 内边距且子项不超出；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
 | `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置；`#title` 内 `.in-table__count` 使用 summary 次要正文样式，与标题间隔 12px | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
-| `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多在固定操作左侧，工具栏为竖向三点、行内为横向三点，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
+| `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；可选 `icon`；`kind: primary` 描边主色、`danger` 描边危险色、`quick` 工具栏实心主操作；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多在固定操作左侧，工具栏为竖向三点、行内为横向三点，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
 | `InMenu` | 全局左侧导航 | 菜单滚动视口与底部「收起导航」控制为兄弟区域；滚动条隐藏；控制区上方 1px 分隔线并与按钮间隔 8px；图标固定 20px；带图标/无图标分色，选中叶子 `#2b2f36`；展开/收起图标为 `ic_expand` / `ic_close`；236/52px；收缩态无二级浮层 | 桌面折叠入口只在侧栏底部；`InMenuToggle` 仅 overlay |
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位；默认 framed Logo 随 dark 切换 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav`；`branding.logo` 可覆盖默认 Logo |
 | `InPicker` | 紧凑单选（筛选/工具栏） | 可选 `label` 前缀；32px / 6px 圆角；默认边框 `#d0d3d6`，悬停/展开 `#3370ff`；展开后面板勾选当前项；相邻实例默认 12px 间距；`v-model` + `options` + `change` | 新组件；不替代表单 `InSelect` |
@@ -32,7 +32,7 @@ type InPageScrollMode = "page" | "contained";
 type InPageSurface = "plain" | "workspace";
 type InTableFeedback = "none" | "empty" | "no-result" | "error" | "unauthorized";
 type InDialogTone = "default" | "danger";
-type InTableActionKind = "detail" | "quick" | "default" | "danger";
+type InTableActionKind = "detail" | "quick" | "default" | "danger" | "primary";
 type InTableActionOverflow = "auto" | "never" | "always";
 ```
 
@@ -63,6 +63,6 @@ InDrawer / InDialog
 - 容器默认直角无边框。`InContainer` 的 `plain` 背景透明；需要白底或描边时传 `background` / `borderColor`，或用 `variant="bordered"`。列表工作面继续用 `InSplitLayout`，不要为了白底再套一层默认圆角 `InContainer`。
 - 未传 `table-id` 时列设置只在当前会话生效，不写 localStorage。
 - `InTable` 不再自动渲染刷新和字段设置。旧 `#toolbar` 仍可用，请尽快改为 `#tools-start` / `#tools-end`。`refresh` 事件只为存量 `@refresh` 保类型，组件本身不会发出。
-- `InTableActions` 的 `overflow: never` 始终直出；相同 `overflowGroup` 的 `auto` 操作整组进入 `…`。页面不要再按 `selectedCount` 隐藏批量组，未选中时应禁用并给出 `disabledReason`。
+- `InTableActions` 的 `overflow: never` 始终直出；相同 `overflowGroup` 的 `auto` 操作整组进入 `…`。页面不要再按 `selectedCount` 隐藏批量组，未选中时应禁用并给出 `disabledReason`。工具栏主操作可用 `icon`；描边主色用 `kind: "primary"`，实心主色用 `kind: "quick"`，描边危险色用 `kind: "danger"`。
 - 桌面侧栏折叠入口只在底部「收起导航 / 展开导航」；顶栏 `InMenuToggle` 仅窄屏 overlay 使用。
 - 顶栏企业管理、产品设置仅在提供对应插槽时渲染，不显示死入口。组织切换在用户菜单中。

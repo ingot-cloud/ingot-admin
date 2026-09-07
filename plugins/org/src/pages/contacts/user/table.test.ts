@@ -44,11 +44,15 @@ describe("org contacts user table contract", () => {
     expect(tableHeaders.find((item) => item.prop === "avatar")?.required).toBe(true);
   });
 
-  it("工具栏只直出现有添加成员操作", () => {
+  it("工具栏包含描边批量导入与带图标的添加成员", () => {
     const actions = createOrgUserToolbarActions(() => undefined);
-    expect(actions.map((item) => item.label)).toEqual(["添加成员"]);
-    expect(actions[0]?.overflow).toBe("never");
-    expect(actions.some((item) => item.overflowGroup === "batch")).toBe(false);
+    expect(actions.map((item) => `${item.kind}:${item.key}`)).toEqual([
+      "primary:import",
+      "quick:create",
+    ]);
+    expect(actions[0]?.overflowGroup).toBe("batch");
+    expect(actions[1]?.overflow).toBe("never");
+    expect(actions[1]?.icon).toBe("ep:plus");
   });
 
   it("行内只展示详情，暂停账号进入更多且 200 行映射稳定", () => {

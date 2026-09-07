@@ -12,7 +12,7 @@ export type InPageScrollMode = "page" | "contained";
 
 export type InPageSurface = "plain" | "workspace";
 
-export type InTableActionKind = "detail" | "quick" | "default" | "danger";
+export type InTableActionKind = "detail" | "quick" | "default" | "danger" | "primary";
 
 export type InTableActionOverflow = "auto" | "never" | "always";
 

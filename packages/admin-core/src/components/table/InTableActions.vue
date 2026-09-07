@@ -16,7 +16,11 @@
         class="in-table-actions__inline is-toolbar"
         :data-action-key="action.key"
       >
-        <in-icon v-if="action.icon" :name="action.icon" class="in-table-actions__icon" />
+        <in-icon
+          v-if="action.icon"
+          :name="action.icon"
+          class="in-table-actions__icon"
+        />
         {{ action.label }}
       </span>
     </div>
@@ -32,18 +36,17 @@
         <button
           type="button"
           class="in-table-actions__inline"
-          :class="{
-            'is-toolbar': variant === 'toolbar',
-            'is-primary': isPrimary(item.action),
-            'is-danger': item.action.kind === 'danger',
-            'is-disabled': item.action.disabled,
-          }"
+          :class="privateInlineClass(item.action)"
           :disabled="item.action.disabled"
           :aria-label="item.action.label"
           :title="item.action.disabled ? item.action.disabledReason : undefined"
           @click="privateOnSelect(item.action)"
         >
-          <in-icon v-if="item.action.icon" :name="item.action.icon" class="in-table-actions__icon" />
+          <in-icon
+            v-if="item.action.icon"
+            :name="item.action.icon"
+            class="in-table-actions__icon"
+          />
           {{ item.action.label }}
         </button>
       </el-tooltip>
@@ -104,6 +107,7 @@
               type="button"
               class="in-table-actions__item"
               :class="{
+                'is-primary': action.kind === 'primary',
                 'is-danger': action.kind === 'danger',
                 'is-disabled': action.disabled,
                 'is-active': index === activeIndex,
@@ -116,7 +120,11 @@
               @click="privateOnSelect(action)"
               @mouseenter="activeIndex = index"
             >
-              <in-icon v-if="action.icon" :name="action.icon" class="in-table-actions__icon" />
+              <in-icon
+                v-if="action.icon"
+                :name="action.icon"
+                class="in-table-actions__icon"
+              />
               {{ action.label }}
             </button>
           </div>
@@ -218,14 +226,25 @@ const renderItems = computed((): Array<RenderItem> => {
   return ranked.value.showMore ? [...fluid, more, ...pinned] : [...fluid, ...pinned];
 });
 
-const isPrimary = (action: InTableAction<Row>) => {
+const isFilled = (action: InTableAction<Row>) => {
   if (props.variant !== "toolbar") {
+    return false;
+  }
+  if (action.kind === "danger" || action.kind === "primary") {
     return false;
   }
   const never = ranked.value.inline.filter((item) => resolveActionOverflow(item) === "never");
   const last = never[never.length - 1];
   return last?.key === action.key && (action.kind === "quick" || never.length === 1);
 };
+
+const privateInlineClass = (action: InTableAction<Row>) => ({
+  "is-toolbar": props.variant === "toolbar",
+  "is-filled": isFilled(action),
+  "is-primary": action.kind === "primary",
+  "is-danger": action.kind === "danger",
+  "is-disabled": action.disabled,
+});
 
 const readWidths = (): Record<string, number> => {
   const layer = measureRef.value;
@@ -266,7 +285,13 @@ const applyToolbarLayout = () => {
 let resizeObserver: ResizeObserver | undefined;
 
 watch(
-  () => [props.variant, visibleActions.value.map((item) => `${item.key}:${item.label}`).join("|")].join("|"),
+  () =>
+    [
+      props.variant,
+      visibleActions.value
+        .map((item) => `${item.key}:${item.label}:${item.icon ?? ""}:${item.kind}`)
+        .join("|"),
+    ].join("|"),
   async () => {
     if (props.variant !== "toolbar") {
       measuring.value = false;
@@ -500,6 +525,8 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
 }
 
 .in-table-actions__inline {
+  display: inline-flex;
+  align-items: center;
   height: var(--in-control-height-small);
   padding: 0 var(--in-space-2);
   border: 0;
@@ -509,6 +536,10 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   cursor: pointer;
   font-size: var(--in-font-size-body);
   line-height: var(--in-control-height-small);
+  transition:
+    background-color var(--in-motion-duration-split) var(--in-motion-ease),
+    border-color var(--in-motion-duration-split) var(--in-motion-ease),
+    color var(--in-motion-duration-split) var(--in-motion-ease);
 }
 
 .in-table-actions__inline.is-toolbar {
@@ -523,19 +554,33 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   white-space: nowrap;
 }
 
-.in-table-actions__inline.is-toolbar.is-primary {
+.in-table-actions__inline.is-toolbar.is-filled {
   border-color: var(--in-color-primary);
   background: var(--in-color-primary);
   color: var(--in-text-color-inverse);
 }
 
-.in-table-actions__inline.is-danger {
+.in-table-actions__inline.is-primary,
+.in-table-actions__item.is-primary {
+  color: var(--in-color-primary);
+}
+
+.in-table-actions__inline.is-danger,
+.in-table-actions__item.is-danger {
   color: var(--in-color-danger);
+}
+
+.in-table-actions__inline.is-toolbar.is-primary,
+.in-table-actions__inline.is-toolbar.is-danger {
+  background: var(--in-bg-color-surface);
+}
+
+.in-table-actions__inline.is-toolbar.is-primary {
+  border-color: var(--in-color-primary);
 }
 
 .in-table-actions__inline.is-toolbar.is-danger {
   border-color: var(--in-color-danger);
-  background: var(--in-bg-color-surface);
 }
 
 .in-table-actions__inline.is-disabled,
@@ -544,10 +589,50 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   cursor: not-allowed;
 }
 
+.in-table-actions__inline.is-toolbar.is-disabled {
+  border-color: var(--in-border-color);
+  background: var(--in-bg-color-surface);
+}
+
+.in-table-actions__inline:hover:not(:disabled) {
+  background: var(--in-bg-color-hover);
+}
+
+.in-table-actions__inline:focus-visible {
+  outline: 2px solid var(--in-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.in-table-actions__inline.is-toolbar:hover:not(:disabled) {
+  background: var(--in-bg-color-control-hover);
+}
+
+.in-table-actions__inline.is-toolbar.is-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--in-color-primary) 8%, var(--in-bg-color-surface));
+}
+
+.in-table-actions__inline.is-toolbar.is-danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--in-color-danger) 8%, var(--in-bg-color-surface));
+}
+
+.in-table-actions__inline.is-toolbar.is-filled:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--in-color-primary) 82%, black);
+  background: color-mix(in srgb, var(--in-color-primary) 82%, black);
+  color: var(--in-text-color-inverse);
+}
+
 .in-table-actions__icon {
+  display: inline-flex;
+  flex-shrink: 0;
   width: 14px;
   height: 14px;
   margin-right: 4px;
+  color: inherit;
+}
+
+.in-table-actions__icon :deep(svg) {
+  width: 14px;
+  height: 14px;
 }
 
 .in-table-actions__more {
@@ -633,9 +718,5 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
 .in-table-actions__item.is-active,
 .in-table-actions__item:hover:not(.is-disabled) {
   background: var(--in-bg-color-hover);
-}
-
-.in-table-actions__item.is-danger {
-  color: var(--in-color-danger);
 }
 </style>

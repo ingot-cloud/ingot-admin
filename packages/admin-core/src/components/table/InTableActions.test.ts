@@ -276,4 +276,67 @@ describe("InTableActions", () => {
     wide.unmount();
     Element.prototype.getBoundingClientRect = original;
   });
+
+  it("工具栏可配置图标，primary 为描边主色，quick 为实心主操作", async () => {
+    const toolbarActions: Array<InTableAction<typeof row>> = [
+      {
+        key: "invite",
+        label: "邀请成员",
+        kind: "primary",
+        icon: "ep:plus",
+        overflow: "never",
+        priority: 40,
+        onSelect: noop,
+      },
+      {
+        key: "add",
+        label: "添加成员",
+        kind: "quick",
+        icon: "ep:plus",
+        overflow: "never",
+        priority: 50,
+        onSelect: noop,
+      },
+    ];
+    const wrapper = mount(InTableActions, {
+      props: { actions: toolbarActions, row, variant: "toolbar" },
+      global: { stubs },
+    });
+    await wrapper.vm.$nextTick();
+
+    const invite = wrapper.get("[aria-label='邀请成员']");
+    expect(invite.classes()).toContain("is-primary");
+    expect(invite.classes()).not.toContain("is-filled");
+    expect(invite.find("in-icon-stub").attributes("name")).toBe("ep:plus");
+
+    const add = wrapper.get("[aria-label='添加成员']");
+    expect(add.classes()).toContain("is-filled");
+    expect(add.classes()).not.toContain("is-primary");
+    expect(add.find("in-icon-stub").attributes("name")).toBe("ep:plus");
+    wrapper.unmount();
+  });
+
+  it("唯一固定操作为 primary 时保持描边，不升格为实心", async () => {
+    const wrapper = mount(InTableActions, {
+      props: {
+        actions: [
+          {
+            key: "invite",
+            label: "邀请成员",
+            kind: "primary",
+            overflow: "never",
+            onSelect: noop,
+          },
+        ],
+        row,
+        variant: "toolbar",
+      },
+      global: { stubs },
+    });
+    await wrapper.vm.$nextTick();
+    const invite = wrapper.get("[aria-label='邀请成员']");
+    expect(invite.classes()).toContain("is-primary");
+    expect(invite.classes()).not.toContain("is-filled");
+    wrapper.unmount();
+  });
 });

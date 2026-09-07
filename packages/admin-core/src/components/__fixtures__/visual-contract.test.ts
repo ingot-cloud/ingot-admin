@@ -185,6 +185,15 @@ describe("admin UI visual fixtures", () => {
     expect(logoResolver).toContain("in-dark-framed.svg");
   });
 
+  it("InTableActions 直出按钮启用态有 hover，禁用态不响应", () => {
+    const actions = readFileSync(resolve(root, "../table/InTableActions.vue"), "utf8");
+    expect(actions).toContain(".in-table-actions__inline:hover:not(:disabled)");
+    expect(actions).toContain(".in-table-actions__inline.is-toolbar:hover:not(:disabled)");
+    expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-primary:hover:not(:disabled)");
+    expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-danger:hover:not(:disabled)");
+    expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-filled:hover:not(:disabled)");
+  });
+
   it("InPicker 为紧凑单选：可选 label、32px 触发器、相邻 12px", () => {
     const picker = readFileSync(resolve(root, "../select/InPicker.vue"), "utf8");
     expect(picker).toContain("name: \"InPicker\"");

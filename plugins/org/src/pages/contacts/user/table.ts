@@ -58,9 +58,19 @@ export function createOrgUserToolbarActions(
 ): Array<InTableAction<UserPageItemVO>> {
   return [
     {
+      key: "import",
+      label: "批量导入/导出",
+      kind: "primary",
+      overflow: "auto",
+      overflowGroup: "batch",
+      priority: 40,
+      onSelect: () => undefined,
+    },
+    {
       key: "create",
       label: "添加成员",
       kind: "quick",
+      icon: "ep:plus",
       overflow: "never",
       priority: 50,
       onSelect: () => onCreate(),
