@@ -144,6 +144,7 @@ declare module 'vue' {
     InTable: typeof import('./../../packages/admin-core/src/components/table/InTable.vue')['default']
     InTableActions: typeof import('./../../packages/admin-core/src/components/table/InTableActions.vue')['default']
     InTableColumnSetting: typeof import('./../../packages/admin-core/src/components/table/InTableColumnSetting.vue')['default']
+    InTableSkeleton: typeof import('./../../packages/admin-core/src/components/table/InTableSkeleton.vue')['default']
     InTabs: typeof import('./../../packages/admin-core/src/components/InTabs.vue')['default']
     InTag: typeof import('./../../packages/admin-core/src/components/tag/InTag.vue')['default']
     InTagEnum: typeof import('./../../packages/admin-core/src/components/tag/InTagEnum.vue')['default']

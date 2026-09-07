@@ -1,109 +1,110 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header />
+      <in-page-header description="生成并下载自定义二维码。" />
     </template>
 
     <in-split-layout>
-    <template #left>
-      <div class="qrcode-config">
-        <div class="in-custom-title">
-          <div class="rect" />
-          <div class="title">二维码配置</div>
+      <template #left>
+        <div class="qrcode-config">
+          <div class="qrcode-config__title">二维码配置</div>
+          <el-form ref="editFormRef" class="form" label-width="100px" :model="editForm">
+            <el-form-item label="二维码样式">
+              <in-select w-full v-model="editForm.type" :options="qrcodeTypeEnum.getOptions()" />
+            </el-form-item>
+            <el-form-item label="容错率">
+              <in-select
+                w-full
+                v-model="editForm.correctLevel"
+                :options="correctLevelEnum.getOptions()"
+              />
+            </el-form-item>
+            <el-form-item label="码点样式" v-if="editForm.type === QrcodeType.Line">
+              <in-select
+                w-full
+                v-model="editForm.lineOptionsType"
+                :options="lineOptionsTypeEnum.getOptions()"
+              />
+            </el-form-item>
+            <el-form-item label="码点样式" v-if="editForm.type === QrcodeType.Round">
+              <in-select
+                w-full
+                v-model="editForm.roundOptionsType"
+                :options="roundOptionsTypeEnum.getOptions()"
+              />
+            </el-form-item>
+            <el-form-item label="码眼样式">
+              <in-select
+                w-full
+                v-model="editForm.posType"
+                :options="optionsPosTypeEnum.getOptions()"
+              />
+            </el-form-item>
+            <el-form-item label="码点大小">
+              <el-input
+                type="number"
+                v-model="editForm.size"
+                placeholder="请输入码点大小"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="透明度">
+              <el-input
+                type="number"
+                v-model="editForm.opacity"
+                placeholder="请输入透明度"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="码点颜色">
+              <div flex flex-row gap-2 items-center w-full>
+                <in-copy-tag
+                  effect="dark"
+                  :color="editForm.otherColor"
+                  flex-1
+                  :text="editForm.otherColor"
+                />
+                <el-color-picker v-model="editForm.otherColor" />
+              </div>
+            </el-form-item>
+            <el-form-item label="码眼颜色">
+              <div flex flex-row gap-2 items-center w-full>
+                <in-copy-tag
+                  effect="dark"
+                  :color="editForm.posColor"
+                  flex-1
+                  :text="editForm.posColor"
+                />
+                <el-color-picker v-model="editForm.posColor" />
+              </div>
+            </el-form-item>
+            <el-form-item label="二维码大小">
+              <el-input
+                type="number"
+                v-model="qrcodeSize"
+                clearable
+                placeholder="请输入二维码大小"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="二维码内容">
+              <el-input
+                v-model="editForm.text"
+                :autosize="{ minRows: 3, maxRows: 6 }"
+                type="textarea"
+                placeholder="请输入二维码内容"
+                clearable
+              />
+            </el-form-item>
+          </el-form>
         </div>
-        <el-form ref="editFormRef" class="form" label-width="100px" :model="editForm">
-          <el-form-item label="二维码样式">
-            <in-select w-full v-model="editForm.type" :options="qrcodeTypeEnum.getOptions()" />
-          </el-form-item>
-          <el-form-item label="容错率">
-            <in-select
-              w-full
-              v-model="editForm.correctLevel"
-              :options="correctLevelEnum.getOptions()"
-            />
-          </el-form-item>
-          <el-form-item label="码点样式" v-if="editForm.type == QrcodeType.Line">
-            <in-select
-              w-full
-              v-model="editForm.lineOptionsType"
-              :options="lineOptionsTypeEnum.getOptions()"
-            />
-          </el-form-item>
-          <el-form-item label="码点样式" v-if="editForm.type == QrcodeType.Round">
-            <in-select
-              w-full
-              v-model="editForm.roundOptionsType"
-              :options="roundOptionsTypeEnum.getOptions()"
-            />
-          </el-form-item>
-          <el-form-item label="码眼样式">
-            <in-select
-              w-full
-              v-model="editForm.posType"
-              :options="optionsPosTypeEnum.getOptions()"
-            />
-          </el-form-item>
-          <el-form-item label="码点大小">
-            <el-input type="number" v-model="editForm.size" placeholder="请输入码点大小"></el-input>
-          </el-form-item>
-          <el-form-item label="透明度">
-            <el-input
-              type="number"
-              v-model="editForm.opacity"
-              placeholder="请输入透明度"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="码点颜色">
-            <div flex flex-row gap-2 items-center w-full>
-              <in-copy-tag
-                effect="dark"
-                :color="editForm.otherColor"
-                flex-1
-                :text="editForm.otherColor"
-              />
-              <el-color-picker v-model="editForm.otherColor" />
-            </div>
-          </el-form-item>
-          <el-form-item label="码眼颜色">
-            <div flex flex-row gap-2 items-center w-full>
-              <in-copy-tag
-                effect="dark"
-                :color="editForm.posColor"
-                flex-1
-                :text="editForm.posColor"
-              />
-              <el-color-picker v-model="editForm.posColor" />
-            </div>
-          </el-form-item>
-          <el-form-item label="二维码大小">
-            <el-input
-              type="number"
-              v-model="qrcodeSize"
-              clearable
-              placeholder="请输入二维码大小"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="二维码内容">
-            <el-input
-              v-model="editForm.text"
-              :autosize="{ minRows: 3, maxRows: 6 }"
-              type="textarea"
-              placeholder="请输入二维码内容"
-              clearable
-            />
-          </el-form-item>
-        </el-form>
-      </div>
-    </template>
+      </template>
 
-    <div h-full flex flex-col items-center justify-center>
-      <in-qrcode :options="editForm" ref="QrcodeRef" />
+      <div h-full flex flex-col items-center justify-center>
+        <in-qrcode :options="editForm" ref="QrcodeRef" />
 
-      <div flex flex-row>
-        <in-button type="primary" @click="handleDownload(true)"> 下载SVG </in-button>
-        <in-button type="primary" @click="handleDownload(false)"> 下载图片 </in-button>
+        <div flex flex-row>
+          <in-button type="primary" @click="handleDownload(true)"> 下载SVG </in-button>
+          <in-button type="primary" @click="handleDownload(false)"> 下载图片 </in-button>
+        </div>
       </div>
-    </div>
     </in-split-layout>
   </in-page-frame>
 </template>
@@ -167,25 +168,11 @@ const handleDownload = (isSvg: boolean) => {
 .qrcode-config {
   @apply w-300px flex flex-col gap-10px;
 
-  & .in-custom-title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    grid-gap: 10px;
+  & .qrcode-config__title {
+    font-weight: bold;
+    font-size: 18px;
     padding-bottom: var(--in-common-padding);
     border-bottom: var(--in-border-style);
-    & .rect {
-      width: 4px;
-      height: 14px;
-      background: var(--in-color-primary);
-      border-radius: 2px;
-    }
-    & .title {
-      font-weight: bold;
-      color: #192f48;
-      font-size: 18px;
-    }
   }
 }
 </style>

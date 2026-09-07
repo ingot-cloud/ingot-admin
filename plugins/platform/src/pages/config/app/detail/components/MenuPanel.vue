@@ -3,13 +3,21 @@
     <in-table
       :loading="loading"
       :data="menuData"
-      :headers="menuTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="MENU_TABLE_ID"
+      density="compact"
       row-key="id"
       default-expand-all
-      @refresh="privateFetchData"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">添加菜单</in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="menuTableHeaders"
+          :table-id="MENU_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #menuType="{ item }">
         <Icon :icon="getMenuTypeIcon(item.menuType)" />
@@ -39,20 +47,7 @@
         <in-common-status-tag :status="item.status" />
       </template>
       <template #actions="{ item }">
-        <div flex flex-row items-center justify-center gap-8px>
-          <in-button type="success" text link @click="privateOnAddChild(item.id)">
-            <template #icon>
-              <i-carbon:parent-child />
-            </template>
-            添加子菜单
-          </in-button>
-          <in-button type="primary" text link @click="privateOnEdit(item)">
-            <template #icon>
-              <i-ep:edit />
-            </template>
-            编辑
-          </in-button>
-        </div>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
   </div>
@@ -66,30 +61,36 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import { Icon } from "@iconify/vue";
 import type { MenuTreeNode } from "@/models";
-import {
-  getMenuTypeIcon,
-  useMenuTypeEnum,
-  useAccessModeEnum,
-  AccessModeEnum,
-} from "@/models/enums";
+import { getMenuTypeIcon, useAccessModeEnum, AccessModeEnum } from "@/models/enums";
 import { AppMenuTreeQueryOptions } from "@/api/platform/config/app.query";
 import { useQuery } from "@tanstack/vue-query";
-import { menuTableHeaders } from "./menuTable";
+import {
+  createMenuRowActions,
+  createMenuToolbarActions,
+  MENU_TABLE_ID,
+  menuTableHeaders,
+} from "./menuTable";
 import MenuEditDrawer from "./MenuEditDrawer.vue";
 
 const props = defineProps<{
   appId: string;
 }>();
 
-const menuTypeEnum = useMenuTypeEnum();
 const accessModeEnum = useAccessModeEnum();
 
 const menuQuery = useQuery(() => AppMenuTreeQueryOptions(() => props.appId));
 const menuData = computed(() => menuQuery.data.value ?? []);
 const loading = computed(() => menuQuery.isFetching.value);
 const menuEditDrawerRef = ref<InstanceType<typeof MenuEditDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: MenuTreeNode = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(menuTableHeaders, selectedColumnProps.value),
+);
 
 const privateFetchData = (): void => {
   void menuQuery.refetch();
@@ -99,12 +100,24 @@ const privateOnCreate = (): void => {
   menuEditDrawerRef.value?.show();
 };
 
-const privateOnAddChild = (pid: string): void => {
-  menuEditDrawerRef.value?.show(pid);
+const privateOnAddChild = (item: MenuTreeNode): void => {
+  menuEditDrawerRef.value?.show(item.id);
 };
 
 const privateOnEdit = (item: MenuTreeNode): void => {
   menuEditDrawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createMenuToolbarActions(privateOnCreate));
+
+const rowActionsOf = (item: MenuTreeNode): Array<InTableAction<MenuTreeNode>> =>
+  createMenuRowActions(item, {
+    onDetail: privateOnEdit,
+    onAddChild: privateOnAddChild,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

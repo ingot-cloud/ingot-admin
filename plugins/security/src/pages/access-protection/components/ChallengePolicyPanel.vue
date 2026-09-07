@@ -3,17 +3,20 @@
     <in-table
       :loading="policyQuery.isFetching.value"
       :data="tableData"
-      :headers="challengePolicyTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="CHALLENGE_POLICY_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="privateRefresh"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">
-          <template #icon>
-            <i-ep:plus />
-          </template>
-          新建挑战策略
-        </in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="challengePolicyTableHeaders"
+          :table-id="CHALLENGE_POLICY_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #code="{ item }">
         <in-copy-tag :text="item.code" />
@@ -33,12 +36,7 @@
         </el-tag>
       </template>
       <template #actions="{ item }">
-        <in-button type="primary" text link @click="privateOnEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <ChallengePolicyDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
@@ -46,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { GatewayChallengePolicy } from "@/models";
 import { useChallengeTriggerEnum, useChallengeTypeEnum } from "@/models/enums";
 import {
@@ -53,7 +52,12 @@ import {
   EndpointGroupListQueryOptions,
   challengePolicyQueryKeys,
 } from "@/api/security/policy.query";
-import { challengePolicyTableHeaders } from "../table/challengePolicyTable";
+import {
+  CHALLENGE_POLICY_TABLE_ID,
+  challengePolicyTableHeaders,
+  createChallengePolicyRowActions,
+  createChallengePolicyToolbarActions,
+} from "../table/challengePolicyTable";
 import ChallengePolicyDrawer from "./ChallengePolicyDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
@@ -63,6 +67,12 @@ const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
 const tableData = computed(() => policyQuery.data.value ?? []);
 const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof ChallengePolicyDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: GatewayChallengePolicy = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(challengePolicyTableHeaders, selectedColumnProps.value),
+);
 
 const challengeTriggerEnum = useChallengeTriggerEnum();
 const challengeTypeEnum = useChallengeTypeEnum();
@@ -89,6 +99,19 @@ const privateOnCreate = (): void => {
 
 const privateOnEdit = (item: GatewayChallengePolicy): void => {
   drawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createChallengePolicyToolbarActions(privateOnCreate));
+
+const rowActionsOf = (
+  item: GatewayChallengePolicy,
+): Array<InTableAction<GatewayChallengePolicy>> =>
+  createChallengePolicyRowActions(item, {
+    onDetail: privateOnEdit,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

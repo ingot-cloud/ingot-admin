@@ -1,4 +1,7 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { GatewayEndpointGroup } from "@/models";
+
+export const ENDPOINT_GROUP_TABLE_ID = "security-access-endpoint-group";
 
 export const endpointGroupTableHeaders: Array<TableHeaderRecord> = [
   {
@@ -33,3 +36,35 @@ export const endpointGroupTableHeaders: Array<TableHeaderRecord> = [
     fixed: "right",
   },
 ];
+
+export function createEndpointGroupToolbarActions(
+  onCreate: () => void,
+): Array<InTableAction<GatewayEndpointGroup>> {
+  return [
+    {
+      key: "create",
+      label: "新建分组",
+      kind: "quick",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 50,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createEndpointGroupRowActions(
+  _row: GatewayEndpointGroup,
+  handlers: {
+    onDetail: (row: GatewayEndpointGroup) => void;
+  },
+): Array<InTableAction<GatewayEndpointGroup>> {
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+  ];
+}

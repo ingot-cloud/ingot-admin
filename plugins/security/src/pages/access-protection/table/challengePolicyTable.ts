@@ -1,4 +1,7 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { GatewayChallengePolicy } from "@/models";
+
+export const CHALLENGE_POLICY_TABLE_ID = "security-access-challenge";
 
 export const challengePolicyTableHeaders: Array<TableHeaderRecord> = [
   {
@@ -53,3 +56,35 @@ export const challengePolicyTableHeaders: Array<TableHeaderRecord> = [
     fixed: "right",
   },
 ];
+
+export function createChallengePolicyToolbarActions(
+  onCreate: () => void,
+): Array<InTableAction<GatewayChallengePolicy>> {
+  return [
+    {
+      key: "create",
+      label: "新建挑战策略",
+      kind: "quick",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 50,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createChallengePolicyRowActions(
+  _row: GatewayChallengePolicy,
+  handlers: {
+    onDetail: (row: GatewayChallengePolicy) => void;
+  },
+): Array<InTableAction<GatewayChallengePolicy>> {
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+  ];
+}

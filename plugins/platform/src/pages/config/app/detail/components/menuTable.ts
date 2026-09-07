@@ -1,4 +1,7 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { MenuTreeNode } from "@/models";
+
+export const MENU_TABLE_ID = "platform-config-app-detail-menu";
 
 export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
@@ -10,6 +13,7 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
     label: "菜单名称",
     prop: "name",
     minWidth: "200",
+    required: true,
   },
   {
     label: "路由",
@@ -30,8 +34,44 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "280",
+    width: "160",
     prop: "actions",
     fixed: "right",
   },
 ];
+
+export function createMenuToolbarActions(onCreate: () => void): Array<InTableAction<MenuTreeNode>> {
+  return [
+    {
+      key: "create",
+      label: "添加菜单",
+      kind: "quick",
+      overflow: "never",
+      priority: 50,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createMenuRowActions(
+  row: MenuTreeNode,
+  handlers: {
+    onDetail: (row: MenuTreeNode) => void;
+    onAddChild: (row: MenuTreeNode) => void;
+  },
+): Array<InTableAction<MenuTreeNode>> {
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+    {
+      key: "add-child",
+      label: "添加子菜单",
+      kind: "quick",
+      onSelect: handlers.onAddChild,
+    },
+  ];
+}

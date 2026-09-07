@@ -73,11 +73,11 @@ const treeOrgRef = ref();
   & .dept {
     @apply flex flex-row items-center justify-between;
     padding: 5px 10px;
-    background: rgba(0, 127, 255, 0.12);
+    background: color-mix(in srgb, var(--in-color-primary) 12%, transparent);
     & .label {
       font-size: 12px;
       font-weight: bold;
-      color: black;
+      color: var(--in-text-color);
     }
     & .count {
       font-size: 11px;

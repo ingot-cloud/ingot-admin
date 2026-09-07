@@ -39,17 +39,20 @@
     <in-table
       :loading="ipQuery.isFetching.value"
       :data="filteredData"
-      :headers="ipListTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="IP_LIST_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="privateRefresh"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">
-          <template #icon>
-            <i-ep:plus />
-          </template>
-          新建名单
-        </in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="ipListTableHeaders"
+          :table-id="IP_LIST_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #listType="{ item }">
         <in-tag-enum :value="item.listType" :enumObj="ipListTypeEnum" />
@@ -76,12 +79,7 @@
         </el-tag>
       </template>
       <template #actions="{ item }">
-        <in-button type="primary" text link @click="privateOnEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <IpListDrawer ref="drawerRef" @success="privateRefresh" />
@@ -89,6 +87,7 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { GatewayIpList } from "@/models";
 import {
   useIpListKeyTypeEnum,
@@ -96,7 +95,12 @@ import {
   useIpListTypeEnum,
 } from "@/models/enums";
 import { IpListQueryOptions, ipListQueryKeys } from "@/api/security/policy.query";
-import { ipListTableHeaders } from "../table/ipListTable";
+import {
+  createIpListRowActions,
+  createIpListToolbarActions,
+  IP_LIST_TABLE_ID,
+  ipListTableHeaders,
+} from "../table/ipListTable";
 import IpListDrawer from "./IpListDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
@@ -115,6 +119,12 @@ const filter = reactive<IpListFilter>({
   enabled: undefined,
 });
 const drawerRef = ref<InstanceType<typeof IpListDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: GatewayIpList = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(ipListTableHeaders, selectedColumnProps.value),
+);
 
 const ipListTypeEnum = useIpListTypeEnum();
 const ipListKeyTypeEnum = useIpListKeyTypeEnum();
@@ -156,6 +166,17 @@ const privateOnCreate = (): void => {
 
 const privateOnEdit = (item: GatewayIpList): void => {
   drawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createIpListToolbarActions(privateOnCreate));
+
+const rowActionsOf = (item: GatewayIpList): Array<InTableAction<GatewayIpList>> =>
+  createIpListRowActions(item, {
+    onDetail: privateOnEdit,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

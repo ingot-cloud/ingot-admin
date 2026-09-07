@@ -60,7 +60,9 @@ const queryClient = useQueryClient();
 const roleQuery = useQuery(() => OrgRoleTreeQueryOptions());
 const roleTree = computed(() => roleQuery.data.value ?? []);
 const loading = computed(() => roleQuery.isFetching.value);
-const emits = defineEmits(["onNodeClick"]);
+const emits = defineEmits<{
+  "node-click": [value: RoleTreeNodeVO];
+}>();
 
 const roleTreeRef = ref();
 const searchValue = ref("");
@@ -74,7 +76,7 @@ const privateOnNodeClick = (value: RoleTreeNodeVO) => {
   if (value.type === RoleTypeEnums.GROUP) {
     return;
   }
-  emits("onNodeClick", value);
+  emits("node-click", value);
 };
 const privateFilterNode = (value: string, data: RoleTreeNodeVO) => {
   if (!value || !data.name) return true;

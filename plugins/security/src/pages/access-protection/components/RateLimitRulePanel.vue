@@ -3,17 +3,20 @@
     <in-table
       :loading="rulesQuery.isFetching.value"
       :data="tableData"
-      :headers="rateLimitTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="RATE_LIMIT_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="privateRefresh"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">
-          <template #icon>
-            <i-ep:plus />
-          </template>
-          新建限流规则
-        </in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="rateLimitTableHeaders"
+          :table-id="RATE_LIMIT_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #code="{ item }">
         <in-copy-tag :text="item.code" />
@@ -30,12 +33,7 @@
         </el-tag>
       </template>
       <template #actions="{ item }">
-        <in-button type="primary" text link @click="privateOnEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <RateLimitRuleDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
@@ -43,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { GatewayRateLimitRule } from "@/models";
 import { useRateLimitDimensionEnum } from "@/models/enums";
 import {
@@ -50,7 +49,12 @@ import {
   RateLimitRuleListQueryOptions,
   rateLimitRuleQueryKeys,
 } from "@/api/security/policy.query";
-import { rateLimitTableHeaders } from "../table/rateLimitTable";
+import {
+  createRateLimitRowActions,
+  createRateLimitToolbarActions,
+  RATE_LIMIT_TABLE_ID,
+  rateLimitTableHeaders,
+} from "../table/rateLimitTable";
 import RateLimitRuleDrawer from "./RateLimitRuleDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
@@ -60,6 +64,12 @@ const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
 const tableData = computed(() => rulesQuery.data.value ?? []);
 const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof RateLimitRuleDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: GatewayRateLimitRule = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(rateLimitTableHeaders, selectedColumnProps.value),
+);
 
 const rateLimitDimensionEnum = useRateLimitDimensionEnum();
 
@@ -73,6 +83,17 @@ const privateOnCreate = (): void => {
 
 const privateOnEdit = (item: GatewayRateLimitRule): void => {
   drawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createRateLimitToolbarActions(privateOnCreate));
+
+const rowActionsOf = (item: GatewayRateLimitRule): Array<InTableAction<GatewayRateLimitRule>> =>
+  createRateLimitRowActions(item, {
+    onDetail: privateOnEdit,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

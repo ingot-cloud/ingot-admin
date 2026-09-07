@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header>
+      <in-page-header description="查询在线会话并配置并发策略。">
         <template #tabs>
           <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
         </template>

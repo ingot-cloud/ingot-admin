@@ -1,4 +1,7 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { GatewayIpList } from "@/models";
+
+export const IP_LIST_TABLE_ID = "security-access-ip-list";
 
 export const ipListTableHeaders: Array<TableHeaderRecord> = [
   {
@@ -48,3 +51,35 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
     fixed: "right",
   },
 ];
+
+export function createIpListToolbarActions(
+  onCreate: () => void,
+): Array<InTableAction<GatewayIpList>> {
+  return [
+    {
+      key: "create",
+      label: "新建名单",
+      kind: "quick",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 50,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createIpListRowActions(
+  _row: GatewayIpList,
+  handlers: {
+    onDetail: (row: GatewayIpList) => void;
+  },
+): Array<InTableAction<GatewayIpList>> {
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+  ];
+}

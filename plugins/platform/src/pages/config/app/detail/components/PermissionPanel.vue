@@ -3,13 +3,21 @@
     <in-table
       :loading="loading"
       :data="treeData"
-      :headers="permissionTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="PERMISSION_TABLE_ID"
+      density="compact"
       row-key="id"
       default-expand-all
-      @refresh="privateFetchData"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">添加权限</in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="permissionTableHeaders"
+          :table-id="PERMISSION_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #code="{ item }">
         <in-copy-tag :text="item.code" />
@@ -26,33 +34,7 @@
         <in-common-status-tag :status="item.status" />
       </template>
       <template #actions="{ item }">
-        <div flex flex-row items-center justify-center gap-8px>
-          <in-button
-            v-if="!item.readOnly && !item.managed"
-            type="success"
-            text
-            link
-            @click="privateOnAddChild(item.id)"
-          >
-            <template #icon>
-              <i-carbon:parent-child />
-            </template>
-            添加子权限
-          </in-button>
-          <in-button v-if="!item.readOnly" type="primary" text link @click="privateOnEdit(item)">
-            <template #icon>
-              <i-ep:edit />
-            </template>
-            编辑
-          </in-button>
-          <common-status-button
-            v-if="!item.readOnly && !item.managed"
-            text
-            link
-            :status="item.status"
-            @click="privateOnStatusChange(item)"
-          />
-        </div>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
   </div>
@@ -66,18 +48,27 @@
 </template>
 
 <script setup lang="ts">
-import type { AppPermissionTreeNodeVO } from "@/models";
-import type { CommonStatus } from "@/models/enums";
 import {
-  getCommonStatusActionDesc,
+  applyColumnSelection,
+  invalidateQueriesByKeys,
+  silentQueryRequest,
+  type InTableAction,
+} from "@ingot/admin-core";
+import type { AppPermissionTreeNodeVO } from "@/models";
+import {
   getCommonStatusToggle,
   usePermissionNodeTypeEnum,
+  type CommonStatus,
 } from "@/models/enums";
 import { UpdateAppPermissionAPI } from "@/api/platform/config/app.ts";
 import { AppPermissionTreeQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
-import { invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { permissionTableHeaders } from "./permissionTable";
+import {
+  createPermissionRowActions,
+  createPermissionToolbarActions,
+  PERMISSION_TABLE_ID,
+  permissionTableHeaders,
+} from "./permissionTable";
 import PermissionEditDrawer from "./PermissionEditDrawer.vue";
 
 const props = defineProps<{
@@ -88,16 +79,26 @@ const props = defineProps<{
 const nodeTypeEnum = usePermissionNodeTypeEnum();
 const queryClient = useQueryClient();
 const message = useMessage();
-const confirm = useMessageConfirm();
 
 const permissionQuery = useQuery(() => AppPermissionTreeQueryOptions(() => props.appId));
 const treeData = computed(() => permissionQuery.data.value ?? []);
 const loading = computed(() => permissionQuery.isFetching.value);
 const permissionEditDrawerRef = ref<InstanceType<typeof PermissionEditDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: AppPermissionTreeNodeVO = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(permissionTableHeaders, selectedColumnProps.value),
+);
 
 const statusMutation = useMutation({
   mutationFn: (vars: { id: string; status: CommonStatus | string }) =>
-    UpdateAppPermissionAPI(props.appId, vars.id, { status: vars.status as CommonStatus }, silentQueryRequest()),
+    UpdateAppPermissionAPI(
+      props.appId,
+      vars.id,
+      { status: vars.status as CommonStatus },
+      silentQueryRequest(),
+    ),
   onSuccess: () => {
     void invalidateQueriesByKeys(queryClient, [
       appQueryKeys.permissions(props.appId),
@@ -114,8 +115,8 @@ const privateOnCreate = (): void => {
   permissionEditDrawerRef.value?.show();
 };
 
-const privateOnAddChild = (pid: string): void => {
-  permissionEditDrawerRef.value?.show(pid);
+const privateOnAddChild = (item: AppPermissionTreeNodeVO): void => {
+  permissionEditDrawerRef.value?.show(item.id);
 };
 
 const privateOnEdit = (item: AppPermissionTreeNodeVO): void => {
@@ -124,11 +125,24 @@ const privateOnEdit = (item: AppPermissionTreeNodeVO): void => {
 
 const privateOnStatusChange = (item: AppPermissionTreeNodeVO): void => {
   const next = getCommonStatusToggle(item.status as CommonStatus);
-  confirm.warning(`是否${getCommonStatusActionDesc(next)}权限(${item.name})`).then(() => {
-    statusMutation.mutateAsync({ id: item.id!, status: next }).then(() => {
-      message.success("操作成功");
-    });
+  statusMutation.mutateAsync({ id: item.id!, status: next }).then(() => {
+    message.success("操作成功");
   });
+};
+
+const toolbarActions = computed(() => createPermissionToolbarActions(privateOnCreate));
+
+const rowActionsOf = (
+  item: AppPermissionTreeNodeVO,
+): Array<InTableAction<AppPermissionTreeNodeVO>> =>
+  createPermissionRowActions(item, {
+    onDetail: privateOnEdit,
+    onAddChild: privateOnAddChild,
+    onToggleStatus: privateOnStatusChange,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

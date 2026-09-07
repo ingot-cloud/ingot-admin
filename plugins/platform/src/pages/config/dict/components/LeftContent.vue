@@ -1,11 +1,8 @@
 <template>
   <div class="dict-type-filter">
-    <div class="in-custom-title">
-      <div class="rect" />
-      <div class="title">字典类型</div>
-      <div class="actions">
-        <in-refresh-icon size="18" @refresh="privateRefresh" />
-      </div>
+    <div class="dict-type-heading">
+      <div class="dict-type-heading__title">字典类型</div>
+      <in-refresh-icon size="18" @refresh="privateRefresh" />
     </div>
 
     <el-input
@@ -34,7 +31,7 @@
           <el-tag v-if="data.systemFlag" size="small" type="warning" effect="plain" class="badge">
             系统
           </el-tag>
-          <in-button text link type="primary" @click="emits('onNodeEditClick', data)">
+          <in-button text link type="primary" @click="emits('node-edit-click', data)">
             <template #icon>
               <i-ep:edit />
             </template>
@@ -55,8 +52,8 @@ const props = defineProps<{
   query?: DictQueryDTO;
 }>();
 const emits = defineEmits<{
-  (e: "onNodeClick", data?: DictTreeNodeVO): void;
-  (e: "onNodeEditClick", data?: DictTreeNodeVO): void;
+  "node-click": [data?: DictTreeNodeVO];
+  "node-edit-click": [data?: DictTreeNodeVO];
 }>();
 
 const searchValue = ref("");
@@ -80,7 +77,7 @@ const privateFilterNode = (value: string, data: DictTreeNodeVO) => {
 };
 
 const privateOnNodeClick = (value: DictTreeNodeVO) => {
-  emits("onNodeClick", value);
+  emits("node-click", value);
 };
 
 const selectFirstNode = (): void => {
@@ -91,9 +88,9 @@ const selectFirstNode = (): void => {
     if (first) {
       const node = treeRef.value?.getNode(first);
       node?.store.setCurrentNode(node);
-      emits("onNodeClick", first);
+      emits("node-click", first);
     } else {
-      emits("onNodeClick", undefined);
+      emits("node-click", undefined);
     }
   });
 };
@@ -121,22 +118,16 @@ const privateRefresh = (): void => {
 .dict-type-filter {
   @apply flex flex-col gap-10px w-full;
 
-  & .in-custom-title {
+  & .dict-type-heading {
     @apply flex flex-row items-center gap-2;
     padding-bottom: var(--in-common-padding);
     border-bottom: var(--in-border-style);
-    & .rect {
-      width: 4px;
-      height: 14px;
-      background: var(--in-color-primary);
-      border-radius: 2px;
-    }
-    & .title {
-      flex: 1;
-      font-weight: bold;
-      color: #192f48;
-      font-size: 16px;
-    }
+  }
+
+  & .dict-type-heading__title {
+    flex: 1;
+    font-weight: bold;
+    font-size: 16px;
   }
 
   & .dict-type-tree {

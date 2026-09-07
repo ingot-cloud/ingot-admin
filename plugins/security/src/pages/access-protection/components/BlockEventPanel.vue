@@ -3,17 +3,21 @@
     <in-table
       :loading="eventQuery.isFetching.value"
       :data="tableData"
-      :headers="blockEventTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="BLOCK_EVENT_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="privateRefresh"
     >
-      <template #title>
-        <div class="title-wrap">
-          <span>封禁审计</span>
-        </div>
-      </template>
+      <template #title>封禁审计</template>
       <template #subtitle>
         <div class="subtitle-tip">历史兼容数据，新事件请查看 security_event。</div>
+      </template>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="blockEventTableHeaders"
+          :table-id="BLOCK_EVENT_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
       </template>
       <template #keyType="{ item }">
         <in-tag-enum v-if="item.keyType" :value="item.keyType" :enumObj="ipListKeyTypeEnum" />
@@ -32,20 +36,30 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection } from "@ingot/admin-core";
 import { useIpListKeyTypeEnum, useIpListSourceEnum } from "@/models/enums";
 import { BlockEventListQueryOptions, blockEventQueryKeys } from "@/api/security/policy.query";
-import { blockEventTableHeaders } from "../table/blockEventTable";
+import { BLOCK_EVENT_TABLE_ID, blockEventTableHeaders } from "../table/blockEventTable";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const queryClient = useQueryClient();
 const eventQuery = useQuery(() => BlockEventListQueryOptions());
 const tableData = computed(() => eventQuery.data.value ?? []);
+const selectedColumnProps = ref<string[]>([]);
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(blockEventTableHeaders, selectedColumnProps.value),
+);
 
 const ipListKeyTypeEnum = useIpListKeyTypeEnum();
 const ipListSourceEnum = useIpListSourceEnum();
 
 const privateRefresh = (): void => {
   void queryClient.invalidateQueries({ queryKey: blockEventQueryKeys.lists() });
+};
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

@@ -1,8 +1,13 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { PermissionTreeNode } from "@/models";
+
+export const PERMISSION_TABLE_ID = "platform-config-permission";
+
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "权限",
     prop: "code",
+    required: true,
   },
   {
     label: "名称",
@@ -26,8 +31,24 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "100",
+    width: "140",
     prop: "actions",
     fixed: "right",
   },
 ];
+
+export function createPermissionRowActions(
+  _row: PermissionTreeNode,
+  handlers: {
+    onEdit: (row: PermissionTreeNode) => void;
+  },
+): Array<InTableAction<PermissionTreeNode>> {
+  return [
+    {
+      key: "edit",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onEdit,
+    },
+  ];
+}

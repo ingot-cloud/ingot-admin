@@ -29,12 +29,14 @@ const visible = ref(false);
 const deptTree = ref<Array<DeptTreeNode>>([]);
 const defaultExpandedKeys = ref<Array<string>>([]);
 
-const emits = defineEmits(["onNodeClick"]);
+const emits = defineEmits<{
+  "node-click": [value: DeptTreeNode];
+}>();
 const privateOnNodeClick = (value: DeptTreeNode) => {
   if (value.mainFlag) {
     return;
   }
-  emits("onNodeClick", value);
+  emits("node-click", value);
   visible.value = false;
 };
 

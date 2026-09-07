@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header>
+      <in-page-header description="按类型维护凭证策略，各分组独立保存。">
         <template #tabs>
           <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
         </template>
@@ -45,6 +45,7 @@ onMounted(() => {
 </script>
 <style lang="postcss" scoped>
 .credential-policy-page {
-  padding: 8px 12px 16px;
+  @apply min-h-0;
+  padding: var(--in-space-5);
 }
 </style>

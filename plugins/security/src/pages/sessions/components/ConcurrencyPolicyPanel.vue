@@ -6,17 +6,20 @@
     <in-table
       :loading="loading"
       :data="tableData"
-      :headers="policyTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="SESSIONS_POLICY_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="loadAll"
     >
-      <template #toolbar>
-        <in-button v-auth-any="updateAuths" type="primary" @click="privateOnCreate">
-          <template #icon>
-            <i-ep:plus />
-          </template>
-          新建策略
-        </in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="policyTableHeaders"
+          :table-id="SESSIONS_POLICY_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #scope="{ item }">
         <in-tag-enum :value="item.scope" :enumObj="scopeEnum" />
@@ -48,31 +51,7 @@
         {{ item.remark || "-" }}
       </template>
       <template #actions="{ item }">
-        <in-button v-auth-any="updateAuths" type="primary" text link @click="privateOnEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
-        <el-tooltip
-          v-if="item.scope === SessionConcurrencyScopeEnum.GLOBAL"
-          content="全局兜底策略不可删除，可将最大会话数改为 0 以关闭限制"
-          placement="top"
-        >
-          <span v-auth-any="updateAuths">
-            <in-button type="danger" text link disabled>删除</in-button>
-          </span>
-        </el-tooltip>
-        <in-button
-          v-else
-          v-auth-any="updateAuths"
-          type="danger"
-          text
-          link
-          @click="removePolicy(item)"
-        >
-          删除
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <ConcurrencyPolicyDrawer ref="drawerRef" @success="loadAll" />
@@ -80,25 +59,33 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SessionConcurrencyPolicy } from "@/models";
 import {
-  SessionConcurrencyScopeEnum,
   useSessionConcurrencyOverflowEnum,
   useSessionConcurrencyScopeEnum,
   useSessionUserTypeEnum,
 } from "@/models/enums";
-import { ROLE_SYSTEM_ADMIN_CODE } from "@ingot/admin-core";
-import { policyTableHeaders } from "../policyTable.ts";
+import {
+  createConcurrencyPolicyRowActions,
+  createConcurrencyPolicyToolbarActions,
+  policyTableHeaders,
+  SESSIONS_POLICY_TABLE_ID,
+} from "../policyTable.ts";
 import { useConcurrencyPolicy } from "../useConcurrencyPolicy.ts";
-import { SESSION_POLICY_UPDATE_PERMISSION } from "../constants.ts";
 import ConcurrencyPolicyDrawer from "./ConcurrencyPolicyDrawer.vue";
 
 const { loading, tableData, loadAll, removePolicy } = useConcurrencyPolicy();
 const scopeEnum = useSessionConcurrencyScopeEnum();
 const overflowEnum = useSessionConcurrencyOverflowEnum();
 const userTypeEnum = useSessionUserTypeEnum();
-const updateAuths = [SESSION_POLICY_UPDATE_PERMISSION, ROLE_SYSTEM_ADMIN_CODE];
 const drawerRef = ref<InstanceType<typeof ConcurrencyPolicyDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: SessionConcurrencyPolicy = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(policyTableHeaders, selectedColumnProps.value),
+);
 
 const privateOnCreate = (): void => {
   drawerRef.value?.show();
@@ -106,6 +93,20 @@ const privateOnCreate = (): void => {
 
 const privateOnEdit = (item: SessionConcurrencyPolicy): void => {
   drawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createConcurrencyPolicyToolbarActions(privateOnCreate));
+
+const rowActionsOf = (
+  item: SessionConcurrencyPolicy,
+): Array<InTableAction<SessionConcurrencyPolicy>> =>
+  createConcurrencyPolicyRowActions(item, {
+    onDetail: privateOnEdit,
+    onDelete: removePolicy,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 onMounted(() => {

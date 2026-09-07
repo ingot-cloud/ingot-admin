@@ -1,5 +1,7 @@
 import type { TableHeaderRecord } from "@ingot/admin-core";
 
+export const BLOCK_EVENT_TABLE_ID = "security-access-block-event";
+
 export const blockEventTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "Key 类型",

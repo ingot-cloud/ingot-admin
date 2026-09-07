@@ -98,7 +98,9 @@ const groupList = computed<Array<Option>>(() =>
       label: item.name!,
     })),
 );
-const emits = defineEmits(["onNodeClick"]);
+const emits = defineEmits<{
+  "node-click": [value: RoleTreeNodeVO];
+}>();
 
 const roleTreeRef = ref();
 const RoleGroupDrawerRef = ref();
@@ -114,7 +116,7 @@ const privateOnNodeClick = (value: RoleTreeNodeVO) => {
   if (value.type === RoleTypeEnums.GROUP) {
     return;
   }
-  emits("onNodeClick", value);
+  emits("node-click", value);
 };
 const privateFilterNode = (value: string, data: RoleTreeNodeVO) => {
   if (!value || !data.name) return true;

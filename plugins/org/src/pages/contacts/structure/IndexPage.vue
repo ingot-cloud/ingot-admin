@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header />
+      <in-page-header description="浏览当前组织的部门架构。" />
     </template>
 
     <in-split-layout>

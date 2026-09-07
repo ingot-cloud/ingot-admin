@@ -1,80 +1,77 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header />
+      <in-page-header description="配置社交登录应用。" />
     </template>
 
     <in-split-layout>
-    <template #header>
-      <in-filter-item>
-        <in-with-label title="社交名称">
-          <el-input
-            v-model="condition.name"
-            class="item"
-            clearable
-            style="width: 200px"
-            placeholder="请输入社交名称"
-          ></el-input>
-        </in-with-label>
-        <template #rightActions>
-          <in-button @click="resetFilter">重置</in-button>
-          <in-button type="primary" @in-click="fetchData" :loading="loading">搜索</in-button>
+      <template #top>
+        <in-filter-item>
+          <in-with-label title="社交名称">
+            <el-input
+              v-model="condition.name"
+              class="w-200px"
+              clearable
+              placeholder="请输入社交名称"
+            />
+          </in-with-label>
+          <template #rightActions>
+            <in-button @click="resetFilter">重置</in-button>
+            <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>
+          </template>
+        </in-filter-item>
+      </template>
+
+      <in-table
+        :loading="loading"
+        :data="pageInfo.records"
+        :page="pageInfo"
+        :headers="visibleHeaders"
+        :table-id="SOCIAL_TABLE_ID"
+        density="compact"
+        @handleSizeChange="fetchData"
+        @handleCurrentChange="fetchData"
+      >
+        <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
+        <template #tools-start>
+          <in-table-column-setting
+            :headers="tableHeaders"
+            :table-id="SOCIAL_TABLE_ID"
+            @change="privateOnColumnChange"
+          />
         </template>
-      </in-filter-item>
-    </template>
-    <in-table
-      :loading="loading"
-      :data="pageInfo.records"
-      :page="pageInfo"
-      :headers="tableHeaders"
-      @handleSizeChange="fetchData"
-      @handleCurrentChange="fetchData"
-      @refresh="fetchData"
-    >
-      <template #toolbar>
-        <in-button type="primary" @click="handleCreate">添加配置</in-button>
-      </template>
-      <template #status="{ item }">
-        <in-common-status-tag :status="item.status"></in-common-status-tag>
-      </template>
-      <template #actions="{ item }">
-        <in-button type="primary" text link @click="handleEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
-        <common-status-button text link :status="item.status" @click="privateOnStatusChange(item)" />
-        <in-button type="danger" text link @click="privateOnRemove(item)">
-          <template #icon>
-            <i-ep:delete />
-          </template>
-          删除
-        </in-button>
-      </template>
-    </in-table>
+        <template #tools-end>
+          <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
+        </template>
+        <template #status="{ item }">
+          <in-common-status-tag :status="item.status" />
+        </template>
+        <template #actions="{ item }">
+          <in-table-actions :actions="rowActionsOf(item)" :row="item" />
+        </template>
+      </in-table>
     </in-split-layout>
   </in-page-frame>
 
   <EditDialog ref="editDialog" @success="invalidateList" />
 </template>
-<script lang="ts" setup>
+
+<script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SysSocialDetails } from "@/models";
 import type { CommonStatus } from "@/models/enums";
+import { getCommonStatusToggle } from "@/models/enums";
 import {
-  getCommonStatusActionDesc,
-  getCommonStatusToggle,
-} from "@/models/enums";
-import { tableHeaders } from "./table";
+  SOCIAL_TABLE_ID,
+  createSocialRowActions,
+  createSocialToolbarActions,
+  tableHeaders,
+} from "./table";
 import EditDialog from "./components/EditDialog.vue";
 import type { API as EditDialogAPI } from "./components/EditDialog.vue";
 import { UpdateSocialAPI, RemoveSocialAPI } from "@/api/platform/dev/social";
 import { SocialPageQueryOptions, socialQueryKeys } from "@/api/platform/dev/social.query";
-import {
-  invalidateQueriesByKeys,
-  silentQueryRequest,
-  useServerPaging,
-} from "@ingot/admin-core";
+import { invalidateQueriesByKeys, silentQueryRequest, useServerPaging } from "@ingot/admin-core";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const queryClient = useQueryClient();
@@ -86,8 +83,13 @@ const { condition, pageInfo, fetching, fetchData, resetSubmitted } = useServerPa
 });
 const loading = fetching;
 const message = useMessage();
-const confirm = useMessageConfirm();
 const editDialog = ref<EditDialogAPI>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: SysSocialDetails = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 
 const invalidateList = (): void => {
   void queryClient.invalidateQueries({ queryKey: socialQueryKeys.lists() });
@@ -117,19 +119,34 @@ const handleEdit = (params: SysSocialDetails): void => {
 };
 
 const privateOnStatusChange = (item: SysSocialDetails): void => {
-  const next = getCommonStatusToggle(item.status as CommonStatus);
-  confirm.warning(`是否${getCommonStatusActionDesc(next)}社交信息(${item.name})`).then(() => {
-    statusMutation.mutateAsync({ id: item.id!, status: next }).then(() => {
-      message.success("操作成功");
-    });
+  if (!item.id || !item.status) {
+    return;
+  }
+  const next = getCommonStatusToggle(item.status);
+  statusMutation.mutateAsync({ id: item.id, status: next }).then(() => {
+    message.success("操作成功");
   });
 };
 
 const privateOnRemove = (item: SysSocialDetails): void => {
-  confirm.warning(`是否删除社交信息(${item.name})`).then(() => {
-    removeMutation.mutateAsync(item.id!).then(() => {
-      message.success("删除成功");
-    });
+  if (!item.id) {
+    return;
+  }
+  removeMutation.mutateAsync(item.id).then(() => {
+    message.success("删除成功");
   });
+};
+
+const toolbarActions = computed(() => createSocialToolbarActions(handleCreate));
+
+const rowActionsOf = (item: SysSocialDetails): Array<InTableAction<SysSocialDetails>> =>
+  createSocialRowActions(item, {
+    onEdit: handleEdit,
+    onToggleStatus: privateOnStatusChange,
+    onRemove: privateOnRemove,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 </script>

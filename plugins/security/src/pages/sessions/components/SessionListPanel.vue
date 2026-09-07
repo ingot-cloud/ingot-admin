@@ -29,17 +29,18 @@
       </in-with-label>
       <template #rightActions>
         <in-button @click="privateOnReset">重置</in-button>
-        <in-button type="primary" :loading="loading" @in-click="fetchData">搜索</in-button>
+        <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>
       </template>
     </in-filter-item>
 
     <in-table
       :loading="loading"
       :data="pageInfo.records"
-      :headers="tableHeaders"
+      :headers="visibleHeaders"
       :page="pageInfo"
+      :table-id="SESSIONS_TABLE_ID"
+      density="compact"
       row-key="sid"
-      @refresh="fetchData"
       @handleSizeChange="fetchData"
       @handleCurrentChange="fetchData"
     >
@@ -47,11 +48,15 @@
       <template v-if="isClientOnlyQuery" #subtitle>
         按在线用户翻页；多会话时当页条数可能大于每页条数
       </template>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="tableHeaders"
+          :table-id="SESSIONS_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
       <template #user="{ item }">
-        <div flex flex-row items-center gap-2>
-          <el-image v-if="item.avatar" class="w-30px h-30px" :src="item.avatar" fit="cover" />
-          <span>{{ displaySessionUser(item) }}</span>
-        </div>
+        <in-avatar :src="item.avatar" :name="displaySessionUser(item)" />
       </template>
       <template #tenantName="{ item }">
         {{ displaySessionTenant(item) }}
@@ -65,13 +70,7 @@
         <span v-else>-</span>
       </template>
       <template #actions="{ item }">
-        <in-button text link type="primary" @click="privateOnDetail(item)">详情</in-button>
-        <in-button v-auth-any="revokeAuths" text link type="danger" @click="revokeBySid(item)">
-          强制下线
-        </in-button>
-        <in-button v-auth-any="revokeAuths" text link type="danger" @click="revokeByUser(item)">
-          下线该用户
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <SessionDetailDrawer ref="detailDrawerRef" @missing="fetchData" />
@@ -79,13 +78,12 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import { TenantSelect } from "@ingot/admin-common";
 import type { PlatformSessionVO } from "@/models";
 import { useSessionUserTypeEnum, useTokenAuthMethodEnum } from "@/models/enums";
-import { ROLE_SYSTEM_ADMIN_CODE } from "@ingot/admin-core";
-import { tableHeaders } from "../table.ts";
+import { createSessionRowActions, SESSIONS_TABLE_ID, tableHeaders } from "../table.ts";
 import { useOps } from "../useOps.ts";
-import { SESSION_REVOKE_PERMISSION } from "../constants.ts";
 import { displaySessionTenant, displaySessionUser } from "../sessionDisplay.ts";
 import ClientIdField from "./ClientIdField.vue";
 import SessionDetailDrawer from "./SessionDetailDrawer.vue";
@@ -103,8 +101,12 @@ const {
 
 const tokenAuthMethodEnum = useTokenAuthMethodEnum();
 const sessionUserTypeEnum = useSessionUserTypeEnum();
-const revokeAuths = [SESSION_REVOKE_PERMISSION, ROLE_SYSTEM_ADMIN_CODE];
 const detailDrawerRef = ref<InstanceType<typeof SessionDetailDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 
 const privateOnReset = (): void => {
   resetFilter();
@@ -115,6 +117,17 @@ const privateOnDetail = (item: PlatformSessionVO): void => {
     return;
   }
   detailDrawerRef.value?.show(item.sid);
+};
+
+const rowActionsOf = (item: PlatformSessionVO): Array<InTableAction<PlatformSessionVO>> =>
+  createSessionRowActions(item, {
+    onDetail: privateOnDetail,
+    onRevokeSid: revokeBySid,
+    onRevokeUser: revokeByUser,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 watch(

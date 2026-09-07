@@ -1,10 +1,14 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { MenuTreeNode } from "@/models";
+
+export const MENU_TABLE_ID = "platform-config-menu";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "菜单名称",
     prop: "name",
     minWidth: "200",
+    required: true,
   },
   {
     label: "菜单类型",
@@ -98,8 +102,24 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "100",
+    width: "140",
     prop: "actions",
     fixed: "right",
   },
 ];
+
+export function createMenuRowActions(
+  _row: MenuTreeNode,
+  handlers: {
+    onEdit: (row: MenuTreeNode) => void;
+  },
+): Array<InTableAction<MenuTreeNode>> {
+  return [
+    {
+      key: "edit",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onEdit,
+    },
+  ];
+}

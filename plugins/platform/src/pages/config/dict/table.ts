@@ -1,4 +1,9 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { PlatformDict } from "@/models";
+import { CommonStatus } from "@/models/enums";
+
+export const DICT_TABLE_ID = "platform-config-dict";
+export const DICT_SPLIT_KEY = "platform-config-dict";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
@@ -22,6 +27,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "名称",
     prop: "name",
     minWidth: "160",
+    required: true,
   },
   {
     label: "作用域",
@@ -58,8 +64,69 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "260",
+    width: "160",
     prop: "actions",
     fixed: "right",
   },
 ];
+
+export function createDictItemToolbarActions(
+  onCreate: () => void,
+  options?: { disabled?: boolean },
+): Array<InTableAction<PlatformDict>> {
+  const disabled = Boolean(options?.disabled);
+  return [
+    {
+      key: "create",
+      label: "新建字典项",
+      kind: "quick",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 50,
+      disabled,
+      disabledReason: disabled ? "请先选择字典类型" : undefined,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createDictItemRowActions(
+  row: PlatformDict,
+  handlers: {
+    onDetail: (row: PlatformDict) => void;
+    onToggleStatus: (row: PlatformDict) => void;
+    onDelete: (row: PlatformDict) => void;
+  },
+): Array<InTableAction<PlatformDict>> {
+  const canToggle = Boolean(row.id && row.status);
+  const next = row.status === CommonStatus.Enable ? CommonStatus.Lock : CommonStatus.Enable;
+  const action = next === CommonStatus.Enable ? "启用" : "禁用";
+  const displayName = row.label || row.name;
+  const isSystem = Boolean(row.systemFlag);
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+    {
+      key: "toggle-status",
+      label: action,
+      kind: "default",
+      disabled: !canToggle,
+      disabledReason: canToggle ? undefined : "缺少字典状态，无法切换",
+      confirm: canToggle ? `是否${action}字典(${displayName})` : undefined,
+      onSelect: handlers.onToggleStatus,
+    },
+    {
+      key: "delete",
+      label: "删除",
+      kind: "danger",
+      disabled: isSystem,
+      disabledReason: isSystem ? "内置字典不允许该操作" : undefined,
+      confirm: isSystem ? undefined : `是否删除字典项(${displayName})`,
+      onSelect: handlers.onDelete,
+    },
+  ];
+}

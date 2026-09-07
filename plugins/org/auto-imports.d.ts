@@ -9,6 +9,7 @@
 export {}
 declare global {
   const CONFIRM_DIALOG_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_CLASS
+  const CONFIRM_DIALOG_OVERLAY_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_OVERLAY_CLASS
   const EffectScope: typeof import('vue').EffectScope
   const UNSAVED_CHANGES_MESSAGE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_MESSAGE
   const UNSAVED_CHANGES_TITLE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_TITLE
@@ -364,6 +365,7 @@ declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
     readonly CONFIRM_DIALOG_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_CLASS']>
+    readonly CONFIRM_DIALOG_OVERLAY_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_OVERLAY_CLASS']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly UNSAVED_CHANGES_MESSAGE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_MESSAGE']>
     readonly UNSAVED_CHANGES_TITLE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_TITLE']>

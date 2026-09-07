@@ -8,7 +8,11 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const CONFIRM_DIALOG_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_CLASS
+  const CONFIRM_DIALOG_OVERLAY_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_OVERLAY_CLASS
   const EffectScope: typeof import('vue').EffectScope
+  const UNSAVED_CHANGES_MESSAGE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_MESSAGE
+  const UNSAVED_CHANGES_TITLE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_TITLE
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
@@ -17,6 +21,7 @@ declare global {
   const computedEager: typeof import('@vueuse/core').computedEager
   const computedInject: typeof import('@vueuse/core').computedInject
   const computedWithControl: typeof import('@vueuse/core').computedWithControl
+  const confirmUnsavedChanges: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').confirmUnsavedChanges
   const controlledComputed: typeof import('@vueuse/core').controlledComputed
   const controlledRef: typeof import('@vueuse/core').controlledRef
   const createAdminPinia: typeof import('../../packages/admin-core/src/stores/index').createAdminPinia
@@ -176,6 +181,7 @@ declare global {
   const useDebounce: typeof import('@vueuse/core').useDebounce
   const useDebounceFn: typeof import('@vueuse/core').useDebounceFn
   const useDebouncedRefHistory: typeof import('@vueuse/core').useDebouncedRefHistory
+  const useDetailEditSession: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').useDetailEditSession
   const useDeviceMotion: typeof import('@vueuse/core').useDeviceMotion
   const useDeviceOrientation: typeof import('@vueuse/core').useDeviceOrientation
   const useDevicePixelRatio: typeof import('@vueuse/core').useDevicePixelRatio
@@ -358,7 +364,11 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly CONFIRM_DIALOG_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_CLASS']>
+    readonly CONFIRM_DIALOG_OVERLAY_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_OVERLAY_CLASS']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly UNSAVED_CHANGES_MESSAGE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_MESSAGE']>
+    readonly UNSAVED_CHANGES_TITLE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_TITLE']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
@@ -367,6 +377,7 @@ declare module 'vue' {
     readonly computedEager: UnwrapRef<typeof import('@vueuse/core')['computedEager']>
     readonly computedInject: UnwrapRef<typeof import('@vueuse/core')['computedInject']>
     readonly computedWithControl: UnwrapRef<typeof import('@vueuse/core')['computedWithControl']>
+    readonly confirmUnsavedChanges: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['confirmUnsavedChanges']>
     readonly controlledComputed: UnwrapRef<typeof import('@vueuse/core')['controlledComputed']>
     readonly controlledRef: UnwrapRef<typeof import('@vueuse/core')['controlledRef']>
     readonly createAdminPinia: UnwrapRef<typeof import('../../packages/admin-core/src/stores/index')['createAdminPinia']>
@@ -526,6 +537,7 @@ declare module 'vue' {
     readonly useDebounce: UnwrapRef<typeof import('@vueuse/core')['useDebounce']>
     readonly useDebounceFn: UnwrapRef<typeof import('@vueuse/core')['useDebounceFn']>
     readonly useDebouncedRefHistory: UnwrapRef<typeof import('@vueuse/core')['useDebouncedRefHistory']>
+    readonly useDetailEditSession: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['useDetailEditSession']>
     readonly useDeviceMotion: UnwrapRef<typeof import('@vueuse/core')['useDeviceMotion']>
     readonly useDeviceOrientation: UnwrapRef<typeof import('@vueuse/core')['useDeviceOrientation']>
     readonly useDevicePixelRatio: UnwrapRef<typeof import('@vueuse/core')['useDevicePixelRatio']>

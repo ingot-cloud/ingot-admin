@@ -3,17 +3,20 @@
     <in-table
       :loading="groupQuery.isFetching.value"
       :data="tableData"
-      :headers="endpointGroupTableHeaders"
+      :headers="visibleHeaders"
+      :table-id="ENDPOINT_GROUP_TABLE_ID"
+      density="compact"
       row-key="id"
-      @refresh="privateRefresh"
     >
-      <template #toolbar>
-        <in-button type="primary" @click="privateOnCreate">
-          <template #icon>
-            <i-ep:plus />
-          </template>
-          新建分组
-        </in-button>
+      <template #tools-start>
+        <in-table-column-setting
+          :headers="endpointGroupTableHeaders"
+          :table-id="ENDPOINT_GROUP_TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
       </template>
       <template #code="{ item }">
         <in-copy-tag :text="item.code" />
@@ -30,12 +33,7 @@
         <span>{{ item.remark || "-" }}</span>
       </template>
       <template #actions="{ item }">
-        <in-button type="primary" text link @click="privateOnEdit(item)">
-          <template #icon>
-            <i-ep:edit />
-          </template>
-          编辑
-        </in-button>
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
     <EndpointGroupDrawer ref="drawerRef" @success="privateRefresh" />
@@ -43,9 +41,15 @@
 </template>
 
 <script setup lang="ts">
+import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { GatewayEndpointGroup } from "@/models";
 import { EndpointGroupListQueryOptions, endpointGroupQueryKeys } from "@/api/security/policy.query";
-import { endpointGroupTableHeaders } from "../table/endpointGroupTable";
+import {
+  createEndpointGroupRowActions,
+  createEndpointGroupToolbarActions,
+  ENDPOINT_GROUP_TABLE_ID,
+  endpointGroupTableHeaders,
+} from "../table/endpointGroupTable";
 import EndpointGroupDrawer from "./EndpointGroupDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
@@ -53,6 +57,12 @@ const queryClient = useQueryClient();
 const groupQuery = useQuery(() => EndpointGroupListQueryOptions());
 const tableData = computed(() => groupQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof EndpointGroupDrawer>>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: GatewayEndpointGroup = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(endpointGroupTableHeaders, selectedColumnProps.value),
+);
 
 const privateRefresh = (): void => {
   void queryClient.invalidateQueries({ queryKey: endpointGroupQueryKeys.lists() });
@@ -64,6 +74,17 @@ const privateOnCreate = (): void => {
 
 const privateOnEdit = (item: GatewayEndpointGroup): void => {
   drawerRef.value?.show(item);
+};
+
+const toolbarActions = computed(() => createEndpointGroupToolbarActions(privateOnCreate));
+
+const rowActionsOf = (item: GatewayEndpointGroup): Array<InTableAction<GatewayEndpointGroup>> =>
+  createEndpointGroupRowActions(item, {
+    onDetail: privateOnEdit,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
 };
 
 defineExpose({

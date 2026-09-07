@@ -1,49 +1,45 @@
 <template>
   <in-dialog :title="title" v-model="visible" width="800">
     <in-table
-      hide-setting
       :loading="paging.fetching.value"
       :data="paging.pageInfo.value.records"
       :headers="tableHeaders"
       :page="paging.pageInfo.value"
       ref="AddMemberTableRef"
       row-key="userId"
-      @refresh="paging.fetchData"
+      density="compact"
       @handleSizeChange="paging.fetchData"
       @handleCurrentChange="paging.fetchData"
       @selectionChange="onSelectChanged"
     >
-      <template #toolbar>
-        <div m-t-10px gap-2 flex flex-col>
+      <template #tools-start>
+        <div class="flex flex-col gap-2">
           <div v-if="currentDeptNode.id">
             当前选择部门：
             <el-tag closable @close="onDeptNodeClose">
               {{ currentDeptNode.name }}
             </el-tag>
           </div>
-          <div gap-2 flex flex-row items-center>
+          <div class="flex flex-row items-center gap-2">
             <el-input
               v-model="paging.condition.nickname"
+              class="w-200px"
               clearable
-              w-200px
               placeholder="请输入名称"
-            ></el-input>
-            <in-button @click="paging.search()" type="primary">搜索</in-button>
+            />
+            <in-button type="primary" @click="paging.search()">搜索</in-button>
           </div>
         </div>
       </template>
       <template #avatar="{ item }">
-        <div flex flex-row items-center gap-2>
-          <el-image v-if="item.avatar" class="w-30px h-30px" :src="item.avatar" fit="cover" />
-          {{ item.nickname }}
-        </div>
+        <in-avatar :src="item.avatar" :name="item.nickname" />
       </template>
     </in-table>
     <template #footer>
       <in-button type="primary" @click="onConfirmClick" :loading="confirmLoading"> 确定 </in-button>
     </template>
   </in-dialog>
-  <SelectDeptDialog ref="SelectDeptDialogRef" @onNodeClick="onDeptNodeClick" />
+  <SelectDeptDialog ref="SelectDeptDialogRef" @node-click="onDeptNodeClick" />
 </template>
 <script lang="ts" setup>
 import type { TableHeaderRecord } from "@ingot/admin-core";
@@ -59,7 +55,9 @@ import { useServerPaging } from "@ingot/admin-core";
 import { useQueryClient } from "@tanstack/vue-query";
 import SelectDeptDialog from "./SelectDeptDialog.vue";
 
-const emits = defineEmits(["success"]);
+const emits = defineEmits<{
+  success: [];
+}>();
 const queryClient = useQueryClient();
 
 const tableHeaders: Array<TableHeaderRecord> = [

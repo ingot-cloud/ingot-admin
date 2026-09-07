@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header>
+      <in-page-header description="配置网关访问防护策略，未打开的页签不发请求。">
         <template #action>
           <in-button :loading="broadcasting" @click="privateOnBroadcastClick">
             强制刷新策略

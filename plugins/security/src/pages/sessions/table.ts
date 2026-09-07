@@ -1,5 +1,9 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { PlatformSessionVO } from "@/models";
+import { SESSION_REVOKE_PERMISSION } from "./constants";
 import { formatSessionTime } from "./sessionDisplay";
+
+export const SESSIONS_TABLE_ID = "security-sessions";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
@@ -92,3 +96,35 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     fixed: "right",
   },
 ];
+
+export function createSessionRowActions(
+  _row: PlatformSessionVO,
+  handlers: {
+    onDetail: (row: PlatformSessionVO) => void;
+    onRevokeSid: (row: PlatformSessionVO) => void;
+    onRevokeUser: (row: PlatformSessionVO) => void;
+  },
+): Array<InTableAction<PlatformSessionVO>> {
+  return [
+    {
+      key: "detail",
+      label: "详情",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+    {
+      key: "revoke-sid",
+      label: "强制下线",
+      kind: "danger",
+      permission: SESSION_REVOKE_PERMISSION,
+      onSelect: handlers.onRevokeSid,
+    },
+    {
+      key: "revoke-user",
+      label: "下线该用户",
+      kind: "danger",
+      permission: SESSION_REVOKE_PERMISSION,
+      onSelect: handlers.onRevokeUser,
+    },
+  ];
+}

@@ -29,10 +29,10 @@ describe("org contacts user DetailDrawer", () => {
       source.indexOf("<el-form"),
     );
     const editBlock = source.slice(source.indexOf("<el-form"));
-    const viewOrder = ["姓名", "用户名", "手机号", "email", "部门"].map((label) =>
+    const viewOrder = ["姓名", "手机号", "email", "部门"].map((label) =>
       viewBlock.indexOf(`label="${label}"`),
     );
-    const editOrder = ["姓名", "用户名", "手机号", "email", "部门"].map((label) =>
+    const editOrder = ["姓名", "手机号", "email", "部门"].map((label) =>
       editBlock.indexOf(`label="${label}"`),
     );
     expect(viewOrder.every((index) => index >= 0)).toBe(true);

@@ -1,4 +1,7 @@
-import type { TableHeaderRecord } from "@ingot/admin-core";
+import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { GatewayRateLimitRule } from "@/models";
+
+export const RATE_LIMIT_TABLE_ID = "security-access-rate-limit";
 
 export const rateLimitTableHeaders: Array<TableHeaderRecord> = [
   {
@@ -43,3 +46,35 @@ export const rateLimitTableHeaders: Array<TableHeaderRecord> = [
     fixed: "right",
   },
 ];
+
+export function createRateLimitToolbarActions(
+  onCreate: () => void,
+): Array<InTableAction<GatewayRateLimitRule>> {
+  return [
+    {
+      key: "create",
+      label: "新建限流规则",
+      kind: "quick",
+      icon: "ep:plus",
+      overflow: "never",
+      priority: 50,
+      onSelect: () => onCreate(),
+    },
+  ];
+}
+
+export function createRateLimitRowActions(
+  _row: GatewayRateLimitRule,
+  handlers: {
+    onDetail: (row: GatewayRateLimitRule) => void;
+  },
+): Array<InTableAction<GatewayRateLimitRule>> {
+  return [
+    {
+      key: "detail",
+      label: "编辑",
+      kind: "detail",
+      onSelect: handlers.onDetail,
+    },
+  ];
+}
