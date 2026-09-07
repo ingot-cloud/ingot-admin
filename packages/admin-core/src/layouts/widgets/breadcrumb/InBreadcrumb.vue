@@ -3,7 +3,7 @@
     <el-breadcrumb-item v-for="item in breadcrumbList" :key="item.path" :to="item.path">
       <div flex items-center class="h-[var(--in-breadcrumb-height)]">
         <in-icon
-          v-if="item.icon"
+          v-if="showIcon && item.icon"
           :name="item.icon"
           class="w-[var(--in-breadcrumb-icon-size)] h-[var(--in-breadcrumb-icon-size)] mr-5px"
         />
@@ -12,10 +12,22 @@
     </el-breadcrumb-item>
   </el-breadcrumb>
 </template>
-
 <script lang="ts" setup>
 import IconArrowRight from "@/components/icons/IconArrowRight.vue";
 import { buildBreadcrumbList } from "./buildBreadcrumbList";
+
+defineOptions({
+  name: "InBreadcrumb",
+});
+
+withDefaults(
+  defineProps<{
+    showIcon?: boolean;
+  }>(),
+  {
+    showIcon: false,
+  },
+);
 
 const route = useRoute();
 const breadcrumbList = computed(() => buildBreadcrumbList(route.matched));
