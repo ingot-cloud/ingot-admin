@@ -121,6 +121,7 @@
 - [x] compact 密度：表头 48px、数据行 44px
 - [x] 表头默认 14px / `font-weight: 400` / `--in-table-header-text`
 - [x] 勾选框 16×16；树列 `checkbox` / `headerCheckbox` 三态 on / off / disabled；`type: selection` 表头默认不显示，需显式 on
+- [x] `InTree` 展开/收起三角与 `InTable` 树列同一对 SVG；叶子节点占位隐藏
 - [x] `InTableActions` toolbar：`overflow: never` 直出；相同 `overflowGroup` 整组展开或整组进入 `…`
 - [x] row 变体：详情 + 至多一个高频动作 + `…`
 - [x] `InTableColumnSetting` 依赖稳定 `tableId`；选择列和操作列默认不可隐藏

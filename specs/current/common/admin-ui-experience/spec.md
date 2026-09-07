@@ -81,7 +81,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | platform | `develop/qrcode` | Tool | 无装饰蓝条 |
 | platform | `develop/social` | List | `platform-develop-social` |
 | platform | `org/tenant` | List | |
-| org | `contacts/user` | Split List | 标准页；`org-contacts-user`；见 REQ-003 |
+| org | `contacts/user` | Split List | 标准页；`org-contacts-user`；左树默认展开企业根；见 REQ-003 |
 | org | `contacts/auth` | Split List | `org-contacts-auth` |
 | org | `contacts/role` | Split List | `org-contacts-role` |
 | org | `contacts/dept` | List | 无左树；`InSplitLayout` 仅作工作面；`org-contacts-dept`；搜索部门名；工具栏批量删除 / 批量导入导出 / 新建部门；`tree-column="name"`；企业根节点勾选 `off`、无展开箭头；表头全选默认打开 |
@@ -134,6 +134,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - [x] 工具栏仅「添加成员」直出；不为对齐飞书新增无接口的邀请/批量按钮
 - [x] 行内只出详情；暂停/恢复与删除进入更多；暂停/恢复只更新 `enabled`
 - [x] 「共 N 人」在 `#title` 右侧 `.in-table__count`
+- [x] 左栏部门树默认展开企业根，露出第一层级部门
 
 ### REQ-004：用户类列表对齐成员页
 
