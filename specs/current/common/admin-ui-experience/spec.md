@@ -4,7 +4,7 @@
 
 ## 概述
 
-platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、筛选在 `InSplitLayout` `#top`、`InTable` compact + 字段设置 + `InTableActions`。不改变 API、权限码、路由 path、菜单或 Query 语义。
+platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、列表筛选在表格 `#tools-start`（下拉 `InPicker`、查询无 label）、`InTable` compact + 字段设置 + `InTableActions`。不改变 API、权限码、路由 path、菜单或 Query 语义。
 
 ## 范围
 
@@ -48,7 +48,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | 原型 | 框架 | 滚动 | 说明 |
 |------|------|------|------|
 | Overview | `InPageFrame mode="page"` | PageBody | Dashboard 摘要与快捷入口 |
-| List | `contained` + `InSplitLayout`（可不启用左栏） | 表格数据区 | 筛选放 `#top`，不要放 `#header` |
+| List | `contained` + `InSplitLayout`（可不启用左栏） | 表格数据区 | 筛选放 `#tools-start`，不要放 `#header` |
 | Split List | `contained` + `left-collapsible` | 左树与右表独立 | `InPageHeader` 在 `InPageFrame` `#header` |
 | Settings | `mode="page"`，局部 Tab | PageBody | 安全策略；懒挂载不变 |
 | Detail | `mode="page"`，`showBack` | PageBody | 应用详情 |
@@ -61,6 +61,8 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - 去掉 `@refresh`、`#toolbar`、`hide-setting`
 - emit 使用 kebab-case（`node-click`）
 - 宽度用 UnoCSS（如 `w-200px`），不用 `style="width: 200px"`
+- 列表筛选：下拉用 `InPicker`（带 label、含「全部」、切换即查）；查询框无 label，占位「搜索…」，回车或清空即查；不要 `InFilterItem` + `InWithLabel` 和搜索/重置按钮
+- `#top` 只留给会改左树或作用域的上下文筛选（如字典作用域、会话的组织/客户端）
 - `InTableAction.confirm` 后，handler 不再套一层 `Confirm`
 - Toast 使用 `import { Message } from "@ingot/admin-core"`；官方插件不 auto-import `Message` 类，composable 可用 `useMessage()`
 

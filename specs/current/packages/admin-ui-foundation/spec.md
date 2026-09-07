@@ -125,7 +125,7 @@
 - [x] `InTableActions` toolbar：`overflow: never` 直出；相同 `overflowGroup` 整组展开或整组进入 `…`
 - [x] row 变体：详情 + 至多一个高频动作 + `…`
 - [x] `InTableColumnSetting` 依赖稳定 `tableId`；选择列和操作列默认不可隐藏
-- [x] `InPicker` 用于工具栏单选，不替代表单 `InSelect`
+- [x] `InPicker` 用于工具栏单选（带 label、含「全部」、切换即查），不替代表单 `InSelect`；列表查询框无 label
 
 ### REQ-007：状态展示组件
 

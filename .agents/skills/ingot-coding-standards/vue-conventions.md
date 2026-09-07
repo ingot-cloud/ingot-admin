@@ -327,6 +327,34 @@ defineExpose({} as any);
 
 ## 好/坏对比
 
+### 列表筛选
+
+默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。
+
+```vue
+<template #tools-start>
+  <el-input
+    v-model="nameFilter"
+    class="w-200px!"
+    clearable
+    placeholder="搜索应用名"
+    :prefix-icon="Search"
+    @keyup.enter="privateOnSearch"
+    @clear="privateOnSearch"
+  />
+  <in-picker v-model="statusFilter" label="状态" :options="statusFilterOptions" />
+  <in-table-column-setting
+    :headers="tableHeaders"
+    :table-id="TABLE_ID"
+    @change="privateOnColumnChange"
+  />
+</template>
+```
+
+- `InPicker` 选项以「全部」开头；空选映射为 `undefined`，不传查询参数；切换即查
+- 查询框无 label，占位用「搜索…」；回车或清空即查；不要搜索/重置按钮
+- 表单编辑仍用 `InSelect`；远程分页选择仍用 `InPageSelect`
+
 ### 事件处理命名
 
 ```typescript

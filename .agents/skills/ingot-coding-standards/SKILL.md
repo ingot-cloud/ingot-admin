@@ -23,6 +23,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] emit 使用 kebab-case 语义名（change、success），带类型签名
 - [ ] 样式优先 UnoCSS 原子类，禁止 scss/less
 - [ ] 跨 app 逻辑优先放 packages/，不复制
+- [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`
 ```
 
 ## 目录约定
@@ -105,6 +106,16 @@ pages/platform/base/app/
 - 显式返回 `Promise<R<T>>`；类型来自 `@/models`
 - 写操作/查询前对 condition 调用 `filterParams()`
 - Http 单例统一：`import request from "@/net"`；API 第三参可选 `options?: RequestOptions`
+
+### 列表筛选
+
+列表、双栏列表的筛选是默认统一标准，参考通讯录成员管理 / 部门管理 / 应用管理：
+
+- 筛选放 `InTable` `#tools-start`（查询框 → `InPicker` → 字段设置），不要用 `#header`，也不要再铺 `InFilterItem` + `InWithLabel`
+- **下拉用 `InPicker`**：带 `label`（如「状态」），选项以「全部」为首项；`value: ""` 表示不传该条件；切换后立即重查。用 `withAllPickerOption` / `resolveStringPickerFilter` / `toStringPickerValue`（布尔条件用 `resolveBooleanPickerFilter`）
+- **查询不要 label**：文本搜索用无 label 的 `el-input`，`placeholder` 写成「搜索部门名」这种，`:prefix-icon="Search"`，回车或清空即查；不要 `InWithLabel`，也不要单独的搜索/重置按钮
+- `InPicker` 只用于工具栏单选，不替代表单 `InSelect`；远程实体选择（`InPageSelect` / `TenantSelect`）不是枚举下拉，保持原控件
+- `#top` 只留给会改左树/作用域的上下文筛选（如字典作用域），不要把普通列表查询放回去
 
 ### 样式
 

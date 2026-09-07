@@ -52,9 +52,9 @@ InPageFrame mode="contained" surface="workspace"
   #header  InPageHeader
   InSplitLayout variant="plain" persistence-key
     #left  树/分组
-    #top   筛选
+    #top   仅左树/作用域上下文（可选）
     InTable table-id density="compact"
-      #tools-start  InPicker + InTableColumnSetting
+      #tools-start  无 label 查询 + InPicker + InTableColumnSetting
       #tools-end    InTableActions variant="toolbar"
       #actions      InTableActions
 InDrawer / InDetailDrawer / InDialog
