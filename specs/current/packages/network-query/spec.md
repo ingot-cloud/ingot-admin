@@ -155,7 +155,8 @@ HTTP/2 SHALL 配在浏览器连接的 TLS 终止点。应用容器 `proxy.conf` 
 
 - Query 重试最多 1 次，且仅网络 / 超时 / 502–504
 - NProgress 只计前台请求，静默 Query 不参与
-- 401、签退、412、信封加解密与 kid 轮换语义不变
+- HTTP 401、业务码 S0401 / invalid_token 均视为未授权并跳转登录；`feedback: "silent"` 不得跳过该处理
+- 签退、412、信封加解密与 kid 轮换语义不变
 - `@tanstack/vue-query` 锁定 catalog `5.102.2`
 - 网络分层与 order 表以 [docs/network.md](../../../../docs/network.md) 为准
 

@@ -97,7 +97,7 @@ const result = await http.get<{ id: string }>("/api/example");
 | 响应 | envelope | `AdminNetInterceptorOrder.response.envelope` | 解密（必须早于 normalize） |
 | 响应 | challenge | `AdminNetInterceptorOrder.response.challenge` | 网关 412 |
 
-failure hooks 由 core 处理：未授权登出、签退确认、其它业务/HTTP 失败 `Message.warning`。App 不能覆盖这些 hooks。
+failure hooks 由 core 处理：未授权登出（HTTP 401 与业务码 `S0401` / `invalid_token`）、签退确认、其它业务/HTTP 失败 `Message.warning`。App 不能覆盖这些 hooks。
 
 页面 API：
 
@@ -111,7 +111,7 @@ export function UserPageAPI(
 }
 ```
 
-Query 请求用 `silentQueryRequest(signal)`（`feedback` / `progress` 均为 `silent`）。命令式写操作保持默认全局提示。
+Query 请求用 `silentQueryRequest(signal)`（`feedback` / `progress` 均为 `silent`）。命令式写操作保持默认全局提示。HTTP 401 与业务码 `S0401` / `invalid_token` 仍由适配器登出并跳转登录，不受 silent 抑制。
 
 ## App 只能追加拦截器
 
