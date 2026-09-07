@@ -283,7 +283,7 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
       key: string;
       label: string;
       icon?: string;
-      kind: "detail" | "quick" | "default" | "danger";
+      kind: "detail" | "quick" | "default" | "danger" | "primary";
       permission?: string;
       group?: string;
       confirm?: string | { title: string; description?: string };
@@ -295,7 +295,10 @@ InTableActions 只处理配置型 action。复杂自定义 VNode、表单、Popo
       onSelect: (row: Row) => void;
     }
 
-- quick 主操作默认 `overflow: never`；低频操作可以指定 `always`，始终进入“…”。
+- `icon` 为可选 `InIcon` 名称（如 `ep:plus`），渲染在按钮文字左侧；行内、工具栏直出和更多菜单共用同一字段。
+- `kind: "danger"` 与 `kind: "primary"` 在工具栏都是描边按钮：表面底、彩色边框与文字。前者用危险色，后者用主色。行内和菜单只改文字色。
+- `kind: "quick"` 主操作默认 `overflow: never`，在 toolbar 右侧渲染为实心主色按钮；`primary` / `danger` 即使是唯一固定操作也不改为实心。
+- 直出按钮启用态有 hover：行内浅中性底，工具栏默认控件 hover 底，`primary` / `danger` 为对应浅色底，实心主操作加深主色。`disabled` 不响应 hover。
 - 相同 `overflowGroup` 的 `auto` 操作必须全体展开或全体进入菜单，不允许只露出组内一部分。
 - 数值较大的 `priority` 在菜单中靠前；组内直出时按低到高排列，使高优先级操作更靠近右侧固定操作；同优先级保持输入顺序。
 - `permission`、`group`、`confirm` 和 `onSelect` 延续现有契约；`overflowGroup` 只负责响应式收纳，不替代既有批量上下文 `group`。

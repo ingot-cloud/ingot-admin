@@ -191,7 +191,7 @@ MainLayout
 - [ ] 字段设置改为完整 32px 按钮组件，由页面按需导入并放入 tools，不再由 `InTable` 自动渲染。
 - [ ] `InTableActions` 的 toolbar 变体使用 `ResizeObserver` 监听自身可用宽度；`overflow: never` 操作保持直出，相同 `overflowGroup` 的 `auto` 操作必须整体展开或整体收入 `…`。
 - [ ] 空间恢复且能容纳整个折叠组后，该组一次性全部重新显示；`…` 仅在至少有一个折叠组或 `always` 操作时出现，计算宽度时预留其 32px 和相邻 gap。
-- [ ] action 配置保留现有 `key`、`label`、`kind`、`permission`、`group`、`confirm`、`disabled`、`disabledReason` 与 `onSelect`，新增 `icon`、`priority`、`overflow` 和 `overflowGroup`；quick 主操作默认 `overflow: never`。
+- [ ] action 配置保留现有 `key`、`label`、`kind`、`permission`、`group`、`confirm`、`disabled`、`disabledReason` 与 `onSelect`，新增 `icon`、`priority`、`overflow` 和 `overflowGroup`；`kind` 含 `primary`（描边主色，与 `danger` 对称）与 `danger`；quick 主操作默认 `overflow: never` 且在 toolbar 为实心主色。
 - [ ] row 变体继续遵守“详情 + 至多一个高频快捷操作 + …”，不因操作列变宽而展开全部低频项。
 - [ ] 更多菜单默认悬停打开，离开触发器与菜单后关闭；同时保留点击、Enter/Space 打开与 Esc / 点外部关闭，触屏不把悬停作为唯一打开方式。
 - [ ] 成员页式 toolbar 的“邀请成员”“添加成员”始终直出；三个批量操作同组收纳，展开态为 3 个批量按钮 + 2 个固定按钮，收纳态为“…” + 2 个固定按钮。
