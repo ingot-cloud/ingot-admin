@@ -339,4 +339,47 @@ describe("InTableActions", () => {
     expect(invite.classes()).not.toContain("is-filled");
     wrapper.unmount();
   });
+
+  it("toolbar 选择后刷新禁用态", async () => {
+    const wrapper = mount(InTableActions, {
+      props: {
+        actions: [
+          {
+            key: "batch-delete",
+            label: "批量删除",
+            kind: "danger",
+            overflow: "never",
+            disabled: true,
+            disabledReason: "请先选择部门",
+            onSelect: noop,
+          },
+        ],
+        row,
+        variant: "toolbar",
+        selectedCount: 0,
+      },
+      global: { stubs },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get("[aria-label='批量删除']").attributes("disabled")).toBeDefined();
+
+    await wrapper.setProps({
+      selectedCount: 2,
+      actions: [
+        {
+          key: "batch-delete",
+          label: "批量删除",
+          kind: "danger",
+          overflow: "never",
+          disabled: false,
+          confirm: "是否删除已选的 2 个部门",
+          onSelect: noop,
+        },
+      ],
+    });
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.get("[aria-label='批量删除']").attributes("disabled")).toBeUndefined();
+    wrapper.unmount();
+  });
 });

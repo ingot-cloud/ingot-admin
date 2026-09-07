@@ -6,3 +6,8 @@ export type {
   InTableActionOverflow,
 } from "../types";
 export { IN_TABLE_STATUS_MIN_WIDTH, applyColumnSelection } from "./columnVisibility";
+export {
+  asCheckboxMode,
+  isTreeCheckboxEnabled,
+  resolveRowCheckboxMode,
+} from "./checkboxMode";

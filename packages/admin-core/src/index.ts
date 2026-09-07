@@ -57,6 +57,7 @@ export { default as InPicker } from "./components/select/InPicker.vue";
 export type { InPickerOption } from "./components/select/types";
 export { coreGlobalComponents } from "./components/coreComponents";
 export { default as InAvatar } from "./components/avatar/InAvatar.vue";
+export { deptDrawerHeaderAvatar } from "./assets/deptDrawerHeaderAvatar";
 export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";
 export { default as InAccountStatusTag } from "./components/status/InAccountStatusTag.vue";
 export { resolveCommonStatus } from "./components/status/resolveCommonStatus";

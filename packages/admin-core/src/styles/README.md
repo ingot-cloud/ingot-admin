@@ -44,6 +44,9 @@
 | `--in-split-collapse-width` / `--in-split-collapse-height` / `--in-split-collapse-radius` | `16px` / `32px` / `8px` |
 | `--in-motion-duration-split` | `180ms` |
 | `--in-table-header-height` / `--in-table-row-height-compact` | `48px` / `44px` |
+| `--in-table-header-text` | `#646a73`（`--in-text-color-secondary`） |
+| `--in-table-cell-text` | `#18263c` |
+| `--in-checkbox-radius` / `--in-checkbox-size` | `4px` / `16px` |
 | `--in-page-gutter` | `12px`（`--in-space-3`） |
 | `--in-page-breadcrumb-height` / `--in-page-header-min-height` | `46px` / `80px`（仅有说明时作为页面头最小高度） |
 | `--in-avatar-size` / `--in-avatar-size-lg` / `--in-status-tag-height` | `32px` / `48px` / `24px` |

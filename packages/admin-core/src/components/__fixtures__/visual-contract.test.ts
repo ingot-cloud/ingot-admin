@@ -33,6 +33,20 @@ describe("admin UI visual fixtures", () => {
     expect(table).toContain("is-compact");
     expect(table).not.toContain("h(ElTable");
     expect(table).toContain("element-plus/theme-chalk/el-table.css");
+    expect(table).toContain("element-plus/theme-chalk/el-checkbox.css");
+    expect(table).toContain("--in-table-cell-text");
+    expect(table).toContain("--in-table-header-text");
+    expect(table).toContain("table-expand-collapsed.svg");
+    expect(table).toContain("table-expand-expanded.svg");
+    expect(table).toContain("table-checkbox-checked.svg");
+    expect(table).toContain("--in-checkbox-radius");
+    expect(table).toContain("--in-checkbox-size");
+    expect(table).toContain("background-position: center");
+    expect(table).toContain("is-custom-tree");
+    expect(table).toContain("asCheckboxMode");
+    expect(table).toContain("treeColumn");
+    expect(table).toContain("InTableTreeCell");
+    expect(table).toContain("in-table-tree-cell");
     expect(table).toMatch(/\.in-table__body \{[\s\S]*?overflow: hidden;/);
     expect(table).toContain("showSkeleton");
     expect(table).toContain("in-table-skeleton");
@@ -153,6 +167,10 @@ describe("admin UI visual fixtures", () => {
     expect(tokens).toContain("--in-motion-ease-tabs-ink: cubic-bezier(0.34, 0.69, 0.1, 1)");
     expect(tokens).toContain("--in-avatar-size-lg: 48px");
     expect(tokens).toContain("--in-drawer-width-detail: 480px");
+    expect(tokens).toContain("--in-table-cell-text: #18263c");
+    expect(tokens).toContain("--in-table-header-text: var(--in-text-color-secondary)");
+    expect(tokens).toContain("--in-checkbox-radius: 4px");
+    expect(tokens).toContain("--in-checkbox-size: 16px");
   });
 
   it("容器默认直角无边框，双栏折叠带宽度过渡", () => {

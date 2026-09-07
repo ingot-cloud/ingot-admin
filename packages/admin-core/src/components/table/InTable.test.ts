@@ -184,6 +184,7 @@ describe("InTable", () => {
     expect(source).toContain("<el-table");
     expect(source).not.toContain("h(ElTable");
     expect(source).toContain("element-plus/theme-chalk/el-table.css");
+    expect(source).toContain("element-plus/theme-chalk/el-checkbox.css");
     expect(source).toContain(".in-table__body");
     expect(source).toMatch(/\.in-table__body \{[\s\S]*?overflow: hidden;/);
     expect(source).toContain(".hidden-columns");
@@ -191,5 +192,60 @@ describe("InTable", () => {
     expect(source).toContain("暂无数据");
     expect(source).toContain("showSkeleton");
     expect(source).toContain("in-table-skeleton");
+    expect(source).toContain("customTree");
+    expect(source).toContain("treeColumn");
+    expect(source).toContain("headerCheckbox");
+    expect(source).toContain("InTableTreeCell");
+    expect(source).toContain("--in-checkbox-size");
+    expect(source).toContain("background-position: center");
+    expect(source).toContain("background-color var(--in-motion-duration)");
+    expect(source).not.toContain("background var(--in-motion-duration)");
+    expect(source).toContain("font-weight: var(--in-font-weight-body)");
+    expect(source).toContain("in-table-tree-cell");
+  });
+
+  it("需要全选时才显示表头勾选，自定义树时隐藏默认缩进", () => {
+    setActivePinia(createPinia());
+    const hiddenHeader = mount(InTable, {
+      props: {
+        headers: [{ type: "selection", prop: "selection" }],
+        data: [],
+      },
+      global: { stubs },
+    });
+    expect(hiddenHeader.get(".in-table").classes()).toContain("is-hide-header-selection");
+    hiddenHeader.unmount();
+
+    const withSelectAll = mount(InTable, {
+      props: {
+        headers: [{ type: "selection", prop: "selection", headerCheckbox: true }],
+        data: [],
+      },
+      global: { stubs },
+    });
+    expect(withSelectAll.get(".in-table").classes()).not.toContain("is-hide-header-selection");
+    withSelectAll.unmount();
+
+    const withDisabled = mount(InTable, {
+      props: {
+        headers: [{ type: "selection", prop: "selection", headerCheckbox: "disabled" }],
+        data: [],
+      },
+      global: { stubs },
+    });
+    expect(withDisabled.get(".in-table").classes()).toContain("is-header-selection-disabled");
+    expect(withDisabled.get(".in-table").classes()).not.toContain("is-hide-header-selection");
+    withDisabled.unmount();
+
+    const customTree = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [],
+        customTree: true,
+      },
+      global: { stubs },
+    });
+    expect(customTree.get(".in-table").classes()).toContain("is-custom-tree");
+    customTree.unmount();
   });
 });

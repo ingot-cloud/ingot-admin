@@ -1,5 +1,6 @@
 import type { TableHeaderRecord, TablePage } from "./types";
 import type { InDensity, InTableFeedback } from "../types";
+import type { InTableCheckboxMode, InTableCheckboxSpec, InTableRowPredicate } from "./checkboxMode";
 import { TreeListKeyAndProps } from "@/models";
 
 // 简化的 treeProps 类型定义
@@ -20,6 +21,15 @@ export interface ExtendTableProps {
   pageSize?: Array<number>;
   pageLayout?: string;
   tableId?: string;
+  customTree?: boolean;
+  /** 在该列内绘制展开三角、可选勾选与单元格内容。 */
+  treeColumn?: string;
+  /** 树列行勾选：on 显示可点、off 不显示、disabled 显示禁用；可按行返回。 */
+  checkbox?: InTableCheckboxSpec;
+  /** 树列表头全选；启用行勾选时默认 on。 */
+  headerCheckbox?: InTableCheckboxMode | boolean;
+  /** 是否显示展开三角；默认有子节点则显示。 */
+  treeExpand?: boolean | InTableRowPredicate;
 }
 
 // 手动定义所有需要的表格属性，避免复杂的类型继承
@@ -79,6 +89,11 @@ export const DefaultProps = {
   pageSize: () => [20, 30, 40, 50],
   pageLayout: () => "total, sizes, prev, pager, next, jumper",
   tableId: "",
+  customTree: false,
+  treeColumn: "",
+  checkbox: undefined,
+  headerCheckbox: undefined,
+  treeExpand: undefined,
   // ElTable
   data: () => [],
   stripe: false,

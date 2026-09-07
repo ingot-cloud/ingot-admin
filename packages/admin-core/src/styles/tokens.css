@@ -153,7 +153,10 @@
   --in-table-row-height: 48px;
   --in-table-row-height-compact: 44px;
   --in-table-header-bg: var(--in-bg-color-muted);
-  --in-table-header-text: #3f4f66;
+  --in-table-header-text: var(--in-text-color-secondary);
+  --in-table-cell-text: #18263c;
+  --in-checkbox-radius: 4px;
+  --in-checkbox-size: 16px;
   --in-breadcrumb-icon-size: 16px;
   --in-breadcrumb-height: 24px;
   --in-page-breadcrumb-height: 46px;

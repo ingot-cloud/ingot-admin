@@ -8,7 +8,7 @@
 | `InPageHeader` | 页面标题区 | 白底、底部分隔；有说明时约 80px，无说明时高度随主标题收缩、不预留副标题占位；未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InSplitLayout` | 可选 header + 左右分栏工作面 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏默认与容器同色，可用 `left-background` 单独覆盖；左栏 260→0px，分隔线中线 16×32 右侧圆角折叠标签（贴线向右伸出）；左栏默认 16px 内边距且子项不超出；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
-| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；无数据加载用行骨架，不出现「暂无数据」；已有数据刷新用局部 loading；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；不再内置刷新和字段设置；`#title` 内 `.in-table__count` 使用 summary 次要正文样式，与标题间隔 12px | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列 |
+| `InTable` | 列表 | 全高 flex：Meta/Tools/分页固定，数据区内 ElTable 唯一滚动；无数据加载用行骨架，不出现「暂无数据」；已有数据刷新用局部 loading；空态插图为 `no_data.svg`；`tools-start` / `tools-end`；`density: compact` 为 48/44 行高；表头 14px / 400 / `--in-table-header-text`；单元格正文 `--in-table-cell-text` 14px；`treeColumn` 在列内绘制展开三角 + 可选勾选 + 内容（部门树样式）；`checkbox` / `headerCheckbox` 三态 `on` / `off` / `disabled`（行可函数，表头启用勾选时默认 `on`）；`type: selection` 表头仍默认 `off`，需 `headerCheckbox: true` / `"on"` / `"disabled"`；勾选框 16×16、4px 圆角与勾选 SVG；不再内置刷新和字段设置；`#title` 内 `.in-table__count` 使用 summary 次要正文样式，与标题间隔 12px | 旧 `#toolbar` 映射到 `tools-start`；`refresh` emit 仅保留类型、不再触发；`hideSetting` 废弃无效果；`#actions` 仍是行操作列；`customTree` 仍可只藏默认缩进，优先改用 `treeColumn` |
 | `InTableActions` | 行内/工具栏操作分层 | `actions` + `row` + `variant` + `selectedCount`；可选 `icon`；`kind: primary` 描边主色、`danger` 描边危险色、`quick` 工具栏实心主操作；`priority` / `overflow` / `overflowGroup`；toolbar 按容器宽度原子收纳同组操作；更多在固定操作左侧，工具栏为竖向三点、行内为横向三点，默认悬停弹出 | 新组件；不包含 API/Query；自定义 VNode 不自动搬移 |
 | `InMenu` | 全局左侧导航 | 菜单滚动视口与底部「收起导航」控制为兄弟区域；滚动条隐藏；控制区上方 1px 分隔线并与按钮间隔 8px；图标固定 20px；带图标/无图标分色，选中叶子 `#2b2f36`；展开/收起图标为 `ic_expand` / `ic_close`；236/52px；收缩态无二级浮层 | 桌面折叠入口只在侧栏底部；`InMenuToggle` 仅 overlay |
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位；默认 framed Logo 随 dark 切换 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav`；`branding.logo` 可覆盖默认 Logo |
@@ -18,7 +18,7 @@
 | `InTabs` | 全局路由 Tab | 与页内 Tab 视觉分离，默认可关闭 | 行为不变 |
 | `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条；`layout="pinned"` 钉住内容头、仅内部滚动 | `v-model`、`title`、`#header`/`#footer`、`loading`；默认 `layout="default"` |
 | `InDetailDrawer` | 实体详情查看/编辑 | 标题 + `#identity` + 页内 Tab；查看态底部「编辑…」，编辑态取消/保存；编辑中关抽屉或切 Tab 需确认 | `v-model`、`v-model:tab`、`v-model:editing`、`edit-label`、`save` / `cancel` / `edit` |
-| `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |
+| `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；无头像实体固定 `src` 且 `editable=false`；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |
 | `InDescriptionList` | 只读字段列表 | 上标签下值；空值 `-` | `InDescriptionItem` 的 `label` + `value` |
 | `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger`；标题左侧 `#icon`；`showClose` 控制右上角关闭；`align-center` 全屏居中 | `v-model`、`title`、`#footer`、`#header` |
 | `InAvatar` | 姓名/头像 | 默认 32px；`size="lg"` 为 48px；无图时用姓名最后两字；`showAvatar` 默认 true；`showName` 默认 true；可用 `color` 覆盖；`src` / `avatar` 别名 | 新组件 |
@@ -37,6 +37,7 @@ type InTableFeedback = "none" | "empty" | "no-result" | "error" | "unauthorized"
 type InDialogTone = "default" | "danger";
 type InDrawerLayout = "default" | "pinned";
 type InAvatarSize = "default" | "lg" | number;
+type InTableCheckboxMode = "on" | "off" | "disabled";
 type InTableActionKind = "detail" | "quick" | "default" | "danger" | "primary";
 type InTableActionOverflow = "auto" | "never" | "always";
 ```
@@ -58,6 +59,13 @@ InPageFrame mode="contained" surface="workspace"
 InDrawer / InDetailDrawer / InDialog
 ```
 
+树表（部门管理同款）：`tree-column` 指定名称列；`checkbox` 控制行勾选，`header-checkbox` 控制表头全选，取值 `on`（默认打开）/ `off`（不显示）/ `disabled`（显示禁用）。根节点不勾选、不展开时：
+
+```text
+InTable tree-column="name" :checkbox="(row) => row.root ? 'off' : 'on'" :tree-expand="(row) => !row.root"
+  @selection-change
+```
+
 实体详情抽屉标准：
 
 ```text
@@ -68,7 +76,7 @@ InDetailDrawer title edit-label v-model:editing
     编辑：表单
 ```
 
-`useDetailEditSession` 管理 `editing` / 快照回滚，离开确认走公共 `Confirm`（`in-confirm-dialog`），文案固定为「确定退出当前编辑？」，并关闭右上角关闭按钮。查看/编辑字段顺序必须一致。编辑态头像在身份区悬停上传，不要在表单里再放头像项。创建表单仍用普通 `InDrawer`，不要套查看态。
+`useDetailEditSession` 管理 `editing` / 快照回滚，离开确认走公共 `Confirm`（`in-confirm-dialog`），文案固定为「确定退出当前编辑？」，并关闭右上角关闭按钮。查看/编辑字段顺序必须一致。成员编辑态头像在身份区悬停上传，不要在表单里再放头像项。部门详情使用 `deptDrawerHeaderAvatar`，且 `editable=false`。创建表单仍用普通 `InDrawer`，不要套查看态。
 
 公共确认框（`Confirm.warning` / `useMessageConfirm` / `openConfirmDialog`）统一白底 8px 圆角、视口居中。第一参是说明或自定义 VNode；`title`、`icon`（组件 / VNode / `false` 隐藏）、`showClose` 可配。默认警告图标、显示关闭按钮。
 

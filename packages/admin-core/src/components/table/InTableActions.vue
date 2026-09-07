@@ -246,6 +246,20 @@ const privateInlineClass = (action: InTableAction<Row>) => ({
   "is-disabled": action.disabled,
 });
 
+const actionLayoutKey = (item: InTableAction<Row>): string => {
+  const confirm =
+    typeof item.confirm === "string" ? item.confirm : (item.confirm?.title ?? "");
+  return [
+    item.key,
+    item.label,
+    item.icon ?? "",
+    item.kind,
+    item.disabled ? "1" : "0",
+    item.disabledReason ?? "",
+    confirm,
+  ].join(":");
+};
+
 const readWidths = (): Record<string, number> => {
   const layer = measureRef.value;
   const widths: Record<string, number> = {};
@@ -288,9 +302,7 @@ watch(
   () =>
     [
       props.variant,
-      visibleActions.value
-        .map((item) => `${item.key}:${item.label}:${item.icon ?? ""}:${item.kind}`)
-        .join("|"),
+      visibleActions.value.map((item) => actionLayoutKey(item)).join("|"),
     ].join("|"),
   async () => {
     if (props.variant !== "toolbar") {

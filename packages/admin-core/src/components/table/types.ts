@@ -1,4 +1,7 @@
 import type { TableColumnCtx } from "element-plus";
+import type { InTableCheckboxMode } from "./checkboxMode";
+
+export type { InTableCheckboxMode, InTableCheckboxSpec, InTableRowPredicate } from "./checkboxMode";
 
 export interface TableAPI<Row = unknown> {
   clearSelection(): void;
@@ -33,6 +36,8 @@ export interface TableHeaderRecord<In = unknown, Out = unknown> extends Partial<
   required?: boolean;
   configurable?: boolean;
   transform?: TransformItem<In, Out>;
+  /** selection 列表头勾选：on 显示、off 不显示、disabled 显示但禁用。布尔值映射 on/off；默认 off。 */
+  headerCheckbox?: boolean | InTableCheckboxMode;
 }
 
 export interface TablePage {

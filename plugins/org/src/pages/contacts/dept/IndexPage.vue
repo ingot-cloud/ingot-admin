@@ -7,16 +7,25 @@
     <in-split-layout>
       <in-table
         :loading="deptQuery.isFetching.value"
-        :data="deptTree"
+        :data="visibleTree"
         :headers="visibleHeaders"
         :table-id="ORG_DEPT_TABLE_ID"
         density="compact"
-        :expandRowKeys="expandRowKeys"
+        tree-column="name"
+        :checkbox="checkboxModeOf"
+        :tree-expand="treeExpandOf"
+        v-model:expand-row-keys="expandRowKeys"
+        :feedback="searchName.trim() ? 'no-result' : 'none'"
+        @selection-change="privateOnSelectionChange"
       >
-        <template #title>
-          <span>{{ userInforStore.getCurrentOrg?.name }}</span>
-        </template>
         <template #tools-start>
+          <el-input
+            v-model="searchName"
+            class="w-200px"
+            clearable
+            placeholder="搜索部门名"
+            :prefix-icon="Search"
+          />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="ORG_DEPT_TABLE_ID"
@@ -24,29 +33,28 @@
           />
         </template>
         <template #tools-end>
-          <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
+          <in-table-actions
+            variant="toolbar"
+            :actions="toolbarActions"
+            :row="toolbarRow"
+            :selected-count="selectedRows.length"
+          />
         </template>
         <template #name="{ item }">
-          <in-button :disabled="item.mainFlag" link text @click="handleEdit(item)">
+          <span
+            class="dept-name"
+            :class="{ 'is-link': !item.mainFlag }"
+            @click="privateOnNameClick(item)"
+          >
             {{ item.name }}
-          </in-button>
+          </span>
         </template>
         <template #managerUsers="{ item }">
-          <div
-            flex
-            flex-row
-            gap-2
-            flex-wrap
-            v-if="item.managerUsers && item.managerUsers.length > 0"
-          >
-            <el-tag v-for="(it, index) in item.managerUsers" type="primary" :key="index">
-              {{ it.nickname }}
-            </el-tag>
-          </div>
-          <el-tag v-else type="info"> 暂无 </el-tag>
+          {{ managerDisplay(item) }}
         </template>
         <template #status="{ item }">
-          <in-common-status-tag :status="item.status" />
+          <in-common-status-tag v-if="item.status" :status="item.status" />
+          <span v-else>-</span>
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -55,52 +63,79 @@
     </in-split-layout>
   </in-page-frame>
 
-  <EditDrawer ref="EditDrawerRef" :selectData="deptTree" @success="privateRefresh" />
+  <CreateDrawer ref="CreateDrawerRef" :select-data="deptTree" @success="privateRefresh" />
+  <DetailDrawer ref="DetailDrawerRef" :select-data="deptTree" @success="privateRefresh" />
 </template>
 
 <script lang="ts" setup>
 import {
   applyColumnSelection,
-  Message,
   silentQueryRequest,
-  useUserInfoStore,
   type InTableAction,
+  type InTableCheckboxMode,
 } from "@ingot/admin-core";
 import type { DeptTreeNodeWithManagerVO } from "@/models";
 import { RemoveDeptAPI } from "@/api/org/dept";
 import { OrgDeptTreeQueryOptions, orgDeptQueryKeys } from "@/api/org/dept.query";
+import { Search } from "@element-plus/icons-vue";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import EditDrawer from "./components/EditDrawer.vue";
+import CreateDrawer from "./components/CreateDrawer.vue";
+import DetailDrawer from "./components/DetailDrawer.vue";
+import { collectExpandableDeptIds, filterDeptTree } from "./deptTree";
 import {
+  collectSelectedDeptIds,
   createOrgDeptRowActions,
   createOrgDeptToolbarActions,
   ORG_DEPT_TABLE_ID,
   tableHeaders,
 } from "./table";
 
-const userInforStore = useUserInfoStore();
 const queryClient = useQueryClient();
 const deptQuery = useQuery(() => OrgDeptTreeQueryOptions());
 const deptTree = computed(() => deptQuery.data.value ?? []);
+const searchName = ref("");
 const expandRowKeys = ref<Array<string>>([]);
 const selectedColumnProps = ref<string[]>([]);
+const selectedRows = ref<Array<DeptTreeNodeWithManagerVO>>([]);
 const toolbarRow = {} satisfies DeptTreeNodeWithManagerVO;
+
+const visibleTree = computed(() => filterDeptTree(deptTree.value, searchName.value));
+
+watch(searchName, (keyword) => {
+  const query = keyword.trim();
+  if (query) {
+    expandRowKeys.value = collectExpandableDeptIds(visibleTree.value);
+    return;
+  }
+  const rootId = deptTree.value[0]?.id;
+  expandRowKeys.value = rootId ? [rootId] : [];
+});
 
 watch(
   deptTree,
   (data) => {
-    if (data.length > 0 && expandRowKeys.value.length === 0) {
-      expandRowKeys.value = [data[0].id!];
+    if (searchName.value.trim()) {
+      expandRowKeys.value = collectExpandableDeptIds(visibleTree.value);
+      return;
+    }
+    if (expandRowKeys.value.length === 0 && data[0]?.id) {
+      expandRowKeys.value = [data[0].id];
     }
   },
   { immediate: true },
 );
 
-const EditDrawerRef = ref();
+const CreateDrawerRef = ref();
+const DetailDrawerRef = ref();
 
 const visibleHeaders = computed(() =>
   applyColumnSelection(tableHeaders, selectedColumnProps.value),
 );
+
+const checkboxModeOf = (row: DeptTreeNodeWithManagerVO): InTableCheckboxMode =>
+  row.mainFlag ? "off" : "on";
+
+const treeExpandOf = (row: DeptTreeNodeWithManagerVO): boolean => !row.mainFlag;
 
 const removeMutation = useMutation({
   mutationFn: (id: string) => RemoveDeptAPI(id, silentQueryRequest()),
@@ -113,8 +148,15 @@ const privateRefresh = (): void => {
   void queryClient.invalidateQueries({ queryKey: orgDeptQueryKeys.all });
 };
 
+const managerDisplay = (item: DeptTreeNodeWithManagerVO): string => {
+  const names = (item.managerUsers ?? [])
+    .map((user) => user.nickname?.trim())
+    .filter((name): name is string => Boolean(name));
+  return names.length > 0 ? names.join("、") : "-";
+};
+
 const handleRemove = (item: DeptTreeNodeWithManagerVO): void => {
-  if (!item.id) {
+  if (!item.id || item.mainFlag) {
     return;
   }
   removeMutation.mutateAsync(item.id).then(() => {
@@ -122,22 +164,60 @@ const handleRemove = (item: DeptTreeNodeWithManagerVO): void => {
   });
 };
 
-const handleEdit = (data?: DeptTreeNodeWithManagerVO | string) => {
-  EditDrawerRef.value.show(data || deptTree.value[0].id);
+const handleCreate = (parentId?: string): void => {
+  const pid = parentId || deptTree.value[0]?.id;
+  if (!pid) {
+    return;
+  }
+  CreateDrawerRef.value.show(pid);
 };
 
-const toolbarActions = computed(() => createOrgDeptToolbarActions(() => handleEdit()));
+const handleDetail = (data: DeptTreeNodeWithManagerVO): void => {
+  if (data.mainFlag) {
+    return;
+  }
+  DetailDrawerRef.value.show(data);
+};
+
+const privateOnNameClick = (item: DeptTreeNodeWithManagerVO): void => {
+  handleDetail(item);
+};
+
+const handleBatchDelete = (): void => {
+  collectSelectedDeptIds(selectedRows.value);
+};
+
+const toolbarActions = computed(() =>
+  createOrgDeptToolbarActions({
+    onCreate: () => handleCreate(),
+    onBatchDelete: handleBatchDelete,
+    selectedCount: selectedRows.value.length,
+  }),
+);
 
 const rowActionsOf = (
   item: DeptTreeNodeWithManagerVO,
 ): Array<InTableAction<DeptTreeNodeWithManagerVO>> =>
   createOrgDeptRowActions(item, {
-    onEdit: handleEdit,
-    onAddChild: (row) => handleEdit(row.id),
+    onDetail: handleDetail,
+    onAddChild: (row) => handleCreate(row.id),
     onDelete: handleRemove,
   });
+
+const privateOnSelectionChange = (rows: Array<DeptTreeNodeWithManagerVO>): void => {
+  selectedRows.value = rows;
+};
 
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };
 </script>
+<style lang="postcss" scoped>
+.dept-name {
+  min-width: 0;
+}
+
+.dept-name.is-link {
+  cursor: pointer;
+}
+</style>

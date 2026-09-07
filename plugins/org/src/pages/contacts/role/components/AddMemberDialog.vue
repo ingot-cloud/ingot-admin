@@ -64,6 +64,7 @@ const tableHeaders: Array<TableHeaderRecord> = [
   {
     type: "selection",
     width: "50",
+    headerCheckbox: true,
     selectable: (row: { canBind?: boolean }) => Boolean(row.canBind),
   },
   {
