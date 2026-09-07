@@ -1,11 +1,10 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header description="分别维护管理员与会员的登录失败锁定策略。">
-        <template #tabs>
-          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
-        </template>
-      </in-page-header>
+      <in-page-header description="分别维护管理员与会员的登录失败锁定策略。" />
+    </template>
+    <template #tabs>
+      <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
     <div class="account-protection-page">

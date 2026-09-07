@@ -57,6 +57,7 @@ describe("admin UI visual fixtures", () => {
     expect(table).toContain(":slotted(.in-table__count)");
     expect(table).toContain("gap: var(--in-space-3)");
     expect(pageFrame).toMatch(/\.in-page-frame__body\.is-page \{[\s\S]*?padding-bottom: var\(--in-page-gutter\);/);
+    expect(pageFrame).toContain(".in-page-frame__header:has(+ .in-page-frame__tabs)");
     const pageHeader = readFileSync(resolve(root, "../InPageHeader.vue"), "utf8");
     expect(pageHeader).toContain("font-size: var(--in-font-size-section-title)");
     expect(pageHeader).toContain("font-weight: var(--in-font-weight-section-title)");
@@ -64,10 +65,17 @@ describe("admin UI visual fixtures", () => {
     expect(pageHeader).toContain("-webkit-line-clamp: 1");
     expect(pageHeader).toContain("word-break: break-all");
     expect(pageHeader).toContain("route.meta.title");
+    expect(pageHeader).toContain(
+      "M1.293 11.293a1 1 0 0 0 0 1.414l7 7a1 1 0 0 0 1.414-1.414L4.414 13H21a1 1 0 1 0 0-2H4.414l5.293-5.293a1 1 0 0 0-1.414-1.414l-7 7Z",
+    );
+    expect(pageHeader).toContain("width: 20px");
+    expect(pageHeader).toContain("in-page-header__divider");
+    expect(pageHeader).not.toContain("ep:back");
     expect(pageHeader).toContain(".in-page-header.has-description {");
     expect(pageHeader).not.toMatch(
       /\.in-page-header \{[^}]*min-height: var\(--in-page-header-min-height\);/,
     );
+    expect(pageHeader).toContain(".in-page-header:has(.in-page-header__tabs)");
     const tree = readFileSync(resolve(root, "../InTree.vue"), "utf8");
     expect(tree).toContain("table-expand-collapsed.svg");
     expect(tree).toContain("table-expand-expanded.svg");

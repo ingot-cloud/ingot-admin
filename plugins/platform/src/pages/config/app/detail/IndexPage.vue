@@ -1,20 +1,22 @@
 <template>
-  <in-page-frame v-loading="loading" mode="page">
+  <in-page-frame v-loading="loading" mode="page" surface="workspace">
     <template #header>
-      <in-page-header show-back :description="detail.name" @back="privateOnBack">
+      <in-page-header show-back :title="detail.name" @back="privateOnBack">
         <template #action>
           <template v-if="currentTab === TabNameBase">
             <template v-if="editing">
               <in-button @click="privateOnCancel">取消</in-button>
-              <in-button type="primary" :loading="loading" @click="privateOnConfirm">确定</in-button>
+              <in-button type="primary" :loading="loading" @click="privateOnConfirm">
+                确定
+              </in-button>
             </template>
             <in-button v-else type="primary" @click="privateOnEdit">编辑</in-button>
           </template>
         </template>
-        <template #tabs>
-          <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
-        </template>
       </in-page-header>
+    </template>
+    <template #tabs>
+      <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
     </template>
 
     <BasicInfoPanel

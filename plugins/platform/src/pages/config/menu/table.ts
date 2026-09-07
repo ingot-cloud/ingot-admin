@@ -13,17 +13,24 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "菜单类型",
     prop: "menuType",
+    width: "120",
+  },
+  {
+    label: "状态",
+    prop: "status",
     width: "100",
   },
   {
     label: "图标",
     prop: "icon",
     width: "80",
+    hide: true,
   },
   {
     label: "访问模式",
     prop: "accessMode",
     width: "100",
+    hide: true,
   },
   {
     label: "权限编码",
@@ -34,11 +41,12 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "路由",
     prop: "path",
-    width: "150",
+    width: "200",
   },
   {
     label: "备注",
     prop: "remark",
+    minWidth: "180",
   },
   {
     label: "路由名称",
@@ -89,16 +97,13 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "链接类型",
     prop: "linkType",
     width: "80",
+    hide: true,
   },
   {
     label: "组织类型",
     prop: "orgType",
     width: "80",
-  },
-  {
-    label: "状态",
-    prop: "status",
-    minWidth: "132",
+    hide: true,
   },
   {
     label: "操作",

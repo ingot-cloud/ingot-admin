@@ -91,13 +91,14 @@
 
 ### REQ-004：页面框架与页面头
 
-系统 SHALL 用 `InPageFrame` 区分 page / contained 滚动；`InPageHeader` 固定在页面头。
+系统 SHALL 用 `InPageFrame` 区分 page / contained 滚动；`InPageHeader` 固定在页面头。页内 Tab 使用 `InPageFrame` `#tabs`，与 header 同为非滚动区。
 
 **验收标准：**
 
 - [x] page 模式只滚动 PageBody；contained 模式由内部表格/双栏承担数据滚动
 - [x] 页面头主标题 16/24px、500；说明 14/22px、400
 - [x] 列表和双栏默认全高白色工作面，不套外层圆角卡片
+- [x] `#header` 后接 `#tabs` 时去掉页头底边，只保留 Tab 底部分隔；两者均不进入滚动区
 
 ### REQ-005：可折叠双栏
 

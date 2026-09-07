@@ -50,13 +50,14 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | Overview | `InPageFrame mode="page"` | PageBody | Dashboard 摘要与快捷入口 |
 | List | `contained` + `InSplitLayout`（可不启用左栏） | 表格数据区 | 筛选放 `#tools-start`，不要放 `#header` |
 | Split List | `contained` + `left-collapsible` | 左树与右表独立 | `InPageHeader` 在 `InPageFrame` `#header` |
-| Settings | `mode="page"`，局部 Tab | PageBody | 安全策略；懒挂载不变 |
-| Detail | `mode="page"`，`showBack` | PageBody | 应用详情 |
+| Settings | `mode="page"`，局部 Tab 放 `InPageFrame` `#tabs` | PageBody | 安全策略；懒挂载不变；Tab 在滚动区外钉住，不进 `InPageHeader` |
+| Detail | `mode="page"`，`showBack`，`surface="workspace"` | PageBody | 应用详情；局部 Tab 同 Settings |
 | Tool | `mode="page"` | PageBody | 二维码等单一任务 |
 
 约定：
 
 - 主标题取 `route.meta.title`，页面不硬编码菜单名
+- Settings / Detail 的页内 Tab 放 `InPageFrame` `#tabs`，不要塞进 `InPageHeader`（会双横线），也不要放进滚动 body（会丢掉钉住）
 - 表格 `#title` 只保留左树或局部上下文；人数用 `.in-table__count`
 - 去掉 `@refresh`、`#toolbar`、`hide-setting`
 - emit 使用 kebab-case（`node-click`）
@@ -73,7 +74,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | platform | `dashboard` | Overview | |
 | platform | `admin/user` | List | `tableId` `platform-admin-user`；行内仅详情 |
 | platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：无 label 名称搜索（回车或清空即查）+ `InFilterPanel`（应用类型/状态 `InPicker`，切换即查）+ 字段设置 |
-| platform | `config/app/detail` | Detail | 菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
+| platform | `config/app/detail` | Detail | `surface="workspace"`；Tab 在 `InPageFrame` `#tabs`；菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
 | platform | `config/dict` | Split List | `platform-config-dict`；作用域在左栏；`#tools-end`：新建字典类型（描边 `primary`）+ 新建字典项（实心 `quick`）；`node-click` / `node-edit-click` |
 | platform | `config/menu` | List | `platform-config-menu` |
 | platform | `config/permission` | List | `platform-config-permission` |
@@ -108,7 +109,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 
 - [x] 25 个入口均使用共享组件组织，不复制顶栏/侧栏
 - [x] List / Split List 使用 contained + workspace
-- [x] 固定页面头；主标题来自菜单名
+- [x] 固定页面头；主标题来自菜单名；页内 Tab 在 `InPageFrame` `#tabs`，不进滚动区
 
 ### REQ-002：列表操作分层与字段偏好
 

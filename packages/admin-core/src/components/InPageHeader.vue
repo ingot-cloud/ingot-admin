@@ -1,15 +1,30 @@
 <template>
   <div class="in-page-header" :class="{ 'has-description': hasDescription }">
     <div class="in-page-header__row">
-      <button
-        v-if="showBack"
-        type="button"
-        class="in-icon-button in-page-header__back"
-        aria-label="返回"
-        @click="privateOnBack"
-      >
-        <in-icon name="ep:back" />
-      </button>
+      <div v-if="showBack" class="in-page-header__nav">
+        <button
+          type="button"
+          class="in-icon-button in-page-header__back"
+          aria-label="返回"
+          @click="privateOnBack"
+        >
+          <svg
+            class="in-page-header__back-icon"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M1.293 11.293a1 1 0 0 0 0 1.414l7 7a1 1 0 0 0 1.414-1.414L4.414 13H21a1 1 0 1 0 0-2H4.414l5.293-5.293a1 1 0 0 0-1.414-1.414l-7 7Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+        <span class="in-page-header__divider" aria-hidden="true" />
+      </div>
       <div class="in-page-header__titles">
         <h1 class="in-page-header__title">
           <slot name="title">{{ resolvedTitle }}</slot>
@@ -91,8 +106,28 @@ const privateOnBack = () => {
   align-items: flex-start;
 }
 
-.in-page-header.has-description .in-page-header__back {
+.in-page-header.has-description .in-page-header__nav {
   margin-top: 2px;
+}
+
+.in-page-header__nav {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--in-space-2);
+}
+
+.in-page-header__back-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.in-page-header__divider {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  background: var(--in-border-color);
 }
 
 .in-page-header__titles {
@@ -132,7 +167,14 @@ const privateOnBack = () => {
   gap: var(--in-space-2);
 }
 
+.in-page-header:has(.in-page-header__tabs) {
+  gap: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .in-page-header__tabs {
   min-width: 0;
+  margin-inline: calc(var(--in-space-5) * -1);
 }
 </style>

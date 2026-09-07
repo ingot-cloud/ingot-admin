@@ -4,8 +4,8 @@
 
 | 组件 | 用途 | 主要新增/约定 | 兼容说明 |
 |------|------|----------------|----------|
-| `InPageFrame` | 页面高度、表面与滚动契约 | `mode: page \| contained`，`surface: plain \| workspace`；page 模式滑到底保留 `--in-page-gutter`；`#header` / `#tabs` / default | 新组件；普通页用 `page`，列表/双栏用 `contained` + `workspace` |
-| `InPageHeader` | 页面标题区 | 白底、底部分隔；有说明时约 80px，无说明时高度随主标题收缩、不预留副标题占位；未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `#tabs` / `back` | 原 `#title`、`#action` 仍可用 |
+| `InPageFrame` | 页面高度、表面与滚动契约 | `mode: page \| contained`，`surface: plain \| workspace`；page 模式滑到底保留 `--in-page-gutter`；`#header` / `#tabs` / default；`#tabs` 在滚动区外（与 header 一起钉住），页头紧挨 Tab 时去掉底边，只留 Tab 底部分隔 | 新组件；普通页用 `page`，列表/双栏用 `contained` + `workspace` |
+| `InPageHeader` | 页面标题区 | 白底、底部分隔；有说明时约 80px，无说明时高度随主标题收缩、不预留副标题占位；未传 `title` 时使用当前路由 `meta.title`（侧栏菜单名）；主标题 16/24px、500、`#1f2329`；说明 14/22px、400、`#646a73`；超长单行省略；返回为 20×20 左箭头 SVG，右侧 16px 竖分隔线；`title` / `description`（`subtitle` 别名）/ `showBack` / `#action` / `back`；页级 Tab 用 `InPageFrame` `#tabs`，不要塞进本组件 | 原 `#title`、`#action`、`#tabs` 仍可用；自带 `#tabs` 时同样去掉页头底边 |
 | `InContainer` | 信息卡片/区块 | 默认 `plain` 透明无边框、直角；`variant="bordered"` 加边框；`radius` / `background` / `borderColor` / `borderWidth` 可覆盖 | `padding` / `showBacktop` / `getContentSize` 保留 |
 | `InSplitLayout` | 可选 header + 左右分栏工作面 | 默认全高白底工作面、无边框直角；可覆盖 `background` / `borderColor` / `radius`；左栏默认与容器同色，可用 `left-background` 单独覆盖；左栏 260→0px，分隔线中线 16×32 右侧圆角折叠标签（贴线向右伸出）；左栏默认 16px 内边距且子项不超出；`auto-collapse`（默认 true）+ `min-right-width`（默认 680）临时收起；`v-model:left-open` 只持久化手动桌面状态；`<1024` 覆盖层不写回桌面状态 | `header/left/top/default` 插槽名不变；`left-collapsible=false` 不出现折叠柄 |
 | `InTree` | 左栏树 | 展开/收起三角与 `InTable` 树列相同：`table-expand-collapsed.svg` / `table-expand-expanded.svg`，叶子节点占位但不显示三角 | 仍透传 `ElTree` 属性与实例方法 |
@@ -84,7 +84,14 @@ InDetailDrawer title edit-label v-model:editing
 
 全局 Toast 使用 `Message.success` / `warning` / `error`（`import { Message } from "@ingot/admin-core"`）。不要依赖 auto-import 类名；composable 场景可用已注入的 `useMessage()`。样式由封装统一加 `.in-message`：最小 204×54、语义色描边与浅底、正文 `--in-text-color`。不要在业务页覆盖 toast 宽高。
 
-普通 Overview/Settings/Detail 使用 `InPageFrame mode="page"`，由 PageBody 滚动；返回顶部只绑定该滚动区。
+普通 Overview/Settings/Detail 使用 `InPageFrame mode="page"`，由 PageBody 滚动；返回顶部只绑定该滚动区。Settings / Detail 的页内 Tab 放 `InPageFrame` `#tabs`（header 与 tabs 都不进滚动区，滚动时仍钉住），不要放进 `InPageHeader`，也不要放进 default 以免丢掉钉住。
+
+```text
+InPageFrame mode="page"
+  #header  InPageHeader  (#action 可选)
+  #tabs    InBizTabsHeader
+  面板内容
+```
 
 宽表格只在 `InTable` 数据区横向滚动。不要在页面容器上加 `overflow-x-hidden`。不要为了白底再套一层默认圆角 `InContainer`。
 

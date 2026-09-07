@@ -13,6 +13,7 @@ describe("security sessions IndexPage", () => {
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="查询在线会话并配置并发策略。"');
     expect(source).toContain("in-biz-tabs-header");
+    expect(source).toMatch(/<in-page-header[\s\S]*?\/>\s*<\/template>\s*<template #tabs>/);
     expect(source).toContain("visitedTabs");
     expect(source).not.toContain("@refresh");
   });

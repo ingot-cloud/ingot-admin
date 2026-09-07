@@ -97,6 +97,8 @@ describe("InPageHeader", () => {
     const wrapper = await mountHeader({
       props: { title: "详情", showBack: true },
     });
+    expect(wrapper.get(".in-page-header__back-icon").attributes("viewBox")).toBe("0 0 24 24");
+    expect(wrapper.get(".in-page-header__divider").exists()).toBe(true);
     await wrapper.get(".in-page-header__back").trigger("click");
     expect(wrapper.emitted("back")).toHaveLength(1);
     wrapper.unmount();
@@ -120,5 +122,16 @@ describe("InPageHeader", () => {
     expect(source).not.toMatch(
       /\.in-page-header \{[^}]*min-height: var\(--in-page-header-min-height\);/,
     );
+    expect(source).toContain(".in-page-header:has(.in-page-header__tabs)");
+    expect(source).toContain("margin-inline: calc(var(--in-space-5) * -1)");
+  });
+
+  it("仍渲染 #tabs 插槽", async () => {
+    const wrapper = await mountHeader({
+      props: { title: "应用详情" },
+      slots: { tabs: "<nav>基本信息</nav>" },
+    });
+    expect(wrapper.get(".in-page-header__tabs").text()).toBe("基本信息");
+    wrapper.unmount();
   });
 });

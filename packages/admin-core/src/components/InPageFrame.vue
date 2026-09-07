@@ -82,6 +82,15 @@ const backtopTarget = ".in-page-frame__body.is-page";
   min-width: 0;
 }
 
+.in-page-frame__tabs {
+  background: var(--in-bg-color-surface);
+}
+
+.in-page-frame__header:has(+ .in-page-frame__tabs) :deep(.in-page-header) {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .in-page-frame__body {
   @apply flex flex-col min-w-0;
   flex: 1;

@@ -7,10 +7,10 @@
             强制刷新策略
           </in-button>
         </template>
-        <template #tabs>
-          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
-        </template>
       </in-page-header>
+    </template>
+    <template #tabs>
+      <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
     <div class="access-protection-page">

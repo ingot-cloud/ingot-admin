@@ -19,21 +19,22 @@ export const permissionTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "节点类型",
     prop: "nodeType",
-    width: "100",
+    width: "120",
   },
   {
     label: "托管",
     prop: "managed",
-    width: "80",
+    width: "100",
+    hide: true
   },
   {
     label: "状态",
     prop: "status",
-    minWidth: "132",
+    minWidth: "80",
   },
   {
     label: "操作",
-    width: "160",
+    width: "240",
     prop: "actions",
     fixed: "right",
   },

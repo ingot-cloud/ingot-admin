@@ -7,7 +7,7 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "图标",
     prop: "menuType",
-    minWidth: "80",
+    minWidth: "100",
   },
   {
     label: "菜单名称",
@@ -18,23 +18,27 @@ export const menuTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "路由",
     prop: "path",
+    minWidth: "280",
   },
   {
     label: "权限",
     prop: "accessMode",
+    minWidth: "240",
+    hide: true
   },
   {
     label: "状态",
     prop: "status",
-    minWidth: "132",
+    minWidth: "80",
   },
   {
     label: "备注",
     prop: "remark",
+    minWidth: "180",
   },
   {
     label: "操作",
-    width: "160",
+    width: "200",
     prop: "actions",
     fixed: "right",
   },

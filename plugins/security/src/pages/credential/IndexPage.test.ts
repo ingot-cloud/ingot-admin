@@ -14,6 +14,7 @@ describe("security credential IndexPage", () => {
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="按类型维护凭证策略，各分组独立保存。"');
     expect(source).toContain("in-biz-tabs-header");
+    expect(source).toMatch(/<in-page-header[\s\S]*?\/>\s*<\/template>\s*<template #tabs>/);
     expect(source).toContain("loadAll");
     expect(source).toContain("onMounted");
     expect(source).toContain("padding: var(--in-space-5)");

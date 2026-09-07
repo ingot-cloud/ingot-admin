@@ -21,6 +21,7 @@ describe("account-protection IndexPage", () => {
     expect(source).toContain('mode="page"');
     expect(source).toContain("in-page-header");
     expect(source).toContain("in-biz-tabs-header");
+    expect(source).toMatch(/<in-page-header[\s\S]*?\/>\s*<\/template>\s*<template #tabs>/);
     expect(source).toContain("visitedTabs");
     expect(source).toContain('v-if="visitedTabs[AccountProtectionTabEnum.LOCKOUT]"');
     expect(source).not.toContain("@refresh");

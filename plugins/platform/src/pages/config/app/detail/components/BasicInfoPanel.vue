@@ -34,17 +34,12 @@
       <div class="info-section__title">基本信息</div>
       <in-form ref="formRef" :model="form" :rules="rules" :disabled="!editing" label-width="90px">
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="应用名称" prop="name">
               <el-input v-model="form.name" clearable placeholder="请输入应用名称" maxlength="64" />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="排序" prop="sort">
-              <el-input-number v-model="form.sort" :min="0" :max="9999" w-full />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="10">
             <el-form-item label="应用图标" prop="icon">
               <el-input v-model="form.icon" clearable placeholder="请输入 icon 名称">
                 <template #append>
@@ -76,6 +71,11 @@
               >
                 <in-icon-collection @select="privateOnIconSelect" />
               </el-popover>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="排序" prop="sort">
+              <el-input-number v-model="form.sort" :min="0" :max="9999" w-full />
             </el-form-item>
           </el-col>
           <el-col :span="24">

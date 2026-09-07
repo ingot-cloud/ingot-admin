@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
@@ -57,5 +60,14 @@ describe("InPageFrame", () => {
     expect(wrapper.get(".in-page-frame__body").text()).toContain("正文");
     await nextTick();
     wrapper.unmount();
+  });
+
+  it("header 后接 tabs 时去掉页头底边，由 Tab 底边作为唯一分隔", () => {
+    const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InPageFrame.vue"), "utf8");
+    expect(source).toContain(".in-page-frame__header:has(+ .in-page-frame__tabs)");
+    expect(source).toContain("padding-bottom: 0");
+    expect(source).toContain("border-bottom: 0");
+    expect(source).toContain(".in-page-frame__tabs {");
+    expect(source).toContain("background: var(--in-bg-color-surface)");
   });
 });

@@ -19,6 +19,7 @@ describe("security access-protection IndexPage", () => {
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="配置网关访问防护策略，未打开的页签不发请求。"');
     expect(source).toContain("in-biz-tabs-header");
+    expect(source).toMatch(/<\/in-page-header>\s*<\/template>\s*<template #tabs>/);
     expect(source).toContain("visitedTabs");
     expect(source).not.toContain("@refresh");
   });

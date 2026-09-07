@@ -1,11 +1,10 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header description="按类型维护凭证策略，各分组独立保存。">
-        <template #tabs>
-          <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
-        </template>
-      </in-page-header>
+      <in-page-header description="按类型维护凭证策略，各分组独立保存。" />
+    </template>
+    <template #tabs>
+      <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
     <div v-loading="loading" class="credential-policy-page">
