@@ -80,6 +80,8 @@ InDetailDrawer title edit-label v-model:editing
 
 公共确认框（`Confirm.warning` / `useMessageConfirm` / `openConfirmDialog`）统一白底 8px 圆角、视口居中。第一参是说明或自定义 VNode；`title`、`icon`（组件 / VNode / `false` 隐藏）、`showClose` 可配。默认警告图标、显示关闭按钮。
 
+全局 Toast 使用 `Message.success` / `warning` / `error`（`import { Message } from "@ingot/admin-core"`）。不要依赖 auto-import 类名；composable 场景可用已注入的 `useMessage()`。样式由封装统一加 `.in-message`：最小 204×54、语义色描边与浅底、正文 `--in-text-color`。不要在业务页覆盖 toast 宽高。
+
 普通 Overview/Settings/Detail 使用 `InPageFrame mode="page"`，由 PageBody 滚动；返回顶部只绑定该滚动区。
 
 宽表格只在 `InTable` 数据区横向滚动。不要在页面容器上加 `overflow-x-hidden`。不要为了白底再套一层默认圆角 `InContainer`。

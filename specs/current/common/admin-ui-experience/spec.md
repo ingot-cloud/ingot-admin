@@ -62,6 +62,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - emit 使用 kebab-case（`node-click`）
 - 宽度用 UnoCSS（如 `w-200px`），不用 `style="width: 200px"`
 - `InTableAction.confirm` 后，handler 不再套一层 `Confirm`
+- Toast 使用 `import { Message } from "@ingot/admin-core"`；官方插件不 auto-import `Message` 类，composable 可用 `useMessage()`
 
 ## 页面矩阵
 
