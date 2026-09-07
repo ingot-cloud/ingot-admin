@@ -329,7 +329,7 @@ defineExpose({} as any);
 
 ### 列表筛选
 
-默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。
+默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。主搜索永远直出；其余条件少则直出，多则进 `InFilterPanel`「筛选」浮层（不要叫「更多」，也不要用对话框/抽屉）。
 
 ```vue
 <template #tools-start>
@@ -351,8 +351,44 @@ defineExpose({} as any);
 </template>
 ```
 
+条件 ≥ 3 个或含远程实体选择时，直出主搜索 + 至多 1 个高频 `InPicker`，其余进浮层：
+
+```vue
+<template #tools-start>
+  <el-input
+    v-model="userId"
+    class="w-200px!"
+    clearable
+    placeholder="搜索用户 ID"
+    :prefix-icon="Search"
+    @keyup.enter="privateOnSearch"
+    @clear="privateOnSearch"
+  />
+  <in-filter-panel :active-count="extraFilterCount">
+    <TenantSelect v-model="tenantId" />
+    <el-input
+      v-model="ipAddress"
+      clearable
+      placeholder="搜索登录 IP"
+      :prefix-icon="Search"
+      @keyup.enter="privateOnSearch"
+      @clear="privateOnSearch"
+    />
+    <template #footer>
+      <in-button @click="privateOnResetExtra">重置</in-button>
+    </template>
+  </in-filter-panel>
+  <in-table-column-setting
+    :headers="tableHeaders"
+    :table-id="TABLE_ID"
+    @change="privateOnColumnChange"
+  />
+</template>
+```
+
 - `InPicker` 选项以「全部」开头；空选映射为 `undefined`，不传查询参数；切换即查
-- 查询框无 label，占位用「搜索…」；回车或清空即查；不要搜索/重置按钮
+- 查询框无 label，占位用「搜索…」；回车或清空即查；不要搜索主按钮
+- 浮层角标只统计已生效的**额外**条件（不含主搜索）；「重置」只清额外条件
 - 表单编辑仍用 `InSelect`；远程分页选择仍用 `InPageSelect`
 
 ### 事件处理命名

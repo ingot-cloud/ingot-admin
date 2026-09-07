@@ -4,7 +4,7 @@
 
 ## 概述
 
-platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、列表筛选在表格 `#tools-start`（下拉 `InPicker`、查询无 label）、`InTable` compact + 字段设置 + `InTableActions`。不改变 API、权限码、路由 path、菜单或 Query 语义。
+platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、列表筛选在表格 `#tools-start`（下拉 `InPicker`、查询无 label；条件多时用 `InFilterPanel`「筛选」浮层）、`InTable` compact + 字段设置 + `InTableActions`。不改变 API、权限码、路由 path、菜单或 Query 语义。
 
 ## 范围
 
@@ -61,8 +61,8 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - 去掉 `@refresh`、`#toolbar`、`hide-setting`
 - emit 使用 kebab-case（`node-click`）
 - 宽度用 UnoCSS（如 `w-200px`），不用 `style="width: 200px"`
-- 列表筛选：下拉用 `InPicker`（带 label、含「全部」、切换即查）；查询框无 label，占位「搜索…」，回车或清空即查；不要 `InFilterItem` + `InWithLabel` 和搜索/重置按钮
-- `#top` 只留给会改左树或作用域的上下文筛选（如字典作用域、会话的组织/客户端）
+- 列表筛选：下拉用 `InPicker`（带 label、含「全部」、切换即查）；查询框无 label，占位「搜索…」，回车或清空即查。主搜索永远直出；其余条件 ≤ 2 个全部直出；≥ 3 个或含远程实体选择时，直出主搜索 + 至多 1 个高频项，其余进 `InFilterPanel`「筛选」浮层（不要叫「更多」，不要对话框/抽屉）。浮层可「重置」额外条件，不要搜索主按钮，也不要 `InFilterItem` + `InWithLabel`
+- `#top` 只留给会改左树或作用域的上下文筛选（如字典作用域）
 - `InTableAction.confirm` 后，handler 不再套一层 `Confirm`
 - Toast 使用 `import { Message } from "@ingot/admin-core"`；官方插件不 auto-import `Message` 类，composable 可用 `useMessage()`
 
@@ -72,7 +72,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 |------|------|------|------|
 | platform | `dashboard` | Overview | |
 | platform | `admin/user` | List | `tableId` `platform-admin-user`；行内仅详情 |
-| platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：应用类型/状态 `InPicker`（切换即查）+ 无 label 名称搜索（回车或清空即查）+ 字段设置 |
+| platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：无 label 名称搜索（回车或清空即查）+ `InFilterPanel`（应用类型/状态 `InPicker`，切换即查）+ 字段设置 |
 | platform | `config/app/detail` | Detail | 菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
 | platform | `config/dict` | Split List | `platform-config-dict`；`node-click` / `node-edit-click` |
 | platform | `config/menu` | List | `platform-config-menu` |
@@ -94,7 +94,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | security | `access-protection` | Settings | 多 Tab 策略表；热更新提示不变 |
 | security | `account-protection` | Settings | B/C 两栏独立保存 |
 | security | `credential` | Settings | |
-| security | `sessions` | Settings | `security-sessions` / `security-sessions-policy` |
+| security | `sessions` | Settings | `security-sessions` / `security-sessions-policy`；会话列表 `#tools-start`：搜索用户 ID + `InFilterPanel`（组织/客户端/登录 IP + 重置）+ 字段设置 |
 
 通讯录各页是独立菜单路由，不使用页内路由 Tab。
 

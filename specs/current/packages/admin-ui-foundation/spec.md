@@ -13,7 +13,7 @@
 - `@ingot/admin-core` 颜色、排版、间距、圆角、阴影、层级、动效与控件尺寸 Token，以及 Element Plus 单向映射
 - `layout.main` 顶栏、侧栏、面包屑、内容沟槽与窄窗口 overlay
 - `InPageFrame` / `InPageHeader` / `InContainer` / `InSplitLayout`
-- `InTable`、`InTableActions`、`InTableColumnSetting`、`InPicker`
+- `InTable`、`InTableActions`、`InTableColumnSetting`、`InFilterPanel`、`InPicker`
 - `InAvatar`、`InCommonStatusTag`、`InAccountStatusTag`
 - 加载、空态、禁用、焦点与减少动效
 
@@ -126,6 +126,7 @@
 - [x] row 变体：详情 + 至多一个高频动作 + `…`
 - [x] `InTableColumnSetting` 依赖稳定 `tableId`；选择列和操作列默认不可隐藏
 - [x] `InPicker` 用于工具栏单选（带 label、含「全部」、切换即查），不替代表单 `InSelect`；列表查询框无 label
+- [x] `InFilterPanel`：工具栏「筛选」浮层收纳额外条件；文案不是「更多」；`active-count` 为已生效额外条件数；Esc / 点击外部关闭
 
 ### REQ-007：状态展示组件
 

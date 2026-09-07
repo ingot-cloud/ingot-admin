@@ -14,6 +14,7 @@
 - [packages/admin-core/src/components/container/InSplitLayout.vue](../../../../packages/admin-core/src/components/container/InSplitLayout.vue)
 - [packages/admin-core/src/components/table](../../../../packages/admin-core/src/components/table)
 - [packages/admin-core/src/components/select/InPicker.vue](../../../../packages/admin-core/src/components/select/InPicker.vue)
+- [packages/admin-core/src/components/table/InFilterPanel.vue](../../../../packages/admin-core/src/components/table/InFilterPanel.vue)
 - [packages/admin-core/src/components/README.md](../../../../packages/admin-core/src/components/README.md)
 - [docs/development-model.md](../../../../docs/development-model.md)
 
