@@ -116,7 +116,7 @@ pages/platform/base/app/
 - **查询不要 label**：文本搜索用无 label 的 `el-input`，`placeholder` 写成「搜索部门名」这种，`:prefix-icon="Search"`，回车或清空即查；不要 `InWithLabel`，也不要单独的搜索主按钮
 - **少的直出、多的进筛选浮层**：主搜索永远直出；其余条件 ≤ 2 个（例如 1～2 个 `InPicker`）全部直出；其余 ≥ 3 个，或含远程实体选择（`TenantSelect` / `InPageSelect`）时，直出主搜索 + 至多 1 个最高频 `InPicker`，其余放 `InFilterPanel`。按钮文案是「筛选」（`aria-label="筛选条件"`），不要叫「更多」（那是 `InTableActions`），也不要用对话框或抽屉。有已生效额外条件时显示数量角标（不含主搜索）。浮层内仍用 `InPicker` / 无 label 查询，切换或回车即查；底部可「重置」清空额外条件
 - `InPicker` 只用于工具栏单选，不替代表单 `InSelect`；远程实体选择（`InPageSelect` / `TenantSelect`）不是枚举下拉，保持原控件
-- `#top` 只留给会改左树/作用域的上下文筛选（如字典作用域），不要把普通列表查询放回去
+- `#top` 只留给会改左树的上下文筛选；字典作用域放左栏（先限制类型树），不要把普通列表查询放回去
 
 ### 样式
 

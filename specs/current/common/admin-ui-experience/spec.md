@@ -62,7 +62,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - emit 使用 kebab-case（`node-click`）
 - 宽度用 UnoCSS（如 `w-200px`），不用 `style="width: 200px"`
 - 列表筛选：下拉用 `InPicker`（带 label、含「全部」、切换即查）；查询框无 label，占位「搜索…」，回车或清空即查。主搜索永远直出；其余条件 ≤ 2 个全部直出；≥ 3 个或含远程实体选择时，直出主搜索 + 至多 1 个高频项，其余进 `InFilterPanel`「筛选」浮层（不要叫「更多」，不要对话框/抽屉）。浮层可「重置」额外条件，不要搜索主按钮，也不要 `InFilterItem` + `InWithLabel`
-- `#top` 只留给会改左树或作用域的上下文筛选（如字典作用域）
+- `#top` 只留给会改左树的上下文筛选；字典作用域放左栏（先限制类型树）
 - `InTableAction.confirm` 后，handler 不再套一层 `Confirm`
 - Toast 使用 `import { Message } from "@ingot/admin-core"`；官方插件不 auto-import `Message` 类，composable 可用 `useMessage()`
 
@@ -74,7 +74,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | platform | `admin/user` | List | `tableId` `platform-admin-user`；行内仅详情 |
 | platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：无 label 名称搜索（回车或清空即查）+ `InFilterPanel`（应用类型/状态 `InPicker`，切换即查）+ 字段设置 |
 | platform | `config/app/detail` | Detail | 菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
-| platform | `config/dict` | Split List | `platform-config-dict`；`node-click` / `node-edit-click` |
+| platform | `config/dict` | Split List | `platform-config-dict`；作用域在左栏；`#tools-end`：新建字典类型（描边 `primary`）+ 新建字典项（实心 `quick`）；`node-click` / `node-edit-click` |
 | platform | `config/menu` | List | `platform-config-menu` |
 | platform | `config/permission` | List | `platform-config-permission` |
 | platform | `config/role` | List | `platform-config-role` |
