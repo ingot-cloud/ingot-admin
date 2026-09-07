@@ -1,14 +1,36 @@
-import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
+import type { InPickerOption, InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { PlatformApp } from "@/models";
-import { CommonStatus, getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
+import {
+  AppTypeEnum,
+  CommonStatus,
+  getCommonStatusActionDesc,
+  getCommonStatusToggle,
+} from "@/models/enums";
 
 export const APP_HOME_TABLE_ID = "platform-config-app-home";
+
+export const appTypeFilterOptions: Array<InPickerOption> = [
+  { value: "", label: "全部" },
+  { value: AppTypeEnum.Platform, label: "平台" },
+  { value: AppTypeEnum.Tenant, label: "租户" },
+];
+
+export const appStatusFilterOptions: Array<InPickerOption> = [
+  { value: "", label: "全部" },
+  { value: CommonStatus.Enable, label: "正常" },
+  { value: CommonStatus.Lock, label: "锁定" },
+];
+
+export const resolveAppPickerFilter = (
+  value: string | number | boolean | null,
+): string | undefined => (typeof value === "string" && value !== "" ? value : undefined);
+
+export const toAppPickerValue = (value: string | undefined): string => value ?? "";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "应用名称",
     prop: "name",
-    minWidth: "180",
     required: true,
   },
   {
@@ -25,11 +47,12 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "排序",
     prop: "sort",
     width: "80",
+    hide: true,
   },
   {
     label: "状态",
     prop: "status",
-    minWidth: "132",
+    width: "80",
   },
   {
     label: "应用描述",

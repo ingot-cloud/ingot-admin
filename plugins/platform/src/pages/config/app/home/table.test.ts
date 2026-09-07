@@ -1,12 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   APP_HOME_TABLE_ID,
+  appStatusFilterOptions,
+  appTypeFilterOptions,
   createAppHomeRowActions,
   createAppHomeToolbarActions,
+  resolveAppPickerFilter,
   tableHeaders,
+  toAppPickerValue,
 } from "./table";
 
 vi.mock("@/models/enums", () => ({
+  AppTypeEnum: { Platform: "0", Tenant: "1" },
   CommonStatus: { Enable: "0", Lock: "9" },
   getCommonStatusToggle: (status: string) => (status === "0" ? "9" : "0"),
   getCommonStatusActionDesc: (status: string) => (status === "0" ? "启用" : "锁定"),
@@ -22,6 +27,16 @@ const handlers = {
 };
 
 describe("platform config app home table contract", () => {
+  it("应用类型与状态筛选映射到查询参数", () => {
+    expect(appTypeFilterOptions.map((item) => item.label)).toEqual(["全部", "平台", "租户"]);
+    expect(appStatusFilterOptions.map((item) => item.label)).toEqual(["全部", "正常", "锁定"]);
+    expect(resolveAppPickerFilter("")).toBeUndefined();
+    expect(resolveAppPickerFilter("0")).toBe("0");
+    expect(resolveAppPickerFilter("1")).toBe("1");
+    expect(toAppPickerValue(undefined)).toBe("");
+    expect(toAppPickerValue("0")).toBe("0");
+  });
+
   it("提供稳定 tableId，名称列为必选", () => {
     expect(APP_HOME_TABLE_ID).toBe("platform-config-app-home");
     expect(tableHeaders.find((item) => item.prop === "name")?.required).toBe(true);

@@ -5,45 +5,6 @@
     </template>
 
     <in-split-layout>
-      <template #top>
-        <in-filter-item>
-          <in-with-label title="应用类型">
-            <in-select
-              class="w-120px!"
-              v-model="condition.appType"
-              placeholder="全部类型"
-              :options="appTypeEnum.getOptions()"
-              @change="fetchData()"
-              clearable
-            />
-          </in-with-label>
-          <in-with-label title="状态">
-            <in-select
-              class="w-120px!"
-              v-model="condition.status"
-              placeholder="全部状态"
-              :options="statusEnum.getOptions()"
-              clearable
-            />
-          </in-with-label>
-          <in-with-label title="名称">
-            <el-input
-              class="w-200px"
-              v-model="condition.name"
-              clearable
-              placeholder="搜索应用名称"
-              @keyup.enter="privateOnSearch"
-            />
-          </in-with-label>
-          <template #rightActions>
-            <in-button @click="resetFilter">重置</in-button>
-            <in-button type="primary" :loading="loading" @in-click="privateOnSearch"
-              >搜索</in-button
-            >
-          </template>
-        </in-filter-item>
-      </template>
-
       <in-table
         :loading="loading"
         :data="pageInfo.records"
@@ -54,8 +15,18 @@
         @handleSizeChange="fetchData"
         @handleCurrentChange="fetchData"
       >
-        <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
         <template #tools-start>
+          <el-input
+            v-model="nameFilter"
+            class="w-200px!"
+            clearable
+            placeholder="搜索应用名"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
+          <in-picker v-model="appTypeFilter" label="应用类型" :options="appTypeFilterOptions" />
+          <in-picker v-model="statusFilter" label="状态" :options="appStatusFilterOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="APP_HOME_TABLE_ID"
@@ -99,13 +70,15 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { PlatformApp } from "@/models";
-import type { CommonStatus } from "@/models/enums";
-import { CommonStatusEnumExtArray, getCommonStatusToggle, useAppTypeEnum } from "@/models/enums";
+import { getCommonStatusToggle, useAppTypeEnum, type CommonStatus } from "@/models/enums";
+import { Search } from "@element-plus/icons-vue";
 import { PatchAppStatusAPI, RemoveAppAPI } from "@/api/platform/config/app.ts";
 import { appQueryKeys } from "@/api/platform/config/app.query";
 import { useOps } from "./useOps";
 import {
   APP_HOME_TABLE_ID,
+  appStatusFilterOptions,
+  appTypeFilterOptions,
   createAppHomeRowActions,
   createAppHomeToolbarActions,
   tableHeaders,
@@ -121,11 +94,11 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const { getIsSystemAdmin } = storeToRefs(useUserInfoStore());
-const { loading, condition, pageInfo, resetFilter, fetchData } = useOps();
+const { loading, appTypeFilter, statusFilter, nameFilter, pageInfo, fetchData, searchByName } =
+  useOps();
 const queryClient = useQueryClient();
 
 const appTypeEnum = useAppTypeEnum();
-const statusEnum = useEnum(CommonStatusEnumExtArray);
 const message = useMessage();
 const confirm = useMessageConfirm();
 const go = useGo();
@@ -155,7 +128,7 @@ const removeMutation = useMutation({
 });
 
 const privateOnSearch = (): void => {
-  fetchData();
+  searchByName();
 };
 
 const privateOnCreate = (): void => {
