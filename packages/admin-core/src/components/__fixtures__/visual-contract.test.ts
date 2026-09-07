@@ -68,6 +68,12 @@ describe("admin UI visual fixtures", () => {
     expect(pageHeader).not.toMatch(
       /\.in-page-header \{[^}]*min-height: var\(--in-page-header-min-height\);/,
     );
+    const tree = readFileSync(resolve(root, "../InTree.vue"), "utf8");
+    expect(tree).toContain("table-expand-collapsed.svg");
+    expect(tree).toContain("table-expand-expanded.svg");
+    expect(tree).toContain(".el-tree-node__expand-icon.expanded::before");
+    expect(tree).toContain(".el-tree-node__expand-icon.is-leaf::before");
+    expect(tree).toContain("transform: none !important");
     const avatar = readFileSync(resolve(root, "../avatar/InAvatar.vue"), "utf8");
     expect(avatar).toContain("width: var(--in-avatar-size)");
     expect(avatar).toContain("border-radius: 50%");

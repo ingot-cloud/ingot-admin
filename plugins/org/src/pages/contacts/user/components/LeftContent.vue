@@ -9,6 +9,7 @@
       :data="deptTree"
       :props="TreeKeyAndProps.props"
       :node-key="TreeKeyAndProps.nodeKey"
+      :default-expanded-keys="defaultExpandedKeys"
       :filter-node-method="privateFilterNode"
       @node-click="privateOnNodeClick"
     >
@@ -37,6 +38,7 @@ const emits = defineEmits<{
 const deptTreeRef = ref();
 const loading = computed(() => deptQuery.isFetching.value);
 const searchValue = ref("");
+const defaultExpandedKeys = ref<Array<string>>([]);
 
 watch(searchValue, (val) => {
   deptTreeRef.value!.filter(val);
@@ -56,8 +58,12 @@ watch(
     if (!updatedAt || deptTree.value.length === 0) {
       return;
     }
+    const selectData = deptTree.value[0];
+    const rootId = selectData?.id;
+    if (rootId && defaultExpandedKeys.value.length === 0) {
+      defaultExpandedKeys.value = [rootId];
+    }
     nextTick(() => {
-      const selectData = deptTree.value[0];
       const node = deptTreeRef.value?.getNode(selectData);
       node?.store.setCurrentNode(node);
       privateOnNodeClick(selectData);

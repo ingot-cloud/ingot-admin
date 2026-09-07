@@ -46,6 +46,12 @@ describe("org contacts user IndexPage", () => {
     expect(source).not.toContain("EditDrawer");
   });
 
+  it("左树默认展开企业根第一层级", () => {
+    expect(leftSource).toContain(":default-expanded-keys=\"defaultExpandedKeys\"");
+    expect(leftSource).toContain("defaultExpandedKeys.value = [rootId]");
+    expect(leftSource).toContain("defaultExpandedKeys.value.length === 0");
+  });
+
   it("左树向页面发出 kebab-case 选择事件", () => {
     expect(leftSource).toContain('"node-click"');
     expect(source).toContain("@node-click");
