@@ -118,6 +118,8 @@
 - [x] 不再内置刷新按钮；旧 `refresh` emit 仅兼容、无自动触发入口
 - [x] `tools-start` / `tools-end`；旧 `#toolbar` 映射到 `tools-start`
 - [x] compact 密度：表头 48px、数据行 44px
+- [x] 表头默认 14px / `font-weight: 400` / `--in-table-header-text`
+- [x] 勾选框 16×16；树列 `checkbox` / `headerCheckbox` 三态 on / off / disabled；`type: selection` 表头默认不显示，需显式 on
 - [x] `InTableActions` toolbar：`overflow: never` 直出；相同 `overflowGroup` 整组展开或整组进入 `…`
 - [x] row 变体：详情 + 至多一个高频动作 + `…`
 - [x] `InTableColumnSetting` 依赖稳定 `tableId`；选择列和操作列默认不可隐藏

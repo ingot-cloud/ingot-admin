@@ -2,7 +2,7 @@
 
 ## 概述
 
-`@ingot/admin-core` 提供实体详情的查看/编辑壳层：默认只读、底部进入编辑、编辑中离开需确认。通讯录成员详情为试点；添加成员仍走独立创建表单。
+`@ingot/admin-core` 提供实体详情的查看/编辑壳层：默认只读、底部进入编辑、编辑中离开需确认。通讯录成员与部门详情已接入；添加成员、添加部门仍走独立创建表单。
 
 ## 相关源码
 
@@ -14,12 +14,14 @@
 - [packages/admin-core/src/components/InDialog.vue](../../../../packages/admin-core/src/components/InDialog.vue)
 - [packages/admin-core/src/styles/dropdown.css](../../../../packages/admin-core/src/styles/dropdown.css)
 - [plugins/org/src/pages/contacts/user](../../../../plugins/org/src/pages/contacts/user)
+- [plugins/org/src/pages/contacts/dept](../../../../plugins/org/src/pages/contacts/dept)
+- [packages/admin-core/src/assets/dept-drawer-header-avatar.svg](../../../../packages/admin-core/src/assets/dept-drawer-header-avatar.svg)
 - [packages/admin-core/src/components/README.md](../../../../packages/admin-core/src/components/README.md)
 - 壳层与列表基础设施见 [admin-ui-foundation](../admin-ui-foundation/)
 
 ## 对接接口
 
-本能力不新增后端接口。成员试点复用组织用户 CRUD，副本见归档 [API.md](../../../changes/archive/2026/20260907-packages-detail-edit-pattern/API.md)。
+本能力不新增后端接口。成员与部门复用组织用户/部门 CRUD，副本见归档 [API.md](../../../changes/archive/2026/20260907-packages-detail-edit-pattern/API.md)。
 
 ## 变更记录
 

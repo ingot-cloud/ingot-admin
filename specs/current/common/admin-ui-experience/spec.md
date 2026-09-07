@@ -83,7 +83,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | org | `contacts/user` | Split List | 标准页；`org-contacts-user`；见 REQ-003 |
 | org | `contacts/auth` | Split List | `org-contacts-auth` |
 | org | `contacts/role` | Split List | `org-contacts-role` |
-| org | `contacts/dept` | List | 无左树；`InSplitLayout` 仅作工作面；`org-contacts-dept` |
+| org | `contacts/dept` | List | 无左树；`InSplitLayout` 仅作工作面；`org-contacts-dept`；搜索部门名；工具栏批量删除 / 批量导入导出 / 新建部门；`tree-column="name"`；企业根节点勾选 `off`、无展开箭头；表头全选默认打开 |
 | org | `contacts/structure` | List | 组织树浏览，无右表 |
 | member | `user` | List | `member-user`；对齐平台用户操作分层 |
 | member | `role` | List | `member-role` |
@@ -176,7 +176,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 ## 依赖与约束
 
 - 共享组件来自 [管理台 UI 基础设施](../../packages/admin-ui-foundation/spec.md)
-- 成员详情查看/编辑见 [详情查看/编辑标准](../../packages/detail-edit-pattern/spec.md)
+- 成员详情查看/编辑见 [详情查看/编辑标准](../../packages/detail-edit-pattern/spec.md)；通讯录部门详情同样接入该标准，头像固定且不可更换
 - 访问防护 / 账号保护 / 会话管理的业务规则仍以各自 capability 为准
 
 ## 验收标准
