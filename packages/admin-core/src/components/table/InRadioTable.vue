@@ -36,7 +36,7 @@
     <el-table
       v-bind="{ ...$attrs, ...props }"
       :ref="tableRef"
-      v-loading="loading"
+      v-loading="showOverlayLoading"
       @row-click="privateRowClick"
     >
       <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
@@ -63,7 +63,12 @@
         </template>
       </el-table-column>
       <template #empty>
-        <el-empty :image="emptyIllustration" description="暂无数据" />
+        <in-table-skeleton
+          v-if="showSkeleton"
+          :columns="headersEnable"
+          :rows="skeletonRows"
+        />
+        <el-empty v-else :image="emptyIllustration" description="暂无数据" />
       </template>
     </el-table>
   </el-radio-group>
@@ -86,6 +91,8 @@
 import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { emptyIllustration } from "./emptyIllustration";
+import InTableSkeleton from "./InTableSkeleton.vue";
+import { resolveSkeletonRowCount } from "./resolveSkeletonRowCount";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";
@@ -102,6 +109,11 @@ const slot = defineSlots<InTableSlots<TableRow>>();
 const props = withDefaults(defineProps<InTableProps>(), DefaultProps);
 const emits = defineEmits(["handleSizeChange", "handleCurrentChange", "refresh"]);
 const { componentSize } = storeToRefs(useAppStateStore());
+
+const hasRows = computed(() => (props.data?.length ?? 0) > 0);
+const showSkeleton = computed(() => Boolean(props.loading) && !hasRows.value);
+const showOverlayLoading = computed(() => Boolean(props.loading) && hasRows.value);
+const skeletonRows = computed(() => resolveSkeletonRowCount(props.page.size));
 
 const headersEnable = ref<Array<TableHeaderRecord>>(
   props.headers.filter((item: TableHeaderRecord) => !item.hide),
@@ -169,6 +181,18 @@ defineExpose<TableAPI<TableRow>>({
 });
 </script>
 <style lang="postcss" scoped>
+:deep(.el-table__empty-block:has(.in-table-skeleton)) {
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 0;
+}
+
+:deep(.el-table__empty-block:has(.in-table-skeleton) .el-table__empty-text) {
+  width: 100%;
+  line-height: 0;
+}
+
 :deep(th.el-table__cell) {
   height: var(--in-table-header-height);
   padding: 0 12px;

@@ -18,6 +18,10 @@ const stubs = {
     template: '<div class="empty" :data-image="image">{{ description }}</div>',
   },
   ElPagination: { template: '<div class="pager" />' },
+  InTableSkeleton: {
+    props: ["columns", "rows"],
+    template: '<div class="in-table-skeleton" :data-rows="rows">骨架</div>',
+  },
 };
 
 describe("InTable", () => {
@@ -32,6 +36,37 @@ describe("InTable", () => {
     });
     expect(wrapper.get(".empty").text()).toBe("暂无数据");
     expect(wrapper.get(".empty").attributes("data-image")).toBe(emptyIllustration);
+    wrapper.unmount();
+  });
+
+  it("无数据加载时显示骨架，不出现暂无数据", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [],
+        loading: true,
+        page: { current: 1, size: 20, total: 0 },
+      },
+      global: { stubs },
+    });
+    expect(wrapper.get(".in-table-skeleton").exists()).toBe(true);
+    expect(wrapper.get(".in-table-skeleton").attributes("data-rows")).toBe("8");
+    expect(wrapper.find(".empty").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it("已有数据刷新时不替换为骨架", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [{ name: "Ada" }],
+        loading: true,
+      },
+      global: { stubs },
+    });
+    expect(wrapper.find(".in-table-skeleton").exists()).toBe(false);
     wrapper.unmount();
   });
 
@@ -154,5 +189,7 @@ describe("InTable", () => {
     expect(source).toContain(".hidden-columns");
     expect(source).toContain("emptyIllustration");
     expect(source).toContain("暂无数据");
+    expect(source).toContain("showSkeleton");
+    expect(source).toContain("in-table-skeleton");
   });
 });

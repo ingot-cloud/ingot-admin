@@ -23,7 +23,11 @@
     </div>
 
     <div class="in-table__body">
-      <el-table v-bind="{ ...$attrs, ...tableBind }" :ref="tableRef" v-loading="loading">
+      <el-table
+        v-bind="{ ...$attrs, ...tableBind }"
+        :ref="tableRef"
+        v-loading="showOverlayLoading"
+      >
         <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
           <template #default="scope">
             <slot
@@ -48,7 +52,12 @@
           </template>
         </el-table-column>
         <template #empty>
-          <slot v-if="feedback === 'error'" name="error">
+          <in-table-skeleton
+            v-if="showSkeleton"
+            :columns="headersEnable"
+            :rows="skeletonRows"
+          />
+          <slot v-else-if="feedback === 'error'" name="error">
             <el-empty :image="emptyIllustration" description="加载失败" />
           </slot>
           <slot v-else-if="feedback === 'unauthorized'" name="unauthorized">
@@ -84,6 +93,8 @@ import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { visibleHeaderProps } from "./columnVisibility";
 import { emptyIllustration } from "./emptyIllustration";
+import InTableSkeleton from "./InTableSkeleton.vue";
+import { resolveSkeletonRowCount } from "./resolveSkeletonRowCount";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";
@@ -105,6 +116,11 @@ const emits = defineEmits<{
   refresh: [];
 }>();
 const { componentSize } = storeToRefs(useAppStateStore());
+
+const hasRows = computed(() => (props.data?.length ?? 0) > 0);
+const showSkeleton = computed(() => Boolean(props.loading) && !hasRows.value);
+const showOverlayLoading = computed(() => Boolean(props.loading) && hasRows.value);
+const skeletonRows = computed(() => resolveSkeletonRowCount(props.page.size));
 
 const hasMeta = computed(() => Boolean(slot.title || slot.subtitle || slot.summary));
 const hasTools = computed(() =>
@@ -245,6 +261,19 @@ defineExpose<TableAPI<TableRow>>({
 .in-table__pagination {
   @apply flex flex-row justify-end items-start;
   flex: none;
+}
+
+:deep(.el-table__empty-block:has(.in-table-skeleton)) {
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+}
+
+:deep(.el-table__empty-block:has(.in-table-skeleton) .el-table__empty-text) {
+  width: 100%;
+  line-height: 0;
 }
 
 :deep(.el-table) {
