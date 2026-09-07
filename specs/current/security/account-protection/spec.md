@@ -4,7 +4,7 @@
 
 ## 概述
 
-平台管理员在「安全中心 / 账号保护」维护账号相关安全策略。页面为单页多 Tab（对齐凭证策略 / 访问防护）；当前仅「账号锁定」Tab，左右两栏分别配置 B 端、C 端登录失败自动锁定。前端鉴权走 session，不传 Bearer Token。后续账号保护能力继续加 Tab，不新增子菜单。
+平台管理员在「安全中心 / 账号保护」维护账号相关安全策略。页面为 Settings 原型（固定页面头 + 局部 Tab）；当前仅「账号锁定」Tab，左右两栏分别配置 B 端、C 端登录失败自动锁定。前端鉴权走 session，不传 Bearer Token。后续账号保护能力继续加 Tab，不新增子菜单。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
 
 ## 范围
 
@@ -87,6 +87,7 @@
 - 账号锁定策略接口见归档 [API.md](../../../changes/archive/2026/20260825-security-account-protection/API.md)
 - 菜单由运营在菜单管理配置，不在本仓库落库
 - 用户类型复用 `SessionUserTypeEnum`（`"0"` / `"1"`）
+- 跨页面布局见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 
 ## 验收标准
 

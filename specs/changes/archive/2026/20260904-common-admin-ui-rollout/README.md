@@ -1,6 +1,6 @@
 # 20260904-common-admin-ui-rollout
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -72,15 +72,16 @@
 ## 相关链接
 
 - [依赖的 UI 基础设施 change](../20260904-packages-admin-ui-foundation/)
-- [已上线 App 插件化与共享包规格](../../../current/packages/app-plugins-shared-scaffold/spec.md)
-- [访问防护 current](../../../current/security/access-protection/spec.md)
-- [账号保护 current](../../../current/security/account-protection/spec.md)
-- [会话管理 current](../../../current/security/session-management/spec.md)
+- [已上线管理台 UI 体验](../../../../current/common/admin-ui-experience/spec.md)
+- [已上线 App 插件化与共享包规格](../../../../current/packages/app-plugins-shared-scaffold/spec.md)
+- [访问防护 current](../../../../current/security/access-protection/spec.md)
+- [账号保护 current](../../../../current/security/account-protection/spec.md)
+- [会话管理 current](../../../../current/security/session-management/spec.md)
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-09-07
 - 关联提交或 PR：
-- 更新的 current capability：`common/admin-ui-experience`（验收完成后新建）以及发生行为变化的既有 capability
-- 与原设计的差异：
+- 更新的 current capability：`common/admin-ui-experience`；并更新 `security/access-protection`、`security/account-protection`、`security/session-management`
+- 与原设计的差异：`org/contacts/dept` 无左树，落地为 contained List（`InSplitLayout` 仅作工作面）；`org/contacts/structure` 为组织树浏览而非左树右表。成员试点未新增无接口的邀请/批量按钮。多分辨率人工截图基线未入库，用户要求归档视为验收通过。
 - 取消原因：

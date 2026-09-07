@@ -26,6 +26,7 @@
 - [docs/composable-admin-runtime.md](../../../../docs/composable-admin-runtime.md)
 - [docs/create-app.md](../../../../docs/create-app.md)
 - [docs/menu-view-path.md](../../../../docs/menu-view-path.md)
+- 管理台视觉与交互基础见 [admin-ui-foundation](../admin-ui-foundation/)
 
 ## 对接接口
 
@@ -44,3 +45,4 @@
 | 2026-09-03 | [20260903-packages-app-convention-local-plugin](../../../changes/archive/2026/20260903-packages-app-convention-local-plugin/) | App 约定目录本地插件；组件/hook 自动注入；重名失败 |
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | `@ingot/http-client` 与 TanStack Query；服务端状态见 [network-query](../network-query/) |
 | 2026-09-04 | [20260904-packages-net-interceptor-extension](../../../changes/archive/2026/20260904-packages-net-interceptor-extension/) | 删除 `usePaging` 公共导出；列表统一 `useServerPaging` |
+| 2026-09-07 | [20260904-packages-admin-ui-foundation](../../../changes/archive/2026/20260904-packages-admin-ui-foundation/) | `layout.main` 与 `In*` 共享组件扩展视觉/交互；页面注册与组合契约不变 |

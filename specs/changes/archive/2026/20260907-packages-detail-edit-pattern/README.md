@@ -52,8 +52,8 @@
 
 ## 相关链接
 
-- [管理台 UI 基础设施](../../../active/20260904-packages-admin-ui-foundation/)
-- [业务页面迁移](../../../active/20260904-common-admin-ui-rollout/)
+- [管理台 UI 基础设施](../20260904-packages-admin-ui-foundation/)
+- [业务页面迁移](../20260904-common-admin-ui-rollout/)
 - 已上线规格：[specs/current/packages/detail-edit-pattern](../../../../current/packages/detail-edit-pattern/)
 
 ## 完成记录

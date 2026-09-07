@@ -4,7 +4,7 @@
 
 ## 概述
 
-平台管理员在「安全中心 / 访问防护」维护网关策略。页面为单页多 Tab。挑战策略 Tab 可配置匹配路径后的滑块挑战（ALWAYS / 限流后）。写成功提示热更新。前端鉴权走 session，不传 Bearer Token。全局 412 拦截见 [网关挑战](../../common/gateway-challenge/spec.md)。
+平台管理员在「安全中心 / 访问防护」维护网关策略。页面为 Settings 原型（`InPageFrame mode="page"` + 固定页面头 + 局部 Tab）。挑战策略 Tab 可配置匹配路径后的滑块挑战（ALWAYS / 限流后）。写成功提示热更新。前端鉴权走 session，不传 Bearer Token。全局 412 拦截见 [网关挑战](../../common/gateway-challenge/spec.md)。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
 
 ## 范围
 
@@ -85,6 +85,7 @@
 - 挑战策略接口见归档 [API.md](../../../changes/archive/2026/20260827-security-challenge-verification/API.md)
 - 路径分组复用既有 `GET /groups` 与 `PatternListEditor`
 - 全局 412 行为见 [网关挑战](../../common/gateway-challenge/spec.md)
+- 跨页面布局与操作分层见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 
 ## 验收标准
 

@@ -23,3 +23,4 @@
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.sessions`，兼容旧 semantic / 文件键 |
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | canonical 改为 `security.sessions`，去掉 legacy 别名 |
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | 会话列表/详情与并发策略迁 Query；`staleTime: 0`；下线后按 Key 失效 |
+| 2026-09-07 | [20260904-common-admin-ui-rollout](../../../changes/archive/2026/20260904-common-admin-ui-rollout/) | Settings 呈现：会话表与并发策略表接入 `InTable`；查询前置与 GLOBAL 约束不变 |

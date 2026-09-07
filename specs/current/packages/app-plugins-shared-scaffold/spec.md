@@ -114,7 +114,7 @@
 
 ### REQ-004：页面键、布局扫描与共享能力
 
-系统 SHALL 为 IndexPage 生成 canonical 键 `{domain}.*`（无全局 `ingot.` 前缀）。布局扫描 `layouts/{slot}/IndexPage.vue` 为 `layout.{slot}`；系统页为 `common.*`；App 本地页面 prefix 为 `appCode` 的 `-` 转 `.`，本地布局再拼 `.layout`。不注册 `@/`、`ingot.admin.*`、`ingot.base.*`。租户与 Client 只读选择器在 `@ingot/admin-common`。
+系统 SHALL 为 IndexPage 生成 canonical 键 `{domain}.*`（无全局 `ingot.` 前缀）。布局扫描 `layouts/{slot}/IndexPage.vue` 为 `layout.{slot}`；系统页为 `common.*`；App 本地页面 prefix 为 `appCode` 的 `-` 转 `.`，本地布局再拼 `.layout`。不注册 `@/`、`ingot.admin.*`、`ingot.base.*`。租户与 Client 只读选择器在 `@ingot/admin-common`。`layout.main` 的顶栏、侧栏、滚动与 `In*` 共享组件视觉契约见 [管理台 UI 基础设施](../admin-ui-foundation/spec.md)，本规格只保证页面注册、布局扫描和 App 组合不变。
 
 **验收标准：**
 

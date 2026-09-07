@@ -1,6 +1,6 @@
 # 20260904-packages-admin-ui-foundation
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -82,16 +82,17 @@
 
 ## 相关链接
 
-- [已上线 App 插件化与共享包规格](../../../current/packages/app-plugins-shared-scaffold/spec.md)
-- [管理台开发模式](../../../../docs/development-model.md)
+- [已上线管理台 UI 基础设施](../../../../current/packages/admin-ui-foundation/spec.md)
+- [已上线 App 插件化与共享包规格](../../../../current/packages/app-plugins-shared-scaffold/spec.md)
+- [管理台开发模式](../../../../../docs/development-model.md)
 - [关联迁移 change](../20260904-common-admin-ui-rollout/)
 
 ## 完成记录
 
-- 完成日期：
+- 完成日期：2026-09-07
 - 关联提交或 PR：
-- 更新的 current capability：`packages/admin-ui-foundation`（验收完成后新建）
-- 与原设计的差异：
-- 2026-09-04 原 Phase 05 已完成代码施工但成员页式工作区仍未通过针对性视觉确认；用户要求新增 Phase 06，只补强 `InSplitLayout` 与 `InTable`，完成前不得归档或启动关联 rollout，业务代码继续施工前须再次确认修订后的规格。
-- 2026-09-05 用户要求新增 Phase 07，专项修订全局左侧导航；本轮只增加规格，Phase 07 未获得业务代码施工授权，关联 rollout 的门禁顺延至 Phase 07 视觉验收完成。
+- 更新的 current capability：`packages/admin-ui-foundation`；并更新 `packages/app-plugins-shared-scaffold`
+- 与原设计的差异：Phase 06/07 为验收后追加的规格修订（成员工作区与全局侧栏），已随代码一并交付。多分辨率人工截图基线未入库，用户要求归档视为验收通过。
+- 2026-09-04 原 Phase 05 已完成代码施工但成员页式工作区仍未通过针对性视觉确认；用户要求新增 Phase 06，只补强 `InSplitLayout` 与 `InTable`。
+- 2026-09-05 用户要求新增 Phase 07，专项修订全局左侧导航。
 - 取消原因：

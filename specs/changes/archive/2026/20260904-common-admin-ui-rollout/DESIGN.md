@@ -16,7 +16,7 @@
 
 ## 可用组件矩阵
 
-foundation change 冻结后，业务页面只组合下表组件。契约详见 [`packages/admin-core/src/components/README.md`](../../../../packages/admin-core/src/components/README.md)。
+foundation change 冻结后，业务页面只组合下表组件。契约详见 [`packages/admin-core/src/components/README.md`](../../../../../packages/admin-core/src/components/README.md)。
 
 | 页面原型   | 页面框架                       | 页面头                    | 主容器                     | 列表与操作                   | 局部 Tab / 浮层          |
 | ---------- | ------------------------------ | ------------------------- | -------------------------- | ---------------------------- | ------------------------ |
@@ -140,7 +140,7 @@ foundation change 冻结后，业务页面只组合下表组件。契约详见 [
 | Vue 3 + TypeScript strict      | ✅   | 新代码禁止 `any`，事件和属性使用类型签名。                |
 | UnoCSS 与 Token                | ✅   | 通用布局用 UnoCSS，颜色和外观使用 `--in-*`。              |
 | 响应式                         | ✅   | 页面矩阵覆盖桌面、窄桌面和窄窗口降级。                    |
-| 施工门禁                       | ✅   | 用户于 2026-09-05 确认开工，状态为 `implementing`。       |
+| 施工门禁                       | ✅   | 用户于 2026-09-07 确认以通讯录-成员管理为标准完成剩余迁移；状态为 `validating`。 |
 | current 真相单一               | ✅   | 实施期间不修改 current，验收后再合并页面行为。            |
 
 ## 备选方案

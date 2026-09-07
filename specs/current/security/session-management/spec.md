@@ -4,7 +4,7 @@
 
 ## 概述
 
-平台管理员在「安全中心 / 在线用户」查看与强制下线在线会话，并维护并发会话策略。会话以 `sid` 为下线入参；前端鉴权走 session，不传 Bearer Token。
+平台管理员在「安全中心 / 在线用户」查看与强制下线在线会话，并维护并发会话策略。页面为 Settings 原型：在线会话与并发策略两个局部 Tab，表格使用 `InTable`。会话以 `sid` 为下线入参；前端鉴权走 session，不传 Bearer Token。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
 
 ## 范围
 
@@ -99,6 +99,7 @@
 - 会话与策略接口见归档 [API.md](../../../changes/archive/2026/20260820-security-session-management/API.md)
 - 客户端列表复用 `GET /auth/client/page`（`ClientPageAPI`）；租户 / Client 选择器来自 `@ingot/admin-common`，不依赖 platform 插件
 - 菜单权限沿用 `platform:security:onlinetoken`
+- 跨页面布局与表格操作分层见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 
 ## 验收标准
 

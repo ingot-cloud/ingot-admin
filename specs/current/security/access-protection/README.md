@@ -21,3 +21,4 @@
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.access.protection`，兼容旧 semantic / 文件键 |
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | canonical 改为 `security.access.protection`，去掉 legacy 别名 |
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | 策略面板改为 Query 管理服务端状态；挑战执行链路仍命令式 |
+| 2026-09-07 | [20260904-common-admin-ui-rollout](../../../changes/archive/2026/20260904-common-admin-ui-rollout/) | Settings 呈现：`InPageFrame` + 局部 Tab + `InTable`；策略语义不变 |

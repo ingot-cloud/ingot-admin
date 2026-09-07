@@ -21,3 +21,4 @@
 | 2026-09-02 | [20260902-packages-admin-feature-app-split](../../../changes/archive/2026/20260902-packages-admin-feature-app-split/) | 页面迁入 security 插件；canonical `ingot.security.account.protection`，兼容旧 semantic / 文件键 |
 | 2026-09-03 | [20260902-packages-view-path-canonical](../../../changes/archive/2026/20260902-packages-view-path-canonical/) | canonical 改为 `security.account.protection`，去掉 legacy 别名 |
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | 锁定策略改为 Query 读取，保存后按 Key 失效 |
+| 2026-09-07 | [20260904-common-admin-ui-rollout](../../../changes/archive/2026/20260904-common-admin-ui-rollout/) | Settings 呈现：固定页面头与局部 Tab；B/C 独立保存不变 |

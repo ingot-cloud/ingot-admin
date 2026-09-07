@@ -15,6 +15,7 @@
 - [packages/admin-core/src/styles/dropdown.css](../../../../packages/admin-core/src/styles/dropdown.css)
 - [plugins/org/src/pages/contacts/user](../../../../plugins/org/src/pages/contacts/user)
 - [packages/admin-core/src/components/README.md](../../../../packages/admin-core/src/components/README.md)
+- 壳层与列表基础设施见 [admin-ui-foundation](../admin-ui-foundation/)
 
 ## 对接接口
 
