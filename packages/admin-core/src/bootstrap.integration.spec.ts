@@ -45,6 +45,9 @@ describe("bootstrap 集成", () => {
     expect(runtime.app.component("InContainer")).toBeTruthy();
     expect(runtime.app.component("InRefreshIcon")).toBeTruthy();
     expect(runtime.app.component("InBizTabsHeader")).toBeTruthy();
+    expect(runtime.app.component("InDetailDrawer")).toBeTruthy();
+    expect(runtime.app.component("InDetailIdentity")).toBeTruthy();
+    expect(runtime.app.component("InDescriptionList")).toBeTruthy();
     expect(runtime.app.component("InAppBar")).toBeTruthy();
     expect(runtime.app.component("InMenu")).toBeTruthy();
     expect(runtime.app.component("InBreadcrumb")).toBeTruthy();

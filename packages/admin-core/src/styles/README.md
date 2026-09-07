@@ -7,6 +7,7 @@
 | 文件 | 职责 |
 |------|------|
 | `tokens.css` | 浅色基础 / 语义 / 组件 Token，以及旧变量别名 |
+| `dropdown.css` | 操作下拉：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` |
 | `el-mapping.css` | `--el-*` 只从 `--in-*` 读取 |
 | `dark/tokens.css` | 同一语义集的暗色覆盖 |
 | `dark/el-css-vars.css` | 暗色 Element Plus 映射 |
@@ -45,7 +46,9 @@
 | `--in-table-header-height` / `--in-table-row-height-compact` | `48px` / `44px` |
 | `--in-page-gutter` | `12px`（`--in-space-3`） |
 | `--in-page-breadcrumb-height` / `--in-page-header-min-height` | `46px` / `80px`（仅有说明时作为页面头最小高度） |
-| `--in-avatar-size` / `--in-status-tag-height` | `32px` / `24px` |
+| `--in-avatar-size` / `--in-avatar-size-lg` / `--in-status-tag-height` | `32px` / `48px` / `24px` |
+| `--in-biz-tabs-font-size` / `--in-biz-tabs-ink-height` | `16px` / `3px` |
+| `--in-drawer-width-detail` | `480px` |
 | `--in-control-height` | `32px` |
 | `--in-radius-control` / `--in-radius-card` | `6px` / `8px` |
 

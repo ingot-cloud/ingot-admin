@@ -3,7 +3,7 @@
     <span
       v-if="showAvatar"
       class="in-avatar"
-      :style="avatarColorStyle"
+      :style="avatarStyle"
       aria-hidden="true"
     >
       <img
@@ -21,6 +21,7 @@
   </span>
 </template>
 <script lang="ts" setup>
+import type { InAvatarSize } from "../types";
 import { avatarInitials } from "./avatarInitials";
 
 defineOptions({
@@ -33,10 +34,13 @@ const props = withDefaults(
     src?: string;
     avatar?: string;
     showAvatar?: boolean;
+    showName?: boolean;
+    size?: InAvatarSize;
     color?: string;
   }>(),
   {
     showAvatar: true,
+    showName: true,
   },
 );
 
@@ -48,11 +52,22 @@ const imageFailed = ref(false);
 const resolvedSrc = computed(() => props.src || props.avatar || "");
 const showImage = computed(() => Boolean(resolvedSrc.value) && !imageFailed.value);
 const initials = computed(() => avatarInitials(props.name));
-const hasName = computed(() => Boolean(props.name?.trim()) || Boolean(slots.default));
-const hasContent = computed(() => props.showAvatar || hasName.value);
-const avatarColorStyle = computed(() =>
-  props.color ? { "--in-avatar-color": props.color } : undefined,
+const hasName = computed(
+  () => props.showName && (Boolean(props.name?.trim()) || Boolean(slots.default)),
 );
+const hasContent = computed(() => props.showAvatar || hasName.value);
+const avatarStyle = computed(() => {
+  const style: Record<string, string> = {};
+  if (props.color) {
+    style["--in-avatar-color"] = props.color;
+  }
+  if (typeof props.size === "number") {
+    style["--in-avatar-size"] = `${props.size}px`;
+  } else if (props.size === "lg") {
+    style["--in-avatar-size"] = "var(--in-avatar-size-lg)";
+  }
+  return Object.keys(style).length > 0 ? style : undefined;
+});
 
 watch(resolvedSrc, () => {
   imageFailed.value = false;

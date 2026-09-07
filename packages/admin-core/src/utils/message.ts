@@ -1,6 +1,6 @@
-import { ElMessage, ElMessageBox } from "element-plus";
-
-type MessageType = "" | "success" | "warning" | "info" | "error";
+import { ElMessage, type MessageBoxData } from "element-plus";
+import type { VNode } from "vue";
+import { openConfirmDialog, type ConfirmDialogOptions } from "./confirm-dialog";
 
 export interface Options {
   customClass?: string;
@@ -15,12 +15,7 @@ export interface Options {
   zIndex?: number;
 }
 
-export interface Options2 {
-  cancelButtonText?: string;
-  confirmButtonText?: string;
-  title?: string;
-  type?: MessageType;
-}
+export type Options2 = ConfirmDialogOptions;
 
 export class Message {
   static warning(message: string, options?: Options): void {
@@ -48,29 +43,33 @@ export class Message {
   }
 }
 
-const defaultConfirmOptions = {
-  cancelButtonText: "取消",
-  confirmButtonText: "确定",
-  title: "提示",
-  type: "warning",
-};
-
 export class Confirm {
-  static warning(message: string, options?: Options2): Promise<any> {
-    options = Object.assign(defaultConfirmOptions, options);
-    options.type = "warning";
-    return ElMessageBox.confirm(message, options.title as string, options);
+  static warning(
+    message: string | VNode,
+    options?: ConfirmDialogOptions,
+  ): Promise<MessageBoxData> {
+    return openConfirmDialog(message, { ...options, type: "warning" });
   }
 
-  static error(message: string, options?: Options2): Promise<any> {
-    options = Object.assign(defaultConfirmOptions, options);
-    options.type = "error";
-    return ElMessageBox.confirm(message, options.title as string, options);
+  static error(message: string | VNode, options?: ConfirmDialogOptions): Promise<MessageBoxData> {
+    return openConfirmDialog(message, { ...options, type: "error" });
   }
 
-  static success(message: string, options?: Options2): Promise<any> {
-    options = Object.assign(defaultConfirmOptions, options);
-    options.type = "success";
-    return ElMessageBox.confirm(message, options.title as string, options);
+  static success(
+    message: string | VNode,
+    options?: ConfirmDialogOptions,
+  ): Promise<MessageBoxData> {
+    return openConfirmDialog(message, { ...options, type: "success" });
   }
 }
+
+export type { ConfirmDialogOptions, ConfirmIcon, ConfirmTone } from "./confirm-dialog";
+export {
+  CONFIRM_DIALOG_CLASS,
+  CONFIRM_DIALOG_OVERLAY_CLASS,
+  DEFAULT_CONFIRM_CANCEL_TEXT,
+  DEFAULT_CONFIRM_OK_TEXT,
+  DEFAULT_CONFIRM_TITLE,
+  openConfirmDialog,
+  renderConfirmMessage,
+} from "./confirm-dialog";

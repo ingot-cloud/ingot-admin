@@ -1,0 +1,57 @@
+.el-dropdown__popper.el-popper,
+.el-popper.in-dropdown {
+  box-sizing: border-box;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--in-border-color);
+  border-radius: var(--in-radius-control);
+  background: var(--in-bg-color-surface);
+  box-shadow: var(--in-shadow-overlay);
+  color: var(--in-text-color);
+}
+
+.el-dropdown__popper.el-popper .el-popper__arrow,
+.el-popper.in-dropdown .el-popper__arrow {
+  display: none;
+}
+
+.el-dropdown__popper .el-dropdown-menu,
+.in-dropdown .el-dropdown-menu {
+  padding: var(--in-space-1) 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.el-dropdown__popper .el-dropdown-menu__item,
+.in-dropdown .el-dropdown-menu__item {
+  justify-content: flex-start;
+  min-height: var(--in-control-height);
+  padding: 0 var(--in-space-3);
+  color: var(--in-text-color);
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-control-height);
+}
+
+.el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):focus,
+.el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):hover,
+.in-dropdown .el-dropdown-menu__item:not(.is-disabled):focus,
+.in-dropdown .el-dropdown-menu__item:not(.is-disabled):hover {
+  background: var(--in-bg-color-menu-hover);
+  color: var(--in-text-color);
+}
+
+.el-dropdown__popper .el-dropdown-menu__item.is-disabled,
+.in-dropdown .el-dropdown-menu__item.is-disabled {
+  color: var(--in-text-color-disabled);
+}
+
+.in-dropdown .el-dropdown-menu__item--divided {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.in-dropdown .el-dropdown-menu__item--divided::before {
+  display: none;
+}

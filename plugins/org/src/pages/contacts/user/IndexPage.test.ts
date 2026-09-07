@@ -41,6 +41,9 @@ describe("org contacts user IndexPage", () => {
     expect(source).toContain("in-table__count");
     expect(source).toContain("共 {{ userOps.pageInfo.value.total ?? 0 }} 人");
     expect(source).not.toContain("#summary");
+    expect(source).toContain("CreateDrawer");
+    expect(source).toContain("DetailDrawer");
+    expect(source).not.toContain("EditDrawer");
   });
 
   it("左树向页面发出 kebab-case 选择事件", () => {

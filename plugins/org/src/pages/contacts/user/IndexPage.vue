@@ -54,7 +54,8 @@
     </in-split-layout>
   </in-page-frame>
 
-  <EditDrawer ref="EditDrawerRef" @success="userOps.fetchUserData()" />
+  <CreateDrawer ref="CreateDrawerRef" @success="userOps.fetchUserData()" />
+  <DetailDrawer ref="DetailDrawerRef" @success="userOps.fetchUserData()" />
 </template>
 
 <script lang="ts" setup>
@@ -70,9 +71,11 @@ import {
   ORG_USER_TABLE_ID,
   tableHeaders,
 } from "./table";
-import EditDrawer from "./components/EditDrawer.vue";
+import CreateDrawer from "./components/CreateDrawer.vue";
+import DetailDrawer from "./components/DetailDrawer.vue";
 
-const EditDrawerRef = ref();
+const CreateDrawerRef = ref();
+const DetailDrawerRef = ref();
 const userOps = useUserOps();
 const enabledFilter = userOps.enabledFilter;
 const selectedColumnProps = ref<string[]>([]);
@@ -83,11 +86,11 @@ const visibleHeaders = computed(() =>
 );
 
 const handleCreateUser = (): void => {
-  EditDrawerRef.value.show();
+  CreateDrawerRef.value.show();
 };
 
 const handleDetailUser = (item: UserPageItemVO): void => {
-  EditDrawerRef.value.show(item);
+  DetailDrawerRef.value.show(item);
 };
 
 const toolbarActions = computed(() => createOrgUserToolbarActions(handleCreateUser));

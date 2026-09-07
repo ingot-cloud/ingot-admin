@@ -65,8 +65,10 @@
   --in-motion-duration: 200ms;
   --in-motion-duration-sidebar: 300ms;
   --in-motion-duration-split: 180ms;
+  --in-motion-duration-tabs-ink: 0.3s;
   --in-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --in-motion-ease-sidebar: cubic-bezier(0.25, 0.1, 0.05, 1);
+  --in-motion-ease-tabs-ink: cubic-bezier(0.34, 0.69, 0.1, 1);
 
   /* —— 语义：颜色 —— */
   --in-color-primary: var(--in-blue-500);
@@ -157,6 +159,7 @@
   --in-page-breadcrumb-height: 46px;
   --in-page-header-min-height: 80px;
   --in-avatar-size: 32px;
+  --in-avatar-size-lg: 48px;
   --in-status-tag-height: 24px;
   --in-status-tag-radius: 4px;
   --in-status-tag-info-color: var(--in-blue-600);
@@ -169,6 +172,13 @@
   --in-tabs-height: 32px;
   --in-tabs-font-size: var(--in-font-size-caption);
   --in-tabs-border-color: var(--in-border-color-light);
+  --in-biz-tabs-font-size: var(--in-font-size-section-title);
+  --in-biz-tabs-color: var(--in-text-color);
+  --in-biz-tabs-color-active: var(--in-color-primary);
+  --in-biz-tabs-ink-height: 3px;
+  --in-biz-tabs-ink-duration: var(--in-motion-duration-tabs-ink);
+  --in-biz-tabs-ink-ease: var(--in-motion-ease-tabs-ink);
+  --in-drawer-width-detail: 480px;
   --in-page-gutter: var(--in-space-3);
   --in-section-padding: var(--in-space-4);
   --in-section-padding-relaxed: var(--in-space-5);
@@ -194,6 +204,7 @@
     --in-motion-duration: 0.01ms;
     --in-motion-duration-sidebar: 0.01ms;
     --in-motion-duration-split: 0.01ms;
+    --in-motion-duration-tabs-ink: 0.01ms;
     --in-transition-duration: 0.01ms;
   }
 }

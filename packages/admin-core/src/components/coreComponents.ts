@@ -9,6 +9,10 @@ import InFilterItem from "./container/InFilterItem.vue";
 import InCopyTag from "./InCopyTag.vue";
 import InDialog from "./InDialog.vue";
 import InDrawer from "./drawer/InDrawer.vue";
+import InDetailDrawer from "./drawer/InDetailDrawer.vue";
+import InDetailIdentity from "./detail/InDetailIdentity.vue";
+import InDescriptionList from "./description/InDescriptionList.vue";
+import InDescriptionItem from "./description/InDescriptionItem.vue";
 import InEditor from "./editor/InEditor.vue";
 import InForm from "./form/InForm.vue";
 import InFormGroupTitle from "./form/InFormGroupTitle.vue";
@@ -71,6 +75,10 @@ export const coreGlobalComponents: Record<string, Component> = {
   InCopyTag,
   InDialog,
   InDrawer,
+  InDetailDrawer,
+  InDetailIdentity,
+  InDescriptionList,
+  InDescriptionItem,
   InEditor,
   InForm,
   InFormGroupTitle,
@@ -135,6 +143,10 @@ declare module "vue" {
     InCopyTag: typeof InCopyTag;
     InDialog: typeof InDialog;
     InDrawer: typeof InDrawer;
+    InDetailDrawer: typeof InDetailDrawer;
+    InDetailIdentity: typeof InDetailIdentity;
+    InDescriptionList: typeof InDescriptionList;
+    InDescriptionItem: typeof InDescriptionItem;
     InEditor: typeof InEditor;
     InForm: typeof InForm;
     InFormGroupTitle: typeof InFormGroupTitle;

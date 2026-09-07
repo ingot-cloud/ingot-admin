@@ -40,6 +40,25 @@ describe("InAvatar", () => {
     wrapper.unmount();
   });
 
+  it("size=lg 使用大号头像 Token", () => {
+    const wrapper = mount(InAvatar, {
+      props: { name: "王超", size: "lg" },
+    });
+    expect(wrapper.get(".in-avatar").attributes("style")).toContain(
+      "--in-avatar-size: var(--in-avatar-size-lg)",
+    );
+    wrapper.unmount();
+  });
+
+  it("showName 为 false 时仍用姓名生成缩写", () => {
+    const wrapper = mount(InAvatar, {
+      props: { name: "王超", showName: false },
+    });
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("王超");
+    expect(wrapper.find(".in-avatar-field__name").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it("avatar 作为 src 别名", () => {
     const wrapper = mount(InAvatar, {
       props: { name: "王超", avatar: "/logo.png" },

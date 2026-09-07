@@ -14,11 +14,14 @@
 | `InAppBar` | 全局顶栏 | 品牌(A) / 一级入口(B) / 搜索(C 靠右) / 操作(D)；B/D 按内容站位并限宽 560/360，空区不占位；默认 framed Logo 随 dark 切换 | 现有 `brand-extra`、`org-mgmt`、`product-settings`、`utilities` 仍可用；新增 `#nav`；`branding.logo` 可覆盖默认 Logo |
 | `InPicker` | 紧凑单选（筛选/工具栏） | 可选 `label` 前缀；32px / 6px 圆角；默认边框 `#d0d3d6`，悬停/展开 `#3370ff`；展开后面板勾选当前项；相邻实例默认 12px 间距；`v-model` + `options` + `change` | 新组件；不替代表单 `InSelect` |
 | `InTableColumnSetting` | 字段显示设置 | 32×32 描边按钮、表格设置 SVG、说明「请选择列表中要展示的信息」、约 213×426 复选列表、“全部”半选、必选列禁用、右侧拖拽调序、浮层 Teleport 到 body、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 原名 `InColumnSetting`；继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化；`change` 按显示顺序返回选中列；持久化前缀仍为 `in-column-setting` |
-| `InBizTabs` | 页内 Tab | 键盘方向键，懒挂载 `InBizTabPanel` | `v-model` + `change` |
+| `InBizTabs` | 页内 Tab | 16px；默认 `--in-text-color`，选中 `--in-color-primary`；墨条跟文案同宽、顶部圆角、半条压线；`before-change` 可拦截 | `v-model` + `change`；键盘方向键；懒挂载 `InBizTabPanel` |
 | `InTabs` | 全局路由 Tab | 与页内 Tab 视觉分离，默认可关闭 | 行为不变 |
-| `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条 | `v-model`、`title`、`#header`/`#footer`、`loading` |
-| `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger` | `v-model`、`title`、`#footer` |
-| `InAvatar` | 姓名/头像 | 32px 圆圈；无图时用姓名最后两字；`showAvatar` 默认 true，为 false 时只显示文本；颜色默认主题色，可用 `color` 覆盖；`src` / `avatar` 别名 | 新组件 |
+| `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条；`layout="pinned"` 钉住内容头、仅内部滚动 | `v-model`、`title`、`#header`/`#footer`、`loading`；默认 `layout="default"` |
+| `InDetailDrawer` | 实体详情查看/编辑 | 标题 + `#identity` + 页内 Tab；查看态底部「编辑…」，编辑态取消/保存；编辑中关抽屉或切 Tab 需确认 | `v-model`、`v-model:tab`、`v-model:editing`、`edit-label`、`save` / `cancel` / `edit` |
+| `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |
+| `InDescriptionList` | 只读字段列表 | 上标签下值；空值 `-` | `InDescriptionItem` 的 `label` + `value` |
+| `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger`；标题左侧 `#icon`；`showClose` 控制右上角关闭；`align-center` 全屏居中 | `v-model`、`title`、`#footer`、`#header` |
+| `InAvatar` | 姓名/头像 | 默认 32px；`size="lg"` 为 48px；无图时用姓名最后两字；`showAvatar` 默认 true；`showName` 默认 true；可用 `color` 覆盖；`src` / `avatar` 别名 | 新组件 |
 | `InCommonStatusTag` | 公共状态 | 只根据 `status`；正常：蓝底成功图标；暂停：橙底暂停图标，文案「已暂停」；按内容撑开不截断 | 不再使用 Element Plus Tag 的 success/danger 色 |
 | `InAccountStatusTag` | 账号可用与锁定 | `enabled === true && locked === false` 为正常；`enabled === false` 为已暂停；否则已锁定（`#f54a45`） | 用于通讯录成员、平台管理员用户、会员用户列表 |
 
@@ -32,6 +35,8 @@ type InPageScrollMode = "page" | "contained";
 type InPageSurface = "plain" | "workspace";
 type InTableFeedback = "none" | "empty" | "no-result" | "error" | "unauthorized";
 type InDialogTone = "default" | "danger";
+type InDrawerLayout = "default" | "pinned";
+type InAvatarSize = "default" | "lg" | number;
 type InTableActionKind = "detail" | "quick" | "default" | "danger" | "primary";
 type InTableActionOverflow = "auto" | "never" | "always";
 ```
@@ -50,8 +55,22 @@ InPageFrame mode="contained" surface="workspace"
       #tools-start  InPicker + InTableColumnSetting
       #tools-end    InTableActions variant="toolbar"
       #actions      InTableActions
-InDrawer / InDialog
+InDrawer / InDetailDrawer / InDialog
 ```
+
+实体详情抽屉标准：
+
+```text
+InDetailDrawer title edit-label v-model:editing
+  #identity  InDetailIdentity + 状态 + 更多操作
+  InBizTabPanel
+    查看：InDescriptionList
+    编辑：表单
+```
+
+`useDetailEditSession` 管理 `editing` / 快照回滚，离开确认走公共 `Confirm`（`in-confirm-dialog`），文案固定为「确定退出当前编辑？」，并关闭右上角关闭按钮。查看/编辑字段顺序必须一致。编辑态头像在身份区悬停上传，不要在表单里再放头像项。创建表单仍用普通 `InDrawer`，不要套查看态。
+
+公共确认框（`Confirm.warning` / `useMessageConfirm` / `openConfirmDialog`）统一白底 8px 圆角、视口居中。第一参是说明或自定义 VNode；`title`、`icon`（组件 / VNode / `false` 隐藏）、`showClose` 可配。默认警告图标、显示关闭按钮。
 
 普通 Overview/Settings/Detail 使用 `InPageFrame mode="page"`，由 PageBody 滚动；返回顶部只绑定该滚动区。
 

@@ -8,6 +8,10 @@ export type InTableFeedback = "none" | "empty" | "no-result" | "error" | "unauth
 
 export type InDialogTone = "default" | "danger";
 
+export type InDrawerLayout = "default" | "pinned";
+
+export type InAvatarSize = "default" | "lg" | number;
+
 export type InPageScrollMode = "page" | "contained";
 
 export type InPageSurface = "plain" | "workspace";

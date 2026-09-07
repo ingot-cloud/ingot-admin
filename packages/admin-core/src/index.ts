@@ -33,6 +33,8 @@ export * from "./query";
 export * from "./hooks/web/useMessage";
 export * from "./hooks/web/useRouter";
 export * from "./hooks/web/useTitle";
+export * from "./hooks/components/useDetailEditSession";
+export type { InBizTabsBeforeChange, TabItem } from "./components/tabs/types";
 export * from "./components/table";
 export type {
   InDensity,
@@ -40,6 +42,8 @@ export type {
   InNavigationMode,
   InTableFeedback,
   InDialogTone,
+  InDrawerLayout,
+  InAvatarSize,
   InPageScrollMode,
   InPageSurface,
   InTableActionKind,

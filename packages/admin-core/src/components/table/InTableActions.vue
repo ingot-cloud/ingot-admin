@@ -695,7 +695,7 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-control);
   background: var(--in-bg-color-surface);
-  box-shadow: var(--in-shadow-md);
+  box-shadow: var(--in-shadow-overlay);
 }
 
 .in-table-actions__item {

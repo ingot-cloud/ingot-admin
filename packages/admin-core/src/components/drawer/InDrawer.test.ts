@@ -19,5 +19,21 @@ describe("InDrawer", () => {
     expect(wrapper.get(".title").text()).toBe("编辑成员");
     expect(wrapper.find(".rect").exists()).toBe(false);
     expect(wrapper.get(".in-drawer__footer").text()).toBe("保存");
+    wrapper.unmount();
+  });
+
+  it("pinned 布局给抽屉加上钉住内容区的 class", () => {
+    const wrapper = mount(InDrawer, {
+      props: { modelValue: true, title: "成员详情", layout: "pinned" },
+      global: {
+        stubs: {
+          ElDrawer: {
+            template: "<div class=\"in-drawer\" :class=\"$attrs.class\"><slot /></div>",
+          },
+        },
+      },
+    });
+    expect(wrapper.html()).toContain("in-drawer--pinned");
+    wrapper.unmount();
   });
 });

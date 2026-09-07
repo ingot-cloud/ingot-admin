@@ -1,5 +1,10 @@
 <template>
-  <el-drawer class="in-drawer" direction="rtl" :close-on-click-modal="false">
+  <el-drawer
+    class="in-drawer"
+    :class="{ 'in-drawer--pinned': layout === 'pinned' }"
+    direction="rtl"
+    :close-on-click-modal="false"
+  >
     <template #header>
       <div v-if="slots.header">
         <slot name="header" />
@@ -21,23 +26,25 @@
   </el-drawer>
 </template>
 <script lang="ts" setup>
+import type { InDrawerLayout } from "../types";
+
 defineOptions({
   name: "InDrawer",
 });
 
 const slots = useSlots();
-const props = defineProps({
-  title: {
-    type: String,
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    padding?: string;
+    loading?: unknown;
+    layout?: InDrawerLayout;
+  }>(),
+  {
+    padding: "var(--in-section-padding-relaxed)",
+    layout: "default",
   },
-  padding: {
-    type: String,
-    default: "var(--in-section-padding-relaxed)",
-  },
-  loading: {
-    default: false,
-  },
-});
+);
 const isLoading = computed(() => Boolean(unref(props.loading)));
 </script>
 <style lang="postcss">
@@ -52,6 +59,23 @@ const isLoading = computed(() => Boolean(unref(props.loading)));
 
   & .el-drawer__body {
     overflow: auto;
+  }
+
+  &.in-drawer--pinned {
+    & .el-drawer__body {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    & .in-drawer__body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
   }
 
   & .el-drawer__footer {

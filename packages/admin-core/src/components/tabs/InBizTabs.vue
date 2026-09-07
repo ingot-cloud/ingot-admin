@@ -1,16 +1,17 @@
 <template>
   <div class="in-biz-tabs">
-    <in-biz-tabs-header v-model="headerValue" :tabs="tabs" />
+    <in-biz-tabs-header v-model="headerValue" :tabs="tabs" :before-change="beforeChange" />
     <div class="inner-container">
       <slot />
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import type { TabItem } from "./types";
+import type { InBizTabsBeforeChange, TabItem } from "./types";
 import type { InBizTabPanelContext } from "./constants";
 import { tabsRootContextKey } from "./constants";
 import { useOrderedChildren } from "@/hooks/components/useOrderedChildren";
+import InBizTabsHeader from "./InBizTabsHeader.vue";
 
 defineOptions({
   name: "InBizTabs",
@@ -19,6 +20,9 @@ defineOptions({
 const model = defineModel<string>({ required: true });
 const emits = defineEmits<{
   change: [value: string];
+}>();
+defineProps<{
+  beforeChange?: InBizTabsBeforeChange;
 }>();
 
 const tabs = ref<Array<TabItem>>([]);
@@ -55,10 +59,16 @@ watch(panes, (value) => {
 </script>
 <style lang="postcss" scoped>
 .in-biz-tabs {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
+  min-height: 0;
+  flex: 1;
 }
 
 .inner-container {
-  border-top: 1px solid var(--in-border-color);
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 </style>
