@@ -70,7 +70,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 |------|------|------|------|
 | platform | `dashboard` | Overview | |
 | platform | `admin/user` | List | `tableId` `platform-admin-user`；行内仅详情 |
-| platform | `config/app/home` | List | `platform-config-app-home` |
+| platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：应用类型/状态 `InPicker`（切换即查）+ 无 label 名称搜索（回车或清空即查）+ 字段设置 |
 | platform | `config/app/detail` | Detail | 菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
 | platform | `config/dict` | Split List | `platform-config-dict`；`node-click` / `node-edit-click` |
 | platform | `config/menu` | List | `platform-config-menu` |
