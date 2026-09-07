@@ -2,6 +2,8 @@ import { ElMessage, type MessageBoxData } from "element-plus";
 import type { VNode } from "vue";
 import { openConfirmDialog, type ConfirmDialogOptions } from "./confirm-dialog";
 
+export const MESSAGE_CLASS = "in-message";
+
 export interface Options {
   customClass?: string;
   center?: boolean;
@@ -17,29 +19,35 @@ export interface Options {
 
 export type Options2 = ConfirmDialogOptions;
 
+const mergeMessageClass = (customClass?: string): string => {
+  const extra = customClass?.trim();
+  return extra ? `${MESSAGE_CLASS} ${extra}` : MESSAGE_CLASS;
+};
+
+const showMessage = (
+  type: "success" | "warning" | "error",
+  message: string,
+  options?: Options,
+): void => {
+  ElMessage({
+    ...options,
+    message,
+    type,
+    customClass: mergeMessageClass(options?.customClass),
+  });
+};
+
 export class Message {
   static warning(message: string, options?: Options): void {
-    ElMessage({
-      message,
-      type: "warning",
-      ...options,
-    });
+    showMessage("warning", message, options);
   }
 
   static error(message: string, options?: Options): void {
-    ElMessage({
-      message,
-      type: "error",
-      ...options,
-    });
+    showMessage("error", message, options);
   }
 
   static success(message: string, options?: Options): void {
-    ElMessage({
-      message,
-      type: "success",
-      ...options,
-    });
+    showMessage("success", message, options);
   }
 }
 

@@ -42,5 +42,7 @@ describe("org contacts dept IndexPage", () => {
     expect(source).toContain("handleDetail");
     expect(source).toContain("handleCreate");
     expect(source).toContain("handleBatchDelete");
+    expect(source).toMatch(/import \{[\s\S]*\bMessage\b[\s\S]*\} from "@ingot\/admin-core"/);
+    expect(source).toContain('Message.success("删除成功")');
   });
 });

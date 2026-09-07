@@ -157,6 +157,9 @@
   --in-table-cell-text: #18263c;
   --in-checkbox-radius: 4px;
   --in-checkbox-size: 16px;
+  --in-message-min-width: 204px;
+  --in-message-height: 54px;
+  --in-message-icon-size: 20px;
   --in-breadcrumb-icon-size: 16px;
   --in-breadcrumb-height: 24px;
   --in-page-breadcrumb-height: 46px;

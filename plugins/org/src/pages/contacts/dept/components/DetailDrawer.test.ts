@@ -21,6 +21,7 @@ describe("org contacts dept DetailDrawer", () => {
     expect(source).toContain("useDetailEditSession");
     expect(source).toContain("v-model:editing");
     expect(source).toContain("deptDrawerHeaderAvatar");
+    expect(source).toMatch(/import \{[\s\S]*\bMessage\b[\s\S]*\} from "@ingot\/admin-core"/);
     expect(source).toContain(':editable="false"');
     expect(source).not.toContain("v-model:avatar");
     expect(source).not.toContain("upload-dir");

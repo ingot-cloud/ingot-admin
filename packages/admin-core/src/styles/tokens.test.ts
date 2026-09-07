@@ -54,6 +54,9 @@ const REQUIRED_TOKENS = [
   "--in-table-cell-text",
   "--in-checkbox-radius",
   "--in-checkbox-size",
+  "--in-message-min-width",
+  "--in-message-height",
+  "--in-message-icon-size",
   "--in-motion-duration",
 ] as const;
 
@@ -110,6 +113,9 @@ const REQUIRED_VALUES: Record<string, string> = {
   "--in-radius-control": "6px",
   "--in-checkbox-radius": "4px",
   "--in-checkbox-size": "16px",
+  "--in-message-min-width": "204px",
+  "--in-message-height": "54px",
+  "--in-message-icon-size": "20px",
   "--in-table-cell-text": "#18263c",
   "--in-table-header-text": "var(--in-text-color-secondary)",
   "--in-motion-duration-sidebar": "300ms",

@@ -70,6 +70,7 @@
 <script lang="ts" setup>
 import {
   applyColumnSelection,
+  Message,
   silentQueryRequest,
   type InTableAction,
   type InTableCheckboxMode,

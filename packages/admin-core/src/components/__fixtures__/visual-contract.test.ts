@@ -101,6 +101,19 @@ describe("admin UI visual fixtures", () => {
     expect(confirmCss).toContain("in-confirm-dialog__content");
     expect(confirmCss).toContain("border-radius: var(--in-radius-card)");
     expect(confirmCss).toContain("color: var(--in-text-color)");
+    const messageCss = readFileSync(resolve(root, "../../styles/message.css"), "utf8");
+    expect(messageCss).toContain(".el-message.in-message");
+    expect(messageCss).toContain("min-width: var(--in-message-min-width)");
+    expect(messageCss).toContain("height: var(--in-message-height)");
+    expect(messageCss).toContain("flex-shrink: 0");
+    expect(messageCss).toContain("white-space: nowrap");
+    expect(messageCss).toContain("border-radius: var(--in-radius-control)");
+    expect(messageCss).toContain("box-shadow: var(--in-shadow-overlay)");
+    expect(messageCss).toContain("color: var(--in-text-color)");
+    expect(messageCss).toContain("el-message--success");
+    expect(messageCss).toContain("el-message--warning");
+    const stylesIndex = readFileSync(resolve(root, "../../styles/index.ts"), "utf8");
+    expect(stylesIndex).toContain('import "./message.css"');
     const dialog = readFileSync(resolve(root, "../InDialog.vue"), "utf8");
     expect(dialog).toContain("align-center");
     expect(dialog).toContain("showClose");
@@ -171,6 +184,9 @@ describe("admin UI visual fixtures", () => {
     expect(tokens).toContain("--in-table-header-text: var(--in-text-color-secondary)");
     expect(tokens).toContain("--in-checkbox-radius: 4px");
     expect(tokens).toContain("--in-checkbox-size: 16px");
+    expect(tokens).toContain("--in-message-min-width: 204px");
+    expect(tokens).toContain("--in-message-height: 54px");
+    expect(tokens).toContain("--in-message-icon-size: 20px");
   });
 
   it("容器默认直角无边框，双栏折叠带宽度过渡", () => {
