@@ -39,11 +39,11 @@ export const useOps = () => {
     return true;
   };
 
-  const resetFilter = (): void => {
+  const resetExtraFilters = (): void => {
     paging.resetSubmitted({
       tenantId: undefined,
       clientId: undefined,
-      userId: undefined,
+      userId: paging.condition.userId,
       ipAddress: undefined,
     });
   };
@@ -109,7 +109,7 @@ export const useOps = () => {
     condition: paging.condition,
     pageInfo: paging.pageInfo,
     isClientOnlyQuery,
-    resetFilter,
+    resetExtraFilters,
     fetchData,
     revokeBySid,
     revokeByUser,

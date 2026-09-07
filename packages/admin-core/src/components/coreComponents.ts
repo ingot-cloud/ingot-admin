@@ -29,6 +29,7 @@ import InSpacer from "./InSpacer.vue";
 import InTable from "./table/InTable.vue";
 import InTableActions from "./table/InTableActions.vue";
 import InTableColumnSetting from "./table/InTableColumnSetting.vue";
+import InFilterPanel from "./table/InFilterPanel.vue";
 import InRadioTable from "./table/InRadioTable.vue";
 import InTabs from "./InTabs.vue";
 import InBizTabs from "./tabs/InBizTabs.vue";
@@ -95,6 +96,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InTable,
   InTableActions,
   InTableColumnSetting,
+  InFilterPanel,
   InRadioTable,
   InTabs,
   InBizTabs,
@@ -163,6 +165,7 @@ declare module "vue" {
     InTable: typeof InTable;
     InTableActions: typeof InTableActions;
     InTableColumnSetting: typeof InTableColumnSetting;
+    InFilterPanel: typeof InFilterPanel;
     InRadioTable: typeof InRadioTable;
     InTabs: typeof InTabs;
     InBizTabs: typeof InBizTabs;

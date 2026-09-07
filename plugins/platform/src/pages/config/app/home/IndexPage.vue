@@ -25,8 +25,13 @@
             @keyup.enter="privateOnSearch"
             @clear="privateOnSearch"
           />
-          <in-picker v-model="appTypeFilter" label="应用类型" :options="appTypeFilterOptions" />
-          <in-picker v-model="statusFilter" label="状态" :options="appStatusFilterOptions" />
+          <in-filter-panel :active-count="extraFilterCount">
+            <in-picker v-model="appTypeFilter" label="应用类型" :options="appTypeFilterOptions" />
+            <in-picker v-model="statusFilter" label="状态" :options="appStatusFilterOptions" />
+            <template #footer>
+              <in-button @click="privateOnResetExtra">重置</in-button>
+            </template>
+          </in-filter-panel>
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="APP_HOME_TABLE_ID"
@@ -94,8 +99,17 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 const { getIsSystemAdmin } = storeToRefs(useUserInfoStore());
-const { loading, appTypeFilter, statusFilter, nameFilter, pageInfo, fetchData, searchByName } =
-  useOps();
+const {
+  loading,
+  appTypeFilter,
+  statusFilter,
+  nameFilter,
+  extraFilterCount,
+  pageInfo,
+  fetchData,
+  searchByName,
+  resetExtraFilters,
+} = useOps();
 const queryClient = useQueryClient();
 
 const appTypeEnum = useAppTypeEnum();
@@ -129,6 +143,10 @@ const removeMutation = useMutation({
 
 const privateOnSearch = (): void => {
   searchByName();
+};
+
+const privateOnResetExtra = (): void => {
+  resetExtraFilters();
 };
 
 const privateOnCreate = (): void => {

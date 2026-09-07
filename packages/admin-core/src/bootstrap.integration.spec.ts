@@ -53,6 +53,7 @@ describe("bootstrap 集成", () => {
     expect(runtime.app.component("InBreadcrumb")).toBeTruthy();
     expect(runtime.app.component("InCopyright")).toBeTruthy();
     expect(runtime.app.component("InPicker")).toBeTruthy();
+    expect(runtime.app.component("InFilterPanel")).toBeTruthy();
     expect(runtime.app.directive("auth")).toBeTruthy();
     expect(runtime.pinia).toBe(getActivePinia());
     expect(pluginPinia).toBe(runtime.pinia);

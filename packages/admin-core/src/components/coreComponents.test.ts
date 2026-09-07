@@ -14,6 +14,7 @@ const movedComponentNames = [
   "InPageFrame",
   "InTableActions",
   "InTableColumnSetting",
+  "InFilterPanel",
   "InPicker",
   "InAppBar",
   "InAppBarSearch",

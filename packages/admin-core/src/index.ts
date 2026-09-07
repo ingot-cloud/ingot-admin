@@ -54,6 +54,7 @@ export type {
 } from "./components/types";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
 export { default as InPicker } from "./components/select/InPicker.vue";
+export { default as InFilterPanel } from "./components/table/InFilterPanel.vue";
 export type { InPickerOption } from "./components/select/types";
 export {
   ALL_PICKER_VALUE,

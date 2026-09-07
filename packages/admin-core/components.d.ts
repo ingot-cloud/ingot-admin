@@ -100,6 +100,7 @@ declare module 'vue' {
     InDrawer: typeof import('./src/components/drawer/InDrawer.vue')['default']
     InEditor: typeof import('./src/components/editor/InEditor.vue')['default']
     InFilterItem: typeof import('./src/components/container/InFilterItem.vue')['default']
+    InFilterPanel: typeof import('./src/components/table/InFilterPanel.vue')['default']
     InForm: typeof import('./src/components/form/InForm.vue')['default']
     InFormGroupTitle: typeof import('./src/components/form/InFormGroupTitle.vue')['default']
     InFullscreen: typeof import('./src/layouts/widgets/InFullscreen.vue')['default']

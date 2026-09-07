@@ -38,9 +38,19 @@ export const useOps = () => {
     },
   });
 
+  const extraFilterCount = computed(
+    () => [paging.condition.appType, paging.condition.status].filter(Boolean).length,
+  );
+
   const searchByName = (): void => {
     const next = paging.condition.name?.trim();
     paging.condition.name = next ? next : undefined;
+    fetchData();
+  };
+
+  const resetExtraFilters = (): void => {
+    paging.condition.appType = undefined;
+    paging.condition.status = undefined;
     fetchData();
   };
 
@@ -49,8 +59,10 @@ export const useOps = () => {
     appTypeFilter,
     statusFilter,
     nameFilter,
+    extraFilterCount,
     pageInfo: paging.pageInfo,
     fetchData,
     searchByName,
+    resetExtraFilters,
   };
 };

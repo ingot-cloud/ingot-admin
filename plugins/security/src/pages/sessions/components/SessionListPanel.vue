@@ -1,34 +1,5 @@
 <template>
   <div class="session-list-panel">
-    <in-filter-item class="session-list-panel__filters">
-      <in-with-label title="组织">
-        <div class="filter-control">
-          <TenantSelect v-model="condition.tenantId" />
-        </div>
-      </in-with-label>
-      <in-with-label title="客户端">
-        <div class="filter-control">
-          <ClientIdField v-model="condition.clientId" :default-select-index="0" />
-        </div>
-      </in-with-label>
-      <el-input
-        v-model="condition.userId"
-        class="filter-control"
-        clearable
-        placeholder="搜索用户 ID"
-      />
-      <el-input
-        v-model="condition.ipAddress"
-        class="filter-control"
-        clearable
-        placeholder="搜索登录 IP"
-      />
-      <template #rightActions>
-        <in-button @click="privateOnReset">重置</in-button>
-        <in-button type="primary" :loading="loading" @in-click="() => fetchData()">搜索</in-button>
-      </template>
-    </in-filter-item>
-
     <in-table
       :loading="loading"
       :data="pageInfo.records"
@@ -45,6 +16,37 @@
         按在线用户翻页；多会话时当页条数可能大于每页条数
       </template>
       <template #tools-start>
+        <el-input
+          v-model="condition.userId"
+          class="w-200px!"
+          clearable
+          placeholder="搜索用户 ID"
+          :prefix-icon="Search"
+          @keyup.enter="privateOnSearch"
+          @clear="privateOnSearch"
+        />
+        <in-filter-panel :active-count="extraFilterCount">
+          <div class="session-list-panel__filter-field">
+            <span class="session-list-panel__filter-label">组织</span>
+            <TenantSelect v-model="condition.tenantId" class="w-full" />
+          </div>
+          <div class="session-list-panel__filter-field">
+            <span class="session-list-panel__filter-label">客户端</span>
+            <ClientIdField v-model="condition.clientId" :default-select-index="0" />
+          </div>
+          <el-input
+            v-model="condition.ipAddress"
+            class="w-full"
+            clearable
+            placeholder="搜索登录 IP"
+            :prefix-icon="Search"
+            @keyup.enter="privateOnSearch"
+            @clear="privateOnSearch"
+          />
+          <template #footer>
+            <in-button @click="privateOnResetExtra">重置</in-button>
+          </template>
+        </in-filter-panel>
         <in-table-column-setting
           :headers="tableHeaders"
           :table-id="SESSIONS_TABLE_ID"
@@ -76,7 +78,9 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import { TenantSelect } from "@ingot/admin-common";
+import { Search } from "@element-plus/icons-vue";
 import type { PlatformSessionVO } from "@/models";
+import { hasSessionQueryConstraint } from "@/api/security/session.query";
 import { useSessionUserTypeEnum, useTokenAuthMethodEnum } from "@/models/enums";
 import { createSessionRowActions, SESSIONS_TABLE_ID, tableHeaders } from "../table.ts";
 import { useOps } from "../useOps.ts";
@@ -89,7 +93,7 @@ const {
   condition,
   pageInfo,
   isClientOnlyQuery,
-  resetFilter,
+  resetExtraFilters,
   fetchData,
   revokeBySid,
   revokeByUser,
@@ -104,8 +108,16 @@ const visibleHeaders = computed(() =>
   applyColumnSelection(tableHeaders, selectedColumnProps.value),
 );
 
-const privateOnReset = (): void => {
-  resetFilter();
+const extraFilterCount = computed(
+  () => [condition.tenantId, condition.clientId, condition.ipAddress].filter(Boolean).length,
+);
+
+const privateOnSearch = (): void => {
+  fetchData();
+};
+
+const privateOnResetExtra = (): void => {
+  resetExtraFilters();
 };
 
 const privateOnDetail = (item: PlatformSessionVO): void => {
@@ -134,18 +146,31 @@ watch(
     }
   },
 );
+
+watch(
+  () => condition.tenantId,
+  () => {
+    if (hasSessionQueryConstraint(condition)) {
+      fetchData();
+    }
+  },
+);
 </script>
 
 <style lang="postcss" scoped>
 .session-list-panel {
   @apply flex flex-col;
+}
 
-  & .session-list-panel__filters {
-    @apply px-12px pt-10px pb-12px mb-4;
-  }
+.session-list-panel__filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--in-space-1);
+}
 
-  & .filter-control {
-    @apply w-200px;
-  }
+.session-list-panel__filter-label {
+  color: var(--in-text-color-secondary);
+  font-size: var(--in-font-size-caption);
+  line-height: var(--in-line-height-body);
 }
 </style>

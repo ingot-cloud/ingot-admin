@@ -14,6 +14,7 @@ describe("platform config app home IndexPage", () => {
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain("in-table-column-setting");
+    expect(source).toContain("in-filter-panel");
     expect(source).toContain("in-picker");
     expect(source).toContain('label="应用类型"');
     expect(source).toContain('label="状态"');
@@ -23,8 +24,8 @@ describe("platform config app home IndexPage", () => {
     expect(source).toContain(":prefix-icon=\"Search\"");
     expect(source).not.toContain("in-filter-item");
     expect(source).not.toContain("in-with-label");
-    expect(source.indexOf("in-picker")).toBeLessThan(source.indexOf("in-table-column-setting"));
-    expect(source.indexOf("搜索应用名")).toBeLessThan(source.indexOf("in-table-column-setting"));
+    expect(source.indexOf("搜索应用名")).toBeLessThan(source.indexOf("in-filter-panel"));
+    expect(source.indexOf("in-filter-panel")).toBeLessThan(source.indexOf("in-table-column-setting"));
     expect(source).toContain("applyColumnSelection");
     expect(source).toContain("in-table-actions");
     expect(source).toContain("APP_HOME_TABLE_ID");

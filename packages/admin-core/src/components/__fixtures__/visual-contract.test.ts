@@ -281,6 +281,20 @@ describe("admin UI visual fixtures", () => {
     expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-filled:hover:not(:disabled)");
   });
 
+  it("InFilterPanel 为工具栏筛选浮层：文案筛选、32px 描边、Teleport、角标", () => {
+    const panel = readFileSync(resolve(root, "../table/InFilterPanel.vue"), "utf8");
+    expect(panel).toContain("name: \"InFilterPanel\"");
+    expect(panel).toContain("aria-label=\"筛选条件\"");
+    expect(panel).toContain("筛选");
+    expect(panel).not.toContain("更多");
+    expect(panel).toContain("Teleport to=\"body\"");
+    expect(panel).toContain("in-filter-panel__badge");
+    expect(panel).toContain("height: var(--in-control-height)");
+    expect(panel).toContain("activeCount");
+    expect(panel).toContain("Escape");
+    expect(panel).toContain("z-index: var(--in-z-dropdown)");
+  });
+
   it("InPicker 为紧凑单选：可选 label、32px 触发器、相邻 12px", () => {
     const picker = readFileSync(resolve(root, "../select/InPicker.vue"), "utf8");
     expect(picker).toContain("name: \"InPicker\"");
