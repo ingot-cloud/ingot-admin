@@ -73,6 +73,18 @@ describe("createAdminQueryClient", () => {
     } as never);
     expect(warning).toHaveBeenCalledTimes(1);
   });
+
+  it("未授权错误不走 Query 全局提示", () => {
+    const client = createAdminQueryClient();
+    client.getQueryCache().config.onError?.(new ApiError({ kind: "http", message: "未登录", status: 401 }), {
+      meta: {},
+    } as never);
+    client.getQueryCache().config.onError?.(
+      new ApiError({ kind: "business", message: "未登录", code: "S0401" }),
+      { meta: {} } as never,
+    );
+    expect(warning).not.toHaveBeenCalled();
+  });
 });
 
 describe("isRetriableQueryError", () => {

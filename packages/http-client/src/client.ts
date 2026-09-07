@@ -190,11 +190,15 @@ const settleFailure = async (
   config: AxiosRequestConfig | undefined,
   hooks: HttpClientHooks,
 ): Promise<never> => {
-  if (error.cancelled || resolveFeedback(config) === "silent") {
+  if (error.cancelled) {
     return Promise.reject(error);
   }
+  // 未授权必须在 silent 之前处理：Query 用 silent 避免重复提示，但不能跳过登出跳转。
   if (hooks.isUnauthorized?.(error)) {
     await hooks.onUnauthorized?.(error);
+    return Promise.reject(error);
+  }
+  if (resolveFeedback(config) === "silent") {
     return Promise.reject(error);
   }
   if (error.kind === "business") {

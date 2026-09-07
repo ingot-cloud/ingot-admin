@@ -6,6 +6,7 @@ import {
   type VueQueryPluginOptions,
 } from "@tanstack/vue-query";
 import { isApiError } from "@ingot/http-client";
+import { isAdminUnauthorized } from "@/net/unauthorized";
 import "./register";
 import {
   DEFAULT_QUERY_GC_TIME,
@@ -17,7 +18,7 @@ import {
 let adminQueryClient: QueryClient | undefined;
 
 const notifyQueryError = (error: unknown): void => {
-  if (isApiError(error) && error.cancelled) {
+  if (isApiError(error) && (error.cancelled || isAdminUnauthorized(error))) {
     return;
   }
   const message = error instanceof Error ? error.message : "请求失败";

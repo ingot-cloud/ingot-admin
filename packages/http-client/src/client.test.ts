@@ -33,7 +33,7 @@ const jsonAdapter = (
       (error as Error & { code: string }).code = "ERR_CANCELED";
       throw error;
     }
-    return {
+    const response = {
       data: result.data,
       status: result.status ?? 200,
       statusText: "OK",
@@ -41,6 +41,16 @@ const jsonAdapter = (
       config,
       request: {},
     };
+    if (response.status < 200 || response.status >= 300) {
+      throw new AxiosError(
+        `Request failed with status code ${response.status}`,
+        response.status >= 500 ? AxiosError.ERR_BAD_RESPONSE : AxiosError.ERR_BAD_REQUEST,
+        config,
+        {},
+        response,
+      );
+    }
+    return response;
   };
 };
 
@@ -106,6 +116,44 @@ describe("createHttpClient", () => {
       },
     });
     await expect(http.get("/api/me")).rejects.toMatchObject({ code: "S0401" });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+    expect(onBusinessFailure).not.toHaveBeenCalled();
+  });
+
+  it("HTTP 401 走 onUnauthorized", async () => {
+    const onUnauthorized = vi.fn();
+    const onHttpError = vi.fn();
+    const http = createHttpClient({
+      adapter: jsonAdapter(() => ({
+        status: 401,
+        data: { message: "Unauthorized" },
+      })),
+      hooks: {
+        onUnauthorized,
+        onHttpError,
+        isUnauthorized: (error) => error.status === 401,
+      },
+    });
+    await expect(http.get("/api/me")).rejects.toMatchObject({ kind: "http", status: 401 });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+    expect(onHttpError).not.toHaveBeenCalled();
+  });
+
+  it("feedback silent 时仍处理未授权", async () => {
+    const onUnauthorized = vi.fn();
+    const onBusinessFailure = vi.fn();
+    const http = createHttpClient({
+      adapter: jsonAdapter(() => ({
+        status: 401,
+        data: { code: "S0401", message: "未登录", data: {} },
+      })),
+      hooks: {
+        onUnauthorized,
+        onBusinessFailure,
+        isUnauthorized: (error) => error.status === 401 || error.code === "S0401",
+      },
+    });
+    await expect(http.get("/api/me", null, { feedback: "silent" })).rejects.toMatchObject({ status: 401 });
     expect(onUnauthorized).toHaveBeenCalledTimes(1);
     expect(onBusinessFailure).not.toHaveBeenCalled();
   });

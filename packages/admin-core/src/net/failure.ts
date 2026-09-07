@@ -6,8 +6,7 @@ import { StatusCode } from "@/net/status-code";
 import { logoutAndReload } from "@/utils/security";
 import { isString } from "@/utils";
 
-export const isAdminUnauthorized = (error: ApiError): boolean =>
-  error.code === StatusCode.UNAUTHORIZED || error.code === StatusCode.TokenInvalid;
+export { isAdminUnauthorized } from "./unauthorized";
 
 export const shouldBypassAdminError = (error: AxiosError): boolean =>
   Boolean(parseChallengeRequired(error.response?.status, error.response?.data));

@@ -35,11 +35,16 @@ describe("admin failure hooks", () => {
     confirmWarning.mockResolvedValue(undefined);
   });
 
-  it("识别未授权业务码", () => {
+  it("识别未授权业务码与 HTTP 401", () => {
     expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }))).toBe(
       true,
     );
+    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 401 }))).toBe(true);
+    expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.TokenInvalid }))).toBe(
+      true,
+    );
     expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.OK }))).toBe(false);
+    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 500 }))).toBe(false);
   });
 
   it("412 挑战错误应旁路", () => {
@@ -49,6 +54,10 @@ describe("admin failure hooks", () => {
 
   it("未授权时退出登录，refreshTokenAndRetry 时跳过", () => {
     handleAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }));
+    expect(logoutAndReload).toHaveBeenCalledWith(true);
+
+    logoutAndReload.mockReset();
+    handleAdminUnauthorized(new ApiError({ kind: "http", message: "unauthorized", status: 401 }));
     expect(logoutAndReload).toHaveBeenCalledWith(true);
 
     logoutAndReload.mockReset();

@@ -56,7 +56,7 @@ export interface HttpClientHooks {
    */
   shouldBypassError?: (error: AxiosError) => boolean;
   /**
-   * 判断业务失败是否视为未授权。
+   * 判断失败是否视为未授权（业务码或 HTTP 401）。silent 请求仍会触发 onUnauthorized。
    */
   isUnauthorized?: (error: import("./error").ApiError) => boolean;
 }
@@ -103,6 +103,7 @@ declare module "axios" {
   interface AxiosRequestConfig {
     /**
      * 失败反馈：global 走适配器提示，silent 由调用方或 Query 接管。
+     * 未授权（onUnauthorized）不受 silent 影响。
      */
     feedback?: "global" | "silent";
     /**
