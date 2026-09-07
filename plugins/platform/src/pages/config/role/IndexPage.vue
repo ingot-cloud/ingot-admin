@@ -13,7 +13,6 @@
         density="compact"
         :expandRowKeys="roleTree.map((item) => item.id!)"
       >
-        <template #summary>共 {{ roleTree.length }} 个</template>
         <template #tools-start>
           <el-input
             v-model="filter.name"

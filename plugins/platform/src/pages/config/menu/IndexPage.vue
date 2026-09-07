@@ -12,7 +12,6 @@
         :table-id="MENU_TABLE_ID"
         density="compact"
       >
-        <template #summary>共 {{ menuData.length }} 个</template>
         <template #tools-start>
           <in-picker v-model="orgTypeFilter" label="组织类型" :options="orgTypeFilterOptions" />
           <in-table-column-setting
