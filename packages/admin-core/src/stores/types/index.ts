@@ -58,12 +58,3 @@ export interface AppStore {
    */
   bucketName: string;
 }
-
-/**
- * Tab item
- */
-export interface TabItem {
-  title: string;
-  path: string;
-  close: boolean;
-}

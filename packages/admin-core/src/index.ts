@@ -94,6 +94,4 @@ export * from "./layouts";
 export * from "./stores/modules/app";
 export * from "./stores/modules/auth";
 export * from "./stores/modules/router";
-export * from "./stores/modules/tabs";
 export * from "./theme";
-export { default as InTabs } from "./components/InTabs.vue";

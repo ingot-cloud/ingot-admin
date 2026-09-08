@@ -130,7 +130,6 @@ declare module 'vue' {
     InTableColumnSetting: typeof import('./src/components/table/InTableColumnSetting.vue')['default']
     InTableSkeleton: typeof import('./src/components/table/InTableSkeleton.vue')['default']
     InTableTreeCell: typeof import('./src/components/table/InTableTreeCell.vue')['default']
-    InTabs: typeof import('./src/components/InTabs.vue')['default']
     InTag: typeof import('./src/components/tag/InTag.vue')['default']
     InTagEnum: typeof import('./src/components/tag/InTagEnum.vue')['default']
     InTitle: typeof import('./src/components/InTitle.vue')['default']

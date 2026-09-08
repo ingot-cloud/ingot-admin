@@ -36,7 +36,6 @@ await bootstrapAdminApp({
   settings: {
     componentSize,
     showMenu: parseBoolean(env.VITE_APP_SETTINGS_SHOW_MENU),
-    showTabs: parseBoolean(env.VITE_APP_SETTINGS_SHOW_TABS),
     showBreadcrumb: parseBoolean(env.VITE_APP_SETTINGS_SHOW_BREADCRUMB),
     showCopyright: parseBoolean(env.VITE_APP_SETTINGS_SHOW_COPYRIGHT),
     showSearch: parseBoolean(env.VITE_APP_SETTINGS_SHOW_SEARCH),

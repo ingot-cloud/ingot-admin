@@ -6,9 +6,6 @@
     <template #navigation>
       <component :is="navigationPart" />
     </template>
-    <template v-if="showTabs" #tabs>
-      <component :is="tabsPart" />
-    </template>
     <template v-if="showBreadcrumb" #breadcrumb>
       <component :is="breadcrumbPart" />
     </template>
@@ -21,7 +18,6 @@
   </component>
 </template>
 <script lang="ts" setup>
-import InTabs from "@/components/InTabs.vue";
 import InBreadcrumb from "@/layouts/widgets/breadcrumb/InBreadcrumb.vue";
 import InCopyright from "@/layouts/widgets/InCopyright.vue";
 import { getAdminResolvedTheme } from "./applyTheme";
@@ -41,12 +37,11 @@ const theme = inject(adminResolvedThemeKey, null) ?? getAdminResolvedTheme() ?? 
 const shell = createAdminShell();
 provideAdminShell(shell);
 
-const { showTabs, showBreadcrumb, showCopyright } = shell;
+const { showBreadcrumb, showCopyright } = shell;
 
 const shellComponent = computed(() => theme.shell ?? DefaultAdminShell);
 const headerPart = computed(() => theme.parts?.header ?? DefaultHeader);
 const navigationPart = computed(() => theme.parts?.navigation ?? DefaultNavigation);
-const tabsPart = computed(() => theme.parts?.tabs ?? InTabs);
 const breadcrumbPart = computed(() => theme.parts?.breadcrumb ?? InBreadcrumb);
 const footerPart = computed(() => theme.parts?.footer ?? InCopyright);
 

@@ -101,7 +101,6 @@ export type InComponentSize = "large" | "default" | "small";
 export interface InSettingsConfig {
   componentSize?: InComponentSize;
   showMenu?: boolean;
-  showTabs?: boolean;
   showBreadcrumb?: boolean;
   showCopyright?: boolean;
   showSearch?: boolean;

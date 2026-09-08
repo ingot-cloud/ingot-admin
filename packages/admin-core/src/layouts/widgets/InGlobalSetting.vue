@@ -19,10 +19,6 @@
         <el-switch v-model="appStateStore.showBreadcrumb" />
       </div>
       <div class="in-global-setting-item">
-        <span class="title">Tabs</span>
-        <el-switch v-model="appStateStore.showTabs" />
-      </div>
-      <div class="in-global-setting-item">
         <span class="title">版权信息</span>
         <el-switch v-model="appStateStore.showCopyright" />
       </div>

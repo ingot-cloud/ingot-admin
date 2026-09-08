@@ -11,7 +11,6 @@ import { shellLayoutKey, type ShellLayoutApi } from "../layouts/main/types";
 import { isBreadcrumbVisible } from "../layouts/widgets/breadcrumb/buildBreadcrumbList";
 
 export interface InAdminShellApi extends ShellLayoutApi {
-  showTabs: ComputedRef<boolean>;
   showBreadcrumb: ComputedRef<boolean>;
   showCopyright: ComputedRef<boolean>;
   showSearch: ComputedRef<boolean>;
@@ -30,7 +29,6 @@ export const createAdminShell = (): InAdminShellApi => {
   const routerStore = useRouterStore();
   const options = inject(adminAppOptionsKey, null);
 
-  const showTabs = computed(() => Boolean(appStateStore.getShowTabs));
   const showCopyright = computed(() => Boolean(appStateStore.getShowCopyright));
   const showSearch = computed(() => Boolean(appStateStore.getShowSearch));
   const showBreadcrumb = computed(() =>
@@ -39,7 +37,6 @@ export const createAdminShell = (): InAdminShellApi => {
 
   return {
     ...layout,
-    showTabs,
     showBreadcrumb,
     showCopyright,
     showSearch,

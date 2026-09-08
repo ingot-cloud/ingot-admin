@@ -42,7 +42,6 @@ export const useAppStateStore = defineStore(
   () => {
     const menuOpenStatus = ref<boolean | undefined>(undefined);
     const componentSize = ref<ComponentSize | undefined>(undefined);
-    const showTabs = ref<boolean | undefined>(undefined);
     const showBreadcrumb = ref<boolean | undefined>(undefined);
     const showCopyright = ref<boolean | undefined>(undefined);
     const showSearch = ref<boolean | undefined>(undefined);
@@ -54,9 +53,6 @@ export const useAppStateStore = defineStore(
       }
       if (componentSize.value === undefined) {
         componentSize.value = settings.componentSize;
-      }
-      if (showTabs.value === undefined) {
-        showTabs.value = settings.showTabs;
       }
       if (showBreadcrumb.value === undefined) {
         showBreadcrumb.value = settings.showBreadcrumb;
@@ -74,9 +70,6 @@ export const useAppStateStore = defineStore(
 
     const getMenuOpened = computed(() => {
       return menuOpenStatus.value;
-    });
-    const getShowTabs = computed(() => {
-      return showTabs.value;
     });
     const getShowBreadcrumb = computed(() => {
       return showBreadcrumb.value;
@@ -101,13 +94,11 @@ export const useAppStateStore = defineStore(
     return {
       menuOpenStatus,
       componentSize,
-      showTabs,
       showBreadcrumb,
       showCopyright,
       showSearch,
       showWatermark,
       getMenuOpened,
-      getShowTabs,
       getShowBreadcrumb,
       getShowCopyright,
       getShowSearch,
@@ -122,7 +113,6 @@ export const useAppStateStore = defineStore(
       pick: [
         "menuOpenStatus",
         "componentSize",
-        "showTabs",
         "showBreadcrumb",
         "showCopyright",
         "showSearch",

@@ -23,7 +23,6 @@
           'has-copyright': Boolean(slots.footer),
         }"
       >
-        <slot name="tabs" />
         <div v-if="slots.breadcrumb" class="in-shell-breadcrumb">
           <slot name="breadcrumb" />
         </div>
@@ -43,7 +42,6 @@ defineOptions({
 const slots = defineSlots<{
   header?: () => unknown;
   navigation?: () => unknown;
-  tabs?: () => unknown;
   breadcrumb?: () => unknown;
   content?: () => unknown;
   footer?: () => unknown;

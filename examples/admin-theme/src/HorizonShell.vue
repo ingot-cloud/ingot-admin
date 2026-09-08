@@ -17,7 +17,6 @@
           'has-copyright': Boolean($slots.footer),
         }"
       >
-        <slot name="tabs" />
         <div v-if="$slots.breadcrumb" class="ex-horizon__breadcrumb">
           <slot name="breadcrumb" />
         </div>

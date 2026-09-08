@@ -18,7 +18,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_ERROR_IMAGE: string;
   readonly VITE_APP_SETTINGS_COMPONENT_SIZE: string;
   readonly VITE_APP_SETTINGS_SHOW_MENU: boolean;
-  readonly VITE_APP_SETTINGS_SHOW_TABS: boolean;
   readonly VITE_APP_SETTINGS_SHOW_BREADCRUMB: boolean;
   readonly VITE_APP_SETTINGS_SHOW_COPYRIGHT: boolean;
   readonly VITE_APP_SETTINGS_SHOW_SEARCH: boolean;

@@ -51,9 +51,8 @@ describe("InAdminThemeLayout", () => {
       branding: { title: "Test" },
       login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
       plugins: [],
-      settings: { showTabs: true, showBreadcrumb: true, showCopyright: true },
+      settings: { showBreadcrumb: true, showCopyright: true },
     });
-    useAppStateStore().showTabs = true;
     useAppStateStore().showBreadcrumb = true;
     useAppStateStore().showCopyright = true;
     useAppStateStore().menuOpenStatus = true;
@@ -109,7 +108,6 @@ describe("InAdminThemeLayout", () => {
             template:
               '<nav class="menu"><slot name="sidebar-top" /><slot name="sidebar-bottom" /></nav>',
           },
-          InTabs: { template: '<div data-testid="tabs" />' },
           InBreadcrumb: { template: '<div data-testid="breadcrumb" />' },
           InCopyright: { template: '<div data-testid="footer" />' },
           ElContainer: { template: "<div><slot /></div>" },
@@ -126,10 +124,7 @@ describe("InAdminThemeLayout", () => {
     expect(wrapper.find('[data-testid="header-start"]').text()).toBe("start");
     expect(wrapper.find('[data-testid="header-end"]').text()).toBe("end");
     expect(wrapper.find('[data-testid="sidebar-top"]').text()).toBe("top");
-    expect(wrapper.find('[data-testid="tabs"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="footer"]').exists()).toBe(true);
-    useAppStateStore().showTabs = false;
-    await wrapper.vm.$nextTick();
     expect(wrapper.find('[data-testid="tabs"]').exists()).toBe(false);
     wrapper.unmount();
   });

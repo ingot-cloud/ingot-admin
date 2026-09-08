@@ -302,7 +302,6 @@ declare global {
   const useStyleTag: typeof import('@vueuse/core').useStyleTag
   const useSupported: typeof import('@vueuse/core').useSupported
   const useSwipe: typeof import('@vueuse/core').useSwipe
-  const useTabsStore: typeof import('../../packages/admin-core/src/stores/modules/tabs').useTabsStore
   const useTemplateRef: typeof import('vue').useTemplateRef
   const useTemplateRefsList: typeof import('@vueuse/core').useTemplateRefsList
   const useTextDirection: typeof import('@vueuse/core').useTextDirection
@@ -363,7 +362,7 @@ declare global {
   export type { Options, CommandComponent } from '../../packages/admin-core/src/hooks/biz/useCommandComponent'
   import('../../packages/admin-core/src/hooks/biz/useCommandComponent')
   // @ts-ignore
-  export type { NetConfig, LoginConfig, AppStore, TabItem } from '../../packages/admin-core/src/stores/types/index'
+  export type { NetConfig, LoginConfig, AppStore } from '../../packages/admin-core/src/stores/types/index'
   import('../../packages/admin-core/src/stores/types/index')
 }
 
@@ -658,7 +657,6 @@ declare module 'vue' {
     readonly useStyleTag: UnwrapRef<typeof import('@vueuse/core')['useStyleTag']>
     readonly useSupported: UnwrapRef<typeof import('@vueuse/core')['useSupported']>
     readonly useSwipe: UnwrapRef<typeof import('@vueuse/core')['useSwipe']>
-    readonly useTabsStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/tabs')['useTabsStore']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTemplateRefsList: UnwrapRef<typeof import('@vueuse/core')['useTemplateRefsList']>
     readonly useTextDirection: UnwrapRef<typeof import('@vueuse/core')['useTextDirection']>

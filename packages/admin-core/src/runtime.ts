@@ -30,7 +30,6 @@ export interface InResolvedNetConfig {
 export interface InResolvedSettingsConfig {
   componentSize: InComponentSize;
   showMenu: boolean;
-  showTabs: boolean;
   showBreadcrumb: boolean;
   showCopyright: boolean;
   showSearch: boolean;
@@ -74,7 +73,6 @@ const DEFAULT_CONFIG: InResolvedAppConfig = {
   settings: {
     componentSize: "default",
     showMenu: true,
-    showTabs: false,
     showBreadcrumb: true,
     showCopyright: true,
     showSearch: true,
@@ -127,7 +125,6 @@ const resolveStorage = (storage?: InStorageConfig): InStorageConfig => ({
 const resolveSettings = (settings?: InSettingsConfig): InResolvedSettingsConfig => ({
   componentSize: settings?.componentSize ?? DEFAULT_CONFIG.settings.componentSize,
   showMenu: settings?.showMenu ?? DEFAULT_CONFIG.settings.showMenu,
-  showTabs: settings?.showTabs ?? DEFAULT_CONFIG.settings.showTabs,
   showBreadcrumb: settings?.showBreadcrumb ?? DEFAULT_CONFIG.settings.showBreadcrumb,
   showCopyright: settings?.showCopyright ?? DEFAULT_CONFIG.settings.showCopyright,
   showSearch: settings?.showSearch ?? DEFAULT_CONFIG.settings.showSearch,
