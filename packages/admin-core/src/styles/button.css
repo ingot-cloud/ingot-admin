@@ -1,0 +1,99 @@
+/**
+ * InButton / ElButton `plain`：默认白底，类型色只改文字和边框；
+ * 悬停/按下时填满类型色并反白文字。
+ * 使用 :root:root 提高优先级，避免被 Element Plus 按需 CSS 覆盖。
+ */
+:root:root .el-button.is-plain.el-button--primary {
+  --in-button-plain-color: var(--in-color-primary);
+}
+
+:root:root .el-button.is-plain.el-button--success {
+  --in-button-plain-color: var(--in-color-success);
+}
+
+:root:root .el-button.is-plain.el-button--warning {
+  --in-button-plain-color: var(--in-color-warning);
+}
+
+:root:root .el-button.is-plain.el-button--danger {
+  --in-button-plain-color: var(--in-color-danger);
+}
+
+:root:root .el-button.is-plain.el-button--info {
+  --in-button-plain-color: var(--in-color-info);
+}
+
+:root:root
+  .el-button.is-plain:is(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ) {
+  --el-button-text-color: var(--in-button-plain-color);
+  --el-button-bg-color: var(--in-bg-color-surface);
+  --el-button-border-color: var(--in-button-plain-color);
+  --el-button-hover-text-color: var(--in-text-color-inverse);
+  --el-button-hover-bg-color: var(--in-button-plain-color);
+  --el-button-hover-border-color: var(--in-button-plain-color);
+  --el-button-active-text-color: var(--in-text-color-inverse);
+  --el-button-active-bg-color: color-mix(
+    in srgb,
+    var(--in-button-plain-color) 80%,
+    var(--in-text-color)
+  );
+  --el-button-active-border-color: color-mix(
+    in srgb,
+    var(--in-button-plain-color) 80%,
+    var(--in-text-color)
+  );
+  --el-button-disabled-text-color: color-mix(
+    in srgb,
+    var(--in-button-plain-color) 40%,
+    var(--in-bg-color-surface)
+  );
+  --el-button-disabled-bg-color: var(--in-bg-color-surface);
+  --el-button-disabled-border-color: color-mix(
+    in srgb,
+    var(--in-button-plain-color) 40%,
+    var(--in-bg-color-surface)
+  );
+}
+
+:root:root
+  .el-button.is-plain.is-disabled:is(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ),
+:root:root
+  .el-button.is-plain.is-disabled:is(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ):hover,
+:root:root
+  .el-button.is-plain.is-disabled:is(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ):focus,
+:root:root
+  .el-button.is-plain.is-disabled:is(
+    .el-button--primary,
+    .el-button--success,
+    .el-button--warning,
+    .el-button--danger,
+    .el-button--info
+  ):active {
+  color: var(--el-button-disabled-text-color);
+  background-color: var(--in-bg-color-surface);
+  border-color: var(--el-button-disabled-border-color);
+}

@@ -1,6 +1,7 @@
 import "element-plus/theme-chalk/el-message.css";
 import "element-plus/theme-chalk/el-message-box.css";
 import "element-plus/theme-chalk/el-dropdown.css";
+import "element-plus/theme-chalk/el-button.css";
 import "./tokens.css";
 import "./el-mapping.css";
 import "./dark/tokens.css";
@@ -11,3 +12,4 @@ import "./main.css";
 import "./confirm-dialog.css";
 import "./dropdown.css";
 import "./message.css";
+import "./button.css";
