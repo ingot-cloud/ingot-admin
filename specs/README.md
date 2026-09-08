@@ -91,7 +91,7 @@ specs/
 
 inbox 里已有完整后端接口文档时，以移入的原文为准，不必按 `templates/change/API.md` 重写。
 
-施工门禁见 [AGENTS.md](../AGENTS.md)。实现前阅读 [CONSTITUTION.md](./CONSTITUTION.md) 与 [ingot-coding-standards](../.agents/skills/ingot-coding-standards/SKILL.md)。优先读本 change 的 `API.md` 与 `REQUIREMENTS.md`。
+施工门禁见 [AGENTS.md](../AGENTS.md)。实现前阅读 [CONSTITUTION.md](./CONSTITUTION.md) 与 [in-coding-standards](../.agents/skills/in-coding-standards/SKILL.md)。优先读本 change 的 `API.md` 与 `REQUIREMENTS.md`。
 
 ## 状态机
 

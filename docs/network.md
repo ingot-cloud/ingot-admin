@@ -2,7 +2,7 @@
 
 管理台业务代码通过 `@ingot/admin-core` 的 `request` / `Http` 发请求。`@ingot/http-client` 只做传输、归一化、错误分类和可组合拦截器，不含 Vue / Pinia / Element Plus。
 
-详细 API 写法见 [api-conventions.md](../.agents/skills/ingot-coding-standards/api-conventions.md)。信封协议见 [envelope-crypto.md](./envelope-crypto.md)。
+详细 API 写法见 [api-conventions.md](../.agents/skills/in-coding-standards/api-conventions.md)。信封协议见 [envelope-crypto.md](./envelope-crypto.md)。
 
 ## 分层
 

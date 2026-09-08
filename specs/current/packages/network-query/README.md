@@ -15,7 +15,7 @@ admin 与 auth 共用无 UI 的 `@ingot/http-client` 做传输与错误归一化
 - [docs/network.md](../../../../docs/network.md)
 - [docs/composable-admin-runtime.md](../../../../docs/composable-admin-runtime.md)
 - [docs/create-app.md](../../../../docs/create-app.md)
-- [.agents/skills/ingot-coding-standards/api-conventions.md](../../../../.agents/skills/ingot-coding-standards/api-conventions.md)
+- [.agents/skills/in-coding-standards/api-conventions.md](../../../../.agents/skills/in-coding-standards/api-conventions.md)
 
 ## 对接接口
 

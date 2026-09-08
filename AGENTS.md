@@ -2,7 +2,7 @@
 
 本仓库用 `specs/` 管理前端变更。影响页面行为、路由、API 对接或共享包的改动，必须遵循以下规则。细节以 [specs/README.md](./specs/README.md) 为准。
 
-1. 改业务代码前，阅读 [变更规格工作流](./specs/README.md)，检索相关 `specs/current/` 与 `specs/changes/active/`，并阅读 [CONSTITUTION.md](./specs/CONSTITUTION.md) 与 [ingot-coding-standards](./.agents/skills/ingot-coding-standards/SKILL.md)。
+1. 改业务代码前，阅读 [变更规格工作流](./specs/README.md)，检索相关 `specs/current/` 与 `specs/changes/active/`，并阅读 [CONSTITUTION.md](./specs/CONSTITUTION.md) 与 [in-coding-standards](./.agents/skills/in-coding-standards/SKILL.md)。
 2. 从 `specs/inbox/` 生成 change 后状态为 `draft`。仅「生成 spec」时不得改业务代码。
 3. Active change 状态必须为 `approved`，且 `TASKS.md` 已可执行，才能开始施工；开工时将状态改为 `implementing`。
 4. 实现偏离已批准的 `DESIGN.md` / `API.md` / `REQUIREMENTS.md` 时，先更新 Spec 并经用户确认，再继续修改代码。
@@ -14,9 +14,21 @@
 
 - 用户同一句话要求「根据 inbox 生成并实现」：先产出 `draft` spec，**停下来等确认**。用户明确说可以开工后，再将状态改为 `approved` → `implementing` 并改代码。
 - 实现只读该 change 目录（`API.md`、`REQUIREMENTS.md`、`DESIGN.md`），不要再读已清空的 inbox。
-- 提交信息必须遵循 Conventional Commits：`<type>[optional scope][optional !]: <中文摘要>`；摘要聚焦 why，句末不加句号。常用 type：`feat` / `fix` / `refactor` / `docs` / `test` / `chore`。创建或修改 commit 前阅读 [ingot-conventional-commits](./.agents/skills/ingot-conventional-commits/SKILL.md)。
+- Git 提交默认遵循 Conventional Commits，细则见下方「Git 提交」。
 
-架构分层（详情见 [docs/development-model.md](./docs/development-model.md)）：
+## Git 提交
+
+本仓库提交**默认**遵循 [Conventional Commits 1.0.0](https://www.conventionalcommits.org/zh-hans/v1.0.0/)。
+
+- 标题：`<type>[optional scope][optional !]: <中文摘要>`
+- 摘要中文、聚焦 why、句末不加句号
+- 创建、修改或 amend commit 前必须阅读并遵循 [in-conventional-commits](./.agents/skills/in-conventional-commits/SKILL.md)
+
+type / scope / 何时拆分提交等具体要求只维护在该 skill，不要在本文件展开。
+
+## 架构分层
+
+详情见 [docs/development-model.md](./docs/development-model.md)。
 
 - `apps/`：可运行、可部署的应用，是 composition root
 - `plugins/`：不可独立运行的业务源码插件

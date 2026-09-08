@@ -2,7 +2,7 @@
 
 本文档定义 ingot-admin monorepo 的**不可协商原则**。所有 `specs/changes/` 的设计与实现必须符合本宪章。
 
-详细编码规范见：[ingot-coding-standards SKILL](../.agents/skills/ingot-coding-standards/SKILL.md)
+详细编码规范见：[in-coding-standards](../.agents/skills/in-coding-standards/SKILL.md)
 
 ## 技术栈
 

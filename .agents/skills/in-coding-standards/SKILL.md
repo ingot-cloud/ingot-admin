@@ -1,11 +1,11 @@
 ---
-name: ingot-coding-standards
-description: Enforces ingot-admin monorepo coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto (@ingot/shared/crypto). Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption in this repository.
+name: in-coding-standards
+description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption.
 ---
 
-# ingot-admin 编码规范
+# 编码规范
 
-本 SKILL 基于 ingot-admin monorepo 现有良好实践，并纠正已扫描到的不良习惯。编写或修改代码时**必须遵循**。
+本 SKILL 基于本仓库现有良好实践，并纠正已扫描到的不良习惯。编写或修改代码时**必须遵循**。
 
 ## 技术栈
 
@@ -153,7 +153,7 @@ pages/platform/base/app/
 | `console.log` / `console.debug`          | 移除或用 `@/utils/message`                                       |
 | `eslint-disable` 掩盖未用参数            | 修正函数签名或移除参数                                           |
 | `throw "字符串"`                         | `throw new Error("...")`                                         |
-| 跨 app 复制 net/utils/组件               | 抽取到 `@ingot/shared` 或 `@ingot/admin-core`                    |
+| 跨 app 复制 net/utils/组件               | 抽取到 `packages/shared` 或 `packages/admin-core`                 |
 | 新增无域前缀的同名 store                 | 带域前缀命名                                                     |
 
 ## 修改已有代码时
@@ -168,4 +168,4 @@ pages/platform/base/app/
 
 - Vue 组件/页面/Store/样式示例 → [vue-conventions.md](vue-conventions.md)
 - API/TypeScript/Net 层示例 → [api-conventions.md](api-conventions.md)
-- Git 提交信息 → [ingot-conventional-commits](../ingot-conventional-commits/SKILL.md)
+- Git 提交信息 → [in-conventional-commits](../in-conventional-commits/SKILL.md)

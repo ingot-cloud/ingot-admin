@@ -8,7 +8,7 @@
 
 - [ ] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）
 - [ ] 阅读本 change 的 [API.md](./API.md) 与 [REQUIREMENTS.md](./REQUIREMENTS.md)
-- [ ] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [ingot-coding-standards](../../../../.agents/skills/ingot-coding-standards/SKILL.md)
+- [ ] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [ ] 确认 DESIGN.md 的页面路径与对接映射
 
 ## 实现
