@@ -1,12 +1,19 @@
 <template>
   <div class="role-filter">
     <div class="action-box">
-      <el-input v-model="searchValue" placeholder="搜索角色" :prefix-icon="Search" clearable />
-      <el-divider direction="vertical" />
+      <el-input
+        v-model="searchValue"
+        class="action-box__search"
+        placeholder="搜索角色"
+        :prefix-icon="Search"
+        clearable
+      />
       <el-dropdown trigger="click">
-        <el-icon size="22" cursor-pointer>
-          <i-material-symbols:more-vert />
-        </el-icon>
+        <button type="button" class="more-trigger" aria-label="更多">
+          <el-icon>
+            <i-material-symbols:more-vert />
+          </el-icon>
+        </button>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="privateHandleRoleCollapseAction(true)">
@@ -132,7 +139,45 @@ const privateOnNodeCollapse = (data: RoleTreeNodeVO) => {
   @apply flex flex-col min-w-0 w-full;
 
   & .action-box {
-    @apply flex flex-row items-center justify-between;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+  }
+
+  & .action-box :deep(.action-box__search) {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+  }
+
+  & .more-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--in-control-height);
+    height: var(--in-control-height);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--in-text-color-secondary);
+    cursor: pointer;
+  }
+
+  & :deep(.el-dropdown) {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    line-height: 0;
+  }
+
+  & :deep(.el-divider--vertical) {
+    flex: none;
+    align-self: center;
+    height: 16px;
+    margin: 0;
   }
 
   & .member-role-tree {
@@ -146,12 +191,14 @@ const privateOnNodeCollapse = (data: RoleTreeNodeVO) => {
     width: 100%;
 
     & .icon {
+      flex: none;
       color: #39a3ff;
       font-size: 14px;
     }
 
     & .text {
       flex: 1;
+      min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

@@ -83,6 +83,7 @@ describe("admin UI visual fixtures", () => {
     expect(tree).toContain("table-expand-collapsed.svg");
     expect(tree).toContain("table-expand-expanded.svg");
     expect(tree).toContain(".el-tree-node__content");
+    expect(tree).toContain(".el-tree-node__label");
     expect(tree).toContain("align-items: center");
     expect(tree).toContain(".el-tree-node__expand-icon.expanded::before");
     expect(tree).toContain(".el-tree-node__expand-icon.is-leaf::before");
@@ -103,6 +104,9 @@ describe("admin UI visual fixtures", () => {
     expect(bizTabs).toContain("var(--in-biz-tabs-ink-ease)");
     const dropdownCss = readFileSync(resolve(root, "../../styles/dropdown.css"), "utf8");
     expect(dropdownCss).toContain(".el-dropdown__popper.el-popper");
+    expect(dropdownCss).toContain("align-items: center");
+    expect(dropdownCss).toContain("gap: var(--in-space-2)");
+    expect(dropdownCss).toContain("line-height: var(--in-line-height-body)");
     expect(dropdownCss).toContain("border: 1px solid var(--in-border-color)");
     expect(dropdownCss).toContain("border-radius: var(--in-radius-control)");
     expect(dropdownCss).toContain("box-shadow: var(--in-shadow-overlay)");

@@ -34,7 +34,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "140",
+    width: "200",
     prop: "actions",
     fixed: "right",
   },

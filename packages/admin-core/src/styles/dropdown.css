@@ -26,12 +26,24 @@
 
 .el-dropdown__popper .el-dropdown-menu__item,
 .in-dropdown .el-dropdown-menu__item {
+  display: flex;
+  align-items: center;
   justify-content: flex-start;
+  gap: var(--in-space-2);
   min-height: var(--in-control-height);
   padding: 0 var(--in-space-3);
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
-  line-height: var(--in-control-height);
+  line-height: var(--in-line-height-body);
+}
+
+.el-dropdown__popper .el-dropdown-menu__item .el-icon,
+.in-dropdown .el-dropdown-menu__item .el-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  margin-right: 0;
 }
 
 .el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):focus,

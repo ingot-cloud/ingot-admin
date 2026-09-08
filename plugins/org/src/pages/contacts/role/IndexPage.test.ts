@@ -42,5 +42,7 @@ describe("org contacts role IndexPage", () => {
     expect(leftSource).toContain('"node-click"');
     expect(source).toContain("@node-click");
     expect(source).not.toContain("@onNodeClick");
+    expect(leftSource).toContain("more-trigger");
+    expect(leftSource).toContain("action-box__more");
   });
 });

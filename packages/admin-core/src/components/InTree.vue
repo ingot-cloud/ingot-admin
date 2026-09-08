@@ -40,6 +40,15 @@ defineExpose({} as ComponentInstance<typeof ElTree>);
   align-items: center;
 }
 
+:deep(.el-tree-node__label) {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  line-height: 1;
+}
+
 :deep(.el-tree-node__expand-icon) {
   display: inline-flex;
   align-items: center;

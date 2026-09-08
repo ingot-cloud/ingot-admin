@@ -1,27 +1,35 @@
 <template>
   <div class="role-filter">
-    <el-input v-model="searchValue" placeholder="搜索角色" :prefix-icon="Search" clearable />
-
     <div class="action-box">
-      <in-button @click="privateHandleCreateGroup">新增角色组</in-button>
-      <in-button @click="privateHandleCreateRole">新增角色</in-button>
-      <div>
-        <el-divider direction="vertical" />
-        <el-dropdown trigger="click">
-          <el-icon size="22" cursor-pointer>
+      <el-input
+        v-model="searchValue"
+        class="action-box__search"
+        placeholder="搜索角色"
+        :prefix-icon="Search"
+        clearable
+      />
+      <el-dropdown trigger="click">
+        <button type="button" class="more-trigger" aria-label="更多">
+          <el-icon>
             <i-material-symbols:more-vert />
           </el-icon>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item @click="privateHandleRoleCollapseAction(true)">
-                <el-icon><i-material-symbols:expand-rounded /></el-icon>全部展开
-              </el-dropdown-item>
-              <el-dropdown-item @click="privateHandleRoleCollapseAction(false)">
-                <el-icon><i-mdi:arrow-vertical-collapse /></el-icon>全部折叠
-              </el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
-        </el-dropdown>
+        </button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="privateHandleRoleCollapseAction(true)">
+              <el-icon><i-material-symbols:expand-rounded /></el-icon>全部展开
+            </el-dropdown-item>
+            <el-dropdown-item @click="privateHandleRoleCollapseAction(false)">
+              <el-icon><i-mdi:arrow-vertical-collapse /></el-icon>全部折叠
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+    <div class="action-box">
+      <div class="action-box__start">
+        <in-button type="primary" plain @click="privateHandleCreateGroup">新增角色组</in-button>
+        <in-button @click="privateHandleCreateRole">新增角色</in-button>
       </div>
     </div>
 
@@ -203,6 +211,42 @@ const privateDeleteRoleOrGroup = (params: RoleTreeNodeVO) => {
     @apply flex flex-row items-center justify-between m-t-[var(--in-common-margin)];
   }
 
+  & .action-box:first-child {
+    @apply flex flex-row items-center justify-between;
+    margin-top: 0 !important;
+  }
+
+  & .action-box :deep(.action-box__search) {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+  }
+
+  & .more-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--in-control-height);
+    height: var(--in-control-height);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--in-text-color-secondary);
+    cursor: pointer;
+  }
+
+  & :deep(.el-dropdown) {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+
+  & :deep(.el-divider--vertical) {
+    align-self: center;
+    height: 16px;
+    margin: 0;
+  }
+
   & .member-role-tree {
     @apply m-t-[var(--in-common-margin)];
   }
@@ -214,12 +258,14 @@ const privateDeleteRoleOrGroup = (params: RoleTreeNodeVO) => {
     width: 100%;
 
     & .icon {
+      flex: none;
       color: #39a3ff;
       font-size: 14px;
     }
 
     & .text {
       flex: 1;
+      min-width: 0;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
