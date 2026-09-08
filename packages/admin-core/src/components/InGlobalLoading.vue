@@ -1,99 +1,100 @@
 <template>
-  <div class="in-global-loading">
-    <div class="in-global-loading-box">
-      <div class="in-global-loading-box-warp">
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
-        <div class="in-global-loading-box-item"></div>
+  <div class="in-global-loading" role="status" aria-live="polite" :aria-label="hint">
+    <div class="in-global-loading-box" aria-hidden="true">
+      <img class="in-global-loading-mark" :src="loadingSrc" alt="" width="96" height="96" />
+      <div class="in-global-loading-text">
+        <span>{{ hintLabel }}</span>
+        <span class="in-global-loading-dots">
+          <span>.</span>
+          <span>.</span>
+          <span>.</span>
+        </span>
       </div>
-      <div class="in-global-loading-text">{{ hint }}</div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-defineProps({
-  hint: {
-    type: String,
-    default: "加载中...",
-  },
+import { useDark } from "@vueuse/core";
+import loadingDark from "../assets/loading/in-loading-dark.svg";
+import loadingLight from "../assets/loading/in-loading-light.svg";
+
+defineOptions({
+  name: "InGlobalLoading",
 });
+
+const props = withDefaults(
+  defineProps<{
+    hint?: string;
+  }>(),
+  {
+    hint: "加载中...",
+  },
+);
+
+const isDark = useDark();
+const loadingSrc = computed(() => (isDark.value ? loadingDark : loadingLight));
+const hintLabel = computed(() => props.hint.replace(/\.+$/u, ""));
 </script>
 <style lang="postcss" scoped>
 .in-global-loading {
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  inset: 0;
+  z-index: var(--in-z-dropdown);
+  background: var(--in-bg-color-canvas);
 
   & .in-global-loading-box {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    & .in-global-loading-text {
-      color: var(--in-color-primary);
-      font-size: 14px;
-      text-align: center;
-      margin-top: 5px;
-    }
   }
 
-  & .in-global-loading-box-warp {
-    width: 80px;
-    height: 80px;
-    & .in-global-loading-box-item {
-      width: 33.333333%;
-      height: 33.333333%;
-      background: var(--in-color-primary);
-      float: left;
-      animation: in-global-loading-animation 1.2s infinite ease;
-      border-radius: 1px;
-    }
-    & .in-global-loading-box-item:nth-child(7) {
-      animation-delay: 0s;
-    }
-    & .in-global-loading-box-item:nth-child(4) {
-      animation-delay: 0.1s;
-    }
-    & .in-global-loading-box-item:nth-child(8) {
-      animation-delay: 0.1s;
-    }
+  & .in-global-loading-mark {
+    display: block;
+    width: 96px;
+    height: 96px;
+  }
 
-    & .in-global-loading-box-item:nth-child(1) {
-      animation-delay: 0.2s;
-    }
-    & .in-global-loading-box-item:nth-child(5) {
-      animation-delay: 0.2s;
-    }
-    & .in-global-loading-box-item:nth-child(9) {
-      animation-delay: 0.2s;
-    }
+  & .in-global-loading-text {
+    color: var(--in-color-primary);
+    font-size: 14px;
+    text-align: center;
+    margin-top: 5px;
+  }
 
-    & .in-global-loading-box-item:nth-child(2) {
-      animation-delay: 0.3s;
-    }
-    & .in-global-loading-box-item:nth-child(6) {
-      animation-delay: 0.3s;
-    }
+  & .in-global-loading-dots > span {
+    opacity: 0;
+    animation: in-global-loading-dot 1.8s ease-in-out infinite;
+  }
 
-    & .in-global-loading-box-item:nth-child(3) {
-      animation-delay: 0.4s;
-    }
+  & .in-global-loading-dots > span:nth-child(2) {
+    animation-delay: 0.25s;
+  }
+
+  & .in-global-loading-dots > span:nth-child(3) {
+    animation-delay: 0.5s;
   }
 }
 
-@keyframes in-global-loading-animation {
+@keyframes in-global-loading-dot {
   0%,
-  70%,
-  100% {
-    transform: scale3D(1, 1, 1);
+  12% {
+    opacity: 0;
   }
-  35% {
-    transform: scale3D(0, 0, 1);
+  22%,
+  72% {
+    opacity: 1;
+  }
+  88%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in-global-loading .in-global-loading-dots > span {
+    animation: none;
+    opacity: 1;
   }
 }
 </style>

@@ -291,6 +291,20 @@ describe("admin UI visual fixtures", () => {
     expect(logoResolver).toContain("in-dark-framed.svg");
   });
 
+  it("全局加载使用明暗主题 SVG 动画", () => {
+    const loading = readFileSync(resolve(root, "../InGlobalLoading.vue"), "utf8");
+    expect(loading).toContain("name: \"InGlobalLoading\"");
+    expect(loading).toContain("in-loading-light.svg");
+    expect(loading).toContain("in-loading-dark.svg");
+    expect(loading).toContain("useDark");
+    expect(loading).toContain("var(--in-bg-color-canvas)");
+    expect(loading).toContain("in-global-loading-dots");
+    expect(loading).toContain("in-global-loading-dot");
+    expect(loading).toContain("prefers-reduced-motion");
+    expect(loading).not.toContain("in-global-loading-box-item");
+    expect(loading).not.toContain("in-global-loading-animation");
+  });
+
   it("InTableActions 直出按钮启用态有 hover，禁用态不响应", () => {
     const actions = readFileSync(resolve(root, "../table/InTableActions.vue"), "utf8");
     expect(actions).toContain(".in-table-actions__inline:hover:not(:disabled)");

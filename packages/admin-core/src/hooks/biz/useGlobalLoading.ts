@@ -1,34 +1,17 @@
-import "@/styles/global-loading.css";
+import { createVNode, nextTick, render } from "vue";
+import InGlobalLoading from "@/components/InGlobalLoading.vue";
+
+let host: HTMLElement | null = null;
 
 export const useGlobalLoading = () => {
   const start = (hint?: string) => {
     if (window.globalLoading) {
       return;
     }
-    hint = hint || "加载中...";
 
-    const bodys: Element = document.body;
-    const div = <HTMLElement>document.createElement("div");
-    div.setAttribute("class", "in-global-loading");
-    const htmls = `
-			<div class="in-global-loading-box">
-				<div class="in-global-loading-box-warp">
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-					<div class="in-global-loading-box-item"></div>
-				</div>
-        <div class="in-global-loading-text">${hint}</div>
-			</div>
-
-		`;
-    div.innerHTML = htmls;
-    bodys.insertBefore(div, bodys.childNodes[0]);
+    host = document.createElement("div");
+    document.body.insertBefore(host, document.body.childNodes[0]);
+    render(createVNode(InGlobalLoading, { hint: hint ?? "加载中..." }), host);
     window.globalLoading = true;
   };
 
@@ -36,8 +19,12 @@ export const useGlobalLoading = () => {
     nextTick(() => {
       setTimeout(() => {
         window.globalLoading = false;
-        const el = <HTMLElement>document.querySelector(".in-global-loading");
-        el?.parentNode?.removeChild(el);
+        if (!host) {
+          return;
+        }
+        render(null, host);
+        host.parentNode?.removeChild(host);
+        host = null;
       }, time);
     });
   };
