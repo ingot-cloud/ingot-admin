@@ -2,17 +2,14 @@
   <div cursor-pointer>
     <el-dropdown trigger="click" @command="handleMenuCommand">
       <div flex flex-row items-center>
-        <img v-if="getAvatar" :src="getAvatar" class="user-avatar" />
-        <div v-else class="username-avatar">
-          {{ getUsername }}
-        </div>
+        <in-avatar :src="getAvatar" :name="getUsername" :show-name="false" />
         <in-icon class="avatar-arrow" name="bxs:down-arrow"></in-icon>
       </div>
       <template #dropdown>
         <el-dropdown-menu class="user-dropdown">
           <el-dropdown-item>
             <div class="username-dropdown">
-              <img v-if="getAvatar" :src="getAvatar" class="avatar" />
+              <in-avatar :src="getAvatar" :name="getUsername" :size="36" :show-name="false" />
               <div class="username">
                 {{ getUsername }}
               </div>
@@ -38,6 +35,7 @@
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
+import InAvatar from "@/components/avatar/InAvatar.vue";
 import type { UserDropdownCommand } from "./types";
 import { menuList } from "./types";
 import { useUserInfoStore } from "@/stores/modules/auth";
@@ -67,19 +65,6 @@ const handleMenuCommand = (command: UserDropdownCommand): void => {
 };
 </script>
 <style scoped lang="postcss">
-.user-avatar {
-  @apply h-24px w-24px rd-4px;
-}
-.username-avatar {
-  height: 24px;
-  line-height: 24px;
-  font-size: 12px;
-  border-radius: 4px;
-  background: var(--in-color-primary);
-  color: white;
-  padding-left: 5px;
-  padding-right: 5px;
-}
 .avatar-arrow {
   color: var(--in-text-color-secondary);
   margin-left: 8px;
@@ -88,13 +73,9 @@ const handleMenuCommand = (command: UserDropdownCommand): void => {
   padding: 8px;
 
   & .username-dropdown {
-    @apply flex flex-row;
+    @apply flex flex-row items-center;
     height: 70px;
-    & .avatar {
-      width: 36px;
-      height: 36px;
-      margin-right: 12px;
-    }
+    gap: 12px;
 
     & .username {
       width: 124px;

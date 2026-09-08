@@ -66,4 +66,14 @@ describe("InAvatar", () => {
     expect(wrapper.get(".in-avatar__image").attributes("src")).toBe("/logo.png");
     wrapper.unmount();
   });
+
+  it("图片加载失败时回退到姓名最后两个字", async () => {
+    const wrapper = mount(InAvatar, {
+      props: { name: "欧阳修", src: "https://example.com/broken.png" },
+    });
+    await wrapper.get(".in-avatar__image").trigger("error");
+    expect(wrapper.find(".in-avatar__image").exists()).toBe(false);
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    wrapper.unmount();
+  });
 });

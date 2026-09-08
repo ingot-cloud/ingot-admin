@@ -1,7 +1,34 @@
 <template>
   <div class="tenant-item">
     <div class="avatar">
-      <el-image v-if="avatar" :src="avatar" class="h-full w-full" fit="cover" />
+      <span class="avatar-fallback" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+          <path d="M0 0h24v24H0z" fill="none" />
+          <g fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M5 22a3 3 0 1 1 0-6a3 3 0 0 1 0 6Zm14 0a3 3 0 1 1 0-6a3 3 0 0 1 0 6Z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M19 16c-.183-2.453-1.203-3-4.653-3H9.653c-3.45 0-4.47.547-4.653 3"
+            />
+            <path d="M12 10a4 4 0 1 1 0-8a4 4 0 0 1 0 8Z" />
+          </g>
+        </svg>
+      </span>
+      <el-image
+        v-if="showImage"
+        :src="avatar"
+        class="avatar-image"
+        fit="cover"
+        @error="privateOnImageError"
+      >
+        <template #placeholder>
+          <span />
+        </template>
+        <template #error>
+          <span />
+        </template>
+      </el-image>
     </div>
     <div class="name">
       {{ name }}
@@ -12,18 +39,30 @@
   </div>
 </template>
 <script setup lang="ts">
-defineProps({
-  id: {
-    type: [String, Number],
+const props = withDefaults(
+  defineProps<{
+    id?: string | number;
+    avatar?: string;
+    name?: string;
+  }>(),
+  {
+    avatar: "",
   },
-  avatar: {
-    type: String,
-    default: "",
+);
+
+const imageFailed = ref(false);
+const showImage = computed(() => Boolean(props.avatar) && !imageFailed.value);
+
+watch(
+  () => props.avatar,
+  () => {
+    imageFailed.value = false;
   },
-  name: {
-    type: String,
-  },
-});
+);
+
+const privateOnImageError = (): void => {
+  imageFailed.value = true;
+};
 </script>
 <style scoped lang="postcss">
 .tenant-item {
@@ -41,14 +80,26 @@ defineProps({
   grid-gap: 10px;
 
   & .avatar {
+    @apply relative overflow-hidden;
     width: 48px;
     height: 48px;
-    line-height: 48px;
-    font-size: 48px;
-    text-align: center;
     border-radius: 8px;
-    color: rgba(0, 137, 255, 0.48);
-    background: #ffffff;
+    color: #ffffff;
+    background: var(--in-color-primary);
+  }
+
+  & .avatar-fallback {
+    @apply inline-flex items-center justify-center w-full h-full;
+    font-size: 28px;
+  }
+
+  & .avatar-image {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
   }
 
   & .name {
