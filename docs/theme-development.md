@@ -35,7 +35,7 @@ await bootstrapAdminApp({
 | `name`       | 必填，展示名，不据此生成选择 UI                                  |
 | `tokens`     | 可选，`light` / `dark` 两组对 `InThemeTokens` 的部分覆盖         |
 | `shell`      | 可选，布局编排组件；缺省使用默认 Shell                           |
-| `parts`      | 可选，`header` / `navigation` / `tabs` / `breadcrumb` / `footer` |
+| `parts`      | 可选，`header` / `navigation` / `breadcrumb` / `footer` |
 
 浅色覆盖不会复制到深色。某一模式省略时沿用该模式的默认值。未知 Token 键会被拒绝。主题私有变量写在附加 CSS 里，使用自己的前缀，不要占用 `--in-*`。
 
@@ -61,7 +61,7 @@ layout.main → InAdminThemeLayout → 主题 Shell → 插槽区域与页面内
 
 `simple` / `iframe` / `external` 第一版没有替换入口。
 
-Shell 接收 `header`、`navigation`、`tabs`、`breadcrumb`、`content`、`footer`。核心按设置决定是否提供区域内容；Shell 只负责排列。必须把 `content` 恰好渲染一次，并给出有界、可收缩的空间。内容内部滚动、KeepAlive 和滚动恢复由核心内容组件负责。
+Shell 接收 `header`、`navigation`、`breadcrumb`、`content`、`footer`。核心按设置决定是否提供区域内容；Shell 只负责排列。必须把 `content` 恰好渲染一次，并给出有界、可收缩的空间。内容内部滚动、KeepAlive 和滚动恢复由核心内容组件负责。
 
 `useAdminShell()` 提供只读导航模式、展开状态、可见性、已授权菜单、品牌信息，以及切换 / 关闭导航。不要另建菜单数据源，也不要绕过设置开关重新显示被隐藏的区域。
 
@@ -74,7 +74,7 @@ App `shellSlots`：
 
 自定义 parts 必须转交这些插槽；未配置时为空。
 
-可复用的公开部件：`InAppBar`、`InMenu`、`InLogo`、`InTabs`、`InBreadcrumb`、`InCopyright`、`InSwitchDark`、`InUserDropdown`、`DefaultAdminShell`、`InAdminThemeLayout`。
+可复用的公开部件：`InAppBar`、`InMenu`、`InLogo`、`InBreadcrumb`、`InCopyright`、`InSwitchDark`、`InUserDropdown`、`DefaultAdminShell`、`InAdminThemeLayout`。
 
 独立 layout 只继承全局 Token。需要主题外壳时：
 
