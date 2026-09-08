@@ -50,7 +50,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | Overview | `InPageFrame mode="page"` | PageBody | Dashboard 摘要与快捷入口 |
 | List | `contained` + `InSplitLayout`（可不启用左栏） | 表格数据区 | 筛选放 `#tools-start`，不要放 `#header` |
 | Split List | `contained` + `left-collapsible` | 左树与右表独立 | `InPageHeader` 在 `InPageFrame` `#header` |
-| Settings | `mode="page"`，局部 Tab 放 `InPageFrame` `#tabs` | PageBody | 安全策略；懒挂载不变；Tab 在滚动区外钉住，不进 `InPageHeader` |
+| Settings | `mode="page"`，`surface="workspace"`，局部 Tab 放 `InPageFrame` `#tabs` | PageBody | 安全策略；懒挂载不变；Tab 在滚动区外钉住，不进 `InPageHeader`；内容区白底 |
 | Detail | `mode="page"`，`showBack`，`surface="workspace"` | PageBody | 应用详情；局部 Tab 同 Settings |
 | Tool | `mode="page"` | PageBody | 二维码等单一任务 |
 
@@ -92,10 +92,10 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | member | `user` | List | `member-user`；对齐平台用户操作分层 |
 | member | `role` | List | `member-role` |
 | member | `permission` | List | `member-permission` |
-| security | `access-protection` | Settings | 多 Tab 策略表；热更新提示不变 |
-| security | `account-protection` | Settings | B/C 两栏独立保存 |
-| security | `credential` | Settings | |
-| security | `sessions` | Settings | `security-sessions` / `security-sessions-policy`；会话列表 `#tools-start`：搜索用户 ID + `InFilterPanel`（组织/客户端/登录 IP + 重置）+ 字段设置 |
+| security | `access-protection` | Settings | `surface="workspace"`；多 Tab 策略表；热更新提示不变 |
+| security | `account-protection` | Settings | `surface="workspace"`；B/C 两栏独立保存 |
+| security | `credential` | Settings | `surface="workspace"` |
+| security | `sessions` | Settings | `surface="workspace"`；`security-sessions` / `security-sessions-policy`；会话列表 `#tools-start`：搜索用户 ID + `InFilterPanel`（组织/客户端/登录 IP + 重置）+ 字段设置 |
 
 通讯录各页是独立菜单路由，不使用页内路由 Tab。
 
