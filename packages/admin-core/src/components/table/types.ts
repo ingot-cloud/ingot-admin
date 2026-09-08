@@ -13,8 +13,12 @@ export interface TableSlotScope<Row = unknown> {
   index: number;
 }
 
+export interface TableHeaderSlotScope {
+  item: TableHeaderRecord;
+}
+
 export type InTableSlots<Row = unknown> = {
-  [name: string]: ((scope: TableSlotScope<Row>) => unknown) | undefined;
+  [name: string]: ((scope: TableSlotScope<Row> | TableHeaderSlotScope) => unknown) | undefined;
   title?: () => unknown;
   subtitle?: () => unknown;
   summary?: () => unknown;

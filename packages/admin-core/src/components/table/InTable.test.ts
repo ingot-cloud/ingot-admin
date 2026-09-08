@@ -206,6 +206,12 @@ describe("InTable", () => {
     expect(source).toContain("justify-content: center");
   });
 
+  it("表头插槽不要求单元格 index", () => {
+    const types = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "types.ts"), "utf8");
+    expect(types).toContain("export interface TableHeaderSlotScope");
+    expect(types).toContain("TableSlotScope<Row> | TableHeaderSlotScope");
+  });
+
   it("需要全选时才显示表头勾选，自定义树时隐藏默认缩进", () => {
     setActivePinia(createPinia());
     const hiddenHeader = mount(InTable, {
