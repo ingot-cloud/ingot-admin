@@ -17,7 +17,7 @@
 
 .el-dropdown__popper .el-dropdown-menu,
 .in-dropdown .el-dropdown-menu {
-  padding: var(--in-space-1) 0;
+  padding: var(--in-space-1);
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -32,6 +32,7 @@
   gap: var(--in-space-2);
   min-height: var(--in-control-height);
   padding: 0 var(--in-space-3);
+  border-radius: var(--in-radius-control);
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
   line-height: var(--in-line-height-body);
@@ -47,9 +48,14 @@
 }
 
 .el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):focus,
+.in-dropdown .el-dropdown-menu__item:not(.is-disabled):focus {
+  background: transparent;
+}
+
 .el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):hover,
-.in-dropdown .el-dropdown-menu__item:not(.is-disabled):focus,
-.in-dropdown .el-dropdown-menu__item:not(.is-disabled):hover {
+.el-dropdown__popper .el-dropdown-menu__item:not(.is-disabled):focus-visible,
+.in-dropdown .el-dropdown-menu__item:not(.is-disabled):hover,
+.in-dropdown .el-dropdown-menu__item:not(.is-disabled):focus-visible {
   background: var(--in-bg-color-menu-hover);
   color: var(--in-text-color);
 }

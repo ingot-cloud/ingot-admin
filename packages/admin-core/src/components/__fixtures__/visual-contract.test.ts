@@ -107,6 +107,7 @@ describe("admin UI visual fixtures", () => {
     expect(dropdownCss).toContain("align-items: center");
     expect(dropdownCss).toContain("gap: var(--in-space-2)");
     expect(dropdownCss).toContain("line-height: var(--in-line-height-body)");
+    expect(dropdownCss).toContain(":focus-visible");
     expect(dropdownCss).toContain("border: 1px solid var(--in-border-color)");
     expect(dropdownCss).toContain("border-radius: var(--in-radius-control)");
     expect(dropdownCss).toContain("box-shadow: var(--in-shadow-overlay)");
@@ -297,6 +298,9 @@ describe("admin UI visual fixtures", () => {
     expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-primary:hover:not(:disabled)");
     expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-danger:hover:not(:disabled)");
     expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-filled:hover:not(:disabled)");
+    expect(actions).toContain("padding: var(--in-space-1)");
+    expect(actions).toContain(".in-table-actions__item.is-active:not(.is-disabled)");
+    expect(actions).toContain("activeIndex.value = focusFirst ? 0 : -1");
   });
 
   it("InFilterPanel 为工具栏筛选浮层：文案筛选、32px 描边、Teleport、角标", () => {

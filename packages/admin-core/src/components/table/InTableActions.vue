@@ -174,7 +174,7 @@ const triggerRef = ref<HTMLButtonElement>();
 const menuRef = ref<HTMLElement>();
 const menuOpen = ref(false);
 const menuStyle = ref<Record<string, string>>({});
-const activeIndex = ref(0);
+const activeIndex = ref(-1);
 let hoverCloseTimer = 0;
 const measuring = ref(true);
 const toolbarRanked = ref<RankedTableActions<Row>>({
@@ -392,7 +392,7 @@ const privatePlaceMenu = () => {
 
 const privateOpenMenu = (focusFirst = false) => {
   menuOpen.value = true;
-  activeIndex.value = 0;
+  activeIndex.value = focusFirst ? 0 : -1;
   nextTick(() => {
     privatePlaceMenu();
     if (!focusFirst) {
@@ -406,7 +406,7 @@ const privateOpenMenu = (focusFirst = false) => {
 const privateCloseMenu = (restoreFocus = false) => {
   window.clearTimeout(hoverCloseTimer);
   menuOpen.value = false;
-  activeIndex.value = 0;
+  activeIndex.value = -1;
   if (restoreFocus) {
     triggerRef.value?.focus();
   }
@@ -416,7 +416,7 @@ const privateOnTriggerClick = () => {
   if (menuOpen.value) {
     return;
   }
-  privateOpenMenu(true);
+  privateOpenMenu(false);
 };
 
 const privateOnMoreEnter = (event: PointerEvent) => {
@@ -469,7 +469,7 @@ const privateOnMenuKeydown = (event: KeyboardEvent) => {
   }
   if (event.key === "ArrowDown") {
     event.preventDefault();
-    activeIndex.value = (activeIndex.value + 1) % items.length;
+    activeIndex.value = activeIndex.value < 0 ? 0 : (activeIndex.value + 1) % items.length;
     nextTick(() => {
       privateMenuItems()[activeIndex.value]?.focus();
     });
@@ -477,7 +477,10 @@ const privateOnMenuKeydown = (event: KeyboardEvent) => {
   }
   if (event.key === "ArrowUp") {
     event.preventDefault();
-    activeIndex.value = (activeIndex.value - 1 + items.length) % items.length;
+    activeIndex.value =
+      activeIndex.value < 0
+        ? items.length - 1
+        : (activeIndex.value - 1 + items.length) % items.length;
     nextTick(() => {
       privateMenuItems()[activeIndex.value]?.focus();
     });
@@ -485,6 +488,9 @@ const privateOnMenuKeydown = (event: KeyboardEvent) => {
   }
   if (event.key === "Enter") {
     event.preventDefault();
+    if (activeIndex.value < 0) {
+      return;
+    }
     const current = items[activeIndex.value];
     if (current) {
       void privateOnSelect(current);
@@ -703,7 +709,7 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
 .in-table-actions__menu-list {
   max-height: 320px;
   overflow: auto;
-  padding: var(--in-space-2) 0;
+  padding: var(--in-space-1);
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-control);
   background: var(--in-bg-color-surface);
@@ -713,11 +719,12 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
 .in-table-actions__item {
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   width: 100%;
   min-height: 36px;
   padding: 0 var(--in-space-3);
   border: 0;
-  border-radius: 0;
+  border-radius: var(--in-radius-control);
   background: transparent;
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
@@ -727,7 +734,7 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   cursor: pointer;
 }
 
-.in-table-actions__item.is-active,
+.in-table-actions__item.is-active:not(.is-disabled),
 .in-table-actions__item:hover:not(.is-disabled) {
   background: var(--in-bg-color-hover);
 }

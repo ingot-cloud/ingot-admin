@@ -59,6 +59,7 @@ describe("InTableActions", () => {
     expect(wrapper.get("[aria-label='更多'] svg").exists()).toBe(true);
     await wrapper.get("[aria-label='更多']").trigger("click");
     expect(menuLabels()).toEqual(["启用", "删除", "授权"]);
+    expect(document.body.querySelector(".in-table-actions__item.is-active")).toBeNull();
     wrapper.unmount();
   });
 
@@ -72,6 +73,7 @@ describe("InTableActions", () => {
     await wrapper.vm.$nextTick();
     expect(findMenu()).not.toBeNull();
     expect(wrapper.get("[aria-label='更多']").classes()).toContain("is-open");
+    expect(document.body.querySelector(".in-table-actions__item.is-active")).toBeNull();
 
     vi.useFakeTimers();
     await wrapper.get(".in-table-actions__more").trigger("pointerleave", { pointerType: "mouse" });

@@ -15,7 +15,6 @@
         @handleSizeChange="fetchData"
         @handleCurrentChange="fetchData"
       >
-        <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
         <template #tools-start>
           <el-input
             v-model="condition.bizTag"
@@ -58,10 +57,7 @@ import { IdPageQueryOptions, idQueryKeys } from "@/api/platform/dev/id.query";
 import { useQueryClient } from "@tanstack/vue-query";
 
 const queryClient = useQueryClient();
-const { condition, pageInfo, fetching, fetchData } = useServerPaging<
-  BizLeafAlloc,
-  BizLeafAlloc
->({
+const { condition, pageInfo, fetching, fetchData } = useServerPaging<BizLeafAlloc, BizLeafAlloc>({
   queryOptions: IdPageQueryOptions,
 });
 const loading = fetching;

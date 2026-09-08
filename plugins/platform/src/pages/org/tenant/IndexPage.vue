@@ -15,7 +15,6 @@
         @handleSizeChange="paging.fetchData"
         @handleCurrentChange="paging.fetchData"
       >
-        <template #summary>共 {{ paging.pageInfo.value.total ?? 0 }} 个</template>
         <template #tools-start>
           <el-input
             v-model="paging.condition.name"

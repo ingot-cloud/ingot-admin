@@ -15,7 +15,6 @@
         @handleSizeChange="fetchData"
         @handleCurrentChange="fetchData"
       >
-        <template #summary>共 {{ pageInfo.total ?? 0 }} 个</template>
         <template #tools-start>
           <el-input
             v-model="condition.clientId"
