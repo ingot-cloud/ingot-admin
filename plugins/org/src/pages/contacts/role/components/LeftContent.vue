@@ -259,7 +259,7 @@ const privateDeleteRoleOrGroup = (params: RoleTreeNodeVO) => {
 
     & .icon {
       flex: none;
-      color: #39a3ff;
+      color: var(--in-color-primary);
       font-size: 14px;
     }
 

@@ -15,7 +15,6 @@
         @handleSizeChange="ops.fetchUserData"
         @handleCurrentChange="ops.fetchUserData"
       >
-        <template #summary>共 {{ ops.pageInfo.value.total ?? 0 }} 人</template>
         <template #tools-start>
           <el-input
             v-model="ops.condition.nickname"

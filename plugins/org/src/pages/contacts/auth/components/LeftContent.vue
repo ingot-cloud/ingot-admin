@@ -46,9 +46,16 @@
     >
       <template #default="{ node, data }">
         <div class="role-item">
-          <in-icon v-if="data.isGroup" name="mingcute:group-line" class="icon" />
+          <in-icon
+            v-if="data.type === RoleTypeEnums.GROUP"
+            name="mingcute:group-line"
+            class="icon"
+          />
           <in-icon v-else name="tabler:user" class="icon" />
-          <span class="text">{{ node.label }}</span>
+          <span class="text">
+            {{ node.label }}
+            <in-tag v-if="data.filterDept" :value="{ text: '部门角色', tag: 'info' }" />
+          </span>
         </div>
       </template>
     </in-tree>
@@ -192,7 +199,7 @@ const privateOnNodeCollapse = (data: RoleTreeNodeVO) => {
 
     & .icon {
       flex: none;
-      color: #39a3ff;
+      color: var(--in-color-primary);
       font-size: 14px;
     }
 
