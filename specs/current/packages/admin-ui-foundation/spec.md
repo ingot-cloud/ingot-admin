@@ -135,7 +135,7 @@
 
 **验收标准：**
 
-- [x] `InAvatar` 默认 32px；无图时取姓名最后两个字
+- [x] `InAvatar` 默认 32px；无图或图片加载失败时取姓名最后两个字；顶栏用户入口复用 `InAvatar`
 - [x] `InAccountStatusTag`：正常 / 已暂停 / 已锁定，依据 `enabled` 与 `locked`
 - [x] `InCommonStatusTag` 只根据 `status` 判断
 

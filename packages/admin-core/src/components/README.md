@@ -23,7 +23,7 @@
 | `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；无头像实体固定 `src` 且 `editable=false`；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |
 | `InDescriptionList` | 只读字段列表 | 上标签下值；空值 `-` | `InDescriptionItem` 的 `label` + `value` |
 | `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger`；标题左侧 `#icon`；`showClose` 控制右上角关闭；`align-center` 全屏居中 | `v-model`、`title`、`#footer`、`#header` |
-| `InAvatar` | 姓名/头像 | 默认 32px；`size="lg"` 为 48px；无图时用姓名最后两字；`showAvatar` 默认 true；`showName` 默认 true；可用 `color` 覆盖；`src` / `avatar` 别名 | 新组件 |
+| `InAvatar` | 姓名/头像 | 默认 32px；`size="lg"` 为 48px；无图或图片加载失败时用姓名最后两字；`showAvatar` 默认 true；`showName` 默认 true；可用 `color` 覆盖；`src` / `avatar` 别名；顶栏用户入口复用本组件 | 新组件 |
 | `InCommonStatusTag` | 公共状态 | 只根据 `status`；正常：蓝底成功图标；暂停：橙底暂停图标，文案「已暂停」；按内容撑开不截断 | 不再使用 Element Plus Tag 的 success/danger 色 |
 | `InAccountStatusTag` | 账号可用与锁定 | `enabled === true && locked === false` 为正常；`enabled === false` 为已暂停；否则已锁定（`#f54a45`） | 用于通讯录成员、平台管理员用户、会员用户列表 |
 
