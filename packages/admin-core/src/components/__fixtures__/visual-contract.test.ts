@@ -38,6 +38,9 @@ describe("admin UI visual fixtures", () => {
     expect(table).toContain("--in-table-header-text");
     expect(table).toContain("table-expand-collapsed.svg");
     expect(table).toContain("table-expand-expanded.svg");
+    expect(table).toContain(".el-table .cell:has(> .el-table__expand-icon)");
+    expect(table).toContain(".el-table__expand-icon),");
+    expect(table).toContain("justify-content: center");
     expect(table).toContain("table-checkbox-checked.svg");
     expect(table).toContain("--in-checkbox-radius");
     expect(table).toContain("--in-checkbox-size");
@@ -79,8 +82,11 @@ describe("admin UI visual fixtures", () => {
     const tree = readFileSync(resolve(root, "../InTree.vue"), "utf8");
     expect(tree).toContain("table-expand-collapsed.svg");
     expect(tree).toContain("table-expand-expanded.svg");
+    expect(tree).toContain(".el-tree-node__content");
+    expect(tree).toContain("align-items: center");
     expect(tree).toContain(".el-tree-node__expand-icon.expanded::before");
     expect(tree).toContain(".el-tree-node__expand-icon.is-leaf::before");
+    expect(tree).toContain("line-height: 0");
     expect(tree).toContain("transform: none !important");
     const avatar = readFileSync(resolve(root, "../avatar/InAvatar.vue"), "utf8");
     expect(avatar).toContain("width: var(--in-avatar-size)");

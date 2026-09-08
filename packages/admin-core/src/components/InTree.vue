@@ -36,16 +36,22 @@ defineExpose({} as ComponentInstance<typeof ElTree>);
   border-radius: 4px;
 }
 
+:deep(.el-tree-node__content) {
+  align-items: center;
+}
+
 :deep(.el-tree-node__expand-icon) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: none;
   width: var(--in-checkbox-size);
   height: var(--in-checkbox-size);
   padding: 0;
   box-sizing: border-box;
   color: var(--in-gray-900);
   font-size: 0;
+  line-height: 0;
   transform: none !important;
 }
 

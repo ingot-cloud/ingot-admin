@@ -591,8 +591,31 @@ defineExpose<TableAPI<TableRow>>({
   border-bottom: none;
 }
 
-:deep(.el-table__expand-icon) {
+:deep(.el-table .cell:has(> .el-table__expand-icon)),
+:deep(.el-table .cell:has(> .el-table__placeholder)),
+:deep(.el-table .cell:has(> .el-table__indent)) {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+:deep(.el-table__indent) {
+  flex: none;
+}
+
+:deep(.el-table__expand-icon),
+:deep(.el-table__placeholder) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  padding: 0;
   color: var(--in-gray-900);
+  font-size: 0;
+  line-height: 0;
   transform: none !important;
 }
 

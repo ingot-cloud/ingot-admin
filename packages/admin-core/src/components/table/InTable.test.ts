@@ -202,6 +202,8 @@ describe("InTable", () => {
     expect(source).not.toContain("background var(--in-motion-duration)");
     expect(source).toContain("font-weight: var(--in-font-weight-body)");
     expect(source).toContain("in-table-tree-cell");
+    expect(source).toContain(".el-table .cell:has(> .el-table__expand-icon)");
+    expect(source).toContain("justify-content: center");
   });
 
   it("需要全选时才显示表头勾选，自定义树时隐藏默认缩进", () => {
