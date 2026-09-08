@@ -6,8 +6,8 @@ describe("resolveAppBarLogo", () => {
     const light = resolveAppBarLogo(undefined, false);
     const dark = resolveAppBarLogo(undefined, true);
     expect(light).not.toBe(dark);
-    expect(String(light)).toMatch(/F6F3EA|in-light-framed/);
-    expect(String(dark)).toMatch(/12161D|in-dark-framed/);
+    expect(String(light)).toMatch(/F7F9FC|F6F3EA|in-light-framed/);
+    expect(String(dark)).toMatch(/0F141D|12161D|in-dark-framed/);
   });
 
   it("自定义 branding.logo 优先于默认 framed 资源", () => {

@@ -45,7 +45,7 @@
     "check": "pnpm build:packages && pnpm type-check && pnpm lint:check && pnpm test:unit && pnpm check:boundaries && pnpm check:examples && pnpm check:docs",
     "check:plugins": "pnpm type-check:plugins && pnpm test:plugins",
     "check:boundaries": "node scripts/check-boundaries.mjs",
-    "check:examples": "vue-tsc -p examples/admin-plugin/tsconfig.json --noEmit",
+    "check:examples": "vue-tsc -p examples/admin-plugin/tsconfig.json --noEmit && vue-tsc -p examples/admin-theme/tsconfig.json --noEmit && node scripts/verify-theme-example.mjs",
     "check:docs": "node scripts/check-docs.mjs",
     "create:package": "node scripts/create-package.mjs",
     "create:package:config": "node scripts/create-package.mjs config",

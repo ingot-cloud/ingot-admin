@@ -7,23 +7,28 @@ const root = dirname(fileURLToPath(import.meta.url));
 
 describe("admin UI visual fixtures", () => {
   it("主布局不再使用框架级 overflow-x-hidden", () => {
-    const layout = readFileSync(resolve(root, "../../layouts/main/IndexPage.vue"), "utf8");
+    const shell = readFileSync(resolve(root, "../../theme/DefaultAdminShell.vue"), "utf8");
+    const content = readFileSync(resolve(root, "../../theme/InAdminThemeContent.vue"), "utf8");
     const container = readFileSync(resolve(root, "../container/InContainer.vue"), "utf8");
     const filter = readFileSync(resolve(root, "../container/InSplitLayout.vue"), "utf8");
-    expect(layout).not.toContain("overflow-x-hidden");
+    expect(shell).not.toContain("overflow-x-hidden");
+    expect(content).not.toContain("overflow-x-hidden");
     expect(container).not.toContain("overflow-x-hidden");
     expect(filter).not.toContain("overflow-x-hidden");
-    expect(layout).toContain("in-content-viewport");
-    expect(layout).toContain("has-breadcrumb");
-    expect(layout).toContain("breadcrumbVisible");
-    expect(layout).toContain("has-copyright");
-    expect(layout).toContain("padding: 0 var(--in-page-gutter);");
-    expect(layout).toContain("padding-top: var(--in-page-gutter);");
-    expect(layout).not.toContain("padding: 0 var(--in-page-gutter) var(--in-page-gutter)");
-    expect(layout).toContain("overflow: hidden");
-    expect(layout).toContain("calc(var(--in-sidebar-gutter) + var(--in-sidebar-panel-expanded))");
-    expect(layout).toContain("calc(var(--in-sidebar-gutter) + var(--in-sidebar-panel-collapsed))");
-    expect(layout).not.toContain("border-right: 1px solid var(--in-border-color)");
+    expect(content).toContain("in-content-viewport");
+    expect(shell).toContain("has-breadcrumb");
+    expect(shell).toContain("has-copyright");
+    expect(content).toContain("padding: 0 var(--in-page-gutter);");
+    expect(shell).toContain("padding-top: var(--in-page-gutter);");
+    expect(content).not.toContain("padding: 0 var(--in-page-gutter) var(--in-page-gutter)");
+    expect(shell).toContain("overflow: hidden");
+    expect(content).toContain("overflow: hidden");
+    expect(shell).toContain("calc(var(--in-sidebar-gutter) + var(--in-sidebar-panel-expanded))");
+    expect(shell).toContain("calc(var(--in-sidebar-gutter) + var(--in-sidebar-panel-collapsed))");
+    expect(shell).not.toContain("border-right: 1px solid var(--in-border-color)");
+    const layoutEntry = readFileSync(resolve(root, "../../layouts/main/IndexPage.vue"), "utf8");
+    expect(layoutEntry).toContain("in-admin-theme-layout");
+    expect(layoutEntry).not.toContain("in-shell-aside");
     expect(filter).toContain("overflow: hidden");
     const table = readFileSync(resolve(root, "../table/InTable.vue"), "utf8");
     const pageFrame = readFileSync(resolve(root, "../InPageFrame.vue"), "utf8");
@@ -251,7 +256,7 @@ describe("admin UI visual fixtures", () => {
 
   it("侧栏滚动视口与底部控制分离，无 collapse popper", () => {
     const menu = readFileSync(resolve(root, "../../layouts/widgets/InMenu.vue"), "utf8");
-    const layout = readFileSync(resolve(root, "../../layouts/main/IndexPage.vue"), "utf8");
+    const layout = readFileSync(resolve(root, "../../theme/DefaultAdminShell.vue"), "utf8");
     const toggle = readFileSync(resolve(root, "../../layouts/widgets/InMenuToggle.vue"), "utf8");
     expect(menu).toContain("in-menu__scroll");
     expect(menu).toContain("in-menu__control");
@@ -299,7 +304,7 @@ describe("admin UI visual fixtures", () => {
     expect(bar).toMatch(/\.in-app-bar__actions \{[\s\S]*?flex: none;/);
     expect(search).toContain("var(--in-app-bar-search-width)");
     expect(logo).toContain("resolveAppBarLogo");
-    expect(logo).toContain("useDark");
+    expect(logo).toContain("useAdminTheme");
     const logoResolver = readFileSync(resolve(root, "../../layouts/widgets/resolveAppBarLogo.ts"), "utf8");
     expect(logoResolver).toContain("in-light-framed.svg");
     expect(logoResolver).toContain("in-dark-framed.svg");
@@ -310,7 +315,7 @@ describe("admin UI visual fixtures", () => {
     expect(loading).toContain("name: \"InGlobalLoading\"");
     expect(loading).toContain("in-loading-light.svg");
     expect(loading).toContain("in-loading-dark.svg");
-    expect(loading).toContain("useDark");
+    expect(loading).toContain("useAdminTheme");
     expect(loading).toContain("var(--in-bg-color-canvas)");
     expect(loading).toContain("in-global-loading-dots");
     expect(loading).toContain("in-global-loading-dot");

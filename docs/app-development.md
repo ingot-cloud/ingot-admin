@@ -18,7 +18,7 @@ App 只负责启动和部署。默认通用后台是 `apps/admin`。
 
 ## Bootstrap
 
-`apps/admin/src/main.ts` 读取 runtime 配置并调用 `bootstrapAdminApp`。必须同时引入 `@ingot/admin-core/style.css`（core 组件 CSS）和 `uno.css`（App 与插件的 UnoCSS 原子类）；只引 `style.css` 时约定目录和插件里的原子类不会生效。插件清单集中在 `src/plugins.ts`，`appCode` 与约定本地插件必须同源：
+`apps/admin/src/main.ts` 读取 runtime 配置并调用 `bootstrapAdminApp`，显式传入 `defaultAdminTheme`。必须同时引入 `@ingot/admin-core/style.css`（core 组件 CSS）和 `uno.css`（App 与插件的 UnoCSS 原子类）；只引 `style.css` 时约定目录和插件里的原子类不会生效。自定义主题再额外引入主题包 CSS。插件清单集中在 `src/plugins.ts`，`appCode` 与约定本地插件必须同源：
 
 ```ts
 export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
@@ -53,7 +53,9 @@ export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
 - `VITE_APP_NET_BASE_URL` 与超时
 - 布局开关：`VITE_APP_SETTINGS_*`
 
-登录应用是 `apps/auth`，不属于管理台插件体系。
+登录应用是 `apps/auth`，不属于管理台插件体系，也不接入管理台主题协议。
+
+更换主题见 [主题开发](./theme-development.md)。
 
 网络请求、App 追加拦截器与 `useServerPaging` 见 [网络请求](./network.md)。
 

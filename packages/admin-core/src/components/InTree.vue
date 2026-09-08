@@ -7,17 +7,17 @@
 </template>
 <script setup lang="ts">
 import type { ElTree } from "element-plus";
-import type { ComponentInstance } from "vue";
+import type { ComponentInstance, ComponentPublicInstance } from "vue";
 import "element-plus/theme-chalk/el-tree.css";
 
 const slot = useSlots();
 
 const vm = getCurrentInstance();
-const changeRef = (instance: ComponentInstance<typeof ElTree> | null): void => {
+const changeRef = (instance: Element | ComponentPublicInstance | null): void => {
   if (!vm) {
     return;
   }
-  vm.exposed = instance ?? {};
+  vm.exposed = instance && !(instance instanceof Element) ? instance : {};
 };
 
 defineExpose({} as ComponentInstance<typeof ElTree>);

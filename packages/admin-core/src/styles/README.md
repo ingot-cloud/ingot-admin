@@ -66,4 +66,4 @@
 
 旧名如 `--in-app-bar-bg`、`--in-common-padding`、`--in-text-color-light` 仍可用，已指向新语义 Token。不要再让 `--in-*` 依赖 `--el-*`。
 
-暗色模式切换 `html.dark`（`InSwitchDark` / `useDark`），不在业务页面维护主题分支。
+暗色模式通过 `useAdminTheme()` 切换 `html.dark`，存储键仍为 `vueuse-color-scheme`。应用可安装自定义主题覆盖 Token 与壳层，见 [主题开发](../../../docs/theme-development.md)。不要在业务页面维护主题分支，也不要回写 `--el-*`。

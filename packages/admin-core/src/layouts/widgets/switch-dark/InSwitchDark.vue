@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useToggle, useDark } from "@vueuse/core";
+import { useToggle } from "@vueuse/core";
 import IconDark from "@/components/icons/IconDark.vue";
 import IconLight from "@/components/icons/IconLight.vue";
-const isDark = useDark();
+import { useAdminTheme } from "@/theme/useAdminTheme";
+
+const { isDark } = useAdminTheme();
 const toggleDark = useToggle(isDark);
 </script>
 

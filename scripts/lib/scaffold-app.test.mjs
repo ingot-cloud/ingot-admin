@@ -57,7 +57,9 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   assert.match(mainTs, /import "@ingot\/admin-core\/style\.css";/);
   assert.match(mainTs, /import "uno\.css";/);
   assert.match(mainTs, /const appCode = env.VITE_APP_CODE \|\| "acme-admin"/);
+  assert.match(mainTs, /import \{ bootstrapAdminApp, defaultAdminTheme, parseBoolean \} from "@ingot\/admin-core";/);
   assert.match(mainTs, /plugins: createAppPlugins\(appCode\)/);
+  assert.match(mainTs, /theme: defaultAdminTheme/);
   assert.doesNotMatch(mainTs, /adminPlugin/);
 
   const pkg = JSON.parse(fs.readFileSync(path.join(result.appDir, "package.json"), "utf8"));

@@ -20,6 +20,7 @@ import type { IPropTypes } from "./EditorPropTypes";
 import type { Ref } from "vue";
 import type { Editor as TinyMCEEditor, EditorEvent, TinyMCE } from "tinymce";
 import { getAdminRuntimeConfig } from "@/runtime";
+import { useAdminTheme } from "@/theme/useAdminTheme";
 
 const defaultMenubar = "file edit view insert format tools table help";
 const defaultToolbar =
@@ -60,13 +61,13 @@ export const Editor = defineComponent({
       modelBind
         ? () => (modelValue?.value ? modelValue.value : "")
         : () => (isMounting ? initialValue : cache);
-    const isDark = useDark();
+    const { isDark } = useAdminTheme();
 
     const initWrapper = (): void => {
       const content = getContent(mounting);
 
       const publicPath = getAdminRuntimeConfig().publicPath;
-      const skinName = isDark ? "oxide-dark" : "oxide";
+      const skinName = isDark.value ? "oxide-dark" : "oxide";
       const finalInit = {
         ...conf,
         readonly: props.disabled,
@@ -80,7 +81,7 @@ export const Editor = defineComponent({
         link_title: false,
         skin: skinName,
         skin_url: publicPath + "resource/tinymce/skins/ui/" + skinName,
-        content_css: isDark ? "dark" : "default",
+        content_css: isDark.value ? "dark" : "default",
         menubar: defaultMenubar,
         toolbar: props.toolbar || conf.toolbar || defaultToolbar,
         autosave_ask_before_unload: true,

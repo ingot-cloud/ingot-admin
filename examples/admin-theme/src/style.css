@@ -1,0 +1,7 @@
+html[data-in-theme="example-horizon"] {
+  --ex-accent: #0f766e;
+}
+
+html.dark[data-in-theme="example-horizon"] {
+  --ex-accent: #2dd4bf;
+}

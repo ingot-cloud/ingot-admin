@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useDark } from "@vueuse/core";
+import { useAdminTheme } from "@/theme/useAdminTheme";
 import loadingDark from "../assets/loading/in-loading-dark.svg";
 import loadingLight from "../assets/loading/in-loading-light.svg";
 
@@ -31,7 +31,7 @@ const props = withDefaults(
   },
 );
 
-const isDark = useDark();
+const { isDark } = useAdminTheme();
 const loadingSrc = computed(() => (isDark.value ? loadingDark : loadingLight));
 const hintLabel = computed(() => props.hint.replace(/\.+$/u, ""));
 </script>

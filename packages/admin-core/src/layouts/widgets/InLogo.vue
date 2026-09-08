@@ -7,18 +7,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useDark } from "@vueuse/core";
 import { useAppStore } from "@/stores/modules/app";
 import { getAdminRuntimeConfig } from "@/runtime";
 import { resolveAppBarLogo } from "./resolveAppBarLogo";
+import { useAdminTheme } from "@/theme/useAdminTheme";
 
 defineOptions({
   name: "InLogo",
 });
 
 const { app } = useAppStore();
-const isDark = useDark();
-const logoSrc = computed(() => resolveAppBarLogo(getAdminRuntimeConfig().branding.logo, isDark.value));
+const { isDark } = useAdminTheme();
+const logoSrc = computed(() =>
+  resolveAppBarLogo(getAdminRuntimeConfig().branding.logo, isDark.value),
+);
 </script>
 <style scoped lang="postcss">
 .in-logo {

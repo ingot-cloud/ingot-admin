@@ -52,4 +52,5 @@ apps ─────→ plugins ─────→ packages
 - [运行时参考](./composable-admin-runtime.md)
 - [菜单 view_path](./menu-view-path.md)
 - [create-app](./create-app.md)
+- [主题开发](./theme-development.md)
 - [插件示例](../examples/admin-plugin/README.md)

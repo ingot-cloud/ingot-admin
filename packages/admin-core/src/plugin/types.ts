@@ -4,6 +4,7 @@ import type { App, Component, Directive, Plugin as VuePlugin } from "vue";
 import type { RouteRecordRaw, Router } from "vue-router";
 import type { PostFilter, PreFilter } from "@ingot/http-client";
 import type { MenuTreeNode } from "../models/menu";
+import type { InAdminTheme } from "../theme/types";
 
 /** 插件契约版本。不兼容的版本会在启动时拒绝加载。 */
 export const INGOT_ADMIN_PLUGIN_API_VERSION = 1 as const;
@@ -107,11 +108,7 @@ export interface InSettingsConfig {
   showWatermark?: boolean;
 }
 
-export type AdminShellSlot =
-  | "header-start"
-  | "header-end"
-  | "sidebar-top"
-  | "sidebar-bottom";
+export type AdminShellSlot = "header-start" | "header-end" | "sidebar-top" | "sidebar-bottom";
 
 /**
  * `bootstrapAdminApp` 入参。`plugins` 清单即该 App 的构建开关：
@@ -131,6 +128,11 @@ export interface InAdminAppOptions {
   bucketName?: string;
   publicPath?: string;
   shellSlots?: Partial<Record<AdminShellSlot, Component>>;
+  /**
+   * 应用选择的管理台主题。未配置时回退到 `defaultAdminTheme`。
+   * 主题不是业务插件，不参与页面/布局 registry。
+   */
+  theme?: InAdminTheme;
   /**
    * App 级静态菜单，与各插件 `staticMenus`、后端动态菜单合并。
    * 仅静态时（后端为空或失败）侧栏仍展示这些菜单。

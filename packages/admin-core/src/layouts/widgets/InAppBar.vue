@@ -23,6 +23,7 @@
     </div>
 
     <div class="in-app-bar__nav" data-testid="app-bar-nav">
+      <slot name="header-start" />
       <slot name="nav" />
       <div v-if="slots['org-mgmt']" class="in-app-bar__entry">
         <slot name="org-mgmt" />
@@ -50,6 +51,7 @@
           </button>
         </el-tooltip>
       </template>
+      <slot name="header-end" />
       <slot name="utilities" />
       <el-tooltip v-if="showUtility('fullscreen')" content="全屏" effect="light" placement="bottom">
         <span>
@@ -86,6 +88,8 @@ const props = withDefaults(
 
 const slots = defineSlots<{
   nav?: () => unknown;
+  "header-start"?: () => unknown;
+  "header-end"?: () => unknown;
   "brand-extra"?: () => unknown;
   "org-mgmt"?: () => unknown;
   "product-settings"?: () => unknown;

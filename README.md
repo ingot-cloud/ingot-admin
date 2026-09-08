@@ -46,7 +46,8 @@ ingot-admin/
 │   ├── shared/             # 框架无关工具与 crypto
 │   └── vite-config/        # App / library / 源码插件 Vite 配置
 └── examples/
-    └── admin-plugin/       # 完整插件示例
+    ├── admin-plugin/       # 完整插件示例
+    └── admin-theme/        # 独立主题包示例
 ```
 
 ## 常用命令
@@ -81,12 +82,14 @@ pnpm clean:plugins            # 仅清理插件
 - [插件开发](./docs/plugin-development.md) — 源码插件结构、页面、菜单、注册和测试
 - [菜单 view_path](./docs/menu-view-path.md) — 页面/布局编码与菜单数据迁移
 - [App 开发](./docs/app-development.md) — bootstrap、裁剪插件、构建和部署
+- [主题开发](./docs/theme-development.md) — Token、壳层协议与独立主题包
 - [运行时参考](./docs/composable-admin-runtime.md) — 插件排序、页面键、菜单合并
 - [create-app](./docs/create-app.md) — 何时创建独立 App
 - [首次构建](./docs/getting-started.md)
 - [变更规格](./specs/README.md)
 - [Agent 工作流](./AGENTS.md)
 - [插件示例](./examples/admin-plugin/README.md)
+- [主题示例](./examples/admin-theme/README.md)
 
 ## 技术栈
 

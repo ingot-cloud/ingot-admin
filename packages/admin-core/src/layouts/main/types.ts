@@ -1,5 +1,5 @@
 import type { ComputedRef, InjectionKey, Ref } from "vue";
-import type { InNavigationMode } from "@/components/types";
+import type { InNavigationMode } from "../../components/types";
 
 export const SHELL_BREAKPOINT_NARROW = 1024;
 export const SHELL_BREAKPOINT_WIDE = 1280;

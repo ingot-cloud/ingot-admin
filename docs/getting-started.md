@@ -98,7 +98,7 @@ ingot-admin/
 ├── apps/admin|auth|create-app
 ├── plugins/platform|security|org|member
 ├── packages/admin-core|admin-common|shared|http-client|vite-config
-└── examples/admin-plugin
+└── examples/admin-plugin|admin-theme
 ```
 
 ## 相关文档
@@ -107,6 +107,7 @@ ingot-admin/
 - [网络请求](./network.md)
 - [插件开发](./plugin-development.md)
 - [App 开发](./app-development.md)
+- [主题开发](./theme-development.md)
 - [菜单 view_path](./menu-view-path.md)
 - [添加新 Package](./add-new-package.md)
 - [TypeScript 配置模板](./typescript-config-template.md)

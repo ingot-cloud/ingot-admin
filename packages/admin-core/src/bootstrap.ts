@@ -9,17 +9,12 @@ import { rebindKeyStore } from "./net/crypto";
 import { AdminPluginRegistry, validateAndSortPlugins } from "./plugin";
 import { bindAdminRouter, configureAdminRuntime } from "./runtime";
 import { createAdminPinia } from "./stores";
-import {
-  adminVueQueryPluginOptions,
-  bindAdminQueryClient,
-  createAdminQueryClient,
-} from "./query";
-import type {
-  InAdminAppOptions,
-  InAdminPluginContext,
-  InAdminRuntime,
-  PageKey,
-} from "./plugin";
+import { adminVueQueryPluginOptions, bindAdminQueryClient, createAdminQueryClient } from "./query";
+import type { InAdminAppOptions, InAdminPluginContext, InAdminRuntime, PageKey } from "./plugin";
+import { applyAdminTheme } from "./theme/applyTheme";
+import { applyInitialColorScheme } from "./theme/colorScheme";
+import { resolveAdminTheme } from "./theme/resolveTheme";
+import { adminResolvedThemeKey } from "./theme/useAdminTheme";
 
 const APP_CODE_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
@@ -33,12 +28,14 @@ const APP_CODE_PATTERN = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
  * @param options.plugins 构建开关：未列入的插件不会进入产物
  * @param options.staticMenus App 级静态菜单，与插件 `staticMenus`、后端动态菜单合并
  */
-export const bootstrapAdminApp = async (
-  options: InAdminAppOptions,
-): Promise<InAdminRuntime> => {
+export const bootstrapAdminApp = async (options: InAdminAppOptions): Promise<InAdminRuntime> => {
   if (!APP_CODE_PATTERN.test(options.appCode)) {
     throw new Error(`应用编码 “${options.appCode}” 必须使用小写 kebab-case`);
   }
+
+  const resolvedTheme = resolveAdminTheme(options.theme);
+  applyAdminTheme(resolvedTheme);
+  applyInitialColorScheme();
 
   const resolved = configureAdminRuntime(options);
   Http.configure(resolved.net);
@@ -60,6 +57,7 @@ export const bootstrapAdminApp = async (
   const readonlyOptions = Object.freeze({ ...options });
 
   app.provide(adminAppOptionsKey, readonlyOptions);
+  app.provide(adminResolvedThemeKey, resolvedTheme);
   app.use(pinia);
   app.use(router);
   app.use(VueQueryPlugin, adminVueQueryPluginOptions(queryClient));

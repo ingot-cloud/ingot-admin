@@ -13,6 +13,9 @@
       @click.capture="privateOnMenuClick"
     >
       <el-scrollbar class="in-menu__scrollbar">
+        <div v-if="$slots['sidebar-top']" class="in-menu__slot-top">
+          <slot name="sidebar-top" />
+        </div>
         <el-menu
           class="in-menu__list"
           :default-active="activePath"
@@ -23,6 +26,9 @@
         >
           <in-submenu v-for="route in getMenus" :key="route.path" :route="route" />
         </el-menu>
+        <div v-if="$slots['sidebar-bottom']" class="in-menu__slot-bottom">
+          <slot name="sidebar-bottom" />
+        </div>
       </el-scrollbar>
     </div>
     <div class="in-menu__clearance" aria-hidden="true"></div>
@@ -92,6 +98,11 @@ const activePath = computed(() => {
 });
 
 const { getMenus } = storeToRefs(useRouterStore());
+
+defineSlots<{
+  "sidebar-top"?: () => unknown;
+  "sidebar-bottom"?: () => unknown;
+}>();
 
 const privateToggle = () => {
   if (shell) {
@@ -255,8 +266,8 @@ const privateOnMenuClick = (event: MouseEvent) => {
   user-select: none;
   padding-left: calc(
     var(--in-menu-base-level-padding) + min(1, var(--in-menu-depth, 0)) *
-      (var(--in-menu-icon-size) + var(--in-menu-icon-gap)) + max(0, calc(var(--in-menu-depth, 0) - 1)) *
-      var(--in-menu-nested-indent)
+      (var(--in-menu-icon-size) + var(--in-menu-icon-gap)) +
+      max(0, calc(var(--in-menu-depth, 0) - 1)) * var(--in-menu-nested-indent)
   ) !important;
 }
 
