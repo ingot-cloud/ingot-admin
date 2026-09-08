@@ -6,7 +6,7 @@
 
 - [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）
 - [x] 阅读本 change 的 [REQUIREMENTS.md](./REQUIREMENTS.md)
-- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
+- [x] 阅读 [CONSTITUTION.md](../../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [x] 确认 DESIGN.md 的拆除范围与页内 Tab 边界
 
 ## 实现
@@ -28,4 +28,4 @@
 
 - [x] 更新 `current/packages/admin-theme/spec.md`
 - [x] 在 capability README 记录变更 ID
-- [ ] README 状态改为 `completed`，将变更目录移至 `changes/archive/<year>/<change-id>/`
+- [x] README 状态改为 `completed`，将变更目录移至 `changes/archive/<year>/<change-id>/`

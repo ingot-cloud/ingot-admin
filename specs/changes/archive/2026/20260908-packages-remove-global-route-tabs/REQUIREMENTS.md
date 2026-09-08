@@ -1,6 +1,6 @@
 # 需求：移除全局路由 Tabs
 
-> 相对 [管理台主题](../../../current/packages/admin-theme/spec.md) 与设置开关的增量。页内 Tab 行为见 [UI 基础设施](../../../current/packages/admin-ui-foundation/spec.md) REQ-004，本次不改。
+> 相对 [管理台主题](../../../../current/packages/admin-theme/spec.md) 与设置开关的增量。页内 Tab 行为见 [UI 基础设施](../../../../current/packages/admin-ui-foundation/spec.md) REQ-004，本次不改。
 
 ## 场景与页面
 

@@ -1,6 +1,6 @@
 # 20260908-packages-remove-global-route-tabs
 
-> 状态：validating
+> 状态：completed
 
 ## 协作模式
 
@@ -50,13 +50,13 @@
 
 ## 相关链接
 
-- [已上线管理台主题](../../../current/packages/admin-theme/spec.md)
-- [UI 基础](../../../current/packages/admin-ui-foundation/spec.md)
+- [已上线管理台主题](../../../../current/packages/admin-theme/spec.md)
+- [UI 基础](../../../../current/packages/admin-ui-foundation/spec.md)
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
+- 完成日期：2026-09-08
+- 关联提交或 PR：16e4981、b4389b4
+- 更新的 current capability：`packages/admin-theme`
+- 与原设计的差异：无
 - 取消原因：
