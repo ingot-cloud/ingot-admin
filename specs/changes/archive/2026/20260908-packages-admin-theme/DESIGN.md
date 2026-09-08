@@ -96,7 +96,7 @@ Shell 接收 header、navigation、tabs、breadcrumb、content、footer 命名�
 | 业务隔离 | 是 | 不增加业务菜单、API 或插件间依赖 |
 | 类型与 Vue 规范 | 是 | strict TS、组合式 API、公开类型，不新增 any |
 | 样式 | 是 | UnoCSS 优先，必要 CSS 使用 PostCSS，不新增 scss/less |
-| 变更门禁 | 是 | 当前为 draft，仅生成文档；批准后施工 |
+| 变更门禁 | 是 | 验收归档，状态 completed |
 | current 真相 | 是 | 验收后更新，实施前不修改 |
 
 无宪章例外，无待用户决策项。

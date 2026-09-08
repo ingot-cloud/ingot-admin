@@ -1,10 +1,10 @@
 # 20260908-packages-admin-theme
 
-> 状态：draft
+> 状态：completed
 
 ## 协作模式
 
-纯前端公共能力变更，以用户对话需求为输入。本次仅生成 spec，未批准施工。
+纯前端公共能力变更，以用户对话需求为输入。用户已确认开工。
 
 ## 背景与动机
 
@@ -40,12 +40,17 @@
 
 ## 相关规格
 
-- [工作流](../../../README.md)
-- [宪章](../../../CONSTITUTION.md)
-- [UI 基础](../../../current/packages/admin-ui-foundation/spec.md)
-- [后台体验](../../../current/common/admin-ui-experience/spec.md)
-- [App、插件与共享包](../../../current/packages/app-plugins-shared-scaffold/spec.md)
+- [工作流](../../../../README.md)
+- [宪章](../../../../CONSTITUTION.md)
+- [已上线管理台主题](../../../../current/packages/admin-theme/spec.md)
+- [UI 基础](../../../../current/packages/admin-ui-foundation/spec.md)
+- [后台体验](../../../../current/common/admin-ui-experience/spec.md)
+- [App、插件与共享包](../../../../current/packages/app-plugins-shared-scaffold/spec.md)
 
 ## 完成记录
 
-尚未实施、验收或归档；未修改 current。
+- 完成日期：2026-09-08
+- 关联提交或 PR：64915f7
+- 更新的 current capability：`packages/admin-theme`；并更新 `packages/admin-ui-foundation`、`packages/app-plugins-shared-scaffold`
+- 与原设计的差异：主题不作为 `InAdminPlugin`、不覆盖 layout registry（与终版 DESIGN 一致）。App `shellSlots` 原先仅类型未消费，现已接入 header / navigation parts。Editor 暗色判断改为读取 `isDark.value`。完整视觉矩阵与生产构建以用户试用示例主题通过为准。
+- 取消原因：

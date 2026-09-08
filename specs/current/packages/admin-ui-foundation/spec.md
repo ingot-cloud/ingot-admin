@@ -4,7 +4,7 @@
 
 ## 概述
 
-管理台使用语义化 Token 与 `layout.main`：白色顶栏、灰色画布/侧栏、白色工作面。内容滚动由页面原型明确所有者。`InSplitLayout` 与 `InTable` 提供成员页式双栏、紧凑表格、按需工具和原子操作收纳。不复制飞书商标或专有图标。
+管理台使用语义化 Token 与 `layout.main`。默认主题为白色顶栏、灰色画布/侧栏、白色工作面；应用可通过主题协议覆盖 Token 并重排主布局外壳，见 [管理台主题](../admin-theme/spec.md)。内容滚动由页面原型明确所有者。`InSplitLayout` 与 `InTable` 提供成员页式双栏、紧凑表格、按需工具和原子操作收纳。不复制飞书商标或专有图标。
 
 ## 范围
 
@@ -57,7 +57,7 @@
 
 ### REQ-001：语义化设计 Token
 
-系统 SHALL 在 `@ingot/admin-core` 提供语义 Token，并由 Ingot Token 单向映射 Element Plus 变量。业务页面不得新增与 Token 重复的硬编码品牌色。
+系统 SHALL 在 `@ingot/admin-core` 提供语义 Token，并由 Ingot Token 单向映射 Element Plus 变量。下列固定值是 **默认主题** 基线；自定义主题可通过协议覆盖。业务页面不得新增与 Token 重复的硬编码品牌色。
 
 **验收标准：**
 
@@ -68,7 +68,7 @@
 
 ### REQ-002：中性顶栏与内容沟槽
 
-系统 SHALL 使用 56px 白色顶栏；品牌主色只用于操作与状态。内容区使用 `--in-page-gutter`（12px）。
+系统 SHALL 使用 56px 白色顶栏（默认主题）；品牌主色只用于操作与状态。内容区使用 `--in-page-gutter`（12px）。`layout.main` 渲染主题布局宿主，不因选择主题而改变 canonical 键。
 
 **验收标准：**
 
@@ -160,6 +160,7 @@
 - 不新增后端接口；列显示偏好仅前端持久化
 - `InTableActions` 不调用业务 API
 - 业务页面接入规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
+- 可安装主题与布局宿主见 [管理台主题](../admin-theme/spec.md)
 
 ## 验收标准
 

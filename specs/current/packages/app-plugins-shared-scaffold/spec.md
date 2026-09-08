@@ -17,8 +17,10 @@
 - `definePluginPages` 只生成 canonical 键（无 `@/` / `ingot.admin.*` / `ingot.base.*`）
 - 布局与页面同一套 IndexPage 扫描；菜单编辑从 registry 选择视图
 - 静态菜单与后端动态菜单合并
-- 本地 `create-app` 脚手架与 `examples/admin-plugin`
+- 本地 `create-app` 脚手架与 `examples/admin-plugin`；生成物 `main.ts` 显式传入 `defaultAdminTheme`
 - App 约定本地插件（pages / layouts / components / hooks / directives / stores）与重名失败
+- `bootstrapAdminApp` 可选 `theme`；未配置回退默认主题
+- `examples/admin-theme` 独立主题包示例；`pnpm check:examples` 含类型检查与打包消费验证
 
 ### Out of Scope
 
@@ -114,7 +116,7 @@
 
 ### REQ-004：页面键、布局扫描与共享能力
 
-系统 SHALL 为 IndexPage 生成 canonical 键 `{domain}.*`（无全局 `ingot.` 前缀）。布局扫描 `layouts/{slot}/IndexPage.vue` 为 `layout.{slot}`；系统页为 `common.*`；App 本地页面 prefix 为 `appCode` 的 `-` 转 `.`，本地布局再拼 `.layout`。不注册 `@/`、`ingot.admin.*`、`ingot.base.*`。租户与 Client 只读选择器在 `@ingot/admin-common`。`layout.main` 的顶栏、侧栏、滚动与 `In*` 共享组件视觉契约见 [管理台 UI 基础设施](../admin-ui-foundation/spec.md)，本规格只保证页面注册、布局扫描和 App 组合不变。
+系统 SHALL 为 IndexPage 生成 canonical 键 `{domain}.*`（无全局 `ingot.` 前缀）。布局扫描 `layouts/{slot}/IndexPage.vue` 为 `layout.{slot}`；系统页为 `common.*`；App 本地页面 prefix 为 `appCode` 的 `-` 转 `.`，本地布局再拼 `.layout`。不注册 `@/`、`ingot.admin.*`、`ingot.base.*`。租户与 Client 只读选择器在 `@ingot/admin-common`。`layout.main` 的顶栏、侧栏、滚动与 `In*` 共享组件视觉契约见 [管理台 UI 基础设施](../admin-ui-foundation/spec.md)；主题选择与布局宿主见 [管理台主题](../admin-theme/spec.md)。本规格只保证页面注册、布局扫描和 App 组合不变。主题不参与 layout registry 同名覆盖。
 
 **验收标准：**
 
@@ -135,6 +137,7 @@
 - [x] `pnpm check:docs` 与 `pnpm check:examples` 覆盖文档链接和示例类型
 - [x] 菜单类型默认 path 为 `'/' + key.replaceAll('.', '/')`，目录不自动填 path；提交 `customViewPath=true`
 - [x] 生成物始终包含 `src/app-plugin.ts`；关闭 Demo 时仍注册约定插件
+- [x] 生成物 `main.ts` 与 `apps/admin` 一样显式传入 `defaultAdminTheme`；`check:examples` 覆盖 `examples/admin-theme`
 
 ### REQ-006：App 约定本地插件与自动注入
 

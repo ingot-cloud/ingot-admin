@@ -20,6 +20,8 @@
 - [apps/create-app](../../../../apps/create-app)
 - [scripts/lib/scaffold-app.mjs](../../../../scripts/lib/scaffold-app.mjs)
 - [examples/admin-plugin](../../../../examples/admin-plugin)
+- [examples/admin-theme](../../../../examples/admin-theme)
+- [docs/theme-development.md](../../../../docs/theme-development.md)
 - [docs/development-model.md](../../../../docs/development-model.md)
 - [docs/plugin-development.md](../../../../docs/plugin-development.md)
 - [docs/app-development.md](../../../../docs/app-development.md)
@@ -27,6 +29,7 @@
 - [docs/create-app.md](../../../../docs/create-app.md)
 - [docs/menu-view-path.md](../../../../docs/menu-view-path.md)
 - 管理台视觉与交互基础见 [admin-ui-foundation](../admin-ui-foundation/)
+- 可安装主题见 [admin-theme](../admin-theme/)
 
 ## 对接接口
 
@@ -46,3 +49,4 @@
 | 2026-09-04 | [20260903-packages-network-query-modernization](../../../changes/archive/2026/20260903-packages-network-query-modernization/) | `@ingot/http-client` 与 TanStack Query；服务端状态见 [network-query](../network-query/) |
 | 2026-09-04 | [20260904-packages-net-interceptor-extension](../../../changes/archive/2026/20260904-packages-net-interceptor-extension/) | 删除 `usePaging` 公共导出；列表统一 `useServerPaging` |
 | 2026-09-07 | [20260904-packages-admin-ui-foundation](../../../changes/archive/2026/20260904-packages-admin-ui-foundation/) | `layout.main` 与 `In*` 共享组件扩展视觉/交互；页面注册与组合契约不变 |
+| 2026-09-08 | [20260908-packages-admin-theme](../../../changes/archive/2026/20260908-packages-admin-theme/) | bootstrap `theme`、create-app 显式默认主题、`examples/admin-theme` 与 `check:examples` |

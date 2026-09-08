@@ -16,7 +16,8 @@
 - [packages/admin-core/src/components/select/InPicker.vue](../../../../packages/admin-core/src/components/select/InPicker.vue)
 - [packages/admin-core/src/components/table/InFilterPanel.vue](../../../../packages/admin-core/src/components/table/InFilterPanel.vue)
 - [packages/admin-core/src/components/README.md](../../../../packages/admin-core/src/components/README.md)
-- [docs/development-model.md](../../../../docs/development-model.md)
+- [packages/admin-core/src/theme](../../../../packages/admin-core/src/theme)
+- [docs/theme-development.md](../../../../docs/theme-development.md)
 
 ## 对接接口
 
@@ -27,3 +28,4 @@
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
 | 2026-09-07 | [20260904-packages-admin-ui-foundation](../../../changes/archive/2026/20260904-packages-admin-ui-foundation/) | Token、白色顶栏、画布侧栏、contained 滚动、可折叠双栏、表格工具与操作收纳、固定底部「收起导航」 |
+| 2026-09-08 | [20260908-packages-admin-theme](../../../changes/archive/2026/20260908-packages-admin-theme/) | 固定视觉值与顶栏/侧栏排布成为默认主题基线；`layout.main` 改为主题宿主 |
