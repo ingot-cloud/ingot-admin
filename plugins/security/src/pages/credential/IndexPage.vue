@@ -1,5 +1,5 @@
 <template>
-  <in-page-frame mode="page">
+  <in-page-frame mode="page" surface="workspace">
     <template #header>
       <in-page-header description="按类型维护凭证策略，各分组独立保存。" />
     </template>

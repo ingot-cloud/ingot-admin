@@ -11,6 +11,7 @@ const source = readFileSync(
 describe("security credential IndexPage", () => {
   it("使用 Settings 的 page 模式并保持挂载全量加载", () => {
     expect(source).toContain('mode="page"');
+    expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="按类型维护凭证策略，各分组独立保存。"');
     expect(source).toContain("in-biz-tabs-header");

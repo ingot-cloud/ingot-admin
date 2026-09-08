@@ -1,5 +1,5 @@
 <template>
-  <in-page-frame mode="page">
+  <in-page-frame mode="page" surface="workspace">
     <template #header>
       <in-page-header description="查询在线会话并配置并发策略。" />
     </template>

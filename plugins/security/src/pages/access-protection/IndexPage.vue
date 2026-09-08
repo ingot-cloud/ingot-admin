@@ -1,5 +1,5 @@
 <template>
-  <in-page-frame mode="page">
+  <in-page-frame mode="page" surface="workspace">
     <template #header>
       <in-page-header description="配置网关访问防护策略，未打开的页签不发请求。">
         <template #action>

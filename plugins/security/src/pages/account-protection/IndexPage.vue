@@ -1,5 +1,5 @@
 <template>
-  <in-page-frame mode="page">
+  <in-page-frame mode="page" surface="workspace">
     <template #header>
       <in-page-header description="分别维护管理员与会员的登录失败锁定策略。" />
     </template>

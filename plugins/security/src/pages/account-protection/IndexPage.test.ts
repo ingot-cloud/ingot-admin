@@ -19,6 +19,7 @@ const columnSource = readFileSync(
 describe("account-protection IndexPage", () => {
   it("使用 Settings 的 page 模式和局部 Tab 懒挂载", () => {
     expect(source).toContain('mode="page"');
+    expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain("in-biz-tabs-header");
     expect(source).toMatch(/<in-page-header[\s\S]*?\/>\s*<\/template>\s*<template #tabs>/);

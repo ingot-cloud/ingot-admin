@@ -16,6 +16,7 @@ const panels = [
 describe("security access-protection IndexPage", () => {
   it("使用 Settings 的 page 模式和局部 Tab 懒挂载", () => {
     expect(source).toContain('mode="page"');
+    expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="配置网关访问防护策略，未打开的页签不发请求。"');
     expect(source).toContain("in-biz-tabs-header");

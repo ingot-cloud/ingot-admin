@@ -10,6 +10,7 @@ const panel = readFileSync(resolve(dir, "components/SessionListPanel.vue"), "utf
 describe("security sessions IndexPage", () => {
   it("使用 Settings 的 page 模式和局部 Tab 懒挂载", () => {
     expect(source).toContain('mode="page"');
+    expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="查询在线会话并配置并发策略。"');
     expect(source).toContain("in-biz-tabs-header");
