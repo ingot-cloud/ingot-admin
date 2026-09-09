@@ -1,6 +1,6 @@
 # 20260908-packages-app-header
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -54,14 +54,15 @@
 
 ## 相关链接
 
-- [管理台主题](../../../current/packages/admin-theme/spec.md)
-- [管理台 UI 基础设施](../../../current/packages/admin-ui-foundation/spec.md)
-- [变更流程](../../../README.md)
+- [管理台主题](../../../../current/packages/admin-theme/spec.md)
+- [管理台 UI 基础设施](../../../../current/packages/admin-ui-foundation/spec.md)
+- [顶栏 APP 配置](../../../../current/packages/app-header/spec.md)
+- [变更流程](../../../../README.md)
 
 ## 完成记录
 
-- 完成日期：待验收
-- 关联提交或 PR：待填写
-- 更新的 current capability：待验收后更新 admin-theme、admin-ui-foundation
-- 与原设计的差异：无
+- 完成日期：2026-09-09
+- 关联提交或 PR：caabd15、d5c21bc、cb8f3a1、9f711d9
+- 更新的 current capability：`packages/app-header`；并更新 `packages/admin-theme`、`packages/admin-ui-foundation`
+- 与原设计的差异：分组菜单增加 `columns` 与按数量自动折列；修改密码改为对话框。完整视口矩阵以用户试用为准。
 - 取消原因：不适用

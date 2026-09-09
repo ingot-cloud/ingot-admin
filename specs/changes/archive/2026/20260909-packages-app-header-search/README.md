@@ -1,6 +1,6 @@
 # 20260909-packages-app-header-search
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -51,14 +51,15 @@
 
 ## 相关链接
 
-- [顶栏 APP 配置](../../../../docs/app-header.md)
+- [顶栏 APP 配置](../../../../../docs/app-header.md)
 - [20260908-packages-app-header](../20260908-packages-app-header/README.md)
-- [变更流程](../../../README.md)
+- [已上线顶栏规格](../../../../current/packages/app-header/spec.md)
+- [变更流程](../../../../README.md)
 
 ## 完成记录
 
-- 完成日期：待验收
-- 关联提交或 PR：待填写
-- 更新的 current capability：待验收后更新
-- 与原设计的差异：无
+- 完成日期：2026-09-09
+- 关联提交或 PR：5dd13fd、601eaa9
+- 更新的 current capability：`packages/app-header`
+- 与原设计的差异：第一版补充了 `header.search.shortcuts` 常用入口、检索 loading 与结果高亮（与终版 REQUIREMENTS 一致）。
 - 取消原因：不适用

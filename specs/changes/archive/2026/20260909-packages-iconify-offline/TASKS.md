@@ -6,7 +6,7 @@
 
 - [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）
 - [x] 阅读本 change 的 [REQUIREMENTS.md](./REQUIREMENTS.md)
-- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
+- [x] 阅读 [CONSTITUTION.md](../../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [x] 确认 DESIGN.md 的页面路径与对接映射
 
 ## 实现
@@ -28,4 +28,4 @@
 
 ## 收尾
 
-- [ ] 验收通过后再写入 `specs/current/` 并归档（本次不提前改 current）
+- [x] 验收通过后再写入 `specs/current/` 并归档（本次不提前改 current）

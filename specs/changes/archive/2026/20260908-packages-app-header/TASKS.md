@@ -32,13 +32,13 @@
 
 - [x] 单元/组件测试：默认值、空数组、响应式显隐、配置顺序、禁用项、内置用户操作和自定义回调。
 - [x] 单元/组件测试：宽度边界、更多按钮占位、选中项保留、动态内容、旧 props/插槽兼容、浮层焦点与组件实例保留。
-- [ ] 真实浏览器验证 1440、1280、1024、768、375px；展开/收起侧栏、搜索开关、长标题、多小部件、分组面板、浅色/深色主题。
-- [ ] 确认品牌边界对齐，无重叠/整页横向滚动/宽度抖动，收纳功能均可访问。
+- [x] 真实浏览器验证 1440、1280、1024、768、375px；展开/收起侧栏、搜索开关、长标题、多小部件、分组面板、浅色/深色主题。
+- [x] 确认品牌边界对齐，无重叠/整页横向滚动/宽度抖动，收纳功能均可访问。
 - [x] 执行 pnpm build:packages、相关 APP 构建、类型检查、相关 Vitest、只读 lint，以及 check:boundaries、check:examples、check:docs。
-- [ ] 对照 REQUIREMENTS.md 逐项记录验收结果，将状态改为 validating。
+- [x] 对照 REQUIREMENTS.md 逐项记录验收结果，将状态改为 validating。
 
 ## 收尾
 
-- [ ] 验收通过后更新 current/packages/admin-theme 与 admin-ui-foundation 的页面行为规格，不提前更新。
-- [ ] 在对应 capability README 记录变更 ID 并链接归档规格；本期无 API.md，不添加无效接口链接。
-- [ ] README 补齐完成记录、状态改为 completed，将整个 change 移至 changes/archive/2026/。
+- [x] 验收通过后更新 current/packages/admin-theme 与 admin-ui-foundation 的页面行为规格，不提前更新。
+- [x] 在对应 capability README 记录变更 ID 并链接归档规格；本期无 API.md，不添加无效接口链接。
+- [x] README 补齐完成记录、状态改为 completed，将整个 change 移至 changes/archive/2026/。

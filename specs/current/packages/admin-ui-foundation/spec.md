@@ -11,7 +11,7 @@
 ### In Scope
 
 - `@ingot/admin-core` 颜色、排版、间距、圆角、阴影、层级、动效与控件尺寸 Token，以及 Element Plus 单向映射
-- `layout.main` 顶栏、侧栏、面包屑、内容沟槽与窄窗口 overlay
+- `layout.main` 顶栏、侧栏、面包屑、内容沟槽与窄窗口 overlay（顶栏五区与搜索行为见 [顶栏 APP 配置](../app-header/spec.md)）
 - `InPageFrame` / `InPageHeader` / `InContainer` / `InSplitLayout`
 - `InTable`、`InTableActions`、`InTableColumnSetting`、`InFilterPanel`、`InPicker`
 - `InAvatar`、`InCommonStatusTag`、`InAccountStatusTag`
@@ -72,7 +72,7 @@
 
 **验收标准：**
 
-- [x] 顶栏 A/B/C/D 四区：品牌、一级入口、搜索、操作；没有入口时不占空白
+- [x] 顶栏五区：品牌、大类菜单、搜索、功能小部件、用户入口；导航为空时不占入口空白。宽度不足时先把搜索变图标，再收纳小部件，不靠整区横向滚动或固定断点隐藏入口。细节见 [顶栏 APP 配置](../app-header/spec.md)
 - [x] 无版权时 contained 工作面贴视口底；页面滚动尽头保留底部沟槽
 - [x] `bootstrapAdminApp` 既有 branding / settings 配置保持兼容
 
@@ -161,6 +161,7 @@
 - `InTableActions` 不调用业务 API
 - 业务页面接入规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 - 可安装主题与布局宿主见 [管理台主题](../admin-theme/spec.md)
+- Iconify 开发预览与生产离线见 [Iconify 离线打包](../iconify-offline/spec.md)
 
 ## 验收标准
 

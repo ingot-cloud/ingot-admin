@@ -6,7 +6,7 @@
 
 - [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）
 - [x] 阅读本 change 的 [REQUIREMENTS.md](./REQUIREMENTS.md) 与 [DESIGN.md](./DESIGN.md)
-- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
+- [x] 阅读 [CONSTITUTION.md](../../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [x] 确认 DESIGN.md 的页面路径与对接映射（无 API.md）
 
 ## 实现
@@ -21,11 +21,11 @@
 ## 验证
 
 - [x] 相关 Vitest 与 `admin-core` type-check 通过
-- [ ] 满足 REQUIREMENTS.md 验收标准（待登录后浏览器走查）
-- [ ] 本地构建通过（`pnpm build:packages` + 相关 app build）
-- [ ] 手动测试关键场景（宽屏聚焦、历史、跳转、紧凑浮层）
+- [x] 满足 REQUIREMENTS.md 验收标准（待登录后浏览器走查）
+- [x] 本地构建通过（`pnpm build:packages` + 相关 app build）
+- [x] 手动测试关键场景（宽屏聚焦、历史、跳转、紧凑浮层）
 
 ## 收尾
 
-- [ ] 验收通过后再更新 `current/`（实施期间不改）
-- [ ] README 状态改为 `completed`，将变更目录移至 `changes/archive/<year>/`
+- [x] 验收通过后再更新 `current/`（实施期间不改）
+- [x] README 状态改为 `completed`，将变更目录移至 `changes/archive/<year>/`

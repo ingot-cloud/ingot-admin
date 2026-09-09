@@ -4,7 +4,7 @@
 
 ## 概述
 
-每个管理台 App 在 `bootstrapAdminApp` 中选择一套 `InAdminTheme`。未配置时回退到 `defaultAdminTheme`。主题覆盖 `--in-*` Token，并可替换主布局 Shell 与顶栏、导航、面包屑、页脚展示部件。内容区路由出口、KeepAlive、滚动恢复、菜单权限和设置开关仍由核心负责。使用者可切换浅色 / 深色，但不能在运行时更换主题 ID。
+每个管理台 App 在 `bootstrapAdminApp` 中选择一套 `InAdminTheme`。未配置时回退到 `defaultAdminTheme`。主题覆盖 `--in-*` Token，并可替换主布局 Shell 与顶栏、导航、面包屑、页脚展示部件。默认顶栏的五区内容由 APP `header` 配置，见 [顶栏 APP 配置](../app-header/spec.md)。内容区路由出口、KeepAlive、滚动恢复、菜单权限和设置开关仍由核心负责。使用者可切换浅色 / 深色，但不能在运行时更换主题 ID。
 
 ## 范围
 
@@ -14,6 +14,7 @@
 - 浅色、深色 Token 合并与 `html[data-in-theme]` 根样式
 - `InAdminThemeLayout`、默认 Shell、`useAdminTheme`、`useAdminShell`
 - App `shellSlots`（header-start / header-end / sidebar-top / sidebar-bottom）
+- `useAdminShell().header` 供自定义 `parts.header` 读取 APP 顶栏配置
 - admin 与 create-app 显式选择默认主题
 - `examples/admin-theme` 独立主题包示例
 

@@ -12,6 +12,7 @@
 - [scripts/lib/scaffold-app.mjs](../../../../scripts/lib/scaffold-app.mjs)
 - [examples/admin-theme](../../../../examples/admin-theme)
 - [docs/theme-development.md](../../../../docs/theme-development.md)
+- [顶栏 APP 配置](../app-header/spec.md)
 
 ## 对接接口
 
@@ -21,5 +22,6 @@
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
+| 2026-09-09 | [20260908-packages-app-header](../../../changes/archive/2026/20260908-packages-app-header/) | 默认顶栏消费 APP `header` 五区配置；自定义 `parts.header` 仍可整区替换 |
 | 2026-09-08 | [20260908-packages-remove-global-route-tabs](../../../changes/archive/2026/20260908-packages-remove-global-route-tabs/) | 移除全局路由 Tabs：配置开关、环境变量、`InTabs` 与主题 `parts.tabs` |
 | 2026-09-08 | [20260908-packages-admin-theme](../../../changes/archive/2026/20260908-packages-admin-theme/) | 主题协议、默认主题、布局宿主、create-app 接入与独立主题示例 |

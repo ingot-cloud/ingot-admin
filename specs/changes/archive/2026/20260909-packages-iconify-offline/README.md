@@ -1,6 +1,6 @@
 # 20260909-packages-iconify-offline
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -55,11 +55,12 @@
 
 - 顶栏五区：`20260908-packages-app-header`
 - 顶栏搜索：`20260909-packages-app-header-search`
+- [已上线 Iconify 规格](../../../../current/packages/iconify-offline/spec.md)
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
+- 完成日期：2026-09-09
+- 关联提交或 PR：ebb1292、a825aac、1e6a918、4dc018f
+- 更新的 current capability：`packages/iconify-offline`
+- 与原设计的差异：开发成功渲染后写入 used.json，而不是扫描全部源码名去改 Vite 配置。
 - 取消原因：
