@@ -35,7 +35,7 @@ pnpm create:app:cli acme-admin
 
 ## 生成结果
 
-- `src/main.ts`：bootstrap，显式选择 `defaultAdminTheme`，`appCode` 读取 `VITE_APP_CODE`，并引入 `style.css` 与 `uno.css`
+- `src/main.ts`：bootstrap，显式选择 `defaultAdminTheme`，`appCode` 读取 `VITE_APP_CODE`，并引入 `style.css` 与 `uno.css`；顶栏集中配置在 `src/header.ts`
 - `src/plugins.ts`：集中插件清单，与 `package.json` 依赖一致
 - 环境、Vite/TS、Docker 与代理配置
 - 始终生成 `src/app-plugin.ts` 与约定目录；可选 Demo 页

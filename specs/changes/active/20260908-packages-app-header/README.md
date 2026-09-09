@@ -1,10 +1,10 @@
 # 20260908-packages-app-header
 
-> 状态：draft
+> 状态：implementing
 
 ## 协作模式
 
-纯前端公共能力变更。根据用户已讨论的顶栏方案生成 spec，本次只新增规格，不修改业务代码；待用户明确确认开工后进入 approved → implementing。
+纯前端公共能力变更。根据用户已讨论的顶栏方案生成 spec；用户已确认开工，进入 implementing。
 
 ## 背景与动机
 

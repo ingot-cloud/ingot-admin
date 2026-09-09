@@ -16,7 +16,7 @@
 | header.utilities  | 按顺序排列的内置 fullscreen/settings、图标操作、自定义组件列表                       |
 | header.user       | 用户入口展示配置/自定义入口组件，以及内置和自定义菜单列表                            |
 
-所有列表项使用稳定唯一 key；通用展示字段包括 label、icon、visible、disabled，小部件另支持 badge。动态值接受 Vue ref/computed 或 getter，组件在 setup 上下文解析；静态值同样可用。列表可响应式替换。保留的默认用户菜单顺序为 switchOrg、fixPwd、logout，默认小部件顺序为 fullscreen、settings。列表省略使用默认值，显式传入以其为完整列表，空数组清空。
+所有列表项使用稳定唯一 key；通用展示字段包括 label、icon、visible、disabled，小部件另支持 badge。动态值接受 Vue ref/computed 或 getter，组件在 setup 上下文解析；静态值同样可用。列表可响应式替换。保留的默认用户菜单顺序为 switchOrg、fixPwd、logout，默认小部件顺序为 fullscreen、settings。列表省略使用默认值，显式传入以其为完整列表，空数组清空。条目 type、内置 name、分组 trigger 使用导出常量 `InAdminHeaderItemType`、`InAdminHeaderBuiltinUtilityName`、`InAdminHeaderBuiltinUserMenuName`、`InAdminHeaderNavGroupTrigger`；内置项用 `defineHeaderBuiltinUtility` / `defineHeaderBuiltinUserMenuItem` 工厂，不在 APP 手写魔法字符串。
 
 大类入口最多支持“入口 → 分组 → 菜单项”，不做递归多层业务菜单。分组包含标题和菜单项；选择回调携带入口 key 及可选子项 key。activeKey 由 APP 控制，点击仅发出通知；禁用项不通知。不存在或已隐藏的选中 key 按未选中处理，不自动写回 APP。业务路由、权限判断及侧栏联动由 APP 回调和响应式 visible 提供。
 
@@ -36,7 +36,7 @@
 
 ### 浮层和操作
 
-- 大类分组入口点击展开 Element Plus Popover；宽屏按组多列，受视口限制时单列，面板最大高度受视口约束并内部滚动。
+- 大类分组入口按配置以 hover 或 click 展开面板，缺省 hover；宽屏按组多列，组标题下有分割线，菜单项与标题左对齐。面板落在顶栏下方，不遮盖触发入口；受视口限制时单列，最大高度受视口约束并内部滚动。
 - 更多浮层点击分组入口后，在同一浮层中展示分组内容并提供返回按钮，避免多层浮层互相遮挡。
 - 打开同一区域新面板时关闭旧面板；提供焦点进入、键盘选择、Escape、关闭后回到触发器。被响应式隐藏的触发器关闭浮层并把焦点交给仍可见的更多入口。
 - 内置用户动作复用现有确认、修改密码抽屉和退出逻辑；空菜单不渲染箭头或空下拉。自定义回调支持 Promise，执行期间避免重复触发，失败沿用项目消息能力展示并恢复可操作状态。
@@ -62,7 +62,7 @@
 | 三层边界与共享抽象 | ✅   | 通用顶栏进入 packages，APP 仅组合，不依赖其他 APP 或复制业务插件 |
 | 类型与组件规范     | ✅   | Vue script setup、strict 类型、公开配置判别联合，不新增 any      |
 | 样式与响应式       | ✅   | UnoCSS 优先，主题 Token、PostCSS 补充，验证移动窗口与深色主题    |
-| 规格门禁           | ✅   | 本次仅 draft，批准后实施，偏离设计先确认                         |
+| 规格门禁           | ✅   | 用户已确认开工，状态 implementing；偏离设计先确认                |
 | 单一真相           | ✅   | 实施期间不更新 current，无后端接口副本                           |
 
 ## 验证与兼容发布

@@ -63,7 +63,7 @@ layout.main → InAdminThemeLayout → 主题 Shell → 插槽区域与页面内
 
 Shell 接收 `header`、`navigation`、`breadcrumb`、`content`、`footer`。核心按设置决定是否提供区域内容；Shell 只负责排列。必须把 `content` 恰好渲染一次，并给出有界、可收缩的空间。内容内部滚动、KeepAlive 和滚动恢复由核心内容组件负责。
 
-`useAdminShell()` 提供只读导航模式、展开状态、可见性、已授权菜单、品牌信息，以及切换 / 关闭导航。不要另建菜单数据源，也不要绕过设置开关重新显示被隐藏的区域。
+`useAdminShell()` 提供只读导航模式、展开状态、可见性、已授权菜单、品牌信息、顶栏 `header` 配置，以及切换 / 关闭导航。不要另建菜单数据源，也不要绕过设置开关重新显示被隐藏的区域。自定义顶栏可用 `resolveHeaderConfig` 解析响应式配置。详细字段与示例见 [顶栏 APP 配置](./app-header.md)。
 
 窄屏（默认 1024px）必须消费 overlay 状态，提供收起 / 展开入口，并处理遮罩与 Escape。
 

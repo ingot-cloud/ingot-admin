@@ -55,7 +55,7 @@ export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
 
 登录应用是 `apps/auth`，不属于管理台插件体系，也不接入管理台主题协议。
 
-更换主题见 [主题开发](./theme-development.md)。
+更换主题见 [主题开发](./theme-development.md)。顶栏五区配置见 [顶栏 APP 配置](./app-header.md)。
 
 网络请求、App 追加拦截器与 `useServerPaging` 见 [网络请求](./network.md)。
 
