@@ -65,7 +65,7 @@ declare module 'vue' {
     ElTree: typeof import('element-plus/es')['ElTree']
     ElTreeSelect: typeof import('element-plus/es')['ElTreeSelect']
     ElUpload: typeof import('element-plus/es')['ElUpload']
-    FixPwdDrawer: typeof import('./../../packages/admin-core/src/layouts/widgets/user-dropdown/FixPwdDrawer.vue')['default']
+    FixPwdDialog: typeof import('./../../packages/admin-core/src/layouts/widgets/user-dropdown/FixPwdDialog.vue')['default']
     'ICarbon:listBoxes': typeof import('~icons/carbon/list-boxes')['default']
     'ICarbon:parentChild': typeof import('~icons/carbon/parent-child')['default']
     'IClarity:closeLine': typeof import('~icons/clarity/close-line')['default']

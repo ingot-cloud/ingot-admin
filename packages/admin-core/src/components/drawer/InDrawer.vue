@@ -4,6 +4,7 @@
     :class="{ 'in-drawer--pinned': layout === 'pinned' }"
     direction="rtl"
     :close-on-click-modal="false"
+    :modal-class="overlayClass"
   >
     <template #header>
       <div v-if="slots.header">
@@ -39,6 +40,12 @@ const props = withDefaults(
     padding?: string;
     loading?: unknown;
     layout?: InDrawerLayout;
+    /**
+     * 遮罩背景。缺省透明；需要压暗时传入如 `var(--in-overlay-mask)`。
+     */
+    overlayColor?: string;
+    /** 追加到遮罩上的 class，可与 `overlay-color` 一起用来自定义遮罩 */
+    modalClass?: string | string[];
   }>(),
   {
     padding: "var(--in-section-padding-relaxed)",
@@ -46,8 +53,43 @@ const props = withDefaults(
   },
 );
 const isLoading = computed(() => Boolean(unref(props.loading)));
+const overlayToneClass = `in-drawer-overlay-${useId().replaceAll(":", "")}`;
+const overlayClass = computed(() =>
+  ["in-drawer-overlay", props.overlayColor ? overlayToneClass : undefined, props.modalClass]
+    .flat()
+    .filter((item): item is string => Boolean(item)),
+);
+
+let overlayStyleEl: HTMLStyleElement | undefined;
+
+const privateSyncOverlayStyle = () => {
+  const color = props.overlayColor;
+  if (!color) {
+    overlayStyleEl?.remove();
+    overlayStyleEl = undefined;
+    return;
+  }
+  if (!overlayStyleEl) {
+    overlayStyleEl = document.createElement("style");
+    overlayStyleEl.dataset.inDrawerOverlay = overlayToneClass;
+    document.head.appendChild(overlayStyleEl);
+  }
+  overlayStyleEl.textContent = `.el-overlay.${overlayToneClass}{background-color:${color};}`;
+};
+
+onMounted(privateSyncOverlayStyle);
+watch(() => props.overlayColor, privateSyncOverlayStyle);
+onUnmounted(() => {
+  overlayStyleEl?.remove();
+});
 </script>
 <style lang="postcss">
+.el-overlay.in-drawer-overlay {
+  --el-overlay-color: transparent;
+  --el-overlay-color-lighter: transparent;
+  background-color: var(--in-drawer-overlay, transparent);
+}
+
 .in-drawer {
   --el-drawer-padding-primary: 0;
 

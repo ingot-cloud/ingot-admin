@@ -61,7 +61,7 @@
     </template>
   </el-dropdown>
 
-  <FixPwdDrawer ref="PwdDialogRef" />
+  <FixPwdDialog ref="PwdDialogRef" />
 </template>
 <script lang="ts" setup>
 import type { Component } from "vue";
@@ -70,7 +70,7 @@ import { useUserInfoStore } from "@/stores/modules/auth";
 import { logoutAndReload } from "@/utils/security";
 import { useLogin } from "@/hooks/biz/useLogin";
 import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
-import FixPwdDrawer from "./FixPwdDrawer.vue";
+import FixPwdDialog from "./FixPwdDialog.vue";
 import {
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderItemType,

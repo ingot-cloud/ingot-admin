@@ -20,7 +20,7 @@ const mountDropdown = () =>
         ElDropdownItem: { template: "<div><slot /></div>" },
         InIcon: true,
         Icon: true,
-        FixPwdDrawer: { template: "<div />" },
+        FixPwdDialog: { template: "<div />" },
       },
     },
   });
@@ -50,7 +50,7 @@ describe("InUserDropdown", () => {
           ElDropdownMenu: { template: "<div><slot /></div>" },
           ElDropdownItem: { template: "<div><slot /></div>" },
           InIcon: true,
-          FixPwdDrawer: { template: "<div />" },
+          FixPwdDialog: { template: "<div />" },
         },
       },
     });
@@ -107,7 +107,7 @@ describe("InUserDropdown", () => {
           ElDropdownMenu: { template: "<div class='user-dropdown'><slot /></div>" },
           ElDropdownItem: { template: "<div class='item'><slot /></div>" },
           InIcon: true,
-          FixPwdDrawer: { template: "<div />" },
+          FixPwdDialog: { template: "<div />" },
         },
       },
     });

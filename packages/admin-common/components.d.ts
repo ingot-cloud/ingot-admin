@@ -18,7 +18,7 @@ declare module 'vue' {
     ElButton: typeof import('element-plus/es')['ElButton']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
-    FixPwdDrawer: typeof import('./../admin-core/src/layouts/widgets/user-dropdown/FixPwdDrawer.vue')['default']
+    FixPwdDialog: typeof import('./../admin-core/src/layouts/widgets/user-dropdown/FixPwdDialog.vue')['default']
     IconArrowRight: typeof import('./../admin-core/src/components/icons/IconArrowRight.vue')['default']
     IconCamera: typeof import('./../admin-core/src/components/icons/IconCamera.vue')['default']
     IconDark: typeof import('./../admin-core/src/components/icons/IconDark.vue')['default']

@@ -68,6 +68,14 @@ withDefaults(
     padding-right: var(--in-section-padding-relaxed);
   }
 
+  & .el-dialog__body {
+    padding: var(--in-space-4) var(--in-section-padding-relaxed);
+
+    & .el-form-item:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   & .el-dialog__footer {
     border-top: 1px solid var(--in-border-color);
     padding: var(--in-space-3) var(--in-section-padding-relaxed);

@@ -17,11 +17,11 @@
 | `InFilterPanel` | 工具栏筛选浮层 | 32px 描边按钮，文案「筛选」、`aria-label="筛选条件"`；`active-count` 控制数量角标；`#default` 放额外条件，`#footer` 可放重置；Teleport 贴按钮下方；Esc / 点击外部关闭（忽略 `el-popper` / `InPicker` 菜单） | 新组件；不要叫「更多」；不要对话框或抽屉 |
 | `InTableColumnSetting` | 字段显示设置 | 32×32 描边按钮、表格设置 SVG、说明「请选择列表中要展示的信息」、约 213×426 复选列表、“全部”半选、必选列禁用、右侧拖拽调序、浮层 Teleport 到 body、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 原名 `InColumnSetting`；继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化；`change` 按显示顺序返回选中列；持久化前缀仍为 `in-column-setting` |
 | `InBizTabs` | 页内 Tab | 16px；默认 `--in-text-color`，选中 `--in-color-primary`；墨条跟文案同宽、顶部圆角、半条压线；`before-change` 可拦截 | `v-model` + `change`；键盘方向键；懒挂载 `InBizTabPanel` |
-| `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条；`layout="pinned"` 钉住内容头、仅内部滚动 | `v-model`、`title`、`#header`/`#footer`、`loading`；默认 `layout="default"` |
+| `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条；`layout="pinned"` 钉住内容头、仅内部滚动；遮罩默认透明 | `v-model`、`title`、`#header`/`#footer`、`loading`；默认 `layout="default"`；需要压暗时设 `overlay-color`（如 `var(--in-overlay-mask)`） |
 | `InDetailDrawer` | 实体详情查看/编辑 | 标题 + `#identity` + 页内 Tab；查看态底部「编辑…」，编辑态取消/保存；编辑中关抽屉或切 Tab 需确认 | `v-model`、`v-model:tab`、`v-model:editing`、`edit-label`、`save` / `cancel` / `edit` |
 | `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；无头像实体固定 `src` 且 `editable=false`；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |
 | `InDescriptionList` | 只读字段列表 | 上标签下值；空值 `-` | `InDescriptionItem` 的 `label` + `value` |
-| `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger`；标题左侧 `#icon`；`showClose` 控制右上角关闭；`align-center` 全屏居中 | `v-model`、`title`、`#footer`、`#header` |
+| `InDialog` | 短确认/小表单 | `description`、`tone: default \| danger`；标题左侧 `#icon`；`showClose` 控制右上角关闭；`align-center` 全屏居中；内容区内边距与页头水平对齐 | `v-model`、`title`、`#footer`、`#header` |
 | `InAvatar` | 姓名/头像 | 默认 32px；`size="lg"` 为 48px；无图或图片加载失败时用姓名最后两字；`showAvatar` 默认 true；`showName` 默认 true；可用 `color` 覆盖；`src` / `avatar` 别名；顶栏用户入口复用本组件 | 新组件 |
 | `InCommonStatusTag` | 公共状态 | 只根据 `status`；正常：蓝底成功图标；暂停：橙底暂停图标，文案「已暂停」；按内容撑开不截断 | 不再使用 Element Plus Tag 的 success/danger 色 |
 | `InAccountStatusTag` | 账号可用与锁定 | `enabled === true && locked === false` 为正常；`enabled === false` 为已暂停；否则已锁定（`#f54a45`） | 用于通讯录成员、平台管理员用户、会员用户列表 |

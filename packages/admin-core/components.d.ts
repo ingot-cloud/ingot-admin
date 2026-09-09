@@ -54,7 +54,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
-    FixPwdDrawer: typeof import('./src/layouts/widgets/user-dropdown/FixPwdDrawer.vue')['default']
+    FixPwdDialog: typeof import('./src/layouts/widgets/user-dropdown/FixPwdDialog.vue')['default']
     'IClarity:closeLine': typeof import('~icons/clarity/close-line')['default']
     'IClarity:minusLine': typeof import('~icons/clarity/minus-line')['default']
     IconArrowRight: typeof import('./src/components/icons/IconArrowRight.vue')['default']

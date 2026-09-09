@@ -128,6 +128,13 @@ describe("admin UI visual fixtures", () => {
     expect(userDropdown).toContain("in-user-dropdown__divider");
     expect(userDropdown).toContain("user-dropdown-header-divider");
     expect(userDropdown).not.toContain("divided disabled");
+    expect(userDropdown).toContain("FixPwdDialog");
+    expect(userDropdown).not.toContain("FixPwdDrawer");
+    const drawer = readFileSync(resolve(root, "../drawer/InDrawer.vue"), "utf8");
+    expect(drawer).toContain("in-drawer-overlay");
+    expect(drawer).toContain("background-color: var(--in-drawer-overlay, transparent)");
+    expect(drawer).toContain("--el-overlay-color-lighter: transparent");
+    expect(drawer).toContain("overlayColor");
     const confirmCss = readFileSync(resolve(root, "../../styles/confirm-dialog.css"), "utf8");
     expect(confirmCss).toContain(".in-confirm-dialog");
     expect(confirmCss).toContain(".in-confirm-dialog-overlay .el-overlay-message-box");
@@ -172,6 +179,11 @@ describe("admin UI visual fixtures", () => {
     expect(dialog).toContain("showClose");
     expect(dialog).toContain("in-dialog__icon");
     expect(dialog).toContain("name=\"icon\"");
+    expect(dialog).toContain("& .el-dialog__body");
+    expect(dialog.match(/padding: var\(--in-space-4\) var\(--in-section-padding-relaxed\)/g)).toHaveLength(
+      2,
+    );
+    expect(dialog).toContain("& .el-form-item:last-child");
     const detailDrawer = readFileSync(resolve(root, "../drawer/InDetailDrawer.vue"), "utf8");
     expect(detailDrawer).toContain('layout="pinned"');
     expect(detailDrawer).toContain("编辑");

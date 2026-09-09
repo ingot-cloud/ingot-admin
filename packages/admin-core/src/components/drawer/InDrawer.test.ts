@@ -36,4 +36,22 @@ describe("InDrawer", () => {
     expect(wrapper.html()).toContain("in-drawer--pinned");
     wrapper.unmount();
   });
+
+  it("默认遮罩 class 为透明，可追加自定义 modal-class", () => {
+    const wrapper = mount(InDrawer, {
+      props: { modelValue: true, title: "编辑", modalClass: "my-mask" },
+      global: {
+        stubs: {
+          ElDrawer: {
+            template:
+              "<div class=\"in-drawer\" :data-modal-class=\"$attrs.modalClass || $attrs['modal-class']\"><slot /></div>",
+          },
+        },
+      },
+    });
+    const modalClass = wrapper.get(".in-drawer").attributes("data-modal-class") ?? "";
+    expect(modalClass).toContain("in-drawer-overlay");
+    expect(modalClass).toContain("my-mask");
+    wrapper.unmount();
+  });
 });
