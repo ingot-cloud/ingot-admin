@@ -1,0 +1,7 @@
+html[data-in-theme="fixture-aurora"] {
+  --aurora-fixture: #7c3aed;
+}
+
+html.dark[data-in-theme="fixture-aurora"] {
+  --aurora-fixture: #c4b5fd;
+}

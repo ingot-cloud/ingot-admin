@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 
-const DOC_GLOBS = ["README.md", "AGENTS.md", "docs", "examples", ".agents/skills"];
+const DOC_GLOBS = ["README.md", "AGENTS.md", "docs", "examples", "themes", ".agents/skills"];
 const SKIP_DIR_NAMES = new Set(["node_modules", "dist", ".git"]);
 const errors = [];
 

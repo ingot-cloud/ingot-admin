@@ -1,0 +1,13 @@
+{
+  "name": "@ingot/theme-demo",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./style.css": "./src/style.css"
+  },
+  "peerDependencies": {
+    "@ingot/admin-core": "workspace:*",
+    "vue": "^3.5.42"
+  }
+}

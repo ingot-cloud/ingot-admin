@@ -1,7 +1,8 @@
 packages:
- - "apps/*"
- - "plugins/*"
- - "packages/*"
+  - "apps/*"
+  - "plugins/*"
+  - "themes/*"
+  - "packages/*"
 
 catalog:
   "@element-plus/icons-vue": 2.3.2

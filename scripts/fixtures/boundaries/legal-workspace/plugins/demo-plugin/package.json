@@ -1,0 +1,11 @@
+{
+  "name": "@ingot/demo-plugin",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@ingot/admin-core": "workspace:*"
+  }
+}

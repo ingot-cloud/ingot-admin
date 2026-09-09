@@ -1,0 +1,30 @@
+{
+  "name": "@ingot/theme-fixture-aurora",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./style.css": {
+      "import": "./dist/style.css",
+      "default": "./dist/style.css"
+    }
+  },
+  "files": ["dist"],
+  "sideEffects": ["**/*.css", "./dist/style.css"],
+  "scripts": {
+    "build": "vite build --config vite.config.ts && vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist",
+    "type-check": "vue-tsc -p tsconfig.json --noEmit",
+    "test:unit": "vitest run --passWithNoTests",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "@ingot/admin-core": "^0.1.0",
+    "vue": "^3.5.42"
+  }
+}

@@ -18,6 +18,7 @@ export const baseConfig: Linter.Config[] = [
     "**/.temp/**",
     "**/.cache/**",
     "**/scripts/templates/**",
+    "**/scripts/fixtures/**",
   ]),
 
   {

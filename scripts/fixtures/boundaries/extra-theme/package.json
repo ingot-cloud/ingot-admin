@@ -1,0 +1,12 @@
+{
+  "name": "@ingot/theme-other",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./style.css": "./src/style.css"
+  },
+  "peerDependencies": {
+    "@ingot/admin-core": "workspace:*"
+  }
+}

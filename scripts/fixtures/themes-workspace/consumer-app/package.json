@@ -1,0 +1,8 @@
+{
+  "name": "theme-workspace-consumer",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ingot/theme-fixture-aurora": "workspace:*"
+  }
+}

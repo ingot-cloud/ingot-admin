@@ -1,0 +1,10 @@
+{
+  "name": "@ingot/demo-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ingot/admin-core": "workspace:*",
+    "@ingot/demo-plugin": "workspace:*",
+    "@ingot/theme-demo": "workspace:*"
+  }
+}

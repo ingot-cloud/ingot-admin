@@ -1,0 +1,7 @@
+html[data-in-theme="fixture-nebula"] {
+  --nebula-fixture: #0369a1;
+}
+
+html.dark[data-in-theme="fixture-nebula"] {
+  --nebula-fixture: #7dd3fc;
+}

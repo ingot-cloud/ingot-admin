@@ -1,0 +1,3 @@
+html[data-in-theme="demo"] {
+  --demo-accent: #0f766e;
+}
