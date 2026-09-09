@@ -1,7 +1,7 @@
 <template>
   <div class="in-global-setting">
     <button type="button" class="in-icon-button" aria-label="打开配置" @click="onClick">
-      <in-icon name="icon-park-outline:setting-config" class="icon" />
+      <in-icon name="icon-park-outline:setting-config" class="in-app-bar__icon" />
     </button>
   </div>
   <in-drawer v-model="drawer" title="配置" size="300px">
@@ -61,13 +61,6 @@ watch(
 );
 </script>
 <style scoped lang="postcss">
-.in-global-setting {
-  & .icon {
-    color: var(--in-text-color-secondary);
-    width: var(--in-app-bar-icon-size);
-    height: var(--in-app-bar-icon-size);
-  }
-}
 .in-global-setting-list {
   @apply gap-2;
 }

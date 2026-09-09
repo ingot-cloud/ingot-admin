@@ -132,11 +132,6 @@ defineExpose({ close, triggerRef });
   pointer-events: none;
 }
 
-.in-app-bar__icon {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
-}
-
 .in-app-bar-overlay {
   position: fixed;
   z-index: var(--in-z-dropdown);

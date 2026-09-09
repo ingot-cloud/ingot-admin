@@ -7,7 +7,7 @@
   >
     <div
       :class="isFullscreen ? 'i-mdi-fullscreen-exit' : 'i-mdi-fullscreen'"
-      class="in-fullscreen-icon"
+      class="in-app-bar__icon"
     ></div>
   </button>
 </template>
@@ -15,9 +15,3 @@
 const useFullscreenFn = useFullscreen();
 const isFullscreen = useFullscreenFn.isFullscreen;
 </script>
-<style scoped lang="postcss">
-.in-fullscreen-icon {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
-}
-</style>

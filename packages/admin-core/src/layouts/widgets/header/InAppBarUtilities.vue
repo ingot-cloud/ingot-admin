@@ -272,11 +272,6 @@ defineExpose({
   flex: none;
 }
 
-.in-app-bar__icon {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
-}
-
 .in-app-bar__badge {
   position: absolute;
   top: 0;

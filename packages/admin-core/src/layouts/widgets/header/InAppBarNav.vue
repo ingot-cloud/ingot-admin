@@ -531,8 +531,7 @@ defineExpose({
   white-space: nowrap;
 }
 
-.in-app-bar-nav__icon,
-.in-app-bar__icon {
+.in-app-bar-nav__icon {
   width: var(--in-app-bar-icon-size);
   height: var(--in-app-bar-icon-size);
   font-size: var(--in-app-bar-icon-size);

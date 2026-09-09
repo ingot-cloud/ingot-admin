@@ -347,6 +347,11 @@ describe("admin UI visual fixtures", () => {
     expect(utilities).toContain("min-width: 14px");
     expect(utilities).toContain("height: 14px");
     expect(utilities).toContain("transform: translate(40%, -40%)");
+    const mainCss = readFileSync(resolve(root, "../../styles/main.css"), "utf8");
+    expect(mainCss).toContain(".in-app-bar__icon");
+    expect(mainCss).toContain("color: var(--in-text-color-secondary)");
+    expect(mainCss).toContain("text-rendering: optimizeLegibility");
+    expect(mainCss).toContain("-webkit-font-smoothing: antialiased");
     expect(bar).not.toContain("max-width: var(--in-app-bar-nav-max)");
     expect(bar).not.toContain("overflow-x: auto");
     expect(search).toContain("var(--in-app-bar-search-width)");

@@ -136,7 +136,7 @@ navigation: {
 
 - 品牌组件接收 `navigationMode`、`compact`
 - 搜索组件接收 `compact`；紧凑入口在浮层中展示同一实例，输入状态保留
-- 小部件组件接收 `overflowed`、`disabled`；收纳时不重复挂载
+- 小部件组件接收 `overflowed`、`disabled`；收纳时不重复挂载。图标使用 `in-app-bar__icon`，颜色跟随 `--in-text-color-secondary`
 - 自定义用户入口接收 `user`、`compact`，由核心包裹下拉
 
 `utilities` 里 `Action` 只适合图标按钮。需要下拉、开关或自定义交互时用 `InAdminHeaderUtilityItemType.Component`，组件自己渲染，核心只负责占位和收纳。该 `type` 不能用于 `navigation.items` 或 `user.menu`：

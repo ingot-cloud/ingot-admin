@@ -45,6 +45,32 @@ body,
   color: var(--in-text-color);
 }
 
+.in-icon-button:hover .in-app-bar__icon {
+  color: var(--in-text-color);
+}
+
+.in-app-bar__icon {
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--in-app-bar-icon-size);
+  height: var(--in-app-bar-icon-size);
+  color: var(--in-text-color-secondary);
+  font-size: var(--in-app-bar-icon-size);
+  font-style: normal;
+  line-height: 0;
+  text-align: center;
+  text-transform: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.in-app-bar__icon svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
 .in-icon-button:active {
   background: var(--in-bg-color-active);
 }

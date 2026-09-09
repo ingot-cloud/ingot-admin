@@ -95,11 +95,6 @@ const privateOnToggle = () => {
   min-width: var(--in-icon-button-size);
 }
 
-.in-app-bar__icon {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
-}
-
 .in-app-bar__brand-extra {
   @apply flex items-center min-w-0;
 }
