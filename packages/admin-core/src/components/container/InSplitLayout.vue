@@ -45,7 +45,7 @@
       <el-tooltip
         v-if="slot.left && leftCollapsible"
         :content="collapseLabel"
-        effect="light"
+        effect="dark"
         placement="right"
       >
         <button

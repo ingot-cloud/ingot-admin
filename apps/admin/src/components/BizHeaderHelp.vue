@@ -2,7 +2,7 @@
   <el-tooltip
     :disabled="overflowed || disabled"
     content="帮助中心"
-    effect="light"
+    effect="dark"
     placement="bottom"
   >
     <button

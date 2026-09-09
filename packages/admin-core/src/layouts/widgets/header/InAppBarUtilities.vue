@@ -16,7 +16,7 @@
             <el-tooltip
               :disabled="overflowedSet.has(item.key)"
               :content="item.label"
-              effect="light"
+              effect="dark"
               placement="bottom"
             >
               <span class="in-app-bar-utilities__builtin">
@@ -34,7 +34,7 @@
             <el-tooltip
               :disabled="overflowedSet.has(item.key)"
               :content="item.label"
-              effect="light"
+              effect="dark"
               placement="bottom"
             >
               <span class="in-app-bar-utilities__builtin">
@@ -54,7 +54,7 @@
             v-else
             :disabled="overflowedSet.has(item.key) || !item.label"
             :content="item.label"
-            effect="light"
+            effect="dark"
             placement="bottom"
           >
             <button
@@ -94,7 +94,7 @@
       v-if="showMore"
       :disabled="moreOpen"
       content="更多"
-      effect="light"
+      effect="dark"
       placement="bottom"
     >
       <button

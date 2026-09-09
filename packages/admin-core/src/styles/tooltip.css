@@ -1,0 +1,21 @@
+/**
+ * 默认文字提示：深色底、反白字、带箭头。对应 ElTooltip effect="dark"。
+ * 不要作用到下拉/选择器等 is-light 浮层。
+ */
+.el-popper.is-dark {
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: none;
+  border-radius: var(--in-radius-control);
+  background: var(--in-text-color);
+  color: var(--in-text-color-inverse);
+  box-shadow: none;
+  font-size: var(--in-font-size-caption);
+  font-weight: var(--in-font-weight-body);
+  line-height: var(--in-line-height-caption);
+}
+
+.el-popper.is-dark .el-popper__arrow::before {
+  background: var(--in-text-color);
+  border: 1px solid var(--in-text-color);
+}

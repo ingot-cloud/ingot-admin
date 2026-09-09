@@ -62,7 +62,7 @@
       v-if="showMore"
       :disabled="moreOpen"
       content="更多"
-      effect="light"
+      effect="dark"
       placement="bottom"
     >
       <button
@@ -539,7 +539,7 @@ defineExpose({
   color: inherit;
 }
 
-.in-app-bar-nav__item :deep(svg) {
+.in-app-bar-nav__item :deep(svg:not(.in-app-bar-nav__caret)) {
   width: var(--in-app-bar-icon-size);
   height: var(--in-app-bar-icon-size);
 }
@@ -697,11 +697,20 @@ defineExpose({
 }
 
 .in-app-bar-nav__caret {
+  display: inline-block;
   width: 12px;
   height: 12px;
   font-size: 12px;
   flex: none;
   color: var(--in-text-color-secondary);
+  transform-origin: center;
+  transition: transform var(--in-motion-duration) var(--in-motion-ease);
+}
+
+.in-app-bar-nav__item :deep(.in-app-bar-nav__caret) {
+  width: 12px;
+  height: 12px;
+  font-size: 12px;
 }
 
 .in-app-bar-nav__item.is-open:not(.is-active) {
@@ -710,5 +719,11 @@ defineExpose({
 
 .in-app-bar-nav__item.is-open .in-app-bar-nav__caret {
   transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in-app-bar-nav__caret {
+    transition: none;
+  }
 }
 </style>

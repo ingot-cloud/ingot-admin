@@ -121,6 +121,12 @@ describe("admin UI visual fixtures", () => {
     expect(dropdownCss).toContain("display: none");
     expect(dropdownCss).toContain(".el-dropdown__popper .el-dropdown-menu__item--divided");
     expect(dropdownCss).toContain(".in-user-dropdown__divider");
+    const tooltipCss = readFileSync(resolve(root, "../../styles/tooltip.css"), "utf8");
+    expect(tooltipCss).toContain(".el-popper.is-dark");
+    expect(tooltipCss).toContain("background: var(--in-text-color)");
+    expect(tooltipCss).toContain("color: var(--in-text-color-inverse)");
+    expect(tooltipCss).toContain("border-radius: var(--in-radius-control)");
+    expect(tooltipCss).toContain(".el-popper__arrow::before");
     const userDropdown = readFileSync(
       resolve(root, "../../layouts/widgets/user-dropdown/InUserDropdown.vue"),
       "utf8",
@@ -160,6 +166,7 @@ describe("admin UI visual fixtures", () => {
     expect(messageCss).toContain("el-message--warning");
     const stylesIndex = readFileSync(resolve(root, "../../styles/index.ts"), "utf8");
     expect(stylesIndex).toContain('import "./message.css"');
+    expect(stylesIndex).toContain('import "./tooltip.css"');
     expect(stylesIndex).toContain('import "element-plus/theme-chalk/el-button.css"');
     expect(stylesIndex).toContain('import "./button.css"');
     const buttonCss = readFileSync(resolve(root, "../../styles/button.css"), "utf8");
@@ -332,6 +339,10 @@ describe("admin UI visual fixtures", () => {
     expect(nav).toContain("in-app-bar-nav-panel__title");
     expect(nav).toContain("border-bottom: 1px solid var(--in-border-color)");
     expect(nav).toContain("in-app-bar-nav__caret");
+    expect(nav).toContain("svg:not(.in-app-bar-nav__caret)");
+    expect(nav).toContain("width: 12px");
+    expect(nav).toContain("transition: transform var(--in-motion-duration) var(--in-motion-ease)");
+    expect(nav).toContain("prefers-reduced-motion");
     expect(nav).toContain("width: max-content");
     expect(nav).toContain("overflow-x: hidden");
     expect(nav).toContain("overflow-y: auto");

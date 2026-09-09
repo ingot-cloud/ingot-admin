@@ -18,10 +18,10 @@
       <div flex justify-center items-center gap-1 v-if="!hideSetting">
         <el-divider direction="vertical" />
 
-        <el-tooltip content="刷新" effect="light" placement="top">
+        <el-tooltip content="刷新" effect="dark" placement="top">
           <in-refresh-icon size="22" @refresh="privateOnRefreshClick" />
         </el-tooltip>
-        <el-tooltip content="设置" effect="light" placement="top">
+        <el-tooltip content="设置" effect="dark" placement="top">
           <in-table-column-setting
             :data="props.headers"
             :table-id="props.tableId"

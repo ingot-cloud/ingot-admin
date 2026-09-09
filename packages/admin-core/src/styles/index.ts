@@ -11,5 +11,6 @@ import "./waves.css";
 import "./main.css";
 import "./confirm-dialog.css";
 import "./dropdown.css";
+import "./tooltip.css";
 import "./message.css";
 import "./button.css";

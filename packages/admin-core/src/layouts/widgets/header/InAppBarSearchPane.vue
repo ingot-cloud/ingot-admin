@@ -5,7 +5,7 @@
         v-if="compact"
         :disabled="open"
         content="搜索"
-        effect="light"
+        effect="dark"
         placement="bottom"
       >
         <button

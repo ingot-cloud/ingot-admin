@@ -30,7 +30,7 @@
         v-if="item.action"
         :disabled="!item.action.disabled || !item.action.disabledReason"
         :content="item.action.disabledReason"
-        effect="light"
+        effect="dark"
         placement="top"
       >
         <button

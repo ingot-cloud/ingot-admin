@@ -13,7 +13,7 @@
       <el-tooltip
         v-if="navigationMode === 'overlay'"
         :content="overlayOpen ? '关闭导航' : '打开导航'"
-        effect="light"
+        effect="dark"
         placement="bottom"
       >
         <button
