@@ -39,9 +39,9 @@ describe("InTable", () => {
     wrapper.unmount();
   });
 
-  it("无数据加载时显示骨架，不出现暂无数据", () => {
+  it("加载时始终显示骨架，不用转圈遮罩", () => {
     setActivePinia(createPinia());
-    const wrapper = mount(InTable, {
+    const empty = mount(InTable, {
       props: {
         headers: [{ prop: "name", label: "名称" }],
         data: [],
@@ -50,15 +50,12 @@ describe("InTable", () => {
       },
       global: { stubs },
     });
-    expect(wrapper.get(".in-table-skeleton").exists()).toBe(true);
-    expect(wrapper.get(".in-table-skeleton").attributes("data-rows")).toBe("8");
-    expect(wrapper.find(".empty").exists()).toBe(false);
-    wrapper.unmount();
-  });
+    expect(empty.get(".in-table-skeleton").exists()).toBe(true);
+    expect(empty.get(".in-table-skeleton").attributes("data-rows")).toBe("8");
+    expect(empty.find(".empty").exists()).toBe(false);
+    empty.unmount();
 
-  it("已有数据刷新时不替换为骨架", () => {
-    setActivePinia(createPinia());
-    const wrapper = mount(InTable, {
+    const refreshing = mount(InTable, {
       props: {
         headers: [{ prop: "name", label: "名称" }],
         data: [{ name: "Ada" }],
@@ -66,8 +63,8 @@ describe("InTable", () => {
       },
       global: { stubs },
     });
-    expect(wrapper.find(".in-table-skeleton").exists()).toBe(false);
-    wrapper.unmount();
+    expect(refreshing.get(".in-table-skeleton").exists()).toBe(true);
+    refreshing.unmount();
   });
 
   it("区分空数据与无搜索结果反馈", () => {
@@ -191,6 +188,8 @@ describe("InTable", () => {
     expect(source).toContain("emptyIllustration");
     expect(source).toContain("暂无数据");
     expect(source).toContain("showSkeleton");
+    expect(source).not.toContain("v-loading");
+    expect(source).not.toContain("showOverlayLoading");
     expect(source).toContain("in-table-skeleton");
     expect(source).toContain("customTree");
     expect(source).toContain("treeColumn");

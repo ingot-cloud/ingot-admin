@@ -13,6 +13,7 @@ describe("InDrawer", () => {
             template:
               "<div class=\"in-drawer\"><slot name=\"header\" /><slot /><slot name=\"footer\" /></div>",
           },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
         },
       },
     });
@@ -30,6 +31,7 @@ describe("InDrawer", () => {
           ElDrawer: {
             template: "<div class=\"in-drawer\" :class=\"$attrs.class\"><slot /></div>",
           },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
         },
       },
     });
@@ -46,6 +48,7 @@ describe("InDrawer", () => {
             template:
               "<div class=\"in-drawer\" :data-modal-class=\"$attrs.modalClass || $attrs['modal-class']\"><slot /></div>",
           },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
         },
       },
     });

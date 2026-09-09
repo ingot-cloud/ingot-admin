@@ -1,5 +1,5 @@
 <template>
-  <div class="basic-info-panel" v-loading="loading">
+  <in-loading :loading="loading" class="basic-info-panel">
     <div class="info-section">
       <div class="info-section__title">概览</div>
       <el-row :gutter="20">
@@ -94,7 +94,7 @@
         </el-row>
       </in-form>
     </div>
-  </div>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

@@ -17,6 +17,8 @@ import InEditor from "./editor/InEditor.vue";
 import InForm from "./form/InForm.vue";
 import InFormGroupTitle from "./form/InFormGroupTitle.vue";
 import InGlobalLoading from "./InGlobalLoading.vue";
+import InLoading from "./InLoading.vue";
+import InLoadingMark from "./InLoadingMark.vue";
 import InIcon from "./InIcon.vue";
 import InIconCollection from "./InIconCollection.vue";
 import InPageHeader from "./InPageHeader.vue";
@@ -83,6 +85,8 @@ export const coreGlobalComponents: Record<string, Component> = {
   InForm,
   InFormGroupTitle,
   InGlobalLoading,
+  InLoading,
+  InLoadingMark,
   InIcon,
   InIconCollection,
   InPageHeader,
@@ -151,6 +155,8 @@ declare module "vue" {
     InForm: typeof InForm;
     InFormGroupTitle: typeof InFormGroupTitle;
     InGlobalLoading: typeof InGlobalLoading;
+    InLoading: typeof InLoading;
+    InLoadingMark: typeof InLoadingMark;
     InIcon: typeof InIcon;
     InIconCollection: typeof InIconCollection;
     InPageHeader: typeof InPageHeader;

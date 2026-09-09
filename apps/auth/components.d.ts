@@ -23,6 +23,7 @@ declare module 'vue' {
     InDialog: typeof import('./src/components/InDialog.vue')['default']
     InFilterItem: typeof import('./src/components/container/InFilterItem.vue')['default']
     InIcon: typeof import('./src/components/InIcon.vue')['default']
+    InLoading: typeof import('./src/components/InLoading.vue')['default']
     InQrcode: typeof import('./src/components/qrcode/InQrcode.vue')['default']
     InSplitLayout: typeof import('./src/components/container/InSplitLayout.vue')['default']
     'ITabler:arrowRight': typeof import('~icons/tabler/arrow-right')['default']

@@ -1,15 +1,14 @@
 <template>
   <in-dialog :title="title" v-model="visible" width="400" class="dept-filter">
-    <in-tree
-      v-loading="loading"
-      ref="deptTreeRef"
-      class="dept-tree"
-      :data="deptTree"
-      :props="TreeKeyAndProps.props"
-      :node-key="TreeKeyAndProps.nodeKey"
-      :default-expanded-keys="defaultExpandedKeys"
-      @node-click="privateOnNodeClick"
-    >
+    <in-loading :loading="loading" class="dept-tree">
+      <in-tree
+        ref="deptTreeRef"
+        :data="deptTree"
+        :props="TreeKeyAndProps.props"
+        :node-key="TreeKeyAndProps.nodeKey"
+        :default-expanded-keys="defaultExpandedKeys"
+        @node-click="privateOnNodeClick"
+      >
       <template #default="{ node, data }">
         <div class="dept-item">
           <img :src="'/favicon.ico'" class="logo" v-if="data.mainFlag" />
@@ -17,6 +16,7 @@
         </div>
       </template>
     </in-tree>
+    </in-loading>
   </in-dialog>
 </template>
 <script setup lang="ts">

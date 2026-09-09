@@ -8,17 +8,16 @@
       clearable
     />
 
-    <in-tree
-      v-loading="loading"
-      ref="treeRef"
-      class="dict-type-tree"
-      :data="treeData"
-      :props="TreeKeyAndProps.props"
-      :node-key="TreeKeyAndProps.nodeKey"
-      :filter-node-method="privateFilterNode"
-      :default-expanded-keys="defaultExpandedKeys"
-      @node-click="privateOnNodeClick"
-    >
+    <in-loading :loading="loading" class="dict-type-tree">
+      <in-tree
+        ref="treeRef"
+        :data="treeData"
+        :props="TreeKeyAndProps.props"
+        :node-key="TreeKeyAndProps.nodeKey"
+        :filter-node-method="privateFilterNode"
+        :default-expanded-keys="defaultExpandedKeys"
+        @node-click="privateOnNodeClick"
+      >
       <template #default="{ data }">
         <div class="dict-type-item">
           <i-carbon:list-boxes class="icon" />
@@ -34,6 +33,7 @@
         </div>
       </template>
     </in-tree>
+    </in-loading>
   </div>
 </template>
 <script setup lang="ts">

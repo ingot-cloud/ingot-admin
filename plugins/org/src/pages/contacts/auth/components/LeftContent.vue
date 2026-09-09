@@ -27,23 +27,22 @@
       </el-dropdown>
     </div>
 
-    <in-tree
-      v-loading="loading"
-      ref="roleTreeRef"
-      class="member-role-tree"
-      :data="roleTree"
-      :props="TreeKeyAndProps.props"
-      :node-key="TreeKeyAndProps.nodeKey"
-      :default-expanded-keys="defaultExpandedKeys"
-      draggable
-      :allow-drag="privateAllowDrag"
-      :allow-drop="privateAllowDrop"
-      :filter-node-method="privateFilterNode"
-      @node-drop="privateOnDropSuccess"
-      @node-click="privateOnNodeClick"
-      @node-expand="privateOnNodeExpand"
-      @node-collapse="privateOnNodeCollapse"
-    >
+    <in-loading :loading="loading" class="member-role-tree">
+      <in-tree
+        ref="roleTreeRef"
+        :data="roleTree"
+        :props="TreeKeyAndProps.props"
+        :node-key="TreeKeyAndProps.nodeKey"
+        :default-expanded-keys="defaultExpandedKeys"
+        draggable
+        :allow-drag="privateAllowDrag"
+        :allow-drop="privateAllowDrop"
+        :filter-node-method="privateFilterNode"
+        @node-drop="privateOnDropSuccess"
+        @node-click="privateOnNodeClick"
+        @node-expand="privateOnNodeExpand"
+        @node-collapse="privateOnNodeCollapse"
+      >
       <template #default="{ node, data }">
         <div class="role-item">
           <in-icon
@@ -59,6 +58,7 @@
         </div>
       </template>
     </in-tree>
+    </in-loading>
   </div>
 </template>
 <script setup lang="ts">

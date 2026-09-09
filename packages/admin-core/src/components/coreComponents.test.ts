@@ -12,6 +12,8 @@ const movedComponentNames = [
   "InStatusButton",
   "AccountStatusEditButton",
   "InPageFrame",
+  "InLoading",
+  "InLoadingMark",
   "InTableActions",
   "InTableColumnSetting",
   "InFilterPanel",

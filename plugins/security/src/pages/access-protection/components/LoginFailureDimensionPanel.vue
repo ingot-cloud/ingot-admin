@@ -1,5 +1,5 @@
 <template>
-  <div class="login-failure-dimension-panel" v-loading="saving">
+  <in-loading :loading="saving" class="login-failure-dimension-panel">
     <div class="panel-toolbar">
       <div class="panel-toolbar__hint">{{ hint }}</div>
       <div class="panel-toolbar__actions">
@@ -56,7 +56,7 @@
       </el-row>
       <div v-if="form.updatedAt" class="panel-meta">最近更新：{{ form.updatedAt }}</div>
     </in-form>
-  </div>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

@@ -4,7 +4,6 @@
       <div class="auth-content">
         <in-tree
           ref="treeRef"
-          v-loading="loading"
           :data="data"
           show-checkbox
           :props="TreeKeyAndProps.props"

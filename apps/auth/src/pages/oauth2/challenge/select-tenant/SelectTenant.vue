@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <in-loading :loading="loading">
     <div class="back-btn" @click="handleBack">
       <i-ep:arrow-left />
       返回
@@ -20,7 +20,7 @@
         />
       </div>
     </div>
-  </div>
+  </in-loading>
 </template>
 <script setup lang="ts">
 import type { PropType } from "vue";

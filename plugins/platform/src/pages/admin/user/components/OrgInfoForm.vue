@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <in-loading :loading="loading">
     <div v-if="orgList && orgList.length > 0">
       <OrgInfoFormItem
         v-for="org in orgList"
@@ -11,7 +11,7 @@
       />
     </div>
     <el-empty v-else description="暂无组织" />
-  </div>
+  </in-loading>
   <OrgInfoCreateDialog ref="CreateDialogRef" @success="privateRefresh" />
 </template>
 <script setup lang="ts">

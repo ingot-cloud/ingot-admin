@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading">
+  <in-loading :loading="loading">
     <in-form-group-title v-model="editFlag">
       <template #title>
         <div class="logo-title">
@@ -52,7 +52,7 @@
         </el-form-item>
       </in-form>
     </div>
-  </div>
+  </in-loading>
 </template>
 <script setup lang="ts">
 import type { PropType } from "vue";

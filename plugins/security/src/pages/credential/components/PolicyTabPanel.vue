@@ -1,5 +1,5 @@
 <template>
-  <div class="policy-tab-panel" v-loading="saving">
+  <in-loading :loading="saving" class="policy-tab-panel">
     <div class="panel-toolbar">
       <div class="panel-toolbar__actions">
         <template v-if="editing">
@@ -21,7 +21,7 @@
     </in-form>
 
     <component :is="currentComponent" ref="viewRef" :disabled="!editing" />
-  </div>
+  </in-loading>
 </template>
 <script setup lang="ts">
 import type { CredentialPolicyConfig } from "@/models";

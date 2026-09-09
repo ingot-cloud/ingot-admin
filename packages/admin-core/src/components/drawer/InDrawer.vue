@@ -15,8 +15,10 @@
       </div>
     </template>
 
-    <div class="in-drawer__body" :style="`padding: ${padding}`" v-loading="isLoading">
-      <slot />
+    <div class="in-drawer__body" :style="`padding: ${padding}`">
+      <in-loading :loading="isLoading">
+        <slot />
+      </in-loading>
     </div>
 
     <template #footer>
@@ -28,6 +30,7 @@
 </template>
 <script lang="ts" setup>
 import type { InDrawerLayout } from "../types";
+import InLoading from "../InLoading.vue";
 
 defineOptions({
   name: "InDrawer",
@@ -101,6 +104,18 @@ onUnmounted(() => {
 
   & .el-drawer__body {
     overflow: auto;
+  }
+
+  & .in-drawer__body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  & .in-drawer__body > .in-loading {
+    flex: 1;
+    min-height: 160px;
+    width: 100%;
   }
 
   &.in-drawer--pinned {

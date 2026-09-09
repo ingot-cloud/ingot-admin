@@ -141,6 +141,8 @@ describe("admin UI visual fixtures", () => {
     expect(drawer).toContain("background-color: var(--in-drawer-overlay, transparent)");
     expect(drawer).toContain("--el-overlay-color-lighter: transparent");
     expect(drawer).toContain("overlayColor");
+    expect(drawer).toContain("InLoading");
+    expect(drawer).not.toContain("v-loading");
     const confirmCss = readFileSync(resolve(root, "../../styles/confirm-dialog.css"), "utf8");
     expect(confirmCss).toContain(".in-confirm-dialog");
     expect(confirmCss).toContain(".in-confirm-dialog-overlay .el-overlay-message-box");
@@ -386,16 +388,26 @@ describe("admin UI visual fixtures", () => {
 
   it("全局加载使用明暗主题 SVG 动画", () => {
     const loading = readFileSync(resolve(root, "../InGlobalLoading.vue"), "utf8");
+    const mark = readFileSync(resolve(root, "../InLoadingMark.vue"), "utf8");
+    const local = readFileSync(resolve(root, "../InLoading.vue"), "utf8");
     expect(loading).toContain("name: \"InGlobalLoading\"");
-    expect(loading).toContain("in-loading-light.svg");
-    expect(loading).toContain("in-loading-dark.svg");
-    expect(loading).toContain("useAdminTheme");
+    expect(loading).toContain("InLoadingMark");
     expect(loading).toContain("var(--in-bg-color-canvas)");
     expect(loading).toContain("in-global-loading-dots");
-    expect(loading).toContain("in-global-loading-dot");
+    expect(mark).toContain("in-loading-light.svg");
+    expect(mark).toContain("in-loading-dark.svg");
+    expect(mark).toContain("useAdminTheme");
+    expect(local).toContain("background: transparent");
+    expect(local).not.toContain("el-loading");
     expect(loading).toContain("prefers-reduced-motion");
     expect(loading).not.toContain("in-global-loading-box-item");
     expect(loading).not.toContain("in-global-loading-animation");
+    const searchPanel = readFileSync(
+      resolve(root, "../../layouts/widgets/search/InAppBarSearchPanel.vue"),
+      "utf8",
+    );
+    expect(searchPanel).toContain("InLoadingMark");
+    expect(searchPanel).not.toContain("is-loading");
   });
 
   it("InTableActions 直出按钮启用态有 hover，禁用态不响应", () => {

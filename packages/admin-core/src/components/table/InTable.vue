@@ -36,7 +36,6 @@
       <el-table
         v-bind="{ ...$attrs, ...tableBind }"
         :ref="tableRef"
-        v-loading="showOverlayLoading"
         @selection-change="privateOnElSelectionChange"
       >
         <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
@@ -175,9 +174,7 @@ const emits = defineEmits<{
 }>();
 const { componentSize } = storeToRefs(useAppStateStore());
 
-const hasRows = computed(() => (props.data?.length ?? 0) > 0);
-const showSkeleton = computed(() => Boolean(props.loading) && !hasRows.value);
-const showOverlayLoading = computed(() => Boolean(props.loading) && hasRows.value);
+const showSkeleton = computed(() => Boolean(props.loading));
 const skeletonRows = computed(() => resolveSkeletonRowCount(props.page.size));
 
 const hasMeta = computed(() => Boolean(slot.title || slot.subtitle || slot.summary));
@@ -345,6 +342,7 @@ const tableBind = computed(() => {
   } = props;
   return {
     ...rest,
+    data: props.loading ? [] : rest.data,
     expandRowKeys: innerExpandKeys.value,
     height: props.height ?? "100%",
   };

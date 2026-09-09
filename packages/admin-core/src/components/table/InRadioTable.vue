@@ -34,9 +34,8 @@
 
   <el-radio-group v-model="radioValue" w-full>
     <el-table
-      v-bind="{ ...$attrs, ...props }"
+      v-bind="{ ...$attrs, ...tableBind }"
       :ref="tableRef"
-      v-loading="showOverlayLoading"
       @row-click="privateRowClick"
     >
       <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
@@ -110,10 +109,28 @@ const props = withDefaults(defineProps<InTableProps>(), DefaultProps);
 const emits = defineEmits(["handleSizeChange", "handleCurrentChange", "refresh"]);
 const { componentSize } = storeToRefs(useAppStateStore());
 
-const hasRows = computed(() => (props.data?.length ?? 0) > 0);
-const showSkeleton = computed(() => Boolean(props.loading) && !hasRows.value);
-const showOverlayLoading = computed(() => Boolean(props.loading) && hasRows.value);
+const showSkeleton = computed(() => Boolean(props.loading));
 const skeletonRows = computed(() => resolveSkeletonRowCount(props.page.size));
+
+const tableBind = computed(() => {
+  const {
+    headers: _headers,
+    page: _page,
+    loading: _loading,
+    radioKey: _radioKey,
+    hideSetting: _hideSetting,
+    density: _density,
+    feedback: _feedback,
+    pageSize: _pageSize,
+    pageLayout: _pageLayout,
+    tableId: _tableId,
+    ...rest
+  } = props;
+  return {
+    ...rest,
+    data: props.loading ? [] : rest.data,
+  };
+});
 
 const headersEnable = ref<Array<TableHeaderRecord>>(
   props.headers.filter((item: TableHeaderRecord) => !item.hide),

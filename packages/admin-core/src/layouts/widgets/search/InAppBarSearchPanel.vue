@@ -31,9 +31,7 @@
     </div>
 
     <div v-if="loading" class="in-app-bar-search-panel__loading" data-testid="app-bar-search-loading">
-      <el-icon class="is-loading" :size="32">
-        <Loading />
-      </el-icon>
+      <in-loading-mark :size="48" />
     </div>
 
     <div
@@ -87,10 +85,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Loading } from "@element-plus/icons-vue";
 import type { FlattenedMenuItem } from "./flattenMenus";
 import type { ResolvedHeaderSearchShortcut } from "../header/resolveHeaderConfig";
 import InAppBarSearchHit from "./InAppBarSearchHit.vue";
+import InLoadingMark from "@/components/InLoadingMark.vue";
 
 defineOptions({
   name: "InAppBarSearchPanel",

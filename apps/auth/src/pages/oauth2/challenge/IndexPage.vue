@@ -2,23 +2,25 @@
   <div class="login-page login-page-visible">
     <div class="banner-area" role="banner-area" :style="bannerStyle"></div>
     <div class="login-area">
-      <div class="login-box" v-loading="loading">
-        <Transition name="fade-transform" mode="out-in">
-          <SelectTenant
-            v-if="isStepOneSuccess"
-            :list="authorizeResult.allows"
-            @back="handleBackToLoginView"
-          />
-          <div v-else>
-            <div class="login-switcher" @click="handleSwitch">
-              <img :src="isScanLogin ? PasswordLoginImage : QrCodeLoginImage" />
+      <div class="login-box">
+        <in-loading :loading="loading">
+          <Transition name="fade-transform" mode="out-in">
+            <SelectTenant
+              v-if="isStepOneSuccess"
+              :list="authorizeResult.allows"
+              @back="handleBackToLoginView"
+            />
+            <div v-else>
+              <div class="login-switcher" @click="handleSwitch">
+                <img :src="isScanLogin ? PasswordLoginImage : QrCodeLoginImage" />
+              </div>
+              <Transition name="fade-transform" mode="out-in">
+                <QrCodeView v-if="isScanLogin" />
+                <PasswordView v-else @success="handlePreAuthorizeSuccess" :is-show="true" />
+              </Transition>
             </div>
-            <Transition name="fade-transform" mode="out-in">
-              <QrCodeView v-if="isScanLogin" />
-              <PasswordView v-else @success="handlePreAuthorizeSuccess" :is-show="true" />
-            </Transition>
-          </div>
-        </Transition>
+          </Transition>
+        </in-loading>
       </div>
       <div class="login-copyright-bar">
         <div class="login-copyright">{{ login.copyright }}</div>

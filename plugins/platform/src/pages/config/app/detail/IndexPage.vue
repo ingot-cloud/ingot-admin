@@ -1,39 +1,41 @@
 <template>
-  <in-page-frame v-loading="loading" mode="page" surface="workspace">
-    <template #header>
-      <in-page-header show-back :title="detail.name" @back="privateOnBack">
-        <template #action>
-          <template v-if="currentTab === TabNameBase">
-            <template v-if="editing">
-              <in-button @click="privateOnCancel">取消</in-button>
-              <in-button type="primary" :loading="loading" @click="privateOnConfirm">
-                确定
-              </in-button>
+  <in-loading :loading="loading" class="h-full min-h-0">
+    <in-page-frame mode="page" surface="workspace">
+      <template #header>
+        <in-page-header show-back :title="detail.name" @back="privateOnBack">
+          <template #action>
+            <template v-if="currentTab === TabNameBase">
+              <template v-if="editing">
+                <in-button @click="privateOnCancel">取消</in-button>
+                <in-button type="primary" :loading="loading" @click="privateOnConfirm">
+                  确定
+                </in-button>
+              </template>
+              <in-button v-else type="primary" @click="privateOnEdit">编辑</in-button>
             </template>
-            <in-button v-else type="primary" @click="privateOnEdit">编辑</in-button>
           </template>
-        </template>
-      </in-page-header>
-    </template>
-    <template #tabs>
-      <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
-    </template>
+        </in-page-header>
+      </template>
+      <template #tabs>
+        <in-biz-tabs-header v-model="currentTab" :tabs="tabs" />
+      </template>
 
-    <BasicInfoPanel
-      v-show="currentTab === TabNameBase"
-      ref="basicInfoPanelRef"
-      v-model:editing="editing"
-      :app-id="appId"
-      @loaded="privateOnDetailLoaded"
-    />
-    <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" />
-    <PermissionPanel
-      v-if="currentTab === TabNamePermission"
-      ref="permissionPanelRef"
-      :app-id="appId"
-      :app-code="detail.code"
-    />
-  </in-page-frame>
+      <BasicInfoPanel
+        v-show="currentTab === TabNameBase"
+        ref="basicInfoPanelRef"
+        v-model:editing="editing"
+        :app-id="appId"
+        @loaded="privateOnDetailLoaded"
+      />
+      <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" />
+      <PermissionPanel
+        v-if="currentTab === TabNamePermission"
+        ref="permissionPanelRef"
+        :app-id="appId"
+        :app-code="detail.code"
+      />
+    </in-page-frame>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

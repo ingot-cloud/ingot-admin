@@ -56,6 +56,7 @@ const mountSearch = async (
           props: ["name"],
           template: '<i class="in-icon" :data-name="name"></i>',
         },
+        InLoadingMark: { template: '<img class="in-loading-mark" />' },
       },
     },
   });

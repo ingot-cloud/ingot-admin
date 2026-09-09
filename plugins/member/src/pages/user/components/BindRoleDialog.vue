@@ -1,10 +1,9 @@
 <template>
   <in-dialog :title="title" v-model="isShow">
     <in-split-layout :showBacktop="false">
-      <div class="auth-content">
+      <in-loading :loading="loading" class="auth-content">
         <in-tree
           ref="treeRef"
-          v-loading="loading"
           :data="data"
           show-checkbox
           :props="treeProps"
@@ -13,7 +12,7 @@
           :default-checked-keys="defaultSelectedIds"
           @check-change="onCheckChange"
         />
-      </div>
+      </in-loading>
     </in-split-layout>
     <template #footer>
       <in-button @click="isShow = false"> 取消 </in-button>

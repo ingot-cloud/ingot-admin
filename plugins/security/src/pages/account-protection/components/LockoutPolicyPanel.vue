@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="lockout-panel">
+  <in-loading :loading="loading" class="lockout-panel">
     <div class="lockout-panel__tip">
       保存后策略将在数秒内生效。已处于锁定中的账号不会因策略变更自动解锁。
     </div>
@@ -25,7 +25,7 @@
         />
       </el-col>
     </el-row>
-  </div>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

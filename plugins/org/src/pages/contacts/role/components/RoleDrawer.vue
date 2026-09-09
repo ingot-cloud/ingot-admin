@@ -1,7 +1,6 @@
 <template>
-  <in-drawer :title="title" v-model="show">
+  <in-drawer :title="title" v-model="show" :loading="loading">
     <el-form
-      v-loading="loading"
       ref="editFormRef"
       label-width="100px"
       label-position="top"

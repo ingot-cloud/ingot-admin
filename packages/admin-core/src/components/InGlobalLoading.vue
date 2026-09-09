@@ -1,7 +1,7 @@
 <template>
   <div class="in-global-loading" role="status" aria-live="polite" :aria-label="hint">
     <div class="in-global-loading-box" aria-hidden="true">
-      <img class="in-global-loading-mark" :src="loadingSrc" alt="" width="96" height="96" />
+      <in-loading-mark :size="96" />
       <div class="in-global-loading-text">
         <span>{{ hintLabel }}</span>
         <span class="in-global-loading-dots">
@@ -14,9 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useAdminTheme } from "@/theme/useAdminTheme";
-import loadingDark from "../assets/loading/in-loading-dark.svg";
-import loadingLight from "../assets/loading/in-loading-light.svg";
+import InLoadingMark from "./InLoadingMark.vue";
 
 defineOptions({
   name: "InGlobalLoading",
@@ -31,8 +29,6 @@ const props = withDefaults(
   },
 );
 
-const { isDark } = useAdminTheme();
-const loadingSrc = computed(() => (isDark.value ? loadingDark : loadingLight));
 const hintLabel = computed(() => props.hint.replace(/\.+$/u, ""));
 </script>
 <style lang="postcss" scoped>
@@ -47,12 +43,6 @@ const hintLabel = computed(() => props.hint.replace(/\.+$/u, ""));
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
-
-  & .in-global-loading-mark {
-    display: block;
-    width: 96px;
-    height: 96px;
   }
 
   & .in-global-loading-text {

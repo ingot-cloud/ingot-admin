@@ -1,6 +1,6 @@
 <template>
-  <in-drawer :title="title" v-model="visible" size="520px">
-    <div v-loading="loading" class="session-detail">
+  <in-drawer :title="title" v-model="visible" size="520px" :loading="loading">
+    <div class="session-detail">
       <in-with-label title="会话 ID">
         <in-copy-tag v-if="session.sid" :text="session.sid" />
         <span v-else>-</span>

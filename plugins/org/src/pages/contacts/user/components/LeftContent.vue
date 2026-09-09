@@ -2,17 +2,16 @@
   <div class="dept-filter">
     <el-input v-model="searchValue" placeholder="搜索部门" :prefix-icon="Search" clearable />
 
-    <in-tree
-      v-loading="loading"
-      ref="deptTreeRef"
-      class="member-dept-tree"
-      :data="deptTree"
-      :props="TreeKeyAndProps.props"
-      :node-key="TreeKeyAndProps.nodeKey"
-      :default-expanded-keys="defaultExpandedKeys"
-      :filter-node-method="privateFilterNode"
-      @node-click="privateOnNodeClick"
-    >
+    <in-loading :loading="loading" class="member-dept-tree">
+      <in-tree
+        ref="deptTreeRef"
+        :data="deptTree"
+        :props="TreeKeyAndProps.props"
+        :node-key="TreeKeyAndProps.nodeKey"
+        :default-expanded-keys="defaultExpandedKeys"
+        :filter-node-method="privateFilterNode"
+        @node-click="privateOnNodeClick"
+      >
       <template #default="{ node, data }">
         <div class="dept-item">
           <img :src="'/favicon.ico'" class="logo" v-if="data.mainFlag" />
@@ -20,6 +19,7 @@
         </div>
       </template>
     </in-tree>
+    </in-loading>
   </div>
 </template>
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="violation-escalation-panel" v-loading="loading || saving">
+  <in-loading :loading="loading || saving" class="violation-escalation-panel">
     <div class="panel-header">
       <div class="panel-header__info">
         <div class="panel-header__title">违规升级</div>
@@ -42,7 +42,7 @@
         </el-col>
       </el-row>
     </in-form>
-  </div>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <div class="login-failure-panel" v-loading="loading || saving">
+  <in-loading :loading="loading || saving" class="login-failure-panel">
     <div class="login-failure-panel__tabs">
       <in-biz-tabs-header v-model="activeDimension" :tabs="dimensionTabs" />
     </div>
@@ -16,7 +16,7 @@
         @saved="loadAll"
       />
     </div>
-  </div>
+  </in-loading>
 </template>
 
 <script setup lang="ts">

@@ -1,9 +1,8 @@
 <template>
-  <in-drawer :title="title" v-model="show" padding="0">
+  <in-drawer :title="title" v-model="show" padding="0" :loading="loading">
     <in-form-group-title v-if="isEdit" title="基本信息" v-model="editFlag" />
     <div p-20px>
       <in-form
-        v-loading="loading"
         ref="editFormRef"
         :model="editForm"
         :rules="rules"

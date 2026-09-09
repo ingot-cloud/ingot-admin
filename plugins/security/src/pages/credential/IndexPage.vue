@@ -7,7 +7,7 @@
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
-    <div v-loading="loading" class="credential-policy-page">
+    <in-loading :loading="loading" class="credential-policy-page">
       <PolicyTabPanel
         v-for="item in tabOptions"
         v-show="activeTab === item.value"
@@ -17,7 +17,7 @@
         :save-policy="savePolicy"
         @saved="loadAll"
       />
-    </div>
+    </in-loading>
   </in-page-frame>
 </template>
 <script lang="ts" setup>
