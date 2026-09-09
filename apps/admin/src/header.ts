@@ -36,13 +36,12 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
       privateOnNavSelect(entryKey, itemKey);
     },
     items: [
-      { key: "ops", label: "运营", icon: "ep:monitor" },
-      { key: "commerce", label: "电商", icon: "ep:goods" },
+      { key: "platform", label: "平台管理", icon: "ep:monitor" },
       {
-        key: "platform",
+        key: "more",
         type: InAdminHeaderNavItemType.Group,
-        label: "平台",
-        icon: "ep:grid",
+        label: "更多功能",
+        icon: "fluent:home-more-48-regular",
         trigger: InAdminHeaderNavGroupTrigger.Hover,
         groups: [
           {
@@ -74,7 +73,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
       type: InAdminHeaderUtilityItemType.Action,
       key: "notify",
       label: "通知",
-      icon: "ep:bell",
+      icon: "ingot:bell-outlined",
       badge: notifyCount,
       onClick: () => {
         notifyCount.value = 0;
