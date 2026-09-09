@@ -85,7 +85,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
       type: InAdminHeaderUtilityItemType.Action,
       key: "notify",
       label: "通知",
-      icon: "ep:bell",
+      icon: "ingot:bell-outlined",
       onClick: () => undefined,
     },
     {
@@ -143,7 +143,7 @@ navigation: {
 
 ```vue
 <template>
-  <el-tooltip :disabled="overflowed || disabled" content="帮助" effect="light" placement="bottom">
+  <el-tooltip :disabled="overflowed || disabled" content="帮助" effect="dark" placement="bottom">
     <button
       type="button"
       class="in-icon-button in-app-bar-utilities__action gap-8px"

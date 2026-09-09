@@ -8,6 +8,7 @@
 |------|------|
 | `tokens.css` | 浅色基础 / 语义 / 组件 Token，以及旧变量别名 |
 | `dropdown.css` | 操作下拉：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` |
+| `tooltip.css` | 默认文字提示：深色底（`--in-text-color`）、反白字、带箭头；对应 `ElTooltip` `effect="dark"` |
 | `message.css` | 全局 Toast：最小 204×54、描边浅底、`--in-shadow-overlay` |
 | `button.css` | `plain` 按钮：默认白底描边，悬停填满类型色 |
 | `el-mapping.css` | `--el-*` 只从 `--in-*` 读取 |
