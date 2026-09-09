@@ -77,6 +77,22 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   },
   search: {
     placeholder: "搜索功能导航",
+    shortcuts: [
+      {
+        key: "dept",
+        label: "部门",
+        path: "/org/dept",
+        icon: "ep:office-building",
+        description: "组织架构",
+      },
+      {
+        key: "member",
+        label: "成员",
+        path: "/org/members",
+        icon: "ep:user",
+        description: "组织架构",
+      },
+    ],
     // component: CustomSearch,
   },
   utilities: [
@@ -175,6 +191,14 @@ const privateOnClick = () => {
 跑通的示例在 `apps/admin/src/components/BizHeaderHelp.vue`，由 `createAdminHeader()` 注入。
 
 列表项必须有稳定唯一 `key`。搜索显隐仍只使用 `settings.showSearch` 与设置 store。
+
+## 默认菜单搜索
+
+未替换 `header.search.component` 时，默认搜索框检索与侧栏相同的 `useRouterStore().getMenus`（权限裁剪后的动态菜单 + 插件 `staticMenus`，已去掉 `hideMenu`）。不要用 `router.getRoutes()`：公共 403/404/init 等静态路由不会出现在侧栏，也不应被搜到。只按菜单名（及祖先标题）匹配叶子节点，选中后 `router.push`。
+
+聚焦或点击输入框打开面板：空关键词显示本机搜索历史（若有）以及 `header.search.shortcuts` 常用入口；未配置常用时展示空态占位，避免面板中段空白。输入后先出现 loading，再展示「功能」匹配列表，标题中的关键词用主题色标出。结果卡片与常用同一套样式。不提供高级搜索、「应用」分区或全局快捷键。键盘为 ↑↓ 移动高亮、Enter 打开当前项。宽度不足时仍是图标入口，浮层内复用同一输入实例。
+
+自定义 `search.component` 仍整区替换，不会自动带上这套默认面板。
 
 ## 主题兼容
 
