@@ -54,7 +54,7 @@
 </template>
 <script lang="ts" setup>
 import type { FormInstance } from "element-plus";
-import { Icon } from "@iconify/vue";
+import { Icon } from "virtual:ingot-iconify-icon";
 import type {
   DisableAccountAPI,
   EnableAccountAPI,

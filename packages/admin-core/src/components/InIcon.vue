@@ -1,12 +1,20 @@
 <template>
-  <svg aria-hidden="true" v-if="isInIcon">
-    <use :xlink:href="`#${prefix}-${icon}`" />
-  </svg>
-  <Icon v-else :icon="icon" />
+  <span class="in-icon">
+    <svg v-if="isInIcon" aria-hidden="true">
+      <use :xlink:href="`#${prefix}-${icon}`" />
+    </svg>
+    <Icon v-else-if="icon" :icon="icon" />
+  </span>
 </template>
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
+import { computed, watch } from "vue";
+import { Icon } from "virtual:ingot-iconify-icon";
 import { getAdminRuntimeConfig } from "@/runtime";
+import { recordIconifyUsed } from "./recordIconifyUsed";
+
+defineOptions({
+  name: "InIcon",
+});
 
 const props = defineProps<{
   name?: string;
@@ -21,4 +29,15 @@ const icon = computed(() => {
   }
   return props.name ?? "";
 });
+
+watch(
+  () => props.name,
+  (name) => {
+    if (!name || isInIcon.value) {
+      return;
+    }
+    void recordIconifyUsed(name);
+  },
+  { immediate: true },
+);
 </script>

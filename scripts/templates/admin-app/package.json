@@ -27,6 +27,7 @@
     "@tanstack/vue-query": "catalog:"
   },
   "devDependencies": {
+    "@iconify-json/bi": "catalog:",
     "@iconify-json/carbon": "catalog:",
     "@iconify-json/ep": "catalog:",
     "@iconify-json/mdi": "catalog:",

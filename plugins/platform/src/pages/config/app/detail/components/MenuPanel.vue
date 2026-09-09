@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
-import { Icon } from "@iconify/vue";
+import { Icon } from "virtual:ingot-iconify-icon";
 import type { MenuTreeNode } from "@/models";
 import { getMenuTypeIcon, useAccessModeEnum, AccessModeEnum } from "@/models/enums";
 import { AppMenuTreeQueryOptions } from "@/api/platform/config/app.query";

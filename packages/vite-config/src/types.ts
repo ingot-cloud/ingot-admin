@@ -1,6 +1,7 @@
 import type { AliasOptions, PluginOption, ProxyOptions, UserConfig } from "vite";
 import type { ImportsMap } from "unplugin-auto-import/types";
 import type { InOfficialPluginOption } from "./official-plugins.js";
+import type { InIconifyOfflineOptions } from "./iconify-offline.js";
 
 export interface InViteBaseOptions {
   rootDir: string;
@@ -16,6 +17,16 @@ export interface InViteBaseOptions {
   enableDevTools?: boolean;
   extraPlugins?: PluginOption[];
   autoImports?: ImportsMap;
+  /**
+   * Iconify：开发可在线预览；生产扫描 + extra + collections + used.json 打进本地。
+   * 后端菜单等动态图标请开发时打开一次以写入 used.json，或列入 extra / collections。
+   */
+  iconifyOffline?: InIconifyOfflineOptions;
+  /**
+   * 组件库 production build 不打包 `virtual:iconify-offline`，留给 App 注入完整集合。
+   * 仅 `defineInLibraryConfig` 开启。
+   */
+  externalizeIconifyOffline?: boolean;
   /**
    * 官方源码插件包名或配置。省略时根据当前 package.json 的 name / dependencies
    * 自动识别已知官方插件（platform / security / org / member）。

@@ -5,10 +5,10 @@
     :aria-label="isFullscreen ? '退出全屏' : '进入全屏'"
     @click="useFullscreenFn.toggle()"
   >
-    <div
-      :class="isFullscreen ? 'i-mdi-fullscreen-exit' : 'i-mdi-fullscreen'"
+    <in-icon
+      :name="isFullscreen ? 'bi:fullscreen-exit' : 'bi:fullscreen'"
       class="in-app-bar__icon"
-    ></div>
+    />
   </button>
 </template>
 <script lang="ts" setup>

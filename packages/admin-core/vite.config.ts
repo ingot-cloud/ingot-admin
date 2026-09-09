@@ -33,6 +33,8 @@ export default defineInLibraryConfig({
     "pinia-plugin-persistedstate",
     /^vue(?:\/|$)/,
     /^vue-router(?:\/|$)/,
+    "@iconify/vue",
+    /^@iconify\/vue(?:\/|$)/,
   ],
   extend: {
     test: {

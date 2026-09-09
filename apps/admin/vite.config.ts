@@ -11,6 +11,9 @@ export default defineInAppConfig({
     "@": fileURLToPath(new URL("./src", import.meta.url)),
   },
   enforceAppConventions: true,
+  iconifyOffline: {
+    collections: ["ep"],
+  },
   proxy: {
     "/api": {
       target: "http://localhost:7980",

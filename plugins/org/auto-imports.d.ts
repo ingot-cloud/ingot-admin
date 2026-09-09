@@ -214,6 +214,7 @@ declare global {
   const useGeolocation: typeof import('@vueuse/core').useGeolocation
   const useGlobalLoading: typeof import('../../packages/admin-core/src/hooks/biz/useGlobalLoading').useGlobalLoading
   const useGo: typeof import('../../packages/admin-core/src/hooks/web/useRouter').useGo
+  const useHeaderSearchStore: typeof import('../../packages/admin-core/src/stores/modules/headerSearch').useHeaderSearchStore
   const useIconsCollection: typeof import('../../packages/admin-core/src/hooks/web/useIcons').useIconsCollection
   const useId: typeof import('vue').useId
   const useIdle: typeof import('@vueuse/core').useIdle
@@ -569,6 +570,7 @@ declare module 'vue' {
     readonly useGeolocation: UnwrapRef<typeof import('@vueuse/core')['useGeolocation']>
     readonly useGlobalLoading: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/useGlobalLoading')['useGlobalLoading']>
     readonly useGo: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useRouter')['useGo']>
+    readonly useHeaderSearchStore: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/headerSearch')['useHeaderSearchStore']>
     readonly useIconsCollection: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/web/useIcons')['useIconsCollection']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useIdle: UnwrapRef<typeof import('@vueuse/core')['useIdle']>

@@ -350,6 +350,12 @@ describe("admin UI visual fixtures", () => {
     expect(bar).toContain("in-app-bar-utilities");
     expect(bar).toContain("in-app-bar__user");
     expect(bar).toContain("in-app-bar__divider");
+    const fullscreen = readFileSync(
+      resolve(root, "../../layouts/widgets/InFullscreen.vue"),
+      "utf8",
+    );
+    expect(fullscreen).toContain("bi:fullscreen");
+    expect(fullscreen).toContain("bi:fullscreen-exit");
     const utilities = readFileSync(
       resolve(root, "../../layouts/widgets/header/InAppBarUtilities.vue"),
       "utf8",
@@ -359,6 +365,8 @@ describe("admin UI visual fixtures", () => {
     expect(utilities).toContain("height: 14px");
     expect(utilities).toContain("transform: translate(40%, -40%)");
     const mainCss = readFileSync(resolve(root, "../../styles/main.css"), "utf8");
+    expect(mainCss).toContain(".in-icon {");
+    expect(mainCss).toContain(".in-icon svg");
     expect(mainCss).toContain(".in-app-bar__icon");
     expect(mainCss).toContain("color: var(--in-text-color-secondary)");
     expect(mainCss).toContain("text-rendering: optimizeLegibility");

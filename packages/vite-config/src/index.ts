@@ -1,5 +1,7 @@
 export * from "./app-conventions.js";
 export * from "./app.js";
+export * from "./iconify-offline.js";
+export * from "./iconify-used.js";
 export * from "./library.js";
 export * from "./official-plugins.js";
 export * from "./source-plugin.js";

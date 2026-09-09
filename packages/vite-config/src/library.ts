@@ -2,12 +2,14 @@ import { mergeConfig } from "vite";
 import type { UserConfigExport } from "vite";
 import { createSharedViteConfig } from "./shared.js";
 import type { InLibraryViteOptions } from "./types.js";
+import { ICONIFY_ICON_ID, ICONIFY_OFFLINE_ID } from "./iconify-offline.js";
 
 export const defineInLibraryConfig = (options: InLibraryViteOptions): UserConfigExport => {
   const shared = createSharedViteConfig(
     {
       ...options,
       enableDevTools: false,
+      externalizeIconifyOffline: true,
     },
     "ingot",
   );
@@ -24,7 +26,7 @@ export const defineInLibraryConfig = (options: InLibraryViteOptions): UserConfig
         cssFileName: "style",
       },
       rolldownOptions: {
-        external: options.external,
+        external: [...(options.external ?? []), ICONIFY_OFFLINE_ID, ICONIFY_ICON_ID],
         output: {
           assetFileNames: "[name][extname]",
         },

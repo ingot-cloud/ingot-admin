@@ -23,6 +23,7 @@ import {
 } from "./official-plugins.js";
 import type { InViteBaseOptions } from "./types.js";
 import { createUnoContentFilesystem } from "./uno-content.js";
+import { createIconifyOfflinePlugin } from "./iconify-offline.js";
 
 const DEFAULT_APP_HOOK_DIRS = ["./src/hooks/**", "./src/stores/**"];
 
@@ -192,7 +193,7 @@ export const createSharedViteConfig = (
       ],
     }),
     Icons({
-      autoInstall: true,
+      autoInstall: false,
       compiler: "vue3",
       defaultClass: "inline",
       customCollections: {
@@ -203,6 +204,24 @@ export const createSharedViteConfig = (
       content: {
         filesystem: createUnoContentFilesystem(options.rootDir, officialPlugins),
       },
+    }),
+    createIconifyOfflinePlugin({
+      rootDir: options.rootDir,
+      extra: options.iconifyOffline?.extra,
+      collections: options.iconifyOffline?.collections,
+      scan: options.iconifyOffline?.scan,
+      usedFile: options.iconifyOffline?.usedFile,
+      scanDirs: [
+        path.join(options.rootDir, "src"),
+        ...officialPlugins.map((plugin) => plugin.srcDir),
+        ...(adminCoreSrc ? [adminCoreSrc] : []),
+      ],
+      packageDirs: [
+        options.rootDir,
+        ...officialPlugins.map((plugin) => plugin.rootDir),
+        ...(adminCoreSrc ? [path.dirname(adminCoreSrc)] : []),
+      ],
+      externalizeOnBuild: options.externalizeIconifyOffline,
     }),
     ...(options.enforceAppConventions
       ? [

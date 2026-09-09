@@ -1,11 +1,17 @@
 <template>
-  <svg aria-hidden="true" v-if="isInIcon">
-    <use :xlink:href="`#${prefix}-${icon}`" />
-  </svg>
-  <Icon v-else :icon="icon" />
+  <span class="in-icon">
+    <svg v-if="isInIcon" aria-hidden="true">
+      <use :xlink:href="`#${prefix}-${icon}`" />
+    </svg>
+    <Icon v-else-if="icon" :icon="icon" />
+  </span>
 </template>
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
+import { Icon } from "virtual:ingot-iconify-icon";
+
+defineOptions({
+  name: "InIcon",
+});
 
 const props = defineProps<{
   name: String | undefined;

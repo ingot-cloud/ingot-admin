@@ -1,5 +1,18 @@
 /// <reference types="vite/client" />
 declare module "uno.css";
+declare module "virtual:iconify-offline";
+declare module "virtual:ingot-iconify-icon" {
+  import type { Component } from "vue";
+  export const Icon: Component;
+  export function loadIcon(name: string): Promise<{ body: string } | null>;
+  export function getIcon(name: string): {
+    body: string;
+    width?: number;
+    height?: number;
+    left?: number;
+    top?: number;
+  } | null;
+}
 interface ImportMetaEnv {
   readonly VITE_APP_CODE: string;
   readonly VITE_APP_TITLE: string;
