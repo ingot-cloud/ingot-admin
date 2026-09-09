@@ -9,11 +9,19 @@
 - `apps/admin/src/header.ts` 的 `createAdminHeader()`
 - create-app 生成应用的 `src/header.ts`
 
-省略列表使用默认值：小部件为全屏、设置；用户菜单为切换组织、修改密码、退出登录。显式传入数组视为完整列表，空数组清空。用户下拉会在头像区下方、退出登录上方固定画出分割线；其余分组再用 `{ type: InAdminHeaderItemType.Divider, key }`。
+省略列表使用默认值：小部件为全屏、设置；用户菜单为切换组织、修改密码、退出登录。显式传入数组视为完整列表，空数组清空。用户下拉会在头像区下方、退出登录上方固定画出分割线；其余分组再用 `{ type: InAdminHeaderUserMenuItemType.Divider, key }`。
 
-条目 `type`、内置能力 `name`、分组触发方式不要手写字符串，使用 `@ingot/admin-core` 导出的常量与工厂：
+条目 `type` 按区域使用不同常量，不要共用一套种类，以免把 `Component` 写到导航或用户菜单：
 
-- `InAdminHeaderItemType`：`Builtin` / `Action` / `Group` / `Component` / `Divider`
+| 区域 | 列表项 `type` | 允许取值 | 整区替换组件 |
+| --- | --- | --- | --- |
+| `navigation.items` | `InAdminHeaderNavItemType` | `Action`、`Group` | 无；品牌用 `brand.component` |
+| `utilities` | `InAdminHeaderUtilityItemType` | `Builtin`、`Action`、`Component` | 无 |
+| `user.menu` | `InAdminHeaderUserMenuItemType` | `Builtin`、`Action`、`Divider` | 头像用 `user.component` |
+| `brand` / `search` | 无 `type` | — | `brand.component` / `search.component` |
+
+内置能力 `name`、分组触发方式同样不要手写字符串：
+
 - `InAdminHeaderNavGroupTrigger`：`Hover` / `Click`
 - `InAdminHeaderBuiltinUtilityName`：`Fullscreen` / `Settings`
 - `InAdminHeaderBuiltinUserMenuName`：`SwitchOrg` / `FixPwd` / `Logout`
@@ -27,11 +35,14 @@ import {
   defineHeaderBuiltinUtility,
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
+  InAdminHeaderUtilityItemType,
+  InAdminHeaderUserMenuItemType,
   type InAdminHeaderConfig,
 } from "@ingot/admin-core";
 import { ref } from "vue";
+import BizHeaderHelp from "./components/BizHeaderHelp.vue";
 
 const activeNavKey = ref("ops");
 
@@ -49,7 +60,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
       { key: "ops", label: "运营" },
       {
         key: "platform",
-        type: InAdminHeaderItemType.Group,
+        type: InAdminHeaderNavItemType.Group,
         label: "平台",
         groups: [
           {
@@ -71,11 +82,17 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   utilities: [
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Fullscreen),
     {
-      type: InAdminHeaderItemType.Action,
+      type: InAdminHeaderUtilityItemType.Action,
       key: "notify",
       label: "通知",
       icon: "ep:bell",
       onClick: () => undefined,
+    },
+    {
+      type: InAdminHeaderUtilityItemType.Component,
+      key: "help",
+      label: "帮助",
+      component: BizHeaderHelp,
     },
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Settings),
   ],
@@ -83,7 +100,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
     menu: [
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.SwitchOrg),
       {
-        type: InAdminHeaderItemType.Action,
+        type: InAdminHeaderUserMenuItemType.Action,
         key: "profile",
         label: "个人资料",
         icon: "ep:user",
@@ -106,7 +123,7 @@ navigation: {
   items: [
     {
       key: "platform",
-      type: InAdminHeaderItemType.Group,
+      type: InAdminHeaderNavItemType.Group,
       label: "平台",
       // trigger: InAdminHeaderNavGroupTrigger.Click, // 覆盖默认，改为点击打开
       groups: [{ key: "system", title: "系统", items: [{ key: "app", label: "应用" }] }],
@@ -121,6 +138,41 @@ navigation: {
 - 搜索组件接收 `compact`；紧凑入口在浮层中展示同一实例，输入状态保留
 - 小部件组件接收 `overflowed`、`disabled`；收纳时不重复挂载
 - 自定义用户入口接收 `user`、`compact`，由核心包裹下拉
+
+`utilities` 里 `Action` 只适合图标按钮。需要下拉、开关或自定义交互时用 `InAdminHeaderUtilityItemType.Component`，组件自己渲染，核心只负责占位和收纳。该 `type` 不能用于 `navigation.items` 或 `user.menu`：
+
+```vue
+<template>
+  <el-tooltip :disabled="overflowed || disabled" content="帮助" effect="light" placement="bottom">
+    <button
+      type="button"
+      class="in-icon-button in-app-bar-utilities__action gap-8px"
+      :class="{ 'is-overflow': overflowed }"
+      aria-label="帮助"
+      :disabled="disabled"
+      @click="privateOnClick"
+    >
+      <in-icon name="ep:question-filled" class="in-app-bar__icon" />
+      <span v-if="overflowed">帮助</span>
+    </button>
+  </el-tooltip>
+</template>
+<script setup lang="ts">
+import { Message, type InAdminHeaderUtilityComponentProps } from "@ingot/admin-core";
+
+defineOptions({
+  name: "BizHeaderHelp",
+});
+
+defineProps<InAdminHeaderUtilityComponentProps>();
+
+const privateOnClick = () => {
+  Message.success("打开帮助（示例）");
+};
+</script>
+```
+
+跑通的示例在 `apps/admin/src/components/BizHeaderHelp.vue`，由 `createAdminHeader()` 注入。
 
 列表项必须有稳定唯一 `key`。搜索显隐仍只使用 `settings.showSearch` 与设置 store。
 

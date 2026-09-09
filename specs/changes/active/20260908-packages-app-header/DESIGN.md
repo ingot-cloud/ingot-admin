@@ -16,7 +16,7 @@
 | header.utilities  | 按顺序排列的内置 fullscreen/settings、图标操作、自定义组件列表                       |
 | header.user       | 用户入口展示配置/自定义入口组件，以及内置和自定义菜单列表                            |
 
-所有列表项使用稳定唯一 key；通用展示字段包括 label、icon、visible、disabled，小部件另支持 badge。动态值接受 Vue ref/computed 或 getter，组件在 setup 上下文解析；静态值同样可用。列表可响应式替换。保留的默认用户菜单顺序为 switchOrg、fixPwd、logout，默认小部件顺序为 fullscreen、settings。列表省略使用默认值，显式传入以其为完整列表，空数组清空。条目 type、内置 name、分组 trigger 使用导出常量 `InAdminHeaderItemType`、`InAdminHeaderBuiltinUtilityName`、`InAdminHeaderBuiltinUserMenuName`、`InAdminHeaderNavGroupTrigger`；内置项用 `defineHeaderBuiltinUtility` / `defineHeaderBuiltinUserMenuItem` 工厂，不在 APP 手写魔法字符串。
+所有列表项使用稳定唯一 key；通用展示字段包括 label、icon、visible、disabled，小部件另支持 badge。动态值接受 Vue ref/computed 或 getter，组件在 setup 上下文解析；静态值同样可用。列表可响应式替换。保留的默认用户菜单顺序为 switchOrg、fixPwd、logout，默认小部件顺序为 fullscreen、settings。列表省略使用默认值，显式传入以其为完整列表，空数组清空。条目 type、内置 name、分组 trigger 使用分区常量 `InAdminHeaderNavItemType`、`InAdminHeaderUtilityItemType`、`InAdminHeaderUserMenuItemType` 以及 `InAdminHeaderBuiltinUtilityName`、`InAdminHeaderBuiltinUserMenuName`、`InAdminHeaderNavGroupTrigger`；内置项用 `defineHeaderBuiltinUtility` / `defineHeaderBuiltinUserMenuItem` 工厂，不在 APP 手写魔法字符串。`Component` 只属于 `utilities` 列表项；品牌、搜索、用户入口的整区替换分别写 `brand.component`、`search.component`、`user.component`，不要写到 `navigation.items` 或 `user.menu`。
 
 大类入口最多支持“入口 → 分组 → 菜单项”，不做递归多层业务菜单。分组包含标题和菜单项；选择回调携带入口 key 及可选子项 key。activeKey 由 APP 控制，点击仅发出通知；禁用项不通知。不存在或已隐藏的选中 key 按未选中处理，不自动写回 APP。业务路由、权限判断及侧栏联动由 APP 回调和响应式 visible 提供。
 
