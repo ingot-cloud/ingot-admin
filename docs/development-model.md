@@ -54,3 +54,4 @@ apps ─────→ plugins ─────→ packages
 - [create-app](./create-app.md)
 - [主题开发](./theme-development.md)
 - [插件示例](../examples/admin-plugin/README.md)
+- [图标](./icons.md)

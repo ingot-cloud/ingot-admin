@@ -98,3 +98,5 @@ pnpm check:boundaries
 - 在 package 中注册业务页面或 `InAdminPlugin`
 
 需要复用时进入有明确职责的 package，而不是让插件直接依赖另一个官方插件。
+
+菜单与页面上的 Iconify 图标名会在 App 构建时打进本地产物，内网不会请求 Iconify API。开发时粘贴预览过的动态菜单图标写入 `iconify-offline.used.json`，须提交到 Git。详见 [图标](./icons.md)。
