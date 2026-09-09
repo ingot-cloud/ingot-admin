@@ -1,6 +1,8 @@
 import type { Component } from "vue";
 import {
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
+  InAdminHeaderUtilityItemType,
+  InAdminHeaderUserMenuItemType,
   InAdminHeaderNavGroupTrigger,
   type InAdminHeaderBuiltinUserMenuName,
   type InAdminHeaderBuiltinUtilityName,
@@ -49,7 +51,7 @@ export interface ResolvedHeaderNavItem {
   /** 入口稳定唯一键 */
   key: string;
   /** Action 为直出点击，Group 为分组面板 */
-  type: typeof InAdminHeaderItemType.Action | typeof InAdminHeaderItemType.Group;
+  type: typeof InAdminHeaderNavItemType.Action | typeof InAdminHeaderNavItemType.Group;
   /** 展示文案 */
   label: string;
   /** Iconify 图标名 */
@@ -68,9 +70,9 @@ export interface ResolvedHeaderUtilityItem {
   key: string;
   /** Builtin / Action / Component */
   type:
-    | typeof InAdminHeaderItemType.Builtin
-    | typeof InAdminHeaderItemType.Action
-    | typeof InAdminHeaderItemType.Component;
+    | typeof InAdminHeaderUtilityItemType.Builtin
+    | typeof InAdminHeaderUtilityItemType.Action
+    | typeof InAdminHeaderUtilityItemType.Component;
   /** 内置小部件名称；仅 Builtin 有值 */
   name?: InAdminHeaderBuiltinUtilityName;
   /** 展示文案 */
@@ -93,9 +95,9 @@ export interface ResolvedHeaderUserMenuItem {
   key: string;
   /** Builtin / Action / Divider */
   type:
-    | typeof InAdminHeaderItemType.Builtin
-    | typeof InAdminHeaderItemType.Action
-    | typeof InAdminHeaderItemType.Divider;
+    | typeof InAdminHeaderUserMenuItemType.Builtin
+    | typeof InAdminHeaderUserMenuItemType.Action
+    | typeof InAdminHeaderUserMenuItemType.Divider;
   /** 内置菜单名称；仅 Builtin 有值 */
   name?: InAdminHeaderBuiltinUserMenuName;
   /** 展示文案；分割线为空字符串 */
@@ -186,7 +188,7 @@ const resolveNavItem = (
   if (!isVisible(readHeaderValue(item.visible, true))) {
     return undefined;
   }
-  const isGroup = item.type === InAdminHeaderItemType.Group;
+  const isGroup = item.type === InAdminHeaderNavItemType.Group;
   const groups = isGroup ? item.groups.map(resolveNavGroup) : [];
   if (isGroup) {
     assertUniqueKeys(
@@ -196,7 +198,7 @@ const resolveNavItem = (
   }
   return {
     key: item.key,
-    type: isGroup ? InAdminHeaderItemType.Group : InAdminHeaderItemType.Action,
+    type: isGroup ? InAdminHeaderNavItemType.Group : InAdminHeaderNavItemType.Action,
     label: readHeaderValue(item.label, ""),
     icon: readHeaderValue(item.icon, undefined),
     disabled: readHeaderValue(item.disabled, false),
@@ -212,14 +214,14 @@ const resolveUtility = (
     return undefined;
   }
   const label =
-    item.type === InAdminHeaderItemType.Builtin
+    item.type === InAdminHeaderUtilityItemType.Builtin
       ? readHeaderValue(item.label, builtinUtilityLabel(item.name))
       : readHeaderValue(item.label, "");
   const badge = readHeaderValue(item.badge, undefined);
-  if (item.type === InAdminHeaderItemType.Builtin) {
+  if (item.type === InAdminHeaderUtilityItemType.Builtin) {
     return {
       key: item.key,
-      type: InAdminHeaderItemType.Builtin,
+      type: InAdminHeaderUtilityItemType.Builtin,
       name: item.name,
       label,
       icon: readHeaderValue(item.icon, undefined),
@@ -227,10 +229,10 @@ const resolveUtility = (
       badge,
     };
   }
-  if (item.type === InAdminHeaderItemType.Component) {
+  if (item.type === InAdminHeaderUtilityItemType.Component) {
     return {
       key: item.key,
-      type: InAdminHeaderItemType.Component,
+      type: InAdminHeaderUtilityItemType.Component,
       label,
       icon: readHeaderValue(item.icon, undefined),
       disabled: readHeaderValue(item.disabled, false),
@@ -240,7 +242,7 @@ const resolveUtility = (
   }
   return {
     key: item.key,
-    type: InAdminHeaderItemType.Action,
+    type: InAdminHeaderUtilityItemType.Action,
     label,
     icon: readHeaderValue(item.icon, undefined),
     disabled: readHeaderValue(item.disabled, false),
@@ -255,18 +257,18 @@ const resolveUserMenuItem = (
   if (!isVisible(readHeaderValue(item.visible, true))) {
     return undefined;
   }
-  if (item.type === InAdminHeaderItemType.Divider) {
+  if (item.type === InAdminHeaderUserMenuItemType.Divider) {
     return {
       key: item.key,
-      type: InAdminHeaderItemType.Divider,
+      type: InAdminHeaderUserMenuItemType.Divider,
       label: "",
       disabled: false,
     };
   }
-  if (item.type === InAdminHeaderItemType.Builtin) {
+  if (item.type === InAdminHeaderUserMenuItemType.Builtin) {
     return {
       key: item.key,
-      type: InAdminHeaderItemType.Builtin,
+      type: InAdminHeaderUserMenuItemType.Builtin,
       name: item.name,
       label: readHeaderValue(item.label, builtinUserMenuLabel(item.name)),
       icon: readHeaderValue(item.icon, builtinUserMenuIcon(item.name)),
@@ -275,7 +277,7 @@ const resolveUserMenuItem = (
   }
   return {
     key: item.key,
-    type: InAdminHeaderItemType.Action,
+    type: InAdminHeaderUserMenuItemType.Action,
     label: readHeaderValue(item.label, ""),
     icon: readHeaderValue(item.icon, undefined),
     disabled: readHeaderValue(item.disabled, false),

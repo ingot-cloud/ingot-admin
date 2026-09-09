@@ -9,7 +9,7 @@
       >
         <in-icon v-if="item.icon" :name="item.icon" class="in-app-bar-nav__icon" />
         <span class="in-app-bar-nav__label">{{ item.label }}</span>
-        <in-icon v-if="item.type === InAdminHeaderItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
+        <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
       </span>
       <span data-nav-more class="in-icon-button in-app-bar-nav__more-measure">
         <in-icon name="ep:more" class="in-app-bar__icon" />
@@ -43,19 +43,19 @@
       :class="{
         'is-active': item.key === effectiveActiveKey,
         'is-disabled': item.disabled,
-        'is-open': item.type === InAdminHeaderItemType.Group && openGroupKey === item.key,
+        'is-open': item.type === InAdminHeaderNavItemType.Group && openGroupKey === item.key,
       }"
       :disabled="item.disabled"
       :aria-current="item.key === effectiveActiveKey ? 'page' : undefined"
-      :aria-expanded="item.type === InAdminHeaderItemType.Group ? openGroupKey === item.key : undefined"
-      :aria-haspopup="item.type === InAdminHeaderItemType.Group ? 'dialog' : undefined"
+      :aria-expanded="item.type === InAdminHeaderNavItemType.Group ? openGroupKey === item.key : undefined"
+      :aria-haspopup="item.type === InAdminHeaderNavItemType.Group ? 'dialog' : undefined"
       @click="privateOnEntryClick(item)"
       @mouseenter="privateOnEntryEnter(item)"
       @mouseleave="privateOnEntryLeave(item)"
     >
       <in-icon v-if="item.icon" :name="item.icon" class="in-app-bar-nav__icon" />
       <span class="in-app-bar-nav__label">{{ item.label }}</span>
-      <in-icon v-if="item.type === InAdminHeaderItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
+      <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
     </button>
 
     <el-tooltip
@@ -186,7 +186,7 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from "vue";
 import {
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
 } from "@/plugin/header";
 import type { ResolvedHeaderNavItem, ResolvedHeaderNavMenuItem } from "./resolveHeaderConfig";
@@ -286,7 +286,7 @@ const HOVER_CLOSE_MS = 160;
 let groupCloseTimer = 0;
 
 const privateUsesHover = (item: ResolvedHeaderNavItem): boolean =>
-  item.type === InAdminHeaderItemType.Group &&
+  item.type === InAdminHeaderNavItemType.Group &&
   item.trigger === InAdminHeaderNavGroupTrigger.Hover;
 
 const privateCancelGroupClose = () => {
@@ -305,7 +305,7 @@ const privateScheduleGroupClose = () => {
 };
 
 const privateOpenGroup = (item: ResolvedHeaderNavItem) => {
-  if (item.disabled || item.type !== InAdminHeaderItemType.Group) {
+  if (item.disabled || item.type !== InAdminHeaderNavItemType.Group) {
     return;
   }
   if (props.overflowKeys.includes(item.key)) {
@@ -363,7 +363,7 @@ const privateOnEntryClick = (item: ResolvedHeaderNavItem) => {
   if (item.disabled) {
     return;
   }
-  if (item.type === InAdminHeaderItemType.Group) {
+  if (item.type === InAdminHeaderNavItemType.Group) {
     if (privateUsesHover(item) && !props.overflowKeys.includes(item.key)) {
       if (openGroupKey.value !== item.key) {
         privateOpenGroup(item);

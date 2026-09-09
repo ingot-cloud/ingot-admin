@@ -5,20 +5,20 @@ import {
 } from "./normalizeUserMenuItems";
 import {
   InAdminHeaderBuiltinUserMenuName,
-  InAdminHeaderItemType,
+  InAdminHeaderUserMenuItemType,
 } from "@/plugin/header";
 import type { ResolvedHeaderUserMenuItem } from "../header/resolveHeaderConfig";
 
 const action = (key: string): ResolvedHeaderUserMenuItem => ({
   key,
-  type: InAdminHeaderItemType.Action,
+  type: InAdminHeaderUserMenuItemType.Action,
   label: key,
   disabled: false,
 });
 
 const logout = (): ResolvedHeaderUserMenuItem => ({
   key: InAdminHeaderBuiltinUserMenuName.Logout,
-  type: InAdminHeaderItemType.Builtin,
+  type: InAdminHeaderUserMenuItemType.Builtin,
   name: InAdminHeaderBuiltinUserMenuName.Logout,
   label: "退出登录",
   disabled: false,
@@ -26,7 +26,7 @@ const logout = (): ResolvedHeaderUserMenuItem => ({
 
 const divider = (key: string): ResolvedHeaderUserMenuItem => ({
   key,
-  type: InAdminHeaderItemType.Divider,
+  type: InAdminHeaderUserMenuItemType.Divider,
   label: "",
   disabled: false,
 });

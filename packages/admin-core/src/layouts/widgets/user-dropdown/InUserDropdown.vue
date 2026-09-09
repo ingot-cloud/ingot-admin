@@ -38,7 +38,7 @@
         ></li>
         <template v-for="item in displayMenuItems" :key="item.key">
           <li
-            v-if="item.type === InAdminHeaderItemType.Divider"
+            v-if="item.type === InAdminHeaderUserMenuItemType.Divider"
             class="in-user-dropdown__divider"
             role="separator"
             :data-testid="`user-dropdown-divider-${item.key}`"
@@ -73,7 +73,7 @@ import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
 import FixPwdDialog from "./FixPwdDialog.vue";
 import {
   InAdminHeaderBuiltinUserMenuName,
-  InAdminHeaderItemType,
+  InAdminHeaderUserMenuItemType,
 } from "@/plugin/header";
 import { resolveHeaderConfig, type ResolvedHeaderUserMenuItem } from "../header/resolveHeaderConfig";
 import { normalizeUserMenuItems } from "./normalizeUserMenuItems";
@@ -99,7 +99,7 @@ const menuItems = computed(
 );
 const displayMenuItems = computed(() => normalizeUserMenuItems(menuItems.value));
 const hasMenu = computed(() =>
-  displayMenuItems.value.some((item) => item.type !== InAdminHeaderItemType.Divider),
+  displayMenuItems.value.some((item) => item.type !== InAdminHeaderUserMenuItemType.Divider),
 );
 const userInfo = computed(() => ({
   username: getUsername.value ?? "",
@@ -127,12 +127,12 @@ const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
 
 const privateOnCommand = async (key: string) => {
   const item = menuItems.value.find((entry) => entry.key === key);
-  if (!item || item.disabled || item.type === InAdminHeaderItemType.Divider || pendingKey.value) {
+  if (!item || item.disabled || item.type === InAdminHeaderUserMenuItemType.Divider || pendingKey.value) {
     return;
   }
   pendingKey.value = key;
   try {
-    if (item.type === InAdminHeaderItemType.Builtin) {
+    if (item.type === InAdminHeaderUserMenuItemType.Builtin) {
       await privateRunBuiltin(item.name);
       return;
     }

@@ -4,11 +4,14 @@ import {
   defineHeaderBuiltinUtility,
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
+  InAdminHeaderUtilityItemType,
+  InAdminHeaderUserMenuItemType,
   type InAdminHeaderConfig,
 } from "@ingot/admin-core";
 import { ref } from "vue";
+import BizHeaderHelp from "./components/BizHeaderHelp.vue";
 
 /**
  * 顶栏示例配置，便于对照大类菜单、小部件和用户菜单。
@@ -37,7 +40,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
       { key: "commerce", label: "电商", icon: "ep:goods" },
       {
         key: "platform",
-        type: InAdminHeaderItemType.Group,
+        type: InAdminHeaderNavItemType.Group,
         label: "平台",
         icon: "ep:grid",
         trigger: InAdminHeaderNavGroupTrigger.Hover,
@@ -68,7 +71,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   utilities: [
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Fullscreen),
     {
-      type: InAdminHeaderItemType.Action,
+      type: InAdminHeaderUtilityItemType.Action,
       key: "notify",
       label: "通知",
       icon: "ep:bell",
@@ -78,12 +81,18 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
         Message.success("打开通知（示例）");
       },
     },
+    {
+      type: InAdminHeaderUtilityItemType.Component,
+      key: "help",
+      label: "帮助",
+      component: BizHeaderHelp,
+    },
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Settings),
   ],
   user: {
     menu: [
       {
-        type: InAdminHeaderItemType.Action,
+        type: InAdminHeaderUserMenuItemType.Action,
         key: "profile",
         label: "个人资料",
         icon: "ep:user",

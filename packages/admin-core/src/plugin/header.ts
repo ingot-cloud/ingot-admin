@@ -15,30 +15,53 @@ import type { InNavigationMode } from "../components/types";
 export type InAdminHeaderReactive<T> = T | Ref<T> | ComputedRef<T> | (() => T);
 
 /**
- * 顶栏条目种类，配置 `type` 时使用，不要手写字符串。
- *
- * - `Builtin`：核心已实现的能力，靠 `name` 区分（全屏、设置、退出登录等）
- * - `Action`：APP 提供点击回调的入口或菜单项
- * - `Group`：大类入口，展开分组面板
- * - `Component`：APP 提供的自定义 Vue 组件
- * - `Divider`：用户菜单分割线
+ * 大类区 `navigation.items` 的条目种类。只允许 Action / Group。
+ * 不要把小部件的 Component 写到这里；自定义品牌用 `brand.component`。
  */
-export const InAdminHeaderItemType = {
-  /** 核心已实现能力，必须搭配对应的 `name` */
-  Builtin: "builtin",
-  /** APP 自定义动作，点击走 `onClick` */
+export const InAdminHeaderNavItemType = {
+  /** 直出入口，点击即选中；`type` 可省略，缺省视为 Action */
   Action: "action",
-  /** 大类分组入口，展开 `groups` 面板 */
+  /** 分组入口，展开 `groups` 面板 */
   Group: "group",
-  /** 自定义组件，由 APP 传入 `component` */
+} as const;
+
+/** 大类条目种类取值，使用同名常量而不是手写字符串。 */
+export type InAdminHeaderNavItemType =
+  (typeof InAdminHeaderNavItemType)[keyof typeof InAdminHeaderNavItemType];
+
+/**
+ * 功能小部件 `utilities` 的条目种类。只允许 Builtin / Action / Component。
+ * `Component` 仅用于本区列表项；品牌、搜索、用户入口的整区替换分别写 `brand.component`、`search.component`、`user.component`。
+ */
+export const InAdminHeaderUtilityItemType = {
+  /** 核心已实现能力，必须搭配 `InAdminHeaderBuiltinUtilityName` */
+  Builtin: "builtin",
+  /** 图标按钮，点击走 `onClick` */
+  Action: "action",
+  /** 自定义 Vue 组件，props 见 `InAdminHeaderUtilityComponentProps` */
   Component: "component",
-  /** 用户菜单分割线 */
+} as const;
+
+/** 小部件条目种类取值，使用同名常量而不是手写字符串。 */
+export type InAdminHeaderUtilityItemType =
+  (typeof InAdminHeaderUtilityItemType)[keyof typeof InAdminHeaderUtilityItemType];
+
+/**
+ * 用户下拉 `user.menu` 的条目种类。只允许 Builtin / Action / Divider。
+ * 不要把 Component 写到菜单项；替换头像触发器用 `user.component`。
+ */
+export const InAdminHeaderUserMenuItemType = {
+  /** 核心已实现能力，必须搭配 `InAdminHeaderBuiltinUserMenuName` */
+  Builtin: "builtin",
+  /** APP 自定义菜单项，点击走 `onClick` */
+  Action: "action",
+  /** 分割线；头像区下方、退出登录上方核心会固定画线 */
   Divider: "divider",
 } as const;
 
-/** 顶栏条目种类取值，使用同名常量而不是手写字符串。 */
-export type InAdminHeaderItemType =
-  (typeof InAdminHeaderItemType)[keyof typeof InAdminHeaderItemType];
+/** 用户菜单条目种类取值，使用同名常量而不是手写字符串。 */
+export type InAdminHeaderUserMenuItemType =
+  (typeof InAdminHeaderUserMenuItemType)[keyof typeof InAdminHeaderUserMenuItemType];
 
 /**
  * 大类分组面板的打开方式。
@@ -147,14 +170,14 @@ export interface InAdminHeaderNavGroup {
  */
 export interface InAdminHeaderNavActionItem extends InAdminHeaderItemBase {
   /** 直出入口；省略时与 Action 相同 */
-  type?: typeof InAdminHeaderItemType.Action;
+  type?: typeof InAdminHeaderNavItemType.Action;
 }
 
 /**
  * 大类分组入口：展示 caret，按 `trigger` 打开分组面板。
  */
 export interface InAdminHeaderNavGroupItem extends InAdminHeaderItemBase {
-  type: typeof InAdminHeaderItemType.Group;
+  type: typeof InAdminHeaderNavItemType.Group;
   /** 面板内部分组，至少一组 */
   groups: InAdminHeaderNavGroup[];
   /**
@@ -163,7 +186,7 @@ export interface InAdminHeaderNavGroupItem extends InAdminHeaderItemBase {
   trigger?: InAdminHeaderNavGroupTrigger;
 }
 
-/** 大类区一条入口：直出动作或分组面板。 */
+/** 大类区一条入口：直出动作或分组面板。种类见 `InAdminHeaderNavItemType`。 */
 export type InAdminHeaderNavItem = InAdminHeaderNavActionItem | InAdminHeaderNavGroupItem;
 
 /**
@@ -225,7 +248,7 @@ export interface InAdminHeaderUtilityBadge {
  */
 export interface InAdminHeaderBuiltinUtility
   extends InAdminHeaderItemBase, InAdminHeaderUtilityBadge {
-  type: typeof InAdminHeaderItemType.Builtin;
+  type: typeof InAdminHeaderUtilityItemType.Builtin;
   /** 内置能力名称，见 `InAdminHeaderBuiltinUtilityName` */
   name: InAdminHeaderBuiltinUtilityName;
 }
@@ -235,7 +258,7 @@ export interface InAdminHeaderBuiltinUtility
  */
 export interface InAdminHeaderActionUtility
   extends InAdminHeaderItemBase, InAdminHeaderUtilityBadge {
-  type: typeof InAdminHeaderItemType.Action;
+  type: typeof InAdminHeaderUtilityItemType.Action;
   /** 点击回调；支持 Promise，执行期间避免重复触发 */
   onClick: () => void | Promise<void>;
 }
@@ -245,13 +268,14 @@ export interface InAdminHeaderActionUtility
  */
 export interface InAdminHeaderComponentUtility
   extends InAdminHeaderItemBase, InAdminHeaderUtilityBadge {
-  type: typeof InAdminHeaderItemType.Component;
+  type: typeof InAdminHeaderUtilityItemType.Component;
   /** 自定义小部件组件，props 见 `InAdminHeaderUtilityComponentProps` */
   component: Component;
 }
 
 /**
- * 功能小部件列表项：内置、图标动作或自定义组件。
+ * 功能小部件列表项：内置、图标动作或自定义组件。种类见 `InAdminHeaderUtilityItemType`。
+ * `Component` 只允许出现在本区，不能用于 `navigation.items` 或 `user.menu`。
  * `utilities` 省略用默认（全屏、设置）；显式数组视为完整列表，空数组清空。
  */
 export type InAdminHeaderUtilityItem =
@@ -275,7 +299,7 @@ export interface InAdminHeaderUtilityComponentProps {
  * 建议用 `defineHeaderBuiltinUserMenuItem`。
  */
 export interface InAdminHeaderBuiltinUserMenuItem extends InAdminHeaderItemBase {
-  type: typeof InAdminHeaderItemType.Builtin;
+  type: typeof InAdminHeaderUserMenuItemType.Builtin;
   /** 内置能力名称，见 `InAdminHeaderBuiltinUserMenuName` */
   name: InAdminHeaderBuiltinUserMenuName;
 }
@@ -284,7 +308,7 @@ export interface InAdminHeaderBuiltinUserMenuItem extends InAdminHeaderItemBase 
  * APP 自定义用户菜单项，点击执行 `onClick`。
  */
 export interface InAdminHeaderActionUserMenuItem extends InAdminHeaderItemBase {
-  type: typeof InAdminHeaderItemType.Action;
+  type: typeof InAdminHeaderUserMenuItemType.Action;
   /** 点击回调；支持 Promise，失败时用项目消息能力提示 */
   onClick: () => void | Promise<void>;
 }
@@ -293,7 +317,7 @@ export interface InAdminHeaderActionUserMenuItem extends InAdminHeaderItemBase {
  * 用户菜单分割线。头像区下方、退出登录上方核心会固定画线，配置里相邻分割线会去重。
  */
 export interface InAdminHeaderDividerUserMenuItem {
-  type: typeof InAdminHeaderItemType.Divider;
+  type: typeof InAdminHeaderUserMenuItemType.Divider;
   /** 分割线稳定唯一键 */
   key: string;
   /** 为 `false` 时不渲染该分割线 */
@@ -301,7 +325,8 @@ export interface InAdminHeaderDividerUserMenuItem {
 }
 
 /**
- * 用户下拉菜单项：内置动作、自定义动作或分割线。
+ * 用户下拉菜单项：内置动作、自定义动作或分割线。种类见 `InAdminHeaderUserMenuItemType`。
+ * 不支持 Component；替换头像触发器写 `user.component`。
  * `user.menu` 省略用默认（切换组织、修改密码、退出登录）；显式数组视为完整列表，空数组清空。
  */
 export type InAdminHeaderUserMenuItem =
@@ -332,6 +357,7 @@ export interface InAdminHeaderUserTriggerProps {
 
 /**
  * 用户区配置。不传 `component` 则用默认头像触发器。
+ * `component` 只替换头像入口，不是 `user.menu` 的条目 type。
  */
 export interface InAdminHeaderUserConfig {
   /** 替换默认头像触发器的自定义组件，props 见 `InAdminHeaderUserTriggerProps` */
@@ -378,7 +404,7 @@ export const defineHeaderBuiltinUtility = (
   extra?: Omit<InAdminHeaderBuiltinUtility, "type" | "name" | "key"> & { key?: string },
 ): InAdminHeaderBuiltinUtility => ({
   ...extra,
-  type: InAdminHeaderItemType.Builtin,
+  type: InAdminHeaderUtilityItemType.Builtin,
   key: extra?.key ?? name,
   name,
 });
@@ -394,7 +420,7 @@ export const defineHeaderBuiltinUserMenuItem = (
   extra?: Omit<InAdminHeaderBuiltinUserMenuItem, "type" | "name" | "key"> & { key?: string },
 ): InAdminHeaderBuiltinUserMenuItem => ({
   ...extra,
-  type: InAdminHeaderItemType.Builtin,
+  type: InAdminHeaderUserMenuItemType.Builtin,
   key: extra?.key ?? name,
   name,
 });

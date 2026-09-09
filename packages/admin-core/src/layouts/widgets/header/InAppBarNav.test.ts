@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import {
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
 } from "@/plugin/header";
 import InAppBarNav from "./InAppBarNav.vue";
@@ -10,7 +10,7 @@ import type { ResolvedHeaderNavItem } from "./resolveHeaderConfig";
 const items: ResolvedHeaderNavItem[] = [
   {
     key: "ops",
-    type: InAdminHeaderItemType.Action,
+    type: InAdminHeaderNavItemType.Action,
     label: "运营",
     disabled: false,
     trigger: InAdminHeaderNavGroupTrigger.Click,
@@ -18,7 +18,7 @@ const items: ResolvedHeaderNavItem[] = [
   },
   {
     key: "dev",
-    type: InAdminHeaderItemType.Action,
+    type: InAdminHeaderNavItemType.Action,
     label: "研发",
     disabled: true,
     trigger: InAdminHeaderNavGroupTrigger.Click,
@@ -72,7 +72,7 @@ describe("InAppBarNav", () => {
     const groupItems: ResolvedHeaderNavItem[] = [
       {
         key: "platform",
-        type: InAdminHeaderItemType.Group,
+        type: InAdminHeaderNavItemType.Group,
         label: "平台",
         disabled: false,
         trigger: InAdminHeaderNavGroupTrigger.Hover,
@@ -86,7 +86,7 @@ describe("InAppBarNav", () => {
       },
       {
         key: "ops",
-        type: InAdminHeaderItemType.Group,
+        type: InAdminHeaderNavItemType.Group,
         label: "运营",
         disabled: false,
         trigger: InAdminHeaderNavGroupTrigger.Click,

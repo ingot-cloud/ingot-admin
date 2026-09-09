@@ -1,7 +1,7 @@
 import type { InAppBarUtilityAction } from "@/components/types";
 import {
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderItemType,
+  InAdminHeaderUtilityItemType,
   type InAdminHeaderUtilityItem,
 } from "@/plugin/header";
 import { DEFAULT_HEADER_UTILITIES } from "./defaults";
@@ -34,7 +34,7 @@ export const adaptLegacyUtilities = (
       return true;
     })
     .map((item) => ({
-      type: InAdminHeaderItemType.Action,
+      type: InAdminHeaderUtilityItemType.Action,
       key: item.key,
       label: item.label,
       icon: item.icon,
@@ -43,7 +43,7 @@ export const adaptLegacyUtilities = (
     }));
 
   const builtins = DEFAULT_HEADER_UTILITIES.filter(
-    (item) => item.type === InAdminHeaderItemType.Builtin && showBuiltin(item.key, utilities),
+    (item) => item.type === InAdminHeaderUtilityItemType.Builtin && showBuiltin(item.key, utilities),
   );
 
   return [...extras, ...builtins];

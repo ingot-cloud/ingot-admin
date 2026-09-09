@@ -9,7 +9,7 @@
         >
           <template
             v-if="
-              item.type === InAdminHeaderItemType.Builtin &&
+              item.type === InAdminHeaderUtilityItemType.Builtin &&
               item.name === InAdminHeaderBuiltinUtilityName.Fullscreen
             "
           >
@@ -27,7 +27,7 @@
           </template>
           <template
             v-else-if="
-              item.type === InAdminHeaderItemType.Builtin &&
+              item.type === InAdminHeaderUtilityItemType.Builtin &&
               item.name === InAdminHeaderBuiltinUtilityName.Settings
             "
           >
@@ -43,7 +43,7 @@
               </span>
             </el-tooltip>
           </template>
-          <template v-else-if="item.type === InAdminHeaderItemType.Component && item.component">
+          <template v-else-if="item.type === InAdminHeaderUtilityItemType.Component && item.component">
             <component
               :is="item.component"
               :overflowed="overflowedSet.has(item.key)"
@@ -129,7 +129,7 @@
 import { useMessage } from "@/hooks/web/useMessage";
 import {
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderItemType,
+  InAdminHeaderUtilityItemType,
 } from "@/plugin/header";
 import type { ResolvedHeaderUtilityItem } from "./resolveHeaderConfig";
 import { isVisibleUtilityBadge } from "./isVisibleUtilityBadge";

@@ -5,8 +5,9 @@ import {
   defineHeaderBuiltinUtility,
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
+  InAdminHeaderUserMenuItemType,
 } from "@/plugin/header";
 import { resolveHeaderConfig } from "./resolveHeaderConfig";
 import {
@@ -45,7 +46,7 @@ describe("resolveHeaderConfig", () => {
         menu: [
           defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.Logout),
           {
-            type: InAdminHeaderItemType.Action,
+            type: InAdminHeaderUserMenuItemType.Action,
             key: "profile",
             label: "个人资料",
             onClick: () => undefined,
@@ -88,13 +89,13 @@ describe("resolveHeaderConfig", () => {
         items: [
           {
             key: "platform",
-            type: InAdminHeaderItemType.Group,
+            type: InAdminHeaderNavItemType.Group,
             label: "平台",
             groups: [{ key: "system", title: "系统", items: [{ key: "app", label: "应用" }] }],
           },
           {
             key: "ops",
-            type: InAdminHeaderItemType.Group,
+            type: InAdminHeaderNavItemType.Group,
             label: "运营",
             trigger: InAdminHeaderNavGroupTrigger.Click,
             groups: [{ key: "biz", title: "业务", items: [{ key: "order", label: "订单" }] }],

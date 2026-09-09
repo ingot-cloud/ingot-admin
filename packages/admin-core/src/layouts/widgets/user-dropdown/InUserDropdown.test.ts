@@ -6,7 +6,7 @@ import { useUserInfoStore } from "@/stores/modules/auth";
 import { USER_MENU_LOGOUT_DIVIDER_KEY } from "./normalizeUserMenuItems";
 import {
   InAdminHeaderBuiltinUserMenuName,
-  InAdminHeaderItemType,
+  InAdminHeaderUserMenuItemType,
 } from "@/plugin/header";
 
 const mountDropdown = () =>
@@ -78,21 +78,21 @@ describe("InUserDropdown", () => {
         menu: [
           {
             key: "profile",
-            type: InAdminHeaderItemType.Action,
+            type: InAdminHeaderUserMenuItemType.Action,
             label: "个人资料",
             disabled: false,
           },
-          { key: "mid", type: InAdminHeaderItemType.Divider, label: "", disabled: false },
+          { key: "mid", type: InAdminHeaderUserMenuItemType.Divider, label: "", disabled: false },
           {
             key: InAdminHeaderBuiltinUserMenuName.FixPwd,
-            type: InAdminHeaderItemType.Builtin,
+            type: InAdminHeaderUserMenuItemType.Builtin,
             name: InAdminHeaderBuiltinUserMenuName.FixPwd,
             label: "修改密码",
             disabled: false,
           },
           {
             key: InAdminHeaderBuiltinUserMenuName.Logout,
-            type: InAdminHeaderItemType.Builtin,
+            type: InAdminHeaderUserMenuItemType.Builtin,
             name: InAdminHeaderBuiltinUserMenuName.Logout,
             label: "退出登录",
             disabled: false,

@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./../../packages/admin-core/src/components/user/AccountStatusEditButton.vue')['default']
+    BizHeaderHelp: typeof import('./src/components/BizHeaderHelp.vue')['default']
     ChallengeHost: typeof import('./../../packages/admin-core/src/components/challenge/ChallengeHost.vue')['default']
     CommonStatusButton: typeof import('./../../packages/admin-core/src/components/status/CommonStatusButton.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']

@@ -82,7 +82,9 @@ export type {
   InAdminHeaderUtilityItem,
 } from "./plugin/header";
 export {
-  InAdminHeaderItemType,
+  InAdminHeaderNavItemType,
+  InAdminHeaderUtilityItemType,
+  InAdminHeaderUserMenuItemType,
   InAdminHeaderNavGroupTrigger,
   InAdminHeaderBuiltinUtilityName,
   InAdminHeaderBuiltinUserMenuName,

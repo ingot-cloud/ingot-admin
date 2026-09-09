@@ -1,13 +1,13 @@
 import {
   InAdminHeaderBuiltinUserMenuName,
-  InAdminHeaderItemType,
+  InAdminHeaderUserMenuItemType,
 } from "@/plugin/header";
 import type { ResolvedHeaderUserMenuItem } from "../header/resolveHeaderConfig";
 
 export const USER_MENU_LOGOUT_DIVIDER_KEY = "in-user-logout-divider";
 
 const isLogout = (item: ResolvedHeaderUserMenuItem): boolean =>
-  item.type === InAdminHeaderItemType.Builtin &&
+  item.type === InAdminHeaderUserMenuItemType.Builtin &&
   item.name === InAdminHeaderBuiltinUserMenuName.Logout;
 
 const collapseDividers = (
@@ -16,17 +16,17 @@ const collapseDividers = (
   const result: ResolvedHeaderUserMenuItem[] = [];
   for (const item of items) {
     if (
-      item.type === InAdminHeaderItemType.Divider &&
-      result[result.length - 1]?.type === InAdminHeaderItemType.Divider
+      item.type === InAdminHeaderUserMenuItemType.Divider &&
+      result[result.length - 1]?.type === InAdminHeaderUserMenuItemType.Divider
     ) {
       continue;
     }
     result.push(item);
   }
-  while (result[0]?.type === InAdminHeaderItemType.Divider) {
+  while (result[0]?.type === InAdminHeaderUserMenuItemType.Divider) {
     result.shift();
   }
-  while (result[result.length - 1]?.type === InAdminHeaderItemType.Divider) {
+  while (result[result.length - 1]?.type === InAdminHeaderUserMenuItemType.Divider) {
     result.pop();
   }
   return result;
@@ -40,11 +40,11 @@ export const normalizeUserMenuItems = (
     if (
       isLogout(item) &&
       result.length > 0 &&
-      result[result.length - 1]?.type !== InAdminHeaderItemType.Divider
+      result[result.length - 1]?.type !== InAdminHeaderUserMenuItemType.Divider
     ) {
       result.push({
         key: USER_MENU_LOGOUT_DIVIDER_KEY,
-        type: InAdminHeaderItemType.Divider,
+        type: InAdminHeaderUserMenuItemType.Divider,
         label: "",
         disabled: false,
       });
