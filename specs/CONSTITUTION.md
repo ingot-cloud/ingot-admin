@@ -15,8 +15,8 @@
 
 ### 架构与代码组织
 
-1. **Monorepo 边界**：跨 app / 插件复用逻辑必须放在 `packages/`，禁止在 `apps/` 或官方插件之间复制
-2. **三层目录**：`apps/` 是可运行 composition root；`plugins/` 是不可独立运行的业务源码插件；`packages/` 是无页面公共抽象。依赖只允许 `apps → plugins/packages`、`plugins → packages`
+1. **Monorepo 边界**：跨 app / 插件复用的无页面公共逻辑必须放在 `packages/`，禁止在 `apps/` 或官方插件之间复制。具体视觉主题放在 `themes/`，不要把主题包当作普通共享包塞进 `packages/`
+2. **四类目录**：`apps/` 是可运行 composition root；`plugins/` 是不可独立运行的业务源码插件；`themes/` 是无业务页面的视觉主题包；`packages/` 是无页面公共抽象。依赖只允许 `apps → plugins/themes/packages`、`plugins → packages`、`themes → packages`；官方插件不得互相依赖，主题不得依赖 App、插件或另一具体主题
 3. **页面结构**：页面拆分为 `IndexPage.vue` + `table.ts` + `useOps.ts` + `components/`
 4. **API 层**：函数命名 `XxxAPI`，显式 `Promise<R<T>>`，统一 `import request from "@/net"`
 5. **目录语义**：业务页面在插件 `pages/`（非 `views/`）；官方 admin 不复制业务实现；API 按业务域拆分
@@ -42,7 +42,7 @@
 
 ### 构建与依赖
 
-1. **首次构建**：新 clone 后须先 `pnpm build:packages` 再启动开发服务器
+1. **首次构建**：新 clone 后须先 `pnpm build:packages` 再启动开发服务器；有正式主题时 `build` / `build:admin` 会在 packages 之后构建 themes
 2. **包管理**：统一使用 pnpm，遵循 workspace 协议
 
 ## 符合性检查

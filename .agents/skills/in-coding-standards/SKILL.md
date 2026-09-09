@@ -22,7 +22,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 新代码无 any / as any / == / console.log / 注释死代码
 - [ ] emit 使用 kebab-case 语义名（change、success），带类型签名
 - [ ] 样式优先 UnoCSS 原子类，禁止 scss/less
-- [ ] 跨 app 逻辑优先放 packages/，不复制
+- [ ] 跨 app / 插件公共逻辑优先放 packages/，具体主题放 themes/，不复制
 - [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件多时用 `InFilterPanel`「筛选」浮层
 ```
 
@@ -46,9 +46,10 @@ plugins/{plugin}/src/       # 业务纵向切片
 ├── stores/
 └── plugin.ts
 packages/                   # 无页面公共抽象（http-client / admin-core / admin-common / shared）
+themes/<id>/                # 正式主题包 @ingot/theme-<id>；默认主题仍在 admin-core
 ```
 
-官方插件不得互相依赖；跨插件复用进入 `packages/`。App 全局组件必须 `Biz*`，禁止 `In*` / `El*`。页面示例见 `plugins/platform/src/pages/config/dict/`。
+官方插件不得互相依赖；跨插件复用进入 `packages/`。具体主题进入 `themes/`，不要放进 `packages/`。App 全局组件必须 `Biz*`，禁止 `In*` / `El*`。页面示例见 `plugins/platform/src/pages/config/dict/`。
 
 ## 必须遵循
 
@@ -64,12 +65,12 @@ packages/                   # 无页面公共抽象（http-client / admin-core /
 
 参考 `plugins/platform/src/pages/config/dict/`：
 
-| 文件            | 职责                            |
-| --------------- | ------------------------------- |
-| `IndexPage.vue` | 路由入口，编排表格/筛选/抽屉    |
-| `table.ts`      | 表头 `TableHeaderRecord[]` 配置 |
+| 文件            | 职责                              |
+| --------------- | --------------------------------- |
+| `IndexPage.vue` | 路由入口，编排表格/筛选/抽屉      |
+| `table.ts`      | 表头 `TableHeaderRecord[]` 配置   |
 | `useOps.ts`     | 筛选 + `useServerPaging` 分页逻辑 |
-| `components/`   | 页面私有子组件                  |
+| `components/`   | 页面私有子组件                    |
 
 ### 多页面模块目录
 
@@ -153,7 +154,8 @@ pages/platform/base/app/
 | `console.log` / `console.debug`          | 移除或用 `@/utils/message`                                       |
 | `eslint-disable` 掩盖未用参数            | 修正函数签名或移除参数                                           |
 | `throw "字符串"`                         | `throw new Error("...")`                                         |
-| 跨 app 复制 net/utils/组件               | 抽取到 `packages/shared` 或 `packages/admin-core`                 |
+| 跨 app 复制 net/utils/组件               | 抽取到 `packages/shared` 或 `packages/admin-core`                |
+| 新增正式主题放进 `packages/`             | 放到 `themes/<id>/`，包名 `@ingot/theme-<id>`                    |
 | 新增无域前缀的同名 store                 | 带域前缀命名                                                     |
 
 ## 修改已有代码时

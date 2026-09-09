@@ -8,7 +8,7 @@
 - 附加 CSS 使用 `html[data-in-theme="example-horizon"]` 作用域
 - 独立打包后被消费端引入，而不扫描主题源码生成 UnoCSS
 
-不要把本示例加入 `pnpm-workspace.yaml`。正式主题可以是 `packages/` 中的公共包或外部 npm 包。
+不要把本示例加入 `pnpm-workspace.yaml`。仓库内正式主题位于 [`themes/<id>/`](../../themes/README.md)，也可消费外部 npm 主题包。
 
 ## 在 admin 中试用
 

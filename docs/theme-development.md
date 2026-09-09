@@ -2,13 +2,15 @@
 
 管理台主题是无业务页面的视觉与壳层扩展，不是 `InAdminPlugin`。它不注册菜单、路由、权限或服务。每个 App 在启动时选择一套主题，不提供运行时切换主题 ID 的接口。使用者仍可切换浅色 / 深色。
 
+仓库内正式主题位于 `themes/<id>/`，包名为 `@ingot/theme-<id>`。默认主题与协议仍在 `@ingot/admin-core`，不会迁出。外部 npm 主题仍可按同一协议消费。[examples/admin-theme](../examples/admin-theme/README.md) 是不加入 workspace 的独立示例。目录约定见 [themes/README.md](../themes/README.md)。
+
 ## 接入
 
 ```ts
 import { bootstrapAdminApp, defaultAdminTheme } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
-import { projectTheme } from "@company/admin-theme";
-import "@company/admin-theme/style.css";
+import { projectTheme } from "@ingot/theme-project";
+import "@ingot/theme-project/style.css";
 import "uno.css";
 
 await bootstrapAdminApp({
@@ -16,6 +18,8 @@ await bootstrapAdminApp({
   theme: projectTheme,
 });
 ```
+
+App 须在 `package.json` 显式声明主题 workspace 依赖（如 `"@ingot/theme-project": "workspace:*"`）。创建主题目录不会自动修改 App 依赖或启用配置；未 import 的主题不进入 App 模块图。外部包把 `@ingot/theme-project` 换成对应 npm 名即可。
 
 - `apps/admin` 与 create-app 生成应用显式传入 `defaultAdminTheme`
 - 未配置 `theme` 的应用回退到同一套默认主题
@@ -28,14 +32,14 @@ await bootstrapAdminApp({
 
 使用 `defineAdminTheme` 声明主题：
 
-| 字段         | 约定                                                             |
-| ------------ | ---------------------------------------------------------------- |
-| `id`         | 必填，小写 kebab-case，写入 `html[data-in-theme]`                |
-| `apiVersion` | 必填，首版为 `1`                                                 |
-| `name`       | 必填，展示名，不据此生成选择 UI                                  |
-| `tokens`     | 可选，`light` / `dark` 两组对 `InThemeTokens` 的部分覆盖         |
-| `shell`      | 可选，布局编排组件；缺省使用默认 Shell                           |
-| `parts`      | 可选，`header` / `navigation` / `breadcrumb` / `footer` |
+| 字段         | 约定                                                     |
+| ------------ | -------------------------------------------------------- |
+| `id`         | 必填，小写 kebab-case，写入 `html[data-in-theme]`        |
+| `apiVersion` | 必填，首版为 `1`                                         |
+| `name`       | 必填，展示名，不据此生成选择 UI                          |
+| `tokens`     | 可选，`light` / `dark` 两组对 `InThemeTokens` 的部分覆盖 |
+| `shell`      | 可选，布局编排组件；缺省使用默认 Shell                   |
+| `parts`      | 可选，`header` / `navigation` / `breadcrumb` / `footer`  |
 
 浅色覆盖不会复制到深色。某一模式省略时沿用该模式的默认值。未知 Token 键会被拒绝。主题私有变量写在附加 CSS 里，使用自己的前缀，不要占用 `--in-*`。
 
@@ -97,4 +101,4 @@ import { InAdminThemeLayout } from "@ingot/admin-core";
 - 消费端不扫描主题源码生成 UnoCSS
 - 禁止依赖 `@/`、`@ingot/admin-core/src` 或其它内部路径
 
-完整示例见 [examples/admin-theme](../examples/admin-theme/README.md)。
+仓库内正式主题最小结构、脚本与导出见 [themes/README.md](../themes/README.md)。独立示例见 [examples/admin-theme](../examples/admin-theme/README.md)。

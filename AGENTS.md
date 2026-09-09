@@ -32,6 +32,8 @@ type / scope / 何时拆分提交等具体要求只维护在该 skill，不要�
 
 - `apps/`：可运行、可部署的应用，是 composition root
 - `plugins/`：不可独立运行的业务源码插件
+- `themes/`：无业务页面的视觉主题包；仓库内正式主题位于 `themes/<id>/`
 - `packages/`：无页面的公共抽象
-- 依赖只允许 `apps → plugins/packages`、`plugins → packages`；官方插件不得互相依赖
+- 依赖只允许 `apps → plugins/themes/packages`、`plugins → packages`、`themes → packages`；官方插件不得互相依赖；主题不得依赖 App、插件或另一具体主题
+- 跨 app / 插件公共逻辑进入 `packages/`；具体主题不要放进 `packages/`
 - 普通后台直接使用 `apps/admin`，不要把业务页面写回 admin 宿主

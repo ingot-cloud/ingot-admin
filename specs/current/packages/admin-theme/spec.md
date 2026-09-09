@@ -4,7 +4,7 @@
 
 ## 概述
 
-每个管理台 App 在 `bootstrapAdminApp` 中选择一套 `InAdminTheme`。未配置时回退到 `defaultAdminTheme`。主题覆盖 `--in-*` Token，并可替换主布局 Shell 与顶栏、导航、面包屑、页脚展示部件。默认顶栏的五区内容由 APP `header` 配置，见 [顶栏 APP 配置](../app-header/spec.md)。内容区路由出口、KeepAlive、滚动恢复、菜单权限和设置开关仍由核心负责。使用者可切换浅色 / 深色，但不能在运行时更换主题 ID。
+每个管理台 App 在 `bootstrapAdminApp` 中选择一套 `InAdminTheme`。未配置时回退到 `defaultAdminTheme`。仓库内新增正式主题位于 `themes/<id>/`，包名为 `@ingot/theme-<id>`；默认主题、Token 合并与布局宿主仍在 `@ingot/admin-core`。主题覆盖 `--in-*` Token，并可替换主布局 Shell 与顶栏、导航、面包屑、页脚展示部件。默认顶栏的五区内容由 APP `header` 配置，见 [顶栏 APP 配置](../app-header/spec.md)。内容区路由出口、KeepAlive、滚动恢复、菜单权限和设置开关仍由核心负责。使用者可切换浅色 / 深色，但不能在运行时更换主题 ID。
 
 ## 范围
 
@@ -16,6 +16,7 @@
 - App `shellSlots`（header-start / header-end / sidebar-top / sidebar-bottom）
 - `useAdminShell().header` 供自定义 `parts.header` 读取 APP 顶栏配置
 - admin 与 create-app 显式选择默认主题
+- `themes/<id>/` 仓库内正式主题目录与 `@ingot/theme-<id>` 包名
 - `examples/admin-theme` 独立主题包示例
 
 ### Out of Scope
@@ -30,9 +31,9 @@
 ### 场景 1：安装并启用主题
 
 - **角色**：项目开发者
-- **前置条件**：已有符合协议的主题包
-- **步骤**：在 admin 启动配置传入 `theme`，引入主题 CSS，重新构建部署
-- **预期结果**：全后台使用该主题外观与壳层编排；业务插件和后端菜单不改
+- **前置条件**：已有符合协议的主题包（仓库内 `themes/<id>/` 的 `@ingot/theme-<id>`，或外部 npm 包）
+- **步骤**：在 App `package.json` 声明依赖，引入主题与 CSS，在启动配置传入 `theme`，重新构建部署
+- **预期结果**：全后台使用该主题外观与壳层编排；业务插件和后端菜单不改；未选择的主题不进入模块图
 
 ### 场景 2：使用默认主题
 
@@ -56,7 +57,7 @@
 
 **验收标准：**
 
-- [x] 支持 workspace 包与 npm 包；无业务插件注册、无后端接口
+- [x] 支持 workspace 包与 npm 包；仓库内正式主题使用 `themes/<id>/`；无业务插件注册、无后端接口
 - [x] admin 与 create-app 生成应用显式传入 `defaultAdminTheme`
 - [x] 未配置 `theme` 时回退到默认主题
 - [x] 协议版本不兼容时，挂载前抛出包含主题标识的中文错误
@@ -87,6 +88,7 @@
 ## 非功能需求
 
 - 主题包将 Vue 与 `@ingot/admin-core` 作为 peerDependencies
+- 仓库内正式主题位于 `themes/<id>/`，包名 `@ingot/theme-<id>`；默认主题不迁出 admin-core
 - 消费端不扫描主题源码生成 UnoCSS
 - 禁止依赖 `@/` 或 `@ingot/admin-core/src` 内部路径
 
@@ -95,6 +97,7 @@
 - 默认视觉值仍以 [UI 基础设施](../admin-ui-foundation/spec.md) 为基线
 - 页面注册、布局扫描与重复键报错见 [App 插件化与共享包](../app-plugins-shared-scaffold/spec.md)
 - 主题开发指南见 [docs/theme-development.md](../../../../docs/theme-development.md)
+- 主题目录与包约定见 [themes/README.md](../../../../themes/README.md)
 
 ## 验收标准
 

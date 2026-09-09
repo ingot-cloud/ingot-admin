@@ -30,6 +30,8 @@ pnpm install
 pnpm build:packages
 ```
 
+有正式主题包时，`pnpm build:admin` 会在 packages 之后构建 `themes/`；目录为空则跳过。
+
 应用依赖 packages 的 `dist` 类型声明。未构建时会出现：
 
 ```
