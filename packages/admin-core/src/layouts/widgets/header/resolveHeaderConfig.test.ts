@@ -22,6 +22,8 @@ describe("resolveHeaderConfig", () => {
     expect(resolved.brand.visible).toBe(true);
     expect(resolved.navigation.items).toEqual([]);
     expect(resolved.search.placeholder).toBe(DEFAULT_HEADER_SEARCH_PLACEHOLDER);
+    expect(resolved.search.shortcuts).toEqual([]);
+    expect(resolved.search.emptyHint).toBe("输入关键词搜索功能导航");
     expect(resolved.utilities.map((item) => item.key)).toEqual(
       DEFAULT_HEADER_UTILITIES.map((item) => item.key),
     );
@@ -118,5 +120,19 @@ describe("resolveHeaderConfig", () => {
         },
       }),
     ).toThrow("顶栏导航入口存在重复的 key: ops");
+  });
+
+  it("解析搜索常用并去掉隐藏项", () => {
+    const resolved = resolveHeaderConfig({
+      search: {
+        shortcuts: [
+          { key: "dept", label: "部门", path: "/org/dept", icon: "ep:office-building" },
+          { key: "hidden", label: "隐藏", path: "/hidden", visible: false },
+        ],
+      },
+    });
+    expect(resolved.search.shortcuts).toEqual([
+      { key: "dept", label: "部门", path: "/org/dept", icon: "ep:office-building", description: undefined },
+    ]);
   });
 });

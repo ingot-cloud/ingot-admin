@@ -73,6 +73,7 @@ export type {
   InAdminHeaderReactive,
   InAdminHeaderSearchConfig,
   InAdminHeaderSearchProps,
+  InAdminHeaderSearchShortcut,
   InAdminHeaderUserConfig,
   InAdminHeaderUserInfo,
   InAdminHeaderUserMenuItem,
@@ -98,6 +99,7 @@ export type {
   ResolvedHeaderNavGroup,
   ResolvedHeaderNavItem,
   ResolvedHeaderNavMenuItem,
+  ResolvedHeaderSearchShortcut,
   ResolvedHeaderUserMenuItem,
   ResolvedHeaderUtilityItem,
 } from "./layouts/widgets/header/resolveHeaderConfig";
@@ -141,5 +143,6 @@ export * from "./net/status-code";
 export * from "./layouts";
 export * from "./stores/modules/app";
 export * from "./stores/modules/auth";
+export * from "./stores/modules/headerSearch";
 export * from "./stores/modules/router";
 export * from "./theme";

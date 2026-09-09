@@ -105,7 +105,7 @@
   --in-app-bar-icon-size: 20px;
   --in-app-bar-nav-max: 560px;
   --in-app-bar-actions-max: 360px;
-  --in-app-bar-search-width: 240px;
+  --in-app-bar-search-width: 400px;
   --in-app-bar-bg: var(--in-bg-color-surface);
   --in-app-bar-text: var(--in-text-color);
   --in-app-bar-border: transparent;

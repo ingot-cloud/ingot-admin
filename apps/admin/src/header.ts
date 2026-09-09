@@ -66,6 +66,22 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   },
   search: {
     placeholder: "搜索功能导航",
+    shortcuts: [
+      {
+        key: "dept",
+        label: "部门",
+        path: "/org/dept",
+        icon: "ep:office-building",
+        description: "组织架构",
+      },
+      {
+        key: "member",
+        label: "成员",
+        path: "/org/members",
+        icon: "ep:user",
+        description: "组织架构",
+      },
+    ],
   },
   utilities: [
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Fullscreen),

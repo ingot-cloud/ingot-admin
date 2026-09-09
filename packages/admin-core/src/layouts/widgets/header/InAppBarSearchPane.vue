@@ -26,8 +26,12 @@
         >
           <component
             :is="searchComponent ?? defaultSearch"
+            ref="searchInstanceRef"
             :placeholder="placeholder"
             :compact="compact"
+            :shortcuts="shortcuts"
+            :empty-hint="emptyHint"
+            @close="privateOnSearchClose"
           />
         </div>
       </Teleport>
@@ -47,6 +51,8 @@
 </template>
 <script setup lang="ts">
 import type { Component } from "vue";
+import type { ResolvedHeaderSearchShortcut } from "./resolveHeaderConfig";
+import { DEFAULT_HEADER_SEARCH_EMPTY_HINT } from "../search/constants";
 import InAppBarSearch from "../search/InAppBarSearch.vue";
 import { useAppBarOverlay } from "./useAppBarOverlay";
 
@@ -54,30 +60,51 @@ defineOptions({
   name: "InAppBarSearchPane",
 });
 
-const props = defineProps<{
-  enabled: boolean;
-  compact: boolean;
-  placeholder: string;
-  searchComponent?: Component;
-}>();
+const props = withDefaults(
+  defineProps<{
+    enabled: boolean;
+    compact: boolean;
+    placeholder: string;
+    emptyHint?: string;
+    shortcuts?: ResolvedHeaderSearchShortcut[];
+    searchComponent?: Component;
+  }>(),
+  {
+    emptyHint: DEFAULT_HEADER_SEARCH_EMPTY_HINT,
+    shortcuts: () => [],
+  },
+);
 
 const emit = defineEmits<{
   "open-panel": [id: string];
   "close-panel": [];
 }>();
 
+type SearchInstance = {
+  focusInput?: () => void;
+};
+
 const defaultSearch = InAppBarSearch;
 const triggerRef = ref<HTMLElement>();
 const overlayRef = ref<HTMLElement>();
+const searchInstanceRef = ref<SearchInstance | null>(null);
 const open = ref(false);
 const { panelStyle, privateToggle: toggleOverlay, privateClose } = useAppBarOverlay({
   open,
   triggerRef,
   panelRef: overlayRef,
-  maxWidth: 320,
+  maxWidth: 424,
 });
 
 const overlayTarget = computed(() => overlayRef.value ?? "body");
+
+const privateOnSearchClose = () => {
+  if (!open.value) {
+    return;
+  }
+  emit("close-panel");
+  privateClose();
+};
 
 const privateToggle = () => {
   if (open.value) {
@@ -87,6 +114,9 @@ const privateToggle = () => {
   }
   emit("open-panel", "search");
   toggleOverlay();
+  nextTick(() => {
+    searchInstanceRef.value?.focusInput?.();
+  });
 };
 
 const privateOnKeydown = (event: KeyboardEvent) => {
@@ -136,8 +166,9 @@ defineExpose({ close, triggerRef });
   position: fixed;
   z-index: var(--in-z-dropdown);
   box-sizing: border-box;
-  min-width: 240px;
+  min-width: var(--in-app-bar-search-width);
   padding: var(--in-space-3);
+  overflow: auto;
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-control);
   background: var(--in-bg-color-surface);

@@ -228,11 +228,37 @@ export interface InAdminHeaderSearchProps {
 }
 
 /**
+ * 空关键词时展示的常用入口。点击后 `router.push(path)`。
+ * `key` 在 `search.shortcuts` 内必须唯一。
+ */
+export interface InAdminHeaderSearchShortcut {
+  /** 稳定唯一键 */
+  key: string;
+  /** 主标题 */
+  label: InAdminHeaderReactive<string>;
+  /** 跳转路径 */
+  path: InAdminHeaderReactive<string>;
+  /** Iconify 图标名 */
+  icon?: InAdminHeaderReactive<string | undefined>;
+  /** 次级说明，一般为祖先路径 */
+  description?: InAdminHeaderReactive<string | undefined>;
+  /** 为 `false` 时不渲染 */
+  visible?: InAdminHeaderReactive<boolean>;
+}
+
+/**
  * 搜索区配置。显隐仍只由 `settings.showSearch` 与设置 store 决定，本对象管内容和占位。
  */
 export interface InAdminHeaderSearchConfig {
   /** 默认搜索框占位文案 */
   placeholder?: InAdminHeaderReactive<string>;
+  /**
+   * 空关键词时的常用入口。省略或空数组展示空态占位，不留大块空白。
+   * 自定义 `component` 整区替换后不会自动带上这些项。
+   */
+  shortcuts?: InAdminHeaderReactive<InAdminHeaderSearchShortcut[]>;
+  /** 无常用时的空态文案 */
+  emptyHint?: InAdminHeaderReactive<string>;
   /** 替换默认搜索框的自定义组件，props 见 `InAdminHeaderSearchProps` */
   component?: Component;
 }

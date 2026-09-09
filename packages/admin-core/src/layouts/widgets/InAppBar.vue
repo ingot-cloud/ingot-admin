@@ -45,6 +45,8 @@
       :enabled="showSearch"
       :compact="overflow.searchCompact"
       :placeholder="header.search.placeholder"
+      :empty-hint="header.search.emptyHint"
+      :shortcuts="header.search.shortcuts"
       :search-component="header.search.component"
       @open-panel="privateOpenPanel"
       @close-panel="privateOnPanelClose"
@@ -211,7 +213,7 @@ const privateMeasure = () => {
   }
   const searchFullWidth = readPx(
     getComputedStyle(host).getPropertyValue("--in-app-bar-search-width"),
-    240,
+    400,
   );
   const next = allocateHeaderOverflow({
     availableWidth,

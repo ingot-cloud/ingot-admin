@@ -85,7 +85,7 @@ const REQUIRED_VALUES: Record<string, string> = {
   "--in-app-bar-height": "56px",
   "--in-app-bar-nav-max": "560px",
   "--in-app-bar-actions-max": "360px",
-  "--in-app-bar-search-width": "240px",
+  "--in-app-bar-search-width": "400px",
   "--in-sidebar-gutter": "8px",
   "--in-sidebar-panel-expanded": "236px",
   "--in-sidebar-panel-collapsed": "52px",

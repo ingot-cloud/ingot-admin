@@ -33,7 +33,7 @@
 | `--in-bg-color-control-hover` | `rgba(31, 35, 41, 0.08)` |
 | `--in-border-color` | `#dee0e3` |
 | `--in-app-bar-height` | `56px` |
-| `--in-app-bar-nav-max` / `--in-app-bar-actions-max` / `--in-app-bar-search-width` | `560px` / `360px` / `240px` |
+| `--in-app-bar-nav-max` / `--in-app-bar-actions-max` / `--in-app-bar-search-width` | `560px` / `360px` / `400px` |
 | `--in-sidebar-gutter` | `8px` |
 | `--in-sidebar-panel-expanded` / `--in-sidebar-panel-collapsed` | `236px` / `52px` |
 | `--in-menu-item-height` / `--in-menu-icon-size` / `--in-menu-icon-gap` | `40px` / `20px` / `8px` |

@@ -10,6 +10,7 @@ import {
   type InAdminHeaderNavGroup,
   type InAdminHeaderNavItem,
   type InAdminHeaderNavSelectPayload,
+  type InAdminHeaderSearchShortcut,
   type InAdminHeaderUserMenuItem,
   type InAdminHeaderUtilityItem,
 } from "@/plugin/header";
@@ -22,7 +23,22 @@ import {
   DEFAULT_HEADER_USER_MENU,
   DEFAULT_HEADER_UTILITIES,
 } from "./defaults";
+import { DEFAULT_HEADER_SEARCH_EMPTY_HINT } from "../search/constants";
 import { readHeaderValue } from "./readHeaderValue";
+
+/** `resolveHeaderConfig` 解析后的搜索常用入口。 */
+export interface ResolvedHeaderSearchShortcut {
+  /** 稳定唯一键 */
+  key: string;
+  /** 主标题 */
+  label: string;
+  /** 跳转路径 */
+  path: string;
+  /** Iconify 图标名 */
+  icon?: string;
+  /** 次级说明 */
+  description?: string;
+}
 
 /** `resolveHeaderConfig` 解析后的分组内菜单项，字段已是当前静态值。 */
 export interface ResolvedHeaderNavMenuItem {
@@ -137,6 +153,10 @@ export interface ResolvedHeaderConfig {
     placeholder: string;
     /** 自定义搜索组件 */
     component?: Component;
+    /** 空关键词时的常用入口 */
+    shortcuts: ResolvedHeaderSearchShortcut[];
+    /** 无常用时的空态文案 */
+    emptyHint: string;
   };
   /** 可见小部件，顺序与配置一致 */
   utilities: ResolvedHeaderUtilityItem[];
@@ -251,6 +271,26 @@ const resolveUtility = (
   };
 };
 
+const resolveSearchShortcut = (
+  item: InAdminHeaderSearchShortcut,
+): ResolvedHeaderSearchShortcut | undefined => {
+  if (!isVisible(readHeaderValue(item.visible, true))) {
+    return undefined;
+  }
+  const label = readHeaderValue(item.label, "").trim();
+  const path = readHeaderValue(item.path, "").trim();
+  if (!label || !path) {
+    return undefined;
+  }
+  return {
+    key: item.key,
+    label,
+    path,
+    icon: readHeaderValue(item.icon, undefined),
+    description: readHeaderValue(item.description, undefined),
+  };
+};
+
 const resolveUserMenuItem = (
   item: InAdminHeaderUserMenuItem,
 ): ResolvedHeaderUserMenuItem | undefined => {
@@ -317,6 +357,11 @@ export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeade
     userMenuSource.map((item) => item.key),
     "顶栏用户菜单",
   );
+  const shortcutSource = readHeaderValue(config?.search?.shortcuts, []);
+  assertUniqueKeys(
+    shortcutSource.map((item) => item.key),
+    "顶栏搜索常用",
+  );
 
   return {
     brand: {
@@ -336,6 +381,10 @@ export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeade
         DEFAULT_HEADER_SEARCH_PLACEHOLDER,
       ),
       component: config?.search?.component,
+      shortcuts: shortcutSource
+        .map(resolveSearchShortcut)
+        .filter((item): item is ResolvedHeaderSearchShortcut => Boolean(item)),
+      emptyHint: readHeaderValue(config?.search?.emptyHint, DEFAULT_HEADER_SEARCH_EMPTY_HINT),
     },
     utilities: utilitiesSource
       .map(resolveUtility)

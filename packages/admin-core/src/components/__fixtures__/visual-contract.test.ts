@@ -214,7 +214,7 @@ describe("admin UI visual fixtures", () => {
     expect(tokens).toContain("--in-app-bar-height: 56px");
     expect(tokens).toContain("--in-app-bar-nav-max: 560px");
     expect(tokens).toContain("--in-app-bar-actions-max: 360px");
-    expect(tokens).toContain("--in-app-bar-search-width: 240px");
+    expect(tokens).toContain("--in-app-bar-search-width: 400px");
     expect(tokens).toContain("--in-sidebar-panel-expanded: 236px");
     expect(tokens).toContain("--in-sidebar-panel-collapsed: 52px");
     expect(tokens).toContain("--in-sidebar-gutter: 8px");
