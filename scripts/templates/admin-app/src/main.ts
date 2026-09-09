@@ -2,6 +2,7 @@ import { bootstrapAdminApp, defaultAdminTheme, parseBoolean } from "@ingot/admin
 import type { InComponentSize } from "@ingot/admin-core";
 import "@ingot/admin-core/style.css";
 import "uno.css";
+import { createAppHeader } from "./header";
 import { createAppPlugins } from "./plugins";
 
 const env = import.meta.env;
@@ -12,6 +13,7 @@ await bootstrapAdminApp({
   appCode,
   plugins: createAppPlugins(appCode),
   theme: defaultAdminTheme,
+  header: createAppHeader(),
   branding: {
     title: env.VITE_APP_TITLE,
     copyright: env.VITE_APP_COPYRIGHT,

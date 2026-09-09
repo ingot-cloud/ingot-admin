@@ -1,5 +1,5 @@
 <template>
-  <div class="ex-horizon-header">
+  <div class="ex-horizon-header" :data-header-configured="header ? '1' : '0'">
     <div class="ex-horizon-header__brand">
       <span class="ex-horizon-header__name">{{ branding.title }}</span>
       <span class="ex-horizon-header__theme">{{ themeName }}</span>
@@ -20,7 +20,7 @@ defineOptions({
   name: "HorizonHeader",
 });
 
-const { branding, shellSlots } = useAdminShell();
+const { branding, shellSlots, header } = useAdminShell();
 const { themeName } = useAdminTheme();
 const headerStart = computed(() => shellSlots.value["header-start"]);
 const headerEnd = computed(() => shellSlots.value["header-end"]);

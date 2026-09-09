@@ -82,6 +82,7 @@ export const IN_THEME_TOKEN_NAMES = [
   "--in-focus-ring-color",
   "--in-overlay-mask",
   "--in-app-bar-height",
+  "--in-app-bar-padding-inline",
   "--in-app-bar-padding",
   "--in-app-bar-icon-size",
   "--in-app-bar-nav-max",

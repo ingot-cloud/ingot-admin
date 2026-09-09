@@ -119,6 +119,15 @@ describe("admin UI visual fixtures", () => {
     expect(dropdownCss).toContain("color: var(--in-text-color)");
     expect(dropdownCss).toContain(".el-popper__arrow");
     expect(dropdownCss).toContain("display: none");
+    expect(dropdownCss).toContain(".el-dropdown__popper .el-dropdown-menu__item--divided");
+    expect(dropdownCss).toContain(".in-user-dropdown__divider");
+    const userDropdown = readFileSync(
+      resolve(root, "../../layouts/widgets/user-dropdown/InUserDropdown.vue"),
+      "utf8",
+    );
+    expect(userDropdown).toContain("in-user-dropdown__divider");
+    expect(userDropdown).toContain("user-dropdown-header-divider");
+    expect(userDropdown).not.toContain("divided disabled");
     const confirmCss = readFileSync(resolve(root, "../../styles/confirm-dialog.css"), "utf8");
     expect(confirmCss).toContain(".in-confirm-dialog");
     expect(confirmCss).toContain(".in-confirm-dialog-overlay .el-overlay-message-box");
@@ -290,18 +299,44 @@ describe("admin UI visual fixtures", () => {
     expect(toggle).toContain("关闭导航");
   });
 
-  it("顶栏按品牌/导航/搜索/操作四区划分，搜索靠右", () => {
+  it("顶栏按品牌/导航/搜索/小部件/用户五区划分", () => {
     const bar = readFileSync(resolve(root, "../../layouts/widgets/InAppBar.vue"), "utf8");
     const search = readFileSync(resolve(root, "../../layouts/widgets/search/InAppBarSearch.vue"), "utf8");
     const logo = readFileSync(resolve(root, "../../layouts/widgets/InLogo.vue"), "utf8");
-    expect(bar).toContain("in-app-bar__brand");
-    expect(bar).toContain("in-app-bar__nav");
-    expect(bar).toContain("in-app-bar__search-pane");
-    expect(bar).toContain("in-app-bar__actions");
-    expect(bar).toContain("justify-content: flex-end");
-    expect(bar).toContain("max-width: var(--in-app-bar-nav-max)");
-    expect(bar).toContain("max-width: var(--in-app-bar-actions-max)");
-    expect(bar).toMatch(/\.in-app-bar__actions \{[\s\S]*?flex: none;/);
+    expect(bar).toContain("in-app-bar-brand");
+    expect(bar).toContain("in-app-bar-nav");
+    const nav = readFileSync(resolve(root, "../../layouts/widgets/header/InAppBarNav.vue"), "utf8");
+    expect(nav).toContain("color: var(--in-text-color)");
+    expect(nav).toContain("gap: 6px");
+    expect(nav).toContain("font-size: var(--in-app-bar-icon-size)");
+    expect(nav).toContain("font-weight: var(--in-font-weight-body)");
+    expect(nav).toContain("font-weight: var(--in-font-weight-section-title)");
+    expect(nav).toContain("padding: 7px var(--in-space-3)");
+    expect(nav).toContain("margin: 0 var(--in-space-6) 0 0");
+    expect(nav).toContain("border-radius: var(--in-radius-card)");
+    expect(nav).toContain("line-height: var(--in-line-height-body)");
+    expect(nav).toContain("color-mix(in srgb, var(--in-text-color) 6%, transparent)");
+    expect(nav).toContain("in-app-bar-overlay--nav");
+    expect(nav).toContain("in-app-bar-nav-panel__title");
+    expect(nav).toContain("border-bottom: 1px solid var(--in-border-color)");
+    expect(nav).toContain("in-app-bar-nav__caret");
+    expect(nav).toContain("width: max-content");
+    expect(nav).toContain("overflow-x: hidden");
+    expect(nav).toContain("overflow-y: auto");
+    expect(bar).toContain("in-app-bar-search-pane");
+    expect(bar).toContain("in-app-bar-utilities");
+    expect(bar).toContain("in-app-bar__user");
+    expect(bar).toContain("in-app-bar__divider");
+    const utilities = readFileSync(
+      resolve(root, "../../layouts/widgets/header/InAppBarUtilities.vue"),
+      "utf8",
+    );
+    expect(utilities).toContain("in-app-bar-utilities__icon-wrap");
+    expect(utilities).toContain("min-width: 14px");
+    expect(utilities).toContain("height: 14px");
+    expect(utilities).toContain("transform: translate(40%, -40%)");
+    expect(bar).not.toContain("max-width: var(--in-app-bar-nav-max)");
+    expect(bar).not.toContain("overflow-x: auto");
     expect(search).toContain("var(--in-app-bar-search-width)");
     expect(logo).toContain("resolveAppBarLogo");
     expect(logo).toContain("useAdminTheme");

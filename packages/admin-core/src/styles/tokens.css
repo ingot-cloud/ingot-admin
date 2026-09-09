@@ -100,7 +100,8 @@
 
   /* —— 组件：顶栏 / 侧栏 / 控件 —— */
   --in-app-bar-height: 56px;
-  --in-app-bar-padding: 0 16px;
+  --in-app-bar-padding-inline: 16px;
+  --in-app-bar-padding: 0 var(--in-app-bar-padding-inline);
   --in-app-bar-icon-size: 20px;
   --in-app-bar-nav-max: 560px;
   --in-app-bar-actions-max: 360px;

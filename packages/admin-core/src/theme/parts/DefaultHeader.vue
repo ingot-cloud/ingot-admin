@@ -1,5 +1,5 @@
 <template>
-  <in-app-bar>
+  <in-app-bar :header="header">
     <template v-if="headerStart" #header-start>
       <component :is="headerStart" />
     </template>
@@ -16,7 +16,7 @@ defineOptions({
   name: "DefaultAdminHeader",
 });
 
-const { shellSlots } = useAdminShell();
+const { shellSlots, header } = useAdminShell();
 const headerStart = computed(() => shellSlots.value["header-start"]);
 const headerEnd = computed(() => shellSlots.value["header-end"]);
 </script>

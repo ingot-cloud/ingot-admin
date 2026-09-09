@@ -52,7 +52,53 @@ export type {
   InTableActionConfirm,
   InAppBarUtilityAction,
 } from "./components/types";
+export type {
+  InAdminHeaderActionUserMenuItem,
+  InAdminHeaderActionUtility,
+  InAdminHeaderBrandConfig,
+  InAdminHeaderBrandProps,
+  InAdminHeaderBuiltinUserMenuItem,
+  InAdminHeaderBuiltinUtility,
+  InAdminHeaderComponentUtility,
+  InAdminHeaderConfig,
+  InAdminHeaderDividerUserMenuItem,
+  InAdminHeaderItemBase,
+  InAdminHeaderNavActionItem,
+  InAdminHeaderNavGroup,
+  InAdminHeaderNavGroupItem,
+  InAdminHeaderNavItem,
+  InAdminHeaderNavMenuItem,
+  InAdminHeaderNavSelectPayload,
+  InAdminHeaderNavigationConfig,
+  InAdminHeaderReactive,
+  InAdminHeaderSearchConfig,
+  InAdminHeaderSearchProps,
+  InAdminHeaderUserConfig,
+  InAdminHeaderUserInfo,
+  InAdminHeaderUserMenuItem,
+  InAdminHeaderUserTriggerProps,
+  InAdminHeaderUtilityBadge,
+  InAdminHeaderUtilityComponentProps,
+  InAdminHeaderUtilityItem,
+} from "./plugin/header";
+export {
+  InAdminHeaderItemType,
+  InAdminHeaderNavGroupTrigger,
+  InAdminHeaderBuiltinUtilityName,
+  InAdminHeaderBuiltinUserMenuName,
+  defineHeaderBuiltinUtility,
+  defineHeaderBuiltinUserMenuItem,
+} from "./plugin/header";
 export type { LoadDataParams } from "./components/select/InPageSelect.vue";
+export { resolveHeaderConfig } from "./layouts/widgets/header/resolveHeaderConfig";
+export type {
+  ResolvedHeaderConfig,
+  ResolvedHeaderNavGroup,
+  ResolvedHeaderNavItem,
+  ResolvedHeaderNavMenuItem,
+  ResolvedHeaderUserMenuItem,
+  ResolvedHeaderUtilityItem,
+} from "./layouts/widgets/header/resolveHeaderConfig";
 export { default as InPicker } from "./components/select/InPicker.vue";
 export { default as InFilterPanel } from "./components/table/InFilterPanel.vue";
 export type { InPickerOption } from "./components/select/types";

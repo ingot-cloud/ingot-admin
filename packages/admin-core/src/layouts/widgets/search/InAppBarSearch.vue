@@ -39,16 +39,4 @@ const searchValue = ref("");
     --el-input-text-color: var(--in-text-color);
   }
 }
-
-@media (max-width: 1279px) {
-  .in-app-bar-search {
-    width: 200px;
-  }
-}
-
-@media (max-width: 1023px) {
-  .in-app-bar-search {
-    width: 140px;
-  }
-}
 </style>

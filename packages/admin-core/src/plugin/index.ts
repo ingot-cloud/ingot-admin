@@ -4,4 +4,5 @@ export * from "./local";
 export * from "./pages";
 export * from "./registry";
 export * from "./sort";
+export type * from "./header";
 export * from "./types";

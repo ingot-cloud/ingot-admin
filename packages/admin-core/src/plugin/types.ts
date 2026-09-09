@@ -5,6 +5,7 @@ import type { RouteRecordRaw, Router } from "vue-router";
 import type { PostFilter, PreFilter } from "@ingot/http-client";
 import type { MenuTreeNode } from "../models/menu";
 import type { InAdminTheme } from "../theme/types";
+import type { InAdminHeaderConfig } from "./header";
 
 /** 插件契约版本。不兼容的版本会在启动时拒绝加载。 */
 export const INGOT_ADMIN_PLUGIN_API_VERSION = 1 as const;
@@ -127,6 +128,10 @@ export interface InAdminAppOptions {
   bucketName?: string;
   publicPath?: string;
   shellSlots?: Partial<Record<AdminShellSlot, Component>>;
+  /**
+   * 默认顶栏五区配置。组件与回调只经应用注入传递，不写入可序列化运行时或持久化。
+   */
+  header?: InAdminHeaderConfig;
   /**
    * 应用选择的管理台主题。未配置时回退到 `defaultAdminTheme`。
    * 主题不是业务插件，不参与页面/布局 registry。

@@ -1,7 +1,7 @@
 <template>
   <div flex justify-center items-center box-border class="in-logo">
     <img class="logo-image" :src="logoSrc" alt="" />
-    <span class="title">
+    <span v-if="showTitle" class="title">
       {{ app.title }}
     </span>
   </div>
@@ -15,6 +15,15 @@ import { useAdminTheme } from "@/theme/useAdminTheme";
 defineOptions({
   name: "InLogo",
 });
+
+withDefaults(
+  defineProps<{
+    showTitle?: boolean;
+  }>(),
+  {
+    showTitle: true,
+  },
+);
 
 const { app } = useAppStore();
 const { isDark } = useAdminTheme();
@@ -43,12 +52,6 @@ const logoSrc = computed(() =>
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-}
-
-@media (max-width: 1023px) {
-  .in-logo .title {
-    display: none;
   }
 }
 </style>
