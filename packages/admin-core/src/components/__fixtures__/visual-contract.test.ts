@@ -338,8 +338,11 @@ describe("admin UI visual fixtures", () => {
     expect(nav).toContain("in-app-bar-overlay--nav");
     expect(nav).toContain("in-app-bar-nav-panel__title");
     expect(nav).toContain("border-bottom: 1px solid var(--in-border-color)");
+    expect(nav).toContain("grid-auto-flow: column");
+    expect(nav).toContain("in-app-bar-nav-panel__label");
+    expect(nav).toContain("height: 42px");
     expect(nav).toContain("in-app-bar-nav__caret");
-    expect(nav).toContain("svg:not(.in-app-bar-nav__caret)");
+    expect(nav).toContain(".in-app-bar-nav__caret svg");
     expect(nav).toContain("width: 12px");
     expect(nav).toContain("transition: transform var(--in-motion-duration) var(--in-motion-ease)");
     expect(nav).toContain("prefers-reduced-motion");

@@ -52,7 +52,7 @@ export interface ResolvedHeaderNavMenuItem {
   disabled: boolean;
 }
 
-/** `resolveHeaderConfig` 解析后的分组面板一列。 */
+/** `resolveHeaderConfig` 解析后的分组面板一组。 */
 export interface ResolvedHeaderNavGroup {
   /** 分组稳定唯一键 */
   key: string;
@@ -60,6 +60,8 @@ export interface ResolvedHeaderNavGroup {
   title: string;
   /** 该组菜单项，已去掉 `visible: false` */
   items: ResolvedHeaderNavMenuItem[];
+  /** 组内菜单列数，已按配置或条目数量解析 */
+  columns: number;
 }
 
 /** `resolveHeaderConfig` 解析后的大类入口。 */
@@ -173,6 +175,25 @@ export interface ResolvedHeaderConfig {
 
 const isVisible = (value: boolean | undefined): boolean => value !== false;
 
+/** 动态折列时每列最多行数 */
+export const NAV_GROUP_AUTO_MAX_ROWS = 8;
+/** 组内菜单最多列数 */
+export const NAV_GROUP_MAX_COLUMNS = 4;
+
+/**
+ * 解析分组内菜单列数。显式 `columns` 优先；否则按条目数量每列最多 8 行折列。
+ */
+export const resolveNavGroupColumns = (itemCount: number, columns?: number): number => {
+  const count = Math.max(0, itemCount);
+  if (count <= 0) {
+    return 1;
+  }
+  if (typeof columns === "number" && Number.isInteger(columns) && columns >= 1) {
+    return Math.min(NAV_GROUP_MAX_COLUMNS, columns, count);
+  }
+  return Math.min(NAV_GROUP_MAX_COLUMNS, Math.ceil(count / NAV_GROUP_AUTO_MAX_ROWS));
+};
+
 const resolveNavMenuItem = (
   item: InAdminHeaderNavGroup["items"][number],
 ): ResolvedHeaderNavMenuItem | undefined => {
@@ -192,12 +213,14 @@ const resolveNavGroup = (group: InAdminHeaderNavGroup): ResolvedHeaderNavGroup =
     group.items.map((item) => item.key),
     `顶栏导航分组 ${group.key} `,
   );
+  const items = group.items
+    .map(resolveNavMenuItem)
+    .filter((item): item is ResolvedHeaderNavMenuItem => Boolean(item));
   return {
     key: group.key,
     title: readHeaderValue(group.title, ""),
-    items: group.items
-      .map(resolveNavMenuItem)
-      .filter((item): item is ResolvedHeaderNavMenuItem => Boolean(item)),
+    items,
+    columns: resolveNavGroupColumns(items.length, group.columns),
   };
 };
 

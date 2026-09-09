@@ -80,6 +80,7 @@ describe("InAppBarNav", () => {
           {
             key: "system",
             title: "系统",
+            columns: 1,
             items: [{ key: "app", label: "应用", disabled: false }],
           },
         ],
@@ -94,6 +95,7 @@ describe("InAppBarNav", () => {
           {
             key: "biz",
             title: "业务",
+            columns: 1,
             items: [{ key: "order", label: "订单", disabled: false }],
           },
         ],
@@ -116,6 +118,8 @@ describe("InAppBarNav", () => {
     await hoverBtn?.trigger("mouseenter");
     expect(document.body.querySelector(".in-app-bar-overlay--nav.is-open")).not.toBeNull();
     expect(hoverBtn?.classes()).toContain("is-open");
+    const itemsGrid = document.body.querySelector(".in-app-bar-nav-panel__items") as HTMLElement | null;
+    expect(itemsGrid?.style.getPropertyValue("--in-nav-group-columns")).toBe("1");
     await clickBtn?.trigger("mouseenter");
     await new Promise((resolve) => setTimeout(resolve, 200));
     expect(clickBtn?.attributes("aria-expanded")).toBe("false");

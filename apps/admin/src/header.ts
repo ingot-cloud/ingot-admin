@@ -47,6 +47,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
           {
             key: "org",
             title: "组织",
+            columns: 1,
             items: [
               { key: "dept", label: "部门", icon: "ep:office-building" },
               { key: "member", label: "成员", icon: "ep:user" },

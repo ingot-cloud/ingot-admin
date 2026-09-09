@@ -152,16 +152,21 @@ export interface InAdminHeaderBrandConfig {
 export type InAdminHeaderNavMenuItem = InAdminHeaderItemBase;
 
 /**
- * 分组面板中的一列。宽屏按组多列，组标题下有分割线。
+ * 分组面板中的一组。宽屏按组并排；组内菜单项可多列，避免单列过长。
  * 大类最多「入口 → 分组 → 菜单项」，不做更深递归。
  */
 export interface InAdminHeaderNavGroup {
   /** 分组稳定唯一键，同一入口内不可重复 */
   key: string;
-  /** 分组标题，展示为灰字 + 底部分割线 */
+  /** 分组标题，展示为灰字 + 底部分割线，横跨本组全部菜单列 */
   title: InAdminHeaderReactive<string>;
   /** 该组下的菜单项，与标题左对齐 */
   items: InAdminHeaderNavMenuItem[];
+  /**
+   * 组内菜单列数，1–4。省略时按条目数量动态折列（每列最多 8 行）。
+   * 窄屏分组面板仍强制单列。
+   */
+  columns?: number;
 }
 
 /**

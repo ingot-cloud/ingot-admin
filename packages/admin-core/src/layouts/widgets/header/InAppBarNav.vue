@@ -103,7 +103,7 @@
             class="in-app-bar-nav-panel__group"
           >
             <h3 class="in-app-bar-nav-panel__title">{{ group.title }}</h3>
-            <div class="in-app-bar-nav-panel__items">
+            <div class="in-app-bar-nav-panel__items" :style="privateGroupItemGridStyle(group)">
               <button
                 v-for="entry in group.items"
                 :key="entry.key"
@@ -114,7 +114,7 @@
                 @click="privateOnGroupItemClick(openGroup.key, entry)"
               >
                 <in-icon v-if="entry.icon" :name="entry.icon" class="in-app-bar-nav__icon" />
-                <span>{{ entry.label }}</span>
+                <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
               </button>
             </div>
           </section>
@@ -165,19 +165,21 @@
           class="in-app-bar-nav-panel__group"
         >
           <h3 class="in-app-bar-nav-panel__title">{{ group.title }}</h3>
-          <button
-            v-for="entry in group.items"
-            :key="entry.key"
-            type="button"
-            class="in-app-bar-overlay__item"
-            :class="{ 'is-disabled': entry.disabled }"
-            :disabled="entry.disabled"
-            role="menuitem"
-            @click="privateOnGroupItemClick(moreGroup.key, entry)"
-          >
-            <in-icon v-if="entry.icon" :name="entry.icon" class="in-app-bar-nav__icon" />
-            {{ entry.label }}
-          </button>
+          <div class="in-app-bar-nav-panel__items" :style="privateGroupItemGridStyle(group, true)">
+            <button
+              v-for="entry in group.items"
+              :key="entry.key"
+              type="button"
+              class="in-app-bar-nav-panel__item"
+              :class="{ 'is-disabled': entry.disabled }"
+              :disabled="entry.disabled"
+              role="menuitem"
+              @click="privateOnGroupItemClick(moreGroup.key, entry)"
+            >
+              <in-icon v-if="entry.icon" :name="entry.icon" class="in-app-bar-nav__icon" />
+              <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
+            </button>
+          </div>
         </section>
       </template>
     </div>
@@ -189,7 +191,7 @@ import {
   InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
 } from "@/plugin/header";
-import type { ResolvedHeaderNavItem, ResolvedHeaderNavMenuItem } from "./resolveHeaderConfig";
+import type { ResolvedHeaderNavGroup, ResolvedHeaderNavItem, ResolvedHeaderNavMenuItem } from "./resolveHeaderConfig";
 import { useAppBarOverlay } from "./useAppBarOverlay";
 
 defineOptions({
@@ -267,7 +269,7 @@ const groupOverlay = useAppBarOverlay({
   open: groupOpen,
   triggerRef: groupTriggerRef,
   panelRef: groupPanelRef,
-  maxWidth: 720,
+  maxWidth: 1080,
   align: "start",
   offset: 8,
 });
@@ -284,6 +286,18 @@ const groupPanelStyle = groupOverlay.panelStyle;
 const morePanelStyle = moreOverlay.panelStyle;
 const HOVER_CLOSE_MS = 160;
 let groupCloseTimer = 0;
+
+const privateGroupItemGridStyle = (
+  group: ResolvedHeaderNavGroup,
+  forceSingle = false,
+): Record<string, string> => {
+  const columns = forceSingle || groupPanelSingle.value ? 1 : group.columns;
+  const rows = Math.max(1, Math.ceil(Math.max(group.items.length, 1) / columns));
+  return {
+    "--in-nav-group-columns": String(columns),
+    "--in-nav-group-rows": String(rows),
+  };
+};
 
 const privateUsesHover = (item: ResolvedHeaderNavItem): boolean =>
   item.type === InAdminHeaderNavItemType.Group &&
@@ -539,11 +553,6 @@ defineExpose({
   color: inherit;
 }
 
-.in-app-bar-nav__item :deep(svg:not(.in-app-bar-nav__caret)) {
-  width: var(--in-app-bar-icon-size);
-  height: var(--in-app-bar-icon-size);
-}
-
 .in-app-bar-nav__extra,
 .in-app-bar__entry {
   @apply flex items-center min-w-0;
@@ -651,33 +660,40 @@ defineExpose({
 }
 
 .in-app-bar-nav-panel__title {
+  display: flex;
+  align-items: center;
+  gap: var(--in-space-3);
   margin: 0;
-  padding: 0 0 var(--in-space-2);
+  padding: 0 0 var(--in-space-3);
   border-bottom: 1px solid var(--in-border-color);
   color: var(--in-text-color-placeholder);
-  font-size: var(--in-font-size-caption);
+  font-size: var(--in-font-size-body);
   font-weight: var(--in-font-weight-body);
-  line-height: var(--in-line-height-caption);
+  line-height: var(--in-line-height-body);
   white-space: nowrap;
 }
 
 .in-app-bar-nav-panel__items {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--in-nav-group-rows, 1), auto);
+  grid-template-columns: repeat(var(--in-nav-group-columns, 1), minmax(160px, max-content));
   align-items: stretch;
-  gap: var(--in-space-1);
-  margin-top: var(--in-space-2);
+  column-gap: var(--in-space-2);
+  row-gap: var(--in-space-1);
+  margin-top: var(--in-space-3);
 }
 
 .in-app-bar-nav-panel__item {
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  width: max-content;
+  width: 160px;
   max-width: 100%;
-  min-height: 32px;
+  height: 42px;
+  min-height: 42px;
   margin: 0;
-  padding: 4px 8px;
+  padding: 0 var(--in-space-3);
   border: 0;
   border-radius: var(--in-radius-card);
   background: transparent;
@@ -687,7 +703,15 @@ defineExpose({
   line-height: var(--in-line-height-body);
   cursor: pointer;
   gap: 6px;
+}
+
+.in-app-bar-nav-panel__label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: left;
 }
 
 .in-app-bar-nav-panel__item .in-app-bar-nav__icon {
@@ -697,7 +721,9 @@ defineExpose({
 }
 
 .in-app-bar-nav__caret {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 12px;
   height: 12px;
   font-size: 12px;
@@ -707,10 +733,9 @@ defineExpose({
   transition: transform var(--in-motion-duration) var(--in-motion-ease);
 }
 
-.in-app-bar-nav__item :deep(.in-app-bar-nav__caret) {
+.in-app-bar-nav__item :deep(.in-app-bar-nav__caret svg) {
   width: 12px;
   height: 12px;
-  font-size: 12px;
 }
 
 .in-app-bar-nav__item.is-open:not(.is-active) {

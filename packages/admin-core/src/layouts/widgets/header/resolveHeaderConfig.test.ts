@@ -109,6 +109,30 @@ describe("resolveHeaderConfig", () => {
     expect(resolved.navigation.items[1]?.trigger).toBe(InAdminHeaderNavGroupTrigger.Click);
   });
 
+  it("分组菜单按数量折列，也可指定 columns", () => {
+    const manyItems = Array.from({ length: 14 }, (_, index) => ({
+      key: `item-${index}`,
+      label: `项${index}`,
+    }));
+    const resolved = resolveHeaderConfig({
+      navigation: {
+        items: [
+          {
+            key: "more",
+            type: InAdminHeaderNavItemType.Group,
+            label: "更多",
+            groups: [
+              { key: "org", title: "组织", items: manyItems },
+              { key: "system", title: "系统", columns: 3, items: manyItems.slice(0, 3) },
+            ],
+          },
+        ],
+      },
+    });
+    expect(resolved.navigation.items[0]?.groups[0]?.columns).toBe(2);
+    expect(resolved.navigation.items[0]?.groups[1]?.columns).toBe(3);
+  });
+
   it("重复 key 抛出中文错误", () => {
     expect(() =>
       resolveHeaderConfig({
