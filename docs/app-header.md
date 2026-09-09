@@ -148,6 +148,22 @@ navigation: {
 }
 ```
 
+分组内条目多时默认每列最多 8 行再向右折列（最多 4 列），也可写 `columns` 指定列数。组标题为灰字加底部分割线，横跨该组全部菜单列；菜单项为图标 + 文案、固定列宽。窄屏仍单列。
+
+```ts
+groups: [
+  {
+    key: "org",
+    title: "组织",
+    columns: 2,
+    items: [
+      { key: "dept", label: "部门", icon: "ep:office-building" },
+      { key: "member", label: "成员", icon: "ep:user" },
+    ],
+  },
+]
+```
+
 ## 自定义组件约定
 
 - 品牌组件接收 `navigationMode`、`compact`
