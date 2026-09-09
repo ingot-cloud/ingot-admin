@@ -170,9 +170,11 @@ const emit = defineEmits<{
   width: 20px;
   height: 20px;
   padding: 0;
+  overflow: hidden;
   border: 0;
   background: transparent;
   color: var(--in-text-color-placeholder);
+  font-size: 16px;
   cursor: pointer;
 
   &:hover {

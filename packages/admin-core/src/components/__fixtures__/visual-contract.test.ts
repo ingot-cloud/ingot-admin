@@ -372,6 +372,7 @@ describe("admin UI visual fixtures", () => {
     const mainCss = readFileSync(resolve(root, "../../styles/main.css"), "utf8");
     expect(mainCss).toContain(".in-icon {");
     expect(mainCss).toContain(".in-icon svg");
+    expect(mainCss).toMatch(/\.in-icon \{[\s\S]*?width: 1em;/);
     expect(mainCss).toContain(".in-app-bar__icon");
     expect(mainCss).toContain("color: var(--in-text-color-secondary)");
     expect(mainCss).toContain("text-rendering: optimizeLegibility");
@@ -408,6 +409,8 @@ describe("admin UI visual fixtures", () => {
     );
     expect(searchPanel).toContain("InLoadingMark");
     expect(searchPanel).not.toContain("is-loading");
+    expect(searchPanel).toContain("in-app-bar-search-panel__clear");
+    expect(searchPanel).toContain("font-size: 16px");
   });
 
   it("InTableActions 直出按钮启用态有 hover，禁用态不响应", () => {

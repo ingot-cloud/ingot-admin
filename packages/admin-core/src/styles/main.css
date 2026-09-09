@@ -26,6 +26,9 @@ body,
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
   line-height: 0;
   flex: none;
 }
