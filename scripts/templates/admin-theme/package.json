@@ -1,0 +1,47 @@
+{
+  "name": "{{packageName}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "{{themeName}}",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./style.css": {
+      "import": "./dist/style.css",
+      "default": "./dist/style.css"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist"],
+  "sideEffects": ["**/*.css", "./dist/style.css"],
+  "ingotScaffold": {
+    "version": 1,
+    "kind": "theme",
+    "id": "{{themeId}}",
+    "exportName": "{{exportName}}"
+  },
+  "scripts": {
+    "build": "vite build --config vite.config.ts && vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly --outDir dist",
+    "type-check": "vue-tsc -p tsconfig.json --noEmit",
+    "test:unit": "vitest run --passWithNoTests",
+    "clean": "rimraf node_modules dist"
+  },
+  "peerDependencies": {
+    "@ingot/admin-core": "^0.1.0",
+    "vue": "^3.5.42"
+  },
+  "devDependencies": {
+    "@ingot/admin-core": "workspace:*",
+    "@vitejs/plugin-vue": "catalog:",
+    "vite": "catalog:",
+    "vue": "catalog:",
+    "vue-tsc": "catalog:",
+    "vitest": "4.1.11"
+  }
+}

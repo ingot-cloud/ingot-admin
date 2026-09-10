@@ -9,7 +9,7 @@
 {
   "scripts": {
     "build:packages": "pnpm --filter \"./packages/*\" build",
-    "build:apps": "pnpm --filter \"./apps/*\" --filter \"!create-app\" build",
+    "build:apps": "pnpm --filter \"./apps/*\" --filter \"!@ingot/dev-portal\" build",
   }
 }
 ```

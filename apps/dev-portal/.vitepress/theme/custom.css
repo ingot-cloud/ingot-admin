@@ -1,0 +1,143 @@
+.vp-doc div[class*="language-"] {
+  overflow-x: auto;
+}
+
+/* 向导 Element Plus 跟随 VitePress 明暗；弹层挂到 body 也走同一组变量 */
+:root {
+  --el-color-primary: var(--vp-c-brand-1);
+  --el-color-primary-light-3: var(--vp-c-brand-2);
+  --el-color-primary-light-5: var(--vp-c-brand-soft);
+  --el-color-primary-light-7: var(--vp-c-brand-soft);
+  --el-color-primary-light-8: var(--vp-c-brand-soft);
+  --el-color-primary-light-9: var(--vp-c-brand-soft);
+  --el-color-primary-dark-2: var(--vp-c-brand-1);
+  --el-bg-color: var(--vp-c-bg);
+  --el-bg-color-page: var(--vp-c-bg);
+  --el-bg-color-overlay: var(--vp-c-bg-elv);
+  --el-fill-color-blank: var(--vp-c-bg);
+  --el-fill-color: var(--vp-c-bg-soft);
+  --el-fill-color-light: var(--vp-c-bg-soft);
+  --el-fill-color-lighter: var(--vp-c-bg-alt);
+  --el-fill-color-extra-light: var(--vp-c-bg-alt);
+  --el-fill-color-dark: var(--vp-c-bg-alt);
+  --el-disabled-bg-color: var(--vp-c-bg-soft);
+  --el-disabled-text-color: var(--vp-c-text-3);
+  --el-text-color-primary: var(--vp-c-text-1);
+  --el-text-color-regular: var(--vp-c-text-1);
+  --el-text-color-secondary: var(--vp-c-text-2);
+  --el-text-color-placeholder: var(--vp-c-text-3);
+  --el-text-color-disabled: var(--vp-c-text-3);
+  --el-border-color: var(--vp-c-border);
+  --el-border-color-light: var(--vp-c-divider);
+  --el-border-color-lighter: var(--vp-c-divider);
+  --el-border-color-extra-light: var(--vp-c-divider);
+  --el-border-color-hover: var(--vp-c-brand-1);
+  --el-mask-color: color-mix(in srgb, var(--vp-c-bg) 72%, transparent);
+}
+
+html.dark {
+  --el-color-primary: var(--vp-c-brand-1);
+  --el-color-primary-light-3: var(--vp-c-brand-2);
+  --el-color-primary-dark-2: var(--vp-c-brand-1);
+  --el-bg-color: var(--vp-c-bg);
+  --el-bg-color-page: var(--vp-c-bg);
+  --el-bg-color-overlay: var(--vp-c-bg-elv);
+  --el-fill-color-blank: var(--vp-c-bg);
+  --el-fill-color: var(--vp-c-bg-soft);
+  --el-fill-color-light: var(--vp-c-bg-soft);
+  --el-fill-color-lighter: var(--vp-c-bg-alt);
+  --el-fill-color-extra-light: var(--vp-c-bg-alt);
+  --el-fill-color-dark: var(--vp-c-bg-alt);
+  --el-disabled-bg-color: var(--vp-c-bg-soft);
+  --el-disabled-text-color: var(--vp-c-text-3);
+  --el-text-color-primary: var(--vp-c-text-1);
+  --el-text-color-regular: var(--vp-c-text-1);
+  --el-text-color-secondary: var(--vp-c-text-2);
+  --el-text-color-placeholder: var(--vp-c-text-3);
+  --el-text-color-disabled: var(--vp-c-text-3);
+  --el-border-color: var(--vp-c-border);
+  --el-border-color-light: var(--vp-c-divider);
+  --el-border-color-lighter: var(--vp-c-divider);
+  --el-border-color-extra-light: var(--vp-c-divider);
+  --el-border-color-hover: var(--vp-c-brand-1);
+  --el-mask-color: color-mix(in srgb, var(--vp-c-bg) 72%, transparent);
+}
+
+.wizard .el-collapse,
+.wizard .el-collapse-item__wrap,
+.wizard .el-collapse-item__header,
+.wizard .el-collapse-item__content,
+.wizard .el-tabs__header,
+.wizard .el-tabs__item,
+.wizard .el-form-item__label {
+  color: var(--vp-c-text-1);
+  background: var(--vp-c-bg);
+  border-color: var(--vp-c-divider);
+}
+
+.wizard .el-collapse {
+  border-top: 1px solid var(--vp-c-divider);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.wizard .el-input__wrapper,
+.wizard .el-textarea__inner,
+.wizard .el-select__wrapper {
+  background-color: var(--vp-c-bg-soft);
+  box-shadow: 0 0 0 1px var(--vp-c-divider) inset;
+}
+
+.wizard .el-button {
+  --el-button-bg-color: var(--vp-c-bg-soft);
+  --el-button-border-color: var(--vp-c-divider);
+  --el-button-text-color: var(--vp-c-text-1);
+  --el-button-hover-bg-color: var(--vp-c-bg-alt);
+  --el-button-hover-border-color: var(--vp-c-brand-1);
+  --el-button-hover-text-color: var(--vp-c-brand-1);
+}
+
+.wizard .el-button--primary {
+  --el-button-bg-color: var(--vp-c-brand-1);
+  --el-button-border-color: var(--vp-c-brand-1);
+  --el-button-text-color: var(--vp-c-white);
+  --el-button-hover-bg-color: var(--vp-c-brand-2);
+  --el-button-hover-border-color: var(--vp-c-brand-2);
+  --el-button-hover-text-color: var(--vp-c-white);
+}
+
+.wizard .el-button.is-text {
+  --el-button-bg-color: transparent;
+  --el-button-border-color: transparent;
+  --el-button-hover-bg-color: var(--vp-c-bg-soft);
+}
+
+.wizard .el-checkbox__label,
+.wizard .el-radio__label,
+.wizard .el-switch__label {
+  color: var(--vp-c-text-1);
+}
+
+.wizard .preview,
+.wizard .hint {
+  color: var(--vp-c-text-2);
+}
+
+.wizard pre,
+.wizard code {
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+}
+
+.wizard pre {
+  padding: 12px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+.wizard details {
+  color: var(--vp-c-text-1);
+}
+
+.wizard summary {
+  cursor: pointer;
+}

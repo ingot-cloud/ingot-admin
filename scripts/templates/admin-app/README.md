@@ -1,6 +1,6 @@
 # {{appTitle}}
 
-本目录由 create-app 生成，是一个**独立后台 App** 的 composition root。
+本目录由开发者中心生成，是一个**独立后台 App** 的 composition root。
 
 普通单后台项目请直接使用仓库里的 `apps/admin`。只有在需要独立 appCode、品牌、环境变量、构建产物或部署流水线时，才应创建本应用。
 

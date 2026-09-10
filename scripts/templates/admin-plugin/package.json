@@ -1,0 +1,62 @@
+{
+  "name": "{{packageName}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "{{description}}",
+  "exports": {
+    ".": {
+      "types": "./src/plugin.ts",
+      "import": "./src/plugin.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "ingotScaffold": {
+    "version": 1,
+    "kind": "plugin",
+    "id": "{{pluginId}}",
+    "exportName": "{{exportName}}",
+    "canonicalPrefix": "{{canonicalPrefix}}"
+  },
+  "scripts": {
+    "test": "vitest run --passWithNoTests",
+    "test:unit": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "type-check": "vue-tsc -p tsconfig.app.json --noEmit",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "format": "prettier --write src/",
+    "clean": "rimraf node_modules dist"
+  },
+  "dependencies": {
+    "@ingot/admin-core": "workspace:*",
+    "@ingot/shared": "workspace:*"
+  },
+  "peerDependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@vue/shared": "catalog:",
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:",
+    "@tanstack/vue-query": "catalog:"
+  },
+  "devDependencies": {
+    "@element-plus/icons-vue": "catalog:",
+    "@iconify-json/carbon": "catalog:",
+    "@iconify-json/ep": "catalog:",
+    "@iconify-json/mdi": "catalog:",
+    "@iconify/vue": "catalog:",
+    "@ingot/vite-config": "workspace:*",
+    "@vue/shared": "catalog:",
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "pinia-plugin-persistedstate": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:",
+    "@tanstack/vue-query": "catalog:"
+  }
+}

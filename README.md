@@ -35,7 +35,7 @@ ingot-admin/
 ├── apps/
 │   ├── admin/              # 默认通用后台，注册全部官方插件
 │   ├── auth/               # 独立登录应用
-│   └── create-app/         # 本地 App 生成工具
+│   └── dev-portal/         # Ingot 开发者中心（文档 + 本地创建）
 ├── plugins/
 │   ├── platform/           # 平台控制面 + Dashboard
 │   ├── security/           # 安全中心
@@ -58,7 +58,7 @@ ingot-admin/
 pnpm dev                      # 并行启动 admin + login
 pnpm dev:admin                # 默认后台 :5798
 pnpm dev:login                # 登录应用
-pnpm dev:create-app           # 脚手架 UI :5801
+pnpm dev:portal               # 开发者中心 :5801
 pnpm dev:packages             # watch 构建全部 packages
 pnpm dev:admin-with-packages  # admin + packages watch
 pnpm preview:admin            # 预览 admin 生产构建
@@ -87,7 +87,7 @@ pnpm clean:plugins            # 仅清理插件
 - [App 开发](./docs/app-development.md) — bootstrap、裁剪插件、构建和部署
 - [主题开发](./docs/theme-development.md) — Token、壳层协议与独立主题包
 - [运行时参考](./docs/composable-admin-runtime.md) — 插件排序、页面键、菜单合并
-- [create-app](./docs/create-app.md) — 何时创建独立 App
+- [开发者中心 / 创建工具](./docs/create-app.md) — 文档站与创建 App／插件／主题
 - [首次构建](./docs/getting-started.md)
 - [变更规格](./specs/README.md)
 - [Agent 工作流](./AGENTS.md)

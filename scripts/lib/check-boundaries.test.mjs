@@ -292,3 +292,27 @@ test("devDependencies 声明非法主题依赖应失败", () => {
     fs.rmSync(rootDir, { recursive: true, force: true });
   }
 });
+
+test("App 依赖自定义插件但未注册应失败", () => {
+  const rootDir = makeTempWorkspace();
+  try {
+    writeSource(rootDir, "apps/demo-app/src/main.ts", `export const ready = true;\n`);
+    const { errors } = checkBoundaries(rootDir);
+    assertHasError(errors, "依赖了 @ingot/demo-plugin");
+  } finally {
+    fs.rmSync(rootDir, { recursive: true, force: true });
+  }
+});
+
+test("App 注册自定义插件但未声明依赖应失败", () => {
+  const rootDir = makeTempWorkspace();
+  try {
+    const pkg = readPkg(rootDir, "apps/demo-app/package.json");
+    delete pkg.dependencies["@ingot/demo-plugin"];
+    writePkg(rootDir, "apps/demo-app/package.json", pkg);
+    const { errors } = checkBoundaries(rootDir);
+    assertHasError(errors, "导入了 @ingot/demo-plugin");
+  } finally {
+    fs.rmSync(rootDir, { recursive: true, force: true });
+  }
+});

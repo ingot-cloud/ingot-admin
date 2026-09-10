@@ -97,7 +97,7 @@ pnpm dev:admin
 
 ```
 ingot-admin/
-├── apps/admin|auth|create-app
+├── apps/admin|auth|dev-portal
 ├── plugins/platform|security|org|member
 ├── packages/admin-core|admin-common|shared|http-client|vite-config
 └── examples/admin-plugin|admin-theme

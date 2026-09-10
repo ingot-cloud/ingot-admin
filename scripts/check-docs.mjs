@@ -4,8 +4,11 @@
  * 检查文档相对链接，以及 README / docs / examples 中的过时命令和包名。
  */
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { buildCoverage, listGlobalComponents, vitepressSlug } from "../apps/dev-portal/scripts/public-api.mjs";
+import { writeGeneratedReference } from "../apps/dev-portal/scripts/generate-reference.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
@@ -59,6 +62,18 @@ const collectMarkdownFiles = (target) => {
 
 const markdownFiles = DOC_GLOBS.flatMap(collectMarkdownFiles);
 
+try {
+  const pageMap = await import(pathToFileURL(path.join(rootDir, "apps/dev-portal/page-map.mjs")).href);
+  for (const page of pageMap.PAGE_MAP) {
+    const source = path.join(rootDir, page.source);
+    if (!fs.existsSync(source)) {
+      errors.push(`门户页面映射源不存在：${page.source}`);
+    }
+  }
+} catch (error) {
+  errors.push(`无法读取门户页面映射：${error instanceof Error ? error.message : String(error)}`);
+}
+
 const LINK_PATTERN = /\[[^\]]*]\(([^)]+)\)/g;
 
 for (const filePath of markdownFiles) {
@@ -83,6 +98,59 @@ for (const filePath of markdownFiles) {
     if (!fs.existsSync(resolved)) {
       errors.push(`${relative} 相对链接失效：${raw}`);
     }
+  }
+}
+
+const coverage = buildCoverage(rootDir);
+const headingSlugs = (markdown) =>
+  [...markdown.matchAll(/^#{1,6}\s+(.+)$/gm)].map((match) => {
+    const explicit = match[1].match(/\{#([^}]+)\}/);
+    return explicit ? explicit[1] : vitepressSlug(match[1].replace(/\s*\{#[^}]+\}\s*$/, ""));
+  });
+
+const generatedDir = fs.mkdtempSync(path.join(os.tmpdir(), "ingot-docs-ref-"));
+writeGeneratedReference(rootDir, generatedDir);
+const componentsMd = fs.readFileSync(path.join(generatedDir, "reference/components.md"), "utf8");
+const modulesMd = fs.readFileSync(path.join(generatedDir, "reference/modules.md"), "utf8");
+const pluginsMd = fs.readFileSync(path.join(generatedDir, "reference/plugins.md"), "utf8");
+const componentSlugs = new Set(headingSlugs(componentsMd));
+const moduleSlugs = new Set(headingSlugs(modulesMd));
+const pluginSlugs = new Set(headingSlugs(pluginsMd));
+fs.rmSync(generatedDir, { recursive: true, force: true });
+
+for (const name of listGlobalComponents(rootDir)) {
+  if (!coverage.entries[name]) {
+    errors.push(`公开组件 ${name} 未写入覆盖清单`);
+  }
+}
+for (const [name, entry] of Object.entries(coverage.entries)) {
+  const doc = String(entry.doc ?? "");
+  const hash = doc.split("#")[1];
+  if (!hash) {
+    errors.push(`覆盖清单 ${name} 缺少文档锚点`);
+    continue;
+  }
+  if (doc.includes("/reference/modules") && !moduleSlugs.has(hash)) {
+    errors.push(`覆盖清单 ${name} 指向不存在的模块锚点 #${hash}`);
+  }
+  if (doc.includes("/reference/components") && !componentSlugs.has(hash)) {
+    errors.push(`覆盖清单 ${name} 指向不存在的组件锚点 #${hash}`);
+  }
+  if (doc.includes("/reference/plugins") && !pluginSlugs.has(hash)) {
+    errors.push(`覆盖清单 ${name} 指向不存在的插件锚点 #${hash}`);
+  }
+  if (entry.demo) {
+    const demoId = entry.exampleId;
+    if (!demoId) {
+      errors.push(`覆盖清单 ${name} 标记了 demo 但缺少 exampleId`);
+    }
+  }
+}
+
+const demoApp = fs.readFileSync(path.join(rootDir, "apps/dev-portal/demos/DemoApp.vue"), "utf8");
+for (const demoId of new Set(Object.values(coverage.entries).map((entry) => entry.exampleId).filter(Boolean))) {
+  if (!demoApp.includes(demoId)) {
+    errors.push(`演示入口缺少 ${demoId}`);
   }
 }
 

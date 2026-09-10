@@ -9,7 +9,10 @@
     "isolatedModules": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client", "element-plus/global"],
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@portal/*": ["./src/*"]
+    }
   },
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"]
+    "include": ["env.d.ts", "src/**/*", "src/**/*.vue", ".vitepress/**/*.ts", ".vitepress/**/*.vue"]
 }

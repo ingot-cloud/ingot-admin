@@ -79,8 +79,12 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   );
 
   const tsconfig = JSON.parse(fs.readFileSync(path.join(result.appDir, "tsconfig.app.json"), "utf8"));
-  assert.deepEqual(tsconfig.compilerOptions.paths["@ingot/org-plugin"], ["./org-plugin.d.ts"]);
-  assert.ok(fs.existsSync(path.join(result.appDir, "org-plugin.d.ts")));
+  assert.deepEqual(tsconfig.compilerOptions.paths["@/*"], ["./src/*"]);
+  assert.equal(fs.existsSync(path.join(result.appDir, "org-plugin.d.ts")), false);
+  const viteConfig = fs.readFileSync(path.join(result.appDir, "vite.config.ts"), "utf8");
+  assert.match(viteConfig, /officialPlugins:/);
+  assert.match(viteConfig, /@ingot\/org-plugin/);
+  assert.match(mainTs, /header: createAppHeader\(\)/);
   assert.ok(fs.existsSync(path.join(result.appDir, "README.md")));
 
   fs.rmSync(rootDir, { recursive: true, force: true });

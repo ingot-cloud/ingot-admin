@@ -21,7 +21,7 @@ export const LEGACY_APP_PACKAGES = [
   "@ingot/member-app",
 ];
 
-export const APP_PACKAGES = ["@ingot/admin-app", "@ingot/auth-app", "create-app"];
+export const APP_PACKAGES = ["@ingot/admin-app", "@ingot/auth-app", "@ingot/dev-portal"];
 
 export const WORKSPACE_LAYERS = ["apps", "plugins", "themes", "packages"];
 
@@ -40,6 +40,8 @@ const IGNORED_DIR_NAMES = new Set([
   ".git",
   ".turbo",
   ".output",
+  ".generated",
+  ".vitepress",
 ]);
 
 const LAYER_LABEL = {
@@ -347,10 +349,10 @@ const checkPackagesDoNotDependOnAppsOrPlugins = (rootDir, errors) => {
   }
 };
 
-const officialPackagesFromImports = (source) => {
+const pluginPackagesFromImports = (source, pluginPackages) => {
   const found = new Set();
   for (const specifier of importSpecifiers(source)) {
-    for (const packageName of OFFICIAL_PLUGIN_PACKAGES) {
+    for (const packageName of pluginPackages) {
       if (specifier === packageName || specifier.startsWith(`${packageName}/`)) {
         found.add(packageName);
       }
@@ -359,7 +361,8 @@ const officialPackagesFromImports = (source) => {
   return found;
 };
 
-const checkPluginManifestAlignment = (rootDir, errors) => {
+const checkPluginManifestAlignment = (rootDir, errors, packages) => {
+  const pluginPackages = packages.filter((item) => item.layer === "plugins").map((item) => item.name);
   const appsDir = path.join(rootDir, "apps");
   if (!fs.existsSync(appsDir)) {
     return;
@@ -381,12 +384,12 @@ const checkPluginManifestAlignment = (rootDir, errors) => {
     }
     const pkg = readJson(pkgPath);
     const packageName = pkg.name ?? "";
-    if (packageName === "create-app") {
+    if (packageName === "@ingot/dev-portal") {
       continue;
     }
     const deps = packageDepNames(pkg);
-    const declared = OFFICIAL_PLUGIN_PACKAGES.filter((name) => deps.has(name));
-    const imported = [...officialPackagesFromImports(fs.readFileSync(manifestPath, "utf8"))];
+    const declared = pluginPackages.filter((name) => deps.has(name));
+    const imported = [...pluginPackagesFromImports(fs.readFileSync(manifestPath, "utf8"), pluginPackages)];
     const declaredSet = new Set(declared);
     const importedSet = new Set(imported);
     for (const name of declaredSet) {
@@ -500,7 +503,7 @@ export const checkBoundaries = (rootDir) => {
   }
   checkOfficialPluginIsolation(rootDir, errors);
   checkPackagesDoNotDependOnAppsOrPlugins(rootDir, errors);
-  checkPluginManifestAlignment(rootDir, errors);
+  checkPluginManifestAlignment(rootDir, errors, workspacePackages);
   checkLayerAndThemeRules(rootDir, errors, workspacePackages);
 
   return { errors, workspacePackages };

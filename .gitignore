@@ -1,3 +1,9 @@
 node_modules
 **/dist
 .temp
+**/.generated
+**/.vitepress/cache
+**/.vitepress/dist
+**/test-results
+**/playwright-report
+apps/dev-portal/public/scaffold-schema.json

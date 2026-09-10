@@ -12,6 +12,7 @@ export const defineInAppConfig = (options: InAppViteOptions): InViteConfigFactor
     const shared = createSharedViteConfig(options, symbol);
     const config = mergeConfig(shared.config, {
       plugins: shared.plugins,
+      base: options.base ?? "/",
       server: {
         host: options.host ?? "0.0.0.0",
         port: options.port,

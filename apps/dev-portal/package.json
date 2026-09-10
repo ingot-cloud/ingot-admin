@@ -1,0 +1,31 @@
+{
+  "name": "@ingot/dev-portal",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/collect-docs.mjs && vitepress dev --port 5801 --host 127.0.0.1",
+    "build": "node scripts/build.mjs",
+    "preview": "vitepress preview --port 5801 --host 127.0.0.1",
+    "test:e2e": "playwright test",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "eslint . --fix",
+    "format": "prettier --write src/",
+    "clean": "rimraf node_modules dist .generated .vitepress/cache .vitepress/dist"
+  },
+  "dependencies": {
+    "@vueuse/core": "catalog:",
+    "element-plus": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "5.2.4",
+    "@unocss/preset-wind3": "catalog:",
+    "typescript": "catalog:",
+    "unocss": "catalog:",
+    "unplugin-auto-import": "catalog:",
+    "vite": "6.3.7",
+    "vitepress": "1.6.4",
+    "vue-tsc": "catalog:"
+  }
+}

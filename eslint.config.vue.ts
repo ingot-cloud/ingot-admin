@@ -32,6 +32,7 @@ export const vueConfig = withVueTs(
     "**/auto-imports.d.ts",
     "**/components.d.ts",
     "**/scripts/templates/**",
+    "**/.generated/**",
   ]),
 
   pluginVue.configs["flat/essential"],

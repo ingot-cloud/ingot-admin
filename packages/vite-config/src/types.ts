@@ -10,7 +10,7 @@ export interface InViteBaseOptions {
   hookDirs?: string[];
   /**
    * 管理台约定目录守卫。为 true 时扫描组件 In*、El* 前缀与 hook/store 保留导出名。
-   * 仅 `apps/admin` 与 create-app 生成的后台开启；`apps/auth` 不要开。
+   * 仅 `apps/admin` 与脚手架生成的后台开启；`apps/auth` 不要开。
    */
   enforceAppConventions?: boolean;
   iconDir?: string;
@@ -38,6 +38,8 @@ export interface InViteBaseOptions {
 export interface InAppViteOptions extends InViteBaseOptions {
   port: number;
   host?: string;
+  /** Vite `base`，同时作为资源 publicPath，默认 `/` */
+  base?: string;
   proxy?: Record<string, string | ProxyOptions>;
 }
 

@@ -29,7 +29,7 @@ apps ─────→ plugins ─────→ packages
 1. **直接使用 `apps/admin`**：普通单后台、OA、运营后台或 C 端业务管理。这是默认入口。本部署专属页面/组件/hook 放 `apps/admin/src` 约定目录，不必手写注册。
 2. **开发 `plugins/<name>`**：新增或修改可复用业务页面和 API。插件自己 type-check / lint / 单测，由 admin 编译运行。
 3. **开发 `themes/<id>`**：新增正式视觉主题。App 通过包名声明 workspace 依赖并显式传入 `theme`；创建主题不会自动改 App 配置。
-4. **create-app 生成新 App**：需要独立 appCode、品牌、环境变量、构建产物或部署流水线时才创建。
+4. **开发者中心生成新 App**：需要独立 appCode、品牌、环境变量、构建产物或部署流水线时才创建。入口为 `apps/dev-portal`（兼容命令 `pnpm create:app`）。
 
 不要为了“看起来像独立产品”再复制一套全插件后台。`apps/admin` 已经承担这个角色。
 
@@ -56,7 +56,7 @@ apps ─────→ plugins ─────→ packages
 - [网络请求](./network.md)
 - [运行时参考](./composable-admin-runtime.md)
 - [菜单 view_path](./menu-view-path.md)
-- [create-app](./create-app.md)
+- [创建工具](./create-app.md)
 - [主题开发](./theme-development.md)
 - [主题目录约定](../themes/README.md)
 - [插件示例](../examples/admin-plugin/README.md)
