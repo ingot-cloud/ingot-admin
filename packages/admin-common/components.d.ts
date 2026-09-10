@@ -67,6 +67,8 @@ declare module 'vue' {
     InIcon: typeof import('./../admin-core/src/components/InIcon.vue')['default']
     InIconCollection: typeof import('./../admin-core/src/components/InIconCollection.vue')['default']
     InInputTag: typeof import('./../admin-core/src/components/tag/InInputTag.vue')['default']
+    InLoading: typeof import('./../admin-core/src/components/InLoading.vue')['default']
+    InLoadingMark: typeof import('./../admin-core/src/components/InLoadingMark.vue')['default']
     InLogo: typeof import('./../admin-core/src/layouts/widgets/InLogo.vue')['default']
     InMenu: typeof import('./../admin-core/src/layouts/widgets/InMenu.vue')['default']
     InMenuToggle: typeof import('./../admin-core/src/layouts/widgets/InMenuToggle.vue')['default']
