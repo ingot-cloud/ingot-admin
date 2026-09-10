@@ -2,7 +2,7 @@
 
 ## 概述
 
-仓库按 apps / plugins / packages 三层组织。官方业务能力是 `plugins/` 下的源码插件（platform、security、org、member），不可独立运行。`apps/admin` 是默认通用后台 composition root，在 `src/plugins.ts` 构建期静态注册所选插件。跨插件工具在 `@ingot/shared`；HTTP 传输在 `@ingot/http-client`；壳层、菜单混合、Query 与通用组件在 `@ingot/admin-core`；跨域只读租户/Client 选择器在 `@ingot/admin-common`。需要独立 appCode、品牌或部署流水线时，用 `apps/create-app` 生成新 App。
+仓库按 apps / plugins / packages 三层组织。官方业务能力是 `plugins/` 下的源码插件（platform、security、org、member），不可独立运行。`apps/admin` 是默认通用后台 composition root，在 `src/plugins.ts` 构建期静态注册所选插件。跨插件工具在 `@ingot/shared`；HTTP 传输在 `@ingot/http-client`；壳层、菜单混合、Query 与通用组件在 `@ingot/admin-core`；跨域只读租户/Client 选择器在 `@ingot/admin-common`。需要独立 appCode、品牌或部署流水线时，用开发者中心创建新 App（`pnpm create:app` / `pnpm create:app:cli`）。插件与主题也可由同一门户或 CLI 生成，不自动改现有 App。
 
 ## 相关源码
 
@@ -17,7 +17,7 @@
 - [packages/http-client](../../../../packages/http-client)
 - [packages/shared](../../../../packages/shared)
 - [packages/vite-config/src/official-plugins.ts](../../../../packages/vite-config/src/official-plugins.ts)
-- [apps/create-app](../../../../apps/create-app)
+- [apps/dev-portal](../../../../apps/dev-portal)
 - [scripts/lib/scaffold-app.mjs](../../../../scripts/lib/scaffold-app.mjs)
 - [examples/admin-plugin](../../../../examples/admin-plugin)
 - [examples/admin-theme](../../../../examples/admin-theme)
@@ -50,3 +50,4 @@
 | 2026-09-04 | [20260904-packages-net-interceptor-extension](../../../changes/archive/2026/20260904-packages-net-interceptor-extension/) | 删除 `usePaging` 公共导出；列表统一 `useServerPaging` |
 | 2026-09-07 | [20260904-packages-admin-ui-foundation](../../../changes/archive/2026/20260904-packages-admin-ui-foundation/) | `layout.main` 与 `In*` 共享组件扩展视觉/交互；页面注册与组合契约不变 |
 | 2026-09-08 | [20260908-packages-admin-theme](../../../changes/archive/2026/20260908-packages-admin-theme/) | bootstrap `theme`、create-app 显式默认主题、`examples/admin-theme` 与 `check:examples` |
+| 2026-09-10 | [20260909-packages-dev-portal](../../../changes/archive/2026/20260909-packages-dev-portal/) | 创建入口迁到 `apps/dev-portal`；增加创建插件／主题；文档门户见 [dev-portal](../dev-portal/) |

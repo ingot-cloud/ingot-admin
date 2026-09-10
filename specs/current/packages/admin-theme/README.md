@@ -10,6 +10,8 @@
 - [packages/admin-core/src/layouts/main/IndexPage.vue](../../../../packages/admin-core/src/layouts/main/IndexPage.vue)
 - [apps/admin/src/main.ts](../../../../apps/admin/src/main.ts)
 - [scripts/lib/scaffold-app.mjs](../../../../scripts/lib/scaffold-app.mjs)
+- [scripts/create-theme.mjs](../../../../scripts/create-theme.mjs)
+- [apps/dev-portal](../../../../apps/dev-portal)
 - [examples/admin-theme](../../../../examples/admin-theme)
 - [themes/README.md](../../../../themes/README.md)
 - [docs/theme-development.md](../../../../docs/theme-development.md)
@@ -23,6 +25,7 @@
 
 | 日期       | 变更 ID                                                                                                                 | 说明                                                                                   |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 2026-09-10 | [20260909-packages-dev-portal](../../../changes/archive/2026/20260909-packages-dev-portal/) | 门户／CLI 创建 `themes/<id>`，不自动启用或改现有 App |
 | 2026-09-09 | [20260909-packages-themes-workspace](../../../changes/archive/2026/20260909-packages-themes-workspace/)                 | 正式主题位于 `themes/<id>/`（`@ingot/theme-<id>`）；默认主题仍在 admin-core；无 API.md |
 | 2026-09-09 | [20260908-packages-app-header](../../../changes/archive/2026/20260908-packages-app-header/)                             | 默认顶栏消费 APP `header` 五区配置；自定义 `parts.header` 仍可整区替换                 |
 | 2026-09-08 | [20260908-packages-remove-global-route-tabs](../../../changes/archive/2026/20260908-packages-remove-global-route-tabs/) | 移除全局路由 Tabs：配置开关、环境变量、`InTabs` 与主题 `parts.tabs`                    |

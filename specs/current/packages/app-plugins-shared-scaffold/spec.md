@@ -17,7 +17,7 @@
 - `definePluginPages` 只生成 canonical 键（无 `@/` / `ingot.admin.*` / `ingot.base.*`）
 - 布局与页面同一套 IndexPage 扫描；菜单编辑从 registry 选择视图
 - 静态菜单与后端动态菜单合并
-- 本地 `create-app` 脚手架与 `examples/admin-plugin`；生成物 `main.ts` 显式传入 `defaultAdminTheme`
+- 本地 `dev-portal` 脚手架与 `examples/admin-plugin`；生成物 `main.ts` 显式传入 `defaultAdminTheme`
 - App 约定本地插件（pages / layouts / components / hooks / directives / stores）与重名失败
 - `bootstrapAdminApp` 可选 `theme`；未配置回退默认主题
 - `examples/admin-theme` 独立主题包示例；`pnpm check:examples` 含类型检查与打包消费验证
@@ -55,9 +55,9 @@
 ### 场景 4：创建独立后台 App
 
 - **角色**：需要多后台交付的开发者
-- **前置条件**：本地执行 `pnpm create:app`（`127.0.0.1:5801`）
-- **步骤**：填写独立 appCode / 端口，默认全选官方插件，可取消；可选本地 Demo 页
-- **预期结果**：写入新的 `apps/<appCode>`；始终有 `src/app-plugin.ts` 与约定目录；`src/plugins.ts` 与依赖一致；已有目录拒绝覆盖
+- **前置条件**：本地执行 `pnpm create:app` 或 `pnpm dev:portal`（`127.0.0.1:5801`）
+- **步骤**：填写独立 appCode / 端口，默认全选官方插件，可取消；可选本地 Demo 页；可先预览再生成
+- **预期结果**：写入新的 `apps/<appCode>`；始终有 `src/app-plugin.ts` 与约定目录；`src/plugins.ts` 与依赖一致；已有目录拒绝覆盖；不自动安装依赖
 
 ### 场景 5：静态 + 动态菜单
 
@@ -79,6 +79,13 @@
 - **前置条件**：使用 `apps/admin` 或 create-app 生成的后台
 - **步骤**：在 `src/pages` / `components` / `hooks` / `stores` 新增文件，不改 `app-plugin.ts`
 - **预期结果**：页面进入 registry；`Biz*` 组件与 hook/store 可直接使用；`InButton`、`useServerPaging` 仍可用；`In*` 或保留导出名构建失败
+
+### 场景 8：创建业务插件或主题包
+
+- **角色**：扩展框架的开发者
+- **前置条件**：本地门户 `/create/plugin`、`/create/theme` 或对应 CLI
+- **步骤**：填写标识与可选 Demo／Token／Shell，预览后生成
+- **预期结果**：写入 `plugins/<id>` 或 `themes/<id>`；不修改现有 App；给出宿主接入步骤
 
 ## 功能需求
 
@@ -127,7 +134,7 @@
 
 ### REQ-005：菜单、脚手架与文档
 
-系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。create-app 默认全选四个官方插件；始终生成约定本地插件 `defineAppLocalPlugin(appCode)`，与 `main.ts` 同源；原本地插件开关只控制 Demo。菜单编辑从当前 registry 选择页面或布局。根 README 与 `docs/development-model.md` 说明三层开发入口；`docs/menu-view-path.md` 说明编码与迁库。
+系统 SHALL 合并 App/插件 `staticMenus` 与 `UserMenuAPI`；冲突报错。开发者中心创建 App 默认全选四个官方插件；始终生成约定本地插件 `defineAppLocalPlugin(appCode)`，与 `main.ts` 同源；原本地插件开关只控制 Demo。菜单编辑从当前 registry 选择页面或布局。根 README 与 `docs/development-model.md` 说明分层开发入口；`docs/menu-view-path.md` 说明编码与迁库。创建插件／主题不自动改现有 App。
 
 **验收标准：**
 
@@ -154,7 +161,7 @@
 
 - 组合方 Vite 必须按 importer 编译官方插件内的 Vue SFC、`import.meta.glob` 与 `@/`
 - Vue / Router / Pinia / Element Plus / VueUse 保持单实例
-- create-app 仅限本地，不得暴露到公网
+- create-app / 开发者中心仅限本地写入，不得把生成 API 暴露到公网
 - 不改变现有业务接口路径与 `R<T>` 包装
 - 插件为构建期静态组合，不引入远程运行时加载
 

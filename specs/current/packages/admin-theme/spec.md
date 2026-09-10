@@ -17,7 +17,7 @@
 - `useAdminShell().header` 供自定义 `parts.header` 读取 APP 顶栏配置
 - admin 与 create-app 显式选择默认主题
 - `themes/<id>/` 仓库内正式主题目录与 `@ingot/theme-<id>` 包名
-- `examples/admin-theme` 独立主题包示例
+- `pnpm create:theme` / 开发者中心创建正式主题目录，不自动启用
 
 ### Out of Scope
 
@@ -48,6 +48,13 @@
 - **前置条件**：App 或插件注册了专用 layout
 - **步骤**：启动并选择自定义主题
 - **预期结果**：独立 layout 结构不被替换，仍继承全局 Token；需要主题外壳时主动组合 `InAdminThemeLayout`
+
+### 场景 4：脚手架创建主题包
+
+- **角色**：主题开发者
+- **前置条件**：本地 `pnpm create:theme` 或门户 `/create/theme`
+- **步骤**：填写 id、可选 Token 明暗覆盖与 Shell／parts，预览后生成
+- **预期结果**：写入 `themes/<id>`；不修改现有 App；给出 dependency、import 与 CSS 接入步骤
 
 ## 功能需求
 
