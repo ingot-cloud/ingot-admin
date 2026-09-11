@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { defineComponent, h, nextTick } from "vue";
 import { mount } from "@vue/test-utils";
@@ -133,6 +136,14 @@ describe("InMenu", () => {
     expect(wrapper.get(".in-menu__control-icon").attributes("name")).toBe("ingot:ic_expand");
     expect(wrapper.find(".in-menu__control-text").exists()).toBe(false);
     wrapper.unmount();
+  });
+
+  it("收起态只隐藏菜单标题 span，不把 InIcon 根节点裁掉", () => {
+    const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InMenu.vue"), "utf8");
+    expect(source).toContain(".el-menu-item > span");
+    expect(source).toContain(".el-sub-menu__title > span");
+    expect(source).not.toMatch(/is-collapsed[^{]*:deep\(\.el-menu-item span\)/);
+    expect(source).not.toMatch(/:deep\(\.el-menu-item span\),/);
   });
 
   it("overlay 控制文案为关闭导航，不改写桌面展开偏好", async () => {

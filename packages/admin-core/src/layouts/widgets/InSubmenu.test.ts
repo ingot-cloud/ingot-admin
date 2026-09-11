@@ -16,8 +16,14 @@ const group = {
   ],
 };
 
+const leaf = {
+  path: "/contacts",
+  title: "通讯录",
+  icon: "ep:notebook",
+};
+
 describe("InSubmenu", () => {
-  const mountSubmenu = (options?: { collapsed?: boolean; route?: typeof group }) => {
+  const mountSubmenu = (options?: { collapsed?: boolean; route?: typeof group | typeof leaf }) => {
     const pinia = createPinia();
     setActivePinia(pinia);
     configureAdminRuntime({
@@ -52,6 +58,15 @@ describe("InSubmenu", () => {
     expect(wrapper.text()).not.toContain("成员");
     expect(group.title).toBe("组织");
     expect(group.children?.[0]?.title).toBe("成员");
+    wrapper.unmount();
+    resetAdminRuntime();
+  });
+
+  it("收起态叶子项仍渲染图标", () => {
+    const wrapper = mountSubmenu({ collapsed: true, route: leaf });
+    expect(wrapper.get(".el-menu-item").classes()).toContain("has-icon");
+    expect(wrapper.get(".in-menu-node__icon").exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("通讯录");
     wrapper.unmount();
     resetAdminRuntime();
   });

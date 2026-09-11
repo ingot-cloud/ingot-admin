@@ -295,7 +295,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
   display: block;
 }
 
-:deep(.el-menu-item span),
+:deep(.el-menu-item > span),
 :deep(.el-sub-menu__title > span) {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -329,7 +329,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
   margin-right: 0;
 }
 
-.is-collapsed :deep(.el-menu-item span),
+.is-collapsed :deep(.el-menu-item > span),
 .is-collapsed :deep(.el-sub-menu__title > span),
 .is-collapsed :deep(.el-sub-menu__icon-arrow),
 .is-collapsed :deep(.el-badge),
