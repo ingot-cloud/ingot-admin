@@ -1,6 +1,6 @@
 # 20260911-base-rbac-data-authorization
 
-> 状态：implementing
+> 状态：completed
 
 ## 协作模式
 
@@ -58,11 +58,13 @@ PMS 已切换为「菜单可见性 / 功能权限 / 资源数据范围」三套�
 ## 相关链接
 
 - 后端 change：`ingot/specs/changes/active/20260910-pms-rbac-data-authorization/`
+- [已上线规格](../../../../current/base/rbac-data-authorization/spec.md)
+- [变更流程](../../../../README.md)
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
-- 取消原因：
+- 完成日期：2026-09-12
+- 关联提交或 PR：4bb9280
+- 更新的 current capability：`base/rbac-data-authorization`
+- 与原设计的差异：刷新权限函数名为 `refreshSessionPermissions`；`DynamicRouterGuard` 仍走 `fetchRoutes()`，bootstrap 已写入菜单后短路不再请求。菜单快捷新建权限默认 `nodeType` 为 ACTION。
+- 取消原因：不适用

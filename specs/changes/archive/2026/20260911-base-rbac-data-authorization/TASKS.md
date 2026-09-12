@@ -6,7 +6,7 @@
 
 - [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`）
 - [x] 阅读本 change 的 [API.md](./API.md) 与 [REQUIREMENTS.md](./REQUIREMENTS.md)
-- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
+- [x] 阅读 [CONSTITUTION.md](../../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [x] 确认 DESIGN.md 的页面路径与对接映射
 
 ## 实现
@@ -54,15 +54,15 @@
 
 ## 验证
 
-- [ ] 满足 REQUIREMENTS.md 验收标准
+- [x] 满足 REQUIREMENTS.md 验收标准
 - [x] 对接行为与 API.md 一致：不传已删除字段，不读 `authorities`
-- [ ] 本地构建通过（`pnpm build:packages` + 相关 app / plugin 测试）
+- [x] 本地构建通过（`pnpm build:packages` + 相关 app / plugin 测试）
 - [x] admin-core / platform / org 相关单测与 platform、org type-check 已通过
-- [ ] 手动：登录 bootstrap 只打三次；权限树无 `type`；菜单无 Button；503 不登出
+- [x] 手动：登录 bootstrap 只打三次；权限树无 `type`；菜单无 Button；503 不登出
 - [x] member 权限页未误改
 
 ## 收尾
 
-- [ ] 更新 `current/base/rbac-data-authorization/spec.md`（页面行为，不要合并整份 API.md）
-- [ ] 在 capability README 记录变更 ID，并链到归档后的 `API.md`
-- [ ] README 状态改为 `completed`，将变更目录移至 `changes/archive/2026/20260911-base-rbac-data-authorization/`
+- [x] 更新 `current/base/rbac-data-authorization/spec.md`（页面行为，不要合并整份 API.md）
+- [x] 在 capability README 记录变更 ID，并链到归档后的 `API.md`
+- [x] README 状态改为 `completed`，将变更目录移至 `changes/archive/2026/20260911-base-rbac-data-authorization/`
