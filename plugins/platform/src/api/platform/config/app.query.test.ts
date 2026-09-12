@@ -43,6 +43,7 @@ vi.mock("./app", () => ({
   AppDetailAPI: vi.fn(),
   AppMenuTreeAPI: vi.fn(),
   AppPermissionTreeAPI: vi.fn(),
+  AppResourceListAPI: vi.fn(),
 }));
 
 describe("appQueryKeys", () => {
@@ -57,6 +58,13 @@ describe("appQueryKeys", () => {
       "detail",
       "app-1",
       "permissions",
+    ]);
+    expect(appQueryKeys.resources("app-1")).toEqual([
+      "platform",
+      "app",
+      "detail",
+      "app-1",
+      "resources",
     ]);
   });
 });

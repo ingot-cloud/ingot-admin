@@ -6,11 +6,12 @@ export interface PermissionTreeNode {
   name?: string;
   code?: string;
   status?: CommonStatus;
-  type?: string;
+  nodeType?: string;
+  resourceId?: string;
   children?: Array<PermissionTreeNode>;
 }
 
 export interface BizPermissionTreeNodeVO extends PermissionTreeNode {
-  PlatformRoleBind?: boolean;
+  platformRoleBind?: boolean;
   defaultFlag?: boolean;
 }

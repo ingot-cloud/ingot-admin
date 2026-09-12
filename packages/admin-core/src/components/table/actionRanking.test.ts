@@ -78,11 +78,13 @@ describe("rankTableActions", () => {
     expect(ranked.menu.map((item) => item.key)).toEqual(["enable", "delete"]);
   });
 
-  it("无权限动作不渲染", () => {
+  it("无权限动作不渲染，且不做前缀放大", () => {
     const ranked = rankTableActions(actions, "row", ["member:grant"]);
     expect(ranked.menu.map((item) => item.key)).toContain("secret");
     const hidden = rankTableActions(actions, "row", []);
     expect(hidden.menu.map((item) => item.key)).not.toContain("secret");
+    const prefix = rankTableActions(actions, "row", ["member"]);
+    expect(prefix.menu.map((item) => item.key)).not.toContain("secret");
   });
 
   it("解析危险确认文案", () => {

@@ -11,6 +11,10 @@ const leftSource = readFileSync(
   resolve(dirname(fileURLToPath(import.meta.url)), "components/LeftContent.vue"),
   "utf8",
 );
+const roleDrawerSource = readFileSync(
+  resolve(dirname(fileURLToPath(import.meta.url)), "components/RoleDrawer.vue"),
+  "utf8",
+);
 
 describe("org contacts role IndexPage", () => {
   it("使用可折叠 Split List 与字段设置", () => {
@@ -43,6 +47,10 @@ describe("org contacts role IndexPage", () => {
     expect(source).toContain("@node-click");
     expect(source).not.toContain("@onNodeClick");
     expect(leftSource).toContain("more-trigger");
-    expect(leftSource).toContain("action-box__more");
+    expect(leftSource).toContain("数据范围");
+    expect(leftSource).toContain("DataRuleDrawer");
+    expect(roleDrawerSource).toContain("filterDept");
+    expect(roleDrawerSource).not.toContain("scopeType");
+    expect(roleDrawerSource).not.toContain("scopes");
   });
 });

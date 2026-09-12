@@ -9,11 +9,11 @@ export enum DataScopeTypeEnum {
 }
 
 export const DataScopeTypeEnumExtArray = [
-  newEnumExt(DataScopeTypeEnum.ALL, "全部数据权限", "info"),
-  newEnumExt(DataScopeTypeEnum.CUSTOM, "自定义数据权限", "info"),
-  newEnumExt(DataScopeTypeEnum.DEPT_AND_CHILD, "本部门及以下数据权限", "info"),
-  newEnumExt(DataScopeTypeEnum.DEPT, "本部门数据权限", "info"),
-  newEnumExt(DataScopeTypeEnum.SELF, "仅本人数据权限", "info"),
+  newEnumExt(DataScopeTypeEnum.ALL, "全部", "info"),
+  newEnumExt(DataScopeTypeEnum.CUSTOM, "指定部门", "info"),
+  newEnumExt(DataScopeTypeEnum.DEPT_AND_CHILD, "本部门及下级", "info"),
+  newEnumExt(DataScopeTypeEnum.DEPT, "本部门", "info"),
+  newEnumExt(DataScopeTypeEnum.SELF, "仅本人", "info"),
 ];
 
 export const useDataScopeTypeEnum = () => {

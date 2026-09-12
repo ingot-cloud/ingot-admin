@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 import type { MenuRouteRecord } from "@/layouts";
 import type { MenuTreeNode } from "@/models";
-import { MenuType, MenuLinkType } from "@/models/enums";
+import { MenuType, MenuLinkType, LEGACY_MENU_TYPE_BUTTON } from "@/models/enums";
 import {
   getConfiguredAppCode,
   importComponent,
@@ -43,7 +43,7 @@ export const transformMenu = (menus: Array<MenuTreeNode>): Array<RouteRecordRaw>
   const result: Array<RouteRecordRaw> = [];
   menus
     .filter((item) => {
-      return item.menuType !== MenuType.Button;
+      return item.menuType !== LEGACY_MENU_TYPE_BUTTON;
     })
     .forEach((menu) => {
       const route: RouteRecordRaw = menuToRoute(menu);
@@ -76,12 +76,10 @@ const findEntryPath = (menus: Array<MenuTreeNode>): string => {
     return "/403";
   }
   const menu = menus[0];
+  if (menu.menuType === LEGACY_MENU_TYPE_BUTTON) {
+    return findEntryPath(menus.slice(1));
+  }
   switch (menu.menuType) {
-    case MenuType.Button:
-      // eslint-disable-next-line no-case-declarations
-      const temp = menus.slice();
-      temp.shift();
-      return findEntryPath(temp);
     case MenuType.Directory:
       if (menu.children && menu.children.length > 0) {
         return findEntryPath(menu.children);
@@ -96,7 +94,7 @@ const findEntryPath = (menus: Array<MenuTreeNode>): string => {
 const transformMenuItem = (route: RouteRecordRaw, menu: MenuTreeNode) => {
   menu.children
     ?.filter((item) => {
-      return item.menuType !== MenuType.Button;
+      return item.menuType !== LEGACY_MENU_TYPE_BUTTON;
     })
     .forEach((item) => {
       const child = menuToRoute(item);

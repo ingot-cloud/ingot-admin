@@ -7,6 +7,8 @@ import type {
   Option,
   BizPermissionTreeNodeVO,
   SetDTO,
+  RoleDataRuleSetDTO,
+  RoleDataRuleVO,
 } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
@@ -76,4 +78,19 @@ export function GetBindAuthoritiesAPI(
     undefined,
     options,
   );
+}
+
+export function GetRoleDataRulesAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<Array<RoleDataRuleVO>>> {
+  return request.get<Array<RoleDataRuleVO>>(`${PATH}/${id}/data-rules`, undefined, options);
+}
+
+export function SetRoleDataRulesAPI(
+  id: string,
+  params: RoleDataRuleSetDTO,
+  options?: RequestOptions,
+): Promise<R<void>> {
+  return request.put<void>(`${PATH}/${id}/data-rules`, params, options);
 }

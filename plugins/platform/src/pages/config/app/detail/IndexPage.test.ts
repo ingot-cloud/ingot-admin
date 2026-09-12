@@ -8,6 +8,7 @@ const pageSource = readFileSync(resolve(dir, "IndexPage.vue"), "utf8");
 const basicInfoSource = readFileSync(resolve(dir, "components/BasicInfoPanel.vue"), "utf8");
 const menuSource = readFileSync(resolve(dir, "components/MenuPanel.vue"), "utf8");
 const permissionSource = readFileSync(resolve(dir, "components/PermissionPanel.vue"), "utf8");
+const resourceSource = readFileSync(resolve(dir, "components/ResourcePanel.vue"), "utf8");
 
 describe("platform config app detail", () => {
   it("详情页使用 page 模式与 InPageHeader", () => {
@@ -46,5 +47,17 @@ describe("platform config app detail", () => {
     expect(permissionSource).toContain("in-table-actions");
     expect(permissionSource).not.toContain("@refresh");
     expect(permissionSource).not.toContain("#toolbar");
+  });
+
+  it("资源面板接入表格工具且无 @refresh", () => {
+    expect(pageSource).toContain("ResourcePanel");
+    expect(pageSource).toContain('title: "资源"');
+    expect(resourceSource).toContain("RESOURCE_TABLE_ID");
+    expect(resourceSource).toContain('density="compact"');
+    expect(resourceSource).toContain("in-table-column-setting");
+    expect(resourceSource).toContain("applyColumnSelection");
+    expect(resourceSource).toContain("in-table-actions");
+    expect(resourceSource).not.toContain("@refresh");
+    expect(resourceSource).not.toContain("#toolbar");
   });
 });

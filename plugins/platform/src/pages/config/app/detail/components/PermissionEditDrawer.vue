@@ -15,25 +15,24 @@
           w-full
           v-model="editForm.pid"
           :data="selectData"
-          :disabled="edit || isReadOnly"
+          :disabled="edit"
           :node-key="TreeKeyAndProps.nodeKey"
           :value-key="TreeKeyAndProps.nodeKey"
           :props="TreeKeyAndProps.props"
           :check-strictly="true"
         />
       </el-form-item>
-      <el-form-item v-if="!edit && !isReadOnly" label="节点类型" prop="nodeType">
+      <el-form-item v-if="!edit" label="节点类型" prop="nodeType">
         <in-select
           w-full
           v-model="editForm.nodeType"
           :options="creatableNodeTypeOptions"
-          @change="privateOnNodeTypeChange"
+          @onChanged="privateOnNodeTypeChange"
         />
       </el-form-item>
       <el-form-item label="权限名称" prop="name">
         <el-input
           v-model="editForm.name"
-          :disabled="isReadOnly"
           clearable
           placeholder="请输入权限名称"
         />
@@ -41,7 +40,7 @@
       <el-form-item label="权限编码" prop="code">
         <el-input
           v-model="editForm.code"
-          :disabled="edit || isReadOnly"
+          :disabled="edit"
           clearable
           :placeholder="codePlaceholder"
         />
@@ -49,13 +48,25 @@
           可填写片段，如 user:**，将自动位于 {{ appCode }}: 命名空间下
         </div>
       </el-form-item>
-      <el-form-item v-if="edit && !isReadOnly" label="备注">
+      <el-form-item v-if="!edit" label="绑定资源" prop="resourceId">
+        <in-select
+          w-full
+          v-model="editForm.resourceId"
+          clearable
+          placeholder="数据操作建议绑定资源"
+          :options="resourceOptions"
+        />
+      </el-form-item>
+      <el-form-item v-if="edit" label="绑定资源">
+        <span>{{ resourceLabel }}</span>
+      </el-form-item>
+      <el-form-item v-if="edit" label="备注">
         <el-input v-model="editForm.remark" clearable placeholder="请输入备注" />
       </el-form-item>
     </in-form>
     <template #footer>
-      <in-button v-if="edit && !isReadOnly" type="danger" @click="privateOnRemove">删除</in-button>
-      <in-button v-if="!isReadOnly" :loading="loading" type="primary" @click="privateOnConfirm">
+      <in-button v-if="edit && !isRoot" type="danger" @click="privateOnRemove">删除</in-button>
+      <in-button :loading="loading" type="primary" @click="privateOnConfirm">
         确定
       </in-button>
     </template>
@@ -71,10 +82,11 @@ import {
   RemoveAppPermissionAPI,
   UpdateAppPermissionAPI,
 } from "@/api/platform/config/app";
-import { appQueryKeys } from "@/api/platform/config/app.query";
+import { AppResourceListQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
 import { copyParams, getDiffWithIgnore, invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import type { TreeData } from "element-plus";
+import { isAppRootPermission } from "./permissionTree";
 
 const props = defineProps<{
   appId: string;
@@ -102,6 +114,7 @@ const defaultEditForm: AppPermissionCreateDTO & { id?: string; remark?: string }
   name: undefined,
   code: undefined,
   nodeType: PermissionNodeTypeEnum.Group,
+  resourceId: undefined,
   remark: undefined,
 };
 
@@ -110,11 +123,24 @@ const editForm = reactive({ ...defaultEditForm });
 const rawForm = reactive({ ...defaultEditForm });
 const title = ref("");
 const edit = ref(false);
-const isReadOnly = ref(false);
+const isRoot = ref(false);
 const visible = ref(false);
 const message = useMessage();
 const confirm = useMessageConfirm();
 const queryClient = useQueryClient();
+const resourceQuery = useQuery(() => AppResourceListQueryOptions(() => props.appId));
+const resourceOptions = computed(() =>
+  (resourceQuery.data.value ?? []).map((item) => ({
+    label: item.code ? `${item.name}（${item.code}）` : (item.name ?? item.id ?? ""),
+    value: item.id ?? "",
+  })),
+);
+const resourceLabel = computed(() => {
+  if (!editForm.resourceId) {
+    return "未绑定";
+  }
+  return resourceOptions.value.find((item) => item.value === editForm.resourceId)?.label ?? editForm.resourceId;
+});
 
 const invalidatePermissions = (): Promise<void> =>
   invalidateQueriesByKeys(queryClient, [
@@ -138,7 +164,6 @@ const loading = computed(() => saveMutation.isPending.value || removeMutation.is
 const showWildcardTip = computed(
   () =>
     !edit.value &&
-    !isReadOnly.value &&
     editForm.nodeType === PermissionNodeTypeEnum.Group &&
     !!editForm.code,
 );
@@ -221,7 +246,7 @@ defineExpose({
     visible.value = true;
     copyParams(editForm, defaultEditForm);
     copyParams(rawForm, defaultEditForm);
-    isReadOnly.value = false;
+    isRoot.value = false;
     nextTick(() => {
       unref(editFormRef)?.clearValidate();
     });
@@ -238,10 +263,7 @@ defineExpose({
       copyParams(rawForm, data);
       title.value = "编辑权限";
       edit.value = true;
-      isReadOnly.value = !!(data.readOnly || data.managed);
-      if (data.nodeType === PermissionNodeTypeEnum.Navigation) {
-        isReadOnly.value = true;
-      }
+      isRoot.value = isAppRootPermission(data);
       return;
     }
 

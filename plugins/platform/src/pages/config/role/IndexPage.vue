@@ -59,6 +59,7 @@
   </in-page-frame>
 
   <RoleDrawer ref="RoleDrawerRef" :roleList="roleTree" @success="refreshData" />
+  <DataRuleDrawer ref="dataRuleDrawerRef" />
 </template>
 
 <script setup lang="ts">
@@ -71,6 +72,7 @@ import {
 } from "@/api/platform/config/role.query";
 import { useOrgTypeEnums, useRoleTypeEnums } from "@/models/enums";
 import RoleDrawer from "./components/RoleDrawer.vue";
+import DataRuleDrawer from "./components/DataRuleDrawer.vue";
 import {
   createRoleRowActions,
   createRoleToolbarActions,
@@ -80,6 +82,7 @@ import {
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const RoleDrawerRef = ref();
+const dataRuleDrawerRef = ref<InstanceType<typeof DataRuleDrawer>>();
 const queryClient = useQueryClient();
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: RoleTreeNodeVO = {};
@@ -113,12 +116,20 @@ const handleAddChild = (params: RoleTreeNodeVO): void => {
   RoleDrawerRef.value.show(params, true);
 };
 
+const handleDataRules = (params: RoleTreeNodeVO): void => {
+  if (!params.id) {
+    return;
+  }
+  dataRuleDrawerRef.value?.show(params.id, params.name);
+};
+
 const toolbarActions = computed(() => createRoleToolbarActions(handleCreate));
 
 const rowActionsOf = (item: RoleTreeNodeVO): Array<InTableAction<RoleTreeNodeVO>> =>
   createRoleRowActions(item, {
     onEdit: handleEdit,
     onAddChild: handleAddChild,
+    onDataRules: handleDataRules,
   });
 
 const privateOnColumnChange = (value: string[]): void => {

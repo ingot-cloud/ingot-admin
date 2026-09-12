@@ -38,7 +38,7 @@
           :value="item.accessMode"
           :enumObj="accessModeEnum"
         />
-        <in-copy-tag v-else :text="item.permissionCode" />
+        <span v-else>{{ permissionSummary(item) }}</span>
       </template>
       <template #path="{ item }">
         <in-copy-tag :text="item.path" />
@@ -55,6 +55,7 @@
   <MenuEditDrawer
     ref="menuEditDrawerRef"
     :app-id="appId"
+    :app-code="appCode"
     :select-data="menuData"
     @success="privateFetchData"
   />
@@ -77,9 +78,18 @@ import MenuEditDrawer from "./MenuEditDrawer.vue";
 
 const props = defineProps<{
   appId: string;
+  appCode?: string;
 }>();
 
 const accessModeEnum = useAccessModeEnum();
+
+const permissionSummary = (item: MenuTreeNode): string => {
+  const count = item.permissionIds?.length ?? 0;
+  if (count === 0) {
+    return "未关联权限";
+  }
+  return `已关联 ${count} 个权限`;
+};
 
 const menuQuery = useQuery(() => AppMenuTreeQueryOptions(() => props.appId));
 const menuData = computed(() => menuQuery.data.value ?? []);

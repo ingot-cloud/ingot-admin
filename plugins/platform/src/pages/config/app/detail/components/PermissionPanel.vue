@@ -25,10 +25,8 @@
       <template #nodeType="{ item }">
         <in-tag-enum :value="item.nodeType" :enumObj="nodeTypeEnum" />
       </template>
-      <template #managed="{ item }">
-        <el-tag v-if="item.managed" type="warning" size="small">托管</el-tag>
-        <el-tag v-else-if="item.readOnly" type="info" size="small">只读</el-tag>
-        <span v-else>-</span>
+      <template #resourceId="{ item }">
+        <span>{{ resourceNameOf(item.resourceId) }}</span>
       </template>
       <template #status="{ item }">
         <in-common-status-tag :status="item.status" />
@@ -61,7 +59,7 @@ import {
   type CommonStatus,
 } from "@/models/enums";
 import { UpdateAppPermissionAPI } from "@/api/platform/config/app.ts";
-import { AppPermissionTreeQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
+import { AppPermissionTreeQueryOptions, AppResourceListQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import {
   createPermissionRowActions,
@@ -81,7 +79,14 @@ const queryClient = useQueryClient();
 const message = useMessage();
 
 const permissionQuery = useQuery(() => AppPermissionTreeQueryOptions(() => props.appId));
+const resourceQuery = useQuery(() => AppResourceListQueryOptions(() => props.appId));
 const treeData = computed(() => permissionQuery.data.value ?? []);
+const resourceNameOf = (resourceId?: string): string => {
+  if (!resourceId) {
+    return "-";
+  }
+  return resourceQuery.data.value?.find((item) => item.id === resourceId)?.name ?? resourceId;
+};
 const loading = computed(() => permissionQuery.isFetching.value);
 const permissionEditDrawerRef = ref<InstanceType<typeof PermissionEditDrawer>>();
 const selectedColumnProps = ref<string[]>([]);

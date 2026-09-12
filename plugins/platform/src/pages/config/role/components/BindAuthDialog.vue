@@ -60,17 +60,15 @@ const onCheckChange = (
 };
 
 const handleActionButton = () => {
-  const checkedNodes = treeRef.value.getCheckedNodes();
-  const realSelectIds = checkedNodes.map((node: any) => node.id);
+  const checkedNodes = (treeRef.value.getCheckedNodes() as Array<PermissionTreeNode>);
+  const realSelectIds = checkedNodes.map((node) => node.id);
 
-  // 如果当前选中的节点父节点也选中，那么不需要绑定当前节点
   const bindIds = checkedNodes
-    .filter((node: any) => {
-      return !realSelectIds.some((id: any) => id === node.pid);
+    .filter((node) => {
+      return !realSelectIds.some((id) => id === node.pid);
     })
-    .map((node: any) => {
-      return node.id;
-    });
+    .map((node) => node.id)
+    .filter((id): id is string => Boolean(id));
   // 过滤权限，如果父节点是选中状态，那么不需要绑定当前节点，并且孙子节点等都不需要
   btnLoading.value = true;
   BindAuthorityAPI({

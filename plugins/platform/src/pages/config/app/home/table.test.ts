@@ -35,6 +35,7 @@ describe("platform config app home table contract", () => {
   it("提供稳定 tableId，名称列为必选", () => {
     expect(APP_HOME_TABLE_ID).toBe("platform-config-app-home");
     expect(tableHeaders.find((item) => item.prop === "name")?.required).toBe(true);
+    expect(tableHeaders.find((item) => item.prop === "defaultAccessMode")?.label).toBe("默认访问");
   });
 
   it("工具栏添加应用始终直出", () => {

@@ -5,6 +5,8 @@ describe("platform config menu table contract", () => {
   it("提供稳定 tableId，名称列为必选", () => {
     expect(MENU_TABLE_ID).toBe("platform-config-menu");
     expect(tableHeaders.find((item) => item.prop === "name")?.required).toBe(true);
+    expect(tableHeaders.find((item) => item.prop === "permissionIds")?.label).toBe("可见性权限");
+    expect(tableHeaders.some((item) => item.prop === "permissionCode")).toBe(false);
   });
 
   it("行内只展示编辑，200 行映射保持稳定", () => {

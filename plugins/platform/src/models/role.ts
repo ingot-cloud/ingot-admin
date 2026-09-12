@@ -8,8 +8,6 @@ export interface PlatformRole {
   type?: string;
   orgType?: string;
   filterDept?: boolean;
-  scopeType?: string;
-  scopes?: Array<string>;
   status?: CommonStatus;
 }
 
@@ -18,6 +16,5 @@ export interface RoleTreeNodeVO extends PlatformRole {
   custom?: boolean;
   typeText?: string;
   orgTypeText?: string;
-  scopeTypeText?: string;
   statusText?: string;
 }

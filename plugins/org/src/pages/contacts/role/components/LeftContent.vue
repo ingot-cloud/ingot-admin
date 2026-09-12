@@ -62,14 +62,24 @@
             <in-tag v-if="data.filterDept" :value="{ text: '部门角色', tag: 'info' }" />
           </span>
 
-          <el-dropdown trigger="hover" class="action" v-if="data.custom">
+          <el-dropdown trigger="hover" class="action" v-if="data.type === RoleTypeEnums.ROLE || data.custom">
             <div class="action-icon">
               <in-icon name="icon-park-outline:more" cursor-pointer />
             </div>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item @click="privateEditRoleOrGroup(data)"> 编辑 </el-dropdown-item>
-                <el-dropdown-item @click="privateDeleteRoleOrGroup(data)"> 删除 </el-dropdown-item>
+                <el-dropdown-item
+                  v-if="data.type === RoleTypeEnums.ROLE"
+                  @click="privateEditDataRules(data)"
+                >
+                  数据范围
+                </el-dropdown-item>
+                <el-dropdown-item v-if="data.custom" @click="privateEditRoleOrGroup(data)">
+                  编辑
+                </el-dropdown-item>
+                <el-dropdown-item v-if="data.custom" @click="privateDeleteRoleOrGroup(data)">
+                  删除
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -81,6 +91,7 @@
 
   <RoleGroupDrawer ref="RoleGroupDrawerRef" @success="fetchData" />
   <RoleDrawer ref="RoleDrawerRef" :groupList="groupList" @success="fetchData" />
+  <DataRuleDrawer ref="DataRuleDrawerRef" />
 </template>
 <script setup lang="ts">
 import { TreeKeyAndProps } from "@/models";
@@ -93,6 +104,7 @@ import { Confirm, Message } from "@ingot/admin-core";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import RoleGroupDrawer from "./RoleGroupDrawer.vue";
 import RoleDrawer from "./RoleDrawer.vue";
+import DataRuleDrawer from "./DataRuleDrawer.vue";
 
 const queryClient = useQueryClient();
 const roleQuery = useQuery(() => OrgRoleTreeQueryOptions());
@@ -113,6 +125,7 @@ const emits = defineEmits<{
 const roleTreeRef = ref();
 const RoleGroupDrawerRef = ref();
 const RoleDrawerRef = ref();
+const DataRuleDrawerRef = ref<InstanceType<typeof DataRuleDrawer>>();
 const searchValue = ref("");
 const defaultExpandedKeys = ref<Array<string>>([]);
 
@@ -185,6 +198,13 @@ const privateHandleCreateGroup = () => {
 const privateHandleCreateRole = () => {
   RoleDrawerRef.value.show();
 };
+const privateEditDataRules = (params: RoleTreeNodeVO): void => {
+  if (!params.id) {
+    return;
+  }
+  DataRuleDrawerRef.value?.show(params.id, params.name);
+};
+
 const privateEditRoleOrGroup = (params: RoleTreeNodeVO) => {
   if (params.type === RoleTypeEnums.GROUP) {
     RoleGroupDrawerRef.value.show(params);

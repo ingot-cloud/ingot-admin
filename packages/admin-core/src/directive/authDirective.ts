@@ -1,6 +1,9 @@
 import type { Directive } from "vue";
 import { usePermissions } from "@/stores/modules/auth";
 
+const matchesAuth = (required: string, permissions: Array<string>, roles: Array<string>): boolean =>
+  permissions.includes(required) || roles.includes(required);
+
 const removeIfUnauthorized = (el: HTMLElement, allowed: boolean): void => {
   if (allowed) {
     return;
@@ -10,36 +13,23 @@ const removeIfUnauthorized = (el: HTMLElement, allowed: boolean): void => {
 
 export const authDirective: Directive<HTMLElement, string> = {
   mounted(el, binding) {
-    const permissions = usePermissions();
-    const reqAuth = binding.value;
-    const allowed =
-      permissions.permissions.some((item) => reqAuth.startsWith(item)) ||
-      permissions.roles.some((item) => item === reqAuth);
-    removeIfUnauthorized(el, allowed);
+    const store = usePermissions();
+    removeIfUnauthorized(el, matchesAuth(binding.value, store.permissions, store.roles));
   },
 };
 
 export const authAnyDirective: Directive<HTMLElement, string[]> = {
   mounted(el, binding) {
-    const permissions = usePermissions();
-    const reqAuths = binding.value;
-    const roleMatched = permissions.roles.some((role) => reqAuths.some((auth) => auth === role));
-    if (roleMatched) {
-      return;
-    }
-    const permissionMatched = permissions.permissions.some((item) =>
-      reqAuths.some((auth) => auth.startsWith(item)),
-    );
-    removeIfUnauthorized(el, permissionMatched);
+    const store = usePermissions();
+    const allowed = binding.value.some((auth) => matchesAuth(auth, store.permissions, store.roles));
+    removeIfUnauthorized(el, allowed);
   },
 };
 
 export const authAllDirective: Directive<HTMLElement, string[]> = {
   mounted(el, binding) {
-    const permissions = usePermissions();
-    const reqAuths = binding.value;
-    const userAuths = [...permissions.roles, ...permissions.permissions];
-    const allowed = reqAuths.every((auth) => userAuths.some((item) => auth.startsWith(item)));
+    const store = usePermissions();
+    const allowed = binding.value.every((auth) => matchesAuth(auth, store.permissions, store.roles));
     removeIfUnauthorized(el, allowed);
   },
 };

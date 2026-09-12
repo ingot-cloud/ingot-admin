@@ -1,5 +1,14 @@
 import { request, type RequestOptions } from "@ingot/admin-core";
-import type { RoleTreeNodeVO, PlatformRole, SetDTO, R, PermissionTreeNode, Option } from "@/models";
+import type {
+  RoleTreeNodeVO,
+  PlatformRole,
+  SetDTO,
+  R,
+  PermissionTreeNode,
+  Option,
+  RoleDataRuleSetDTO,
+  RoleDataRuleVO,
+} from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
 const PATH = "/api/pms/v1/platform/config/role";
@@ -41,4 +50,19 @@ export function GetBindAuthoritiesAPI(
   options?: RequestOptions,
 ): Promise<R<Array<PermissionTreeNode>>> {
   return request.get<Array<PermissionTreeNode>>(`${PATH}/${id}/permissions`, undefined, options);
+}
+
+export function GetRoleDataRulesAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<Array<RoleDataRuleVO>>> {
+  return request.get<Array<RoleDataRuleVO>>(`${PATH}/${id}/data-rules`, undefined, options);
+}
+
+export function SetRoleDataRulesAPI(
+  id: string,
+  params: RoleDataRuleSetDTO,
+  options?: RequestOptions,
+): Promise<R<void>> {
+  return request.put<void>(`${PATH}/${id}/data-rules`, params, options);
 }

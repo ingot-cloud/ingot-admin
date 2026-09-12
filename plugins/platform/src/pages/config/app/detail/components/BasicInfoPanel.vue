@@ -27,6 +27,12 @@
             <span class="info-item__value">{{ form.permissionCount ?? 0 }}</span>
           </div>
         </el-col>
+        <el-col :span="6">
+          <div class="info-item">
+            <span class="info-item__label">默认访问</span>
+            <in-tag-enum :value="form.defaultAccessMode" :enumObj="defaultAccessModeEnum" />
+          </div>
+        </el-col>
       </el-row>
     </div>
 
@@ -78,6 +84,15 @@
               <el-input-number v-model="form.sort" :min="0" :max="9999" w-full />
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="默认访问" prop="defaultAccessMode">
+              <in-select
+                w-full
+                v-model="form.defaultAccessMode"
+                :options="defaultAccessModeEnum.getOptions()"
+              />
+            </el-form-item>
+          </el-col>
           <el-col :span="24">
             <el-form-item label="应用描述" prop="intro">
               <el-input
@@ -100,6 +115,7 @@
 <script setup lang="ts">
 import { ClickOutside as vClickOutside } from "element-plus";
 import type { PlatformAppDetailVO, PlatformAppUpdateDTO } from "@/models";
+import { useAppDefaultAccessModeEnum } from "@/models/enums";
 import { AppDetailQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
 import { UpdateAppAPI } from "@/api/platform/config/app";
 import { getDiff, invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
@@ -115,6 +131,7 @@ const emit = defineEmits<{
 
 const editing = defineModel<boolean>("editing", { default: false });
 
+const defaultAccessModeEnum = useAppDefaultAccessModeEnum();
 const rules = {
   name: [{ required: true, message: "请输入应用名称", trigger: "blur" }],
   intro: [{ required: true, message: "请输入应用描述", trigger: "blur" }],
@@ -187,12 +204,14 @@ const save = (): Promise<void> => {
           icon: rawForm.icon,
           intro: rawForm.intro,
           sort: rawForm.sort,
+          defaultAccessMode: rawForm.defaultAccessMode,
         },
         {
           name: form.name,
           icon: form.icon,
           intro: form.intro,
           sort: form.sort,
+          defaultAccessMode: form.defaultAccessMode,
         },
       );
       if (Object.keys(diff).length === 0) {

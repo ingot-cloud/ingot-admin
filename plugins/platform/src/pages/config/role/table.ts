@@ -1,5 +1,6 @@
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { RoleTreeNodeVO } from "@/models";
+import { RoleTypeEnums } from "@/models/enums";
 
 export const ROLE_TABLE_ID = "platform-config-role";
 
@@ -34,7 +35,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "200",
+    width: "240",
     prop: "actions",
     fixed: "right",
   },
@@ -57,13 +58,14 @@ export function createRoleToolbarActions(
 }
 
 export function createRoleRowActions(
-  _row: RoleTreeNodeVO,
+  row: RoleTreeNodeVO,
   handlers: {
     onEdit: (row: RoleTreeNodeVO) => void;
     onAddChild: (row: RoleTreeNodeVO) => void;
+    onDataRules?: (row: RoleTreeNodeVO) => void;
   },
 ): Array<InTableAction<RoleTreeNodeVO>> {
-  return [
+  const actions: Array<InTableAction<RoleTreeNodeVO>> = [
     {
       key: "edit",
       label: "编辑",
@@ -77,4 +79,13 @@ export function createRoleRowActions(
       onSelect: handlers.onAddChild,
     },
   ];
+  if (row.type !== RoleTypeEnums.GROUP && handlers.onDataRules) {
+    actions.push({
+      key: "data-rules",
+      label: "数据范围",
+      kind: "default",
+      onSelect: handlers.onDataRules,
+    });
+  }
+  return actions;
 }

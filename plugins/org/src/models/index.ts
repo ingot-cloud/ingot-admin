@@ -1,4 +1,5 @@
 export * from "./authority";
+export * from "./dataRule";
 export * from "./dept";
 export * from "./role";
 export * from "./user";

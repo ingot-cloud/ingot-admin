@@ -15,12 +15,14 @@ import type {
   PlatformAppFilterDTO,
   MenuTreeNode,
   AppPermissionTreeNodeVO,
+  PlatformResource,
 } from "@/models";
 import {
   AppDetailAPI,
   AppMenuTreeAPI,
   AppPageAPI,
   AppPermissionTreeAPI,
+  AppResourceListAPI,
 } from "./app";
 
 const resourceKeys = createResourceQueryKeys("platform", "app");
@@ -29,6 +31,7 @@ export const appQueryKeys = {
   ...resourceKeys,
   menus: (appId: string) => [...resourceKeys.detail(appId), "menus"] as const,
   permissions: (appId: string) => [...resourceKeys.detail(appId), "permissions"] as const,
+  resources: (appId: string) => [...resourceKeys.detail(appId), "resources"] as const,
 };
 
 export function AppPageQueryOptions(
@@ -79,6 +82,16 @@ export function AppPermissionTreeQueryOptions(appId: MaybeRefOrGetter<string>) {
     enabled: Boolean(id),
     queryFn: ({ signal }): Promise<Array<AppPermissionTreeNodeVO>> =>
       AppPermissionTreeAPI(id, silentQueryRequest(signal)).then(({ data }) => data),
+  });
+}
+
+export function AppResourceListQueryOptions(appId: MaybeRefOrGetter<string>) {
+  const id = toValue(appId);
+  return queryOptions({
+    queryKey: appQueryKeys.resources(id),
+    enabled: Boolean(id),
+    queryFn: ({ signal }): Promise<Array<PlatformResource>> =>
+      AppResourceListAPI(id, silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
 }
 

@@ -28,15 +28,27 @@ export const useAccessModeEnum = () => {
   return useEnum(AccessModeEnumExtArray);
 };
 
+export enum AppDefaultAccessModeEnum {
+  Open = "0",
+  Closed = "1",
+}
+
+export const AppDefaultAccessModeEnumExtArray = [
+  newEnumExt(AppDefaultAccessModeEnum.Open, "默认开放", "success"),
+  newEnumExt(AppDefaultAccessModeEnum.Closed, "申请制", "warning"),
+];
+
+export const useAppDefaultAccessModeEnum = () => {
+  return useEnum(AppDefaultAccessModeEnumExtArray);
+};
+
 export enum PermissionNodeTypeEnum {
   Group = "0",
-  Navigation = "1",
   Action = "2",
 }
 
 export const PermissionNodeTypeEnumExtArray = [
   newEnumExt(PermissionNodeTypeEnum.Group, "分组", "info"),
-  newEnumExt(PermissionNodeTypeEnum.Navigation, "导航", "warning"),
   newEnumExt(PermissionNodeTypeEnum.Action, "操作", "success"),
 ];
 

@@ -15,6 +15,7 @@ export interface PlatformApp {
   status?: CommonStatus | string;
   menuId?: string;
   permissionId?: string;
+  defaultAccessMode?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -39,6 +40,7 @@ export interface PlatformAppCreateDTO {
   icon?: string;
   intro?: string;
   sort?: number;
+  defaultAccessMode?: string;
 }
 
 export interface PlatformAppUpdateDTO {
@@ -46,6 +48,7 @@ export interface PlatformAppUpdateDTO {
   icon?: string;
   intro?: string;
   sort?: number;
+  defaultAccessMode?: string;
 }
 
 export interface AppEnabledDTO {

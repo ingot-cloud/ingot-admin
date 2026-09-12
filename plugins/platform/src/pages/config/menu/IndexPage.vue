@@ -35,10 +35,10 @@
         <template #accessMode="{ item }">
           <in-tag-enum :value="item.accessMode" :enumObj="accessModeEnums" />
         </template>
-        <template #permissionCode="{ item }">
+        <template #permissionIds="{ item }">
           <in-copy-tag
             v-if="item.accessMode === AccessModeEnum.Permission"
-            :text="item.permissionCode || '-'"
+            :text="permissionSummary(item)"
           />
           <el-tag v-else type="success">开放</el-tag>
         </template>
@@ -107,6 +107,11 @@ const menuTypeEnums = useMenuTypeEnum();
 const orgTypeEnums = useOrgTypeEnums();
 const menuLinkTypeEnums = useMenuLinkTypeEnum();
 const accessModeEnums = useAccessModeEnum();
+
+const permissionSummary = (item: MenuTreeNode): string => {
+  const count = item.permissionIds?.length ?? 0;
+  return count > 0 ? `已关联 ${count} 个权限` : "未关联权限";
+};
 
 const message = useMessage();
 const go = useGo();

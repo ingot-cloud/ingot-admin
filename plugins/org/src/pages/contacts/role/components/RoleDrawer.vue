@@ -26,22 +26,6 @@
           <el-radio-button :value="false"> 否 </el-radio-button>
         </el-radio-group>
       </el-form-item>
-
-      <el-form-item label="数据权限" prop="scopeType">
-        <in-select
-          w-full
-          v-model="editForm.scopeType"
-          placeholder="请选择数据权限"
-          :options="useDataScope.getOptions()"
-        />
-      </el-form-item>
-      <el-form-item
-        label="数据范围"
-        prop="scopes"
-        v-if="editForm.scopeType === DataScopeTypeEnum.CUSTOM"
-      >
-        <BizDeptSelect w-full multiple v-model="editForm.scopes" clearable />
-      </el-form-item>
     </el-form>
     <template #footer>
       <in-button type="primary" @click="handleActionButton">确定</in-button>
@@ -56,8 +40,6 @@ import { Message } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
 import { CreateRoleAPI, UpdateRoleAPI } from "@/api/org/role";
 import { orgRoleQueryKeys } from "@/api/org/role.query";
-import { useDataScopeTypeEnum, DataScopeTypeEnum } from "@/models/enums";
-import BizDeptSelect from "@/components/biz/dept-select/BizDeptSelect.vue";
 import { useQueryClient } from "@tanstack/vue-query";
 
 const rawForm = {
@@ -65,12 +47,10 @@ const rawForm = {
   pid: undefined,
   name: undefined,
   type: RoleTypeEnums.ROLE,
-  scopeType: undefined,
-  scopes: [],
   filterDept: false,
 };
 
-const keys = ["id", "pid", "name", "type", "scopeType", "scopes", "filterDept"];
+const keys = ["id", "pid", "name", "type", "filterDept"];
 
 const title = ref("");
 const show = ref(false);
@@ -79,8 +59,6 @@ const id = ref();
 const rules = {
   name: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
   pid: [{ required: true, message: "请选择角色组", trigger: "blur" }],
-  scopeType: [{ required: true, message: "请选择数据权限", trigger: "blur" }],
-  scopes: [{ required: true, message: "请选择数据范围", trigger: "blur" }],
 };
 
 const emits = defineEmits(["success"]);
@@ -92,7 +70,6 @@ defineProps({
 });
 
 const queryClient = useQueryClient();
-const useDataScope = useDataScopeTypeEnum();
 
 const editFormRef = ref();
 const editForm = reactive(Object.assign({}, rawForm));

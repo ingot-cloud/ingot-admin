@@ -38,6 +38,11 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "100",
   },
   {
+    label: "默认访问",
+    prop: "defaultAccessMode",
+    width: "110",
+  },
+  {
     label: "排序",
     prop: "sort",
     width: "80",

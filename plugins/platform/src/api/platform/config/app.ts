@@ -13,6 +13,9 @@ import type {
   AppPermissionTreeNodeVO,
   AppPermissionCreateDTO,
   AppPermissionUpdateDTO,
+  PlatformResource,
+  AppResourceCreateDTO,
+  AppResourceUpdateDTO,
 } from "@/models";
 import type { CommonStatus } from "@/models/enums";
 import { filterParams } from "@ingot/admin-core";
@@ -145,9 +148,9 @@ export function CreateAppPermissionAPI(
   appId: string,
   params: AppPermissionCreateDTO,
   options?: RequestOptions,
-): Promise<R<void>> {
+): Promise<R<string>> {
   filterParams(params);
-  return request.post<void>(`${PATH}/${appId}/permissions`, params, options);
+  return request.post<string>(`${PATH}/${appId}/permissions`, params, options);
 }
 
 /** 更新应用权限 */
@@ -168,4 +171,42 @@ export function RemoveAppPermissionAPI(
   options?: RequestOptions,
 ): Promise<R<void>> {
   return request.delete<void>(`${PATH}/${appId}/permissions/${permissionId}`, null, options);
+}
+
+/** 应用资源列表 */
+export function AppResourceListAPI(
+  appId: string,
+  options?: RequestOptions,
+): Promise<R<Array<PlatformResource>>> {
+  return request.get<Array<PlatformResource>>(`${PATH}/${appId}/resources`, undefined, options);
+}
+
+/** 创建应用资源 */
+export function CreateAppResourceAPI(
+  appId: string,
+  params: AppResourceCreateDTO,
+  options?: RequestOptions,
+): Promise<R<string>> {
+  filterParams(params);
+  return request.post<string>(`${PATH}/${appId}/resources`, params, options);
+}
+
+/** 更新应用资源 */
+export function UpdateAppResourceAPI(
+  appId: string,
+  resourceId: string,
+  params: AppResourceUpdateDTO,
+  options?: RequestOptions,
+): Promise<R<void>> {
+  filterParams(params);
+  return request.put<void>(`${PATH}/${appId}/resources/${resourceId}`, params, options);
+}
+
+/** 删除应用资源 */
+export function RemoveAppResourceAPI(
+  appId: string,
+  resourceId: string,
+  options?: RequestOptions,
+): Promise<R<void>> {
+  return request.delete<void>(`${PATH}/${appId}/resources/${resourceId}`, null, options);
 }

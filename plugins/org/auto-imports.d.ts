@@ -45,6 +45,7 @@ declare global {
   const defineStore: typeof import('pinia').defineStore
   const eagerComputed: typeof import('@vueuse/core').eagerComputed
   const effectScope: typeof import('vue').effectScope
+  const ensureSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').ensureSessionBootstrap
   const extendRef: typeof import('@vueuse/core').extendRef
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
@@ -106,6 +107,8 @@ declare global {
   const refManualReset: typeof import('@vueuse/core').refManualReset
   const refThrottled: typeof import('@vueuse/core').refThrottled
   const refWithControl: typeof import('@vueuse/core').refWithControl
+  const refreshSessionPermissions: typeof import('../../packages/admin-core/src/stores/modules/auth').refreshSessionPermissions
+  const resetSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').resetSessionBootstrap
   const resolveComponent: typeof import('vue').resolveComponent
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
@@ -401,6 +404,7 @@ declare module 'vue' {
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
+    readonly ensureSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['ensureSessionBootstrap']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
@@ -462,6 +466,8 @@ declare module 'vue' {
     readonly refManualReset: UnwrapRef<typeof import('@vueuse/core')['refManualReset']>
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
+    readonly refreshSessionPermissions: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['refreshSessionPermissions']>
+    readonly resetSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['resetSessionBootstrap']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly setActivePinia: UnwrapRef<typeof import('pinia')['setActivePinia']>
     readonly setMapStoreSuffix: UnwrapRef<typeof import('pinia')['setMapStoreSuffix']>

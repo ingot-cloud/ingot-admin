@@ -59,6 +59,9 @@
         <template #appType="{ item }">
           <in-tag-enum :value="item.appType" :enumObj="appTypeEnum" />
         </template>
+        <template #defaultAccessMode="{ item }">
+          <in-tag-enum :value="item.defaultAccessMode" :enumObj="defaultAccessModeEnum" />
+        </template>
         <template #status="{ item }">
           <in-common-status-tag :status="item.status" />
         </template>
@@ -75,7 +78,7 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { PlatformApp } from "@/models";
-import { getCommonStatusToggle, useAppTypeEnum, type CommonStatus } from "@/models/enums";
+import { getCommonStatusToggle, useAppDefaultAccessModeEnum, useAppTypeEnum, type CommonStatus } from "@/models/enums";
 import { Search } from "@element-plus/icons-vue";
 import { PatchAppStatusAPI, RemoveAppAPI } from "@/api/platform/config/app.ts";
 import { appQueryKeys } from "@/api/platform/config/app.query";
@@ -113,6 +116,7 @@ const {
 const queryClient = useQueryClient();
 
 const appTypeEnum = useAppTypeEnum();
+const defaultAccessModeEnum = useAppDefaultAccessModeEnum();
 const message = useMessage();
 const confirm = useMessageConfirm();
 const go = useGo();

@@ -28,8 +28,8 @@
         <template #status="{ item }">
           <in-common-status-tag :status="item.status" />
         </template>
-        <template #type="{ item }">
-          <in-tag :value="authorityTypeEnums.getTagText(item.type)" />
+        <template #nodeType="{ item }">
+          <in-tag-enum :value="item.nodeType" :enumObj="nodeTypeEnum" />
         </template>
         <template #orgType="{ item }">
           <in-tag :value="orgTypeEnums.getTagText(item.orgType)" />
@@ -45,13 +45,13 @@
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction, withAllPickerOption } from "@ingot/admin-core";
 import type { PlatformPermission, PermissionTreeNode } from "@/models";
-import { useOrgTypeEnums, useAuthorityTypeEnums } from "@/models/enums";
+import { useOrgTypeEnums, usePermissionNodeTypeEnum } from "@/models/enums";
 import { PlatformAuthorityTreeQueryOptions } from "@/api/platform/config/authority.query";
 import { createPermissionRowActions, PERMISSION_TABLE_ID, tableHeaders } from "./table";
 import { useQuery } from "@tanstack/vue-query";
 
 const orgTypeEnums = useOrgTypeEnums();
-const authorityTypeEnums = useAuthorityTypeEnums();
+const nodeTypeEnum = usePermissionNodeTypeEnum();
 const message = useMessage();
 const go = useGo();
 

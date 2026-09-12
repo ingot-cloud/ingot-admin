@@ -8,7 +8,7 @@
             w-full
             v-model="editForm.menuType"
             :options="menuTypeEnum.getOptions()"
-            @change="privateOnMenuTypeChange"
+            @onChanged="privateOnMenuTypeChange"
           />
         </el-form-item>
         <el-form-item label="上级菜单">
@@ -35,7 +35,7 @@
           <el-input v-model="editForm.name" placeholder="请输入菜单名称" clearable />
         </el-form-item>
         <el-form-item
-          v-if="!isButton() && isDefaultLink()"
+          v-if="isDefaultLink()"
           prop="viewPath"
           label="绑定视图"
         >
@@ -72,7 +72,36 @@
         <el-form-item label="访问模式" prop="accessMode">
           <in-select w-full v-model="editForm.accessMode" :options="accessModeEnum.getOptions()" />
         </el-form-item>
-        <el-form-item v-if="!isButton()" prop="icon" label="菜单 icon">
+        <el-form-item
+          v-if="needsPermissions"
+          prop="permissionIds"
+          label="可见性权限"
+        >
+          <in-select
+            w-full
+            multiple
+            filterable
+            v-model="editForm.permissionIds"
+            placeholder="选择同应用的操作权限"
+            :options="actionPermissionOptions"
+          />
+          <div class="code-hint">受保护页面必须关联至少一个 ACTION 权限，不要从路径生成。</div>
+        </el-form-item>
+        <el-form-item v-if="needsPermissions" prop="permissionMatchMode" label="匹配方式">
+          <in-select
+            w-full
+            v-model="editForm.permissionMatchMode"
+            :options="matchModeEnum.getOptions()"
+          />
+        </el-form-item>
+        <div v-if="needsPermissions" class="shortcut-create">
+          <el-input v-model="shortcutName" placeholder="快捷权限名称" class="flex-1" />
+          <el-input v-model="shortcutCode" placeholder="如 user:query" class="flex-1" />
+          <in-button :loading="shortcutLoading" @click="privateOnShortcutPermission">
+            快捷新建权限
+          </in-button>
+        </div>
+        <el-form-item prop="icon" label="菜单 icon">
           <el-input v-model="editForm.icon" placeholder="请输入 icon 名称" clearable>
             <template #append>
               <div
@@ -128,8 +157,8 @@
         </el-form-item>
       </div>
 
-      <in-form-group-title v-if="!isButton()" title="其他高级选项" v-model="moreOptionsFlag" />
-      <div p-20px v-if="!isButton() && moreOptionsFlag">
+      <in-form-group-title title="其他高级选项" v-model="moreOptionsFlag" />
+      <div p-20px v-if="moreOptionsFlag">
         <el-form-item label="路由名称">
           <el-input v-model="editForm.routeName" placeholder="请输入路由名称" clearable />
         </el-form-item>
@@ -196,17 +225,22 @@ import {
   CommonStatusEnumExtArray,
   MenuLinkType,
   MenuType,
+  PermissionMatchModeEnum,
+  PermissionNodeTypeEnum,
   useAccessModeEnum,
   useMenuLinkTypeEnum,
   useMenuTypeEnum,
+  usePermissionMatchModeEnum,
 } from "@/models/enums";
-import { CreateAppMenuAPI, RemoveAppMenuAPI, UpdateAppMenuAPI } from "@/api/platform/config/app";
-import { appQueryKeys } from "@/api/platform/config/app.query";
+import { CreateAppMenuAPI, CreateAppPermissionAPI, RemoveAppMenuAPI, UpdateAppMenuAPI } from "@/api/platform/config/app";
+import { AppPermissionTreeQueryOptions, appQueryKeys } from "@/api/platform/config/app.query";
 import { invalidateQueriesByKeys, silentQueryRequest } from "@ingot/admin-core";
-import { useMutation, useQueryClient } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
+import { flattenActionPermissions } from "./permissionTree";
 
 const props = defineProps<{
   appId: string;
+  appCode?: string;
   selectData: TreeData;
 }>();
 
@@ -214,38 +248,14 @@ const emit = defineEmits<{
   success: [];
 }>();
 
-const rules = {
-  name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
-  menuType: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
-  path: [{ required: true, message: "请输入菜单路由", trigger: "blur" }],
-  linkType: [{ required: true, message: "请选择链接类型", trigger: "blur" }],
-  linkUrl: [{ required: true, message: "请输入链接 URL", trigger: "blur" }],
-  accessMode: [{ required: true, message: "请选择访问模式", trigger: "change" }],
-  viewPath: [
-    {
-      trigger: "change",
-      validator: (_rule: unknown, value: string | undefined, callback: (error?: Error) => void) => {
-        if (isButton() || !isDefaultLink()) {
-          callback();
-          return;
-        }
-        if (!value) {
-          callback(new Error("请选择绑定视图"));
-          return;
-        }
-        callback();
-      },
-    },
-  ],
-};
-
 const defaultEditForm: PlatformMenu = {
   pid: undefined,
   name: undefined,
   menuType: MenuType.Directory,
   path: undefined,
   accessMode: AccessModeEnum.Permission,
-  permissionCode: undefined,
+  permissionIds: [],
+  permissionMatchMode: PermissionMatchModeEnum.Any,
   routeName: undefined,
   customViewPath: true,
   viewPath: undefined,
@@ -262,9 +272,59 @@ const defaultEditForm: PlatformMenu = {
   remark: undefined,
 };
 
+const editForm = reactive<PlatformMenu>({ ...defaultEditForm });
+const isDirectory = (): boolean => editForm.menuType === MenuType.Directory;
+const isMenu = (): boolean => editForm.menuType === MenuType.Menu;
+const isDefaultLink = (): boolean => editForm.linkType === MenuLinkType.Default;
+const needsPermissions = computed(
+  () => isMenu() && editForm.accessMode === AccessModeEnum.Permission,
+);
+
+const rules = {
+  name: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+  menuType: [{ required: true, message: "请选择菜单类型", trigger: "blur" }],
+  path: [{ required: true, message: "请输入菜单路由", trigger: "blur" }],
+  linkType: [{ required: true, message: "请选择链接类型", trigger: "blur" }],
+  linkUrl: [{ required: true, message: "请输入链接 URL", trigger: "blur" }],
+  accessMode: [{ required: true, message: "请选择访问模式", trigger: "change" }],
+  permissionIds: [
+    {
+      trigger: "change",
+      validator: (_rule: unknown, value: Array<string> | undefined, callback: (error?: Error) => void) => {
+        if (!needsPermissions.value) {
+          callback();
+          return;
+        }
+        if (!value?.length) {
+          callback(new Error("受保护页面必须关联至少一个操作权限"));
+          return;
+        }
+        callback();
+      },
+    },
+  ],
+  viewPath: [
+    {
+      trigger: "change",
+      validator: (_rule: unknown, value: string | undefined, callback: (error?: Error) => void) => {
+        if (!isDefaultLink()) {
+          callback();
+          return;
+        }
+        if (!value) {
+          callback(new Error("请选择绑定视图"));
+          return;
+        }
+        callback();
+      },
+    },
+  ],
+};
+
 const menuTypeEnum = useMenuTypeEnum();
 const menuLinkTypeEnum = useMenuLinkTypeEnum();
 const accessModeEnum = useAccessModeEnum();
+const matchModeEnum = usePermissionMatchModeEnum();
 const statusEnum = useEnum(CommonStatusEnumExtArray);
 const message = useMessage();
 const confirm = useMessageConfirm();
@@ -275,7 +335,6 @@ const lastAutoPath = ref<string | undefined>();
 const editFormRef = ref();
 const iconButtonRef = ref();
 const iconPopoverRef = ref();
-const editForm = reactive<PlatformMenu>({ ...defaultEditForm });
 const rawForm = reactive<PlatformMenu>({});
 const title = ref("");
 const edit = ref(false);
@@ -327,10 +386,54 @@ const viewOptionGroups = computed(() => {
   return groups;
 });
 
-const isDirectory = (): boolean => editForm.menuType === MenuType.Directory;
-const isMenu = (): boolean => editForm.menuType === MenuType.Menu;
-const isButton = (): boolean => editForm.menuType === MenuType.Button;
-const isDefaultLink = (): boolean => editForm.linkType === MenuLinkType.Default;
+const permissionQuery = useQuery(() => ({
+  ...AppPermissionTreeQueryOptions(() => props.appId),
+  enabled: visible.value,
+}));
+const actionPermissionOptions = computed(() => flattenActionPermissions(permissionQuery.data.value));
+const shortcutName = ref("");
+const shortcutCode = ref("");
+const shortcutLoading = ref(false);
+
+const normalizePermissionFields = (): void => {
+  if (needsPermissions.value) {
+    editForm.permissionMatchMode = editForm.permissionMatchMode ?? PermissionMatchModeEnum.Any;
+    return;
+  }
+  editForm.permissionIds = [];
+  editForm.permissionMatchMode = undefined;
+};
+
+const privateOnShortcutPermission = (): void => {
+  if (!shortcutName.value || !shortcutCode.value) {
+    message.warning("请填写快捷权限名称和编码");
+    return;
+  }
+  shortcutLoading.value = true;
+  CreateAppPermissionAPI(
+    props.appId,
+    {
+      name: shortcutName.value,
+      code: shortcutCode.value,
+      nodeType: PermissionNodeTypeEnum.Action,
+      pid: "0",
+    },
+    silentQueryRequest(),
+  )
+    .then((response) => {
+      const id = response.data;
+      if (id) {
+        editForm.permissionIds = [...(editForm.permissionIds ?? []), id];
+      }
+      shortcutName.value = "";
+      shortcutCode.value = "";
+      message.success("已创建权限并选中");
+      void queryClient.invalidateQueries({ queryKey: appQueryKeys.permissions(props.appId) });
+    })
+    .finally(() => {
+      shortcutLoading.value = false;
+    });
+};
 
 const privateOnMenuTypeChange = (): void => {
   editForm.linkType = MenuLinkType.Default;
@@ -390,9 +493,11 @@ const privateOnConfirm = (): void => {
           editForm.viewPath = PageLayoutViewPath.EXTERNAL;
           break;
       }
-    } else if (!isButton()) {
+    } else {
       editForm.customViewPath = true;
     }
+
+    normalizePermissionFields();
 
     let request: Promise<unknown>;
     if (edit.value) {
@@ -424,6 +529,11 @@ defineExpose({
     copyParams(editForm, defaultEditForm);
     copyParams(rawForm, defaultEditForm);
     lastAutoPath.value = undefined;
+    shortcutName.value = "";
+    shortcutCode.value = "";
+    if (!editForm.permissionIds) {
+      editForm.permissionIds = [];
+    }
     nextTick(() => {
       unref(editFormRef)?.clearValidate();
     });
@@ -441,6 +551,12 @@ defineExpose({
         if (!editForm.accessMode) {
           editForm.accessMode = AccessModeEnum.Permission;
         }
+        if (!editForm.permissionIds) {
+          editForm.permissionIds = [];
+        }
+        if (!editForm.permissionMatchMode) {
+          editForm.permissionMatchMode = PermissionMatchModeEnum.Any;
+        }
         title.value = "编辑菜单";
         edit.value = true;
         canEditPid.value = false;
@@ -455,3 +571,13 @@ defineExpose({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.code-hint {
+  @apply mt-4px text-12px text-[var(--in-text-color-secondary)];
+}
+
+.shortcut-create {
+  @apply flex flex-row items-center gap-8px mb-12px;
+}
+</style>

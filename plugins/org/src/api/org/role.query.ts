@@ -6,8 +6,8 @@ import {
   silentQueryRequest,
   snapshotQueryParams,
 } from "@ingot/admin-core";
-import type { BizPermissionTreeNodeVO, Option, RoleTreeNodeVO, TenantRolePrivate } from "@/models";
-import { GetBindAuthoritiesAPI, RoleOptionsAPI, RoleTreeAPI } from "./role";
+import type { BizPermissionTreeNodeVO, Option, RoleDataRuleVO, RoleTreeNodeVO, TenantRolePrivate } from "@/models";
+import { GetBindAuthoritiesAPI, GetRoleDataRulesAPI, RoleOptionsAPI, RoleTreeAPI } from "./role";
 
 const resourceKeys = createResourceQueryKeys("org", "role");
 
@@ -15,6 +15,7 @@ export const orgRoleQueryKeys = {
   ...resourceKeys,
   options: () => [...resourceKeys.all, "options"] as const,
   permissions: (id: string) => [...resourceKeys.detail(id), "permissions"] as const,
+  dataRules: (id: string) => [...resourceKeys.detail(id), "data-rules"] as const,
 };
 
 export function OrgRoleTreeQueryOptions(condition?: MaybeRefOrGetter<TenantRolePrivate | undefined>) {
@@ -42,5 +43,15 @@ export function OrgRoleBindAuthoritiesQueryOptions(id: MaybeRefOrGetter<string>)
     enabled: Boolean(value),
     queryFn: ({ signal }): Promise<Array<BizPermissionTreeNodeVO>> =>
       GetBindAuthoritiesAPI(value, silentQueryRequest(signal)).then(({ data }) => data ?? []),
+  });
+}
+
+export function OrgRoleDataRulesQueryOptions(id: MaybeRefOrGetter<string>) {
+  const value = toValue(id);
+  return queryOptions({
+    queryKey: orgRoleQueryKeys.dataRules(value),
+    enabled: Boolean(value),
+    queryFn: ({ signal }): Promise<Array<RoleDataRuleVO>> =>
+      GetRoleDataRulesAPI(value, silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
 }

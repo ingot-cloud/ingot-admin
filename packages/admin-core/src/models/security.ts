@@ -21,7 +21,17 @@ export interface UserInfo {
   user?: User;
   roles: Array<string>;
   allows: Array<TenantItem>;
-  mustChangePwd: boolean
+  mustChangePwd: boolean;
+  credentialStatus?: string | null;
+  daysLeft?: number;
+  graceRemaining?: number;
+}
+
+export interface UserEffectivePermissionVO {
+  permissions: Array<string>;
+  version?: number;
+  generatedAt?: string;
+  expiresAt?: string;
 }
 
 export interface UserPasswordDTO {

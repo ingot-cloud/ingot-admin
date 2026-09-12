@@ -7,6 +7,10 @@ const source = readFileSync(
   resolve(dirname(fileURLToPath(import.meta.url)), "IndexPage.vue"),
   "utf8",
 );
+const roleDrawerSource = readFileSync(
+  resolve(dirname(fileURLToPath(import.meta.url)), "components/RoleDrawer.vue"),
+  "utf8",
+);
 
 describe("platform config role IndexPage", () => {
   it("使用 contained 列表契约并接入表格工具", () => {
@@ -21,5 +25,9 @@ describe("platform config role IndexPage", () => {
     expect(source).not.toContain("@refresh");
     expect(source).not.toContain("#toolbar");
     expect(source.indexOf("</in-page-frame>")).toBeLessThan(source.indexOf("RoleDrawer"));
+    expect(source).toContain("DataRuleDrawer");
+    expect(roleDrawerSource).toContain("filterDept");
+    expect(roleDrawerSource).not.toContain("scopeType");
+    expect(roleDrawerSource).not.toContain("scopes");
   });
 });

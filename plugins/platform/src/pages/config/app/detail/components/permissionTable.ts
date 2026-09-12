@@ -1,6 +1,7 @@
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { AppPermissionTreeNodeVO } from "@/models";
 import { getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
+import { isAppRootPermission } from "./permissionTree";
 
 export const PERMISSION_TABLE_ID = "platform-config-app-detail-permission";
 
@@ -22,10 +23,10 @@ export const permissionTableHeaders: Array<TableHeaderRecord> = [
     width: "120",
   },
   {
-    label: "托管",
-    prop: "managed",
-    width: "100",
-    hide: true
+    label: "资源",
+    prop: "resourceId",
+    width: "140",
+    hide: true,
   },
   {
     label: "状态",
@@ -63,15 +64,7 @@ export function createPermissionRowActions(
     onToggleStatus: (row: AppPermissionTreeNodeVO) => void;
   },
 ): Array<InTableAction<AppPermissionTreeNodeVO>> {
-  const isReadOnly = Boolean(row.readOnly);
-  const isManaged = Boolean(row.managed);
-  const canEdit = !isReadOnly;
-  const canMutate = !isReadOnly && !isManaged;
-  const mutateReason = isReadOnly
-    ? "只读权限不允许该操作"
-    : isManaged
-      ? "托管权限不允许该操作"
-      : undefined;
+  const root = isAppRootPermission(row);
   const next = row.status ? getCommonStatusToggle(row.status) : undefined;
   const actionDesc = next ? getCommonStatusActionDesc(next) : "切换状态";
   return [
@@ -79,25 +72,21 @@ export function createPermissionRowActions(
       key: "detail",
       label: "编辑",
       kind: "detail",
-      disabled: !canEdit,
-      disabledReason: canEdit ? undefined : "只读权限不允许该操作",
       onSelect: handlers.onDetail,
     },
     {
       key: "add-child",
       label: "添加子权限",
       kind: "quick",
-      disabled: !canMutate,
-      disabledReason: mutateReason,
       onSelect: handlers.onAddChild,
     },
     {
       key: "toggle-status",
       label: actionDesc,
       kind: "default",
-      disabled: !canMutate,
-      disabledReason: mutateReason,
-      confirm: canMutate ? `是否${actionDesc}权限(${row.name})` : undefined,
+      disabled: root,
+      disabledReason: root ? "应用根权限不可停用" : undefined,
+      confirm: root ? undefined : `是否${actionDesc}权限(${row.name})`,
       onSelect: handlers.onToggleStatus,
     },
   ];

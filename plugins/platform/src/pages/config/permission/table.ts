@@ -15,8 +15,8 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     width: "150",
   },
   {
-    label: "类型",
-    prop: "type",
+    label: "节点类型",
+    prop: "nodeType",
     width: "100",
   },
   {

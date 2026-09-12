@@ -8,8 +8,6 @@ export interface RolePageItemVO {
   code: string;
   type: string;
   filterDept?: boolean;
-  scopeType?: string;
-  scopes?: Array<string>;
   status: CommonStatus;
   createdAt: string;
 }
@@ -21,8 +19,6 @@ export interface TenantRolePrivate {
   code?: string;
   type?: string;
   filterDept?: boolean;
-  scopeType?: string;
-  scopes?: Array<string>;
   status?: CommonStatus;
 }
 
@@ -32,7 +28,6 @@ export interface RoleTreeNodeVO extends TenantRolePrivate {
   isGroup?: boolean;
   typeText?: string;
   orgTypeText?: string;
-  scopeTypeText?: string;
   statusText?: string;
 }
 

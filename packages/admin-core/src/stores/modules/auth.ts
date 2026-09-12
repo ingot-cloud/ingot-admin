@@ -1,8 +1,15 @@
-import type { UserInfo } from "@/models/security";
+import type { UserInfo, UserEffectivePermissionVO } from "@/models/security";
 import { LogoutAPI } from "@/api/common/auth";
-import { UserInfoAPI } from "@/api/common/user";
-import type { MenuTreeNode } from "@/models";
+import { UserInfoAPI, UserMenuAPI, UserPermissionsAPI } from "@/api/common/user";
 import { isRoleSystemAdmin } from "@/constants/role";
+import { useRouterStore } from "./router";
+
+const emptyUserInfo = (): UserInfo => ({
+  user: undefined,
+  roles: [],
+  allows: [],
+  mustChangePwd: false,
+});
 
 /**
  * 授权信息
@@ -18,8 +25,7 @@ export const useAuthStore = defineStore(
         new Promise((resolve) => {
           LogoutAPI().then(resolve).catch(resolve);
         }),
-        new Promise<any>((resolve) => {
-          // 不忽略revokeAPI最多等待退出接口1500ms
+        new Promise<number>((resolve) => {
           setTimeout(
             () => {
               resolve(1);
@@ -28,7 +34,9 @@ export const useAuthStore = defineStore(
           );
         }),
       ]).then(() => {
+        resetSessionBootstrap();
         useUserInfoStore().clear();
+        usePermissions().clear();
       });
     };
 
@@ -50,13 +58,7 @@ export const useAuthStore = defineStore(
 export const useUserInfoStore = defineStore("security.user", () => {
   const permissions = usePermissions();
 
-  const defaultUser = {
-    user: undefined,
-    roles: [],
-    allows: [],
-    mustChangePwd: false,
-  };
-  const userInfo = reactive<UserInfo>(defaultUser);
+  const userInfo = reactive<UserInfo>(emptyUserInfo());
 
   const getUsername = computed(() => {
     return userInfo.user ? userInfo.user.nickname : "未登录";
@@ -80,20 +82,18 @@ export const useUserInfoStore = defineStore("security.user", () => {
     return userInfo.roles.some((role) => isRoleSystemAdmin(role));
   });
   const clear = () => {
-    Object.assign(userInfo, { user: undefined, roles: [] });
+    Object.assign(userInfo, emptyUserInfo());
+  };
+
+  const applyUserInfo = (data: UserInfo): void => {
+    Object.assign(userInfo, data);
+    permissions.updateRoles(data.roles);
   };
 
   const fetchUserInfo = (): Promise<UserInfo> => {
-    return new Promise((resolve, reject) => {
-      UserInfoAPI()
-        .then((response) => {
-          Object.assign(userInfo, response.data);
-          permissions.updateRoles(response.data.roles);
-          resolve(response.data);
-        })
-        .catch((e) => {
-          reject(e);
-        });
+    return UserInfoAPI().then((response) => {
+      applyUserInfo(response.data);
+      return response.data;
     });
   };
 
@@ -109,6 +109,7 @@ export const useUserInfoStore = defineStore("security.user", () => {
     getIsInitPwd,
     getIsSystemAdmin,
     clear,
+    applyUserInfo,
     fetchUserInfo,
   };
 });
@@ -116,40 +117,117 @@ export const useUserInfoStore = defineStore("security.user", () => {
 export const usePermissions = defineStore("security.permissions", () => {
   const roles = ref<Array<string>>([]);
   const permissions = ref<Array<string>>([]);
+  const version = ref<number>();
+  const generatedAt = ref<string>();
+  const expiresAt = ref<string>();
 
   const updateRoles = (params: Array<string>) => {
     roles.value = params;
   };
 
-  const updatePermissions = (menus: Array<MenuTreeNode>) => {
-    const permissionsData: Array<string> = [];
-    menus.forEach((item) => {
-      if (item.permissionCode) {
-        permissionsData.push(item.permissionCode);
-      }
-      if (item.children?.length) {
-        extractPermissionsItem(permissionsData, item);
-      }
-    });
+  const applyEffectivePermissions = (data: UserEffectivePermissionVO): void => {
+    permissions.value = data.permissions ?? [];
+    version.value = data.version;
+    generatedAt.value = data.generatedAt;
+    expiresAt.value = data.expiresAt;
+  };
 
-    permissions.value = permissionsData;
+  const clear = (): void => {
+    roles.value = [];
+    permissions.value = [];
+    version.value = undefined;
+    generatedAt.value = undefined;
+    expiresAt.value = undefined;
   };
 
   return {
     roles,
     permissions,
+    version,
+    generatedAt,
+    expiresAt,
     updateRoles,
-    updatePermissions,
+    applyEffectivePermissions,
+    clear,
   };
 });
 
-const extractPermissionsItem = (permissions: Array<string>, menu: MenuTreeNode) => {
-  menu.children?.forEach((item) => {
-    if (item.permissionCode) {
-      permissions.push(item.permissionCode);
+let bootstrapPromise: Promise<void> | undefined;
+let bootstrapped = false;
+let visibilityBound = false;
+let refreshPromise: Promise<void> | undefined;
+
+const bindVisibilityRefresh = (): void => {
+  if (visibilityBound || typeof document === "undefined") {
+    return;
+  }
+  visibilityBound = true;
+  const onVisible = (): void => {
+    if (document.visibilityState !== "visible") {
+      return;
     }
-    if (item.children?.length) {
-      extractPermissionsItem(permissions, item);
+    const expiresAt = usePermissions().expiresAt;
+    if (!expiresAt) {
+      return;
     }
-  });
+    const deadline = Date.parse(expiresAt);
+    if (Number.isNaN(deadline) || Date.now() < deadline) {
+      return;
+    }
+    void refreshSessionPermissions({ refreshMenusIfVersionChanged: true });
+  };
+  document.addEventListener("visibilitychange", onVisible);
+  window.addEventListener("focus", onVisible);
+};
+
+export const resetSessionBootstrap = (): void => {
+  bootstrapped = false;
+  bootstrapPromise = undefined;
+  refreshPromise = undefined;
+};
+
+export const ensureSessionBootstrap = (): Promise<void> => {
+  if (bootstrapped) {
+    return Promise.resolve();
+  }
+  if (bootstrapPromise) {
+    return bootstrapPromise;
+  }
+  bootstrapPromise = Promise.all([UserInfoAPI(), UserMenuAPI(), UserPermissionsAPI()])
+    .then(([infoRes, menuRes, permRes]) => {
+      useUserInfoStore().applyUserInfo(infoRes.data);
+      usePermissions().applyEffectivePermissions(permRes.data);
+      useRouterStore().applyRemoteMenus(menuRes.data ?? []);
+      bootstrapped = true;
+      bindVisibilityRefresh();
+    })
+    .catch((error) => {
+      bootstrapPromise = undefined;
+      throw error;
+    });
+  return bootstrapPromise;
+};
+
+export const refreshSessionPermissions = (options?: {
+  refreshMenusIfVersionChanged?: boolean;
+}): Promise<void> => {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+  const previousVersion = usePermissions().version;
+  refreshPromise = UserPermissionsAPI()
+    .then(async (response) => {
+      usePermissions().applyEffectivePermissions(response.data);
+      if (
+        options?.refreshMenusIfVersionChanged &&
+        response.data.version !== undefined &&
+        response.data.version !== previousVersion
+      ) {
+        await useRouterStore().fetchRoutes(true);
+      }
+    })
+    .finally(() => {
+      refreshPromise = undefined;
+    });
+  return refreshPromise;
 };

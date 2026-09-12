@@ -33,9 +33,8 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     hide: true,
   },
   {
-    label: "权限编码",
-    prop: "permissionCode",
-    transform: (v) => v || "-",
+    label: "可见性权限",
+    prop: "permissionIds",
     width: "200",
   },
   {

@@ -1,14 +1,13 @@
 import type { RouteRecordRaw } from "vue-router";
 import type { MenuRouteRecord } from "@/layouts";
+import type { MenuTreeNode } from "@/models";
 import { default as routes } from "@/router/routes";
 import { UserMenuAPI } from "@/api/common/user";
 import { generateMenus, transformMenu, cacheRoutes } from "@/router/helper/route";
 import { mergeMenuTrees } from "@/router/helper/menus";
 import { getAdminRuntimeConfig } from "@/runtime";
-import { usePermissions } from "./auth";
 
 export const useRouterStore = defineStore("router", () => {
-  const permissions = usePermissions();
   const allRoutes = ref<Array<RouteRecordRaw>>([]);
   const dynamicRoutes = ref<Array<RouteRecordRaw>>([]);
   const menus = ref<Array<MenuRouteRecord>>([]);
@@ -17,11 +16,15 @@ export const useRouterStore = defineStore("router", () => {
   const getMenus = computed(() => menus.value);
 
   const applyMergedMenus = (mergedMenus: ReturnType<typeof mergeMenuTrees>) => {
-    permissions.updatePermissions(mergedMenus);
     dynamicRoutes.value = transformMenu(mergedMenus);
     allRoutes.value = routes.concat(dynamicRoutes.value);
     menus.value = generateMenus(allRoutes.value);
     cacheNames.value = cacheRoutes;
+  };
+
+  const applyRemoteMenus = (remoteMenus: Array<MenuTreeNode>): void => {
+    const staticMenus = getAdminRuntimeConfig().staticMenus;
+    applyMergedMenus(mergeMenuTrees(staticMenus, remoteMenus));
   };
 
   const fetchRoutes = async (forceRefresh?: boolean) => {
@@ -33,7 +36,7 @@ export const useRouterStore = defineStore("router", () => {
         const staticMenus = getAdminRuntimeConfig().staticMenus;
         UserMenuAPI()
           .then((response) => {
-            applyMergedMenus(mergeMenuTrees(staticMenus, response.data ?? []));
+            applyRemoteMenus(response.data ?? []);
             resolve({
               menus: menus.value,
               dynamicRoutes: dynamicRoutes.value,
@@ -58,5 +61,5 @@ export const useRouterStore = defineStore("router", () => {
     });
   };
 
-  return { menus, cacheNames, getMenus, fetchRoutes };
+  return { menus, cacheNames, getMenus, fetchRoutes, applyRemoteMenus };
 });

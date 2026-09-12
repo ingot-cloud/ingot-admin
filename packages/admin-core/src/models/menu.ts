@@ -13,8 +13,8 @@ export interface PlatformMenu {
   menuType?: string;
   path?: string;
   accessMode?: string;
-  permissionId?: string;
-  permissionCode?: string;
+  permissionIds?: Array<string>;
+  permissionMatchMode?: string;
   routeName?: string;
   customViewPath?: boolean;
   viewPath?: string;

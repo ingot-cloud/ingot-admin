@@ -18,6 +18,34 @@ export const handleAdminUnauthorized = (error: ApiError): void => {
   logoutAndReload(true);
 };
 
+const isForbidden = (error: ApiError): boolean =>
+  error.status === 403 ||
+  error.code === StatusCode.FORBIDDEN ||
+  error.code === StatusCode.DataScopeForbidden;
+
+const isSnapshotUnavailable = (error: ApiError): boolean =>
+  error.status === 503 || error.code === StatusCode.AuthorizationSnapshotUnavailable;
+
+const schedulePermissionRefresh = (): void => {
+  void import("@/stores/modules/auth").then(({ refreshSessionPermissions }) => {
+    void refreshSessionPermissions();
+  });
+};
+
+const handleAuthorizationFailure = (error: ApiError): boolean => {
+  if (isSnapshotUnavailable(error)) {
+    Message.warning("授权服务暂时不可用，请稍后重试", { showClose: true });
+    schedulePermissionRefresh();
+    return true;
+  }
+  if (isForbidden(error)) {
+    Message.warning(error.message, { showClose: true });
+    schedulePermissionRefresh();
+    return true;
+  }
+  return false;
+};
+
 export const handleAdminBusinessFailure = (error: ApiError): void => {
   if (error.code === StatusCode.TokenSignBack) {
     Confirm.warning("您已被签退，可以取消继续留在该页面，或者重新登录", {
@@ -28,10 +56,16 @@ export const handleAdminBusinessFailure = (error: ApiError): void => {
     });
     return;
   }
+  if (handleAuthorizationFailure(error)) {
+    return;
+  }
   Message.warning(error.message, { showClose: true });
 };
 
 export const handleAdminHttpError = (error: ApiError): void => {
+  if (handleAuthorizationFailure(error)) {
+    return;
+  }
   const axiosError = error.cause as AxiosError | undefined;
   if (axiosError?.code === "ERR_BAD_RESPONSE" && axiosError.response && isString(axiosError.response.data)) {
     logoutAndReload(true);

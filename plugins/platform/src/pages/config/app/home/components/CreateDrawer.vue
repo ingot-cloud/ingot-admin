@@ -20,6 +20,14 @@
           :options="appTypeEnum.getOptions()"
         />
       </el-form-item>
+      <el-form-item label="默认访问" prop="defaultAccessMode">
+        <in-select
+          w-full
+          v-model="editForm.defaultAccessMode"
+          placeholder="请选择默认访问策略"
+          :options="defaultAccessModeEnum.getOptions()"
+        />
+      </el-form-item>
       <el-form-item label="应用图标" prop="icon">
         <el-input v-model="editForm.icon" clearable placeholder="请输入 icon 名称">
           <template #append>
@@ -76,7 +84,7 @@
 <script setup lang="ts">
 import { ClickOutside as vClickOutside } from "element-plus";
 import type { PlatformAppCreateDTO } from "@/models";
-import { AppTypeEnum, useAppTypeEnum } from "@/models/enums";
+import { AppDefaultAccessModeEnum, AppTypeEnum, useAppDefaultAccessModeEnum, useAppTypeEnum } from "@/models/enums";
 import { CreateAppAPI } from "@/api/platform/config/app";
 import { appQueryKeys } from "@/api/platform/config/app.query";
 import { silentQueryRequest } from "@ingot/admin-core";
@@ -93,6 +101,7 @@ const rules = {
   ],
   name: [{ required: true, message: "请输入应用名称", trigger: "blur" }],
   appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
+  defaultAccessMode: [{ required: true, message: "请选择默认访问策略", trigger: "change" }],
   intro: [{ required: true, message: "请输入应用描述", trigger: "blur" }],
 };
 
@@ -100,12 +109,14 @@ const defaultEditForm: PlatformAppCreateDTO = {
   code: undefined,
   name: undefined,
   appType: AppTypeEnum.Tenant,
+  defaultAccessMode: AppDefaultAccessModeEnum.Open,
   icon: undefined,
   intro: undefined,
   sort: 100,
 };
 
 const appTypeEnum = useAppTypeEnum();
+const defaultAccessModeEnum = useAppDefaultAccessModeEnum();
 const message = useMessage();
 const queryClient = useQueryClient();
 

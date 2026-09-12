@@ -91,4 +91,33 @@ describe("transformMenu", () => {
     expect(directoryRoute?.component).toBe(simpleLoader);
     expect(directoryRoute?.props).toBeUndefined();
   });
+
+  it("忽略历史按钮节点", () => {
+    configurePageResolver("ingot-admin", (pageKey) => {
+      if (pageKey === "platform.dashboard") {
+        return dashboardLoader;
+      }
+      if (pageKey === PLUGIN_UNAVAILABLE_PAGE_KEY) {
+        return unavailableLoader;
+      }
+      return undefined;
+    });
+    const routes = transformMenu([
+      {
+        name: "按钮",
+        path: "/btn",
+        menuType: "9",
+        viewPath: "platform.dashboard",
+      },
+      {
+        name: "仪表盘",
+        path: "/dashboard",
+        routeName: "Dashboard",
+        menuType: MenuType.Menu,
+        viewPath: "platform.dashboard",
+      },
+    ]);
+    expect(routes.some((item) => item.path === "/btn")).toBe(false);
+    expect(routes.some((item) => item.path === "/dashboard")).toBe(true);
+  });
 });

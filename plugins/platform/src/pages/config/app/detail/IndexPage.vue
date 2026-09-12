@@ -27,13 +27,14 @@
         :app-id="appId"
         @loaded="privateOnDetailLoaded"
       />
-      <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" />
+      <MenuPanel v-if="currentTab === TabNameMenu" ref="menuPanelRef" :app-id="appId" :app-code="detail.code" />
       <PermissionPanel
         v-if="currentTab === TabNamePermission"
         ref="permissionPanelRef"
         :app-id="appId"
         :app-code="detail.code"
       />
+      <ResourcePanel v-if="currentTab === TabNameResource" :app-id="appId" />
     </in-page-frame>
   </in-loading>
 </template>
@@ -43,6 +44,7 @@ import type { PlatformAppDetailVO } from "@/models";
 import BasicInfoPanel from "./components/BasicInfoPanel.vue";
 import MenuPanel from "./components/MenuPanel.vue";
 import PermissionPanel from "./components/PermissionPanel.vue";
+import ResourcePanel from "./components/ResourcePanel.vue";
 
 const props = defineProps<{
   appId: string;
@@ -51,17 +53,20 @@ const props = defineProps<{
 const TabNameBase = "1";
 const TabNameMenu = "2";
 const TabNamePermission = "3";
+const TabNameResource = "4";
 
 const tabs = [
   { id: TabNameBase, title: "基本信息" },
   { id: TabNameMenu, title: "菜单" },
   { id: TabNamePermission, title: "权限" },
+  { id: TabNameResource, title: "资源" },
 ];
 
 const TabQueryMap: Record<string, string> = {
   base: TabNameBase,
   menu: TabNameMenu,
   permission: TabNamePermission,
+  resource: TabNameResource,
 };
 
 const basicInfoPanelRef = ref<InstanceType<typeof BasicInfoPanel>>();

@@ -14,7 +14,7 @@ const isVisibleAction = <Row>(action: InTableAction<Row>, allowed: string[]): bo
   if (!permission) {
     return true;
   }
-  return allowed.some((item) => permission === item || permission.startsWith(item));
+  return allowed.includes(permission);
 };
 
 export const filterActionsByPermission = <Row>(

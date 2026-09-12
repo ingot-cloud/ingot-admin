@@ -10,6 +10,10 @@ vi.mock("@/utils/security", () => ({
   logoutAndReload: (...args: unknown[]) => logoutAndReload(...args),
 }));
 
+vi.mock("@/stores/modules/auth", () => ({
+  refreshSessionPermissions: vi.fn(() => Promise.resolve()),
+}));
+
 vi.mock("@/utils/message", () => ({
   Message: { warning: (...args: unknown[]) => warning(...args) },
   Confirm: { warning: (...args: unknown[]) => confirmWarning(...args) },
@@ -85,7 +89,28 @@ describe("admin failure hooks", () => {
     expect(warning).toHaveBeenCalledWith("非法操作", { showClose: true });
   });
 
-  it("字符串 502 响应触发退出", () => {
+  it("403 明确无权限时提示且不登出", () => {
+    handleAdminHttpError(
+      new ApiError({ kind: "http", message: "无权限", status: 403, code: StatusCode.FORBIDDEN }),
+    );
+    expect(warning).toHaveBeenCalledWith("无权限", { showClose: true });
+    expect(logoutAndReload).not.toHaveBeenCalled();
+  });
+
+  it("503 授权快照不可用时提示重试且不登出", () => {
+    handleAdminHttpError(
+      new ApiError({
+        kind: "http",
+        message: "unavailable",
+        status: 503,
+        code: StatusCode.AuthorizationSnapshotUnavailable,
+      }),
+    );
+    expect(warning).toHaveBeenCalledWith("授权服务暂时不可用，请稍后重试", { showClose: true });
+    expect(logoutAndReload).not.toHaveBeenCalled();
+  });
+
+  it("非授权类 502 仍按坏响应退出登录", () => {
     handleAdminHttpError(
       new ApiError({
         kind: "http",

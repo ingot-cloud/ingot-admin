@@ -70,7 +70,7 @@
           </div>
           <in-tag v-else :value="{ text: '暂无权限', tag: 'info' }"></in-tag>
           <div
-            v-if="editForm.orgType == OrgTypeEnums.Tenant"
+            v-if="editForm.orgType === OrgTypeEnums.Tenant"
             class="text-sm text-gray-500 color-red"
           >
             *组织类型的角色，这里配置的权限为预设权限，对所有组织生效
@@ -104,6 +104,7 @@ import {
   TreeKeyAndProps,
   type RoleTreeNodeVO,
   type PlatformRole,
+  type PermissionTreeNode,
 } from "@/models";
 import { Confirm, Message, getCommonStatusActionDesc, getCommonStatusToggle } from "@ingot/admin-core";
 import { copyParamsWithKeys, getDiffWithIgnore } from "@ingot/admin-core";
@@ -127,8 +128,6 @@ const rawForm: PlatformRole = {
   type: undefined,
   orgType: undefined,
   filterDept: false,
-  scopeType: undefined,
-  scopes: [],
   status: undefined,
 };
 
@@ -141,8 +140,6 @@ const keys = [
   "type",
   "orgType",
   "filterDept",
-  "scopeType",
-  "scopes",
 ];
 
 const roleTypeEnum = useRoleTypeEnums();
@@ -201,7 +198,7 @@ const handleStatusClick = () => {
   });
 };
 
-const stretch = (tree: Array<any>): Array<string> => {
+const stretch = (tree: Array<PermissionTreeNode>): Array<string> => {
   let ids: Array<string> = [];
 
   tree.forEach((item) => {

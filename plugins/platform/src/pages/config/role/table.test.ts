@@ -1,10 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   createRoleRowActions,
   createRoleToolbarActions,
   ROLE_TABLE_ID,
   tableHeaders,
 } from "./table";
+
+vi.mock("@/models/enums", () => ({
+  RoleTypeEnums: { ROLE: "0", GROUP: "1" },
+}));
 
 const handlers = {
   onEdit: () => undefined,
@@ -34,10 +38,23 @@ describe("platform config role table contract", () => {
       "detail:edit",
       "quick:add-child",
     ]);
-    expect(rows).toHaveLength(200);
     expect(createRoleRowActions(rows[199]!, handlers).map((item) => item.key)).toEqual([
       "edit",
       "add-child",
     ]);
+    expect(rows).toHaveLength(200);
+  });
+
+  it("角色行可配置数据范围，角色组不展示", () => {
+    const roleActions = createRoleRowActions(
+      { id: "1", name: "角色", type: "0" },
+      { ...handlers, onDataRules: () => undefined },
+    );
+    expect(roleActions.map((item) => item.key)).toEqual(["edit", "add-child", "data-rules"]);
+    const groupActions = createRoleRowActions(
+      { id: "2", name: "分组", type: "1" },
+      { ...handlers, onDataRules: () => undefined },
+    );
+    expect(groupActions.map((item) => item.key)).toEqual(["edit", "add-child"]);
   });
 });

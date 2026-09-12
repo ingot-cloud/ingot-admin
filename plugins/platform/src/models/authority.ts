@@ -7,13 +7,9 @@ export interface PlatformPermission {
   name?: string;
   code?: string;
   status?: CommonStatus;
-  type?: string;
   nodeType?: string;
-  sourceType?: string;
-  sourceId?: string;
-  managed?: boolean;
-  readOnly?: boolean;
   orgType?: string;
+  resourceId?: string;
   remark?: string;
   createdAt?: string;
 }
@@ -29,6 +25,8 @@ export interface AppPermissionCreateDTO {
   name?: string;
   code?: string;
   nodeType?: string;
+  resourceId?: string;
+  status?: CommonStatus;
   remark?: string;
 }
 
