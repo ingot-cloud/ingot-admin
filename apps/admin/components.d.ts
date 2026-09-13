@@ -161,7 +161,4 @@ declare module 'vue' {
     VerifyPoints: typeof import('./../../packages/admin-core/src/components/verifition/verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./../../packages/admin-core/src/components/verifition/verify/VerifySlide.vue')['default']
   }
-  export interface GlobalDirectives {
-    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
-  }
 }
