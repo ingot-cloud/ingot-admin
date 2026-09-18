@@ -28,8 +28,6 @@ export const defaultAppOptions = (appCode = "acme-admin", port = 5800) => {
         VITE_APP_BASIC_TOKEN: "aW5nb3Q6aW5nb3Q=",
         VITE_APP_BUCKET_NAME: "ingot",
         VITE_APP_COPYRIGHT: `© 2018-{0} ${code}`,
-        VITE_APP_LOGIN_URI: "http://localhost:1798/oauth2/challenge",
-        VITE_APP_LOGIN_CALLBACK_URI: `http://localhost:${port}`,
         VITE_APP_ERROR_IMAGE:
           "https://img.alicdn.com/imgextra/i2/O1CN01DRq3BY1nmVJzaK3AH_!!6000000005132-2-tps-146-232.png",
         VITE_APP_FINGERPRINT_ENABLED: "true",

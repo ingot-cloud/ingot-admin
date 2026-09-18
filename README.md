@@ -1,6 +1,6 @@
 # Ingot Admin
 
-基于 Vue 3 + TypeScript + Element Plus 的管理后台 monorepo。默认通用后台是 `apps/admin`，通过构建期源码插件组合平台、安全、组织和会员能力。
+基于 Vue 3 + TypeScript + Element Plus 的管理后台 monorepo。租户后台是 `apps/admin`，平台后台是 `apps/admin-platform`。
 
 ## 快速开始
 
@@ -10,10 +10,12 @@ pnpm build:packages
 pnpm dev:admin
 ```
 
-登录应用：
+平台管理台与两套登录：
 
 ```bash
+pnpm dev:admin-platform
 pnpm dev:login
+pnpm dev:login-platform
 ```
 
 首次 clone 后必须先构建 `packages/`，否则类型声明和运行时入口还不存在。详见 [首次构建](./docs/getting-started.md)。
@@ -33,8 +35,10 @@ examples/      不参与默认构建的示例
 ```
 ingot-admin/
 ├── apps/
-│   ├── admin/              # 默认通用后台，注册全部官方插件
-│   ├── auth/               # 独立登录应用
+│   ├── admin/              # 租户管理台
+│   ├── admin-platform/     # 平台管理台
+│   ├── auth/               # 租户登录应用
+│   ├── auth-platform/      # 平台登录应用
 │   └── dev-portal/         # Ingot 开发者中心（文档 + 本地创建）
 ├── plugins/
 │   ├── platform/           # 平台控制面 + Dashboard
@@ -55,18 +59,22 @@ ingot-admin/
 ## 常用命令
 
 ```bash
-pnpm dev                      # 并行启动 admin + login
-pnpm dev:admin                # 默认后台 :5798
-pnpm dev:login                # 登录应用
+pnpm dev                      # 并行启动租户/平台 admin + 两套 login
+pnpm dev:admin                # 租户后台 http://tenant.local:5798
+pnpm dev:admin-platform       # 平台后台 http://platform.local:5799
+pnpm dev:login                # 租户登录 http://tenant-login.local:1798
+pnpm dev:login-platform       # 平台登录 http://platform-login.local:1799
 pnpm dev:portal               # 开发者中心 :5801
 pnpm dev:packages             # watch 构建全部 packages
 pnpm dev:admin-with-packages  # admin + packages watch
-pnpm preview:admin            # 预览 admin 生产构建
+pnpm preview:admin            # 预览租户 admin 生产构建
+pnpm preview:admin-platform   # 预览平台 admin 生产构建
 pnpm build                    # packages → themes → apps
 pnpm build:packages           # 构建共享包
 pnpm build:themes             # 构建正式主题（空目录成功退出）
-pnpm build:apps               # 构建 admin + login
-pnpm build:admin              # 构建默认后台（含 packages 与 themes）
+pnpm build:apps               # 构建两套 admin + 两套 login
+pnpm build:admin              # 构建租户后台（含 packages 与 themes）
+pnpm build:admin-platform     # 构建平台后台（含 packages 与 themes）
 pnpm type-check               # packages + themes + plugins + apps
 pnpm type-check:plugins       # 仅官方插件
 pnpm test:unit                # apps + plugins + packages + scaffold + themes + 边界
@@ -78,6 +86,8 @@ pnpm check:docs               # 文档链接与过时包名
 pnpm clean                    # 清理 workspace node_modules 与 dist
 pnpm clean:plugins            # 仅清理插件
 ```
+
+本机 DEV 请先在 `/etc/hosts` 写入 `127.0.0.1 tenant.local tenant-login.local platform.local platform-login.local`，用这些 hostname 打开，不要用 `localhost:端口`。
 
 ## 文档
 

@@ -12,8 +12,6 @@ export const useAppStore = defineStore("app", () => {
     title: runtime.branding.title,
     copyright: runtime.branding.copyright.replace("{0}", String(now.getFullYear())),
     login: {
-      loginUri: runtime.login.loginUri,
-      loginCallbackUri: runtime.login.callbackUri,
       errorImage: runtime.login.errorImage,
       fingerprintEnabled: runtime.login.fingerprintEnabled,
     },

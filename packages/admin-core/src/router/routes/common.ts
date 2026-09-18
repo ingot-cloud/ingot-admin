@@ -53,6 +53,21 @@ export const commonRoutes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/common/init/IndexPage.vue"),
   },
   {
+    path: "/auth/start",
+    meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
+    component: () => import("@/pages/auth/start/IndexPage.vue"),
+  },
+  {
+    path: "/auth/complete",
+    meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
+    component: () => import("@/pages/auth/complete/IndexPage.vue"),
+  },
+  {
+    path: "/auth/identity-error",
+    meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
+    component: () => import("@/pages/auth/identity-error/IndexPage.vue"),
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: PageName.DYNAMIC_ROUTE_BOOTSTRAP,
     component: LAYOUT_MAIN,

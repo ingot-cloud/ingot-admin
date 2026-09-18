@@ -12,12 +12,17 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./../admin-core/src/components/user/AccountStatusEditButton.vue')['default']
+    BizIamDiagnosePanel: typeof import('./src/components/BizIamDiagnosePanel.vue')['default']
+    BizIamPreviewAlert: typeof import('./src/components/BizIamPreviewAlert.vue')['default']
+    BizIamStatusTag: typeof import('./src/components/BizIamStatusTag.vue')['default']
     ChallengeHost: typeof import('./../admin-core/src/components/challenge/ChallengeHost.vue')['default']
     ClientSelect: typeof import('./src/components/ClientSelect.vue')['default']
     CommonStatusButton: typeof import('./../admin-core/src/components/status/CommonStatusButton.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElTag: typeof import('element-plus/es')['ElTag']
     FixPwdDialog: typeof import('./../admin-core/src/layouts/widgets/user-dropdown/FixPwdDialog.vue')['default']
     IconArrowRight: typeof import('./../admin-core/src/components/icons/IconArrowRight.vue')['default']
     IconCamera: typeof import('./../admin-core/src/components/icons/IconCamera.vue')['default']

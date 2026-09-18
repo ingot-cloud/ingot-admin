@@ -54,13 +54,11 @@ const normalizeEnvMap = (record) => {
   return result;
 };
 
-export const deriveAppDefaults = (appCode, port) => {
+export const deriveAppDefaults = (appCode) => {
   const code = toKebab(appCode);
-  const safePort = Number(port) || 5800;
   return {
     title: code,
     storePrefix: `__${code.replace(/-/g, "_")}__`,
-    callbackUri: `http://localhost:${safePort}`,
     copyright: `© 2018-{0} ${code}`,
   };
 };

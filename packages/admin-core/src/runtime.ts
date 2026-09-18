@@ -57,10 +57,11 @@ const DEFAULT_CONFIG: InResolvedAppConfig = {
     symbol: "ingot",
   },
   login: {
-    loginUri: "",
-    callbackUri: "",
     errorImage: "",
     fingerprintEnabled: false,
+    entry: "tenant",
+    expectedDomain: "TENANT",
+    appId: "tenant-admin",
   },
   net: {
     timeout: 10_000,
@@ -103,10 +104,11 @@ const resolveBranding = (branding: InBrandingConfig): InResolvedBrandingConfig =
 });
 
 const resolveLogin = (login: InLoginConfig): Required<InLoginConfig> => ({
-  loginUri: login.loginUri,
-  callbackUri: login.callbackUri,
   errorImage: login.errorImage ?? "",
   fingerprintEnabled: login.fingerprintEnabled,
+  entry: login.entry ?? "tenant",
+  expectedDomain: login.expectedDomain ?? "TENANT",
+  appId: login.appId ?? "tenant-admin",
 });
 
 const resolveNet = (net?: InNetConfig): InResolvedNetConfig => ({

@@ -64,7 +64,7 @@ const mountMenu = async (options?: { collapsed?: boolean; overlay?: boolean }) =
   configureAdminRuntime({
     appCode: "test-admin",
     branding: { title: "Test" },
-    login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+    login: { fingerprintEnabled: false },
     plugins: [],
   });
   useAppStateStore().menuOpenStatus = options?.collapsed ? false : true;
@@ -168,7 +168,7 @@ describe("InMenuToggle", () => {
     configureAdminRuntime({
       appCode: "test-admin",
       branding: { title: "Test" },
-      login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+      login: { fingerprintEnabled: false },
       plugins: [],
     });
     const wrapper = mount(InMenuToggle, {
@@ -187,7 +187,7 @@ describe("InMenuToggle", () => {
     configureAdminRuntime({
       appCode: "test-admin",
       branding: { title: "Test" },
-      login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+      login: { fingerprintEnabled: false },
       plugins: [],
     });
     useAppStateStore().menuOpenStatus = true;

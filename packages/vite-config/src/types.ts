@@ -38,8 +38,15 @@ export interface InViteBaseOptions {
 export interface InAppViteOptions extends InViteBaseOptions {
   port: number;
   host?: string;
+  /**
+   * Vite `server.allowedHosts` / `preview.allowedHosts`。
+   * 本机 DEV 默认放行四个 `.local` 站点；不要用 `true`（Vite 8 下经常仍拦截）。
+   */
+  allowedHosts?: string[];
   /** Vite `base`，同时作为资源 publicPath，默认 `/` */
   base?: string;
+  /** 构建输出目录，默认 `dist` */
+  outDir?: string;
   proxy?: Record<string, string | ProxyOptions>;
 }
 

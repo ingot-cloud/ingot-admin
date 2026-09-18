@@ -15,6 +15,10 @@ export const handleAdminUnauthorized = (error: ApiError): void => {
   if (error.config?.refreshTokenAndRetry) {
     return;
   }
+  const path = window.location.pathname;
+  if (path === "/auth/start" || path === "/auth/complete") {
+    return;
+  }
   logoutAndReload(true);
 };
 
@@ -35,7 +39,9 @@ const schedulePermissionRefresh = (): void => {
 const handleAuthorizationFailure = (error: ApiError): boolean => {
   if (isSnapshotUnavailable(error)) {
     Message.warning("授权服务暂时不可用，请稍后重试", { showClose: true });
-    schedulePermissionRefresh();
+    void import("@/stores/modules/auth").then(({ usePermissions }) => {
+      usePermissions().markUnavailable();
+    });
     return true;
   }
   if (isForbidden(error)) {

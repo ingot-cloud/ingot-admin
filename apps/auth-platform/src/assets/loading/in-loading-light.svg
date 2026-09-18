@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">ingot loading — light theme</title>
+  <desc id="desc">The shared-stem in monogram assembles and resets in a loop.</desc>
+  <style>
+    .logo { transform-origin: 128px 128px; animation: settle 1.8s ease-in-out infinite; }
+    .stem { transform-box: fill-box; transform-origin: center bottom; animation: grow 1.8s cubic-bezier(.22,.8,.25,1) infinite; }
+    .dot { transform-box: fill-box; transform-origin: center; animation: drop 1.8s cubic-bezier(.22,.8,.25,1) infinite; }
+    .arch-window { animation: reveal 1.8s cubic-bezier(.22,.8,.25,1) infinite; }
+    @keyframes grow { 0%,5% { transform: scaleY(0); } 25%,82% { transform: scaleY(1); } 100% { transform: scaleY(0); } }
+    @keyframes drop { 0%,5% { opacity: 0; transform: translateY(-18px) scale(.78); } 20% { opacity: 1; transform: translateY(3px) scale(1); } 30%,82% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-8px) scale(.88); } }
+    @keyframes reveal { 0%,18% { width: 0; } 58%,82% { width: 170px; } 100% { width: 0; } }
+    @keyframes settle { 0%,58% { transform: scale(1); opacity: 1; } 70% { transform: scale(1.025); opacity: 1; } 82% { transform: scale(1); opacity: 1; } 100% { transform: scale(.98); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .logo, .stem, .dot, .arch-window { animation: none; }
+      .arch-window { width: 170px; }
+    }
+  </style>
+  <defs>
+    <clipPath id="arch-reveal"><rect class="arch-window" x="61" y="80" width="0" height="140"/></clipPath>
+  </defs>
+  <g class="logo">
+    <path clip-path="url(#arch-reveal)" fill="#151A24" d="M61 96h34v16c12-14 28-21 47-21 33 0 53 22 53 58v59h-36v-56c0-21-9-31-27-31-21 0-37 15-37 38v49H61V96Z"/>
+    <path class="stem" fill="#3370FF" d="M61 96h34v112H61V96Z"/>
+    <g class="dot"><rect x="64" y="42" width="28" height="28" rx="7" transform="rotate(45 78 56)" fill="#3370FF"/></g>
+  </g>
+</svg>

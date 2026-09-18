@@ -5,21 +5,42 @@ import type { InAppViteOptions } from "./types.js";
 
 export type InViteConfigFactory = (env: ConfigEnv) => UserConfig;
 
-export const defineInAppConfig = (options: InAppViteOptions): InViteConfigFactory => {
-  return ({ mode }) => {
-    const env = loadEnv(mode, options.rootDir);
+export type InAppViteOptionsFactory = (env: ConfigEnv) => InAppViteOptions;
+
+/** 本机 DEV 四站点；Vite DNS rebinding 默认只放行 localhost / *.localhost。 */
+export const DEV_BFF_ALLOWED_HOSTS = [
+  "tenant.local",
+  "tenant-login.local",
+  "platform.local",
+  "platform-login.local",
+];
+
+export const defineInAppConfig = (
+  options: InAppViteOptions | InAppViteOptionsFactory,
+): InViteConfigFactory => {
+  return (configEnv) => {
+    const resolved = typeof options === "function" ? options(configEnv) : options;
+    const env = loadEnv(configEnv.mode, resolved.rootDir);
     const symbol = env.VITE_APP_SYMBOL || "ingot";
-    const shared = createSharedViteConfig(options, symbol);
+    const shared = createSharedViteConfig(resolved, symbol);
+    const host = resolved.host ?? "0.0.0.0";
+    const allowedHosts = resolved.allowedHosts ?? DEV_BFF_ALLOWED_HOSTS;
     const config = mergeConfig(shared.config, {
       plugins: shared.plugins,
-      base: options.base ?? "/",
+      base: resolved.base ?? "/",
       server: {
-        host: options.host ?? "0.0.0.0",
-        port: options.port,
-        proxy: options.proxy,
+        host,
+        port: resolved.port,
+        proxy: resolved.proxy,
+        allowedHosts,
+      },
+      preview: {
+        host,
+        port: resolved.port,
+        allowedHosts,
       },
       build: {
-        outDir: "dist",
+        outDir: resolved.outDir ?? "dist",
         rolldownOptions: {
           output: {
             chunkFileNames: "static/js/[name]-[hash].js",
@@ -30,6 +51,6 @@ export const defineInAppConfig = (options: InAppViteOptions): InViteConfigFactor
       },
     });
 
-    return mergeConfig(config, options.extend ?? {});
+    return mergeConfig(config, resolved.extend ?? {});
   };
 };

@@ -195,7 +195,6 @@ const submitting = ref(false);
 const openPanels = ref(["base", "env"]);
 const titleDirty = ref(false);
 const storeDirty = ref(false);
-const callbackDirty = ref(false);
 
 const workspaceThemes = computed(() => catalog.themes.filter((theme) => theme.packageName !== "@ingot/admin-core"));
 const targetHint = computed(() => (form.appCode ? `apps/${form.appCode}` : ""));
@@ -226,12 +225,6 @@ const privateOnAppCode = () => {
 };
 
 const privateOnPort = () => {
-  if (!callbackDirty.value) {
-    form.envCommon = {
-      ...form.envCommon,
-      VITE_APP_LOGIN_CALLBACK_URI: `http://localhost:${form.port || "5800"}`,
-    };
-  }
   privateInvalidate();
 };
 

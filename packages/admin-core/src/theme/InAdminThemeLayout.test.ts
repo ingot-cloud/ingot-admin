@@ -49,7 +49,7 @@ describe("InAdminThemeLayout", () => {
     configureAdminRuntime({
       appCode: "test-admin",
       branding: { title: "Test" },
-      login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+      login: { fingerprintEnabled: false },
       plugins: [],
       settings: { showBreadcrumb: true, showCopyright: true },
     });
@@ -91,7 +91,7 @@ describe("InAdminThemeLayout", () => {
             appCode: "test-admin",
             plugins: [],
             branding: { title: "Test" },
-            login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+            login: { fingerprintEnabled: false },
             shellSlots: {
               "header-start": HeaderStart,
               "header-end": HeaderEnd,

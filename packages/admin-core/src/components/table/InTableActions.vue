@@ -183,10 +183,9 @@ const toolbarRanked = ref<RankedTableActions<Row>>({
   showMore: false,
 });
 
-const allowedPermissions = computed(() => [
-  ...permissions.permissions,
-  ...permissions.roles,
-]);
+const allowedPermissions = computed(() =>
+  permissions.unavailable ? [] : [...permissions.permissions],
+);
 
 const visibleActions = computed(() =>
   filterActionsByPermission(

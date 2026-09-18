@@ -4,9 +4,11 @@ import HeaderInterceptor from "./interceptor/request/header";
 import EnvelopeRequestInterceptor from "./interceptor/request/envelope";
 import EnvelopeResponseInterceptor from "./interceptor/response/envelope";
 import ChallengeInterceptor from "./interceptor/response/challenge";
+import { createCsrfRequestInterceptor } from "@ingot/auth-core";
 
 export const CORE_REQUEST_INTERCEPTORS: PreFilter[] = [
   HeaderInterceptor,
+  createCsrfRequestInterceptor(),
   EnvelopeRequestInterceptor,
 ];
 

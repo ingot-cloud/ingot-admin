@@ -32,8 +32,6 @@ describe("bootstrap 集成", () => {
       appCode: "test-admin",
       branding: { title: "Test Admin" },
       login: {
-        loginUri: "/login",
-        callbackUri: "/callback",
         fingerprintEnabled: false,
       },
       plugins: [observerPlugin],

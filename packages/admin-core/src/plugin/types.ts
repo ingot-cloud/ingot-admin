@@ -3,6 +3,7 @@ import type { QueryClient } from "@tanstack/vue-query";
 import type { App, Component, Directive, Plugin as VuePlugin } from "vue";
 import type { RouteRecordRaw, Router } from "vue-router";
 import type { PostFilter, PreFilter } from "@ingot/http-client";
+import type { AuthEntry, AuthorizationDomain } from "@ingot/auth-core";
 import type { MenuTreeNode } from "../models/menu";
 import type { InAdminTheme } from "../theme/types";
 import type { InAdminHeaderConfig } from "./header";
@@ -69,10 +70,11 @@ export interface InBrandingConfig {
 }
 
 export interface InLoginConfig {
-  loginUri: string;
-  callbackUri: string;
   errorImage?: string;
   fingerprintEnabled: boolean;
+  entry?: AuthEntry;
+  expectedDomain?: AuthorizationDomain;
+  appId?: string;
 }
 
 export interface InNetInterceptors {

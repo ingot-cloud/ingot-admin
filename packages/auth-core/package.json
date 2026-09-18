@@ -1,0 +1,36 @@
+{
+  "name": "@ingot/auth-core",
+  "version": "0.1.0",
+  "description": "登录站与管理台共用的 BFF 事务、CSRF 与会话交接能力",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --pretty false --noEmit",
+    "dev": "tsc --watch",
+    "clean": "rimraf node_modules dist",
+    "type-check": "tsc --pretty false --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run"
+  },
+  "engines": {
+    "node": ">=22.17.0 <23"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "@ingot/http-client": "workspace:*",
+    "axios": "catalog:"
+  },
+  "devDependencies": {
+    "vitest": "4.1.11"
+  }
+}

@@ -18,9 +18,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "catalog:",
     "@ingot/admin-core": "workspace:*",
-    "@ingot/member-plugin": "workspace:*",
     "@ingot/org-plugin": "workspace:*",
-    "@ingot/platform-plugin": "workspace:*",
     "@ingot/security-plugin": "workspace:*",
     "@ingot/shared": "workspace:*",
     "@vue/shared": "catalog:",

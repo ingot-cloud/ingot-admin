@@ -44,25 +44,37 @@ error TS2307: Cannot find module '@ingot/shared' or its corresponding type decla
 pnpm dev:admin-with-shared
 ```
 
-### 4. 启动默认后台
+### 4. 启动后台与登录
+
+本机 DEV 用四个 hostname 隔离 Cookie（与 Nacos `in-bff-apps.yml` 一致）。先写入 `/etc/hosts`：
+
+```text
+127.0.0.1 tenant.local tenant-login.local platform.local platform-login.local
+```
+
+租户管理台（http://tenant.local:5798）与租户登录（http://tenant-login.local:1798）：
 
 ```bash
 pnpm dev:admin
-```
-
-登录应用：
-
-```bash
 pnpm dev:login
 ```
 
-默认 admin 注册 platform、security、org、member 全部官方插件。裁剪方式见 [App 开发](./app-development.md)。
+平台管理台（http://platform.local:5799）与平台登录（http://platform-login.local:1799）：
+
+```bash
+pnpm dev:admin-platform
+pnpm dev:login-platform
+```
+
+`pnpm dev` 会并行启动上述四个应用。请用上述 hostname 打开，不要用 `localhost:端口`。租户后台是 `apps/admin`（org/security），平台后台是 `apps/admin-platform`（platform/security）。Member 不默认混入。裁剪方式见 [App 开发](./app-development.md)。登录链路见后端 `docs/modules/authorization-server/BFF-AUTH-FLOW.md`。
 
 ### 5. 生产构建
 
 ```bash
 pnpm build:admin
+pnpm build:admin-platform
 pnpm build:login
+pnpm build:login-platform
 pnpm build
 ```
 

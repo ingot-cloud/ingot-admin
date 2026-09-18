@@ -9,6 +9,9 @@
       "path": "./apps/auth"
     },
     {
+      "path": "./apps/auth-platform"
+    },
+    {
       "path": "./plugins/platform"
     },
     {
@@ -28,6 +31,9 @@
     },
     {
       "path": "./packages/vite-config"
+    },
+    {
+      "path": "./packages/auth-core"
     },
     {
       "path": "./packages/admin-core"

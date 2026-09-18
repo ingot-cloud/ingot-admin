@@ -11,7 +11,7 @@ class InCookie {
     Cookies.set(finalKey, value, {
       expires: finalExpires / 60 / 60 / 24, // 过期时间单位，秒转为天
       path: path || "/",
-      domain: storage.cookieDomain,
+      ...(storage.cookieDomain ? { domain: storage.cookieDomain } : {}),
     });
   }
 
@@ -21,9 +21,10 @@ class InCookie {
 
   public remove(key: string, path = "/") {
     const finalKey = this.keyWrapper(key);
+    const domain = getAdminRuntimeConfig().storage.cookieDomain;
     Cookies.remove(finalKey, {
       path,
-      domain: getAdminRuntimeConfig().storage.cookieDomain,
+      ...(domain ? { domain } : {}),
     });
   }
 

@@ -330,12 +330,118 @@ importers:
       '@ingot/admin-core':
         specifier: workspace:*
         version: link:../../packages/admin-core
-      '@ingot/member-plugin':
-        specifier: workspace:*
-        version: link:../../plugins/member
       '@ingot/org-plugin':
         specifier: workspace:*
         version: link:../../plugins/org
+      '@ingot/security-plugin':
+        specifier: workspace:*
+        version: link:../../plugins/security
+      '@ingot/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@tanstack/vue-query':
+        specifier: 'catalog:'
+        version: 5.102.2(vue@3.5.42(typescript@6.0.3))
+      '@vue/shared':
+        specifier: 'catalog:'
+        version: 3.5.42
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 14.4.0(vue@3.5.42(typescript@6.0.3))
+      element-plus:
+        specifier: 'catalog:'
+        version: 2.14.5(vue@3.5.42(typescript@6.0.3))
+      pinia:
+        specifier: 'catalog:'
+        version: 4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3))
+      pinia-plugin-persistedstate:
+        specifier: 'catalog:'
+        version: 4.7.1(pinia@4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.42(typescript@6.0.3)
+      vue-router:
+        specifier: 'catalog:'
+        version: 5.3.0(@vue/compiler-sfc@3.5.42)(esbuild@0.28.2)(pinia@4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(rolldown@1.2.6)(vite@8.2.2(@types/node@22.19.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.44.1))(vue@3.5.42(typescript@6.0.3))
+    devDependencies:
+      '@iconify-json/bi':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/bxs':
+        specifier: 'catalog:'
+        version: 1.2.3
+      '@iconify-json/carbon':
+        specifier: 'catalog:'
+        version: 1.2.8
+      '@iconify-json/clarity':
+        specifier: 'catalog:'
+        version: 1.2.2
+      '@iconify-json/dashicons':
+        specifier: 'catalog:'
+        version: 1.2.1
+      '@iconify-json/ep':
+        specifier: 'catalog:'
+        version: 1.2.2
+      '@iconify-json/fluent':
+        specifier: 'catalog:'
+        version: 1.2.57
+      '@iconify-json/icon-park':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/icon-park-outline':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/ion':
+        specifier: 'catalog:'
+        version: 1.2.3
+      '@iconify-json/line-md':
+        specifier: 'catalog:'
+        version: 1.2.8
+      '@iconify-json/mage':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/material-symbols':
+        specifier: 'catalog:'
+        version: 1.2.21
+      '@iconify-json/mdi':
+        specifier: 'catalog:'
+        version: 1.2.3
+      '@iconify-json/mdi-light':
+        specifier: 'catalog:'
+        version: 1.2.2
+      '@iconify-json/octicon':
+        specifier: 'catalog:'
+        version: 1.2.33
+      '@iconify-json/tabler':
+        specifier: 'catalog:'
+        version: 1.2.18
+      '@iconify-json/tdesign':
+        specifier: 'catalog:'
+        version: 1.2.18
+      '@iconify-json/teenyicons':
+        specifier: 'catalog:'
+        version: 1.2.2
+      '@iconify-json/twemoji':
+        specifier: 'catalog:'
+        version: 1.2.2
+      '@iconify/vue':
+        specifier: 'catalog:'
+        version: 5.0.0(vue@3.5.42(typescript@6.0.3))
+      '@ingot/vite-config':
+        specifier: workspace:*
+        version: link:../../packages/vite-config
+      '@tanstack/eslint-plugin-query':
+        specifier: 'catalog:'
+        version: 5.102.2(eslint@10.9.1(jiti@2.7.0))(typescript@6.0.3)
+
+  apps/admin-platform:
+    dependencies:
+      '@element-plus/icons-vue':
+        specifier: 'catalog:'
+        version: 2.3.2(vue@3.5.42(typescript@6.0.3))
+      '@ingot/admin-core':
+        specifier: workspace:*
+        version: link:../../packages/admin-core
       '@ingot/platform-plugin':
         specifier: workspace:*
         version: link:../../plugins/platform
@@ -442,6 +548,127 @@ importers:
 
   apps/auth:
     dependencies:
+      '@ingot/auth-core':
+        specifier: workspace:*
+        version: link:../../packages/auth-core
+      '@ingot/http-client':
+        specifier: workspace:*
+        version: link:../../packages/http-client
+      '@ingot/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@vue/devtools-api':
+        specifier: 'catalog:'
+        version: 8.1.5
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 14.4.0(vue@3.5.42(typescript@6.0.3))
+      axios:
+        specifier: 'catalog:'
+        version: 1.20.0
+      beautify-qrcode:
+        specifier: 'catalog:'
+        version: 1.0.3
+      crypto-js:
+        specifier: 'catalog:'
+        version: 4.2.0
+      element-plus:
+        specifier: 'catalog:'
+        version: 2.14.5(vue@3.5.42(typescript@6.0.3))
+      js-cookie:
+        specifier: 'catalog:'
+        version: 3.0.8
+      nprogress:
+        specifier: 'catalog:'
+        version: 0.2.0
+      pinia:
+        specifier: 'catalog:'
+        version: 4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3))
+      pinia-plugin-persistedstate:
+        specifier: 'catalog:'
+        version: 4.7.1(pinia@4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))
+      qs:
+        specifier: 'catalog:'
+        version: 6.15.3
+      tinymce:
+        specifier: 'catalog:'
+        version: 7.9.3
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.42(typescript@6.0.3)
+      vue-router:
+        specifier: 'catalog:'
+        version: 5.3.0(@vue/compiler-sfc@3.5.42)(esbuild@0.28.2)(pinia@4.0.3(@vue/devtools-api@8.1.5)(typescript@6.0.3)(vue@3.5.42(typescript@6.0.3)))(rolldown@1.2.6)(vite@8.2.2(@types/node@22.19.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.44.1))(vue@3.5.42(typescript@6.0.3))
+    devDependencies:
+      '@iconify-json/bi':
+        specifier: ^1.2.4
+        version: 1.2.7
+      '@iconify-json/bxs':
+        specifier: 'catalog:'
+        version: 1.2.3
+      '@iconify-json/carbon':
+        specifier: ^1.2.8
+        version: 1.2.15
+      '@iconify-json/clarity':
+        specifier: ^1.2.2
+        version: 1.2.4
+      '@iconify-json/dashicons':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@iconify-json/ep':
+        specifier: ^1.2.2
+        version: 1.2.3
+      '@iconify-json/fluent':
+        specifier: 'catalog:'
+        version: 1.2.57
+      '@iconify-json/icon-park':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/icon-park-outline':
+        specifier: 'catalog:'
+        version: 1.2.4
+      '@iconify-json/ion':
+        specifier: ^1.2.3
+        version: 1.2.6
+      '@iconify-json/line-md':
+        specifier: ^1.2.8
+        version: 1.2.11
+      '@iconify-json/material-symbols':
+        specifier: ^1.2.21
+        version: 1.2.50
+      '@iconify-json/mdi':
+        specifier: ^1.2.3
+        version: 1.2.3
+      '@iconify-json/mdi-light':
+        specifier: ^1.2.2
+        version: 1.2.2
+      '@iconify-json/octicon':
+        specifier: 'catalog:'
+        version: 1.2.33
+      '@iconify-json/tabler':
+        specifier: ^1.2.18
+        version: 1.2.24
+      '@iconify-json/tdesign':
+        specifier: 'catalog:'
+        version: 1.2.18
+      '@iconify-json/teenyicons':
+        specifier: ^1.2.2
+        version: 1.2.2
+      '@iconify-json/twemoji':
+        specifier: ^1.2.2
+        version: 1.2.5
+      '@iconify/vue':
+        specifier: ^5.0.0
+        version: 5.0.0(vue@3.5.42(typescript@6.0.3))
+      '@ingot/vite-config':
+        specifier: workspace:*
+        version: link:../../packages/vite-config
+
+  apps/auth-platform:
+    dependencies:
+      '@ingot/auth-core':
+        specifier: workspace:*
+        version: link:../../packages/auth-core
       '@ingot/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
@@ -640,6 +867,9 @@ importers:
       '@iconify/vue':
         specifier: 'catalog:'
         version: 5.0.0(vue@3.5.42(typescript@6.0.3))
+      '@ingot/auth-core':
+        specifier: workspace:*
+        version: link:../auth-core
       '@ingot/http-client':
         specifier: workspace:*
         version: link:../http-client
@@ -776,6 +1006,19 @@ importers:
       vue-tsc:
         specifier: 'catalog:'
         version: 3.3.11(typescript@6.0.3)
+
+  packages/auth-core:
+    dependencies:
+      '@ingot/http-client':
+        specifier: workspace:*
+        version: link:../http-client
+      axios:
+        specifier: 'catalog:'
+        version: 1.20.0
+    devDependencies:
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@types/node@22.19.3)(jsdom@30.0.1)(vite@8.2.2(@types/node@22.19.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.44.1))
 
   packages/http-client:
     dependencies:

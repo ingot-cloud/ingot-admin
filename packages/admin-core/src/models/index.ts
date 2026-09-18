@@ -5,3 +5,4 @@ export * from "./common";
 export * from "./menu";
 export * from "./tree";
 export * from "./oss";
+export * from "./iam";

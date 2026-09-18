@@ -86,6 +86,59 @@ build-login:
       allow_failure: true
 
 # ------------------------------
+# 平台 admin build
+# ------------------------------
+build-admin-platform:
+  stage: build
+  extends: .pnpm
+  script:
+    - pnpm build:admin-platform
+  artifacts:
+    paths:
+      - apps/admin-platform/dist/
+    expire_in: 1 hour
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      changes:
+        - apps/admin-platform/**/*
+        - plugins/**/*
+        - packages/**/*
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - .gitlab-ci.yml
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: manual
+      allow_failure: true
+
+# ------------------------------
+# 平台 login build
+# ------------------------------
+build-login-platform:
+  stage: build
+  extends: .pnpm
+  script:
+    - pnpm build:login-platform
+  artifacts:
+    paths:
+      - apps/auth-platform/dist/
+    expire_in: 1 hour
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      changes:
+        - apps/auth-platform/**/*
+        - packages/**/*
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - .gitlab-ci.yml
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: manual
+      allow_failure: true
+
+# ------------------------------
 # Docker 构建模板
 # ------------------------------
 .docker-build-template:
@@ -93,7 +146,7 @@ build-login:
   script:
     - rm -rf docker-build
     - mkdir -p docker-build
-    - docker build -t ${MODULE_NAME}:${RELEASE_VERSION} $BUILD_CONTEXT
+    - docker build ${DOCKER_BUILD_ARGS} -t ${MODULE_NAME}:${RELEASE_VERSION} $BUILD_CONTEXT
     - docker save -o ./docker-build/${MODULE_NAME}.tar ${MODULE_NAME}:${RELEASE_VERSION}
     - ls -l docker-build
   artifacts:
@@ -185,4 +238,68 @@ deploy-login:
       when: on_success
   needs:
     - job: docker-login
+      optional: false
+
+# ------------------------------
+# 平台 admin Docker 镜像
+# ------------------------------
+docker-admin-platform:
+  extends: .docker-build-template
+  variables:
+    MODULE_NAME: "ingot-platform-admin"
+    BUILD_CONTEXT: "apps/admin-platform"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: build-admin-platform
+      optional: false
+
+# ------------------------------
+# 平台 login Docker 镜像
+# ------------------------------
+docker-login-platform:
+  extends: .docker-build-template
+  variables:
+    MODULE_NAME: "ingot-platform-login"
+    BUILD_CONTEXT: "apps/auth-platform"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: build-login-platform
+      optional: false
+
+# ------------------------------
+# 平台 admin 部署
+# ------------------------------
+deploy-admin-platform:
+  extends: .deploy-template
+  variables:
+    MODULE_NAME: ingot-platform-admin
+    SERVICE_NAME: ingot-platform-admin
+    VIRTUAL_HOST: platform.ingotcloud.top
+    VIRTUAL_PORT: 3000
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: docker-admin-platform
+      optional: false
+
+# ------------------------------
+# 平台 login 部署
+# ------------------------------
+deploy-login-platform:
+  extends: .deploy-template
+  variables:
+    MODULE_NAME: ingot-platform-login
+    SERVICE_NAME: ingot-platform-login
+    VIRTUAL_HOST: platform-login.ingotcloud.top
+    VIRTUAL_PORT: 3000
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "release_170"'
+      when: on_success
+  needs:
+    - job: docker-login-platform
       optional: false

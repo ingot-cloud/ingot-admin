@@ -25,6 +25,10 @@ export interface UserInfo {
   credentialStatus?: string | null;
   daysLeft?: number;
   graceRemaining?: number;
+  memberId?: string;
+  accountId?: string;
+  domain?: string;
+  tenantId?: string | null;
 }
 
 export interface UserEffectivePermissionVO {

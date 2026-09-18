@@ -12,6 +12,7 @@ vi.mock("@/utils/security", () => ({
 
 vi.mock("@/stores/modules/auth", () => ({
   refreshSessionPermissions: vi.fn(() => Promise.resolve()),
+  usePermissions: () => ({ markUnavailable: vi.fn() }),
 }));
 
 vi.mock("@/utils/message", () => ({
@@ -74,6 +75,20 @@ describe("admin failure hooks", () => {
       }),
     );
     expect(logoutAndReload).not.toHaveBeenCalled();
+  });
+
+  it("交接页 401 不触发退出跳转", () => {
+    const original = window.location.pathname;
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { ...window.location, pathname: "/auth/start" },
+    });
+    handleAdminUnauthorized(new ApiError({ kind: "http", message: "unauthorized", status: 401 }));
+    expect(logoutAndReload).not.toHaveBeenCalled();
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { ...window.location, pathname: original },
+    });
   });
 
   it("签退弹出确认框", () => {

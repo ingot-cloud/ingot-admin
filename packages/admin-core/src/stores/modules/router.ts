@@ -1,10 +1,11 @@
+import { IamBootstrapAPI } from "@/api/common/iam";
 import type { RouteRecordRaw } from "vue-router";
 import type { MenuRouteRecord } from "@/layouts";
 import type { MenuTreeNode } from "@/models";
 import { default as routes } from "@/router/routes";
-import { UserMenuAPI } from "@/api/common/user";
 import { generateMenus, transformMenu, cacheRoutes } from "@/router/helper/route";
 import { mergeMenuTrees } from "@/router/helper/menus";
+import { mapIamMenus } from "@/router/helper/iamMenus";
 import { getAdminRuntimeConfig } from "@/runtime";
 
 export const useRouterStore = defineStore("router", () => {
@@ -34,9 +35,9 @@ export const useRouterStore = defineStore("router", () => {
     }>((resolve) => {
       if (forceRefresh || menus.value.length === 0) {
         const staticMenus = getAdminRuntimeConfig().staticMenus;
-        UserMenuAPI()
+        IamBootstrapAPI()
           .then((response) => {
-            applyRemoteMenus(response.data ?? []);
+            applyRemoteMenus(mapIamMenus(response.data.menus));
             resolve({
               menus: menus.value,
               dynamicRoutes: dynamicRoutes.value,

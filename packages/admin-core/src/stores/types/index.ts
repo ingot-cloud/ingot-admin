@@ -12,14 +12,6 @@ export interface NetConfig {
  */
 export interface LoginConfig {
   /**
-   * 登录地址
-   */
-  loginUri: string;
-  /**
-   * 登录回调地址
-   */
-  loginCallbackUri: string;
-  /**
    * 登录失败图片
    */
   errorImage: string;

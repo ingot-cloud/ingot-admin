@@ -20,8 +20,6 @@ describe("bootstrapAdminApp", () => {
         appCode: "test-admin",
         branding: { title: "Test Admin" },
         login: {
-          loginUri: "/login",
-          callbackUri: "/callback",
           fingerprintEnabled: false,
         },
         plugins: [

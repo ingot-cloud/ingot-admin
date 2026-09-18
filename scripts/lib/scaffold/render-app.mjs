@@ -144,8 +144,6 @@ await bootstrapAdminApp({
     symbol: env.VITE_APP_SYMBOL,${logo}
   },
   login: {
-    loginUri: env.VITE_APP_LOGIN_URI,
-    callbackUri: env.VITE_APP_LOGIN_CALLBACK_URI,
     errorImage: env.VITE_APP_ERROR_IMAGE,
     fingerprintEnabled: parseBoolean(env.VITE_APP_FINGERPRINT_ENABLED),
   },
@@ -254,8 +252,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_BASIC_TOKEN: string;
   readonly VITE_APP_BUCKET_NAME: string;
   readonly VITE_APP_COPYRIGHT: string;
-  readonly VITE_APP_LOGIN_URI: string;
-  readonly VITE_APP_LOGIN_CALLBACK_URI: string;
   readonly VITE_APP_ERROR_IMAGE: string;
   readonly VITE_APP_SETTINGS_COMPONENT_SIZE: string;
   readonly VITE_APP_SETTINGS_SHOW_MENU: string;

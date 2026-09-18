@@ -1,14 +1,9 @@
-import { useAppStore } from "@/stores/modules/app";
+import { saveReturnTo } from "@ingot/auth-core";
 
 export const useLogin = () => {
   const go = async () => {
-    const { app } = useAppStore();
-
-    const uri =
-      `${app.login.loginUri}` +
-      `?redirect_uri=${app.login.loginCallbackUri}`;
-
-    window.location.href = uri;
+    saveReturnTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
+    window.location.assign("/auth/start");
   };
 
   return {

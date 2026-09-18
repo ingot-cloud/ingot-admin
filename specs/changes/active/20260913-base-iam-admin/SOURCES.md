@@ -1,20 +1,54 @@
 # 输入来源与对接边界
 
-读取日期：2026-09-13。后端源状态 review，前端 change 状态 draft。原文按字节复制，接口真相归后端；不消费 inbox。
+同步日期：2026-09-16。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。后端主状态 implementing，BFF增量review；前端主状态implementing，本次增量draft。用户要求生成规格，本次没有实施。
 
-源目录：/Users/jy/Repositories/Github/ingot-cloud/ingot/specs/changes/active/20260912-iam-identity-access-management
+后端API为权威，以下副本逐字节复制；不消费inbox。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面96路径/161操作，包含新增账号/本人/字典/发号/社交与导出状态；完整schemas/examples随目录同步。BFF-LOGIN为待实施契约，不标记运行时完成。
 
-| 后端原名 | 本地副本 | SHA-256 |
+## 阅读顺序
+
+README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IAM-INTEGRATION → ACCEPTANCE/TASKS。源文件相对链接原样保留；遇到后端专属相对路径按下表映射，不能误认为前端缺少实现。
+
+## 原文副本 SHA-256
+
+| 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| API.md | [API.md](./API.md) | f75cee1aceb778d7a84be6776ee97de879b8078762d28b1f12227a8e582eb056 |
-| FRONTEND.md | [INTERACTIONS.md](./INTERACTIONS.md) | a475c5229deacd6684290d357625a9d73aecbfbcf86772b5b4b22eef3dc9198f |
-| REQUIREMENTS.md | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | a3cd9d93ede14d18e1a8e82c467bfa3bcfd28c5f8d4ce770af43cbdb0fe24eef |
-| DESIGN.md | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | c61820e2eb0caea8bf6c0f40a8b2d9dc09b49056c4e836d1cfe66e43f1d03c64 |
-| MIGRATION.md | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | 473b960f8aff4a017de4be4744637c8134216b6efa974448b1c8886653135749 |
-| ACCEPTANCE.md | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | 910d5412560387d090570a1711a53a56214650ced4980a6a47c13d208d9f88fb |
+| `API.md` | [API.md](./API.md) | `a1994a61f81206db72e37dbf9c1029d0da58a623309242e34cf6d96d7ef3aded` |
+| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `25a0ef0299e56d9afbc7f2fb9ecce70542c4a2e51374e9145c5d7432b8ef5d70` |
+| `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `fd1d498b8b085be7c485b5d566ca6d3ce9055f153ce639e42a3fb8d899a6f9c3` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `fb21e0a400cada1376f076a487e57041440c8b0adbd0fd9ce9e6c17ec60ff4af` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `0804d2643972dc4303b005d069885e0f239b221c372f9acf0c6340a7d2aa0f52` |
+| `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
+| `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `b6269a5c9e70367dbe14156839aa37a074762e354309d1dcc7ada9f094ab1d19` |
+| `endpoint-mapping.json` | [sources/endpoint-mapping.json](./sources/endpoint-mapping.json) | `29857e7b2e754af5665126b013433e5cc4ca157889364644d9beffe51317d1da` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `f520a3a37b202be389f7dbb5572da470621cc49d45bc0738319074952b789c00` |
+| `contracts/examples/assignment.json` | [sources/contracts/examples/assignment.json](./sources/contracts/examples/assignment.json) | `0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa` |
+| `contracts/examples/audit.json` | [sources/contracts/examples/audit.json](./sources/contracts/examples/audit.json) | `b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1` |
+| `contracts/examples/bootstrap.json` | [sources/contracts/examples/bootstrap.json](./sources/contracts/examples/bootstrap.json) | `0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4` |
+| `contracts/examples/decision-restricted.json` | [sources/contracts/examples/decision-restricted.json](./sources/contracts/examples/decision-restricted.json) | `0b33df4ccb9c3adad9434d2a4cc4f0b4e93ebe36e9b83610b6429a8607867ce9` |
+| `contracts/examples/delegation.json` | [sources/contracts/examples/delegation.json](./sources/contracts/examples/delegation.json) | `f1ff9fd992b75c3525226095802b847d87b64226ed2a5cf8120aaa52392b21ae` |
+| `contracts/examples/directory-policy.json` | [sources/contracts/examples/directory-policy.json](./sources/contracts/examples/directory-policy.json) | `7cbf037239d1f2e5e1de2805e4effec9150e4e6dcd188644bfbb8b97653bd90c` |
+| `contracts/examples/field-policy.json` | [sources/contracts/examples/field-policy.json](./sources/contracts/examples/field-policy.json) | `34741450de8a829ef69acff2b368cca63f2fe738304c14cb9e39711097c019f4` |
+| `contracts/examples/field-readonly.json` | [sources/contracts/examples/field-readonly.json](./sources/contracts/examples/field-readonly.json) | `5a1d863e3a989311bec29d36f52e2b4960421844b4e635aab010125bddacf042` |
+| `contracts/examples/member-detail.json` | [sources/contracts/examples/member-detail.json](./sources/contracts/examples/member-detail.json) | `4d834165ab6fc03bd8d51648c58ae9768b5fe39ccd61a298aaebbac7b0a02685` |
+| `contracts/examples/member-page.json` | [sources/contracts/examples/member-page.json](./sources/contracts/examples/member-page.json) | `6df8ae4f9aa0e49588d6b46b4022f96a7b593f42dae47e81bc92a961265cdf49` |
+| `contracts/examples/policy-preview.json` | [sources/contracts/examples/policy-preview.json](./sources/contracts/examples/policy-preview.json) | `95ef6260bc1984d2f3a6aedeb0355fde34cd25f75fcdd8ad8190d8d5c8bb437c` |
+| `contracts/examples/preview-invalid.json` | [sources/contracts/examples/preview-invalid.json](./sources/contracts/examples/preview-invalid.json) | `594ce7180a49ab5d478d90ee758e1e40512a166f8ae6e46285c338565cb86d53` |
+| `contracts/examples/role-create.json` | [sources/contracts/examples/role-create.json](./sources/contracts/examples/role-create.json) | `e407fa60b63de59abfc98db91af42a9d23df1903a5340d1361630da4cba3c43d` |
+| `contracts/examples/role-delta.json` | [sources/contracts/examples/role-delta.json](./sources/contracts/examples/role-delta.json) | `af2f8b4456a4075cd77addebf33db78cdefb38edf633777b6eac5136e9fc7fcf` |
+| `contracts/examples/role-publish.json` | [sources/contracts/examples/role-publish.json](./sources/contracts/examples/role-publish.json) | `161f3c178e679952c5f21a320b30f02eb8ba5b432835b686bf8ac7881abfbdae` |
+| `contracts/examples/role-shared.json` | [sources/contracts/examples/role-shared.json](./sources/contracts/examples/role-shared.json) | `a6c0f4f037d83d87245fad242f27cf3b69d7fe78beebd60d6058c87cb6326dba` |
+| `contracts/examples/role-upgrade.json` | [sources/contracts/examples/role-upgrade.json](./sources/contracts/examples/role-upgrade.json) | `6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b` |
+| `contracts/examples/tenant-create.json` | [sources/contracts/examples/tenant-create.json](./sources/contracts/examples/tenant-create.json) | `bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133` |
+| `contracts/examples/upgrade-conflict.json` | [sources/contracts/examples/upgrade-conflict.json](./sources/contracts/examples/upgrade-conflict.json) | `d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `5a8296b0ce906ca71f4332d2b2a6650e7727a5a390fc06b26cf4bf2c18a67f6a` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `e090093fc99d20abb0cb74a1931eea391141522d44d68d602d0868d86a4352fe` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `0c8a1351e87065e1157dd7564db08d2e7c7c543277069ee7a0604194139bcd5c` |
 
-阅读：README → REQUIREMENTS → API → INTERACTIONS → DESIGN → ACCEPTANCE → TASKS。领域细节见 sources/BACKEND_DESIGN，后端迁移边界见 sources/BACKEND_MIGRATION。所有实现需要的输入已复制到本 change。
+## 对接边界
 
-副本中的原始相对链接沿用后端目录语境；按本表映射阅读。它们是原文证据，不是前端另一套事实源。更新副本时需记录新 SHA 与接口差异，不单方面改变权限语义。
-
-接口仍缺完整操作 code、OpenAPI schemas、部分命令与选择器精确结构，详见 DESIGN §6；这些阻止依赖接口的集成，不阻止批准后以夹具实现视觉组件。不标记接口已上线，不由前端猜测填补。
+- 选择器遵守已发布列表及purpose白名单，没有独立/candidates；平台选择不展示租户部门。
+- 审计导出未发布路径时不提供可操作按钮；成员导出已发布状态接口，必须完整轮询并下载重验。
+- 不整体保留旧PMS辅助调用；依据endpoint-mapping逐项核对账号/本人/字典/发号/社交、安全/OSS和Member归属。
+- RJson包装中的领域类型及实际HTTP仍须核对；不使用any、假路径或假成功填补缺口。
+- 菜单种子/viewPath、BFF新接口、四站点配置与全部权限行为必须真实联调。implemented只表示控制器接入。
+- 历史MIGRATION副本只用于保留处置记录；本轮按全新系统启用，无旧库迁移门禁。

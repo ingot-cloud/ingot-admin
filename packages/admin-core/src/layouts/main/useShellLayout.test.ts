@@ -39,7 +39,7 @@ describe("useShellLayout", () => {
     configureAdminRuntime({
       appCode: "test-admin",
       branding: { title: "Test" },
-      login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+      login: { fingerprintEnabled: false },
       plugins: [],
     });
     useAppStateStore().menuOpenStatus = true;

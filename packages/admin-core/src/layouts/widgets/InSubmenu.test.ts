@@ -29,7 +29,7 @@ describe("InSubmenu", () => {
     configureAdminRuntime({
       appCode: "test-admin",
       branding: { title: "Test" },
-      login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+      login: { fingerprintEnabled: false },
       plugins: [],
     });
     useAppStateStore().menuOpenStatus = options?.collapsed ? false : true;

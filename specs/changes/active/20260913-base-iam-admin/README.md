@@ -1,52 +1,34 @@
 # 20260913-base-iam-admin
 
-> 状态：draft
+> 状态：implementing
+> 2026-09-16 双入口 BFF 与完整 IAM 对齐增量：implementing（规格已补齐，后端先行）。原实现进展与历史证据保留。
 
-## 协作模式与目标
+## 目标与范围
 
-前后端分离。根据后端 20260912-iam-identity-access-management 生成前端规格，覆盖 IAM 后台页面、公共授权能力与接口切换。当前仅生成文档，不修改业务代码，不代表后端接口已上线或前端获准施工。
+完整接入后端 IAM 身份、权限和页面契约，补齐双入口 BFF 登录。一份 apps/admin 源码按平台/租户分别配置构建并部署；apps/auth 保留租户登录，新增 apps/auth-platform；四个同主域 HTTPS 子域。平台与租户独立认证且可同时在线；单租户自动完整认证，多租户选择。登录事务、交接与 host-only Cookie 由 BFF 管理，浏览器不传 domain/OAuth 参数/任意返回 URL。
 
-平台和租户各不超过四个一级目录；角色共享固定版本、租户只存差异；配置、授权、预览及诊断形成可理解的闭环。
+范围包含 admin-core/admin-common、平台/组织/安全插件全部 IAM 页面与必要辅助调用、auth 公共包及页面插件、双登录 App、管理台完成页和部署配置。包含账号治理、本人资料/密码、字典/发号/社交配置、成员导出状态和已实现页面的完整向导/详情/冲突处理；不以之前已勾任务或接口数量替代完成证据。
 
-## 范围
+不包含 SSO、跨主域部署、扫码认证、平台代入租户、会员重构、数据库迁移、额外业务微服务或通用规则执行器。当前只有静态二维码的入口隐藏；Member 既有能力保留。
 
-包含 packages/admin-core、packages/admin-common、plugins/platform、plugins/org、plugins/security 的 IAM 相关能力，以及 apps/admin 的必要组合注册；apps/auth 仅在后端更名确有调用影响时更新服务目标，不改认证协议。业务页面不放进宿主。
+## 输入与职责
 
-不包含后端实现、数据库迁移工具、前端迁移控制台、复制模板旧语义、平台进入租户业务、多级委派、动态组、会员体系重构、新增业务微服务。数据库迁移由后端负责；前端需要在新库/新会话环境联调。
+后端来源为同级 ingot 的 20260912-iam-identity-access-management，2026-09-16 同步当前管理面 OpenAPI 96路径/161操作、完整 schemas/examples、入口映射与登录契约。x-runtime-implemented 仅表示后端控制器接入，不证明前端已实现或真实 HTTP 已通过。BFF-LOGIN 是待实施契约，不混入 96/161。
 
-## 输入来源与真相归属
+接口真相归后端，前端副本按字节复制。没有消费或移动 inbox；来源及 SHA-256 见 SOURCES。旧来源记录保留于 sources/history。后端 B01–B06 与前端 N01–N10 相互依赖，不能用前端 Mock 代替后端认证和权限证据。
 
-后端来源：同级 ingot 仓库 specs/changes/active/20260912-iam-identity-access-management，2026-09-13 读取，源状态 review。
-本次直接从指定仓库复制输入到 change，未消费、移动或清空 inbox，未修改后端源文件。
+## 阅读与工件
 
-- API.md：后端 API 原文副本，接口真相仍在后端。
-- INTERACTIONS.md：后端 FRONTEND.md 原文副本，页面语义约束。
-- sources/：后端需求、领域设计、迁移和验收原文快照。
-- SOURCES.md：源路径、SHA-256、文件对应关系及阅读顺序。
-- REQUIREMENTS/DESIGN/TASKS/ACCEPTANCE：本次前端方案与任务，不另造授权语义。
+1. [需求](./REQUIREMENTS.md)、[设计](./DESIGN.md)。
+2. [BFF 登录权威副本](./BFF-LOGIN.md)、[IAM 接口](./API.md)、[逐页交互](./INTERACTIONS.md)。
+3. [逐操作对接矩阵](./IAM-INTEGRATION.md)、[任务](./TASKS.md)、[验收](./ACCEPTANCE.md)。
+4. [来源和剩余边界](./SOURCES.md)、[契约快照](./sources/contracts/README.md)。
 
-副本保留源文件相对链接原文，其中部分链接按后端目录组织；前端实现按 SOURCES.md 的本地映射阅读，无须依赖源仓库或聊天记录。
+## 完成门禁
 
-## 工件
+现有 TASKS 勾选保留为历史阶段进展；新增任务全部未完成。增量确认后实施，真实四站点登录、非超管 IAM 联调、CI/镜像验证完成后才更新 current 并归档。不提前勾后端 T16/T17 或 F 系列。未请求提交，不创建 commit。
 
-- [接口](./API.md)
-- [前端需求](./REQUIREMENTS.md)
-- [前端设计](./DESIGN.md)
-- [逐页交互](./INTERACTIONS.md)
-- [任务](./TASKS.md)
-- [验收](./ACCEPTANCE.md)
-- [来源与契约缺口](./SOURCES.md)
-
-## 风险与依赖
-
-后端契约仍为目标设计：操作码、完整 OpenAPI、选择器地址及部分 DTO 尚未交付。详见 DESIGN 的集成门禁；不得自行发明线上接口、硬编码角色绕过或宣称可直接联调。组件布局可在批准后用明确标记的夹具开发，API 集成必须先校对后端契约。
-
-本 change 没有与其他 active change 的文件冲突（生成时目录无既有 active 文件）。当前基线为 RBAC data-authorization、network-query、detail-edit-pattern 和插件架构，实施后再更新 current。
-
-## 完成记录
-
-- 完成日期：未完成
-- 关联提交或 PR：未创建
-- current 更新：尚未更新
-- 与设计差异：未实施
-- 取消原因：不适用
+- 完成日期：未完成。
+- 提交或 PR：未创建。
+- current：未更新。
+- 差异：由“auth仅必要更名、不改协议”扩大为固定域BFF与会话交接；辅助接口改为按当前映射逐项处理，旧迁移要求退出。

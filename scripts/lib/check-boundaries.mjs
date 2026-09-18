@@ -21,7 +21,13 @@ export const LEGACY_APP_PACKAGES = [
   "@ingot/member-app",
 ];
 
-export const APP_PACKAGES = ["@ingot/admin-app", "@ingot/auth-app", "@ingot/dev-portal"];
+export const APP_PACKAGES = [
+  "@ingot/admin-app",
+  "@ingot/admin-platform-app",
+  "@ingot/auth-app",
+  "@ingot/auth-platform-app",
+  "@ingot/dev-portal",
+];
 
 export const WORKSPACE_LAYERS = ["apps", "plugins", "themes", "packages"];
 
@@ -361,6 +367,22 @@ const pluginPackagesFromImports = (source, pluginPackages) => {
   return found;
 };
 
+const listPluginManifestFiles = (appDir) => {
+  const srcDir = path.join(appDir, "src");
+  const mainPath = path.join(srcDir, "main.ts");
+  if (!fs.existsSync(srcDir)) {
+    return [];
+  }
+  const pluginFiles = fs
+    .readdirSync(srcDir)
+    .filter((name) => name === "plugins.ts" || /^plugins\.[^.]+\.ts$/.test(name))
+    .map((name) => path.join(srcDir, name));
+  if (pluginFiles.length > 0) {
+    return pluginFiles;
+  }
+  return fs.existsSync(mainPath) ? [mainPath] : [];
+};
+
 const checkPluginManifestAlignment = (rootDir, errors, packages) => {
   const pluginPackages = packages.filter((item) => item.layer === "plugins").map((item) => item.name);
   const appsDir = path.join(rootDir, "apps");
@@ -373,13 +395,7 @@ const checkPluginManifestAlignment = (rootDir, errors, packages) => {
     }
     const appDir = path.join(appsDir, entry.name);
     const pkgPath = path.join(appDir, "package.json");
-    const pluginsPath = path.join(appDir, "src/plugins.ts");
-    const mainPath = path.join(appDir, "src/main.ts");
     if (!fs.existsSync(pkgPath)) {
-      continue;
-    }
-    const manifestPath = fs.existsSync(pluginsPath) ? pluginsPath : mainPath;
-    if (!fs.existsSync(manifestPath)) {
       continue;
     }
     const pkg = readJson(pkgPath);
@@ -387,23 +403,29 @@ const checkPluginManifestAlignment = (rootDir, errors, packages) => {
     if (packageName === "@ingot/dev-portal") {
       continue;
     }
+    const manifestFiles = listPluginManifestFiles(appDir);
+    if (manifestFiles.length === 0) {
+      continue;
+    }
     const deps = packageDepNames(pkg);
     const declared = pluginPackages.filter((name) => deps.has(name));
-    const imported = [...pluginPackagesFromImports(fs.readFileSync(manifestPath, "utf8"), pluginPackages)];
+    const imported = new Set();
+    for (const manifestPath of manifestFiles) {
+      for (const name of pluginPackagesFromImports(fs.readFileSync(manifestPath, "utf8"), pluginPackages)) {
+        imported.add(name);
+      }
+    }
     const declaredSet = new Set(declared);
-    const importedSet = new Set(imported);
+    const importedSet = imported;
+    const manifestLabel = manifestFiles.map((file) => path.relative(appDir, file)).join("、");
     for (const name of declaredSet) {
       if (!importedSet.has(name)) {
-        errors.push(
-          `${packageName} 依赖了 ${name}，但 ${path.relative(appDir, manifestPath)} 未导入该官方插件`,
-        );
+        errors.push(`${packageName} 依赖了 ${name}，但 ${manifestLabel} 未导入该官方插件`);
       }
     }
     for (const name of importedSet) {
       if (!declaredSet.has(name)) {
-        errors.push(
-          `${packageName} 的 ${path.relative(appDir, manifestPath)} 导入了 ${name}，但 package.json 未声明依赖`,
-        );
+        errors.push(`${packageName} 的 ${manifestLabel} 导入了 ${name}，但 package.json 未声明依赖`);
       }
     }
   }
@@ -497,6 +519,8 @@ export const checkBoundaries = (rootDir) => {
   }
   checkNoAtBase(rootDir, errors, "apps/admin");
   checkNoLegacyAppPackages(rootDir, errors, "apps/admin");
+  checkNoAtBase(rootDir, errors, "apps/admin-platform");
+  checkNoLegacyAppPackages(rootDir, errors, "apps/admin-platform");
   for (const theme of workspacePackages.filter((item) => item.layer === "themes")) {
     checkNoAtBase(rootDir, errors, theme.dir);
     checkNoLegacyAppPackages(rootDir, errors, theme.dir);

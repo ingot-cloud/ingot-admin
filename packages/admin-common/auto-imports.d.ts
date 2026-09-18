@@ -10,12 +10,14 @@ export {}
 declare global {
   const CONFIRM_DIALOG_CLASS: typeof import('../admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_CLASS
   const CONFIRM_DIALOG_OVERLAY_CLASS: typeof import('../admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_OVERLAY_CLASS
+  const DomainMismatchError: typeof import('../admin-core/src/stores/modules/auth').DomainMismatchError
   const EffectScope: typeof import('vue').EffectScope
   const UNSAVED_CHANGES_MESSAGE: typeof import('../admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_MESSAGE
   const UNSAVED_CHANGES_TITLE: typeof import('../admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_TITLE
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
+  const beginIdentitySwitch: typeof import('../admin-core/src/stores/modules/auth').beginIdentitySwitch
   const computed: typeof import('vue').computed
   const computedAsync: typeof import('@vueuse/core').computedAsync
   const computedEager: typeof import('@vueuse/core').computedEager
@@ -93,6 +95,7 @@ declare global {
   const pausableWatch: typeof import('@vueuse/core').pausableWatch
   const provide: typeof import('vue').provide
   const provideLocal: typeof import('@vueuse/core').provideLocal
+  const publishIdentityInvalidated: typeof import('../admin-core/src/stores/modules/auth').publishIdentityInvalidated
   const reactify: typeof import('@vueuse/core').reactify
   const reactifyObject: typeof import('@vueuse/core').reactifyObject
   const reactive: typeof import('vue').reactive
@@ -165,6 +168,7 @@ declare global {
   const useBroadcastChannel: typeof import('@vueuse/core').useBroadcastChannel
   const useBrowserLocation: typeof import('@vueuse/core').useBrowserLocation
   const useCached: typeof import('@vueuse/core').useCached
+  const useCapabilities: typeof import('../admin-core/src/hooks/biz/useCapabilities').useCapabilities
   const useClipboard: typeof import('@vueuse/core').useClipboard
   const useClipboardItems: typeof import('@vueuse/core').useClipboardItems
   const useCloned: typeof import('@vueuse/core').useCloned
@@ -358,6 +362,9 @@ declare global {
   export type { Options, CommandComponent } from '../admin-core/src/hooks/biz/useCommandComponent'
   import('../admin-core/src/hooks/biz/useCommandComponent')
   // @ts-ignore
+  export type { DomainMismatchError } from '../admin-core/src/stores/modules/auth'
+  import('../admin-core/src/stores/modules/auth')
+  // @ts-ignore
   export type { NetConfig, LoginConfig, AppStore } from '../admin-core/src/stores/types/index'
   import('../admin-core/src/stores/types/index')
 }
@@ -369,12 +376,14 @@ declare module 'vue' {
   interface ComponentCustomProperties {
     readonly CONFIRM_DIALOG_CLASS: UnwrapRef<typeof import('../admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_CLASS']>
     readonly CONFIRM_DIALOG_OVERLAY_CLASS: UnwrapRef<typeof import('../admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_OVERLAY_CLASS']>
+    readonly DomainMismatchError: UnwrapRef<typeof import('../admin-core/src/stores/modules/auth')['DomainMismatchError']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
     readonly UNSAVED_CHANGES_MESSAGE: UnwrapRef<typeof import('../admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_MESSAGE']>
     readonly UNSAVED_CHANGES_TITLE: UnwrapRef<typeof import('../admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_TITLE']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
+    readonly beginIdentitySwitch: UnwrapRef<typeof import('../admin-core/src/stores/modules/auth')['beginIdentitySwitch']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly computedAsync: UnwrapRef<typeof import('@vueuse/core')['computedAsync']>
     readonly computedEager: UnwrapRef<typeof import('@vueuse/core')['computedEager']>
@@ -452,6 +461,7 @@ declare module 'vue' {
     readonly pausableWatch: UnwrapRef<typeof import('@vueuse/core')['pausableWatch']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
+    readonly publishIdentityInvalidated: UnwrapRef<typeof import('../admin-core/src/stores/modules/auth')['publishIdentityInvalidated']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
     readonly reactifyObject: UnwrapRef<typeof import('@vueuse/core')['reactifyObject']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
@@ -524,6 +534,7 @@ declare module 'vue' {
     readonly useBroadcastChannel: UnwrapRef<typeof import('@vueuse/core')['useBroadcastChannel']>
     readonly useBrowserLocation: UnwrapRef<typeof import('@vueuse/core')['useBrowserLocation']>
     readonly useCached: UnwrapRef<typeof import('@vueuse/core')['useCached']>
+    readonly useCapabilities: UnwrapRef<typeof import('../admin-core/src/hooks/biz/useCapabilities')['useCapabilities']>
     readonly useClipboard: UnwrapRef<typeof import('@vueuse/core')['useClipboard']>
     readonly useClipboardItems: UnwrapRef<typeof import('@vueuse/core')['useClipboardItems']>
     readonly useCloned: UnwrapRef<typeof import('@vueuse/core')['useCloned']>

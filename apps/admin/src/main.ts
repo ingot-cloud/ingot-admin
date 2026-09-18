@@ -20,10 +20,11 @@ await bootstrapAdminApp({
     symbol: env.VITE_APP_SYMBOL,
   },
   login: {
-    loginUri: env.VITE_APP_LOGIN_URI,
-    callbackUri: env.VITE_APP_LOGIN_CALLBACK_URI,
     errorImage: env.VITE_APP_ERROR_IMAGE,
     fingerprintEnabled: parseBoolean(env.VITE_APP_FINGERPRINT_ENABLED),
+    entry: "tenant",
+    expectedDomain: "TENANT",
+    appId: env.VITE_APP_ID || "tenant-admin",
   },
   net: {
     baseURL: env.VITE_APP_NET_BASE_URL || undefined,

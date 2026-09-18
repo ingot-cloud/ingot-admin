@@ -1,0 +1,49 @@
+import { bootstrapAdminApp, defaultAdminTheme, parseBoolean } from "@ingot/admin-core";
+import type { InComponentSize } from "@ingot/admin-core";
+import "@ingot/admin-core/style.css";
+import "uno.css";
+import { createAdminHeader } from "./header";
+import { createAdminPlugins } from "./plugins";
+
+const env = import.meta.env;
+const componentSize = (env.VITE_APP_SETTINGS_COMPONENT_SIZE || "default") as InComponentSize;
+const appCode = env.VITE_APP_CODE || "ingot-platform-admin";
+
+await bootstrapAdminApp({
+  appCode,
+  plugins: createAdminPlugins(appCode),
+  theme: defaultAdminTheme,
+  header: createAdminHeader(),
+  branding: {
+    title: env.VITE_APP_TITLE,
+    copyright: env.VITE_APP_COPYRIGHT,
+    symbol: env.VITE_APP_SYMBOL,
+  },
+  login: {
+    errorImage: env.VITE_APP_ERROR_IMAGE,
+    fingerprintEnabled: parseBoolean(env.VITE_APP_FINGERPRINT_ENABLED),
+    entry: "platform",
+    expectedDomain: "PLATFORM",
+    appId: env.VITE_APP_ID || "platform-admin",
+  },
+  net: {
+    baseURL: env.VITE_APP_NET_BASE_URL || undefined,
+    timeout: Number(env.VITE_APP_NET_DEFAULT_TIMEOUT) || 10_000,
+    timeoutErrorMessage: env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,
+  },
+  storage: {
+    storePrefix: env.VITE_APP_STORE_PREFIX,
+    cookieDomain: env.VITE_APP_COOKIE_DOMAIN,
+    cookieExpireTime: Number(env.VITE_APP_COOKIE_DEFAULT_EXPIRE_TIME) || 7200,
+  },
+  settings: {
+    componentSize,
+    showMenu: parseBoolean(env.VITE_APP_SETTINGS_SHOW_MENU),
+    showBreadcrumb: parseBoolean(env.VITE_APP_SETTINGS_SHOW_BREADCRUMB),
+    showCopyright: parseBoolean(env.VITE_APP_SETTINGS_SHOW_COPYRIGHT),
+    showSearch: parseBoolean(env.VITE_APP_SETTINGS_SHOW_SEARCH),
+    showWatermark: parseBoolean(env.VITE_APP_SETTINGS_SHOW_WATERMARK),
+  },
+  basicToken: env.VITE_APP_BASIC_TOKEN,
+  bucketName: env.VITE_APP_BUCKET_NAME,
+});

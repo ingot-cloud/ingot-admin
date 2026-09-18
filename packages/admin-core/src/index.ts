@@ -29,6 +29,7 @@ export * from "./utils/object";
 export * from "./hooks/biz/useEnum";
 export * from "./hooks/biz/useGlobalLoading";
 export * from "./hooks/biz/useLogin";
+export * from "./hooks/biz/useCapabilities";
 export * from "./query";
 export * from "./hooks/web/useMessage";
 export * from "./hooks/web/useRouter";

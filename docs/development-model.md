@@ -26,24 +26,24 @@ apps ─────→ plugins ─────→ packages
 
 ## 选择哪条路
 
-1. **直接使用 `apps/admin`**：普通单后台、OA、运营后台或 C 端业务管理。这是默认入口。本部署专属页面/组件/hook 放 `apps/admin/src` 约定目录，不必手写注册。
+1. **直接使用 `apps/admin` / `apps/admin-platform`**：租户与平台各一个 composition root。本部署专属页面/组件/hook 放对应 App 的 `src` 约定目录。
 2. **开发 `plugins/<name>`**：新增或修改可复用业务页面和 API。插件自己 type-check / lint / 单测，由 admin 编译运行。
 3. **开发 `themes/<id>`**：新增正式视觉主题。App 通过包名声明 workspace 依赖并显式传入 `theme`；创建主题不会自动改 App 配置。
 4. **开发者中心生成新 App**：需要独立 appCode、品牌、环境变量、构建产物或部署流水线时才创建。入口为 `apps/dev-portal`（兼容命令 `pnpm create:app`）。
 
-不要为了“看起来像独立产品”再复制一套全插件后台。`apps/admin` 已经承担这个角色。
+不要为了“看起来像独立产品”再复制一套全插件后台。租户与平台已经拆成 `apps/admin` 与 `apps/admin-platform` 两个目录。
 
 ## 端到端工作流
 
 ```text
-改插件源码 → 插件 type-check / 单测 → 在 admin 的 src/plugins.ts 注册
-    → 同步 package.json 依赖 → 同步后端菜单 → pnpm dev:admin 或 build:admin
+改插件源码 → 插件 type-check / 单测 → 在对应 admin App 的 src/plugins.ts 注册
+    → 同步 package.json 依赖 → 同步后端菜单 → pnpm dev:admin / dev:admin-platform 或对应 build
 ```
 
 裁剪能力时必须同时：
 
-1. 从 `apps/admin/src/plugins.ts` 删除 import 和数组项
-2. 从 `apps/admin/package.json` 删除对应 plugin 依赖
+1. 从对应 App 的 `src/plugins.ts` 删除 import 和数组项
+2. 从该 App 的 `package.json` 删除对应 plugin 依赖
 3. 让后端应用 / OAuth Client 不再返回该插件菜单
 4. 运行 `pnpm check:boundaries`
 

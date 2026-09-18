@@ -193,8 +193,6 @@ void bootstrapAdminApp({
   plugins: [],
   branding: { title: "Pack Consumer" },
   login: {
-    loginUri: "/login",
-    callbackUri: "/",
     fingerprintEnabled: false,
   },
 });

@@ -26,7 +26,7 @@ const mountBar = (slots?: Record<string, string>) => {
   configureAdminRuntime({
     appCode: "test-admin",
     branding: { title: "管理后台" },
-    login: { loginUri: "/login", callbackUri: "/callback", fingerprintEnabled: false },
+    login: { fingerprintEnabled: false },
     plugins: [],
   });
   useAppStateStore().showSearch = true;

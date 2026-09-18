@@ -1,6 +1,6 @@
 import type { NavigationGuardWithThis } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
-import { ensureSessionBootstrap, useUserInfoStore } from "@/stores/modules/auth";
+import { DomainMismatchError, ensureSessionBootstrap, useUserInfoStore } from "@/stores/modules/auth";
 import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
 
 export class UserInfoGuard extends BaseNavigationGuard {
@@ -21,7 +21,11 @@ export class UserInfoGuard extends BaseNavigationGuard {
               to.meta.dynamicRoutes = true;
               resolve(true);
             })
-            .catch(() => {
+            .catch((error) => {
+              if (error instanceof DomainMismatchError) {
+                resolve({ path: "/auth/identity-error", replace: true });
+                return;
+              }
               resolve(false);
             });
         });
