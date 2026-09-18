@@ -40,25 +40,27 @@
     >
       <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
         <template #default="scope">
-          <slot
-            v-if="item.type === 'expand'"
-            :name="item.prop"
-            :item="scope.row"
-            :index="scope.$index"
-          >
-          </slot>
-          <slot
-            v-else-if="!item.type || item.type === 'default'"
-            :name="item.prop"
-            :item="scope.row"
-            :index="scope.$index"
-          >
-            {{
-              item.transform
-                ? item.transform(scope.row[String(item.prop)])
-                : scope.row[String(item.prop)]
-            }}
-          </slot>
+          <template v-if="!isTableColumnProbe(scope)">
+            <slot
+              v-if="item.type === 'expand'"
+              :name="item.prop"
+              :item="scope.row"
+              :index="scope.$index"
+            >
+            </slot>
+            <slot
+              v-else-if="!item.type || item.type === 'default'"
+              :name="item.prop"
+              :item="scope.row"
+              :index="scope.$index"
+            >
+              {{
+                item.transform
+                  ? item.transform(scope.row[String(item.prop)])
+                  : scope.row[String(item.prop)]
+              }}
+            </slot>
+          </template>
         </template>
       </el-table-column>
       <template #empty>
@@ -92,6 +94,7 @@ import { type InTableProps, DefaultProps } from "./props";
 import { emptyIllustration } from "./emptyIllustration";
 import InTableSkeleton from "./InTableSkeleton.vue";
 import { resolveSkeletonRowCount } from "./resolveSkeletonRowCount";
+import { isTableColumnProbe } from "./tableColumnProbe";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";

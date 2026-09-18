@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { h } from "vue";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import InTable from "./InTable.vue";
@@ -191,6 +192,7 @@ describe("InTable", () => {
     expect(source).not.toContain("v-loading");
     expect(source).not.toContain("showOverlayLoading");
     expect(source).toContain("in-table-skeleton");
+    expect(source).toContain("isTableColumnProbe");
     expect(source).toContain("customTree");
     expect(source).toContain("treeColumn");
     expect(source).toContain("headerCheckbox");
@@ -254,5 +256,65 @@ describe("InTable", () => {
     });
     expect(customTree.get(".in-table").classes()).toContain("is-custom-tree");
     customTree.unmount();
+  });
+
+  it("不把 Element Plus 列探测行转发给业务插槽", () => {
+    setActivePinia(createPinia());
+    let forwarded: unknown;
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称", required: true }],
+        data: [],
+      },
+      slots: {
+        name: (props: { item: { record?: { name: string } } }) => {
+          forwarded = props.item;
+          return h("span", { class: "name-cell" }, props.item.record.name);
+        },
+      },
+      global: {
+        stubs: {
+          ...stubs,
+          ElTableColumn: {
+            template: `<div class="col"><slot name="default" v-bind="probe" /></div>`,
+            setup() {
+              return { probe: { row: {}, column: {}, $index: -1 } };
+            },
+          },
+        },
+      },
+    });
+    expect(forwarded).toBeUndefined();
+    expect(wrapper.find(".name-cell").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it("真实单元格仍转发业务插槽", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [{ record: { name: "组织A" } }],
+      },
+      slots: {
+        name: (props: { item: { record: { name: string } } }) =>
+          h("span", { class: "name-cell" }, props.item.record.name),
+      },
+      global: {
+        stubs: {
+          ...stubs,
+          ElTableColumn: {
+            template: `<div class="col"><slot name="default" v-bind="cell" /></div>`,
+            setup() {
+              return {
+                cell: { row: { record: { name: "组织A" } }, column: {}, $index: 0 },
+              };
+            },
+          },
+        },
+      },
+    });
+    expect(wrapper.get(".name-cell").text()).toBe("组织A");
+    wrapper.unmount();
   });
 });

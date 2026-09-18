@@ -11,3 +11,4 @@ export {
   isTreeCheckboxEnabled,
   resolveRowCheckboxMode,
 } from "./checkboxMode";
+export { isTableColumnProbe } from "./tableColumnProbe";

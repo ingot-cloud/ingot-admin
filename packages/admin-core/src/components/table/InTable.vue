@@ -55,17 +55,38 @@
             <slot v-else :name="`${String(item.prop)}-header`" :item="item" />
           </template>
           <template #default="scope">
-            <in-table-tree-cell
-              v-if="isTreeColumn(item)"
-              :indent="treeIndentOf(scope.row)"
-              :expandable="canExpandRow(scope.row)"
-              :expanded="isRowExpanded(scope.row)"
-              :checkbox-mode="rowCheckboxMode(scope.row)"
-              :checked="isRowSelected(scope.row)"
-              @toggle-expand="privateOnToggleExpand(scope.row)"
-              @change="(checked) => privateOnToggleSelect(scope.row, checked)"
-            >
+            <template v-if="!isTableColumnProbe(scope)">
+              <in-table-tree-cell
+                v-if="isTreeColumn(item)"
+                :indent="treeIndentOf(scope.row)"
+                :expandable="canExpandRow(scope.row)"
+                :expanded="isRowExpanded(scope.row)"
+                :checkbox-mode="rowCheckboxMode(scope.row)"
+                :checked="isRowSelected(scope.row)"
+                @toggle-expand="privateOnToggleExpand(scope.row)"
+                @change="(checked) => privateOnToggleSelect(scope.row, checked)"
+              >
+                <slot
+                  :name="item.prop"
+                  :item="scope.row"
+                  :index="scope.$index"
+                >
+                  {{
+                    item.transform
+                      ? item.transform(scope.row[String(item.prop)])
+                      : scope.row[String(item.prop)]
+                  }}
+                </slot>
+              </in-table-tree-cell>
               <slot
+                v-else-if="item.type === 'expand'"
+                :name="item.prop"
+                :item="scope.row"
+                :index="scope.$index"
+              >
+              </slot>
+              <slot
+                v-else-if="!item.type || item.type === 'default'"
                 :name="item.prop"
                 :item="scope.row"
                 :index="scope.$index"
@@ -76,26 +97,7 @@
                     : scope.row[String(item.prop)]
                 }}
               </slot>
-            </in-table-tree-cell>
-            <slot
-              v-else-if="item.type === 'expand'"
-              :name="item.prop"
-              :item="scope.row"
-              :index="scope.$index"
-            >
-            </slot>
-            <slot
-              v-else-if="!item.type || item.type === 'default'"
-              :name="item.prop"
-              :item="scope.row"
-              :index="scope.$index"
-            >
-              {{
-                item.transform
-                  ? item.transform(scope.row[String(item.prop)])
-                  : scope.row[String(item.prop)]
-              }}
-            </slot>
+            </template>
           </template>
         </el-table-column>
         <template #empty>
@@ -149,6 +151,7 @@ import {
   resolveRowCheckboxMode,
 } from "./checkboxMode";
 import { collectTreeLevels, flattenTreeRows, treeRowHasChildren } from "./tableTree";
+import { isTableColumnProbe } from "./tableColumnProbe";
 import { useAppStateStore } from "@/stores/modules/app";
 import { ElTable, type TableInstance } from "element-plus";
 import "element-plus/theme-chalk/el-table.css";
