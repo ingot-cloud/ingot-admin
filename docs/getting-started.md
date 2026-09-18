@@ -46,27 +46,23 @@ pnpm dev:admin-with-shared
 
 ### 4. 启动后台与登录
 
-本机 DEV 用四个 hostname 隔离 Cookie（与 Nacos `in-bff-apps.yml` 一致）。先写入 `/etc/hosts`：
+本机 DEV 用四个 `*.localhost` 隔离 Cookie（与 Nacos `in-bff-apps.yml` 一致）。浏览器直接回环，不必写 `/etc/hosts`。
 
-```text
-127.0.0.1 tenant.local tenant-login.local platform.local platform-login.local
-```
-
-租户管理台（http://tenant.local:5798）与租户登录（http://tenant-login.local:1798）：
+租户管理台（http://tenant.localhost:5798）与租户登录（http://tenant-login.localhost:1798）：
 
 ```bash
 pnpm dev:admin
 pnpm dev:login
 ```
 
-平台管理台（http://platform.local:5799）与平台登录（http://platform-login.local:1799）：
+平台管理台（http://platform.localhost:5799）与平台登录（http://platform-login.localhost:1799）：
 
 ```bash
 pnpm dev:admin-platform
 pnpm dev:login-platform
 ```
 
-`pnpm dev` 会并行启动上述四个应用。请用上述 hostname 打开，不要用 `localhost:端口`。租户后台是 `apps/admin`（org/security），平台后台是 `apps/admin-platform`（platform/security）。Member 不默认混入。裁剪方式见 [App 开发](./app-development.md)。登录链路见后端 `docs/modules/authorization-server/BFF-AUTH-FLOW.md`。
+`pnpm dev` 会并行启动上述四个应用。请用上述 `*.localhost` 打开，不要用光杆 `localhost:端口`。租户后台是 `apps/admin`（org/security），平台后台是 `apps/admin-platform`（platform/security）。Member 不默认混入。裁剪方式见 [App 开发](./app-development.md)。登录链路见后端 `docs/modules/authorization-server/BFF-AUTH-FLOW.md`。
 
 ### 5. 生产构建
 

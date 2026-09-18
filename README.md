@@ -60,10 +60,10 @@ ingot-admin/
 
 ```bash
 pnpm dev                      # 并行启动租户/平台 admin + 两套 login
-pnpm dev:admin                # 租户后台 http://tenant.local:5798
-pnpm dev:admin-platform       # 平台后台 http://platform.local:5799
-pnpm dev:login                # 租户登录 http://tenant-login.local:1798
-pnpm dev:login-platform       # 平台登录 http://platform-login.local:1799
+pnpm dev:admin                # 租户后台 http://tenant.localhost:5798
+pnpm dev:admin-platform       # 平台后台 http://platform.localhost:5799
+pnpm dev:login                # 租户登录 http://tenant-login.localhost:1798
+pnpm dev:login-platform       # 平台登录 http://platform-login.localhost:1799
 pnpm dev:portal               # 开发者中心 :5801
 pnpm dev:packages             # watch 构建全部 packages
 pnpm dev:admin-with-packages  # admin + packages watch
@@ -87,7 +87,7 @@ pnpm clean                    # 清理 workspace node_modules 与 dist
 pnpm clean:plugins            # 仅清理插件
 ```
 
-本机 DEV 请先在 `/etc/hosts` 写入 `127.0.0.1 tenant.local tenant-login.local platform.local platform-login.local`，用这些 hostname 打开，不要用 `localhost:端口`。
+本机 DEV 用 `tenant.localhost` / `tenant-login.localhost` / `platform.localhost` / `platform-login.localhost` 打开（浏览器直接回环，不必写 hosts），不要用光杆 `localhost:端口`。
 
 ## 文档
 

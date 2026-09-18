@@ -9,10 +9,10 @@ export type InAppViteOptionsFactory = (env: ConfigEnv) => InAppViteOptions;
 
 /** 本机 DEV 四站点；Vite DNS rebinding 默认只放行 localhost / *.localhost。 */
 export const DEV_BFF_ALLOWED_HOSTS = [
-  "tenant.local",
-  "tenant-login.local",
-  "platform.local",
-  "platform-login.local",
+  "tenant.localhost",
+  "tenant-login.localhost",
+  "platform.localhost",
+  "platform-login.localhost",
 ];
 
 export const defineInAppConfig = (
