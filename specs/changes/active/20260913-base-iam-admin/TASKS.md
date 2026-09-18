@@ -76,4 +76,4 @@
 
 ## 本轮实施进展（2026-09-16）
 
-已落地但未勾选验收：`@ingot/auth-core`；两套登录 App；管理台拆成 `apps/admin`（租户，CODE=`ingot-admin`，ID=`tenant-admin`）与 `apps/admin-platform`（平台，CODE=`ingot-platform-admin`，ID=`platform-admin`）；`/auth/start` `/auth/complete`；bootstrap 域校验；切租户/退出 BroadcastChannel。登录站 CSRF 按 `transactionId` 绑定：新事务重新 `POST csrf`，过期/`BFF_BINDING_MISMATCH` 清缓存后回 `/auth/start`。N05 已补平台账号页 `platform/iam/accounts`、应用资源/操作/菜单详情 Tab、套餐创建编辑、平台人员/组 Tab、租户开通预览提交；完整联调与 N06–N08 仍待验收，故 N02/N05–N10 不勾选。
+已落地但未勾选验收：`@ingot/auth-core`；两套登录 App；管理台拆成 `apps/admin`（租户，CODE=`ingot-admin`，ID=`tenant-admin`）与 `apps/admin-platform`（平台，CODE=`ingot-platform-admin`，ID=`platform-admin`）；`/auth/start` `/auth/complete`；bootstrap 域校验；切租户/退出 BroadcastChannel。登录站 CSRF 按 `transactionId` 绑定：新事务重新 `POST csrf`，过期/`BFF_TRANSACTION_EXPIRED`/`BFF_BINDING_MISMATCH` 清缓存后回 `/auth/start`。显式退出不保存 returnTo，start 跳过残留 `me()` 并新建事务。N05 已补平台账号页 `platform/iam/accounts`、应用资源/操作/菜单详情 Tab、套餐创建编辑、平台人员/组 Tab、租户开通预览提交；完整联调与 N06–N08 仍待验收，故 N02/N05–N10 不勾选。N07 部门树：租户 `GET /v1/tenant/departments` 由 API 固定 `purpose=MANAGED_DEPARTMENT`，成员页按默认 20 条分页收齐后再按 `parentId` 组树，不再传 `pageSize=200`。
