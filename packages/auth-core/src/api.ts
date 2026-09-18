@@ -75,10 +75,16 @@ export const createAuthApi = (http: HttpClient, entry: AuthEntry) => {
     me: (): Promise<R<SessionMe>> =>
       http.get<SessionMe>("/api/bff/auth/me", null, { feedback: "silent" }),
     logout: async (): Promise<R<void>> => {
-      await ensureCsrf();
-      const result = await http.delete<void>("/api/bff/auth/logout");
-      clearCsrfToken();
-      return result;
+      try {
+        await issueCsrf();
+      } catch {
+        // BFF still clears the local session if CSRF later mismatches.
+      }
+      try {
+        return await http.delete<void>("/api/bff/auth/logout");
+      } finally {
+        clearCsrfToken();
+      }
     },
   };
 };

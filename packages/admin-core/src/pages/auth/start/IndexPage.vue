@@ -4,19 +4,18 @@
 <script setup lang="ts">
 import { bffAuthApi } from "@/api/common/auth";
 import { DomainMismatchError, ensureSessionBootstrap } from "@/stores/modules/auth";
-import { takeReturnTo } from "@ingot/auth-core";
+import { consumeExplicitLogout, takeReturnTo } from "@ingot/auth-core";
 
 onMounted(async () => {
   const api = bffAuthApi();
+  if (consumeExplicitLogout()) {
+    await privateStartNewTransaction(api);
+    return;
+  }
   try {
     await api.me();
   } catch {
-    try {
-      const created = await api.createTransaction();
-      window.location.assign(created.data.loginUrl);
-    } catch {
-      window.location.replace("/403");
-    }
+    await privateStartNewTransaction(api);
     return;
   }
   try {
@@ -30,6 +29,15 @@ onMounted(async () => {
     window.location.replace("/500");
   }
 });
+
+const privateStartNewTransaction = async (api: ReturnType<typeof bffAuthApi>): Promise<void> => {
+  try {
+    const created = await api.createTransaction();
+    window.location.assign(created.data.loginUrl);
+  } catch {
+    window.location.replace("/403");
+  }
+};
 </script>
 <style lang="postcss" scoped>
 .auth-handoff {

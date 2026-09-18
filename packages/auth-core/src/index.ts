@@ -9,7 +9,7 @@ export {
   currentCsrfTransactionId,
   rememberCsrfToken,
 } from "./csrf";
-export { sanitizeReturnTo, saveReturnTo, takeReturnTo } from "./returnTo";
+export { consumeExplicitLogout, markExplicitLogout, sanitizeReturnTo, saveReturnTo, takeReturnTo } from "./returnTo";
 export {
   BFF_BINDING_MISMATCH,
   BFF_TRANSACTION_EXPIRED,
@@ -21,6 +21,7 @@ export {
 } from "./errors";
 export {
   CSRF_HEADER,
+  EXPLICIT_LOGOUT_STORAGE_KEY,
   RETURN_TO_STORAGE_KEY,
   type AuthEntry,
   type AuthorizationDomain,

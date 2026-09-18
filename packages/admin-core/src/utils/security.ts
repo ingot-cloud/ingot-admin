@@ -10,6 +10,6 @@ export function logoutAndReload(ignoreRevokeAPI?: boolean) {
   useAuthStore()
     .logout(ignoreRevokeAPI)
     .then(() => {
-      useLogin().go();
+      useLogin().go({ rememberReturnTo: Boolean(ignoreRevokeAPI) });
     });
 }

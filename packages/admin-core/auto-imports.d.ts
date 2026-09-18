@@ -351,6 +351,9 @@ declare global {
   // @ts-ignore
   export type { Options, CommandComponent } from './src/hooks/biz/useCommandComponent'
   import('./src/hooks/biz/useCommandComponent')
+  // @ts-ignore
+  export type { LoginGoOptions } from './src/hooks/biz/useLogin'
+  import('./src/hooks/biz/useLogin')
 }
 
 // for vue template auto import

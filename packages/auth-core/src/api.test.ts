@@ -27,7 +27,11 @@ const mockHttp = (csrfToken = "csrf-new") => {
     }
     return { data: { transactionId: "tx-1", loginUrl: "http://localhost:1798/oauth2/challenge?tx=tx-1" } };
   });
-  return { post } as unknown as HttpClient & { post: ReturnType<typeof vi.fn> };
+  const del = vi.fn(async () => ({ data: undefined }));
+  return { post, delete: del } as unknown as HttpClient & {
+    post: ReturnType<typeof vi.fn>;
+    delete: ReturnType<typeof vi.fn>;
+  };
 };
 
 describe("createAuthApi.createTransaction", () => {
@@ -68,5 +72,18 @@ describe("createAuthApi.ensureCsrfForTransaction", () => {
 
     expect(http.post.mock.calls.filter((call) => call[0] === "/api/bff/auth/csrf")).toHaveLength(0);
     expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/tenant/login");
+  });
+});
+
+describe("createAuthApi.logout", () => {
+  it("reissues csrf even when a token is already cached", async () => {
+    rememberCsrfToken("csrf-stale");
+    const http = mockHttp("csrf-fresh");
+    const api = createAuthApi(http, "tenant");
+
+    await api.logout();
+
+    expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/csrf");
+    expect(http.delete).toHaveBeenCalledWith("/api/bff/auth/logout");
   });
 });
