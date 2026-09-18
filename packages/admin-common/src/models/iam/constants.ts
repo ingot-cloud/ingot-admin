@@ -77,6 +77,15 @@ export enum AccountLookupPurpose {
   ACCOUNT_MANAGE = "ACCOUNT_MANAGE",
 }
 
+export enum SelectionPurpose {
+  ASSIGN_RECIPIENT = "ASSIGN_RECIPIENT",
+  MANAGED_DEPARTMENT = "MANAGED_DEPARTMENT",
+  DIRECTORY = "DIRECTORY",
+}
+
+/** IAM 管理面列表默认页大小，与后端 `IamPages.DEFAULT_SIZE` 对齐。 */
+export const IAM_DEFAULT_PAGE_SIZE = 20;
+
 export enum MenuAccessMode {
   OPEN = "OPEN",
   ACTION = "ACTION",

@@ -4,6 +4,7 @@ import {
   IAM_API_PREFIX,
   mapIamPage,
   toIamListParams,
+  SelectionPurpose,
   type ApplicationSummary,
   type CreatedResource,
   type DepartmentRecord,
@@ -35,6 +36,20 @@ const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
   ...res,
   data: mapIamPage(res.data),
 });
+
+const toPurposeParams = (
+  page: Page,
+  condition: IamListQuery | undefined,
+  purpose: SelectionPurpose,
+): Record<string, unknown> => {
+  if (condition) {
+    filterParams(condition);
+  }
+  return {
+    ...toIamListParams(page, condition),
+    purpose,
+  };
+};
 
 export function TenantMemberPageAPI(
   page: Page,
@@ -123,13 +138,10 @@ export function TenantDepartmentPageAPI(
   condition?: IamListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<DepartmentRecord>>>> {
-  if (condition) {
-    filterParams(condition);
-  }
   return request
     .get<IamPageResponse<ResourceDetail<DepartmentRecord>>>(
       DEPT_PATH,
-      toIamListParams(page, condition),
+      toPurposeParams(page, condition, SelectionPurpose.MANAGED_DEPARTMENT),
       options,
     )
     .then(asPage);
@@ -235,13 +247,10 @@ export function DirectoryMemberPageAPI(
   condition?: IamListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<MemberRecord>>>> {
-  if (condition) {
-    filterParams(condition);
-  }
   return request
     .get<IamPageResponse<ResourceDetail<MemberRecord>>>(
       DIR_MEMBER_PATH,
-      toIamListParams(page, condition),
+      toPurposeParams(page, condition, SelectionPurpose.DIRECTORY),
       options,
     )
     .then(asPage);
@@ -252,13 +261,10 @@ export function DirectoryDepartmentPageAPI(
   condition?: IamListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<DepartmentRecord>>>> {
-  if (condition) {
-    filterParams(condition);
-  }
   return request
     .get<IamPageResponse<ResourceDetail<DepartmentRecord>>>(
       DIR_DEPT_PATH,
-      toIamListParams(page, condition),
+      toPurposeParams(page, condition, SelectionPurpose.DIRECTORY),
       options,
     )
     .then(asPage);

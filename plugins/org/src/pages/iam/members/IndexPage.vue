@@ -46,43 +46,11 @@
 
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
-import { applyColumnSelection, useCapabilities, useServerPaging } from "@ingot/admin-core";
-import type { IamListQuery, MemberRecord, ResourceDetail } from "@ingot/admin-common";
-import { TenantMemberPageQueryOptions } from "@/api/iam/directory.query";
-import { TenantDepartmentPageAPI } from "@/api/iam/directory";
-import { tableHeaders } from "./table";
+import { useOps } from "./useOps";
 
-const { unavailable } = useCapabilities();
-const paging = useServerPaging<ResourceDetail<MemberRecord>, IamListQuery & { departmentId?: string }>({
-  queryOptions: TenantMemberPageQueryOptions,
-  enabled: () => !unavailable.value,
-});
-const selectedColumnProps = ref<string[]>([]);
-const deptTree = ref<Array<{ id: string; name: string; children?: unknown[] }>>([]);
-
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
-
-const refreshData = (): void => {
-  paging.search();
-};
-
-const loadDepts = (): void => {
-  TenantDepartmentPageAPI({ current: 1, size: 200 }).then((response) => {
-    deptTree.value = (response.data.records ?? []).map((item) => ({
-      id: item.record.id,
-      name: item.record.name,
-    }));
-  });
-};
-
-const privateOnDept = (node: { id?: string }): void => {
-  paging.condition.departmentId = node.id;
-  refreshData();
-};
-
-const rowKeyOf = (row: ResourceDetail<MemberRecord>): string => row.record.id;
+const { paging, deptTree, visibleHeaders, loadDepts, refreshData, privateOnDept, rowKeyOf } = useOps();
 
 onMounted(() => {
-  loadDepts();
+  void loadDepts();
 });
 </script>

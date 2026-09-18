@@ -9,6 +9,7 @@ import {
   MenuMatchMode,
   RoleKind,
   AuthorizationDomain,
+  SelectionPurpose,
 } from "./constants";
 
 export const ConfigurationStatusExtArray = [
@@ -56,6 +57,14 @@ export const AccountLookupPurposeExtArray = [
 ];
 
 export const useAccountLookupPurposeEnum = () => useEnum(AccountLookupPurposeExtArray);
+
+export const SelectionPurposeExtArray = [
+  newEnumExt(SelectionPurpose.ASSIGN_RECIPIENT, "授权对象"),
+  newEnumExt(SelectionPurpose.MANAGED_DEPARTMENT, "管理部门"),
+  newEnumExt(SelectionPurpose.DIRECTORY, "通讯录"),
+];
+
+export const useSelectionPurposeEnum = () => useEnum(SelectionPurposeExtArray);
 
 export const MenuKindExtArray = [
   newEnumExt(MenuKind.DIRECTORY, "目录"),
