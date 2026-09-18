@@ -103,6 +103,17 @@ export enum EntitlementSource {
   MIGRATION = "MIGRATION",
 }
 
+export enum GrantStatus {
+  ACTIVE = "ACTIVE",
+  REVOKED = "REVOKED",
+}
+
+export enum AssignmentSource {
+  MANUAL = "MANUAL",
+  INITIALIZATION = "INITIALIZATION",
+  MIGRATION = "MIGRATION",
+}
+
 export const IamAction = {
   TENANT_DIRECTORY_READ: "iam-tenant:directory:read",
   PLATFORM_MEMBER_READ: "iam-platform:member:read",

@@ -33,7 +33,9 @@
             @handleSizeChange="assignments.paging.fetchData"
             @handleCurrentChange="assignments.paging.fetchData"
           >
-            <template #subject="{ item }">{{ item.record.subject.type }} / {{ item.record.subject.id }}</template>
+            <template #subject="{ item }">
+              {{ item.record.assignment.subject.type }} / {{ item.record.assignment.subject.id }}
+            </template>
           </in-table>
         </in-biz-tab-panel>
         <in-biz-tab-panel title="授权管理员" name="delegations">
@@ -48,7 +50,9 @@
             @handleSizeChange="delegations.paging.fetchData"
             @handleCurrentChange="delegations.paging.fetchData"
           >
-            <template #administratorMemberId="{ item }">{{ item.record.administratorMemberId }}</template>
+            <template #administratorMemberId="{ item }">
+              {{ item.record.delegation.administratorMemberId }}
+            </template>
           </in-table>
         </in-biz-tab-panel>
       </in-biz-tabs>

@@ -1,9 +1,11 @@
 import {
   AccountLookupPurpose,
+  AssignmentSource,
   AuthorizationDomain,
   ConfigurationStatus,
   EntitlementSource,
   FieldVisibility,
+  GrantStatus,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
@@ -524,17 +526,40 @@ export interface EntitlementPreviewResult {
   impactSummary?: Preview["impactSummary"];
 }
 
-export interface AssignmentRecord {
-  id: string;
+export interface AssignmentInput {
   subject: SubjectRef;
   roleRevisionRef: RoleRevisionRef;
+  scopeBindings: Record<string, ScopeBinding>;
   validFrom?: string;
   validUntil?: string;
+  delegationGrantId?: string;
+}
+
+export interface AssignmentRecord {
+  id: string;
+  assignment: AssignmentInput;
+  status: GrantStatus;
+  source: AssignmentSource;
+}
+
+export interface ActionScopeCeiling {
+  actionId: string;
+  scopes: ScopeExpression[];
+  scopeBindings: Record<string, ScopeBinding>;
+}
+
+export interface DelegationInput {
+  administratorMemberId: string;
+  allowedRoleRevisionRefs: RoleRevisionRef[];
+  recipientSelection: Selection;
+  actionScopeCeilings: ActionScopeCeiling[];
+  validFrom?: string;
+  validUntil?: string;
+  maxAssignmentDuration: string;
 }
 
 export interface DelegationRecord {
   id: string;
-  administratorMemberId: string;
-  validFrom?: string;
-  validUntil?: string;
+  delegation: DelegationInput;
+  status: GrantStatus;
 }
