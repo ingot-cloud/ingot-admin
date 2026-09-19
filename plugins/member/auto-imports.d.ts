@@ -362,6 +362,9 @@ declare global {
   export type { Options, CommandComponent } from '../../packages/admin-core/src/hooks/biz/useCommandComponent'
   import('../../packages/admin-core/src/hooks/biz/useCommandComponent')
   // @ts-ignore
+  export type { LoginGoOptions } from '../../packages/admin-core/src/hooks/biz/useLogin'
+  import('../../packages/admin-core/src/hooks/biz/useLogin')
+  // @ts-ignore
   export type { DomainMismatchError } from '../../packages/admin-core/src/stores/modules/auth'
   import('../../packages/admin-core/src/stores/modules/auth')
   // @ts-ignore
