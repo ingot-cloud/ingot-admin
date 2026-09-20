@@ -83,7 +83,7 @@ Query key 含管理域、tenantId、account/memberId 和 contextEpoch，业务�
 
 无需修改项目宪章。
 
-## 8. 双入口与四站点设计（2026-09-16，待实施）
+## 8. 双入口与四站点设计（2026-09-19：部分实现，剩余见U01）
 
 ### 8.1 模块与构建
 
@@ -113,3 +113,26 @@ Query key 含管理域、tenantId、account/memberId 和 contextEpoch，业务�
 ### 8.4 发布边界
 
 四站同主域不同 host、同源 /api 代理、两个 OAuth client；本地提供同样四主机名 HTTPS 拓扑。部署具体域名由环境配置给出，预检拒绝缺失或不一致；不会从旧 env 猜生产值。全新系统启用后清已知旧 Cookie/缓存并重新登录，不迁移旧会话；前后端一致版本回退，不恢复旧宽松跳转。生产发布不在“只生成 Spec”授权范围。
+
+## 9. 全量适配、交互与验证组织（2026-09-19）
+
+IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和消费落点，TASKS的S/U分别表达已落地开发事实与剩余退出条件。继续复用现有页面；不为凑接口覆盖率生成重复CRUD。接口不足按后端依赖记录，不改变授权/JSON语义。本轮不新增公共API或DTO。
+
+统一视觉和行为以INTERACTIONS第5节为检查清单，原通讯录只作为交互参照。列表action由table.ts提供，业务动作与状态由useOps/页面私有组件组织；公共人员/范围/期限/预览编辑能力放admin-common，框架生命周期在admin-core，插件不得互相依赖。资源字段能力、策略和角色使用可读表单/矩阵及说明，不暴露内部JSON作为最终管理界面。INTERACTIONS 中 `[TEST-DATA](./TEST-DATA.md)` 按 [SOURCES](./SOURCES.md) 解析为 `sources/BACKEND_TEST_DATA.md`。
+
+独立测试环境使用后端TEST-DATA的同一runId，前端记录I操作、U任务、A/P验收与TD场景关系。后端准备脚本不承担浏览器验收；页面测试和静态检查不代替真实授权结果。候选分页、草稿失效、字段payload、冲突保留及多身份状态是组件/集成测试重点，主题/布局/action一致性另行视觉验收（P25）。
+
+### 9.1 页面交互检查表（与 INTERACTIONS §5、P25 对齐）
+
+后续每个 IAM 页面（含已接页面）按下列项勾选，不能只写“保持统一”。
+
+| 检查项 | 通过标准 |
+|---|---|
+| 布局 | 复用 InPageFrame/InPageHeader、InSplitLayout、InTable、InTableActions、InDetailDrawer/InDescriptionList；树表双栏沿用通讯录，不为每域另搭布局 |
+| 动作 | 工具栏与行操作走类型化 action；分主操作、快捷、溢出菜单、危险确认；无 ACTION 隐藏；对象受限禁用并展示后端原因 |
+| 搜索筛选 | 主搜索在 tools-start、无 label、回车或清空查询；枚举用 InPicker；≥3 个或远程实体条件进 InFilterPanel |
+| 选择器 | 人员/部门/应用/角色版本/所有者远程分页，不截断首 200、不手填裸 ID；purpose/范围由服务端约束 |
+| 详情与编辑 | 名称/头像进只读详情；编辑用明确入口；简单用抽屉，角色/升级用全页向导，分配用大抽屉 |
+| 草稿与错误 | 未保存离开确认；409 留草稿并重预览；403 刷新能力；503 可辨识且不空列表；404 不泄露存在性；写请求防重复 |
+| 视觉 | 现有主题 Token 与 UnoCSS；宽/窄屏；统一空态/错误/密度/按钮；不另建品牌色 |
+| 完整性 | 空 handle、JSON 展示、未知 DTO 只能标部分实现；无契约不造按钮；工作台 URL 来自服务端菜单 |

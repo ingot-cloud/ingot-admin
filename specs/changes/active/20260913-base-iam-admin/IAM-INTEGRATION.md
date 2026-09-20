@@ -1,10 +1,10 @@
 # IAM 逐操作对接矩阵
 
-> 2026-09-16 生成，96路径/161操作；所有行均为待复核/待验收，不代表现有代码不存在，也不将后端 x-runtime-implemented 等同前端完成。
+> 2026-09-19静态核对：保留96路径/161操作及I编号。最后一列区分“调用链已接”“仅封装”“待接入”，记录现有符号及U任务；所有行仍待完整业务/真实HTTP验收，不以x-runtime-implemented或源码调用推断通过。
 
 ## 使用规则
 
-接口与 ACTION 从本次后端 OpenAPI 原样提取。表中插件/页面是实施归属；实际具名 API、页面符号及证据由对应任务实施时填写。每一操作都须检查 DTO、筛选/purpose、分页、对象能力/字段、错误及预览语义；一操作服务多个页面时补全所有调用方，不用机械生成 CRUD 代替用户流程。
+接口与 ACTION 从本次后端 OpenAPI 原样提取。表中插件/页面是实施归属；现有具名API及消费落点已静态回填；后续逐项补DTO核验、实际交互及自动化/HTTP证据。每一操作都须检查 DTO、筛选/purpose、分页、对象能力/字段、错误及预览语义；一操作服务多个页面时补全所有调用方，不用机械生成 CRUD 代替用户流程。
 
 响应/参数定义使用 [完整 OpenAPI](./sources/contracts/openapi.json)，辅助模块及已退出入口使用 [入口映射](./sources/endpoint-mapping.json)。无独立 ACTION 的当前身份接口依其契约认证要求，不表示匿名可用。API包装的 RJson 必须核对真实领域类型，不引入 any。BFF 单独按 BFF-LOGIN/L01–L12 验收，不纳入161。
 
@@ -12,164 +12,181 @@
 
 | 序号 | 方法与路径 | operationId | ACTION | 插件 / 页面 | 任务 / 验收 | 实际API、页面与证据 |
 |---|---|---|---|---|---|---|
-| I001 | `GET /v1/me/bootstrap` | `currentBootstrap` | 当前身份契约 | admin-core / bootstrap/能力刷新 | N04/N08 / A02/A16 | 待复核、待验收 |
-| I002 | `GET /v1/me/capabilities` | `currentCapabilities` | 当前身份契约 | admin-core / bootstrap/能力刷新 | N04/N08 / A02/A16 | 待复核、待验收 |
-| I003 | `GET /v1/me/profile` | `currentGetProfile` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待复核、待验收 |
-| I004 | `PATCH /v1/me/profile` | `currentPatchProfile` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待复核、待验收 |
-| I005 | `PUT /v1/me/password` | `currentPutPassword` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待复核、待验收 |
-| I006 | `GET /v1/directory/members` | `listDirectoryMembers` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 待复核、待验收 |
-| I007 | `GET /v1/directory/members/{id}` | `getDirectoryMember` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 待复核、待验收 |
-| I008 | `GET /v1/directory/departments` | `listDirectoryDepartments` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 待复核、待验收 |
-| I009 | `GET /v1/platform/members` | `platformListMembers` | iam-platform:member:read | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I010 | `POST /v1/platform/members` | `platformCreateMember` | iam-platform:member:create | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I011 | `GET /v1/platform/members/{id}` | `platformGetMember` | iam-platform:member:read | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I012 | `PATCH /v1/platform/members/{id}` | `platformPatchMember` | iam-platform:member:update | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I013 | `PATCH /v1/platform/members/{id}/status` | `platformPatchMemberStatus` | iam-platform:member:status | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I014 | `POST /v1/platform/members/{id}/remove` | `platformRemoveMember` | iam-platform:member:remove | platform / 平台人员 | N05 / A03/A22 | 待复核、待验收 |
-| I015 | `GET /v1/platform/groups` | `platformListGroups` | iam-platform:group:read | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I016 | `POST /v1/platform/groups` | `platformCreateGroup` | iam-platform:group:create | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I017 | `GET /v1/platform/groups/{id}` | `platformGetGroup` | iam-platform:group:read | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I018 | `PUT /v1/platform/groups/{id}` | `platformPutGroup` | iam-platform:group:update | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I019 | `DELETE /v1/platform/groups/{id}` | `platformDeleteGroup` | iam-platform:group:delete | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I020 | `POST /v1/platform/groups/{id}/preview` | `platformPreviewGroup` | iam-platform:group:preview | platform / 平台人员的组Tab | N05 / A08 | 待复核、待验收 |
-| I021 | `GET /v1/platform/tenants` | `platformListTenants` | iam-platform:tenant:read | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I022 | `POST /v1/platform/tenants` | `platformCreateTenant` | iam-platform:tenant:create | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I023 | `POST /v1/platform/tenants/preview` | `platformPreviewTenant` | iam-platform:tenant:preview | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I024 | `GET /v1/platform/tenants/{id}` | `platformGetTenant` | iam-platform:tenant:read | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I025 | `PATCH /v1/platform/tenants/{id}` | `platformPatchTenant` | iam-platform:tenant:update | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I026 | `GET /v1/platform/tenants/{id}/entitlements` | `platformListEntitlements` | iam-platform:entitlement:read | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I027 | `PUT /v1/platform/tenants/{id}/entitlements` | `platformPutEntitlements` | iam-platform:entitlement:update | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I028 | `POST /v1/platform/tenants/{id}/entitlements/preview` | `platformPreviewEntitlements` | iam-platform:entitlement:preview | platform / 租户向导/详情/开通 | N05 / A04 | 待复核、待验收 |
-| I029 | `GET /v1/platform/applications` | `platformListApplications` | iam-platform:application:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I030 | `POST /v1/platform/applications` | `platformCreateApplication` | iam-platform:application:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I031 | `GET /v1/platform/applications/{id}` | `platformGetApplication` | iam-platform:application:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I032 | `PUT /v1/platform/applications/{id}` | `platformPutApplication` | iam-platform:application:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I033 | `PATCH /v1/platform/applications/{id}` | `platformPatchApplicationStatus` | iam-platform:application:status | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I034 | `DELETE /v1/platform/applications/{id}` | `platformDeleteApplication` | iam-platform:application:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I035 | `GET /v1/platform/applications/{id}/resources` | `platformListResources` | iam-platform:resource:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I036 | `POST /v1/platform/applications/{id}/resources` | `platformCreateResource` | iam-platform:resource:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I037 | `PUT /v1/platform/applications/{id}/resources/{resourceId}` | `platformPutResource` | iam-platform:resource:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I038 | `DELETE /v1/platform/applications/{id}/resources/{resourceId}` | `platformDeleteResource` | iam-platform:resource:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I039 | `GET /v1/platform/applications/{id}/actions` | `platformListActions` | iam-platform:action:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I040 | `POST /v1/platform/applications/{id}/actions` | `platformCreateAction` | iam-platform:action:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I041 | `PUT /v1/platform/applications/{id}/actions/{actionId}` | `platformPutAction` | iam-platform:action:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I042 | `PATCH /v1/platform/applications/{id}/actions/{actionId}` | `platformPatchActionStatus` | iam-platform:action:status | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I043 | `DELETE /v1/platform/applications/{id}/actions/{actionId}` | `platformDeleteAction` | iam-platform:action:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I044 | `GET /v1/platform/applications/{id}/menus` | `platformListMenus` | iam-platform:menu:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I045 | `POST /v1/platform/applications/{id}/menus` | `platformCreateMenu` | iam-platform:menu:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I046 | `PUT /v1/platform/applications/{id}/menus/{menuId}` | `platformPutMenu` | iam-platform:menu:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I047 | `DELETE /v1/platform/applications/{id}/menus/{menuId}` | `platformDeleteMenu` | iam-platform:menu:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 待复核、待验收 |
-| I048 | `GET /v1/platform/plans` | `platformListPlans` | iam-platform:plan:read | platform / 套餐目录/编辑 | N05 / A04 | 待复核、待验收 |
-| I049 | `POST /v1/platform/plans` | `platformCreatePlan` | iam-platform:plan:create | platform / 套餐目录/编辑 | N05 / A04 | 待复核、待验收 |
-| I050 | `GET /v1/platform/plans/{id}` | `platformGetPlan` | iam-platform:plan:read | platform / 套餐目录/编辑 | N05 / A04 | 待复核、待验收 |
-| I051 | `PUT /v1/platform/plans/{id}` | `platformPutPlan` | iam-platform:plan:update | platform / 套餐目录/编辑 | N05 / A04 | 待复核、待验收 |
-| I052 | `GET /v1/platform/roles` | `platformListRoles` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I053 | `POST /v1/platform/roles` | `platformCreateRole` | iam-platform:role:create | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I054 | `GET /v1/platform/roles/{id}` | `platformGetRole` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I055 | `PATCH /v1/platform/roles/{id}` | `platformPatchRoleStatus` | iam-platform:role:status | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I056 | `DELETE /v1/platform/roles/{id}` | `platformDeleteRole` | iam-platform:role:delete | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I057 | `GET /v1/platform/roles/{id}/revisions` | `platformListRoleRevisions` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I058 | `POST /v1/platform/roles/{id}/revisions` | `platformPublishRoleRevision` | iam-platform:role:publish | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I059 | `POST /v1/platform/roles/{id}/preview` | `platformPreviewRole` | iam-platform:role:preview | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I060 | `GET /v1/platform/shared-roles` | `platformSharedListRoles` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I061 | `POST /v1/platform/shared-roles` | `platformSharedCreateRole` | iam-platform:shared-role:create | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I062 | `GET /v1/platform/shared-roles/{id}` | `platformSharedGetRole` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I063 | `PATCH /v1/platform/shared-roles/{id}` | `platformSharedPatchRoleStatus` | iam-platform:shared-role:status | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I064 | `DELETE /v1/platform/shared-roles/{id}` | `platformSharedDeleteRole` | iam-platform:shared-role:delete | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I065 | `GET /v1/platform/shared-roles/{id}/revisions` | `platformSharedListRoleRevisions` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I066 | `POST /v1/platform/shared-roles/{id}/revisions` | `platformSharedPublishRoleRevision` | iam-platform:shared-role:publish | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I067 | `POST /v1/platform/shared-roles/{id}/preview` | `platformSharedPreviewRole` | iam-platform:shared-role:preview | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待复核、待验收 |
-| I068 | `GET /v1/platform/assignments` | `platformListAssignments` | iam-platform:assignment:read | platform / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I069 | `POST /v1/platform/assignments` | `platformCreateAssignments` | iam-platform:assignment:create | platform / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I070 | `PUT /v1/platform/assignments/{id}` | `platformPutAssignment` | iam-platform:assignment:update | platform / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I071 | `DELETE /v1/platform/assignments/{id}` | `platformDeleteAssignment` | iam-platform:assignment:delete | platform / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I072 | `POST /v1/platform/assignments/preview` | `platformPreviewAssignments` | iam-platform:assignment:create | platform / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I073 | `GET /v1/platform/delegations` | `platformListDelegations` | iam-platform:delegation:read | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I074 | `POST /v1/platform/delegations` | `platformCreateDelegation` | iam-platform:delegation:create | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I075 | `GET /v1/platform/delegations/{id}` | `platformGetDelegation` | iam-platform:delegation:read | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I076 | `PUT /v1/platform/delegations/{id}` | `platformPutDelegation` | iam-platform:delegation:update | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I077 | `DELETE /v1/platform/delegations/{id}` | `platformDeleteDelegation` | iam-platform:delegation:delete | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I078 | `POST /v1/platform/delegations/{id}/preview` | `platformPreviewDelegation` | iam-platform:delegation:preview | platform / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I079 | `POST /v1/platform/authorization/diagnose` | `platformDiagnose` | iam-platform:authorization:diagnose | platform / 角色授权详情诊断工具 | N06 / A13 | 待复核、待验收 |
-| I080 | `GET /v1/platform/authorization/audits` | `platformListAudits` | iam-platform:audit:read | security / 授权审计 | N07 / A13 | 待复核、待验收 |
-| I081 | `GET /v1/tenant/members` | `tenantListMembers` | iam-tenant:member:read | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I082 | `POST /v1/tenant/members` | `tenantCreateMember` | iam-tenant:member:create | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I083 | `GET /v1/tenant/members/{id}` | `tenantGetMember` | iam-tenant:member:read | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I084 | `PATCH /v1/tenant/members/{id}` | `tenantPatchMember` | iam-tenant:member:update | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I085 | `PATCH /v1/tenant/members/{id}/status` | `tenantPatchMemberStatus` | iam-tenant:member:status | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I086 | `POST /v1/tenant/members/{id}/remove` | `tenantRemoveMember` | iam-tenant:member:remove | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I087 | `PUT /v1/tenant/members/{id}/departments` | `tenantReplaceMemberDepartments` | iam-tenant:member:departments | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I088 | `POST /v1/tenant/members/export` | `tenantExportMembers` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I089 | `GET /v1/tenant/members/export/{id}/status` | `tenantGetMemberExportStatus` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I090 | `GET /v1/tenant/members/export/{id}` | `tenantDownloadMemberExport` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待复核、待验收 |
-| I091 | `GET /v1/tenant/departments` | `tenantListDepartments` | iam-tenant:department:read | org / 部门树/详情/移动 | N07 / A08 | 待复核、待验收 |
-| I092 | `POST /v1/tenant/departments` | `tenantCreateDepartment` | iam-tenant:department:create | org / 部门树/详情/移动 | N07 / A08 | 待复核、待验收 |
-| I093 | `GET /v1/tenant/departments/{id}` | `tenantGetDepartment` | iam-tenant:department:read | org / 部门树/详情/移动 | N07 / A08 | 待复核、待验收 |
-| I094 | `PUT /v1/tenant/departments/{id}` | `tenantPutDepartment` | iam-tenant:department:update | org / 部门树/详情/移动 | N07 / A08 | 待复核、待验收 |
-| I095 | `DELETE /v1/tenant/departments/{id}` | `tenantDeleteDepartment` | iam-tenant:department:delete | org / 部门树/详情/移动 | N07 / A08 | 待复核、待验收 |
-| I096 | `GET /v1/tenant/settings` | `tenantGetSettings` | iam-tenant:settings:read | org / 组织设置/所有者转交 | N07 / A21 | 待复核、待验收 |
-| I097 | `PUT /v1/tenant/settings` | `tenantPutSettings` | iam-tenant:settings:update | org / 组织设置/所有者转交 | N07 / A21 | 待复核、待验收 |
-| I098 | `POST /v1/tenant/settings/owner-transfer` | `tenantTransferOwner` | iam-tenant:settings:owner-transfer | org / 组织设置/所有者转交 | N07 / A21 | 待复核、待验收 |
-| I099 | `GET /v1/tenant/applications` | `tenantListApplications` | iam-tenant:application:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待复核、待验收 |
-| I100 | `GET /v1/tenant/applications/{id}/audience` | `tenantGetAudience` | iam-tenant:audience:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待复核、待验收 |
-| I101 | `PUT /v1/tenant/applications/{id}/audience` | `tenantPutAudience` | iam-tenant:audience:update | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待复核、待验收 |
-| I102 | `GET /v1/tenant/applications/{id}/actions` | `tenantListApplicationActions` | iam-tenant:application:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待复核、待验收 |
-| I103 | `GET /v1/tenant/groups` | `tenantListGroups` | iam-tenant:group:read | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I104 | `POST /v1/tenant/groups` | `tenantCreateGroup` | iam-tenant:group:create | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I105 | `GET /v1/tenant/groups/{id}` | `tenantGetGroup` | iam-tenant:group:read | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I106 | `PUT /v1/tenant/groups/{id}` | `tenantPutGroup` | iam-tenant:group:update | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I107 | `DELETE /v1/tenant/groups/{id}` | `tenantDeleteGroup` | iam-tenant:group:delete | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I108 | `POST /v1/tenant/groups/{id}/preview` | `tenantPreviewGroup` | iam-tenant:group:preview | org / 用户组/预览 | N07 / A08 | 待复核、待验收 |
-| I109 | `GET /v1/tenant/roles` | `tenantListRoles` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I110 | `POST /v1/tenant/roles` | `tenantCreateRole` | iam-tenant:role:create | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I111 | `GET /v1/tenant/roles/{id}` | `tenantGetRole` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I112 | `PATCH /v1/tenant/roles/{id}` | `tenantPatchRoleStatus` | iam-tenant:role:status | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I113 | `DELETE /v1/tenant/roles/{id}` | `tenantDeleteRole` | iam-tenant:role:delete | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I114 | `GET /v1/tenant/roles/{id}/revisions` | `tenantListRoleRevisions` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I115 | `POST /v1/tenant/roles/{id}/revisions` | `tenantPublishRoleRevision` | iam-tenant:role:publish | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I116 | `POST /v1/tenant/roles/{id}/preview` | `tenantPreviewRole` | iam-tenant:role:preview | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I117 | `POST /v1/tenant/roles/{id}/upgrade-preview` | `tenantPreviewRoleUpgrade` | iam-tenant:role:upgrade | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I118 | `POST /v1/tenant/roles/{id}/upgrade` | `tenantUpgradeRole` | iam-tenant:role:upgrade | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待复核、待验收 |
-| I119 | `GET /v1/tenant/assignments` | `tenantListAssignments` | iam-tenant:assignment:read | org / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I120 | `POST /v1/tenant/assignments` | `tenantCreateAssignments` | iam-tenant:assignment:create | org / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I121 | `PUT /v1/tenant/assignments/{id}` | `tenantPutAssignment` | iam-tenant:assignment:update | org / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I122 | `DELETE /v1/tenant/assignments/{id}` | `tenantDeleteAssignment` | iam-tenant:assignment:delete | org / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I123 | `POST /v1/tenant/assignments/preview` | `tenantPreviewAssignments` | iam-tenant:assignment:create | org / 授权分配/预览 | N06 / A07 | 待复核、待验收 |
-| I124 | `GET /v1/tenant/policies/directory` | `getDirectoryPolicy` | iam-tenant:directory-policy:read | security / 成员权限/策略预览 | N07 / A09/A10 | 待复核、待验收 |
-| I125 | `PUT /v1/tenant/policies/directory` | `putDirectoryPolicy` | iam-tenant:directory-policy:update | security / 成员权限/策略预览 | N07 / A09/A10 | 待复核、待验收 |
-| I126 | `GET /v1/tenant/policies/fields` | `getFieldPolicy` | iam-tenant:field-policy:read | security / 成员权限/策略预览 | N07 / A09/A10 | 待复核、待验收 |
-| I127 | `PUT /v1/tenant/policies/fields` | `putFieldPolicy` | iam-tenant:field-policy:update | security / 成员权限/策略预览 | N07 / A09/A10 | 待复核、待验收 |
-| I128 | `POST /v1/tenant/policies/preview` | `previewPolicy` | iam-tenant:policy:preview | security / 成员权限/策略预览 | N07 / A09/A10 | 待复核、待验收 |
-| I129 | `POST /v1/tenant/authorization/diagnose` | `tenantDiagnose` | iam-tenant:authorization:diagnose | org / 角色授权详情诊断工具 | N06 / A13 | 待复核、待验收 |
-| I130 | `GET /v1/tenant/authorization/audits` | `tenantListAudits` | iam-tenant:audit:read | security / 授权审计 | N07 / A13 | 待复核、待验收 |
-| I131 | `GET /v1/tenant/delegations` | `tenantListDelegations` | iam-tenant:delegation:read | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I132 | `POST /v1/tenant/delegations` | `tenantCreateDelegation` | iam-tenant:delegation:create | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I133 | `GET /v1/tenant/delegations/{id}` | `tenantGetDelegation` | iam-tenant:delegation:read | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I134 | `PUT /v1/tenant/delegations/{id}` | `tenantPutDelegation` | iam-tenant:delegation:update | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I135 | `DELETE /v1/tenant/delegations/{id}` | `tenantDeleteDelegation` | iam-tenant:delegation:delete | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I136 | `POST /v1/tenant/delegations/{id}/preview` | `tenantPreviewDelegation` | iam-tenant:delegation:preview | org / 受限委派/预览 | N06 / A07 | 待复核、待验收 |
-| I137 | `GET /v1/platform/accounts` | `platformListAccounts` | iam-platform:account:read | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I138 | `POST /v1/platform/accounts` | `platformCreateAccount` | iam-platform:account:create | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I139 | `POST /v1/platform/accounts/lookup` | `platformLookupAccount` | iam-platform:account:lookup | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I140 | `GET /v1/platform/accounts/{id}` | `platformGetAccount` | iam-platform:account:read | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I141 | `PATCH /v1/platform/accounts/{id}` | `platformPatchAccount` | iam-platform:account:update | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I142 | `DELETE /v1/platform/accounts/{id}` | `platformDeleteAccount` | iam-platform:account:delete | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I143 | `POST /v1/platform/accounts/{id}/enable` | `platformEnableAccount` | iam-platform:account:enable | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I144 | `POST /v1/platform/accounts/{id}/disable` | `platformDisableAccount` | iam-platform:account:disable | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I145 | `POST /v1/platform/accounts/{id}/lock` | `platformLockAccount` | iam-platform:account:lock | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I146 | `POST /v1/platform/accounts/{id}/unlock` | `platformUnlockAccount` | iam-platform:account:unlock | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I147 | `POST /v1/platform/accounts/{id}/reset-password` | `platformResetAccountPassword` | iam-platform:account:reset-password | platform / 全局账号治理 | N05 / A16 | 待复核、待验收 |
-| I148 | `GET /v1/platform/dictionaries` | `platformListDictionaries` | iam-platform:dictionary:read | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I149 | `POST /v1/platform/dictionaries` | `platformCreateDictionary` | iam-platform:dictionary:create | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I150 | `PUT /v1/platform/dictionaries/sort` | `platformSortDictionaries` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I151 | `PUT /v1/platform/dictionaries/{id}` | `platformPutDictionary` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I152 | `DELETE /v1/platform/dictionaries/{id}` | `platformDeleteDictionary` | iam-platform:dictionary:delete | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I153 | `PATCH /v1/platform/dictionaries/{id}/status/{status}` | `platformPatchDictionaryStatus` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待复核、待验收 |
-| I154 | `GET /v1/platform/id-allocations` | `platformListIdAllocations` | iam-platform:id-allocation:read | platform / 既有发号页 | N08 / A16 | 待复核、待验收 |
-| I155 | `POST /v1/platform/id-allocations` | `platformCreateIdAllocation` | iam-platform:id-allocation:create | platform / 既有发号页 | N08 / A16 | 待复核、待验收 |
-| I156 | `PUT /v1/platform/id-allocations/{id}` | `platformPutIdAllocation` | iam-platform:id-allocation:update | platform / 既有发号页 | N08 / A16 | 待复核、待验收 |
-| I157 | `DELETE /v1/platform/id-allocations/{id}` | `platformDeleteIdAllocation` | iam-platform:id-allocation:delete | platform / 既有发号页 | N08 / A16 | 待复核、待验收 |
-| I158 | `GET /v1/platform/social-configs` | `platformListSocialConfigs` | iam-platform:social-config:read | platform / 既有社交配置页 | N08 / A16 | 待复核、待验收 |
-| I159 | `POST /v1/platform/social-configs` | `platformCreateSocialConfig` | iam-platform:social-config:create | platform / 既有社交配置页 | N08 / A16 | 待复核、待验收 |
-| I160 | `PUT /v1/platform/social-configs/{id}` | `platformPutSocialConfig` | iam-platform:social-config:update | platform / 既有社交配置页 | N08 / A16 | 待复核、待验收 |
-| I161 | `DELETE /v1/platform/social-configs/{id}` | `platformDeleteSocialConfig` | iam-platform:social-config:delete | platform / 既有社交配置页 | N08 / A16 | 待复核、待验收 |
+| I001 | `GET /v1/me/bootstrap` | `currentBootstrap` | 当前身份契约 | admin-core / bootstrap/能力刷新 | N04/N08 / A02/A16 | 调用链已接：[IamBootstrapAPI](../../../../packages/admin-core/src/api/common/iam.ts) → [auth.ts](../../../../packages/admin-core/src/stores/modules/auth.ts)、[router.ts](../../../../packages/admin-core/src/stores/modules/router.ts)；完整异常/迟到响应待补；U01/U13，待验收 |
+| I002 | `GET /v1/me/capabilities` | `currentCapabilities` | 当前身份契约 | admin-core / bootstrap/能力刷新 | N04/N08 / A02/A16 | 调用链已接：[IamCapabilitiesAPI](../../../../packages/admin-core/src/api/common/iam.ts) → [auth.ts](../../../../packages/admin-core/src/stores/modules/auth.ts)；完整异常/迟到响应待补；U01/U13，待验收 |
+| I003 | `GET /v1/me/profile` | `currentGetProfile` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I004 | `PATCH /v1/me/profile` | `currentPatchProfile` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I005 | `PUT /v1/me/password` | `currentPutPassword` | 当前身份契约 | admin-core / 个人中心资料/密码 | N04/N08 / A02/A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I006 | `GET /v1/directory/members` | `listDirectoryMembers` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 调用链已接：[DirectoryMemberPageAPI](../../../../plugins/org/src/api/iam/directory.ts) → [directory/useOps.ts](../../../../plugins/org/src/pages/iam/directory/useOps.ts)；详情/写交互待补（按资源契约）；U09/U13，待验收 |
+| I007 | `GET /v1/directory/members/{id}` | `getDirectoryMember` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U09/U02，待验收 |
+| I008 | `GET /v1/directory/departments` | `listDirectoryDepartments` | iam-tenant:directory:read | org / 普通通讯录 | N07 / A09/A10 | 仅封装：[DirectoryDepartmentPageAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；详情/写交互待补（按资源契约）；U09/U13，待验收 |
+| I009 | `GET /v1/platform/members` | `platformListMembers` | iam-platform:member:read | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberPageAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/GroupEditDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/GroupEditDrawer.vue)、[personnel/useOps.ts](../../../../plugins/platform/src/pages/iam/personnel/useOps.ts)；U03/U13，待验收 |
+| I010 | `POST /v1/platform/members` | `platformCreateMember` | iam-platform:member:create | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberCreateAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/MemberCreateDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/MemberCreateDrawer.vue)；U03/U13，待验收 |
+| I011 | `GET /v1/platform/members/{id}` | `platformGetMember` | iam-platform:member:read | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberDetailAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/MemberDetailDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/MemberDetailDrawer.vue)；U03/U13，待验收 |
+| I012 | `PATCH /v1/platform/members/{id}` | `platformPatchMember` | iam-platform:member:update | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberUpdateAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/MemberDetailDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/MemberDetailDrawer.vue)；U03/U13，待验收 |
+| I013 | `PATCH /v1/platform/members/{id}/status` | `platformPatchMemberStatus` | iam-platform:member:status | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberStatusAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [personnel/IndexPage.vue](../../../../plugins/platform/src/pages/iam/personnel/IndexPage.vue)；U03/U13，待验收 |
+| I014 | `POST /v1/platform/members/{id}/remove` | `platformRemoveMember` | iam-platform:member:remove | platform / 平台人员 | N05 / A03/A22 | 调用链已接：[PlatformMemberRemoveAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [personnel/IndexPage.vue](../../../../plugins/platform/src/pages/iam/personnel/IndexPage.vue)；U03/U13，待验收 |
+| I015 | `GET /v1/platform/groups` | `platformListGroups` | iam-platform:group:read | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupPageAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [personnel/useOps.ts](../../../../plugins/platform/src/pages/iam/personnel/useOps.ts)；U03/U13，待验收 |
+| I016 | `POST /v1/platform/groups` | `platformCreateGroup` | iam-platform:group:create | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupCreateAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/GroupEditDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/GroupEditDrawer.vue)；U03/U13，待验收 |
+| I017 | `GET /v1/platform/groups/{id}` | `platformGetGroup` | iam-platform:group:read | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupDetailAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/GroupEditDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/GroupEditDrawer.vue)；U03/U13，待验收 |
+| I018 | `PUT /v1/platform/groups/{id}` | `platformPutGroup` | iam-platform:group:update | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupUpdateAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/GroupEditDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/GroupEditDrawer.vue)；U03/U13，待验收 |
+| I019 | `DELETE /v1/platform/groups/{id}` | `platformDeleteGroup` | iam-platform:group:delete | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupDeleteAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [personnel/IndexPage.vue](../../../../plugins/platform/src/pages/iam/personnel/IndexPage.vue)；U03/U13，待验收 |
+| I020 | `POST /v1/platform/groups/{id}/preview` | `platformPreviewGroup` | iam-platform:group:preview | platform / 平台人员的组Tab | N05 / A08 | 调用链已接：[PlatformGroupPreviewAPI](../../../../plugins/platform/src/api/iam/personnel.ts) → [components/GroupEditDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/GroupEditDrawer.vue)；U03/U13，待验收 |
+| I021 | `GET /v1/platform/tenants` | `platformListTenants` | iam-platform:tenant:read | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantPageAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [tenants/useOps.ts](../../../../plugins/platform/src/pages/iam/tenants/useOps.ts)；U03/U13，待验收 |
+| I022 | `POST /v1/platform/tenants` | `platformCreateTenant` | iam-platform:tenant:create | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantCreateAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/CreateWizard.vue](../../../../plugins/platform/src/pages/iam/tenants/components/CreateWizard.vue)；U03/U13，待验收 |
+| I023 | `POST /v1/platform/tenants/preview` | `platformPreviewTenant` | iam-platform:tenant:preview | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantPreviewAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/CreateWizard.vue](../../../../plugins/platform/src/pages/iam/tenants/components/CreateWizard.vue)；U03/U13，待验收 |
+| I024 | `GET /v1/platform/tenants/{id}` | `platformGetTenant` | iam-platform:tenant:read | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantDetailAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/tenants/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I025 | `PATCH /v1/platform/tenants/{id}` | `platformPatchTenant` | iam-platform:tenant:update | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantUpdateAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/tenants/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I026 | `GET /v1/platform/tenants/{id}/entitlements` | `platformListEntitlements` | iam-platform:entitlement:read | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantEntitlementsAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/tenants/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I027 | `PUT /v1/platform/tenants/{id}/entitlements` | `platformPutEntitlements` | iam-platform:entitlement:update | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantEntitlementsReplaceAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/tenants/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I028 | `POST /v1/platform/tenants/{id}/entitlements/preview` | `platformPreviewEntitlements` | iam-platform:entitlement:preview | platform / 租户向导/详情/开通 | N05 / A04 | 调用链已接：[PlatformTenantEntitlementsPreviewAPI](../../../../plugins/platform/src/api/iam/tenants.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/tenants/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I029 | `GET /v1/platform/applications` | `platformListApplications` | iam-platform:application:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformApplicationPageAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [applications/useOps.ts](../../../../plugins/platform/src/pages/iam/applications/useOps.ts)、[components/CreateDrawer.vue](../../../../plugins/platform/src/pages/iam/plans/components/CreateDrawer.vue)；U04/U13，待验收 |
+| I030 | `POST /v1/platform/applications` | `platformCreateApplication` | iam-platform:application:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformApplicationCreateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/CreateDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/CreateDrawer.vue)；U04/U13，待验收 |
+| I031 | `GET /v1/platform/applications/{id}` | `platformGetApplication` | iam-platform:application:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformApplicationDetailAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I032 | `PUT /v1/platform/applications/{id}` | `platformPutApplication` | iam-platform:application:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformApplicationUpdateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I033 | `PATCH /v1/platform/applications/{id}` | `platformPatchApplicationStatus` | iam-platform:application:status | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 仅封装：[PlatformApplicationStatusAPI](../../../../plugins/platform/src/api/iam/catalog.ts)；未发现生产页面/公共调用链；U04/U13，待验收 |
+| I034 | `DELETE /v1/platform/applications/{id}` | `platformDeleteApplication` | iam-platform:application:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformApplicationDeleteAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [applications/IndexPage.vue](../../../../plugins/platform/src/pages/iam/applications/IndexPage.vue)；U04/U13，待验收 |
+| I035 | `GET /v1/platform/applications/{id}/resources` | `platformListResources` | iam-platform:resource:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformResourcePageAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I036 | `POST /v1/platform/applications/{id}/resources` | `platformCreateResource` | iam-platform:resource:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformResourceCreateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/ResourceEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/ResourceEditDrawer.vue)；U04/U13，待验收 |
+| I037 | `PUT /v1/platform/applications/{id}/resources/{resourceId}` | `platformPutResource` | iam-platform:resource:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformResourceUpdateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/ResourceEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/ResourceEditDrawer.vue)；U04/U13，待验收 |
+| I038 | `DELETE /v1/platform/applications/{id}/resources/{resourceId}` | `platformDeleteResource` | iam-platform:resource:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformResourceDeleteAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I039 | `GET /v1/platform/applications/{id}/actions` | `platformListActions` | iam-platform:action:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformActionPageAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I040 | `POST /v1/platform/applications/{id}/actions` | `platformCreateAction` | iam-platform:action:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformActionCreateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/ActionEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/ActionEditDrawer.vue)；U04/U13，待验收 |
+| I041 | `PUT /v1/platform/applications/{id}/actions/{actionId}` | `platformPutAction` | iam-platform:action:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformActionUpdateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/ActionEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/ActionEditDrawer.vue)；U04/U13，待验收 |
+| I042 | `PATCH /v1/platform/applications/{id}/actions/{actionId}` | `platformPatchActionStatus` | iam-platform:action:status | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformActionStatusAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I043 | `DELETE /v1/platform/applications/{id}/actions/{actionId}` | `platformDeleteAction` | iam-platform:action:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformActionDeleteAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I044 | `GET /v1/platform/applications/{id}/menus` | `platformListMenus` | iam-platform:menu:read | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformMenuPageAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I045 | `POST /v1/platform/applications/{id}/menus` | `platformCreateMenu` | iam-platform:menu:create | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformMenuCreateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/MenuEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/MenuEditDrawer.vue)；U04/U13，待验收 |
+| I046 | `PUT /v1/platform/applications/{id}/menus/{menuId}` | `platformPutMenu` | iam-platform:menu:update | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformMenuUpdateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/MenuEditDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/MenuEditDrawer.vue)；U04/U13，待验收 |
+| I047 | `DELETE /v1/platform/applications/{id}/menus/{menuId}` | `platformDeleteMenu` | iam-platform:menu:delete | platform / 应用详情/资源/操作/菜单/人群 | N05 / A04/A08 | 调用链已接：[PlatformMenuDeleteAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I048 | `GET /v1/platform/plans` | `platformListPlans` | iam-platform:plan:read | platform / 套餐目录/编辑 | N05 / A04 | 调用链已接：[PlatformPlanPageAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [plans/useOps.ts](../../../../plugins/platform/src/pages/iam/plans/useOps.ts)；U04/U13，待验收 |
+| I049 | `POST /v1/platform/plans` | `platformCreatePlan` | iam-platform:plan:create | platform / 套餐目录/编辑 | N05 / A04 | 调用链已接：[PlatformPlanCreateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/CreateDrawer.vue](../../../../plugins/platform/src/pages/iam/plans/components/CreateDrawer.vue)；U04/U13，待验收 |
+| I050 | `GET /v1/platform/plans/{id}` | `platformGetPlan` | iam-platform:plan:read | platform / 套餐目录/编辑 | N05 / A04 | 调用链已接：[PlatformPlanDetailAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/plans/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I051 | `PUT /v1/platform/plans/{id}` | `platformPutPlan` | iam-platform:plan:update | platform / 套餐目录/编辑 | N05 / A04 | 调用链已接：[PlatformPlanUpdateAPI](../../../../plugins/platform/src/api/iam/catalog.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/plans/components/DetailDrawer.vue)；U04/U13，待验收 |
+| I052 | `GET /v1/platform/roles` | `platformListRoles` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 调用链已接：[PlatformRolePageAPI](../../../../plugins/platform/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/platform/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U05/U13，待验收 |
+| I053 | `POST /v1/platform/roles` | `platformCreateRole` | iam-platform:role:create | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 仅封装：[PlatformRoleCreateAPI](../../../../plugins/platform/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；完整业务向导待补；U05/U13，待验收 |
+| I054 | `GET /v1/platform/roles/{id}` | `platformGetRole` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I055 | `PATCH /v1/platform/roles/{id}` | `platformPatchRoleStatus` | iam-platform:role:status | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I056 | `DELETE /v1/platform/roles/{id}` | `platformDeleteRole` | iam-platform:role:delete | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I057 | `GET /v1/platform/roles/{id}/revisions` | `platformListRoleRevisions` | iam-platform:role:read | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I058 | `POST /v1/platform/roles/{id}/revisions` | `platformPublishRoleRevision` | iam-platform:role:publish | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I059 | `POST /v1/platform/roles/{id}/preview` | `platformPreviewRole` | iam-platform:role:preview | platform / 角色目录/向导/版本/升级 | N06 / A05/A06 | 仅封装：[PlatformRolePreviewAPI](../../../../plugins/platform/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；完整业务向导待补；U05/U13，待验收 |
+| I060 | `GET /v1/platform/shared-roles` | `platformSharedListRoles` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 调用链已接：[PlatformSharedRolePageAPI](../../../../plugins/platform/src/api/iam/authorization.ts) → [shared-roles/useOps.ts](../../../../plugins/platform/src/pages/iam/shared-roles/useOps.ts)；完整业务向导待补；U05/U13，待验收 |
+| I061 | `POST /v1/platform/shared-roles` | `platformSharedCreateRole` | iam-platform:shared-role:create | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I062 | `GET /v1/platform/shared-roles/{id}` | `platformSharedGetRole` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I063 | `PATCH /v1/platform/shared-roles/{id}` | `platformSharedPatchRoleStatus` | iam-platform:shared-role:status | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I064 | `DELETE /v1/platform/shared-roles/{id}` | `platformSharedDeleteRole` | iam-platform:shared-role:delete | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I065 | `GET /v1/platform/shared-roles/{id}/revisions` | `platformSharedListRoleRevisions` | iam-platform:shared-role:read | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I066 | `POST /v1/platform/shared-roles/{id}/revisions` | `platformSharedPublishRoleRevision` | iam-platform:shared-role:publish | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I067 | `POST /v1/platform/shared-roles/{id}/preview` | `platformSharedPreviewRole` | iam-platform:shared-role:preview | platform / 共享角色及版本/预览 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I068 | `GET /v1/platform/assignments` | `platformListAssignments` | iam-platform:assignment:read | platform / 授权分配/预览 | N06 / A07 | 调用链已接：[PlatformAssignmentPageAPI](../../../../plugins/platform/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/platform/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U06/U13，待验收 |
+| I069 | `POST /v1/platform/assignments` | `platformCreateAssignments` | iam-platform:assignment:create | platform / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I070 | `PUT /v1/platform/assignments/{id}` | `platformPutAssignment` | iam-platform:assignment:update | platform / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I071 | `DELETE /v1/platform/assignments/{id}` | `platformDeleteAssignment` | iam-platform:assignment:delete | platform / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I072 | `POST /v1/platform/assignments/preview` | `platformPreviewAssignments` | iam-platform:assignment:create | platform / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I073 | `GET /v1/platform/delegations` | `platformListDelegations` | iam-platform:delegation:read | platform / 受限委派/预览 | N06 / A07 | 调用链已接：[PlatformDelegationPageAPI](../../../../plugins/platform/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/platform/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U06/U13，待验收 |
+| I074 | `POST /v1/platform/delegations` | `platformCreateDelegation` | iam-platform:delegation:create | platform / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I075 | `GET /v1/platform/delegations/{id}` | `platformGetDelegation` | iam-platform:delegation:read | platform / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I076 | `PUT /v1/platform/delegations/{id}` | `platformPutDelegation` | iam-platform:delegation:update | platform / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I077 | `DELETE /v1/platform/delegations/{id}` | `platformDeleteDelegation` | iam-platform:delegation:delete | platform / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I078 | `POST /v1/platform/delegations/{id}/preview` | `platformPreviewDelegation` | iam-platform:delegation:preview | platform / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I079 | `POST /v1/platform/authorization/diagnose` | `platformDiagnose` | iam-platform:authorization:diagnose | platform / 角色授权详情诊断工具 | N06 / A13 | 仅封装：[PlatformDiagnoseAPI](../../../../plugins/platform/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；U06/U13，待验收 |
+| I080 | `GET /v1/platform/authorization/audits` | `platformListAudits` | iam-platform:audit:read | security / 授权审计 | N07 / A13 | 调用链已接：[SecurityAuditPageAPI](../../../../plugins/security/src/api/iam/policies.ts) → [authorization-audit/IndexPage.vue](../../../../plugins/security/src/pages/iam/authorization-audit/IndexPage.vue)；U10/U13，待验收 |
+| I081 | `GET /v1/tenant/members` | `tenantListMembers` | iam-tenant:member:read | org / 成员/任职/导出 | N07/N08 / A03/A22 | 调用链已接：[TenantMemberPageAPI](../../../../plugins/org/src/api/iam/directory.ts) → [members/useOps.ts](../../../../plugins/org/src/pages/iam/members/useOps.ts)；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I082 | `POST /v1/tenant/members` | `tenantCreateMember` | iam-tenant:member:create | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberCreateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I083 | `GET /v1/tenant/members/{id}` | `tenantGetMember` | iam-tenant:member:read | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberDetailAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I084 | `PATCH /v1/tenant/members/{id}` | `tenantPatchMember` | iam-tenant:member:update | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberUpdateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I085 | `PATCH /v1/tenant/members/{id}/status` | `tenantPatchMemberStatus` | iam-tenant:member:status | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberStatusAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I086 | `POST /v1/tenant/members/{id}/remove` | `tenantRemoveMember` | iam-tenant:member:remove | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberRemoveAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I087 | `PUT /v1/tenant/members/{id}/departments` | `tenantReplaceMemberDepartments` | iam-tenant:member:departments | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberDepartmentsAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I088 | `POST /v1/tenant/members/export` | `tenantExportMembers` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberExportCreateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I089 | `GET /v1/tenant/members/export/{id}/status` | `tenantGetMemberExportStatus` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U07/U02，待验收 |
+| I090 | `GET /v1/tenant/members/export/{id}` | `tenantDownloadMemberExport` | iam-tenant:member:export | org / 成员/任职/导出 | N07/N08 / A03/A22 | 仅封装：[TenantMemberExportDownloadAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I091 | `GET /v1/tenant/departments` | `tenantListDepartments` | iam-tenant:department:read | org / 部门树/详情/移动 | N07 / A08 | 调用链已接：[TenantDepartmentPageAPI](../../../../plugins/org/src/api/iam/directory.ts) → [members/useOps.ts](../../../../plugins/org/src/pages/iam/members/useOps.ts)；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I092 | `POST /v1/tenant/departments` | `tenantCreateDepartment` | iam-tenant:department:create | org / 部门树/详情/移动 | N07 / A08 | 仅封装：[TenantDepartmentCreateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I093 | `GET /v1/tenant/departments/{id}` | `tenantGetDepartment` | iam-tenant:department:read | org / 部门树/详情/移动 | N07 / A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U07/U02，待验收 |
+| I094 | `PUT /v1/tenant/departments/{id}` | `tenantPutDepartment` | iam-tenant:department:update | org / 部门树/详情/移动 | N07 / A08 | 仅封装：[TenantDepartmentUpdateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I095 | `DELETE /v1/tenant/departments/{id}` | `tenantDeleteDepartment` | iam-tenant:department:delete | org / 部门树/详情/移动 | N07 / A08 | 仅封装：[TenantDepartmentDeleteAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；成员/部门写交互和导出流程待补；U07/U13，待验收 |
+| I096 | `GET /v1/tenant/settings` | `tenantGetSettings` | iam-tenant:settings:read | org / 组织设置/所有者转交 | N07 / A21 | 调用链已接：[TenantSettingsAPI](../../../../plugins/org/src/api/iam/directory.ts) → [settings/IndexPage.vue](../../../../plugins/org/src/pages/iam/settings/IndexPage.vue)；所有者仍手填ID，交互待补；U08/U13，待验收 |
+| I097 | `PUT /v1/tenant/settings` | `tenantPutSettings` | iam-tenant:settings:update | org / 组织设置/所有者转交 | N07 / A21 | 调用链已接：[TenantSettingsUpdateAPI](../../../../plugins/org/src/api/iam/directory.ts) → [settings/IndexPage.vue](../../../../plugins/org/src/pages/iam/settings/IndexPage.vue)；所有者仍手填ID，交互待补；U08/U13，待验收 |
+| I098 | `POST /v1/tenant/settings/owner-transfer` | `tenantTransferOwner` | iam-tenant:settings:owner-transfer | org / 组织设置/所有者转交 | N07 / A21 | 调用链已接：[TenantOwnerTransferAPI](../../../../plugins/org/src/api/iam/directory.ts) → [settings/IndexPage.vue](../../../../plugins/org/src/pages/iam/settings/IndexPage.vue)；所有者仍手填ID，交互待补；U08/U13，待验收 |
+| I099 | `GET /v1/tenant/applications` | `tenantListApplications` | iam-tenant:application:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 调用链已接：[TenantApplicationPageAPI](../../../../plugins/org/src/api/iam/directory.ts) → [applications/useOps.ts](../../../../plugins/org/src/pages/iam/applications/useOps.ts)；详情/写交互待补（按资源契约）；U09/U13，待验收 |
+| I100 | `GET /v1/tenant/applications/{id}/audience` | `tenantGetAudience` | iam-tenant:audience:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U09/U02，待验收 |
+| I101 | `PUT /v1/tenant/applications/{id}/audience` | `tenantPutAudience` | iam-tenant:audience:update | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U09/U02，待验收 |
+| I102 | `GET /v1/tenant/applications/{id}/actions` | `tenantListApplicationActions` | iam-tenant:application:read | org / 应用详情/资源/操作/菜单/人群 | N07 / A04/A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U09/U02，待验收 |
+| I103 | `GET /v1/tenant/groups` | `tenantListGroups` | iam-tenant:group:read | org / 用户组/预览 | N07 / A08 | 调用链已接：[TenantGroupPageAPI](../../../../plugins/org/src/api/iam/directory.ts) → [groups/useOps.ts](../../../../plugins/org/src/pages/iam/groups/useOps.ts)；详情/写交互待补（按资源契约）；U08/U13，待验收 |
+| I104 | `POST /v1/tenant/groups` | `tenantCreateGroup` | iam-tenant:group:create | org / 用户组/预览 | N07 / A08 | 仅封装：[TenantGroupCreateAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；详情/写交互待补（按资源契约）；U08/U13，待验收 |
+| I105 | `GET /v1/tenant/groups/{id}` | `tenantGetGroup` | iam-tenant:group:read | org / 用户组/预览 | N07 / A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U08/U02，待验收 |
+| I106 | `PUT /v1/tenant/groups/{id}` | `tenantPutGroup` | iam-tenant:group:update | org / 用户组/预览 | N07 / A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U08/U02，待验收 |
+| I107 | `DELETE /v1/tenant/groups/{id}` | `tenantDeleteGroup` | iam-tenant:group:delete | org / 用户组/预览 | N07 / A08 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U08/U02，待验收 |
+| I108 | `POST /v1/tenant/groups/{id}/preview` | `tenantPreviewGroup` | iam-tenant:group:preview | org / 用户组/预览 | N07 / A08 | 仅封装：[TenantGroupPreviewAPI](../../../../plugins/org/src/api/iam/directory.ts)；未发现生产页面/公共调用链；详情/写交互待补（按资源契约）；U08/U13，待验收 |
+| I109 | `GET /v1/tenant/roles` | `tenantListRoles` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 调用链已接：[TenantRolePageAPI](../../../../plugins/org/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/org/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U05/U13，待验收 |
+| I110 | `POST /v1/tenant/roles` | `tenantCreateRole` | iam-tenant:role:create | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 仅封装：[TenantRoleCreateAPI](../../../../plugins/org/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；完整业务向导待补；U05/U13，待验收 |
+| I111 | `GET /v1/tenant/roles/{id}` | `tenantGetRole` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I112 | `PATCH /v1/tenant/roles/{id}` | `tenantPatchRoleStatus` | iam-tenant:role:status | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I113 | `DELETE /v1/tenant/roles/{id}` | `tenantDeleteRole` | iam-tenant:role:delete | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I114 | `GET /v1/tenant/roles/{id}/revisions` | `tenantListRoleRevisions` | iam-tenant:role:read | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I115 | `POST /v1/tenant/roles/{id}/revisions` | `tenantPublishRoleRevision` | iam-tenant:role:publish | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I116 | `POST /v1/tenant/roles/{id}/preview` | `tenantPreviewRole` | iam-tenant:role:preview | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 仅封装：[TenantRolePreviewAPI](../../../../plugins/org/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；完整业务向导待补；U05/U13，待验收 |
+| I117 | `POST /v1/tenant/roles/{id}/upgrade-preview` | `tenantPreviewRoleUpgrade` | iam-tenant:role:upgrade | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I118 | `POST /v1/tenant/roles/{id}/upgrade` | `tenantUpgradeRole` | iam-tenant:role:upgrade | org / 角色目录/向导/版本/升级 | N06 / A05/A06 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U05/U02，待验收 |
+| I119 | `GET /v1/tenant/assignments` | `tenantListAssignments` | iam-tenant:assignment:read | org / 授权分配/预览 | N06 / A07 | 调用链已接：[TenantAssignmentPageAPI](../../../../plugins/org/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/org/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U06/U13，待验收 |
+| I120 | `POST /v1/tenant/assignments` | `tenantCreateAssignments` | iam-tenant:assignment:create | org / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I121 | `PUT /v1/tenant/assignments/{id}` | `tenantPutAssignment` | iam-tenant:assignment:update | org / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I122 | `DELETE /v1/tenant/assignments/{id}` | `tenantDeleteAssignment` | iam-tenant:assignment:delete | org / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I123 | `POST /v1/tenant/assignments/preview` | `tenantPreviewAssignments` | iam-tenant:assignment:create | org / 授权分配/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I124 | `GET /v1/tenant/policies/directory` | `getDirectoryPolicy` | iam-tenant:directory-policy:read | security / 成员权限/策略预览 | N07 / A09/A10 | 调用链已接：[SecurityDirectoryPolicyAPI](../../../../plugins/security/src/api/iam/policies.ts) → [member-permissions/IndexPage.vue](../../../../plugins/security/src/pages/iam/member-permissions/IndexPage.vue)；当前仅JSON展示/未接编辑预览；U10/U13，待验收 |
+| I125 | `PUT /v1/tenant/policies/directory` | `putDirectoryPolicy` | iam-tenant:directory-policy:update | security / 成员权限/策略预览 | N07 / A09/A10 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U10/U02，待验收 |
+| I126 | `GET /v1/tenant/policies/fields` | `getFieldPolicy` | iam-tenant:field-policy:read | security / 成员权限/策略预览 | N07 / A09/A10 | 调用链已接：[SecurityFieldPolicyAPI](../../../../plugins/security/src/api/iam/policies.ts) → [member-permissions/IndexPage.vue](../../../../plugins/security/src/pages/iam/member-permissions/IndexPage.vue)；当前仅JSON展示/未接编辑预览；U10/U13，待验收 |
+| I127 | `PUT /v1/tenant/policies/fields` | `putFieldPolicy` | iam-tenant:field-policy:update | security / 成员权限/策略预览 | N07 / A09/A10 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U10/U02，待验收 |
+| I128 | `POST /v1/tenant/policies/preview` | `previewPolicy` | iam-tenant:policy:preview | security / 成员权限/策略预览 | N07 / A09/A10 | 仅封装：[SecurityPolicyPreviewAPI](../../../../plugins/security/src/api/iam/policies.ts)；未发现生产页面/公共调用链；当前仅JSON展示/未接编辑预览；U10/U13，待验收 |
+| I129 | `POST /v1/tenant/authorization/diagnose` | `tenantDiagnose` | iam-tenant:authorization:diagnose | org / 角色授权详情诊断工具 | N06 / A13 | 仅封装：[TenantDiagnoseAPI](../../../../plugins/org/src/api/iam/authorization.ts)；未发现生产页面/公共调用链；U06/U13，待验收 |
+| I130 | `GET /v1/tenant/authorization/audits` | `tenantListAudits` | iam-tenant:audit:read | security / 授权审计 | N07 / A13 | 调用链已接：[SecurityAuditPageAPI](../../../../plugins/security/src/api/iam/policies.ts) → [authorization-audit/IndexPage.vue](../../../../plugins/security/src/pages/iam/authorization-audit/IndexPage.vue)；U10/U13，待验收 |
+| I131 | `GET /v1/tenant/delegations` | `tenantListDelegations` | iam-tenant:delegation:read | org / 受限委派/预览 | N06 / A07 | 调用链已接：[TenantDelegationPageAPI](../../../../plugins/org/src/api/iam/authorization.ts) → [authorization/IndexPage.vue](../../../../plugins/org/src/pages/iam/authorization/IndexPage.vue)；完整业务向导待补；U06/U13，待验收 |
+| I132 | `POST /v1/tenant/delegations` | `tenantCreateDelegation` | iam-tenant:delegation:create | org / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I133 | `GET /v1/tenant/delegations/{id}` | `tenantGetDelegation` | iam-tenant:delegation:read | org / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I134 | `PUT /v1/tenant/delegations/{id}` | `tenantPutDelegation` | iam-tenant:delegation:update | org / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I135 | `DELETE /v1/tenant/delegations/{id}` | `tenantDeleteDelegation` | iam-tenant:delegation:delete | org / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I136 | `POST /v1/tenant/delegations/{id}/preview` | `tenantPreviewDelegation` | iam-tenant:delegation:preview | org / 受限委派/预览 | N06 / A07 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U06/U02，待验收 |
+| I137 | `GET /v1/platform/accounts` | `platformListAccounts` | iam-platform:account:read | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountPageAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/useOps.ts](../../../../plugins/platform/src/pages/iam/accounts/useOps.ts)；U03/U13，待验收 |
+| I138 | `POST /v1/platform/accounts` | `platformCreateAccount` | iam-platform:account:create | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountCreateAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [components/CreateDrawer.vue](../../../../plugins/platform/src/pages/iam/accounts/components/CreateDrawer.vue)；U03/U13，待验收 |
+| I139 | `POST /v1/platform/accounts/lookup` | `platformLookupAccount` | iam-platform:account:lookup | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountLookupAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [components/MemberCreateDrawer.vue](../../../../plugins/platform/src/pages/iam/personnel/components/MemberCreateDrawer.vue)、[components/CreateWizard.vue](../../../../plugins/platform/src/pages/iam/tenants/components/CreateWizard.vue)；U03/U13，待验收 |
+| I140 | `GET /v1/platform/accounts/{id}` | `platformGetAccount` | iam-platform:account:read | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountDetailAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/accounts/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I141 | `PATCH /v1/platform/accounts/{id}` | `platformPatchAccount` | iam-platform:account:update | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountUpdateAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [components/DetailDrawer.vue](../../../../plugins/platform/src/pages/iam/accounts/components/DetailDrawer.vue)；U03/U13，待验收 |
+| I142 | `DELETE /v1/platform/accounts/{id}` | `platformDeleteAccount` | iam-platform:account:delete | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountDeleteAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/IndexPage.vue](../../../../plugins/platform/src/pages/iam/accounts/IndexPage.vue)；U03/U13，待验收 |
+| I143 | `POST /v1/platform/accounts/{id}/enable` | `platformEnableAccount` | iam-platform:account:enable | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountEnableAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/IndexPage.vue](../../../../plugins/platform/src/pages/iam/accounts/IndexPage.vue)；U03/U13，待验收 |
+| I144 | `POST /v1/platform/accounts/{id}/disable` | `platformDisableAccount` | iam-platform:account:disable | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountDisableAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/IndexPage.vue](../../../../plugins/platform/src/pages/iam/accounts/IndexPage.vue)；U03/U13，待验收 |
+| I145 | `POST /v1/platform/accounts/{id}/lock` | `platformLockAccount` | iam-platform:account:lock | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountLockAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [components/LockDrawer.vue](../../../../plugins/platform/src/pages/iam/accounts/components/LockDrawer.vue)；U03/U13，待验收 |
+| I146 | `POST /v1/platform/accounts/{id}/unlock` | `platformUnlockAccount` | iam-platform:account:unlock | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountUnlockAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/IndexPage.vue](../../../../plugins/platform/src/pages/iam/accounts/IndexPage.vue)；U03/U13，待验收 |
+| I147 | `POST /v1/platform/accounts/{id}/reset-password` | `platformResetAccountPassword` | iam-platform:account:reset-password | platform / 全局账号治理 | N05 / A16 | 调用链已接：[PlatformAccountResetPasswordAPI](../../../../plugins/platform/src/api/iam/accounts.ts) → [accounts/IndexPage.vue](../../../../plugins/platform/src/pages/iam/accounts/IndexPage.vue)；U03/U13，待验收 |
+| I148 | `GET /v1/platform/dictionaries` | `platformListDictionaries` | iam-platform:dictionary:read | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I149 | `POST /v1/platform/dictionaries` | `platformCreateDictionary` | iam-platform:dictionary:create | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I150 | `PUT /v1/platform/dictionaries/sort` | `platformSortDictionaries` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I151 | `PUT /v1/platform/dictionaries/{id}` | `platformPutDictionary` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I152 | `DELETE /v1/platform/dictionaries/{id}` | `platformDeleteDictionary` | iam-platform:dictionary:delete | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I153 | `PATCH /v1/platform/dictionaries/{id}/status/{status}` | `platformPatchDictionaryStatus` | iam-platform:dictionary:update | platform / 既有字典页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I154 | `GET /v1/platform/id-allocations` | `platformListIdAllocations` | iam-platform:id-allocation:read | platform / 既有发号页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I155 | `POST /v1/platform/id-allocations` | `platformCreateIdAllocation` | iam-platform:id-allocation:create | platform / 既有发号页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I156 | `PUT /v1/platform/id-allocations/{id}` | `platformPutIdAllocation` | iam-platform:id-allocation:update | platform / 既有发号页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I157 | `DELETE /v1/platform/id-allocations/{id}` | `platformDeleteIdAllocation` | iam-platform:id-allocation:delete | platform / 既有发号页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I158 | `GET /v1/platform/social-configs` | `platformListSocialConfigs` | iam-platform:social-config:read | platform / 既有社交配置页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I159 | `POST /v1/platform/social-configs` | `platformCreateSocialConfig` | iam-platform:social-config:create | platform / 既有社交配置页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I160 | `PUT /v1/platform/social-configs/{id}` | `platformPutSocialConfig` | iam-platform:social-config:update | platform / 既有社交配置页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+| I161 | `DELETE /v1/platform/social-configs/{id}` | `platformDeleteSocialConfig` | iam-platform:social-config:delete | platform / 既有社交配置页 | N08 / A16 | 待接入：未发现对应IAM具名API封装/消费闭环；按本行页面归属补齐，U11/U02，待验收 |
+
+## 2026-09-19 核对口径与矩阵外能力
+
+上述落点来自生产源码的具名API/Query消费检查，排除test/spec文件。调用链存在仅确认已连接，不证明参数、响应类型、能力、页面交互及运行结果正确；没有消费的封装不计页面完成。列出的前两个消费落点供定位，多调用方需在U12中全部验证。完整页面缺口见 [IMPLEMENTATION-STATUS](./IMPLEMENTATION-STATUS.md)，执行清单见TASKS U01–U13。
+
+每行U任务与原N/T/A验收映射同时有效。应用和普通通讯录没有创建契约时不增造创建入口；角色/组/策略预览不得以通用unknown请求代替精确DTO。后端契约变化按来源流程重新核对，不静默保持161的固定数量。
+
+| 矩阵外能力 | 当前落点/证据边界 | 后续任务与验收 |
+|---|---|---|
+| 固定域BFF登录/CSRF/交接/会话/退出 | packages/auth-core/src/api.ts；admin-core的auth/start、auth/complete与auth store已接；四个App已存在，auth页面插件尚缺 | U01/U12；BFF-LOGIN L01–L12及A17–A20/A23，TD17 |
+| OSS上传 | packages/admin-core/src/api/common/oss.ts仍为旧PMS路径；以后端OSSCommonAPI及endpoint-mapping核对有效路径/加密/响应 | U11；A14/A22/TD16，不因不在161内忽略 |
+| Security策略/会话/事件等 | plugins/security现有api及页面沿用原服务；逐入口核对新ACTION和对象能力，不能全局替换域/路径 | U11/U12；A14/A16/TD16 |
+| Member及认证/安全回归 | Member独立体系保留；IAM替代旧入口须核对实际消费者，不能全局字符串替换 | U01/U11；A14/A23/TD16/TD17 |
+| IAM内部RPC | 后端web/inner及Auth/Member/Security等服务消费；无须新增管理页面 | 后端T04/T18/A18/A23；TD16/TD18，记录服务证据 |
+| 旧PMS入口及必要辅助能力 | sources/endpoint-mapping.json的163个原入口逐项分类：替换/保留独立契约/已退出；新me/字典/发号/社交已在上表列待接入 | U11/U12；A14/A16/A22；记录调用方与清理结论，不整体豁免旧路径 |
+
+前端真实验收统一引用 [BACKEND_TEST_DATA](./sources/BACKEND_TEST_DATA.md) 的TD编号/runId；P24检查全部管理操作闭环，P25检查统一交互，P26检查多身份真实场景。已存在API或页面的条目仍须完成这些验收。后端 A24–A26 仍是 HTTP/升级/转交，不要与 P24–P26 混用。

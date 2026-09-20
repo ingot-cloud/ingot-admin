@@ -1,26 +1,26 @@
 # 输入来源与对接边界
 
-同步日期：2026-09-16。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。后端主状态 implementing，BFF增量review；前端主状态implementing，本次增量draft。用户要求生成规格，本次没有实施。
+同步校准日期：2026-09-19。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮只修订Spec；实现证据见IMPLEMENTATION-STATUS，历史来源保留。
 
-后端API为权威，以下副本逐字节复制；不消费inbox。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面96路径/161操作，包含新增账号/本人/字典/发号/社交与导出状态；完整schemas/examples随目录同步。BFF-LOGIN为待实施契约，不标记运行时完成。
+后端API为权威，以下副本逐字节复制；不消费inbox。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面96路径/161操作，包含新增账号/本人/字典/发号/社交与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
 
 ## 阅读顺序
 
-README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IAM-INTEGRATION → ACCEPTANCE/TASKS。源文件相对链接原样保留；遇到后端专属相对路径按下表映射，不能误认为前端缺少实现。
+README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEMENTATION-STATUS → IAM-INTEGRATION → ACCEPTANCE/TASKS → sources/BACKEND_TEST_DATA。源文件相对链接原样保留；遇到后端专属相对路径按下表映射，不能误认为前端缺少实现。
 
 ## 原文副本 SHA-256
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
 | `API.md` | [API.md](./API.md) | `a1994a61f81206db72e37dbf9c1029d0da58a623309242e34cf6d96d7ef3aded` |
-| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `25a0ef0299e56d9afbc7f2fb9ecce70542c4a2e51374e9145c5d7432b8ef5d70` |
-| `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `fd1d498b8b085be7c485b5d566ca6d3ce9055f153ce639e42a3fb8d899a6f9c3` |
-| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `fb21e0a400cada1376f076a487e57041440c8b0adbd0fd9ce9e6c17ec60ff4af` |
-| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `0804d2643972dc4303b005d069885e0f239b221c372f9acf0c6340a7d2aa0f52` |
+| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `06ee92f641b98f6d21af267aeded40483be4d17c1698b004b5bd5a3aae60d440` |
+| `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `13ea82307f6e69eb4c92054ce0386fa0be4d9cf5a242d32fbfca125fd6950f9b` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d2a1d37d40bf33be7330f0379cf17d41fec68bc84eb158c4f946adca94cf0ae6` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `d541108413ee14ff06a174d96828f3333592739bc746e53d3db864c74d1a8d4e` |
 | `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
-| `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `b6269a5c9e70367dbe14156839aa37a074762e354309d1dcc7ada9f094ab1d19` |
+| `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `4043e19084de7490e81c6a4c1b0607595351e81e1d308f89e29f1ff503714e0d` |
 | `endpoint-mapping.json` | [sources/endpoint-mapping.json](./sources/endpoint-mapping.json) | `29857e7b2e754af5665126b013433e5cc4ca157889364644d9beffe51317d1da` |
-| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `f520a3a37b202be389f7dbb5572da470621cc49d45bc0738319074952b789c00` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `180a7a297b4132487ea0df9a1d935b2aecf36bf1dc40bd07aeacb3b98a342fe0` |
 | `contracts/examples/assignment.json` | [sources/contracts/examples/assignment.json](./sources/contracts/examples/assignment.json) | `0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa` |
 | `contracts/examples/audit.json` | [sources/contracts/examples/audit.json](./sources/contracts/examples/audit.json) | `b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1` |
 | `contracts/examples/bootstrap.json` | [sources/contracts/examples/bootstrap.json](./sources/contracts/examples/bootstrap.json) | `0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4` |
@@ -43,6 +43,16 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IAM-IN
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `5a8296b0ce906ca71f4332d2b2a6650e7727a5a390fc06b26cf4bf2c18a67f6a` |
 | `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `e090093fc99d20abb0cb74a1931eea391141522d44d68d602d0868d86a4352fe` |
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `0c8a1351e87065e1157dd7564db08d2e7c7c543277069ee7a0604194139bcd5c` |
+
+## 2026-09-19 新增权威副本
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `TEST-DATA.md` | [sources/BACKEND_TEST_DATA.md](./sources/BACKEND_TEST_DATA.md) | `695b2dabcf3f303f9cd7481d14e634359d3a9c9af3969ccccae9b34e26d0c101` |
+
+INTERACTIONS仍是后端FRONTEND的字节副本；前端进展、API消费核对与U任务是本仓库维护的实施工件。后端专属相对链接按上表源文件归属解析；例如INTERACTIONS中的TEST-DATA在前端读取sources/BACKEND_TEST_DATA.md。BFF-LOGIN 前端副本保留跨仓库路径措辞，与后端原文不完全逐字节相同，不以本次未改契约内容为由覆盖。API/OpenAPI/schema/JSON示例本轮不改契约内容。
+
+编号：前端补充验收为 P24–P26；后端 A24–A26 与测试数据 D01–D05、DESIGN D01 的区分见 BACKEND_TEST_DATA / BACKEND_ACCEPTANCE。
 
 ## 对接边界
 
