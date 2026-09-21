@@ -67,11 +67,20 @@ export function toIamListParams(
   page: Page,
   condition?: object,
 ): Record<string, unknown> {
-  return {
+  const params: Record<string, unknown> = {
     page: page.current ?? 1,
     pageSize: page.size ?? IAM_DEFAULT_PAGE_SIZE,
-    ...condition,
   };
+  if (!condition) {
+    return params;
+  }
+  for (const [key, value] of Object.entries(condition)) {
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+    params[key] = value;
+  }
+  return params;
 }
 
 export function mapIamPage<T>(data: IamPageResponse<T> | undefined | null): Page<T> {

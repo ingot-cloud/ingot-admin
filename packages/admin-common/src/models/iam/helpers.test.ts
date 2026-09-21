@@ -65,6 +65,12 @@ describe("iam helpers", () => {
       pageSize: 10,
       name: "a",
     });
+    expect(
+      toIamListParams({ current: 1, size: 20 }, { name: "", status: undefined }),
+    ).toEqual({
+      page: 1,
+      pageSize: 20,
+    });
     expect(ConfigurationStatus.ENABLED).toBe("ENABLED");
   });
 
