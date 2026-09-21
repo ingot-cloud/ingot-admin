@@ -11,6 +11,7 @@ export type Row = ResourceDetail<MemberRecord>;
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "displayName", required: true },
+  { label: "操作", width: "120", prop: "actions", fixed: "right" },
 ];
 
 export function createToolbarActions(_onCreate: () => void): Array<InTableAction<Row>> {

@@ -2,7 +2,7 @@ import { request, type RequestOptions } from "@ingot/admin-core";
 import type { R, Page, BizLeafAlloc } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
-const PATH = "/api/pms/v1/platform/dev/id";
+const PATH = "/api/iam/v1/platform/id-allocations";
 
 export function IdPageAPI(
   page: Page,
@@ -13,7 +13,7 @@ export function IdPageAPI(
     filterParams(condition);
   }
   return request.get<Page<BizLeafAlloc>>(
-    `${PATH}/page`,
+    PATH,
     {
       ...page,
       ...condition,
@@ -29,7 +29,7 @@ export function CreateIdAPI(params: BizLeafAlloc, options?: RequestOptions): Pro
 
 export function UpdateIdAPI(params: BizLeafAlloc, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params, options);
+  return request.put<void>(`${PATH}/${params.bizTag}`, params, options);
 }
 
 export function RemoveIdAPI(id: string, options?: RequestOptions): Promise<R<void>> {

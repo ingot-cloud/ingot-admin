@@ -34,15 +34,18 @@
         </template>
         <template #name="{ item }">
           <in-button text link @click="handleDetail(item)">
-            {{ item.record.name || item.record.id }}
+            {{ item.record.applicationName || item.record.applicationId }}
           </in-button>
         </template>
+        <template #status="{ item }">{{ item.record.status }}</template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
         </template>
       </in-table>
     </in-split-layout>
   </in-page-frame>
+
+  <ApplicationDetailDrawer ref="detailRef" />
 </template>
 
 <script lang="ts" setup>
@@ -53,30 +56,20 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import ApplicationDetailDrawer from "./components/ApplicationDetailDrawer.vue";
+import { createRowActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
 const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
-const toolbarRow = {
-  record: { id: "" },
-  fieldAccess: {},
-  capabilities: {},
-  version: "",
-} as Row;
+const detailRef = ref<{ show: (row: Row) => void }>();
 
 const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
-const handleDetail = (_item: Row): void => undefined;
-const handleCreate = (): void => undefined;
-const toolbarActions = computed(() => createToolbarActions(handleCreate));
+const handleDetail = (item: Row): void => {
+  detailRef.value?.show(item);
+};
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
   createRowActions(item, { onDetail: handleDetail });
 const privateOnColumnChange = (value: string[]): void => {

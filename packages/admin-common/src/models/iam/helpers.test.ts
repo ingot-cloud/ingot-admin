@@ -1,13 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { ConfigurationStatus, FieldVisibility, IAM_MASKED_PLACEHOLDER } from "./constants";
+import {
+  ConfigurationStatus,
+  FieldVisibility,
+  IAM_MASKED_PLACEHOLDER,
+  RoleKind,
+  ScopeKind,
+  SubjectType,
+  UpgradeResolutionChoice,
+} from "./constants";
 import {
   buildDepartmentTree,
   collectIamPageRecords,
+  emptySelection,
   editablePatch,
+  formatScopeKinds,
   isFieldEditable,
   isMaskedValue,
   mapIamPage,
+  toAssignmentBatchItems,
   toIamListParams,
+  toIamSelectRecords,
+  unresolvedUpgradeKeys,
 } from "./helpers";
 import type { DepartmentRecord } from "./types";
 
@@ -75,5 +88,87 @@ describe("iam helpers", () => {
       { id: "1", name: "总部", children: [{ id: "2", name: "研发" }] },
       { id: "9", name: "孤立" },
     ]);
+  });
+
+  it("把 ResourceDetail 列表拍成选择器 id/name", () => {
+    expect(
+      toIamSelectRecords({
+        current: 1,
+        size: 20,
+        total: 1,
+        records: [
+          {
+            record: { id: "m1", displayName: "张三" },
+            fieldAccess: {},
+            capabilities: {},
+            version: "1",
+          },
+        ],
+      }),
+    ).toEqual({
+      current: 1,
+      size: 20,
+      total: 1,
+      records: [{ id: "m1", name: "张三" }],
+    });
+  });
+
+  it("用中文解释资源范围声明", () => {
+    expect(formatScopeKinds([])).toBe("未声明");
+    expect(formatScopeKinds([ScopeKind.ALL, ScopeKind.SELF])).toBe("全部、本人");
+  });
+
+  it("升级冲突未逐项处置或替换范围缺 scopes 时不可提交", () => {
+    expect(
+      unresolvedUpgradeKeys(
+        [
+          { key: "a", reasonCode: "SCOPE", message: "范围冲突" },
+          { key: "b", reasonCode: "DELTA", message: "差异冲突" },
+        ],
+        [{ key: "a", choice: UpgradeResolutionChoice.ACCEPT_BASE }],
+      ),
+    ).toEqual(["b"]);
+    expect(
+      unresolvedUpgradeKeys(
+        [{ key: "a", reasonCode: "SCOPE", message: "范围冲突" }],
+        [{ key: "a", choice: UpgradeResolutionChoice.REPLACE_SCOPE }],
+      ),
+    ).toEqual(["a"]);
+    expect(
+      unresolvedUpgradeKeys(
+        [{ key: "a", reasonCode: "SCOPE", message: "范围冲突" }],
+        [
+          {
+            key: "a",
+            choice: UpgradeResolutionChoice.REPLACE_SCOPE,
+            scopes: [{ kind: ScopeKind.SELF }],
+          },
+        ],
+      ),
+    ).toEqual([]);
+  });
+
+  it("按接收对象展开原子分配批次，不默认带空主体", () => {
+    expect(
+      toAssignmentBatchItems(SubjectType.MEMBER, ["m1", " ", "m2"], {
+        roleRevisionRef: { kind: RoleKind.TENANT_CUSTOM, id: "r1" },
+        scopeBindings: {},
+      }),
+    ).toEqual([
+      {
+        subject: { type: SubjectType.MEMBER, id: "m1" },
+        roleRevisionRef: { kind: RoleKind.TENANT_CUSTOM, id: "r1" },
+        scopeBindings: {},
+      },
+      {
+        subject: { type: SubjectType.MEMBER, id: "m2" },
+        roleRevisionRef: { kind: RoleKind.TENANT_CUSTOM, id: "r1" },
+        scopeBindings: {},
+      },
+    ]);
+  });
+
+  it("空选择器不携带成员或部门", () => {
+    expect(emptySelection()).toEqual({ members: [], departments: [] });
   });
 });

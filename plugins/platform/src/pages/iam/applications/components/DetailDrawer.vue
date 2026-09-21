@@ -58,7 +58,7 @@
             <template #default="{ row }">{{ row.record.code }}</template>
           </el-table-column>
           <el-table-column label="范围" min-width="160">
-            <template #default="{ row }">{{ row.record.scopeCapabilities.join("、") }}</template>
+            <template #default="{ row }">{{ formatScopeKinds(row.record.scopeCapabilities) }}</template>
           </el-table-column>
           <el-table-column label="操作" width="140">
             <template #default="{ row }">
@@ -135,6 +135,7 @@ import {
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
+  formatScopeKinds,
   type AppActionRecord,
   type AppMenuRecord,
   type AppResourceRecord,

@@ -13,6 +13,7 @@
 | `plugins/security` | 安全中心；导出 `securityPlugin` |
 | `plugins/org` | 组织管理；导出 `orgPlugin` |
 | `plugins/member` | 会员管理；导出 `memberPlugin` |
+| `plugins/auth` | 登录站页面；导出 `createAuthRoutes`，不是 `InAdminPlugin` |
 | `apps/admin` | 租户管理台 composition root，org + security |
 | `apps/admin-platform` | 平台管理台 composition root，platform + security |
 

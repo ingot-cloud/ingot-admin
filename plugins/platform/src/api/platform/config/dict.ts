@@ -13,7 +13,7 @@ import type {
 import type { CommonStatus } from "@/models/enums";
 import { filterParams } from "@ingot/admin-core";
 
-const PATH = "/api/pms/v1/platform/config/dict";
+const PATH = "/api/iam/v1/platform/dictionaries";
 
 /**
  * 字典树（左侧导航）
@@ -23,7 +23,7 @@ export function GetDictTreeAPI(query?: DictQueryDTO, options?: RequestOptions): 
   if (query) {
     filterParams(query);
   }
-  return request.get<Array<DictTreeNodeVO>>(`${PATH}/tree`, query, options);
+  return request.get<Array<DictTreeNodeVO>>(PATH, { ...query, view: "tree" }, options);
 }
 
 /**
@@ -40,10 +40,11 @@ export function GetDictPageAPI(
     filterParams(condition);
   }
   return request.get<Page<PlatformDict>>(
-    `${PATH}/page`,
+    PATH,
     {
       ...page,
       ...condition,
+      view: "page",
     },
     options,
   );
@@ -62,7 +63,7 @@ export function GetDictItemsAPI(
   if (query) {
     filterParams(query);
   }
-  return request.get<Array<DictItemVO>>(`${PATH}/items/${code}`, query, options);
+  return request.get<Array<DictItemVO>>(PATH, { ...query, view: "items", code }, options);
 }
 
 /**
@@ -75,7 +76,7 @@ export function CreateDictAPI(params: DictCreateDTO, options?: RequestOptions): 
 
 export function UpdateDictAPI(params: DictUpdateDTO, options?: RequestOptions): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params, options);
+  return request.put<void>(`${PATH}/${params.id}`, params, options);
 }
 
 export function ChangeDictStatusAPI(

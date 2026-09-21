@@ -3,7 +3,7 @@ import { createAuthApi, type AuthEntry, type LoginResult } from "@ingot/auth-cor
 
 const entry = (import.meta.env.VITE_AUTH_ENTRY as AuthEntry | undefined) ?? "tenant";
 
-export const authApi = createAuthApi(request, entry);
+export const authApi = createAuthApi(request.getClient(), entry);
 export const authEntry = entry;
 
 export async function LoginAPI({

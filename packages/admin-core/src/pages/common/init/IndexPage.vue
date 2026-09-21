@@ -90,7 +90,8 @@ const handleConfirmClick = () => {
 
       loading.value = true;
       InitPwdAPI({
-        newPassword: editForm.newPassword,
+        newPassword: editForm.newPassword ?? "",
+        confirmPassword: editForm.confirmPassword ?? "",
       })
         .then(() => {
           loading.value = false;

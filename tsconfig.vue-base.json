@@ -19,7 +19,8 @@
       "@ingot/shared/hooks": ["../../packages/shared/src/hooks/index.ts"],
       "@ingot/http-client": ["../../packages/http-client/src/index.ts"],
       "@ingot/admin-core": ["../../packages/admin-core/src/index.ts"],
-      "@ingot/admin-common": ["../../packages/admin-common/src/index.ts"]
+      "@ingot/admin-common": ["../../packages/admin-common/src/index.ts"],
+      "@ingot/auth-plugin": ["../../plugins/auth/src/index.ts"]
     }
   }
 }

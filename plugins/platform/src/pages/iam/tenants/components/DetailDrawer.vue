@@ -62,21 +62,18 @@
           </div>
         </div>
         <div v-if="!entitlementDrafts.length">暂无开通记录</div>
-        <el-select
+        <in-page-select
           v-if="session.editing.value"
           v-model="addingAppId"
           filterable
+          remote
           clearable
-          placeholder="追加应用开通"
+          value-field="id"
+          label-field="name"
+          placeholder="远程分页追加应用开通"
+          :load-data="loadApplications"
           @change="privateAddEntitlement"
-        >
-          <el-option
-            v-for="item in addableApps"
-            :key="item.record.id"
-            :label="item.record.name"
-            :value="item.record.id"
-          />
-        </el-select>
+        />
         <biz-iam-preview-alert v-if="preview" :preview="preview" />
         <in-button v-if="session.editing.value" @click="privatePreviewEntitlements">预览开通影响</in-button>
       </div>
@@ -97,8 +94,9 @@ import {
   BizIamPreviewAlert,
   BizIamStatusTag,
   ConfigurationStatus,
+  createIamListLoader,
+  toIamSelectRecords,
   useConfigurationStatusEnum,
-  type ApplicationRecord,
   type EntitlementDraft,
   type EntitlementPreviewResult,
   type EntitlementRecord,
@@ -131,7 +129,7 @@ const detail = ref<ResourceDetail<TenantRecord>>();
 const entitlements = ref<Array<ResourceDetail<EntitlementRecord>>>([]);
 const entitlementDrafts = ref<EntitlementDraft[]>([]);
 const entitlementsVersion = ref("");
-const applications = ref<Array<ResourceDetail<ApplicationRecord>>>([]);
+const applicationLabels = reactive<Record<string, string>>({});
 const addingAppId = ref("");
 const preview = ref<Preview<EntitlementPreviewResult> | null>(null);
 const draft = reactive({
@@ -140,17 +138,28 @@ const draft = reactive({
 });
 
 const nameOf = (applicationId: string): string =>
-  applications.value.find((item) => item.record.id === applicationId)?.record.name ??
+  applicationLabels[applicationId] ??
   entitlements.value.find((item) => item.record.applicationId === applicationId)?.record.applicationName ??
   applicationId;
 
 const sourceOf = (applicationId: string): string =>
   entitlements.value.find((item) => item.record.applicationId === applicationId)?.record.source ?? "MANUAL";
 
-const addableApps = computed(() =>
-  applications.value.filter(
-    (item) => !entitlementDrafts.value.some((draftItem) => draftItem.applicationId === item.record.id),
-  ),
+const loadApplications = createIamListLoader(async (page, condition) => {
+  const response = await PlatformApplicationPageAPI(page, condition);
+  const mapped = toIamSelectRecords(response.data);
+  for (const item of mapped.records ?? []) {
+    applicationLabels[item.id] = item.name;
+  }
+  return { data: mapped };
+});
+
+watch(
+  entitlementDrafts,
+  () => {
+    preview.value = null;
+  },
+  { deep: true },
 );
 
 const snapshotEntitlements = (items: Array<ResourceDetail<EntitlementRecord>>): EntitlementDraft[] =>
@@ -167,14 +176,17 @@ const load = (id: string): void => {
   Promise.all([
     PlatformTenantDetailAPI(id),
     PlatformTenantEntitlementsAPI(id),
-    PlatformApplicationPageAPI({ current: 1, size: 200 }),
   ])
-    .then(([detailRes, entitlementRes, appRes]) => {
+    .then(([detailRes, entitlementRes]) => {
       detail.value = detailRes.data;
       entitlements.value = entitlementRes.data ?? [];
       entitlementDrafts.value = snapshotEntitlements(entitlements.value);
       entitlementsVersion.value = entitlements.value[0]?.version || detailRes.data.version;
-      applications.value = appRes.data.records ?? [];
+      for (const item of entitlements.value) {
+        if (item.record.applicationName) {
+          applicationLabels[item.record.applicationId] = item.record.applicationName;
+        }
+      }
       draft.name = detailRes.data.record.name;
       draft.status = detailRes.data.record.status;
     })

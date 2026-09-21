@@ -46,6 +46,27 @@
       </in-table>
     </in-split-layout>
   </in-page-frame>
+
+  <biz-iam-role-create-drawer
+    ref="createRef"
+    title="发布共享角色"
+    :kind="RoleKind.SHARED"
+    :create-api="PlatformSharedRoleCreateAPI"
+    @success="refreshData"
+  />
+  <biz-iam-role-detail-drawer
+    ref="detailRef"
+    :get-api="PlatformSharedRoleDetailAPI"
+    :list-revisions-api="PlatformSharedRoleRevisionPageAPI"
+    :preview-api="PlatformSharedRolePreviewAPI"
+    :publish-api="PlatformSharedRolePublishAPI"
+    :status-api="PlatformSharedRoleStatusAPI"
+    :delete-api="PlatformSharedRoleDeleteAPI"
+    :publish-action="IamAction.PLATFORM_SHARED_ROLE_PUBLISH"
+    :status-action="IamAction.PLATFORM_SHARED_ROLE_STATUS"
+    :delete-action="IamAction.PLATFORM_SHARED_ROLE_DELETE"
+    @success="refreshData"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -56,6 +77,21 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
+import {
+  BizIamRoleCreateDrawer,
+  BizIamRoleDetailDrawer,
+  IamAction,
+  RoleKind,
+} from "@ingot/admin-common";
+import {
+  PlatformSharedRoleCreateAPI,
+  PlatformSharedRoleDeleteAPI,
+  PlatformSharedRoleDetailAPI,
+  PlatformSharedRolePreviewAPI,
+  PlatformSharedRolePublishAPI,
+  PlatformSharedRoleRevisionPageAPI,
+  PlatformSharedRoleStatusAPI,
+} from "@/api/iam/authorization";
 import {
   createRowActions,
   createToolbarActions,
@@ -68,6 +104,8 @@ import { useOps } from "./useOps";
 const { paging, refreshData } = useOps();
 const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
+const createRef = ref<{ show: () => void }>();
+const detailRef = ref<{ show: (id: string) => void }>();
 const toolbarRow = {
   record: { id: "" },
   fieldAccess: {},
@@ -77,8 +115,12 @@ const toolbarRow = {
 
 const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
-const handleDetail = (_item: Row): void => undefined;
-const handleCreate = (): void => undefined;
+const handleDetail = (item: Row): void => {
+  detailRef.value?.show(item.record.id);
+};
+const handleCreate = (): void => {
+  createRef.value?.show();
+};
 const toolbarActions = computed(() => createToolbarActions(handleCreate));
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
   createRowActions(item, { onDetail: handleDetail });

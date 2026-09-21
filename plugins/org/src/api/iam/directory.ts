@@ -5,11 +5,20 @@ import {
   mapIamPage,
   toIamListParams,
   SelectionPurpose,
-  type ApplicationSummary,
+  type AccountLookupInput,
+  type AccountRecord,
+  type ActionRecord,
+  type AudienceDraft,
+  type AudienceUpdateInput,
   type CreatedResource,
+  type DepartmentDraft,
   type DepartmentRecord,
+  type DepartmentUpdateInput,
+  type EntitlementRecord,
+  type ExportTask,
   type GroupDraft,
   type GroupRecord,
+  type GroupUpdateInput,
   type IamListQuery,
   type IamPageResponse,
   type MemberCreateInput,
@@ -19,6 +28,7 @@ import {
   type MemberStatusInput,
   type OwnerTransferInput,
   type Preview,
+  type ReferenceImpactPreview,
   type ResourceDetail,
   type TenantSettingsInput,
   type VersionInput,
@@ -120,17 +130,43 @@ export function TenantMemberRemoveAPI(
 }
 
 export function TenantMemberExportCreateAPI(
-  params: unknown,
+  params: VersionInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
+  filterParams(params);
   return request.post<CreatedResource>(`${MEMBER_PATH}/export`, params, options);
+}
+
+export function TenantMemberExportStatusAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<ExportTask>> {
+  return request.get<ExportTask>(`${MEMBER_PATH}/export/${id}/status`, undefined, options);
 }
 
 export function TenantMemberExportDownloadAPI(
   id: string,
   options?: RequestOptions,
-): Promise<R<unknown>> {
-  return request.get<unknown>(`${MEMBER_PATH}/export/${id}`, undefined, options);
+): Promise<R<Page<ResourceDetail<MemberRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<MemberRecord>>>(
+      `${MEMBER_PATH}/export/${id}`,
+      undefined,
+      options,
+    )
+    .then(asPage);
+}
+
+export function TenantAccountLookupAPI(
+  params: AccountLookupInput,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<AccountRecord>>> {
+  filterParams(params);
+  return request.post<ResourceDetail<AccountRecord>>(
+    `${IAM_API_PREFIX}/v1/platform/accounts/lookup`,
+    params,
+    options,
+  );
 }
 
 export function TenantDepartmentPageAPI(
@@ -148,16 +184,23 @@ export function TenantDepartmentPageAPI(
 }
 
 export function TenantDepartmentCreateAPI(
-  params: { name: string; parentId?: string; sortOrder: number },
+  params: DepartmentDraft,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
   return request.post<CreatedResource>(DEPT_PATH, params, options);
 }
 
+export function TenantDepartmentDetailAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<DepartmentRecord>>> {
+  return request.get<ResourceDetail<DepartmentRecord>>(`${DEPT_PATH}/${id}`, undefined, options);
+}
+
 export function TenantDepartmentUpdateAPI(
   id: string,
-  params: { expectedVersion: string; name: string; parentId?: string; sortOrder: number },
+  params: DepartmentUpdateInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<DepartmentRecord>>> {
   filterParams(params);
@@ -167,8 +210,8 @@ export function TenantDepartmentUpdateAPI(
 export function TenantDepartmentDeleteAPI(
   id: string,
   options?: RequestOptions,
-): Promise<R<void>> {
-  return request.delete<void>(`${DEPT_PATH}/${id}`, null, options);
+): Promise<R<CreatedResource>> {
+  return request.delete<CreatedResource>(`${DEPT_PATH}/${id}`, null, options);
 }
 
 export function TenantGroupPageAPI(
@@ -196,13 +239,36 @@ export function TenantGroupCreateAPI(
   return request.post<CreatedResource>(GROUP_PATH, params, options);
 }
 
+export function TenantGroupDetailAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<GroupRecord>>> {
+  return request.get<ResourceDetail<GroupRecord>>(`${GROUP_PATH}/${id}`, undefined, options);
+}
+
+export function TenantGroupUpdateAPI(
+  id: string,
+  params: GroupUpdateInput,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<GroupRecord>>> {
+  filterParams(params);
+  return request.put<ResourceDetail<GroupRecord>>(`${GROUP_PATH}/${id}`, params, options);
+}
+
+export function TenantGroupDeleteAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  return request.delete<CreatedResource>(`${GROUP_PATH}/${id}`, null, options);
+}
+
 export function TenantGroupPreviewAPI(
   id: string,
-  params: GroupDraft,
+  params: GroupUpdateInput,
   options?: RequestOptions,
-): Promise<R<Preview>> {
+): Promise<R<Preview<ReferenceImpactPreview>>> {
   filterParams(params);
-  return request.post<Preview>(`${GROUP_PATH}/${id}/preview`, params, options);
+  return request.post<Preview<ReferenceImpactPreview>>(`${GROUP_PATH}/${id}/preview`, params, options);
 }
 
 export function TenantSettingsAPI(options?: RequestOptions): Promise<R<ResourceDetail<{ name: string; avatar?: string; ownerMemberId?: string }>>> {
@@ -229,14 +295,44 @@ export function TenantApplicationPageAPI(
   page: Page,
   condition?: IamListQuery,
   options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<ApplicationSummary>>>> {
+): Promise<R<Page<ResourceDetail<EntitlementRecord>>>> {
   if (condition) {
     filterParams(condition);
   }
   return request
-    .get<IamPageResponse<ResourceDetail<ApplicationSummary>>>(
+    .get<IamPageResponse<ResourceDetail<EntitlementRecord>>>(
       APP_PATH,
       toIamListParams(page, condition),
+      options,
+    )
+    .then(asPage);
+}
+
+export function TenantApplicationAudienceAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<AudienceDraft>>> {
+  return request.get<ResourceDetail<AudienceDraft>>(`${APP_PATH}/${id}/audience`, undefined, options);
+}
+
+export function TenantApplicationAudienceUpdateAPI(
+  id: string,
+  params: AudienceUpdateInput,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<AudienceDraft>>> {
+  filterParams(params);
+  return request.put<ResourceDetail<AudienceDraft>>(`${APP_PATH}/${id}/audience`, params, options);
+}
+
+export function TenantApplicationActionPageAPI(
+  id: string,
+  page: Page,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<ActionRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<ActionRecord>>>(
+      `${APP_PATH}/${id}/actions`,
+      toIamListParams(page),
       options,
     )
     .then(asPage);
@@ -254,6 +350,13 @@ export function DirectoryMemberPageAPI(
       options,
     )
     .then(asPage);
+}
+
+export function DirectoryMemberDetailAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<MemberRecord>>> {
+  return request.get<ResourceDetail<MemberRecord>>(`${DIR_MEMBER_PATH}/${id}`, undefined, options);
 }
 
 export function DirectoryDepartmentPageAPI(

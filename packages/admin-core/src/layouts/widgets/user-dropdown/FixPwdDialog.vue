@@ -1,9 +1,9 @@
 <template>
   <in-dialog title="修改密码" v-model="visible" width="480" append-to-body>
     <el-form ref="EditFormRef" label-width="96px" :model="editForm" :rules="rules">
-      <el-form-item prop="password" label="原始密码">
+      <el-form-item prop="oldPassword" label="原始密码">
         <el-input
-          v-model="editForm.password"
+          v-model="editForm.oldPassword"
           placeholder="请输入密码"
           type="password"
           clearable
@@ -44,13 +44,13 @@ defineOptions({
 });
 
 interface EditForm {
-  password?: string;
+  oldPassword?: string;
   newPassword?: string;
   confirmPassword?: string;
 }
 
 const rules: FormRules<EditForm> = {
-  password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+  oldPassword: [{ required: true, message: "请输入密码", trigger: "blur" }],
   newPassword: [{ required: true, message: "请输入新密码", trigger: "blur" }],
   confirmPassword: [{ required: true, message: "请确认新密码", trigger: "blur" }],
 };
@@ -77,8 +77,9 @@ const privateOnConfirm = async () => {
   loading.value = true;
   try {
     await FixPasswordAPI({
-      password: editForm.password,
-      newPassword: editForm.newPassword,
+      oldPassword: editForm.oldPassword,
+      newPassword: editForm.newPassword ?? "",
+      confirmPassword: editForm.confirmPassword ?? "",
     });
     Message.success("操作成功");
     visible.value = false;

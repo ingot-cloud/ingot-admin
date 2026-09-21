@@ -137,6 +137,7 @@ declare module 'vue' {
     InUploadAvatar: typeof import('./src/components/upload/InUploadAvatar.vue')['default']
     InUserDropdown: typeof import('./src/layouts/widgets/user-dropdown/InUserDropdown.vue')['default']
     InWithLabel: typeof import('./src/components/InWithLabel.vue')['default']
+    ProfileDialog: typeof import('./src/layouts/widgets/user-dropdown/ProfileDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StatusTag: typeof import('./src/components/status/StatusTag.vue')['default']

@@ -62,6 +62,7 @@
   </el-dropdown>
 
   <FixPwdDialog ref="PwdDialogRef" />
+  <ProfileDialog ref="ProfileDialogRef" />
 </template>
 <script lang="ts" setup>
 import type { Component } from "vue";
@@ -71,6 +72,7 @@ import { logoutAndReload } from "@/utils/security";
 import { useLogin } from "@/hooks/biz/useLogin";
 import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
 import FixPwdDialog from "./FixPwdDialog.vue";
+import ProfileDialog from "./ProfileDialog.vue";
 import {
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderUserMenuItemType,
@@ -89,6 +91,7 @@ const props = defineProps<{
 }>();
 
 const PwdDialogRef = ref<{ show: () => void }>();
+const ProfileDialogRef = ref<{ show: () => void }>();
 const pendingKey = ref<string>();
 const { getUsername, getAvatar } = storeToRefs(useUserInfoStore());
 const message = useMessage();
@@ -114,6 +117,10 @@ const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
     } catch {
       return;
     }
+    return;
+  }
+  if (name === InAdminHeaderBuiltinUserMenuName.Profile) {
+    ProfileDialogRef.value?.show();
     return;
   }
   if (name === InAdminHeaderBuiltinUserMenuName.FixPwd) {

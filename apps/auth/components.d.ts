@@ -12,11 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ChallengeHost: typeof import('./src/components/challenge/ChallengeHost.vue')['default']
-    ElButton: typeof import('element-plus/es')['ElButton']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
-    ElImage: typeof import('element-plus/es')['ElImage']
-    ElInput: typeof import('element-plus/es')['ElInput']
-    'IEp:arrowLeft': typeof import('~icons/ep/arrow-left')['default']
     InButton: typeof import('./src/components/InButton.vue')['default']
     InContainer: typeof import('./src/components/container/InContainer.vue')['default']
     InCopyTag: typeof import('./src/components/InCopyTag.vue')['default']
@@ -26,7 +22,6 @@ declare module 'vue' {
     InLoading: typeof import('./src/components/InLoading.vue')['default']
     InQrcode: typeof import('./src/components/qrcode/InQrcode.vue')['default']
     InSplitLayout: typeof import('./src/components/container/InSplitLayout.vue')['default']
-    'ITabler:arrowRight': typeof import('~icons/tabler/arrow-right')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Verify: typeof import('./src/components/verifition/Verify.vue')['default']

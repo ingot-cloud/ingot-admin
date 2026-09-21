@@ -15,7 +15,7 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 | `API.md` | [API.md](./API.md) | `a1994a61f81206db72e37dbf9c1029d0da58a623309242e34cf6d96d7ef3aded` |
 | `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `06ee92f641b98f6d21af267aeded40483be4d17c1698b004b5bd5a3aae60d440` |
 | `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `13ea82307f6e69eb4c92054ce0386fa0be4d9cf5a242d32fbfca125fd6950f9b` |
-| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d2a1d37d40bf33be7330f0379cf17d41fec68bc84eb158c4f946adca94cf0ae6` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `b1c8632602faac5b502bb0a540bbeae3ff1c2e7d7b319283fdade0d9599be599` |
 | `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `d541108413ee14ff06a174d96828f3333592739bc746e53d3db864c74d1a8d4e` |
 | `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
 | `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `4043e19084de7490e81c6a4c1b0607595351e81e1d308f89e29f1ff503714e0d` |
@@ -48,9 +48,10 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `TEST-DATA.md` | [sources/BACKEND_TEST_DATA.md](./sources/BACKEND_TEST_DATA.md) | `695b2dabcf3f303f9cd7481d14e634359d3a9c9af3969ccccae9b34e26d0c101` |
+| `TEST-DATA.md` | [sources/BACKEND_TEST_DATA.md](./sources/BACKEND_TEST_DATA.md) | `34fa57118ddb2609be474a20658b11559a2f5ca6d0e0b61b3ec357f760175bbe` |
+| `VERIFICATION-GUIDE.md` | [sources/BACKEND_VERIFICATION_GUIDE.md](./sources/BACKEND_VERIFICATION_GUIDE.md) | `ad7f00b154db22a7ee2bbef715bcb93a8bd7fd037216d1ddd80163dee6d54cf7` |
 
-INTERACTIONS仍是后端FRONTEND的字节副本；前端进展、API消费核对与U任务是本仓库维护的实施工件。后端专属相对链接按上表源文件归属解析；例如INTERACTIONS中的TEST-DATA在前端读取sources/BACKEND_TEST_DATA.md。BFF-LOGIN 前端副本保留跨仓库路径措辞，与后端原文不完全逐字节相同，不以本次未改契约内容为由覆盖。API/OpenAPI/schema/JSON示例本轮不改契约内容。
+INTERACTIONS仍是后端FRONTEND的字节副本；前端进展、API消费核对与U任务是本仓库维护的实施工件。后端专属相对链接按上表源文件归属解析；例如INTERACTIONS中的TEST-DATA在前端读取sources/BACKEND_TEST_DATA.md，联调步骤读 BACKEND_VERIFICATION_GUIDE.md。BFF-LOGIN 前端副本保留跨仓库路径措辞，与后端原文不完全逐字节相同，不以本次未改契约内容为由覆盖。API/OpenAPI/schema/JSON示例本轮不改契约内容。
 
 编号：前端补充验收为 P24–P26；后端 A24–A26 与测试数据 D01–D05、DESIGN D01 的区分见 BACKEND_TEST_DATA / BACKEND_ACCEPTANCE。
 

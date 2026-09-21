@@ -3,7 +3,16 @@
     <template #header>
       <in-page-header description="浏览可见成员与部门。无管理编辑入口。" />
     </template>
-    <in-split-layout>
+    <in-split-layout left-collapsible persistence-key="org-iam-directory">
+      <template #left>
+        <in-tree
+          :data="deptTree"
+          node-key="id"
+          :props="{ label: 'name', children: 'children' }"
+          highlight-current
+          @node-click="privateOnDept"
+        />
+      </template>
       <in-table
         :loading="paging.fetching.value"
         :data="paging.pageInfo.value.records"
@@ -37,9 +46,14 @@
             {{ item.record.displayName || item.record.id }}
           </in-button>
         </template>
+        <template #actions="{ item }">
+          <in-table-actions :actions="rowActionsOf(item)" :row="item" />
+        </template>
       </in-table>
     </in-split-layout>
   </in-page-frame>
+
+  <DirectoryMemberDrawer ref="detailRef" />
 </template>
 
 <script lang="ts" setup>
@@ -50,34 +64,28 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import DirectoryMemberDrawer from "./components/DirectoryMemberDrawer.vue";
+import { createRowActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
-const { paging, refreshData } = useOps();
+const { paging, deptTree, loadDepts, refreshData, privateOnDept } = useOps();
 const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
-const toolbarRow = {
-  record: { id: "" },
-  fieldAccess: {},
-  capabilities: {},
-  version: "",
-} as Row;
+const detailRef = ref<{ show: (row: Row) => void }>();
 
 const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
-const handleDetail = (_item: Row): void => undefined;
-const handleCreate = (): void => undefined;
-const toolbarActions = computed(() => createToolbarActions(handleCreate));
+const handleDetail = (item: Row): void => {
+  detailRef.value?.show(item);
+};
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
   createRowActions(item, { onDetail: handleDetail });
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };
 const rowKeyOf = (row: Row): string => row.record.id;
+
+onMounted(() => {
+  void loadDepts();
+});
 </script>

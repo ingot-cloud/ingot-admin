@@ -21,13 +21,22 @@
         <el-input v-model="draft.path" placeholder="可空" />
       </el-form-item>
       <el-form-item label="视图注册键">
-        <el-input v-model="draft.viewPath" placeholder="可空" />
+        <el-input v-model="draft.viewPath" placeholder="canonical viewPath，如 platform.iam.accounts" />
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          必须与前端 definePluginPages 注册键一致，不能用浏览器 path 代替。
+        </div>
       </el-form-item>
       <el-form-item label="准入方式">
         <in-select v-model="draft.accessMode" :options="accessEnum.getOptions()" />
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          开放不校验操作；按操作时由下方匹配方式决定。
+        </div>
       </el-form-item>
       <el-form-item label="操作匹配">
         <in-select v-model="draft.matchMode" :options="matchEnum.getOptions()" />
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          任一操作：具备列表中任一 ACTION 即可进入；全部操作：必须同时具备。
+        </div>
       </el-form-item>
       <el-form-item label="关联操作">
         <el-select v-model="draft.actionIds" multiple filterable>

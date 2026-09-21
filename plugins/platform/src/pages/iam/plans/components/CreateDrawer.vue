@@ -8,14 +8,12 @@
         <el-input v-model="draft.description" type="textarea" :rows="3" />
       </el-form-item>
       <el-form-item label="包含应用">
-        <el-select v-model="draft.applicationIds" multiple filterable>
-          <el-option
-            v-for="item in applications"
-            :key="item.record.id"
-            :label="item.record.name"
-            :value="item.record.id"
-          />
-        </el-select>
+        <biz-iam-chip-page-select
+          v-model="draft.applicationIds"
+          empty-text="未绑定应用"
+          placeholder="远程分页添加应用"
+          :load-data="loadApplications"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -27,7 +25,11 @@
 
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
-import type { ApplicationRecord, ResourceDetail } from "@ingot/admin-common";
+import {
+  BizIamChipPageSelect,
+  createIamListLoader,
+  toIamSelectRecords,
+} from "@ingot/admin-common";
 import { PlatformApplicationPageAPI, PlatformPlanCreateAPI } from "@/api/iam/catalog";
 import { platformPlanQueryKeys } from "@/api/iam/catalog.query";
 import { useQueryClient } from "@tanstack/vue-query";
@@ -38,11 +40,15 @@ const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const visible = ref(false);
 const loading = ref(false);
-const applications = ref<Array<ResourceDetail<ApplicationRecord>>>([]);
 const draft = reactive({
   name: "",
   description: "",
   applicationIds: [] as string[],
+});
+
+const loadApplications = createIamListLoader(async (page, condition) => {
+  const response = await PlatformApplicationPageAPI(page, condition);
+  return { data: toIamSelectRecords(response.data) };
 });
 
 const privateSubmit = (): void => {
@@ -73,9 +79,6 @@ defineExpose({
     draft.description = "";
     draft.applicationIds = [];
     visible.value = true;
-    PlatformApplicationPageAPI({ current: 1, size: 200 }).then((response) => {
-      applications.value = response.data.records ?? [];
-    });
   },
 });
 </script>

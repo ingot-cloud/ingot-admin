@@ -51,3 +51,25 @@ export interface CurrentCapabilities {
   version: string;
   expiresAt: string;
 }
+
+export interface AccountSelfProfile {
+  accountId: string;
+  username: string;
+  phone?: string;
+  email?: string;
+  mustChangePassword: boolean;
+  member: CurrentProfile;
+  version: string;
+}
+
+export interface AccountSelfProfileInput {
+  expectedVersion: string;
+  phone?: string;
+  email?: string;
+}
+
+export interface CurrentPasswordInput {
+  oldPassword?: string;
+  newPassword: string;
+  confirmPassword: string;
+}

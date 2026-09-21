@@ -20,4 +20,10 @@ describe("org iam members department tree", () => {
     expect(apiSource).toContain("SelectionPurpose.MANAGED_DEPARTMENT");
     expect(apiSource).toContain("toPurposeParams(page, condition, SelectionPurpose.MANAGED_DEPARTMENT)");
   });
+
+  it("导出走创建、状态轮询与下载三个接口", () => {
+    expect(apiSource).toContain("TenantMemberExportStatusAPI");
+    expect(apiSource).toContain("export/${id}/status");
+    expect(pageSource).toContain("MemberExportDrawer");
+  });
 });

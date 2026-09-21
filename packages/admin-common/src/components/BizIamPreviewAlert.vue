@@ -8,6 +8,9 @@
     <ul v-if="preview.errors?.length" class="m-0 pl-16px">
       <li v-for="(item, index) in preview.errors" :key="index">{{ item.message }}</li>
     </ul>
+    <ul v-if="preview.warnings?.length" class="m-0 pl-16px">
+      <li v-for="(item, index) in preview.warnings" :key="`w-${index}`">{{ item.message }}</li>
+    </ul>
   </el-alert>
 </template>
 

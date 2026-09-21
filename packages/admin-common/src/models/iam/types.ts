@@ -1,19 +1,27 @@
 import {
   AccountLookupPurpose,
   AssignmentSource,
+  AudienceKind,
   AuthorizationDomain,
   ConfigurationStatus,
+  DefaultPolicyKind,
+  DirectoryDefaultScope,
   EntitlementSource,
+  ExportTaskStatus,
   FieldVisibility,
   GrantStatus,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
   MemberStatus,
+  PolicyEffect,
+  PolicyScenario,
+  RoleDeltaOperation,
   RoleKind,
   ScopeBindingKind,
   ScopeKind,
   SubjectType,
+  UpgradeResolutionChoice,
 } from "./constants";
 
 export interface AuthorizationContext {
@@ -385,6 +393,24 @@ export interface DepartmentRecord {
   navigationOnly: boolean;
 }
 
+export interface DepartmentDraft {
+  parentId?: string;
+  name: string;
+  sortOrder: number;
+}
+
+export interface DepartmentUpdateInput extends VersionInput {
+  department: DepartmentDraft;
+}
+
+export interface ExportTask {
+  id: string;
+  status: ExportTaskStatus;
+  version: string;
+  expiresAt: string;
+  failureCode?: string;
+}
+
 export interface DepartmentSelection {
   id: string;
   includeDescendants?: boolean;
@@ -434,6 +460,81 @@ export interface ActionGrant {
   scopes: ScopeExpression[];
 }
 
+export interface RoleParameterDefinition {
+  key: string;
+  kind: ScopeBindingKind;
+}
+
+export interface RoleMetadataOverrides {
+  name?: string;
+  description?: string;
+  groupName?: string;
+}
+
+export interface RoleDelta {
+  actionId: string;
+  operation: RoleDeltaOperation;
+  scopes?: ScopeExpression[];
+}
+
+export interface RoleDefinitionDraft {
+  grants: ActionGrant[];
+  deltas: RoleDelta[];
+  parameterDefinitions: RoleParameterDefinition[];
+  metadataOverrides?: RoleMetadataOverrides;
+}
+
+export type RoleCreateKind = RoleKind.SHARED | RoleKind.PLATFORM_CUSTOM | RoleKind.TENANT_CUSTOM;
+
+export interface RoleCreateInput {
+  code: string;
+  name: string;
+  description?: string;
+  groupName?: string;
+  kind: RoleCreateKind;
+  baseRevisionId?: string;
+  definition: RoleDefinitionDraft;
+}
+
+export interface RolePublishInput extends VersionInput {
+  definition: RoleDefinitionDraft;
+}
+
+export type RolePreviewInput = RoleDefinitionDraft;
+
+export interface UpgradeConflict {
+  key: string;
+  actionId?: string;
+  reasonCode: string;
+  message: string;
+}
+
+export interface UpgradeResolution {
+  key: string;
+  choice: UpgradeResolutionChoice;
+  scopes?: ScopeExpression[];
+}
+
+export interface UpgradeInput extends VersionInput {
+  newBaseRevisionId: string;
+  resolutions: UpgradeResolution[];
+  assignmentIds: string[];
+}
+
+export interface UpgradePreview {
+  version: string;
+  oldBaseRevisionId: string;
+  newBaseRevisionId: string;
+  conflicts: UpgradeConflict[];
+  affectedAssignments: string[];
+  changes: unknown[];
+  impactSummary?: {
+    restricted: boolean;
+    affectedMembers?: number;
+    affectedAssignments?: number;
+  };
+}
+
 export interface RoleSummary {
   id: string;
   code: string;
@@ -444,9 +545,26 @@ export interface RoleSummary {
   status: ConfigurationStatus;
 }
 
-export interface RoleRevisionRef {
-  kind: string;
+export interface RoleRevision {
   id: string;
+  roleId: string;
+  revision: string;
+  kind: RoleKind;
+  baseRevisionId?: string;
+  grants: ActionGrant[];
+  deltas: RoleDelta[];
+  parameterDefinitions: RoleParameterDefinition[];
+  metadataOverrides?: RoleMetadataOverrides;
+}
+
+export interface RoleRevisionRef {
+  kind: RoleKind;
+  id: string;
+}
+
+export interface UpgradePreviewInput {
+  newBaseRevisionId: string;
+  resolutions?: UpgradeResolution[];
 }
 
 export interface PreviewIssue {
@@ -455,16 +573,24 @@ export interface PreviewIssue {
   message: string;
 }
 
+export interface ImpactSummary {
+  restricted: boolean;
+  affectedMembers?: number;
+  affectedAssignments?: number;
+  affectedDelegations?: number;
+}
+
+export interface ReferenceImpactPreview {
+  affectedAssignmentIds: string[];
+  impactSummary: ImpactSummary;
+}
+
 export interface Preview<T = unknown> {
   version: string;
   valid: boolean;
   errors: PreviewIssue[];
   warnings: PreviewIssue[];
-  impactSummary?: {
-    restricted: boolean;
-    affectedMembers?: number;
-    affectedAssignments?: number;
-  };
+  impactSummary?: ImpactSummary;
   effectiveResult?: T;
 }
 
@@ -521,6 +647,105 @@ export interface EntitlementReplaceInput extends VersionInput {
   entitlements: EntitlementDraft[];
 }
 
+export interface AudienceDraft {
+  kind: AudienceKind;
+  selection?: Selection;
+  groupIds: string[];
+}
+
+export interface AudienceUpdateInput extends VersionInput {
+  audience: AudienceDraft;
+}
+
+export interface ActionRecord {
+  id: string;
+  applicationId: string;
+  resourceId: string;
+  code: string;
+  name: string;
+  status: ConfigurationStatus;
+}
+
+export interface DirectoryDefault {
+  scope: DirectoryDefaultScope;
+  selection?: Selection;
+}
+
+export interface DirectoryRule {
+  effect: PolicyEffect;
+  viewerSelection: Selection;
+  targetSelection: Selection;
+}
+
+export interface DirectoryPolicyDraft {
+  defaultRevisionId: string;
+  defaultOverride?: DirectoryDefault;
+  rules: DirectoryRule[];
+}
+
+export interface DirectoryPolicyInput extends VersionInput {
+  policy: DirectoryPolicyDraft;
+}
+
+export interface FieldRule {
+  scenario: PolicyScenario;
+  fieldKey: string;
+  viewerSelection: Selection;
+  targetScope: ScopeExpression[];
+  scopeBindings: Record<string, ScopeBinding>;
+  visibility: FieldVisibility;
+  editable: boolean;
+}
+
+export interface FieldPolicyDraft {
+  defaultRevisionId: string;
+  rules: FieldRule[];
+}
+
+export interface FieldPolicyInput extends VersionInput {
+  policy: FieldPolicyDraft;
+}
+
+export interface PolicyDraft {
+  kind: DefaultPolicyKind;
+  directory?: DirectoryPolicyDraft;
+  field?: FieldPolicyDraft;
+}
+
+export interface PolicyPreviewInput {
+  policyDraft: PolicyDraft;
+  viewerMemberId: string;
+  target?: string;
+}
+
+export interface PolicyPreviewResult {
+  kind: DefaultPolicyKind;
+  members: Array<ResourceDetail<MemberRecord>>;
+  departments: DepartmentRecord[];
+  restricted: boolean;
+}
+
+export interface AccountSelfProfile {
+  accountId: string;
+  username: string;
+  phone?: string;
+  email?: string;
+  mustChangePassword: boolean;
+  member: CurrentProfile;
+  version: string;
+}
+
+export interface AccountSelfProfileInput extends VersionInput {
+  phone?: string;
+  email?: string;
+}
+
+export interface CurrentPasswordInput {
+  oldPassword?: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface EntitlementPreviewResult {
   entitlements: EntitlementDraft[];
   impactSummary?: Preview["impactSummary"];
@@ -533,6 +758,25 @@ export interface AssignmentInput {
   validFrom?: string;
   validUntil?: string;
   delegationGrantId?: string;
+}
+
+export interface AssignmentBatchInput {
+  items: AssignmentInput[];
+}
+
+export interface AssignmentUpdateInput extends VersionInput {
+  assignment: AssignmentInput;
+}
+
+export interface AssignmentPreviewItem {
+  subject: SubjectRef;
+  allowed: boolean;
+  errors: PreviewIssue[];
+  grants: ActionGrant[];
+}
+
+export interface AssignmentPreviewResult {
+  items: AssignmentPreviewItem[];
 }
 
 export interface AssignmentRecord {
@@ -556,6 +800,10 @@ export interface DelegationInput {
   validFrom?: string;
   validUntil?: string;
   maxAssignmentDuration: string;
+}
+
+export interface DelegationUpdateInput extends VersionInput {
+  delegation: DelegationInput;
 }
 
 export interface DelegationRecord {

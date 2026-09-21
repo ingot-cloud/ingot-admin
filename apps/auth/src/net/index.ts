@@ -59,6 +59,10 @@ class Http {
     return this.origin;
   }
 
+  getClient(): HttpClient {
+    return this.client;
+  }
+
   rawRequest<T = unknown>(config: HttpRequestConfig): Promise<R<T>> {
     return this.client.rawRequest(config);
   }

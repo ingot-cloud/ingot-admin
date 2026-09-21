@@ -10,6 +10,7 @@ export const OFFICIAL_PLUGINS = [
   { dir: "plugins/security", packageName: "@ingot/security-plugin" },
   { dir: "plugins/org", packageName: "@ingot/org-plugin" },
   { dir: "plugins/member", packageName: "@ingot/member-plugin" },
+  { dir: "plugins/auth", packageName: "@ingot/auth-plugin" },
 ];
 
 export const OFFICIAL_PLUGIN_PACKAGES = OFFICIAL_PLUGINS.map((plugin) => plugin.packageName);

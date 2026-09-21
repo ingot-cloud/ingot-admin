@@ -22,7 +22,7 @@
 1. [需求](./REQUIREMENTS.md)、[设计](./DESIGN.md)。
 2. [BFF 登录权威副本](./BFF-LOGIN.md)、[IAM 接口](./API.md)、[逐页交互](./INTERACTIONS.md)。
 3. [实现核对](./IMPLEMENTATION-STATUS.md)、[逐操作对接矩阵](./IAM-INTEGRATION.md)、[任务](./TASKS.md)、[验收](./ACCEPTANCE.md)。
-4. [来源和剩余边界](./SOURCES.md)、[测试数据副本](./sources/BACKEND_TEST_DATA.md)、[契约快照](./sources/contracts/README.md)。
+4. [来源和剩余边界](./SOURCES.md)、[测试数据副本](./sources/BACKEND_TEST_DATA.md)、[联调操作手册](./sources/BACKEND_VERIFICATION_GUIDE.md)、[契约快照](./sources/contracts/README.md)。
 
 ## 完成门禁
 
@@ -41,5 +41,6 @@
 - [交互标准](./INTERACTIONS.md)第5节：参考原通讯录的action、按钮、搜索及详情抽屉，统一现有页面和后续新增内容。
 - [验收](./ACCEPTANCE.md)：前端补充项为 P24–P26，避免与后端 A24–A26 混淆。
 - [测试数据契约](./sources/BACKEND_TEST_DATA.md)：后端测试数据 D01–D05（≠ DESIGN D01）与 TD01–TD18 场景卡；前端后续按同一runId进行多身份真实验收。
+- [联调操作手册](./sources/BACKEND_VERIFICATION_GUIDE.md)：功能测试导读、建库/导入逐步操作、四站登录与按页点击步骤。执行证据不自动勾选 P24–P26。
 
 本轮只更新Spec，不改业务代码、接口契约或数据库，不声明测试通过；用户已确认本次补充方案。原change继续implementing，后续按已列任务推进，实际偏离接口或权限设计时另行对齐。

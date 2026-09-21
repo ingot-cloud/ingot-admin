@@ -26,6 +26,7 @@
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
+          <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TABLE_ID"
@@ -61,12 +62,20 @@ import {
   applyColumnSelection,
   Confirm,
   Message,
+  resolveStringPickerFilter,
+  toStringPickerValue,
   useCapabilities,
+  withAllPickerOption,
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { AuthorizationDomain, BizIamStatusTag, ConfigurationStatus } from "@ingot/admin-common";
-import { PlatformApplicationDeleteAPI } from "@/api/iam/catalog";
+import {
+  AuthorizationDomain,
+  BizIamStatusTag,
+  ConfigurationStatus,
+  useConfigurationStatusEnum,
+} from "@ingot/admin-common";
+import { PlatformApplicationDeleteAPI, PlatformApplicationStatusAPI } from "@/api/iam/catalog";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import {
@@ -83,6 +92,15 @@ const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
+const statusEnum = useConfigurationStatusEnum();
+const statusOptions = computed(() => withAllPickerOption(statusEnum.getOptions()));
+const statusFilter = computed({
+  get: () => toStringPickerValue(paging.condition.status),
+  set: (value: string | number | boolean | null) => {
+    paging.condition.status = resolveStringPickerFilter(value);
+    refreshData();
+  },
+});
 const toolbarRow = {
   record: {
     id: "",
@@ -106,6 +124,30 @@ const handleDetail = (item: Row): void => {
 const handleCreate = (): void => {
   createRef.value?.show();
 };
+const handleEnable = (item: Row): void => {
+  Confirm.warning(`启用不等于业务授权。是否启用应用（${item.record.name}）？`).then(() => {
+    PlatformApplicationStatusAPI(item.record.id, {
+      expectedVersion: item.version,
+      status: ConfigurationStatus.ENABLED,
+    }).then(() => {
+      Message.success("已启用");
+      refreshData();
+    });
+  });
+};
+const handleDisable = (item: Row): void => {
+  Confirm.warning(
+    `停用后有效访问失败，已开通记录不会自动删除。是否停用（${item.record.name}）？`,
+  ).then(() => {
+    PlatformApplicationStatusAPI(item.record.id, {
+      expectedVersion: item.version,
+      status: ConfigurationStatus.DISABLED,
+    }).then(() => {
+      Message.success("已停用");
+      refreshData();
+    });
+  });
+};
 const handleDelete = (item: Row): void => {
   Confirm.error(`是否删除应用（${item.record.name}）？`, { confirmButtonText: "删除" }).then(() => {
     PlatformApplicationDeleteAPI(item.record.id).then(() => {
@@ -116,7 +158,12 @@ const handleDelete = (item: Row): void => {
 };
 const toolbarActions = computed(() => createToolbarActions(handleCreate));
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
-  createRowActions(item, { onDetail: handleDetail, onDelete: handleDelete });
+  createRowActions(item, {
+    onDetail: handleDetail,
+    onEnable: handleEnable,
+    onDisable: handleDisable,
+    onDelete: handleDelete,
+  });
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };

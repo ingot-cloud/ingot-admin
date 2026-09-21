@@ -11,6 +11,7 @@ export type Row = ResourceDetail<GroupRecord>;
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
+  { label: "有效人数", prop: "visibleMemberCount" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 
@@ -30,9 +31,10 @@ export function createToolbarActions(onCreate: () => void): Array<InTableAction<
 
 export function createRowActions(
   row: Row,
-  handlers: { onDetail: (row: Row) => void },
+  handlers: { onDetail: (row: Row) => void; onDelete: (row: Row) => void },
 ): Array<InTableAction<Row>> {
   const detail = objectActionAllowed(row.capabilities, IamAction.TENANT_GROUP_READ);
+  const remove = objectActionAllowed(row.capabilities, IamAction.TENANT_GROUP_DELETE);
   return [
     {
       key: "detail",
@@ -42,6 +44,15 @@ export function createRowActions(
       disabled: !detail.allowed,
       disabledReason: detail.message,
       onSelect: handlers.onDetail,
+    },
+    {
+      key: "delete",
+      label: "删除",
+      kind: "danger",
+      permission: IamAction.TENANT_GROUP_DELETE,
+      disabled: !remove.allowed,
+      disabledReason: remove.message,
+      onSelect: handlers.onDelete,
     },
   ];
 }

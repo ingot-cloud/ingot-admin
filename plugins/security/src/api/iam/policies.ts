@@ -5,8 +5,14 @@ import {
   mapIamPage,
   toIamListParams,
   type AuditEntry,
+  type DirectoryPolicyDraft,
+  type DirectoryPolicyInput,
+  type FieldPolicyDraft,
+  type FieldPolicyInput,
   type IamListQuery,
   type IamPageResponse,
+  type PolicyPreviewInput,
+  type PolicyPreviewResult,
   type Preview,
   type ResourceDetail,
 } from "@ingot/admin-common";
@@ -16,19 +22,60 @@ const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
   data: mapIamPage(res.data),
 });
 
-export function SecurityDirectoryPolicyAPI(options?: RequestOptions): Promise<R<unknown>> {
-  return request.get(`${IAM_API_PREFIX}/v1/tenant/policies/directory`, undefined, options);
+export function SecurityDirectoryPolicyAPI(
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<DirectoryPolicyDraft>>> {
+  return request.get<ResourceDetail<DirectoryPolicyDraft>>(
+    `${IAM_API_PREFIX}/v1/tenant/policies/directory`,
+    undefined,
+    options,
+  );
 }
 
-export function SecurityFieldPolicyAPI(options?: RequestOptions): Promise<R<unknown>> {
-  return request.get(`${IAM_API_PREFIX}/v1/tenant/policies/fields`, undefined, options);
+export function SecurityDirectoryPolicyUpdateAPI(
+  params: DirectoryPolicyInput,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<DirectoryPolicyDraft>>> {
+  filterParams(params);
+  return request.put<ResourceDetail<DirectoryPolicyDraft>>(
+    `${IAM_API_PREFIX}/v1/tenant/policies/directory`,
+    params,
+    options,
+  );
+}
+
+export function SecurityFieldPolicyAPI(
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<FieldPolicyDraft>>> {
+  return request.get<ResourceDetail<FieldPolicyDraft>>(
+    `${IAM_API_PREFIX}/v1/tenant/policies/fields`,
+    undefined,
+    options,
+  );
+}
+
+export function SecurityFieldPolicyUpdateAPI(
+  params: FieldPolicyInput,
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<FieldPolicyDraft>>> {
+  filterParams(params);
+  return request.put<ResourceDetail<FieldPolicyDraft>>(
+    `${IAM_API_PREFIX}/v1/tenant/policies/fields`,
+    params,
+    options,
+  );
 }
 
 export function SecurityPolicyPreviewAPI(
-  params: unknown,
+  params: PolicyPreviewInput,
   options?: RequestOptions,
-): Promise<R<Preview>> {
-  return request.post<Preview>(`${IAM_API_PREFIX}/v1/tenant/policies/preview`, params, options);
+): Promise<R<Preview<PolicyPreviewResult>>> {
+  filterParams(params);
+  return request.post<Preview<PolicyPreviewResult>>(
+    `${IAM_API_PREFIX}/v1/tenant/policies/preview`,
+    params,
+    options,
+  );
 }
 
 export function SecurityAuditPageAPI(

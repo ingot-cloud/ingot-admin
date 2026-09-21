@@ -119,4 +119,29 @@
 
 执行顺序以IMPLEMENTATION-STATUS第3节为准。U12依赖各业务任务及后端测试环境；U13贯穿开发。若后端缺少某项所需能力，记录具体接口与后端依赖，不以客户端自算权限、Mock或空处理函数交付。内部RPC不新增页面。
 
-T14/N10归档仍以全部研发/验证完成、current更新为前提。测试数据方案见 [后端权威副本](./sources/BACKEND_TEST_DATA.md)，禁止把数据准备完成当作A系列通过。
+T14/N10归档仍以全部研发/验证完成、current更新为前提。测试数据方案见 [后端权威副本](./sources/BACKEND_TEST_DATA.md)，操作步骤见 [联调手册](./sources/BACKEND_VERIFICATION_GUIDE.md)，禁止把数据准备完成当作A系列通过。
+
+开发子项（不代替 U01/U02 退出条件与验收）：
+
+- [x] U01.dev.plugin：已新增 `plugins/auth`（`@ingot/auth-plugin`），双登录 App 改为注入 AuthSession 并共用 `createAuthRoutes`；四产物 CI/真实登录/CSRF 闭环未做。
+- [x] U01.dev.auth-styles：`plugin.ts` 静态拉取登录布局 token 与 ElInput/ElButton/ElImage 的 theme-chalk；页面侧为 CSS 变量补了 fallback，窄屏隐藏 banner。父任务 U01 不勾选。
+- [x] U01.dev.entry：`plugins/auth` 已补 `src/plugin.ts` 宿主编译入口，exports 与官方源码插件一致；登录 App 显式声明 `officialPlugins`。真实登录与四产物 CI 仍属 U01。
+- [x] U02.dev.editors：admin-common 已补范围/主体/期限/差异/升级冲突组件、`createIamOptionLoader`、`useIamDraftPreview`；平台/组织 RoleCreate/Preview API 改为 `RoleCreateInput` / `RolePreviewInput`。
+- [x] U05.dev.role-drawers：`BizIamRoleCreateDrawer` / `BizIamRoleDetailDrawer` 已接到平台授权、共享角色、组织授权（含基于共享定制）；Get/Status/Delete/Revisions/Publish API 已封装。三方升级冲突与分配写操作未做，父任务 U05 不勾选。
+- [x] U03.dev.group-paging：平台组编辑改为远程分页添加成员，草稿变化清除预览。
+- [x] U03.dev.tenant-select：租户创建向导用套餐远程分页替代手填 ID；开通追加应用改为远程分页，草稿变化清除预览。父任务 U03 不勾选。
+- [x] U08.dev.group-drawers：组织用户组已接创建/详情/更新/删除/预览，成员与部门来源走远程分页。父任务 U08 不勾选。
+- [x] U08.dev.group-impact：组抽屉展示有权范围内有效人数及预览中的可披露引用；无法披露时不以 0 代替。父任务 U08 不勾选。
+- [x] U04.dev.app-status：应用列表已接启停（I033）与状态筛选；资源字段能力含可见性/可编辑/筛选/排序，范围用中文解释；套餐/开通选择改为远程分页。菜单 ANY/ALL/OPEN 说明已补。父任务 U04 不勾选。
+- [x] U05.dev.upgrade-conflicts：组织角色详情已接 `upgrade-preview`/`upgrade`；冲突须逐项处置（替换范围必填 scopes），默认不勾选既有授权，409 保留草稿并重新预览。平台/共享角色无租户升级路径。父任务 U05 不勾选。
+- [x] U06.dev.assignment-write：两域授权记录已接批量创建/预览/修改/撤销；接收对象与角色版本远程分页，提交前预览且整批失败不保存。父任务 U06 不勾选。
+- [x] U06.dev.delegation-write：两域委派已接创建/详情/调整/撤销/收缩预览；角色版本须显式加入白名单。父任务 U06 不勾选。
+- [x] U06.dev.diagnose：两域授权页已接通诊断抽屉（成员/账号二选一，不提供模拟执行）；授权行可预填成员。成员详情页入口仍属 U07。父任务 U06 不勾选。
+- [x] U05.dev.restore-deltas：组织/平台角色详情发布页已提供「恢复平台设置」，清空 deltas 并清除预览。完整功能树向导仍待补。父任务 U05 不勾选。
+- [x] U07.dev.member-write：组织成员页已接创建/详情/状态/移出/任职部门，字段走 editablePatch；部门树已接新增/编辑(含移动上级)/删除空部门。父任务 U07 不勾选。
+- [x] U07.dev.export：成员导出已接创建 → 状态轮询 → 成功下载；FAILED 展示 failureCode，EXPIRED/进行中不下载。父任务 U07 不勾选。
+- [x] U08.dev.owner-transfer：组织设置所有者改为有效成员远程分页选择，确认后提交、防重复、409 保留选择，成功后刷新权限。父任务 U08 不勾选。
+- [x] U09.dev.audience：开通应用详情已接人群读写（ALL 不携带 selection 且 groupIds=[]）及操作候选；租户侧不提供应用创建。父任务 U09 不勾选。
+- [x] U09.dev.directory-workbench：通讯录已接 DIRECTORY 部门树与只读详情，无创建入口；工作台改为服务端可见菜单入口。父任务 U09 不勾选。
+- [x] U10.dev.policy-editors：成员权限页已用类型化通讯录/字段草稿、预览与 PUT 保存替换 JSON；审计列表可打开详情（列表行 before/after），无导出按钮。父任务 U10 不勾选。
+- [x] U12.dev.guide：已同步后端联调手册副本 `sources/BACKEND_VERIFICATION_GUIDE.md`；真实多身份 E2E 仍属 U12/P26，不勾选父任务。

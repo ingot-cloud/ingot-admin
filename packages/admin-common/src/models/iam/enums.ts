@@ -1,15 +1,26 @@
 import { newEnumExt, useEnum } from "@ingot/admin-core";
 import {
   AccountLookupPurpose,
+  AudienceKind,
   ConfigurationStatus,
+  DefaultPolicyKind,
+  DirectoryDefaultScope,
+  ExportTaskStatus,
   FieldVisibility,
   MemberStatus,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
+  PolicyEffect,
+  PolicyScenario,
   RoleKind,
   AuthorizationDomain,
   SelectionPurpose,
+  ScopeKind,
+  RoleDeltaOperation,
+  SubjectType,
+  ScopeBindingKind,
+  UpgradeResolutionChoice,
 } from "./constants";
 
 export const ConfigurationStatusExtArray = [
@@ -66,6 +77,46 @@ export const SelectionPurposeExtArray = [
 
 export const useSelectionPurposeEnum = () => useEnum(SelectionPurposeExtArray);
 
+export const ScopeKindExtArray = [
+  newEnumExt(ScopeKind.ALL, "全部"),
+  newEnumExt(ScopeKind.SELF, "本人"),
+  newEnumExt(ScopeKind.MEMBER_DEPARTMENTS, "所在部门"),
+  newEnumExt(ScopeKind.MANAGED_DEPARTMENTS, "管理部门"),
+  newEnumExt(ScopeKind.OBJECT_SET, "指定对象"),
+];
+
+export const useScopeKindEnum = () => useEnum(ScopeKindExtArray);
+
+export const RoleDeltaOperationExtArray = [
+  newEnumExt(RoleDeltaOperation.ADD, "新增", "success"),
+  newEnumExt(RoleDeltaOperation.REMOVE, "移除", "danger"),
+  newEnumExt(RoleDeltaOperation.REPLACE_SCOPE, "替换范围", "warning"),
+];
+
+export const useRoleDeltaOperationEnum = () => useEnum(RoleDeltaOperationExtArray);
+
+export const SubjectTypeExtArray = [
+  newEnumExt(SubjectType.MEMBER, "成员"),
+  newEnumExt(SubjectType.GROUP, "用户组"),
+];
+
+export const useSubjectTypeEnum = () => useEnum(SubjectTypeExtArray);
+
+export const ScopeBindingKindExtArray = [
+  newEnumExt(ScopeBindingKind.DEPARTMENTS, "部门集合"),
+  newEnumExt(ScopeBindingKind.OBJECTS, "对象集合"),
+];
+
+export const useScopeBindingKindEnum = () => useEnum(ScopeBindingKindExtArray);
+
+export const UpgradeResolutionChoiceExtArray = [
+  newEnumExt(UpgradeResolutionChoice.ACCEPT_BASE, "采用新基础"),
+  newEnumExt(UpgradeResolutionChoice.KEEP_DELTA, "保留差异"),
+  newEnumExt(UpgradeResolutionChoice.REPLACE_SCOPE, "替换范围"),
+];
+
+export const useUpgradeResolutionChoiceEnum = () => useEnum(UpgradeResolutionChoiceExtArray);
+
 export const MenuKindExtArray = [
   newEnumExt(MenuKind.DIRECTORY, "目录"),
   newEnumExt(MenuKind.PAGE, "页面"),
@@ -86,3 +137,49 @@ export const MenuMatchModeExtArray = [
 ];
 
 export const useMenuMatchModeEnum = () => useEnum(MenuMatchModeExtArray);
+
+export const AudienceKindExtArray = [
+  newEnumExt(AudienceKind.ALL, "全组织"),
+  newEnumExt(AudienceKind.SELECTED, "指定人群"),
+];
+
+export const useAudienceKindEnum = () => useEnum(AudienceKindExtArray);
+
+export const PolicyEffectExtArray = [
+  newEnumExt(PolicyEffect.ALLOW, "允许", "success"),
+  newEnumExt(PolicyEffect.DENY, "禁止", "danger"),
+];
+
+export const usePolicyEffectEnum = () => useEnum(PolicyEffectExtArray);
+
+export const DirectoryDefaultScopeExtArray = [
+  newEnumExt(DirectoryDefaultScope.ALL, "全部"),
+  newEnumExt(DirectoryDefaultScope.SELF, "本人"),
+  newEnumExt(DirectoryDefaultScope.SELECTED, "指定范围"),
+];
+
+export const useDirectoryDefaultScopeEnum = () => useEnum(DirectoryDefaultScopeExtArray);
+
+export const PolicyScenarioExtArray = [
+  newEnumExt(PolicyScenario.MANAGEMENT, "后台管理"),
+  newEnumExt(PolicyScenario.DIRECTORY, "普通通讯录"),
+];
+
+export const usePolicyScenarioEnum = () => useEnum(PolicyScenarioExtArray);
+
+export const DefaultPolicyKindExtArray = [
+  newEnumExt(DefaultPolicyKind.DIRECTORY, "通讯录"),
+  newEnumExt(DefaultPolicyKind.FIELD, "字段"),
+];
+
+export const useDefaultPolicyKindEnum = () => useEnum(DefaultPolicyKindExtArray);
+
+export const ExportTaskStatusExtArray = [
+  newEnumExt(ExportTaskStatus.PENDING, "排队中", "info"),
+  newEnumExt(ExportTaskStatus.RUNNING, "导出中", "warning"),
+  newEnumExt(ExportTaskStatus.SUCCEEDED, "已完成", "success"),
+  newEnumExt(ExportTaskStatus.FAILED, "失败", "danger"),
+  newEnumExt(ExportTaskStatus.EXPIRED, "已过期", "info"),
+];
+
+export const useExportTaskStatusEnum = () => useEnum(ExportTaskStatusExtArray);

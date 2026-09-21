@@ -11,11 +11,22 @@
         <el-form-item>
           <in-button type="primary" :loading="saving" @click="privateSave">保存设置</in-button>
         </el-form-item>
-        <el-form-item label="新所有者成员 ID">
-          <el-input v-model="newOwnerMemberId" placeholder="当前组织内有效成员" />
+        <el-form-item label="新所有者">
+          <in-page-select
+            v-model="newOwnerMemberId"
+            filterable
+            remote
+            clearable
+            value-field="id"
+            label-field="name"
+            placeholder="选择当前组织内有效成员"
+            :load-data="loadMembers"
+          />
         </el-form-item>
         <el-form-item>
-          <in-button @click="privateTransfer">转交所有者</in-button>
+          <in-button type="danger" :loading="transferring" :disabled="transferring" @click="privateTransfer">
+            转交所有者
+          </in-button>
         </el-form-item>
       </el-form>
     </in-split-layout>
@@ -23,13 +34,29 @@
 </template>
 
 <script lang="ts" setup>
-import { Message } from "@ingot/admin-core";
-import { TenantOwnerTransferAPI, TenantSettingsAPI, TenantSettingsUpdateAPI } from "@/api/iam/directory";
+import {
+  Confirm,
+  Message,
+  refreshSessionPermissions,
+} from "@ingot/admin-core";
+import { createIamListLoader, toIamSelectRecords } from "@ingot/admin-common";
+import {
+  TenantMemberPageAPI,
+  TenantOwnerTransferAPI,
+  TenantSettingsAPI,
+  TenantSettingsUpdateAPI,
+} from "@/api/iam/directory";
 
 const detail = ref<{ version: string; record: { name: string } }>();
 const draft = reactive({ name: "" });
 const newOwnerMemberId = ref("");
 const saving = ref(false);
+const transferring = ref(false);
+
+const loadMembers = createIamListLoader(async (page, condition) => {
+  const response = await TenantMemberPageAPI(page, condition);
+  return { data: toIamSelectRecords(response.data) };
+});
 
 const load = (): void => {
   TenantSettingsAPI().then((response) => {
@@ -61,15 +88,27 @@ const privateSave = (): void => {
 
 const privateTransfer = (): void => {
   if (!detail.value || !newOwnerMemberId.value) {
-    Message.warning("请输入新所有者");
+    Message.warning("请选择新所有者");
     return;
   }
-  TenantOwnerTransferAPI({
-    expectedVersion: detail.value.version,
-    newOwnerMemberId: newOwnerMemberId.value,
-  }).then(() => {
-    Message.success("已提交转交");
-    load();
+  if (transferring.value) {
+    return;
+  }
+  Confirm.warning("转交后当前所有者将失去组织所有权。是否继续？", { confirmButtonText: "转交" }).then(() => {
+    transferring.value = true;
+    TenantOwnerTransferAPI({
+      expectedVersion: detail.value?.version ?? "",
+      newOwnerMemberId: newOwnerMemberId.value,
+    })
+      .then(() => {
+        Message.success("已转交所有者");
+        newOwnerMemberId.value = "";
+        load();
+        void refreshSessionPermissions({ refreshMenusIfVersionChanged: true });
+      })
+      .finally(() => {
+        transferring.value = false;
+      });
   });
 };
 

@@ -21,17 +21,17 @@
           <span v-else>{{ detail.record.description || "—" }}</span>
         </el-form-item>
         <el-form-item label="包含应用">
-          <el-select v-if="session.editing.value" v-model="draft.applicationIds" multiple filterable>
-            <el-option
-              v-for="item in applications"
-              :key="item.record.id"
-              :label="item.record.name"
-              :value="item.record.id"
-            />
-          </el-select>
+          <biz-iam-chip-page-select
+            v-if="session.editing.value"
+            v-model="draft.applicationIds"
+            empty-text="未绑定应用"
+            placeholder="远程分页添加应用"
+            :load-data="loadApplications"
+            :initial-labels="applicationLabels"
+          />
           <div v-else class="flex flex-col gap-4px">
             <div v-for="id in detail.record.applicationIds" :key="id">
-              {{ nameOf(id) }}
+              {{ applicationLabels[id] ?? id }}
             </div>
             <div v-if="!detail.record.applicationIds.length">未绑定应用</div>
           </div>
@@ -47,12 +47,15 @@
 <script setup lang="ts">
 import { Message, useDetailEditSession } from "@ingot/admin-core";
 import {
+  BizIamChipPageSelect,
   BizIamStatusTag,
-  type ApplicationRecord,
+  createIamListLoader,
+  toIamSelectRecords,
   type PlanRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
+  PlatformApplicationDetailAPI,
   PlatformApplicationPageAPI,
   PlatformPlanDetailAPI,
   PlatformPlanUpdateAPI,
@@ -70,15 +73,21 @@ const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
 const detail = ref<ResourceDetail<PlanRecord>>();
-const applications = ref<Array<ResourceDetail<ApplicationRecord>>>([]);
+const applicationLabels = reactive<Record<string, string>>({});
 const draft = reactive({
   name: "",
   description: "",
   applicationIds: [] as string[],
 });
 
-const nameOf = (id: string): string =>
-  applications.value.find((item) => item.record.id === id)?.record.name ?? id;
+const loadApplications = createIamListLoader(async (page, condition) => {
+  const response = await PlatformApplicationPageAPI(page, condition);
+  const mapped = toIamSelectRecords(response.data);
+  for (const item of mapped.records ?? []) {
+    applicationLabels[item.id] = item.name;
+  }
+  return { data: mapped };
+});
 
 const applyDraft = (record: PlanRecord): void => {
   draft.name = record.name;
@@ -86,16 +95,24 @@ const applyDraft = (record: PlanRecord): void => {
   draft.applicationIds = [...record.applicationIds];
 };
 
+const resolveSelectedLabels = (ids: string[]): Promise<void> =>
+  Promise.all(
+    ids.map((id) =>
+      applicationLabels[id]
+        ? Promise.resolve()
+        : PlatformApplicationDetailAPI(id).then((response) => {
+            applicationLabels[id] = response.data.record.name;
+          }),
+    ),
+  ).then(() => undefined);
+
 const load = (id: string): void => {
   loading.value = true;
-  Promise.all([
-    PlatformPlanDetailAPI(id),
-    PlatformApplicationPageAPI({ current: 1, size: 200 }),
-  ])
-    .then(([detailRes, appRes]) => {
+  PlatformPlanDetailAPI(id)
+    .then((detailRes) => {
       detail.value = detailRes.data;
-      applications.value = appRes.data.records ?? [];
       applyDraft(detailRes.data.record);
+      return resolveSelectedLabels(detailRes.data.record.applicationIds);
     })
     .finally(() => {
       loading.value = false;

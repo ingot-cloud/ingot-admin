@@ -26,8 +26,20 @@
       <el-form-item v-if="step === 1" label="所有者显示名">
         <el-input v-model="draft.ownerDisplayName" clearable placeholder="可空，由服务生成" />
       </el-form-item>
-      <el-form-item v-if="step === 2" label="套餐 ID">
-        <el-input v-model="draft.planId" clearable placeholder="可空，开通基础应用" />
+      <el-form-item v-if="step === 2" label="开通套餐">
+        <in-page-select
+          v-model="planPick"
+          filterable
+          remote
+          clearable
+          value-field="id"
+          label-field="name"
+          placeholder="不选则开通基础应用"
+          :load-data="loadPlans"
+        />
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          不选套餐时开通租户域基础应用；指定套餐后改为该套餐内启用的租户应用。开通不等于业务授权。
+        </div>
       </el-form-item>
     </el-form>
 
@@ -56,8 +68,9 @@
 
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
-import { BizIamPreviewAlert, AccountLookupPurpose, type Preview, type TenantCreateInput, type TenantPreviewResult } from "@ingot/admin-common";
+import { BizIamPreviewAlert, AccountLookupPurpose, createIamListLoader, toIamSelectRecords, type Preview, type TenantCreateInput, type TenantPreviewResult } from "@ingot/admin-common";
 import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
+import { PlatformPlanPageAPI } from "@/api/iam/catalog";
 import { PlatformTenantCreateAPI, PlatformTenantPreviewAPI } from "@/api/iam/tenants";
 import { platformTenantQueryKeys } from "@/api/iam/tenants.query";
 import { useQueryClient } from "@tanstack/vue-query";
@@ -78,6 +91,22 @@ const draft = reactive<TenantCreateInput>({
   rootDepartmentName: "",
   planId: "",
 });
+
+const loadPlans = createIamListLoader(async (page, condition) => {
+  const response = await PlatformPlanPageAPI(page, condition);
+  return { data: toIamSelectRecords(response.data) };
+});
+
+const planPick = computed({
+  get: () => draft.planId ?? "",
+  set: (value: string) => {
+    draft.planId = value || undefined;
+  },
+});
+
+watch(draft, () => {
+  preview.value = null;
+}, { deep: true });
 
 const reset = (): void => {
   step.value = 0;

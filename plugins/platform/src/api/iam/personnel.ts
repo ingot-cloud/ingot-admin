@@ -15,6 +15,7 @@ import {
   type MemberRecord,
   type MemberStatusInput,
   type Preview,
+  type ReferenceImpactPreview,
   type ResourceDetail,
   type VersionInput,
 } from "@ingot/admin-common";
@@ -138,7 +139,7 @@ export function PlatformGroupPreviewAPI(
   id: string,
   params: GroupUpdateInput,
   options?: RequestOptions,
-): Promise<R<Preview>> {
+): Promise<R<Preview<ReferenceImpactPreview>>> {
   filterParams(params);
-  return request.post<Preview>(`${GROUP_PATH}/${id}/preview`, params, options);
+  return request.post<Preview<ReferenceImpactPreview>>(`${GROUP_PATH}/${id}/preview`, params, options);
 }

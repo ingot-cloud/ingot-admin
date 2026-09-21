@@ -7,7 +7,6 @@ import {
   InAdminHeaderNavItemType,
   InAdminHeaderNavGroupTrigger,
   InAdminHeaderUtilityItemType,
-  InAdminHeaderUserMenuItemType,
   type InAdminHeaderConfig,
 } from "@ingot/admin-core";
 import { ref } from "vue";
@@ -107,15 +106,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   ],
   user: {
     menu: [
-      {
-        type: InAdminHeaderUserMenuItemType.Action,
-        key: "profile",
-        label: "个人资料",
-        icon: "ep:user",
-        onClick: () => {
-          Message.success("打开个人资料（示例）");
-        },
-      },
+      defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.Profile),
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.SwitchOrg),
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.FixPwd),
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.Logout),

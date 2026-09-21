@@ -10,6 +10,7 @@ export const KNOWN_OFFICIAL_PLUGINS = [
   "@ingot/security-plugin",
   "@ingot/org-plugin",
   "@ingot/member-plugin",
+  "@ingot/auth-plugin",
 ] as const;
 
 export interface InOfficialPluginOption {
@@ -28,6 +29,8 @@ export interface InResolvedOfficialPlugin {
   packageName: string;
   rootDir: string;
   srcDir: string;
+  /** 宿主编译入口：优先 `src/plugin.ts`，否则 `src/index.ts` */
+  entryFile: string;
   sourceAliases: string[];
 }
 
@@ -127,6 +130,22 @@ const normalizeOption = (
 
 const defaultSourceAliases = (): string[] => [];
 
+const isFile = (filePath: string): boolean =>
+  fs.existsSync(filePath) && fs.statSync(filePath).isFile();
+
+const OFFICIAL_PLUGIN_ENTRY_FILES = ["plugin.ts", "index.ts"] as const;
+
+/** 官方源码插件入口：登录站等非 InAdminPlugin 模块也可使用 `src/index.ts`。 */
+export const resolveOfficialPluginEntry = (srcDir: string): string => {
+  for (const name of OFFICIAL_PLUGIN_ENTRY_FILES) {
+    const candidate = path.resolve(srcDir, name);
+    if (isFile(candidate)) {
+      return candidate;
+    }
+  }
+  throw new Error(`官方源码插件缺少入口文件 src/plugin.ts（或 src/index.ts）: ${srcDir}`);
+};
+
 /**
  * 解析当前 App 需要编译的官方源码插件根目录。
  * 未显式传入时：当前包自身若在已知清单中则包含；依赖了已知官方插件则包含。
@@ -155,10 +174,12 @@ export const resolveOfficialPlugins = (
         `无法解析官方源码插件 “${option.packageName}”，请确认已在 package.json 中声明依赖`,
       );
     }
+    const srcDir = path.resolve(packageRoot, option.srcDir ?? "src");
     resolved.push({
       packageName: option.packageName,
       rootDir: packageRoot,
-      srcDir: path.resolve(packageRoot, option.srcDir ?? "src"),
+      srcDir,
+      entryFile: resolveOfficialPluginEntry(srcDir),
       sourceAliases: option.sourceAliases ?? defaultSourceAliases(),
     });
   }
@@ -177,9 +198,6 @@ const resolveImporterPath = (importer: string | undefined, rootDir: string): str
   const stripped = stripImporterQuery(importer);
   return path.isAbsolute(stripped) ? stripped : path.resolve(rootDir, stripped);
 };
-
-const isFile = (filePath: string): boolean =>
-  fs.existsSync(filePath) && fs.statSync(filePath).isFile();
 
 const resolveSourceFile = (base: string): string | undefined => {
   if (path.extname(base) && isFile(base)) {
@@ -230,7 +248,7 @@ const importerBelongsTo = (
 };
 
 /**
- * 官方插件包名到 plugin.ts 的 alias，以及仍声明的 sourceAliases。
+ * 官方插件包名到入口文件的 alias，以及仍声明的 sourceAliases。
  * `@/` 不在这里配置，改由 `createOfficialSourcePlugin` 按 importer 解析。
  * 不要加 customResolver：Vite 8 bundled 模式一旦出现 customResolver 会改走 JS alias，
  * 再被 Rolldown 把绝对路径收成错误的 `../../src`。
@@ -238,10 +256,9 @@ const importerBelongsTo = (
 export const createOfficialPluginAliasEntries = (plugins: InResolvedOfficialPlugin[]): Alias[] => {
   const entries: Alias[] = [];
   for (const plugin of plugins) {
-    const pluginEntry = path.resolve(plugin.srcDir, "plugin.ts");
     entries.push({
       find: plugin.packageName,
-      replacement: pluginEntry,
+      replacement: plugin.entryFile,
     });
     for (const sourceAlias of plugin.sourceAliases) {
       entries.push({
@@ -282,7 +299,7 @@ export const createOfficialSourcePlugin = (
       const absImporter = resolveImporterPath(importer, rootDir);
       for (const plugin of plugins) {
         if (id === plugin.packageName) {
-          return path.resolve(plugin.srcDir, "plugin.ts");
+          return plugin.entryFile;
         }
         for (const alias of plugin.sourceAliases) {
           if (id === alias) {

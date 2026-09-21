@@ -2,6 +2,7 @@ import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import {
   IamAction,
   objectActionAllowed,
+  ConfigurationStatus,
   type ResourceDetail,
   type ApplicationRecord,
 } from "@ingot/admin-common";
@@ -32,11 +33,17 @@ export function createToolbarActions(onCreate: () => void): Array<InTableAction<
 
 export function createRowActions(
   row: Row,
-  handlers: { onDetail: (row: Row) => void; onDelete: (row: Row) => void },
+  handlers: {
+    onDetail: (row: Row) => void;
+    onEnable: (row: Row) => void;
+    onDisable: (row: Row) => void;
+    onDelete: (row: Row) => void;
+  },
 ): Array<InTableAction<Row>> {
   const detail = objectActionAllowed(row.capabilities, IamAction.PLATFORM_APPLICATION_READ);
+  const status = objectActionAllowed(row.capabilities, IamAction.PLATFORM_APPLICATION_STATUS);
   const remove = objectActionAllowed(row.capabilities, IamAction.PLATFORM_APPLICATION_DELETE);
-  return [
+  const actions: Array<InTableAction<Row>> = [
     {
       key: "detail",
       label: "详情",
@@ -46,14 +53,37 @@ export function createRowActions(
       disabledReason: detail.message,
       onSelect: handlers.onDetail,
     },
-    {
-      key: "delete",
-      label: "删除",
-      kind: "danger",
-      permission: IamAction.PLATFORM_APPLICATION_DELETE,
-      disabled: !remove.allowed,
-      disabledReason: remove.message,
-      onSelect: handlers.onDelete,
-    },
   ];
+  if (row.record.status !== ConfigurationStatus.ENABLED) {
+    actions.push({
+      key: "enable",
+      label: "启用",
+      kind: "default",
+      permission: IamAction.PLATFORM_APPLICATION_STATUS,
+      disabled: !status.allowed,
+      disabledReason: status.message,
+      onSelect: handlers.onEnable,
+    });
+  }
+  if (row.record.status === ConfigurationStatus.ENABLED) {
+    actions.push({
+      key: "disable",
+      label: "停用",
+      kind: "default",
+      permission: IamAction.PLATFORM_APPLICATION_STATUS,
+      disabled: !status.allowed,
+      disabledReason: status.message,
+      onSelect: handlers.onDisable,
+    });
+  }
+  actions.push({
+    key: "delete",
+    label: "删除",
+    kind: "danger",
+    permission: IamAction.PLATFORM_APPLICATION_DELETE,
+    disabled: !remove.allowed,
+    disabledReason: remove.message,
+    onSelect: handlers.onDelete,
+  });
+  return actions;
 }

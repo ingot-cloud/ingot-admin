@@ -38,12 +38,14 @@ const UTILITY_LABEL: Record<InAdminHeaderBuiltinUtilityName, string> = {
 
 const USER_MENU_LABEL: Record<InAdminHeaderBuiltinUserMenuName, string> = {
   [UserMenuName.SwitchOrg]: "切换组织",
+  [UserMenuName.Profile]: "个人资料",
   [UserMenuName.FixPwd]: "修改密码",
   [UserMenuName.Logout]: "退出登录",
 };
 
 const USER_MENU_ICON: Record<InAdminHeaderBuiltinUserMenuName, string> = {
   [UserMenuName.SwitchOrg]: "icon-park:switch",
+  [UserMenuName.Profile]: "ep:user",
   [UserMenuName.FixPwd]: "ep:edit",
   [UserMenuName.Logout]: "ep:switch-button",
 };

@@ -4,8 +4,10 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   KNOWN_OFFICIAL_PLUGINS,
+  createOfficialPluginAliasEntries,
   createOfficialSourcePlugin,
   resolveAdminCoreAutoImportMaps,
+  resolveOfficialPluginEntry,
   resolveOfficialPlugins,
 } from "./official-plugins";
 import type { InResolvedOfficialPlugin } from "./official-plugins";
@@ -72,12 +74,13 @@ afterEach(() => {
 });
 
 describe("KNOWN_OFFICIAL_PLUGINS", () => {
-  it("包含四个官方业务插件", () => {
+  it("包含官方业务插件与登录站页面插件", () => {
     expect(KNOWN_OFFICIAL_PLUGINS).toEqual([
       "@ingot/platform-plugin",
       "@ingot/security-plugin",
       "@ingot/org-plugin",
       "@ingot/member-plugin",
+      "@ingot/auth-plugin",
     ]);
   });
 });
@@ -97,7 +100,43 @@ describe("resolveOfficialPlugins", () => {
     expect(resolved[0]?.packageName).toBe("@ingot/platform-plugin");
     expect(resolved[0]?.rootDir).toBe(platformDir);
     expect(resolved[0]?.srcDir).toBe(path.join(platformDir, "src"));
+    expect(resolved[0]?.entryFile).toBe(path.join(platformDir, "src/plugin.ts"));
     expect(resolved[0]?.sourceAliases).toEqual([]);
+  });
+
+  it("缺少 plugin.ts 时回退到 src/index.ts", () => {
+    const workspace = makeTempWorkspace();
+    const authDir = path.join(workspace, "plugins/auth");
+    const hostDir = path.join(workspace, "apps/auth");
+    writePackage(
+      authDir,
+      { name: "@ingot/auth-plugin" },
+      { "src/index.ts": "export const createAuthRoutes = () => [];\n" },
+    );
+    writePackage(hostDir, {
+      name: "@ingot/auth-app",
+      dependencies: { "@ingot/auth-plugin": "workspace:*" },
+    });
+
+    const resolved = resolveOfficialPlugins(hostDir);
+    expect(resolved[0]?.entryFile).toBe(path.join(authDir, "src/index.ts"));
+  });
+
+  it("官方插件缺少入口文件时给出明确错误", () => {
+    const workspace = makeTempWorkspace();
+    const authDir = path.join(workspace, "plugins/auth");
+    const hostDir = path.join(workspace, "apps/auth");
+    writePackage(
+      authDir,
+      { name: "@ingot/auth-plugin" },
+      { "src/routes.ts": "export {};\n" },
+    );
+    writePackage(hostDir, {
+      name: "@ingot/auth-app",
+      dependencies: { "@ingot/auth-plugin": "workspace:*" },
+    });
+
+    expect(() => resolveOfficialPlugins(hostDir)).toThrow(/缺少入口文件 src\/plugin\.ts/);
   });
 
   it("从 plugins/* 按 package.json name 发现官方插件", () => {
@@ -199,9 +238,21 @@ describe("createOfficialSourcePlugin", () => {
       packageName: "@ingot/platform-plugin",
       rootDir,
       srcDir: path.join(rootDir, "src"),
+      entryFile: path.join(rootDir, "src/plugin.ts"),
       sourceAliases: [],
     };
   };
+
+  it("包名解析到 src/plugin.ts", () => {
+    const workspace = makeTempWorkspace();
+    const plugin = platformPlugin(workspace);
+    const vitePlugin = createOfficialSourcePlugin([plugin], path.join(workspace, "apps/host"));
+
+    expect(callResolveId(vitePlugin, "@ingot/platform-plugin")).toBe(plugin.entryFile);
+    expect(createOfficialPluginAliasEntries([plugin])).toEqual(
+      expect.arrayContaining([{ find: "@ingot/platform-plugin", replacement: plugin.entryFile }]),
+    );
+  });
 
   it("importer 属于官方插件时把 @/ 指回该插件的 src", () => {
     const workspace = makeTempWorkspace();
@@ -286,6 +337,17 @@ describe("createOfficialSourcePlugin", () => {
     expect(config.optimizeDeps?.exclude).toEqual(["@ingot/platform-plugin", "@ingot/admin-core"]);
     expect(config.server?.fs?.allow).toEqual(expect.arrayContaining([plugin.rootDir, hostDir]));
     expect(config.optimizeDeps?.exclude).not.toContain("@ingot/org-plugin");
+  });
+});
+
+describe("resolveOfficialPluginEntry", () => {
+  it("优先 plugin.ts，否则 index.ts", () => {
+    const workspace = makeTempWorkspace();
+    const srcDir = path.join(workspace, "src");
+    writePackage(workspace, { name: "demo" }, { "src/index.ts": "export {};\n" });
+    expect(resolveOfficialPluginEntry(srcDir)).toBe(path.join(srcDir, "index.ts"));
+    fs.writeFileSync(path.join(srcDir, "plugin.ts"), "export {};\n");
+    expect(resolveOfficialPluginEntry(srcDir)).toBe(path.join(srcDir, "plugin.ts"));
   });
 });
 

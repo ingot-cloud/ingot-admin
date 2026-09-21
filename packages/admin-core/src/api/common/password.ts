@@ -1,18 +1,19 @@
-import Http from "@/net";
-import type { R, UserPasswordDTO } from "@/models";
+import { request } from "@/net";
+import type { R } from "@/models";
+import type { CurrentPasswordInput } from "@/models/iam";
 
-export function InitPwdAPI(params: UserPasswordDTO): Promise<R<void>> {
-  return Http.put<void>("/api/pms/v1/org/user/pwd/init", params, {
-    crypto: {
-      request: { mode: "whole" },
-    },
-  });
+const PATH = "/api/iam/v1/me/password";
+
+const cryptoOptions = {
+  crypto: {
+    request: { mode: "whole" as const },
+  },
+};
+
+export function InitPwdAPI(params: CurrentPasswordInput): Promise<R<void>> {
+  return request.put<void>(PATH, params, cryptoOptions);
 }
 
-export function FixPasswordAPI(params: UserPasswordDTO): Promise<R<void>> {
-  return Http.put<void>("/api/pms/v1/org/user/pwd", params, {
-    crypto: {
-      request: { mode: "whole" },
-    },
-  });
+export function FixPasswordAPI(params: CurrentPasswordInput): Promise<R<void>> {
+  return request.put<void>(PATH, params, cryptoOptions);
 }

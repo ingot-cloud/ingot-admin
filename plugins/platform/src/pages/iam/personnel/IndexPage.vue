@@ -28,6 +28,7 @@
                 @keyup.enter="refreshData"
                 @clear="refreshData"
               />
+              <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
               <in-table-column-setting
                 :headers="tableHeaders"
                 :table-id="TABLE_ID"
@@ -42,7 +43,9 @@
                 {{ item.record.displayName || item.record.id }}
               </in-button>
             </template>
-            <template #status="{ item }">{{ item.record.status }}</template>
+            <template #status="{ item }">
+              <in-tag :value="memberStatusEnum.getTagText(item.record.status)" />
+            </template>
             <template #actions="{ item }">
               <in-table-actions :actions="rowActionsOf(item)" :row="item" />
             </template>
@@ -108,11 +111,14 @@ import {
   applyColumnSelection,
   Confirm,
   Message,
+  resolveStringPickerFilter,
+  toStringPickerValue,
   useCapabilities,
+  withAllPickerOption,
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { MemberStatus } from "@ingot/admin-common";
+import { MemberStatus, useMemberStatusEnum } from "@ingot/admin-common";
 import { PlatformGroupDeleteAPI, PlatformMemberRemoveAPI, PlatformMemberStatusAPI } from "@/api/iam/personnel";
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";
@@ -137,6 +143,15 @@ import { useOps } from "./useOps";
 const tab = ref("members");
 const { paging, groupPaging, refreshData, refreshGroups } = useOps();
 const { unavailable } = useCapabilities();
+const memberStatusEnum = useMemberStatusEnum();
+const statusOptions = computed(() => withAllPickerOption(memberStatusEnum.getOptions()));
+const statusFilter = computed({
+  get: () => toStringPickerValue(paging.condition.status),
+  set: (value: string | number | boolean | null) => {
+    paging.condition.status = resolveStringPickerFilter(value);
+    refreshData();
+  },
+});
 const selectedColumnProps = ref<string[]>([]);
 const selectedGroupColumns = ref<string[]>([]);
 const createRef = ref<{ show: () => void }>();

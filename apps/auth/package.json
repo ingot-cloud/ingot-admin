@@ -32,6 +32,7 @@
     "vue-router": "catalog:",
     "@ingot/http-client": "workspace:*",
     "@ingot/auth-core": "workspace:*",
+    "@ingot/auth-plugin": "workspace:*",
     "@ingot/shared": "workspace:*"
   },
   "devDependencies": {

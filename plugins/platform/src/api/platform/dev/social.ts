@@ -2,7 +2,7 @@ import { request, type RequestOptions } from "@ingot/admin-core";
 import type { R, Page, SysSocialDetails } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
-const PATH = "/api/pms/v1/platform/dev/social";
+const PATH = "/api/iam/v1/platform/social-configs";
 
 export function SocialPageAPI(
   page: Page,
@@ -13,7 +13,7 @@ export function SocialPageAPI(
     filterParams(condition);
   }
   return request.get<Page<SysSocialDetails>>(
-    `${PATH}/page`,
+    PATH,
     {
       ...page,
       ...condition,
@@ -35,7 +35,7 @@ export function UpdateSocialAPI(
   options?: RequestOptions,
 ): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params, options);
+  return request.put<void>(`${PATH}/${params.id}`, params, options);
 }
 
 export function RemoveSocialAPI(id: string, options?: RequestOptions): Promise<R<void>> {

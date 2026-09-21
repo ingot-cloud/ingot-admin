@@ -2,15 +2,16 @@ import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import {
   IamAction,
   objectActionAllowed,
-  type ApplicationSummary,
+  type EntitlementRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
 
 export const TABLE_ID = "org-iam-applications";
-export type Row = ResourceDetail<ApplicationSummary>;
+export type Row = ResourceDetail<EntitlementRecord>;
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
+  { label: "状态", prop: "status" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 

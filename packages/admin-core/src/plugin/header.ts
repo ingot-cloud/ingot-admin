@@ -100,6 +100,8 @@ export type InAdminHeaderBuiltinUtilityName =
 export const InAdminHeaderBuiltinUserMenuName = {
   /** 切换组织，确认后进入登录选组织流程 */
   SwitchOrg: "switchOrg",
+  /** 打开本人资料对话框 */
+  Profile: "profile",
   /** 打开修改密码对话框 */
   FixPwd: "fixPwd",
   /** 退出登录并刷新 */

@@ -10,6 +10,9 @@
 | `plugins/security` | `@ingot/security-plugin` | `securityPlugin` | `ingot-security` |
 | `plugins/org` | `@ingot/org-plugin` | `orgPlugin` | `ingot-org` |
 | `plugins/member` | `@ingot/member-plugin` | `memberPlugin` | `ingot-member` |
+| `plugins/auth` | `@ingot/auth-plugin` | `createAuthRoutes` / `provideAuthSession` | 无（不是 `InAdminPlugin`） |
+
+登录站页面模块是 `plugins/auth`（`@ingot/auth-plugin`）。它同样通过 `src/plugin.ts` 作为宿主编译入口，导出 `createAuthRoutes` / `provideAuthSession`，**不是** `InAdminPlugin`，不要写进管理台 `plugins.ts`。平台登录根通过 `includeTenantSelect: false` 不装配选租户流程。
 
 Dashboard 属于 platform 插件，canonical key 为 `platform.dashboard`。
 

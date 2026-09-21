@@ -48,6 +48,12 @@ export enum RoleDeltaOperation {
   REPLACE_SCOPE = "REPLACE_SCOPE",
 }
 
+export enum UpgradeResolutionChoice {
+  ACCEPT_BASE = "ACCEPT_BASE",
+  KEEP_DELTA = "KEEP_DELTA",
+  REPLACE_SCOPE = "REPLACE_SCOPE",
+}
+
 export enum RoleKind {
   SYSTEM = "SYSTEM",
   SHARED = "SHARED",
@@ -70,6 +76,40 @@ export enum MenuKind {
 export enum FieldScenario {
   MANAGEMENT = "MANAGEMENT",
   DIRECTORY = "DIRECTORY",
+}
+
+export enum PolicyScenario {
+  MANAGEMENT = "MANAGEMENT",
+  DIRECTORY = "DIRECTORY",
+}
+
+export enum AudienceKind {
+  ALL = "ALL",
+  SELECTED = "SELECTED",
+}
+
+export enum PolicyEffect {
+  ALLOW = "ALLOW",
+  DENY = "DENY",
+}
+
+export enum DirectoryDefaultScope {
+  ALL = "ALL",
+  SELF = "SELF",
+  SELECTED = "SELECTED",
+}
+
+export enum DefaultPolicyKind {
+  DIRECTORY = "DIRECTORY",
+  FIELD = "FIELD",
+}
+
+export enum ExportTaskStatus {
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  SUCCEEDED = "SUCCEEDED",
+  FAILED = "FAILED",
+  EXPIRED = "EXPIRED",
 }
 
 export enum AccountLookupPurpose {
@@ -187,6 +227,18 @@ export const IamAction = {
   PLATFORM_DELEGATION_PREVIEW: "iam-platform:delegation:preview",
   PLATFORM_AUTHORIZATION_DIAGNOSE: "iam-platform:authorization:diagnose",
   PLATFORM_AUDIT_READ: "iam-platform:audit:read",
+  PLATFORM_DICTIONARY_READ: "iam-platform:dictionary:read",
+  PLATFORM_DICTIONARY_CREATE: "iam-platform:dictionary:create",
+  PLATFORM_DICTIONARY_UPDATE: "iam-platform:dictionary:update",
+  PLATFORM_DICTIONARY_DELETE: "iam-platform:dictionary:delete",
+  PLATFORM_ID_ALLOCATION_READ: "iam-platform:id-allocation:read",
+  PLATFORM_ID_ALLOCATION_CREATE: "iam-platform:id-allocation:create",
+  PLATFORM_ID_ALLOCATION_UPDATE: "iam-platform:id-allocation:update",
+  PLATFORM_ID_ALLOCATION_DELETE: "iam-platform:id-allocation:delete",
+  PLATFORM_SOCIAL_CONFIG_READ: "iam-platform:social-config:read",
+  PLATFORM_SOCIAL_CONFIG_CREATE: "iam-platform:social-config:create",
+  PLATFORM_SOCIAL_CONFIG_UPDATE: "iam-platform:social-config:update",
+  PLATFORM_SOCIAL_CONFIG_DELETE: "iam-platform:social-config:delete",
   TENANT_MEMBER_READ: "iam-tenant:member:read",
   TENANT_MEMBER_CREATE: "iam-tenant:member:create",
   TENANT_MEMBER_UPDATE: "iam-tenant:member:update",

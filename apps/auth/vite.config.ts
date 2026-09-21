@@ -5,6 +5,7 @@ const rootDir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineInAppConfig({
   rootDir,
+  officialPlugins: ["@ingot/auth-plugin"],
   port: 1798,
   allowedHosts: [...DEV_BFF_ALLOWED_HOSTS],
   aliases: {

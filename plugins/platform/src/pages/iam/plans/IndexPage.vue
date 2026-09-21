@@ -26,6 +26,7 @@
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
+          <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TABLE_ID"
@@ -58,11 +59,18 @@
 import { Search } from "@element-plus/icons-vue";
 import {
   applyColumnSelection,
+  resolveStringPickerFilter,
+  toStringPickerValue,
   useCapabilities,
+  withAllPickerOption,
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamStatusTag, ConfigurationStatus } from "@ingot/admin-common";
+import {
+  BizIamStatusTag,
+  ConfigurationStatus,
+  useConfigurationStatusEnum,
+} from "@ingot/admin-common";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import {
@@ -79,6 +87,15 @@ const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
+const statusEnum = useConfigurationStatusEnum();
+const statusOptions = computed(() => withAllPickerOption(statusEnum.getOptions()));
+const statusFilter = computed({
+  get: () => toStringPickerValue(paging.condition.status),
+  set: (value: string | number | boolean | null) => {
+    paging.condition.status = resolveStringPickerFilter(value);
+    refreshData();
+  },
+});
 const toolbarRow = {
   record: { id: "", name: "", applicationIds: [], status: ConfigurationStatus.ENABLED },
   fieldAccess: {},
