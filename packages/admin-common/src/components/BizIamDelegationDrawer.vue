@@ -6,7 +6,7 @@
       :closable="false"
       title="允许给别人授权，不自动获得业务操作权。无二次委派。"
     />
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="授权管理员" required>
         <in-page-select
           v-model="administratorMemberId"
@@ -105,7 +105,7 @@
           受影响授权：{{ impact.affectedAssignmentIds.join("、") }}
         </div>
       </div>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button

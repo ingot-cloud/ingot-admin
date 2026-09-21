@@ -2,48 +2,44 @@
   <in-detail-drawer
     v-model="visible"
     v-model:tab="tab"
-    v-model:editing="session.editing.value"
+    v-model:editing="editing"
     title="组织详情"
     :loading="loading"
     :saving="session.saving.value"
-    size="680px"
     @edit="session.enterEdit"
     @cancel="privateCancel"
     @save="privateSave"
   >
     <in-biz-tab-panel title="基础信息" name="base">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="组织名称">
-          <el-input v-if="session.editing.value" v-model="draft.name" />
-          <span v-else>{{ detail.record.name }}</span>
-        </el-form-item>
-        <el-form-item label="状态">
-          <in-select
-            v-if="session.editing.value"
-            v-model="draft.status"
-            :options="statusEnum.getOptions()"
-          />
-          <biz-iam-status-tag v-else :status="detail.record.status" />
-        </el-form-item>
-      </el-form>
+      <in-form v-if="detail" :editing="editing">
+        <in-detail-field label="组织名称" :value="detail.record.name">
+          <el-input v-model="draft.name" />
+        </in-detail-field>
+        <in-detail-field label="状态">
+          <template #view>
+            <biz-iam-status-tag :status="detail.record.status" />
+          </template>
+          <in-select v-model="draft.status" :options="statusEnum.getOptions()" />
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
     <in-biz-tab-panel title="应用开通" name="apps">
       <div class="flex flex-col gap-12px">
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           套餐变化不自动应用。开通不等于业务授权。
         </div>
-        <div v-for="item in entitlementDrafts" :key="item.applicationId" class="flex flex-col gap-8px">
+        <div
+          v-for="item in entitlementDrafts"
+          :key="item.applicationId"
+          class="flex flex-col gap-8px"
+        >
           <div class="flex items-center gap-8px">
             <span class="min-w-160px">{{ nameOf(item.applicationId) }}</span>
-            <in-select
-              v-if="session.editing.value"
-              v-model="item.status"
-              :options="statusEnum.getOptions()"
-            />
+            <in-select v-if="editing" v-model="item.status" :options="statusEnum.getOptions()" />
             <biz-iam-status-tag v-else :status="item.status" />
             <span class="text-12px">来源 {{ sourceOf(item.applicationId) }}</span>
           </div>
-          <div v-if="session.editing.value" class="flex gap-8px">
+          <div v-if="editing" class="flex gap-8px">
             <el-date-picker
               v-model="item.validFrom"
               type="datetime"
@@ -63,7 +59,7 @@
         </div>
         <div v-if="!entitlementDrafts.length">暂无开通记录</div>
         <in-page-select
-          v-if="session.editing.value"
+          v-if="editing"
           v-model="addingAppId"
           filterable
           remote
@@ -75,26 +71,32 @@
           @change="privateAddEntitlement"
         />
         <biz-iam-preview-alert v-if="preview" :preview="preview" />
-        <in-button v-if="session.editing.value" @click="privatePreviewEntitlements">预览开通影响</in-button>
+        <in-button v-if="editing" :loading="previewing" @in-click="privatePreviewEntitlements">
+          预览开通影响
+        </in-button>
       </div>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="所有者" name="owner">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="所有者成员 ID">
-          <span>{{ detail.record.ownerMemberId }}</span>
-        </el-form-item>
-      </el-form>
+    <in-biz-tab-panel title="所有者" name="owner" :editable="false">
+      <in-form v-if="detail" :editing="false">
+        <in-detail-field
+          label="所有者"
+          :value="detail.record.ownerDisplayName || detail.record.ownerMemberId"
+        />
+        <in-detail-field label="所有者成员 ID" :value="detail.record.ownerMemberId" />
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
 
 <script setup lang="ts">
-import { Message, useDetailEditSession } from "@ingot/admin-core";
+import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
   BizIamPreviewAlert,
   BizIamStatusTag,
   ConfigurationStatus,
+  collectIamPageRecords,
   createIamListLoader,
+  entitlementCollectionVersion,
   toIamSelectRecords,
   useConfigurationStatusEnum,
   type EntitlementDraft,
@@ -121,6 +123,7 @@ defineOptions({ name: "TenantDetailDrawer" });
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();
+const { editing } = session;
 const statusEnum = useConfigurationStatusEnum();
 const visible = ref(false);
 const tab = ref("base");
@@ -132,6 +135,8 @@ const entitlementsVersion = ref("");
 const applicationLabels = reactive<Record<string, string>>({});
 const addingAppId = ref("");
 const preview = ref<Preview<EntitlementPreviewResult> | null>(null);
+const previewing = ref(false);
+const loadGuard = createLoadGuard();
 const draft = reactive({
   name: "",
   status: ConfigurationStatus.ENABLED,
@@ -139,11 +144,13 @@ const draft = reactive({
 
 const nameOf = (applicationId: string): string =>
   applicationLabels[applicationId] ??
-  entitlements.value.find((item) => item.record.applicationId === applicationId)?.record.applicationName ??
+  entitlements.value.find((item) => item.record.applicationId === applicationId)?.record
+    .applicationName ??
   applicationId;
 
 const sourceOf = (applicationId: string): string =>
-  entitlements.value.find((item) => item.record.applicationId === applicationId)?.record.source ?? "MANUAL";
+  entitlements.value.find((item) => item.record.applicationId === applicationId)?.record.source ??
+  "MANUAL";
 
 const loadApplications = createIamListLoader(async (page, condition) => {
   const response = await PlatformApplicationPageAPI(page, condition);
@@ -162,7 +169,9 @@ watch(
   { deep: true },
 );
 
-const snapshotEntitlements = (items: Array<ResourceDetail<EntitlementRecord>>): EntitlementDraft[] =>
+const snapshotEntitlements = (
+  items: Array<ResourceDetail<EntitlementRecord>>,
+): EntitlementDraft[] =>
   items.map((item) => ({
     applicationId: item.record.applicationId,
     status: item.record.status,
@@ -170,28 +179,48 @@ const snapshotEntitlements = (items: Array<ResourceDetail<EntitlementRecord>>): 
     validUntil: item.record.validUntil,
   }));
 
-const load = (id: string): void => {
-  loading.value = true;
+const applyEntitlements = (items: Array<ResourceDetail<EntitlementRecord>>): void => {
+  entitlements.value = items;
+  entitlementDrafts.value = snapshotEntitlements(items);
+  entitlementsVersion.value = entitlementCollectionVersion(items);
+  for (const item of items) {
+    if (item.record.applicationName) {
+      applicationLabels[item.record.applicationId] = item.record.applicationName;
+    }
+  }
+};
+
+const privateReset = (): void => {
+  detail.value = undefined;
+  entitlements.value = [];
+  entitlementDrafts.value = [];
+  entitlementsVersion.value = "";
   preview.value = null;
+  draft.name = "";
+  draft.status = ConfigurationStatus.ENABLED;
+};
+
+const load = (id: string): void => {
+  const guard = loadGuard.begin();
+  loading.value = true;
+  privateReset();
   Promise.all([
     PlatformTenantDetailAPI(id),
-    PlatformTenantEntitlementsAPI(id),
+    collectIamPageRecords((page) => PlatformTenantEntitlementsAPI(id, page)),
   ])
-    .then(([detailRes, entitlementRes]) => {
-      detail.value = detailRes.data;
-      entitlements.value = entitlementRes.data ?? [];
-      entitlementDrafts.value = snapshotEntitlements(entitlements.value);
-      entitlementsVersion.value = entitlements.value[0]?.version || detailRes.data.version;
-      for (const item of entitlements.value) {
-        if (item.record.applicationName) {
-          applicationLabels[item.record.applicationId] = item.record.applicationName;
-        }
+    .then(([detailRes, items]) => {
+      if (!guard.isCurrent()) {
+        return;
       }
+      detail.value = detailRes.data;
       draft.name = detailRes.data.record.name;
       draft.status = detailRes.data.record.status;
+      applyEntitlements(items);
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) {
+        loading.value = false;
+      }
     });
 };
 
@@ -228,17 +257,20 @@ const replacePayload = () => ({
   })),
 });
 
+const loadEntitlements = (id: string): Promise<void> =>
+  collectIamPageRecords((page) => PlatformTenantEntitlementsAPI(id, page)).then(applyEntitlements);
+
 const privatePreviewEntitlements = (): void => {
   if (!detail.value) {
     return;
   }
-  loading.value = true;
+  previewing.value = true;
   PlatformTenantEntitlementsPreviewAPI(detail.value.record.id, replacePayload())
     .then((response) => {
       preview.value = response.data;
     })
     .finally(() => {
-      loading.value = false;
+      previewing.value = false;
     });
 };
 
@@ -253,10 +285,8 @@ const privateSave = (): void => {
     }
     session.saving.value = true;
     PlatformTenantEntitlementsReplaceAPI(detail.value.record.id, replacePayload())
-      .then((response) => {
-        entitlements.value = response.data ?? [];
-        entitlementDrafts.value = snapshotEntitlements(entitlements.value);
-        entitlementsVersion.value = entitlements.value[0]?.version || entitlementsVersion.value;
+      .then(() => loadEntitlements(detail.value?.record.id ?? ""))
+      .then(() => {
         Message.success("开通已更新");
         session.exitEdit();
         preview.value = null;

@@ -1,12 +1,14 @@
 <template>
-  <in-drawer v-model="visible" title="开通应用" :loading="loading" size="640px">
+  <in-drawer v-model="visible" title="开通应用" size="640px">
+    <in-form-skeleton v-if="loading" />
+    <template v-else>
     <el-alert
       class="mb-12px"
       type="info"
       :closable="false"
       title="应用可用不等于业务操作。人群只决定谁能看见该应用，不授予角色或操作。"
     />
-    <el-form v-if="audience" label-position="top">
+    <in-form v-if="audience" :editing="true">
       <el-form-item label="应用">
         <span>{{ title }}</span>
       </el-form-item>
@@ -37,20 +39,21 @@
           保存人群
         </in-button>
       </div>
-    </el-form>
-    <el-form class="mt-16px" label-position="top">
+    </in-form>
+    <in-form class="mt-16px" :editing="false">
       <el-form-item label="角色操作候选">
         <el-table :data="actions" size="small">
           <el-table-column prop="record.name" label="名称" />
           <el-table-column prop="record.code" label="操作码" />
         </el-table>
       </el-form-item>
-    </el-form>
+    </in-form>
+    </template>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
-import { Message } from "@ingot/admin-core";
+import { Message, createLoadGuard } from "@ingot/admin-core";
 import {
   AudienceKind,
   BizIamChipPageSelect,
@@ -88,6 +91,7 @@ const selection = ref(emptySelection());
 const groupIds = ref<string[]>([]);
 const actions = ref<Array<ResourceDetail<ActionRecord>>>([]);
 const kindOptions = useAudienceKindEnum().getOptions();
+const loadGuard = createLoadGuard();
 
 const loadMembers = createIamListLoader(async (page, condition) => {
   const response = await TenantMemberPageAPI(page, condition);
@@ -130,17 +134,22 @@ const privateSave = (): void => {
 
 defineExpose({
   show(row: Row) {
+    const id = row.record.applicationId;
+    const guard = loadGuard.begin();
     visible.value = true;
-    applicationId.value = row.record.applicationId;
-    title.value = row.record.applicationName || row.record.applicationId;
+    applicationId.value = id;
+    title.value = row.record.applicationName || id;
     audience.value = undefined;
     actions.value = [];
     loading.value = true;
     Promise.all([
-      TenantApplicationAudienceAPI(row.record.applicationId),
-      TenantApplicationActionPageAPI(row.record.applicationId, { current: 1, size: 20 }),
+      TenantApplicationAudienceAPI(id),
+      TenantApplicationActionPageAPI(id, { current: 1, size: 20 }),
     ])
       .then(([audienceResponse, actionResponse]) => {
+        if (!guard.isCurrent()) {
+          return;
+        }
         audience.value = audienceResponse.data;
         kind.value = audienceResponse.data.record.kind;
         selection.value = audienceResponse.data.record.selection ?? emptySelection();
@@ -148,7 +157,9 @@ defineExpose({
         actions.value = actionResponse.data.records ?? [];
       })
       .finally(() => {
-        loading.value = false;
+        if (guard.isCurrent()) {
+          loading.value = false;
+        }
       });
   },
 });

@@ -1,26 +1,23 @@
 <template>
-  <in-drawer v-model="visible" title="角色详情" :loading="loading" size="720px">
-    <in-biz-tabs v-model="tab">
+  <in-drawer v-model="visible" title="角色详情" size="720px">
+    <in-form-skeleton v-if="loading" />
+    <in-biz-tabs v-show="!loading" v-model="tab">
       <in-biz-tab-panel title="基本资料" name="base">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="编码">
-          <span>{{ detail.record.code }}</span>
-        </el-form-item>
-        <el-form-item label="名称">
-          <span>{{ detail.record.name }}</span>
-        </el-form-item>
-        <el-form-item label="来源">
-          <span>{{ kindLabel(detail.record.kind) }}</span>
-        </el-form-item>
-        <el-form-item label="状态">
-          <biz-iam-status-tag :status="detail.record.status" />
-        </el-form-item>
-        <el-form-item v-if="latest" label="当前版本">
-          <span>{{ latest.record.revision }}</span>
-        </el-form-item>
-        <el-form-item v-if="latest?.record.deltas?.length" label="差异">
-          <biz-iam-delta-tags :items="latest.record.deltas" />
-        </el-form-item>
+      <in-form v-if="detail" :editing="false">
+        <in-detail-field label="编码" :value="detail.record.code" />
+        <in-detail-field label="名称" :value="detail.record.name" />
+        <in-detail-field label="来源" :value="kindLabel(detail.record.kind)" />
+        <in-detail-field label="状态">
+          <template #view>
+            <biz-iam-status-tag :status="detail.record.status" />
+          </template>
+        </in-detail-field>
+        <in-detail-field v-if="latest" label="当前版本" :value="latest.record.revision" />
+        <in-detail-field v-if="latest?.record.deltas?.length" label="差异">
+          <template #view>
+            <biz-iam-delta-tags :items="latest.record.deltas" />
+          </template>
+        </in-detail-field>
         <div class="flex flex-wrap gap-8px">
           <in-button
             v-if="statusApi && canStatus"
@@ -32,13 +29,13 @@
             删除
           </in-button>
         </div>
-      </el-form>
+      </in-form>
     </in-biz-tab-panel>
     <in-biz-tab-panel title="发布新版本" name="publish">
-      <el-form label-position="top">
-        <el-form-item label="定义">
+      <in-form :editing="true">
+        <in-detail-field label="定义">
           <biz-iam-grant-editor v-model="definition" :allow-deltas="allowDeltas" />
-        </el-form-item>
+        </in-detail-field>
         <biz-iam-preview-alert :preview="previewApi ? previewState.preview.value : null" />
         <div v-if="canPublish" class="flex flex-wrap gap-8px">
           <in-button v-if="allowDeltas" @in-click="privateRestoreDeltas">恢复平台设置</in-button>
@@ -54,7 +51,7 @@
             发布（不自动升级授权）
           </in-button>
         </div>
-      </el-form>
+      </in-form>
     </in-biz-tab-panel>
     <in-biz-tab-panel title="版本历史" name="revisions">
       <el-table :data="revisions" size="small">
@@ -68,13 +65,11 @@
       </el-table>
     </in-biz-tab-panel>
     <in-biz-tab-panel v-if="showUpgrade" title="升级共享基础" name="upgrade">
-      <el-form label-position="top">
-        <el-form-item label="当前基础版本">
-          <span>{{ latest?.record.baseRevisionId || "—" }}</span>
-        </el-form-item>
-        <el-form-item label="新基础版本 ID" required>
+      <in-form :editing="true">
+        <in-detail-field label="当前基础版本" :value="latest?.record.baseRevisionId" />
+        <in-detail-field label="新基础版本 ID" required>
           <el-input v-model="newBaseRevisionId" placeholder="目标共享角色版本 ID" />
-        </el-form-item>
+        </in-detail-field>
         <el-alert
           type="info"
           :closable="false"
@@ -112,14 +107,14 @@
             提交升级
           </in-button>
         </div>
-      </el-form>
+      </in-form>
     </in-biz-tab-panel>
     </in-biz-tabs>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, isApiError, type Page, type R } from "@ingot/admin-core";
+import { Confirm, Message, createLoadGuard, isApiError, type Page, type R } from "@ingot/admin-core";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
 import {
   ConfigurationStatus,
@@ -165,6 +160,7 @@ const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
 const saving = ref(false);
+const loadGuard = createLoadGuard();
 const roleId = ref("");
 const detail = ref<ResourceDetail<RoleSummary>>();
 const revisions = ref<Array<ResourceDetail<RoleRevision>>>([]);
@@ -269,18 +265,27 @@ const applyRevision = (revision: ResourceDetail<RoleRevision> | undefined): void
 };
 
 const load = (id: string): void => {
+  const guard = loadGuard.begin();
   loading.value = true;
+  detail.value = undefined;
+  revisions.value = [];
+  definition.value = emptyRoleDefinitionDraft();
   Promise.all([
     props.getApi(id),
     props.listRevisionsApi(id, { current: 1, size: 50 }),
   ])
     .then(([role, page]) => {
+      if (!guard.isCurrent()) {
+        return;
+      }
       detail.value = role.data;
       revisions.value = page.data.records ?? [];
       applyRevision(latest.value);
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) {
+        loading.value = false;
+      }
     });
 };
 

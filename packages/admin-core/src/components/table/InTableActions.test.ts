@@ -3,6 +3,8 @@ import { DOMWrapper, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import InTableActions from "./InTableActions.vue";
 import type { InTableAction } from "../types";
+import { ACTION_UNAVAILABLE_MESSAGE } from "@/hooks/biz/actionAccess";
+import { usePermissions } from "@/stores/modules/auth";
 
 const warning = vi.fn().mockResolvedValue(true);
 
@@ -382,6 +384,51 @@ describe("InTableActions", () => {
     await wrapper.vm.$nextTick();
     await wrapper.vm.$nextTick();
     expect(wrapper.get("[aria-label='批量删除']").attributes("disabled")).toBeUndefined();
+    wrapper.unmount();
+  });
+
+  it("无 ACTION 时隐藏操作，禁用且无原因时给出兜底提示", async () => {
+    usePermissions().applyCapabilities({
+      actionCodes: [],
+      version: "1",
+      expiresAt: "2026-09-21T00:00:00Z",
+    });
+    const hidden = mount(InTableActions, {
+      props: {
+        actions: [
+          {
+            key: "detail",
+            label: "详情",
+            kind: "detail",
+            permission: "iam-platform:tenant:read",
+            onSelect: noop,
+          },
+        ],
+        row,
+      },
+      global: { stubs },
+    });
+    expect(hidden.find("[aria-label='详情']").exists()).toBe(false);
+    hidden.unmount();
+
+    const wrapper = mount(InTableActions, {
+      props: {
+        actions: [
+          {
+            key: "detail",
+            label: "详情",
+            kind: "detail",
+            disabled: true,
+            onSelect: noop,
+          },
+        ],
+        row,
+      },
+      global: { stubs },
+    });
+    const detail = wrapper.get("[aria-label='详情']");
+    expect(detail.attributes("disabled")).toBeDefined();
+    expect(detail.attributes("title")).toBe(ACTION_UNAVAILABLE_MESSAGE);
     wrapper.unmount();
   });
 });

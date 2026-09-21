@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" :title="title" :loading="loading" size="720px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="编码" required>
         <el-input v-model="draft.code" placeholder="发布后不可改" />
       </el-form-item>
@@ -19,7 +19,7 @@
       <el-form-item label="定义">
         <biz-iam-grant-editor v-model="draft.definition" :allow-deltas="allowDeltas" />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">创建并发布首个版本</in-button>

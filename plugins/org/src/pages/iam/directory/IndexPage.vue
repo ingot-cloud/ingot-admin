@@ -42,9 +42,13 @@
           />
         </template>
         <template #displayName="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.TENANT_DIRECTORY_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.displayName || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -64,6 +68,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
+import { BizIamRecordLink, IamAction } from "@ingot/admin-common";
 import DirectoryMemberDrawer from "./components/DirectoryMemberDrawer.vue";
 import { createRowActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";

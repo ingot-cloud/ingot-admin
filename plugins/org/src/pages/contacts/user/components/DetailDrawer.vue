@@ -44,35 +44,25 @@
     </template>
 
     <in-biz-tab-panel title="基本信息" name="basic">
-      <div class="member-detail-body">
-        <in-description-list v-if="!editing">
-          <in-description-item label="姓名" :value="editForm.nickname" />
-          <in-description-item label="手机号" :value="editForm.phone" />
-          <in-description-item label="email" :value="editForm.email" />
-          <in-description-item label="部门" :value="deptNames" />
-        </in-description-list>
-        <el-form
-          v-else
-          ref="editFormRef"
-          label-width="100px"
-          label-position="top"
-          :model="editForm"
-          :rules="rules"
-        >
-          <el-form-item label="姓名" prop="nickname">
-            <el-input v-model="editForm.nickname" clearable placeholder="请输入名称" />
-          </el-form-item>
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model="editForm.phone" clearable placeholder="请输入手机号" />
-          </el-form-item>
-          <el-form-item label="email" prop="email">
-            <el-input v-model="editForm.email" clearable placeholder="请输入email" />
-          </el-form-item>
-          <el-form-item label="部门" prop="deptIds">
-            <BizDeptSelect w-full multiple v-model="editForm.deptIds" clearable />
-          </el-form-item>
-        </el-form>
-      </div>
+      <in-form
+        ref="editFormRef"
+        :model="editForm"
+        :rules="rules"
+        :editing="editing"
+      >
+        <in-detail-field label="姓名" prop="nickname" :value="editForm.nickname">
+          <el-input v-model="editForm.nickname" clearable placeholder="请输入名称" />
+        </in-detail-field>
+        <in-detail-field label="手机号" prop="phone" :value="editForm.phone">
+          <el-input v-model="editForm.phone" clearable placeholder="请输入手机号" />
+        </in-detail-field>
+        <in-detail-field label="email" prop="email" :value="editForm.email">
+          <el-input v-model="editForm.email" clearable placeholder="请输入email" />
+        </in-detail-field>
+        <in-detail-field label="部门" prop="deptIds" :value="deptNames">
+          <BizDeptSelect w-full multiple v-model="editForm.deptIds" clearable />
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
@@ -128,7 +118,7 @@ const deptQuery = useQuery(() => ({
   enabled: open.value,
 }));
 
-const loading = computed(() => profileQuery.isFetching.value || saving.value);
+const loading = computed(() => profileQuery.isFetching.value);
 const displayName = computed(() => editForm.nickname || listRow.value?.nickname || "");
 const displayAvatar = computed(() => editForm.avatar || listRow.value?.avatar);
 const displayEnabled = computed(() => profileMeta.enabled);
@@ -262,8 +252,3 @@ defineExpose({
   },
 });
 </script>
-<style lang="postcss" scoped>
-.member-detail-body {
-  padding: var(--in-space-5);
-}
-</style>

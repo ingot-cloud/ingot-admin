@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="添加组织成员" :loading="loading" size="520px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item v-if="canLookup" label="登录名">
         <div class="flex gap-8px">
           <el-input v-model="username" clearable placeholder="精确查找已有全局账号" />
@@ -21,7 +21,7 @@
           empty-text="未指定部门"
         />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" :disabled="!accountId.trim()" @in-click="privateSubmit">

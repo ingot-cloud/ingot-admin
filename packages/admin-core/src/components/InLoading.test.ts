@@ -21,9 +21,12 @@ describe("InLoading", () => {
     expect(wrapper.find(".in-loading__cover").exists()).toBe(true);
     expect(wrapper.find(".in-loading-mark").exists()).toBe(true);
     expect(wrapper.text()).toContain("内容");
+    expect(wrapper.find(".in-loading__content").exists()).toBe(true);
     wrapper.unmount();
 
     const source = readFileSync(resolve(root, "InLoading.vue"), "utf8");
+    expect(source).toContain("in-loading__content");
+    expect(source).toContain(":only-child");
     expect(source).toContain("background: transparent");
     expect(source).not.toContain("rgba(");
     expect(source).not.toContain("el-loading");

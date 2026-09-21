@@ -23,6 +23,23 @@ describe("InDrawer", () => {
     wrapper.unmount();
   });
 
+  it("没有 footer 插槽时不渲染操作栏", () => {
+    const wrapper = mount(InDrawer, {
+      props: { modelValue: true, title: "通讯录详情" },
+      global: {
+        stubs: {
+          ElDrawer: {
+            template:
+              '<div class="in-drawer"><slot name="header" /><slot /><slot name="footer" /></div>',
+          },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
+        },
+      },
+    });
+    expect(wrapper.find(".in-drawer__footer").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it("pinned 布局给抽屉加上钉住内容区的 class", () => {
     const wrapper = mount(InDrawer, {
       props: { modelValue: true, title: "成员详情", layout: "pinned" },

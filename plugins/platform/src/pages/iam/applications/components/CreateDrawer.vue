@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="创建应用" :loading="loading" size="520px">
-    <el-form label-position="top" :model="draft">
+    <in-form label-position="top" :model="draft">
       <el-form-item label="编码" required>
         <el-input v-model="draft.code" clearable placeholder="创建后不可改" />
       </el-form-item>
@@ -16,7 +16,7 @@
       <el-form-item label="基础应用">
         <el-switch v-model="draft.baseline" />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">创建</in-button>

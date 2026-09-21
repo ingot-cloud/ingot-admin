@@ -37,9 +37,13 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.PLATFORM_APPLICATION_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.name || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #code="{ item }">{{ item.record.code }}</template>
         <template #status="{ item }">
@@ -71,8 +75,10 @@ import {
 } from "@ingot/admin-core";
 import {
   AuthorizationDomain,
+  BizIamRecordLink,
   BizIamStatusTag,
   ConfigurationStatus,
+  IamAction,
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import { PlatformApplicationDeleteAPI, PlatformApplicationStatusAPI } from "@/api/iam/catalog";

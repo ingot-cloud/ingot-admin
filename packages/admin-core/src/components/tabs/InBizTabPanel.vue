@@ -5,7 +5,7 @@
 </template>
 <script setup lang="ts">
 import type { InBizTabPanelContext } from "./constants";
-import { tabsRootContextKey } from "./constants";
+import { detailDrawerTabsKey, tabsRootContextKey } from "./constants";
 const COMPONENT_NAME = "InBizTabPanel";
 defineOptions({
   name: COMPONENT_NAME,
@@ -23,6 +23,10 @@ const props = defineProps({
   lazy: {
     type: Boolean,
     required: false,
+  },
+  editable: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -49,11 +53,16 @@ const pane: InBizTabPanelContext = {
   getVnode: () => instance.vnode,
 };
 
+const drawerTabs = inject(detailDrawerTabsKey, null);
+const paneEditable = computed(() => props.editable !== false);
+
 onMounted(() => {
   tabsRoot.registerPane(pane);
+  drawerTabs?.registerEditable(props.name, paneEditable);
 });
 
 onUnmounted(() => {
   tabsRoot.unregisterPane(pane.uid);
+  drawerTabs?.unregisterEditable(props.name);
 });
 </script>

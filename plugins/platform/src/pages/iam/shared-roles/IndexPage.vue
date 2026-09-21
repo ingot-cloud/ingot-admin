@@ -36,9 +36,13 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.PLATFORM_SHARED_ROLE_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.name || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -78,6 +82,7 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizIamRecordLink,
   BizIamRoleCreateDrawer,
   BizIamRoleDetailDrawer,
   IamAction,

@@ -1,9 +1,10 @@
 <template>
-  <in-tag v-if="tag" :value="tag" />
+  <status-tag v-if="tone && label" :tone="tone" :label="label" />
 </template>
 
-<script setup lang="ts">
-import { ConfigurationStatus, useConfigurationStatusEnum } from "../models/iam";
+<script lang="ts" setup>
+import { StatusTag } from "@ingot/admin-core";
+import { ConfigurationStatus } from "../models/iam";
 
 defineOptions({ name: "BizIamStatusTag" });
 
@@ -11,8 +12,33 @@ const props = defineProps<{
   status?: ConfigurationStatus | string | null;
 }>();
 
-const statusEnum = useConfigurationStatusEnum();
-const tag = computed(() =>
-  props.status ? statusEnum.getTagText(props.status as ConfigurationStatus) : undefined,
-);
+const resolved = computed(() => {
+  if (props.status === ConfigurationStatus.ENABLED) {
+    return ConfigurationStatus.ENABLED;
+  }
+  if (props.status === ConfigurationStatus.DISABLED) {
+    return ConfigurationStatus.DISABLED;
+  }
+  return undefined;
+});
+
+const tone = computed<"info" | "warning" | undefined>(() => {
+  if (resolved.value === ConfigurationStatus.ENABLED) {
+    return "info";
+  }
+  if (resolved.value === ConfigurationStatus.DISABLED) {
+    return "warning";
+  }
+  return undefined;
+});
+
+const label = computed(() => {
+  if (resolved.value === ConfigurationStatus.ENABLED) {
+    return "启用";
+  }
+  if (resolved.value === ConfigurationStatus.DISABLED) {
+    return "停用";
+  }
+  return "";
+});
 </script>

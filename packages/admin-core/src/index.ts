@@ -30,11 +30,13 @@ export * from "./hooks/biz/useEnum";
 export * from "./hooks/biz/useGlobalLoading";
 export * from "./hooks/biz/useLogin";
 export * from "./hooks/biz/useCapabilities";
+export * from "./hooks/biz/actionAccess";
 export * from "./query";
 export * from "./hooks/web/useMessage";
 export * from "./hooks/web/useRouter";
 export * from "./hooks/web/useTitle";
 export * from "./hooks/components/useDetailEditSession";
+export * from "./hooks/components/createLoadGuard";
 export type { InBizTabsBeforeChange, TabItem } from "./components/tabs/types";
 export * from "./components/table";
 export type {
@@ -120,6 +122,7 @@ export { default as InAvatar } from "./components/avatar/InAvatar.vue";
 export { deptDrawerHeaderAvatar } from "./assets/deptDrawerHeaderAvatar";
 export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";
 export { default as InAccountStatusTag } from "./components/status/InAccountStatusTag.vue";
+export { default as StatusTag } from "./components/status/StatusTag.vue";
 export { resolveCommonStatus } from "./components/status/resolveCommonStatus";
 export type {
   DisableAccountAPI,

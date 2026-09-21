@@ -2,7 +2,7 @@
   <in-detail-drawer
     v-model="visible"
     v-model:tab="tab"
-    v-model:editing="session.editing.value"
+    v-model:editing="editing"
     title="应用详情"
     :loading="loading"
     :saving="session.saving.value"
@@ -12,32 +12,28 @@
     @save="privateSave"
   >
     <in-biz-tab-panel title="基本信息" name="base">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="编码">
-          <span>{{ detail.record.code }}</span>
-        </el-form-item>
-        <el-form-item label="名称">
-          <el-input v-if="session.editing.value" v-model="draft.name" />
-          <span v-else>{{ detail.record.name }}</span>
-        </el-form-item>
-        <el-form-item label="说明">
-          <el-input v-if="session.editing.value" v-model="draft.description" type="textarea" :rows="3" />
-          <span v-else>{{ detail.record.description || "—" }}</span>
-        </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number v-if="session.editing.value" v-model="draft.sortOrder" :min="0" />
-          <span v-else>{{ detail.record.sortOrder }}</span>
-        </el-form-item>
-        <el-form-item label="基础应用">
-          <el-switch v-if="session.editing.value" v-model="draft.baseline" />
-          <span v-else>{{ detail.record.baseline ? "是" : "否" }}</span>
-        </el-form-item>
-        <el-form-item label="状态">
-          <biz-iam-status-tag :status="detail.record.status" />
-        </el-form-item>
-      </el-form>
+      <in-form v-if="detail" :editing="editing">
+        <in-detail-field label="编码" :value="detail.record.code" />
+        <in-detail-field label="名称" :value="detail.record.name">
+          <el-input v-model="draft.name" />
+        </in-detail-field>
+        <in-detail-field label="说明" :value="detail.record.description">
+          <el-input v-model="draft.description" type="textarea" :rows="3" />
+        </in-detail-field>
+        <in-detail-field label="排序" :value="detail.record.sortOrder">
+          <el-input-number v-model="draft.sortOrder" :min="0" />
+        </in-detail-field>
+        <in-detail-field label="基础应用" :value="detail.record.baseline ? '是' : '否'">
+          <el-switch v-model="draft.baseline" />
+        </in-detail-field>
+        <in-detail-field label="状态">
+          <template #view>
+            <biz-iam-status-tag :status="detail.record.status" />
+          </template>
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="资源与操作" name="catalog">
+    <in-biz-tab-panel title="资源与操作" name="catalog" :editable="false">
       <div class="flex flex-col gap-16px">
         <div class="flex items-center justify-between">
           <span class="font-500">资源</span>
@@ -95,7 +91,7 @@
         </el-table>
       </div>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="菜单" name="menus">
+    <in-biz-tab-panel title="菜单" name="menus" :editable="false">
       <div class="flex flex-col gap-12px">
         <div class="flex justify-end">
           <in-button v-auth="IamAction.PLATFORM_MENU_CREATE" @click="privateCreateMenu">创建菜单</in-button>
@@ -130,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, useDetailEditSession } from "@ingot/admin-core";
+import { Confirm, Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
   BizIamStatusTag,
   ConfigurationStatus,
@@ -165,6 +161,7 @@ defineOptions({ name: "ApplicationDetailDrawer" });
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();
+const { editing } = session;
 const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
@@ -196,6 +193,7 @@ const draft = reactive({
   sortOrder: 0,
   baseline: false,
 });
+const loadGuard = createLoadGuard();
 
 const visibleActions = computed(() => {
   if (!selectedResource.value) {
@@ -221,13 +219,16 @@ const applyDraft = (record: ApplicationRecord): void => {
   draft.baseline = record.baseline;
 };
 
-const loadCatalog = (): void => {
-  const id = detail.value?.record.id;
+const loadCatalog = (requestId?: string): void => {
+  const id = requestId ?? detail.value?.record.id;
   if (!id) {
     return;
   }
   Promise.all([PlatformResourcePageAPI(id), PlatformActionPageAPI(id), PlatformMenuPageAPI(id)]).then(
     ([resourceRes, actionRes, menuRes]) => {
+      if (detail.value?.record.id !== id) {
+        return;
+      }
       resources.value = resourceRes.data.records ?? [];
       actions.value = actionRes.data.records ?? [];
       menus.value = menuRes.data.records ?? [];
@@ -243,15 +244,30 @@ const loadCatalog = (): void => {
 };
 
 const load = (id: string): void => {
+  const guard = loadGuard.begin();
   loading.value = true;
+  detail.value = undefined;
+  resources.value = [];
+  actions.value = [];
+  menus.value = [];
+  selectedResource.value = undefined;
+  draft.name = "";
+  draft.description = "";
+  draft.sortOrder = 0;
+  draft.baseline = false;
   PlatformApplicationDetailAPI(id)
     .then((response) => {
+      if (!guard.isCurrent()) {
+        return;
+      }
       detail.value = response.data;
       applyDraft(response.data.record);
-      loadCatalog();
+      loadCatalog(id);
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) {
+        loading.value = false;
+      }
     });
 };
 

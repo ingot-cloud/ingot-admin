@@ -6,7 +6,6 @@
     title="部门详情"
     edit-label="编辑基本信息"
     :saving="saving"
-    :loading="saving"
     @edit="privateOnEdit"
     @cancel="privateOnCancel"
     @save="privateOnSave"
@@ -35,93 +34,81 @@
     </template>
 
     <in-biz-tab-panel title="基本信息" name="basic">
-      <div class="dept-detail-body">
-        <in-description-list v-if="!editing">
-          <in-description-item label="部门名称" :value="editForm.name" />
-          <in-description-item label="部门 ID" :value="deptId" />
-          <in-description-item label="上级部门" :value="parentName" />
-          <in-description-item label="部门主管" :value="managerNames" />
-          <in-description-item label="状态">
-            <in-common-status-tag :status="editForm.status" />
-          </in-description-item>
-        </in-description-list>
-        <el-form
-          v-else
-          ref="editFormRef"
-          label-width="100px"
-          label-position="top"
-          :model="editForm"
-          :rules="rules"
-        >
-          <el-form-item label="部门名称" prop="name">
-            <el-input v-model="editForm.name" clearable placeholder="请输入部门名称" />
-          </el-form-item>
-          <el-form-item label="部门 ID">
-            <span>{{ deptId }}</span>
-          </el-form-item>
-          <el-form-item label="上级部门" prop="pid">
-            <el-tree-select
-              w-full
-              v-model="editForm.pid"
-              :data="selectData"
-              :node-key="TreeKeyAndProps.nodeKey"
-              :value-key="TreeKeyAndProps.nodeKey"
-              :props="TreeKeyAndProps.props"
-              :check-strictly="true"
-            />
-          </el-form-item>
-          <el-form-item label="部门主管">
-            <el-select
-              v-model="editForm.managerUsers"
-              multiple
-              filterable
-              remote
-              reserve-keyword
-              placeholder="部门主管"
-              :remote-method="privateQueryUsers"
-              :loading="queryLoading"
+      <in-form
+        ref="editFormRef"
+        :model="editForm"
+        :rules="rules"
+        :editing="editing"
+      >
+        <in-detail-field label="部门名称" prop="name" :value="editForm.name">
+          <el-input v-model="editForm.name" clearable placeholder="请输入部门名称" />
+        </in-detail-field>
+        <in-detail-field label="部门 ID" :value="deptId" />
+        <in-detail-field label="上级部门" prop="pid" :value="parentName">
+          <el-tree-select
+            w-full
+            v-model="editForm.pid"
+            :data="selectData"
+            :node-key="TreeKeyAndProps.nodeKey"
+            :value-key="TreeKeyAndProps.nodeKey"
+            :props="TreeKeyAndProps.props"
+            :check-strictly="true"
+          />
+        </in-detail-field>
+        <in-detail-field label="部门主管" :value="managerNames">
+          <el-select
+            v-model="editForm.managerUsers"
+            multiple
+            filterable
+            remote
+            reserve-keyword
+            placeholder="部门主管"
+            :remote-method="privateQueryUsers"
+            :loading="queryLoading"
+          >
+            <template #label="{ value }">
+              <div flex flex-row items-center gap-2>
+                <el-image
+                  v-if="value.avatar"
+                  class="w-20px h-20px"
+                  :src="value.avatar"
+                  fit="cover"
+                />
+                <span>{{ value.nickname }}</span>
+              </div>
+            </template>
+            <el-option
+              v-for="item in userList"
+              :key="item.id"
+              :label="item.nickname"
+              :value="item"
             >
-              <template #label="{ value }">
-                <div flex flex-row items-center gap-2>
-                  <el-image
-                    v-if="value.avatar"
-                    class="w-20px h-20px"
-                    :src="value.avatar"
-                    fit="cover"
-                  />
-                  <span>{{ value.nickname }}</span>
-                </div>
-              </template>
-              <el-option
-                v-for="item in userList"
-                :key="item.id"
-                :label="item.nickname"
-                :value="item"
-              >
-                <div flex flex-row items-center gap-2>
-                  <el-image
-                    v-if="item.avatar"
-                    class="w-20px h-20px"
-                    :src="item.avatar"
-                    fit="cover"
-                  />
-                  <span>{{ item.nickname }}</span>
-                </div>
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="editForm.status">
-              <el-radio-button :value="CommonStatus.Enable">
-                {{ statusEnum.getTagText(CommonStatus.Enable).text }}
-              </el-radio-button>
-              <el-radio-button :value="CommonStatus.Lock">
-                {{ statusEnum.getTagText(CommonStatus.Lock).text }}
-              </el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-      </div>
+              <div flex flex-row items-center gap-2>
+                <el-image
+                  v-if="item.avatar"
+                  class="w-20px h-20px"
+                  :src="item.avatar"
+                  fit="cover"
+                />
+                <span>{{ item.nickname }}</span>
+              </div>
+            </el-option>
+          </el-select>
+        </in-detail-field>
+        <in-detail-field label="状态" prop="status">
+          <template #view>
+            <in-common-status-tag :status="editForm.status" />
+          </template>
+          <el-radio-group v-model="editForm.status">
+            <el-radio-button :value="CommonStatus.Enable">
+              {{ statusEnum.getTagText(CommonStatus.Enable).text }}
+            </el-radio-button>
+            <el-radio-button :value="CommonStatus.Lock">
+              {{ statusEnum.getTagText(CommonStatus.Lock).text }}
+            </el-radio-button>
+          </el-radio-group>
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
@@ -342,8 +329,3 @@ defineExpose({
   },
 });
 </script>
-<style lang="postcss" scoped>
-.dept-detail-body {
-  padding: var(--in-space-5);
-}
-</style>

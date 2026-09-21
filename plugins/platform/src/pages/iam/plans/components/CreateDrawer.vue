@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="创建套餐" :loading="loading" size="560px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="名称" required>
         <el-input v-model="draft.name" />
       </el-form-item>
@@ -15,7 +15,7 @@
           :load-data="loadApplications"
         />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">创建</in-button>

@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" :title="title" :loading="loading" size="720px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="接收对象" required>
         <el-select v-model="subjectType" :disabled="isEditing" class="w-160px mb-8px">
           <el-option
@@ -102,7 +102,7 @@
           </span>
         </div>
       </div>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button :loading="previewState.loading.value" @in-click="privatePreview">预览效果</in-button>

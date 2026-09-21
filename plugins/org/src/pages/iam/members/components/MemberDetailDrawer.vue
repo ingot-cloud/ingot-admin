@@ -2,7 +2,7 @@
   <in-detail-drawer
     v-model="visible"
     v-model:tab="tab"
-    v-model:editing="session.editing.value"
+    v-model:editing="editing"
     title="成员详情"
     :loading="loading"
     :saving="session.saving.value"
@@ -11,51 +11,39 @@
     @save="privateSave"
   >
     <in-biz-tab-panel title="基本资料" name="base">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="显示名">
-          <el-input v-if="session.editing.value" v-model="draft.displayName" />
-          <span v-else>{{ detail.record.displayName || detail.record.id }}</span>
-        </el-form-item>
-        <el-form-item label="手机号">
-          <el-input v-if="session.editing.value" v-model="draft.phone" />
-          <span v-else>{{ detail.record.phone || "—" }}</span>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-if="session.editing.value" v-model="draft.email" />
-          <span v-else>{{ detail.record.email || "—" }}</span>
-        </el-form-item>
-        <el-form-item label="状态">
-          <span>{{ detail.record.status }}</span>
-        </el-form-item>
-      </el-form>
+      <in-form v-if="detail" :editing="editing">
+        <in-detail-field
+          label="显示名"
+          :value="detail.record.displayName || detail.record.id"
+        >
+          <el-input v-model="draft.displayName" />
+        </in-detail-field>
+        <in-detail-field label="手机号" :value="detail.record.phone">
+          <el-input v-model="draft.phone" />
+        </in-detail-field>
+        <in-detail-field label="邮箱" :value="detail.record.email">
+          <el-input v-model="draft.email" />
+        </in-detail-field>
+        <in-detail-field label="状态" :value="detail.record.status" />
+      </in-form>
     </in-biz-tab-panel>
     <in-biz-tab-panel title="任职部门" name="departments">
-      <el-form label-position="top">
-        <el-form-item label="部门">
+      <in-form :editing="editing">
+        <in-detail-field label="部门" :value="departmentIds">
           <biz-iam-chip-page-select
-            v-if="session.editing.value"
             v-model="departmentIds"
             :load-data="loadDepartments"
             placeholder="远程分页添加部门"
             empty-text="未指定部门"
           />
-          <span v-else>{{ departmentIds.length ? departmentIds.join("、") : "—" }}</span>
-        </el-form-item>
-        <in-button
-          v-if="session.editing.value"
-          type="primary"
-          :loading="savingDepartments"
-          @in-click="privateSaveDepartments"
-        >
-          保存任职
-        </in-button>
-      </el-form>
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
 
 <script setup lang="ts">
-import { Message, useDetailEditSession } from "@ingot/admin-core";
+import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
   BizIamChipPageSelect,
   createIamListLoader,
@@ -79,10 +67,10 @@ defineOptions({ name: "MemberDetailDrawer" });
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();
+const { editing } = session;
 const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
-const savingDepartments = ref(false);
 const detail = ref<ResourceDetail<MemberRecord>>();
 const departmentIds = ref<string[]>([]);
 const draft = reactive({
@@ -90,6 +78,7 @@ const draft = reactive({
   phone: "",
   email: "",
 });
+const loadGuard = createLoadGuard();
 
 const loadDepartments = createIamListLoader(async (page, condition) => {
   const response = await TenantDepartmentPageAPI(page, condition);
@@ -104,14 +93,25 @@ const applyDraft = (record: MemberRecord): void => {
 };
 
 const load = (id: string): void => {
+  const guard = loadGuard.begin();
   loading.value = true;
+  detail.value = undefined;
+  departmentIds.value = [];
+  draft.displayName = "";
+  draft.phone = "";
+  draft.email = "";
   TenantMemberDetailAPI(id)
     .then((response) => {
+      if (!guard.isCurrent()) {
+        return;
+      }
       detail.value = response.data;
       applyDraft(response.data.record);
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) {
+        loading.value = false;
+      }
     });
 };
 
@@ -124,6 +124,10 @@ const privateCancel = (): void => {
 
 const privateSave = (): void => {
   if (!detail.value) {
+    return;
+  }
+  if (tab.value === "departments") {
+    privateSaveDepartments();
     return;
   }
   const access = detail.value.fieldAccess;
@@ -157,7 +161,7 @@ const privateSaveDepartments = (): void => {
   if (!detail.value) {
     return;
   }
-  savingDepartments.value = true;
+  session.saving.value = true;
   TenantMemberDepartmentsAPI(detail.value.record.id, {
     expectedVersion: detail.value.version,
     departments: departmentIds.value.map((id, index) => ({ id, primary: index === 0 })),
@@ -166,11 +170,12 @@ const privateSaveDepartments = (): void => {
       detail.value = response.data;
       applyDraft(response.data.record);
       Message.success("任职已更新");
+      session.exitEdit();
       void queryClient.invalidateQueries({ queryKey: tenantMemberQueryKeys.lists() });
       emits("success");
     })
     .finally(() => {
-      savingDepartments.value = false;
+      session.saving.value = false;
     });
 };
 

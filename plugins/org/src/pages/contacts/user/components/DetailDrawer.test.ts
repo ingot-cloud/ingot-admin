@@ -12,8 +12,11 @@ describe("org contacts user DetailDrawer", () => {
   it("默认查看态并提供编辑与离开确认所需结构", () => {
     expect(source).toContain('title="成员详情"');
     expect(source).toContain('edit-label="编辑基本信息"');
-    expect(source).toContain("in-description-list");
-    expect(source).toContain('v-if="!editing"');
+    expect(source).toContain("<in-form");
+    expect(source).toContain("in-detail-field");
+    expect(source).toContain(':editing="editing"');
+    expect(source).not.toContain("in-description-list");
+    expect(source).not.toContain("member-detail-body");
     expect(source).toContain("更多操作");
     expect(source).toContain('popper-class="in-dropdown"');
     expect(source).toContain('placement="bottom-end"');
@@ -24,20 +27,10 @@ describe("org contacts user DetailDrawer", () => {
     expect(source).toContain(':editable="editing"');
     expect(source).toContain('v-model:avatar="editForm.avatar"');
     expect(source).not.toContain('label="头像"');
-    const viewBlock = source.slice(
-      source.indexOf("in-description-list"),
-      source.indexOf("<el-form"),
+    const order = ["姓名", "手机号", "email", "部门"].map((label) =>
+      source.indexOf(`label="${label}"`),
     );
-    const editBlock = source.slice(source.indexOf("<el-form"));
-    const viewOrder = ["姓名", "手机号", "email", "部门"].map((label) =>
-      viewBlock.indexOf(`label="${label}"`),
-    );
-    const editOrder = ["姓名", "手机号", "email", "部门"].map((label) =>
-      editBlock.indexOf(`label="${label}"`),
-    );
-    expect(viewOrder.every((index) => index >= 0)).toBe(true);
-    expect(editOrder.every((index) => index >= 0)).toBe(true);
-    expect([...viewOrder].sort((a, b) => a - b)).toEqual(viewOrder);
-    expect([...editOrder].sort((a, b) => a - b)).toEqual(editOrder);
+    expect(order.every((index) => index >= 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 });

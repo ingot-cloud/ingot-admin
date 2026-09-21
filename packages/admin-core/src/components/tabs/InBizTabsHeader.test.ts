@@ -18,6 +18,7 @@ describe("InBizTabsHeader", () => {
     expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["b"]);
     expect(wrapper.emitted("change")?.[0]).toEqual(["b"]);
     expect(wrapper.find(".in-biz-tabs-ink").exists()).toBe(true);
+    expect(wrapper.find(".in-biz-tabs-header__bar").exists()).toBe(true);
     expect(wrapper.find(".inner").exists()).toBe(true);
     wrapper.unmount();
   });

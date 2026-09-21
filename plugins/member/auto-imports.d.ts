@@ -8,10 +8,12 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const ACTION_UNAVAILABLE_MESSAGE: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').ACTION_UNAVAILABLE_MESSAGE
   const CONFIRM_DIALOG_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_CLASS
   const CONFIRM_DIALOG_OVERLAY_CLASS: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').CONFIRM_DIALOG_OVERLAY_CLASS
   const DomainMismatchError: typeof import('../../packages/admin-core/src/stores/modules/auth').DomainMismatchError
   const EffectScope: typeof import('vue').EffectScope
+  const OBJECT_ACTION_DENIED_MESSAGE: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').OBJECT_ACTION_DENIED_MESSAGE
   const UNSAVED_CHANGES_MESSAGE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_MESSAGE
   const UNSAVED_CHANGES_TITLE: typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession').UNSAVED_CHANGES_TITLE
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
@@ -45,6 +47,7 @@ declare global {
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
+  const disabledActionHint: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').disabledActionHint
   const eagerComputed: typeof import('@vueuse/core').eagerComputed
   const effectScope: typeof import('vue').effectScope
   const ensureSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').ensureSessionBootstrap
@@ -71,6 +74,7 @@ declare global {
   const mapWritableState: typeof import('pinia').mapWritableState
   const markRaw: typeof import('vue').markRaw
   const nextTick: typeof import('vue').nextTick
+  const objectActionAllowed: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').objectActionAllowed
   const onActivated: typeof import('vue').onActivated
   const onBeforeMount: typeof import('vue').onBeforeMount
   const onBeforeRouteLeave: typeof import('vue-router').onBeforeRouteLeave
@@ -112,6 +116,7 @@ declare global {
   const refWithControl: typeof import('@vueuse/core').refWithControl
   const refreshSessionPermissions: typeof import('../../packages/admin-core/src/stores/modules/auth').refreshSessionPermissions
   const resetSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').resetSessionBootstrap
+  const resolveActionAccess: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').resolveActionAccess
   const resolveComponent: typeof import('vue').resolveComponent
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
@@ -359,6 +364,9 @@ declare global {
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
   // @ts-ignore
+  export type { ObjectActionCapability, ObjectActionCapabilities, ObjectActionDecision, ActionAccess } from '../../packages/admin-core/src/hooks/biz/actionAccess'
+  import('../../packages/admin-core/src/hooks/biz/actionAccess')
+  // @ts-ignore
   export type { Options, CommandComponent } from '../../packages/admin-core/src/hooks/biz/useCommandComponent'
   import('../../packages/admin-core/src/hooks/biz/useCommandComponent')
   // @ts-ignore
@@ -377,10 +385,12 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface GlobalComponents {}
   interface ComponentCustomProperties {
+    readonly ACTION_UNAVAILABLE_MESSAGE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['ACTION_UNAVAILABLE_MESSAGE']>
     readonly CONFIRM_DIALOG_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_CLASS']>
     readonly CONFIRM_DIALOG_OVERLAY_CLASS: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['CONFIRM_DIALOG_OVERLAY_CLASS']>
     readonly DomainMismatchError: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['DomainMismatchError']>
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly OBJECT_ACTION_DENIED_MESSAGE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['OBJECT_ACTION_DENIED_MESSAGE']>
     readonly UNSAVED_CHANGES_MESSAGE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_MESSAGE']>
     readonly UNSAVED_CHANGES_TITLE: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/useDetailEditSession')['UNSAVED_CHANGES_TITLE']>
     readonly acceptHMRUpdate: UnwrapRef<typeof import('pinia')['acceptHMRUpdate']>
@@ -414,6 +424,7 @@ declare module 'vue' {
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
+    readonly disabledActionHint: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['disabledActionHint']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly ensureSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['ensureSessionBootstrap']>
@@ -440,6 +451,7 @@ declare module 'vue' {
     readonly mapWritableState: UnwrapRef<typeof import('pinia')['mapWritableState']>
     readonly markRaw: UnwrapRef<typeof import('vue')['markRaw']>
     readonly nextTick: UnwrapRef<typeof import('vue')['nextTick']>
+    readonly objectActionAllowed: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['objectActionAllowed']>
     readonly onActivated: UnwrapRef<typeof import('vue')['onActivated']>
     readonly onBeforeMount: UnwrapRef<typeof import('vue')['onBeforeMount']>
     readonly onBeforeRouteLeave: UnwrapRef<typeof import('vue-router')['onBeforeRouteLeave']>
@@ -481,6 +493,7 @@ declare module 'vue' {
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
     readonly refreshSessionPermissions: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['refreshSessionPermissions']>
     readonly resetSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['resetSessionBootstrap']>
+    readonly resolveActionAccess: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['resolveActionAccess']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly setActivePinia: UnwrapRef<typeof import('pinia')['setActivePinia']>
     readonly setMapStoreSuffix: UnwrapRef<typeof import('pinia')['setMapStoreSuffix']>

@@ -33,9 +33,13 @@
           />
         </template>
         <template #name="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.TENANT_APPLICATION_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.applicationName || item.record.applicationId }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #status="{ item }">{{ item.record.status }}</template>
         <template #actions="{ item }">
@@ -56,6 +60,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
+import { BizIamRecordLink, IamAction } from "@ingot/admin-common";
 import ApplicationDetailDrawer from "./components/ApplicationDetailDrawer.vue";
 import { createRowActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";

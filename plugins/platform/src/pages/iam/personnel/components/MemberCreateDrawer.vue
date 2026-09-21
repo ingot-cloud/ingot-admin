@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="添加平台成员" :loading="loading" size="520px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="登录名" required>
         <div class="flex gap-8px">
           <el-input v-model="username" clearable placeholder="精确查找已有全局账号" />
@@ -13,7 +13,7 @@
       <el-form-item label="显示名">
         <el-input v-model="displayName" clearable />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" :disabled="!accountId" @in-click="privateSubmit">

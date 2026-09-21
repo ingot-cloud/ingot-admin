@@ -36,9 +36,13 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="emptyAccountRow" />
         </template>
         <template #username="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.PLATFORM_ACCOUNT_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.username || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #phone="{ item }">{{ item.record.phone || "—" }}</template>
         <template #email="{ item }">{{ item.record.email || "—" }}</template>
@@ -75,6 +79,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
+import { BizIamRecordLink, IamAction } from "@ingot/admin-common";
 import {
   PlatformAccountDeleteAPI,
   PlatformAccountDisableAPI,

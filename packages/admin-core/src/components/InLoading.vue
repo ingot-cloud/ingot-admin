@@ -1,6 +1,8 @@
 <template>
   <div class="in-loading">
-    <slot />
+    <div class="in-loading__content">
+      <slot />
+    </div>
     <div
       v-if="loading"
       class="in-loading__cover"
@@ -41,9 +43,19 @@ withDefaults(
   flex-direction: column;
 }
 
-.in-loading > :not(.in-loading__cover) {
+.in-loading__content {
+  display: flex;
+  flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
+  width: 100%;
+}
+
+.in-loading__content > :only-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
 }
 
 .in-loading__cover {

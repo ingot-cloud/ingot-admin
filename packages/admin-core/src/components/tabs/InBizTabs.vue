@@ -1,7 +1,11 @@
 <template>
   <div class="in-biz-tabs">
     <in-biz-tabs-header v-model="headerValue" :tabs="tabs" :before-change="beforeChange" />
-    <div class="inner-container">
+    <div
+      class="inner-container"
+      :class="{ 'is-aligned': alignContent }"
+      :style="contentPaddingStyle"
+    >
       <slot />
     </div>
   </div>
@@ -21,9 +25,15 @@ const model = defineModel<string>({ required: true });
 const emits = defineEmits<{
   change: [value: string];
 }>();
-defineProps<{
+const props = defineProps<{
   beforeChange?: InBizTabsBeforeChange;
+  contentPadding?: string;
+  alignContent?: boolean;
 }>();
+
+const contentPaddingStyle = computed(() =>
+  props.contentPadding ? { padding: props.contentPadding } : undefined,
+);
 
 const tabs = ref<Array<TabItem>>([]);
 const headerValue = computed<string>({
@@ -59,16 +69,22 @@ watch(panes, (value) => {
 </script>
 <style lang="postcss" scoped>
 .in-biz-tabs {
+  --in-biz-tabs-inline-padding: var(--in-space-5);
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
   flex: 1;
+  width: 100%;
 }
 
 .inner-container {
   flex: 1;
   min-height: 0;
   overflow: auto;
+}
+
+.inner-container.is-aligned {
+  padding: var(--in-space-5) var(--in-biz-tabs-inline-padding);
 }
 </style>

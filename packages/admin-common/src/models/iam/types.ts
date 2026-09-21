@@ -173,6 +173,7 @@ export interface TenantRecord {
   name: string;
   avatar?: string;
   ownerMemberId: string;
+  ownerDisplayName?: string;
   status: ConfigurationStatus;
 }
 

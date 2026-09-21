@@ -13,5 +13,13 @@ export interface InBizTabRootContext {
   unregisterPane: (uid: number) => void;
 }
 
+export interface InDetailDrawerTabsContext {
+  registerEditable: (name: string, editable: ComputedRef<boolean>) => void;
+  unregisterEditable: (name: string) => void;
+}
+
 export const tabsRootContextKey: InjectionKey<InBizTabRootContext> =
   Symbol("InBizTabRootContextKey");
+
+export const detailDrawerTabsKey: InjectionKey<InDetailDrawerTabsContext> =
+  Symbol("InDetailDrawerTabsKey");

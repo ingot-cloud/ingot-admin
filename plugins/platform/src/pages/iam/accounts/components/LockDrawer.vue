@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="锁定账号" :loading="loading" size="480px">
-    <el-form v-if="row" label-position="top">
+    <in-form v-if="row" label-position="top">
       <el-form-item label="账号">
         <span>{{ row.record.username }}</span>
       </el-form-item>
@@ -15,7 +15,7 @@
           placeholder="为空表示永久锁定"
         />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">锁定</in-button>

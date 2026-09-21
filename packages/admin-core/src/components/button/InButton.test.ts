@@ -23,6 +23,7 @@ describe("InButton", () => {
     await wrapper.get("button").trigger("click");
     expect(wrapper.emitted("in-click")).toHaveLength(2);
     vi.useRealTimers();
+    wrapper.unmount();
   });
 
   it("把 Ref loading 解成 boolean 再传给按钮", () => {
@@ -39,5 +40,6 @@ describe("InButton", () => {
       },
     });
     expect(wrapper.get("button").attributes("data-loading")).toBe("true");
+    wrapper.unmount();
   });
 });

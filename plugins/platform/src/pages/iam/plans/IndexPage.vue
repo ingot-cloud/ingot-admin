@@ -37,9 +37,13 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.PLATFORM_PLAN_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.name || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #status="{ item }">
           <biz-iam-status-tag :status="item.record.status" />
@@ -67,8 +71,10 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizIamRecordLink,
   BizIamStatusTag,
   ConfigurationStatus,
+  IamAction,
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import CreateDrawer from "./components/CreateDrawer.vue";

@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="创建全局账号" :loading="loading" size="480px">
-    <el-form label-position="top" :model="draft">
+    <in-form label-position="top" :model="draft">
       <el-form-item label="登录名" required>
         <el-input v-model="draft.username" clearable placeholder="不自动授予任何成员资格" />
       </el-form-item>
@@ -10,7 +10,7 @@
       <el-form-item label="登录邮箱">
         <el-input v-model="draft.email" clearable placeholder="可空" />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">创建</in-button>

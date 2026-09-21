@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" :title="edit ? '编辑部门' : '新增部门'" :loading="loading" size="480px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="名称" required>
         <el-input v-model="draft.name" clearable />
       </el-form-item>
@@ -19,7 +19,7 @@
       <el-form-item label="排序">
         <el-input-number v-model="draft.sortOrder" :min="0" />
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">保存</in-button>

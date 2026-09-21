@@ -2,7 +2,7 @@
   <in-detail-drawer
     v-model="visible"
     v-model:tab="tab"
-    v-model:editing="session.editing.value"
+    v-model:editing="editing"
     title="套餐详情"
     :loading="loading"
     :saving="session.saving.value"
@@ -11,41 +11,42 @@
     @save="privateSave"
   >
     <in-biz-tab-panel title="基本信息" name="base">
-      <el-form v-if="detail" label-position="top">
-        <el-form-item label="名称">
-          <el-input v-if="session.editing.value" v-model="draft.name" />
-          <span v-else>{{ detail.record.name }}</span>
-        </el-form-item>
-        <el-form-item label="说明">
-          <el-input v-if="session.editing.value" v-model="draft.description" type="textarea" :rows="3" />
-          <span v-else>{{ detail.record.description || "—" }}</span>
-        </el-form-item>
-        <el-form-item label="包含应用">
+      <in-form v-if="detail" :editing="editing">
+        <in-detail-field label="名称" :value="detail.record.name">
+          <el-input v-model="draft.name" />
+        </in-detail-field>
+        <in-detail-field label="说明" :value="detail.record.description">
+          <el-input v-model="draft.description" type="textarea" :rows="3" />
+        </in-detail-field>
+        <in-detail-field label="包含应用">
+          <template #view>
+            <div class="flex flex-col gap-4px">
+              <div v-for="id in detail.record.applicationIds" :key="id">
+                {{ applicationLabels[id] ?? id }}
+              </div>
+              <div v-if="!detail.record.applicationIds.length">未绑定应用</div>
+            </div>
+          </template>
           <biz-iam-chip-page-select
-            v-if="session.editing.value"
             v-model="draft.applicationIds"
             empty-text="未绑定应用"
             placeholder="远程分页添加应用"
             :load-data="loadApplications"
             :initial-labels="applicationLabels"
           />
-          <div v-else class="flex flex-col gap-4px">
-            <div v-for="id in detail.record.applicationIds" :key="id">
-              {{ applicationLabels[id] ?? id }}
-            </div>
-            <div v-if="!detail.record.applicationIds.length">未绑定应用</div>
-          </div>
-        </el-form-item>
-        <el-form-item label="状态">
-          <biz-iam-status-tag :status="detail.record.status" />
-        </el-form-item>
-      </el-form>
+        </in-detail-field>
+        <in-detail-field label="状态">
+          <template #view>
+            <biz-iam-status-tag :status="detail.record.status" />
+          </template>
+        </in-detail-field>
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
 
 <script setup lang="ts">
-import { Message, useDetailEditSession } from "@ingot/admin-core";
+import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
   BizIamChipPageSelect,
   BizIamStatusTag,
@@ -69,6 +70,7 @@ defineOptions({ name: "PlanDetailDrawer" });
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();
+const { editing } = session;
 const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
@@ -79,6 +81,7 @@ const draft = reactive({
   description: "",
   applicationIds: [] as string[],
 });
+const loadGuard = createLoadGuard();
 
 const loadApplications = createIamListLoader(async (page, condition) => {
   const response = await PlatformApplicationPageAPI(page, condition);
@@ -107,15 +110,25 @@ const resolveSelectedLabels = (ids: string[]): Promise<void> =>
   ).then(() => undefined);
 
 const load = (id: string): void => {
+  const guard = loadGuard.begin();
   loading.value = true;
+  detail.value = undefined;
+  draft.name = "";
+  draft.description = "";
+  draft.applicationIds = [];
   PlatformPlanDetailAPI(id)
     .then((detailRes) => {
+      if (!guard.isCurrent()) {
+        return;
+      }
       detail.value = detailRes.data;
       applyDraft(detailRes.data.record);
       return resolveSelectedLabels(detailRes.data.record.applicationIds);
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) {
+        loading.value = false;
+      }
     });
 };
 

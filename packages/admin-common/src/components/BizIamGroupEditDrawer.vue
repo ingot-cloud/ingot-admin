@@ -1,6 +1,6 @@
 <template>
   <in-drawer :title="title" v-model="visible" :loading="loading" size="560px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="名称" required>
         <el-input v-model="draft.name" />
       </el-form-item>
@@ -82,7 +82,7 @@
         </div>
         <div v-if="impact.impactSummary.restricted">另有无法披露的引用，不以 0 代替。</div>
       </div>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button v-if="editing" @click="privatePreview">预览影响</in-button>

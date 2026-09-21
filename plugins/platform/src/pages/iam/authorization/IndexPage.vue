@@ -21,9 +21,13 @@
               <in-table-actions variant="toolbar" :actions="roleToolbarActions" :row="emptyRoleRow" />
             </template>
             <template #name="{ item }">
-              <in-button text link @click="handleDetail(item)">
+              <biz-iam-record-link
+                :action="IamAction.PLATFORM_ROLE_READ"
+                :capabilities="item.capabilities"
+                @click="handleDetail(item)"
+              >
                 {{ item.record.name || item.record.id }}
-              </in-button>
+              </biz-iam-record-link>
             </template>
             <template #kind="{ item }">{{ item.record.kind }}</template>
             <template #status="{ item }">
@@ -160,6 +164,7 @@ import {
   BizIamAssignmentDrawer,
   BizIamDelegationDrawer,
   BizIamDiagnoseDrawer,
+  BizIamRecordLink,
   BizIamRoleCreateDrawer,
   BizIamRoleDetailDrawer,
   BizIamStatusTag,

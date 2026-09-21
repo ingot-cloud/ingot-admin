@@ -19,9 +19,13 @@
           <in-picker v-model="domainFilter" label="管理域" :options="domainOptions" />
         </template>
         <template #changeType="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="auditReadActionOf(item)"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.changeType || item.record.traceId || "详情" }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #timestamp="{ item }">{{ item.record.timestamp }}</template>
       </in-table>
@@ -29,7 +33,7 @@
   </in-page-frame>
 
   <in-drawer v-model="detailVisible" title="审计详情" size="560px">
-    <el-form v-if="detail" label-position="top">
+    <in-form v-if="detail" :editing="false">
       <el-form-item label="类型">
         <span>{{ detail.record.changeType || "—" }}</span>
       </el-form-item>
@@ -51,7 +55,7 @@
       <el-form-item label="变更后">
         <pre class="whitespace-pre-wrap text-12px">{{ stringify(detail.record.after) }}</pre>
       </el-form-item>
-    </el-form>
+    </in-form>
   </in-drawer>
 </template>
 
@@ -65,6 +69,8 @@ import {
 } from "@ingot/admin-core";
 import {
   AuthorizationDomain,
+  BizIamRecordLink,
+  IamAction,
   useAuthorizationDomainEnum,
   type AuditEntry,
   type IamListQuery,
@@ -101,6 +107,11 @@ const handleDetail = (row: ResourceDetail<AuditEntry>): void => {
   detail.value = row;
   detailVisible.value = true;
 };
+
+const auditReadActionOf = (row: ResourceDetail<AuditEntry>): string =>
+  row.record.context?.domain === AuthorizationDomain.TENANT
+    ? IamAction.TENANT_AUDIT_READ
+    : IamAction.PLATFORM_AUDIT_READ;
 
 const rowKeyOf = (row: ResourceDetail<AuditEntry>): string =>
   row.record.traceId || row.record.timestamp || row.version;

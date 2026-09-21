@@ -28,27 +28,29 @@
     <template v-for="item in renderItems" :key="item.key">
       <el-tooltip
         v-if="item.action"
-        :disabled="!item.action.disabled || !item.action.disabledReason"
-        :content="item.action.disabledReason"
+        :disabled="!privateDisabledHint(item.action)"
+        :content="privateDisabledHint(item.action)"
         effect="dark"
         placement="top"
       >
-        <button
-          type="button"
-          class="in-table-actions__inline"
-          :class="privateInlineClass(item.action)"
-          :disabled="item.action.disabled"
-          :aria-label="item.action.label"
-          :title="item.action.disabled ? item.action.disabledReason : undefined"
-          @click="privateOnSelect(item.action)"
-        >
-          <in-icon
-            v-if="item.action.icon"
-            :name="item.action.icon"
-            class="in-table-actions__icon"
-          />
-          {{ item.action.label }}
-        </button>
+        <span class="in-table-actions__hit">
+          <button
+            type="button"
+            class="in-table-actions__inline"
+            :class="privateInlineClass(item.action)"
+            :disabled="item.action.disabled"
+            :aria-label="item.action.label"
+            :title="privateDisabledHint(item.action)"
+            @click="privateOnSelect(item.action)"
+          >
+            <in-icon
+              v-if="item.action.icon"
+              :name="item.action.icon"
+              class="in-table-actions__icon"
+            />
+            {{ item.action.label }}
+          </button>
+        </span>
       </el-tooltip>
 
       <div
@@ -101,32 +103,41 @@
           @keydown="privateOnMenuKeydown"
         >
           <div class="in-table-actions__menu-list">
-            <button
+            <el-tooltip
               v-for="(action, index) in ranked.menu"
               :key="action.key"
-              type="button"
-              class="in-table-actions__item"
-              :class="{
-                'is-primary': action.kind === 'primary',
-                'is-danger': action.kind === 'danger',
-                'is-disabled': action.disabled,
-                'is-active': index === activeIndex,
-              }"
-              role="menuitem"
-              :tabindex="index === activeIndex ? 0 : -1"
-              :disabled="action.disabled"
-              :title="action.disabled ? action.disabledReason : undefined"
-              :aria-label="action.disabled && action.disabledReason ? `${action.label}，${action.disabledReason}` : action.label"
-              @click="privateOnSelect(action)"
-              @mouseenter="activeIndex = index"
+              :disabled="!privateDisabledHint(action)"
+              :content="privateDisabledHint(action)"
+              effect="dark"
+              placement="left"
             >
-              <in-icon
-                v-if="action.icon"
-                :name="action.icon"
-                class="in-table-actions__icon"
-              />
-              {{ action.label }}
-            </button>
+              <span class="in-table-actions__hit is-menu">
+                <button
+                  type="button"
+                  class="in-table-actions__item"
+                  :class="{
+                    'is-primary': action.kind === 'primary',
+                    'is-danger': action.kind === 'danger',
+                    'is-disabled': action.disabled,
+                    'is-active': index === activeIndex,
+                  }"
+                  role="menuitem"
+                  :tabindex="index === activeIndex ? 0 : -1"
+                  :disabled="action.disabled"
+                  :title="privateDisabledHint(action)"
+                  :aria-label="privateMenuAriaLabel(action)"
+                  @click="privateOnSelect(action)"
+                  @mouseenter="activeIndex = index"
+                >
+                  <in-icon
+                    v-if="action.icon"
+                    :name="action.icon"
+                    class="in-table-actions__icon"
+                  />
+                  {{ action.label }}
+                </button>
+              </span>
+            </el-tooltip>
           </div>
         </div>
       </Teleport>
@@ -146,6 +157,7 @@ import {
   sameActionKeys,
   type RankedTableActions,
 } from "./actionRanking";
+import { disabledActionHint } from "@/hooks/biz/actionAccess";
 import { usePermissions } from "@/stores/modules/auth";
 import { useMessageConfirm } from "@/hooks/web/useMessage";
 
@@ -244,6 +256,14 @@ const privateInlineClass = (action: InTableAction<Row>) => ({
   "is-danger": action.kind === "danger",
   "is-disabled": action.disabled,
 });
+
+const privateDisabledHint = (action: InTableAction<Row>): string | undefined =>
+  disabledActionHint(action.disabled, action.disabledReason);
+
+const privateMenuAriaLabel = (action: InTableAction<Row>): string => {
+  const hint = privateDisabledHint(action);
+  return hint ? `${action.label}，${hint}` : action.label;
+};
 
 const actionLayoutKey = (item: InTableAction<Row>): string => {
   const confirm =
@@ -513,6 +533,16 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   @apply inline-flex items-center min-w-0;
   gap: var(--in-space-2);
   position: relative;
+}
+
+.in-table-actions__hit {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.in-table-actions__hit.is-menu {
+  display: flex;
+  width: 100%;
 }
 
 .in-table-actions.is-toolbar {

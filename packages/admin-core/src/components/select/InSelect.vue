@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="selectModel" @change="privateOnChanged">
+  <el-select v-model="selectModel" class="in-select" @change="privateOnChanged">
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
 </template>
@@ -40,3 +40,10 @@ const privateOnChanged = (value: any) => {
   emits("onChanged", value);
 };
 </script>
+<style lang="postcss" scoped>
+.in-select {
+  --el-select-width: auto;
+  min-width: calc(var(--in-space-8) * 5);
+  max-width: 100%;
+}
+</style>

@@ -1,5 +1,6 @@
 import { storeToRefs } from "pinia";
 import { usePermissions } from "@/stores/modules/auth";
+import { objectActionAllowed, type ObjectActionCapabilities, type ObjectActionDecision } from "./actionAccess";
 
 export const useCapabilities = () => {
   const store = usePermissions();
@@ -13,17 +14,13 @@ export const useCapabilities = () => {
   };
 
   const objectAllowed = (
-    capabilities: Record<string, { allowed?: boolean; message?: string }> | undefined,
+    capabilities: ObjectActionCapabilities | undefined,
     code: string,
-  ): { allowed: boolean; message?: string } => {
+  ): ObjectActionDecision => {
     if (!hasAction(code)) {
       return { allowed: false };
     }
-    const item = capabilities?.[code];
-    return {
-      allowed: item?.allowed === true,
-      message: item?.message,
-    };
+    return objectActionAllowed(capabilities, code);
   };
 
   return {

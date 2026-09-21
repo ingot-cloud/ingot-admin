@@ -80,26 +80,31 @@ export function PlatformTenantUpdateAPI(
 
 export function PlatformTenantEntitlementsAPI(
   id: string,
+  page: Page,
   options?: RequestOptions,
-): Promise<R<Array<ResourceDetail<EntitlementRecord>>>> {
-  return request.get<Array<ResourceDetail<EntitlementRecord>>>(
-    `${PATH}/${id}/entitlements`,
-    undefined,
-    options,
-  );
+): Promise<R<Page<ResourceDetail<EntitlementRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<EntitlementRecord>>>(
+      `${PATH}/${id}/entitlements`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformTenantEntitlementsReplaceAPI(
   id: string,
   params: EntitlementReplaceInput,
   options?: RequestOptions,
-): Promise<R<Array<ResourceDetail<EntitlementRecord>>>> {
+): Promise<R<Page<ResourceDetail<EntitlementRecord>>>> {
   filterParams(params);
-  return request.put<Array<ResourceDetail<EntitlementRecord>>>(
-    `${PATH}/${id}/entitlements`,
-    params,
-    options,
-  );
+  return request
+    .put<IamPageResponse<ResourceDetail<EntitlementRecord>>>(
+      `${PATH}/${id}/entitlements`,
+      params,
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformTenantEntitlementsPreviewAPI(

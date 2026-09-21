@@ -1,13 +1,13 @@
 <template>
-  <in-drawer v-model="visible" title="创建组织" :loading="loading" size="640px">
-    <el-steps :active="step" finish-status="success" align-center class="mb-24px">
+  <in-drawer v-model="visible" title="创建组织" :loading="loading" size="var(--in-drawer-width-detail)">
+    <el-steps :active="step" finish-status="success" align-center class="mb-16px">
       <el-step title="组织资料" />
       <el-step title="所有者" />
       <el-step title="开通" />
       <el-step title="预览" />
     </el-steps>
 
-    <el-form v-if="step < 3" label-position="top" :model="draft">
+    <in-form v-if="step < 3" label-position="top" :model="draft">
       <el-form-item v-if="step === 0" label="组织名称" required>
         <el-input v-model="draft.name" clearable placeholder="请输入组织名称" />
       </el-form-item>
@@ -41,7 +41,7 @@
           不选套餐时开通租户域基础应用；指定套餐后改为该套餐内启用的租户应用。开通不等于业务授权。
         </div>
       </el-form-item>
-    </el-form>
+    </in-form>
 
     <div v-else class="flex flex-col gap-12px">
       <biz-iam-preview-alert :preview="preview" />

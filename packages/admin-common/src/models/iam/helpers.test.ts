@@ -12,11 +12,15 @@ import {
   buildDepartmentTree,
   collectIamPageRecords,
   emptySelection,
+  entitlementCollectionVersion,
   editablePatch,
   formatScopeKinds,
   isFieldEditable,
   isMaskedValue,
   mapIamPage,
+  objectActionAllowed,
+  resolveIamActionAccess,
+  IAM_OBJECT_ACTION_DENIED_MESSAGE,
   toAssignmentBatchItems,
   toIamListParams,
   toIamSelectRecords,
@@ -76,6 +80,26 @@ describe("iam helpers", () => {
     }, 2);
     expect(records).toEqual(["a", "b", "c"]);
     expect(sizes).toEqual([2, 2]);
+  });
+
+  it("按应用 ID 排序拼开通集合版本", () => {
+    expect(entitlementCollectionVersion([])).toBe("0");
+    expect(
+      entitlementCollectionVersion([
+        {
+          record: { id: "2", applicationId: "20", status: ConfigurationStatus.DISABLED, source: "MANUAL" },
+          fieldAccess: {},
+          capabilities: {},
+          version: "3",
+        },
+        {
+          record: { id: "1", applicationId: "9", status: ConfigurationStatus.ENABLED, source: "INITIALIZATION" },
+          fieldAccess: {},
+          capabilities: {},
+          version: "1",
+        },
+      ]),
+    ).toBe("9:1:1|20:3:0");
   });
 
   it("按 parentId 组装部门树，缺父节点的落为根", () => {
@@ -170,5 +194,21 @@ describe("iam helpers", () => {
 
   it("空选择器不携带成员或部门", () => {
     expect(emptySelection()).toEqual({ members: [], departments: [] });
+  });
+
+  it("列表未返回对象能力时不禁用，明确拒绝时给出原因", () => {
+    expect(objectActionAllowed({}, "iam-platform:tenant:read")).toEqual({ allowed: true });
+    expect(
+      objectActionAllowed(
+        { "iam-platform:tenant:read": { allowed: false, message: "超出数据范围" } },
+        "iam-platform:tenant:read",
+      ),
+    ).toEqual({ allowed: false, message: "超出数据范围" });
+    expect(
+      objectActionAllowed({ "iam-platform:tenant:read": { allowed: false } }, "iam-platform:tenant:read"),
+    ).toEqual({ allowed: false, message: IAM_OBJECT_ACTION_DENIED_MESSAGE });
+    expect(
+      resolveIamActionAccess("iam-platform:tenant:read", { hasAction: false, capabilities: {} }),
+    ).toEqual({ visible: false, allowed: false });
   });
 });

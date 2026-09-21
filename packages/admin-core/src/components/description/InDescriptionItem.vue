@@ -24,20 +24,26 @@ const displayValue = computed(() => formatDescriptionValue(props.value));
 .in-description-item {
   display: flex;
   flex-direction: column;
-  gap: var(--in-space-1);
+  gap: var(--in-space-2);
   min-width: 0;
 }
 
 .in-description-item__label {
-  color: var(--in-text-color-secondary);
-  font-size: var(--in-font-size-caption);
-  line-height: var(--in-line-height-caption);
+  display: block;
+  min-height: var(--in-line-height-body);
+  color: var(--in-text-color-placeholder);
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-line-height-body);
+  letter-spacing: 0;
+  transition: color 0.3s ease-in-out;
 }
 
 .in-description-item__value {
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
   line-height: var(--in-line-height-body);
-  word-break: break-all;
+  letter-spacing: 0;
+  overflow-x: auto;
+  border-radius: var(--in-radius-control);
 }
 </style>

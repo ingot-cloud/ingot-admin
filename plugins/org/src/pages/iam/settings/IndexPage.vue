@@ -8,6 +8,9 @@
         <el-form-item label="组织名称">
           <el-input v-model="draft.name" />
         </el-form-item>
+        <el-form-item label="当前所有者">
+          <span>{{ detail.record.ownerDisplayName || detail.record.ownerMemberId }}</span>
+        </el-form-item>
         <el-form-item>
           <in-button type="primary" :loading="saving" @click="privateSave">保存设置</in-button>
         </el-form-item>
@@ -39,7 +42,7 @@ import {
   Message,
   refreshSessionPermissions,
 } from "@ingot/admin-core";
-import { createIamListLoader, toIamSelectRecords } from "@ingot/admin-common";
+import { createIamListLoader, toIamSelectRecords, type TenantRecord } from "@ingot/admin-common";
 import {
   TenantMemberPageAPI,
   TenantOwnerTransferAPI,
@@ -47,7 +50,7 @@ import {
   TenantSettingsUpdateAPI,
 } from "@/api/iam/directory";
 
-const detail = ref<{ version: string; record: { name: string } }>();
+const detail = ref<{ version: string; record: TenantRecord }>();
 const draft = reactive({ name: "" });
 const newOwnerMemberId = ref("");
 const saving = ref(false);
@@ -62,7 +65,7 @@ const load = (): void => {
   TenantSettingsAPI().then((response) => {
     detail.value = {
       version: response.data.version,
-      record: { name: response.data.record.name },
+      record: response.data.record,
     };
     draft.name = response.data.record.name;
   });
@@ -78,7 +81,7 @@ const privateSave = (): void => {
     name: draft.name,
   })
     .then((response) => {
-      detail.value = { version: response.data.version, record: { name: response.data.record.name } };
+      detail.value = { version: response.data.version, record: response.data.record };
       Message.success("保存成功");
     })
     .finally(() => {

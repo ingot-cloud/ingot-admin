@@ -1,6 +1,6 @@
 <template>
   <in-drawer :title="title" v-model="visible" :loading="loading" size="640px">
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="编码" required>
         <el-input v-model="draft.code" :disabled="Boolean(editing)" placeholder="应用内唯一" />
       </el-form-item>
@@ -43,7 +43,7 @@
           <in-button @click="privateAddField">添加字段</in-button>
         </div>
       </el-form-item>
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateSubmit">保存</in-button>

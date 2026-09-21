@@ -6,7 +6,7 @@
       :closable="false"
       title="诊断只给出当前结论与可披露来源，不提供模拟执行或登录。"
     />
-    <el-form label-position="top">
+    <in-form label-position="top">
       <el-form-item label="身份">
         <el-radio-group v-model="identityKind">
           <el-radio-button value="member">成员</el-radio-button>
@@ -47,7 +47,7 @@
         <el-input v-model="targetId" placeholder="可选" />
       </el-form-item>
       <biz-iam-diagnose-panel :decision="decision" />
-    </el-form>
+    </in-form>
     <template #footer>
       <in-button @click="visible = false">关闭</in-button>
       <in-button type="primary" :loading="loading" @in-click="privateRun">诊断</in-button>

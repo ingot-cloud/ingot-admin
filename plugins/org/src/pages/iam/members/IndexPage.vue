@@ -46,9 +46,13 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #displayName="{ item }">
-          <in-button text link @click="handleDetail(item)">
+          <biz-iam-record-link
+            :action="IamAction.TENANT_MEMBER_READ"
+            :capabilities="item.capabilities"
+            @click="handleDetail(item)"
+          >
             {{ item.record.displayName || item.record.id }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #status="{ item }">{{ item.record.status }}</template>
         <template #actions="{ item }">
@@ -67,7 +71,7 @@
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
 import { Confirm, Message, type InTableAction } from "@ingot/admin-core";
-import { MemberStatus } from "@ingot/admin-common";
+import { BizIamRecordLink, IamAction, MemberStatus } from "@ingot/admin-common";
 import { TenantDepartmentDeleteAPI, TenantMemberRemoveAPI, TenantMemberStatusAPI } from "@/api/iam/directory";
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";

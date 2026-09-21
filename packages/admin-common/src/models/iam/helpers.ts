@@ -1,5 +1,6 @@
 import type { Page } from "@ingot/admin-core";
 import {
+  ConfigurationStatus,
   IAM_DEFAULT_PAGE_SIZE,
   IAM_MASKED_PLACEHOLDER,
   FieldVisibility,
@@ -10,6 +11,7 @@ import {
 import type {
   AssignmentInput,
   DepartmentRecord,
+  EntitlementRecord,
   FieldAccessMap,
   IamPageResponse,
   ResourceDetail,
@@ -104,6 +106,26 @@ export async function collectIamPageRecords<T>(
   return records;
 }
 
+/**
+ * 复现开通集合指纹 {@code applicationId:version:enabled}，无开通时为 {@code 0}。
+ */
+export function entitlementCollectionVersion(
+  items: Array<ResourceDetail<EntitlementRecord>>,
+): string {
+  if (items.length === 0) {
+    return "0";
+  }
+  return [...items]
+    .sort((left, right) =>
+      left.record.applicationId.localeCompare(right.record.applicationId, undefined, { numeric: true }),
+    )
+    .map((item) => {
+      const enabled = item.record.status === ConfigurationStatus.ENABLED ? "1" : "0";
+      return `${item.record.applicationId}:${item.version}:${enabled}`;
+    })
+    .join("|");
+}
+
 export function buildDepartmentTree(records: DepartmentRecord[]): DepartmentTreeNode[] {
   const nodes = new Map<string, DepartmentTreeNode>();
   for (const record of records) {
@@ -135,14 +157,45 @@ export function emptySelection(): Selection {
   return { members: [], departments: [] };
 }
 
+export const IAM_OBJECT_ACTION_DENIED_MESSAGE = "当前对象不允许该操作";
+
+/**
+ * 对象级能力只解释「这一条」能不能做。
+ * 列表未返回该操作码时不视为越界，是否展示由会话 actionCodes 决定。
+ */
 export function objectActionAllowed(
   capabilities: Record<string, { allowed?: boolean; message?: string }> | undefined,
   actionCode: string,
 ): { allowed: boolean; message?: string } {
   const item = capabilities?.[actionCode];
+  if (!item) {
+    return { allowed: true };
+  }
+  if (item.allowed === true) {
+    return { allowed: true, message: item.message };
+  }
+  const message = item.message?.trim();
   return {
-    allowed: item?.allowed === true,
-    message: item?.message,
+    allowed: false,
+    message: message || IAM_OBJECT_ACTION_DENIED_MESSAGE,
+  };
+}
+
+export function resolveIamActionAccess(
+  actionCode: string,
+  options: {
+    hasAction: boolean;
+    capabilities?: Record<string, { allowed?: boolean; message?: string }>;
+  },
+): { visible: boolean; allowed: boolean; message?: string } {
+  if (!options.hasAction) {
+    return { visible: false, allowed: false };
+  }
+  const object = objectActionAllowed(options.capabilities, actionCode);
+  return {
+    visible: true,
+    allowed: object.allowed,
+    message: object.message,
   };
 }
 

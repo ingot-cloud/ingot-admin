@@ -18,6 +18,8 @@ const movedComponentNames = [
   "InTableColumnSetting",
   "InFilterPanel",
   "InPicker",
+  "InDetailField",
+  "InFormSkeleton",
   "InAppBar",
   "InAppBarSearch",
   "InLogo",

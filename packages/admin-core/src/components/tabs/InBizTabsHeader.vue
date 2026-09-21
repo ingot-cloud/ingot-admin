@@ -1,27 +1,24 @@
 <template>
-  <div
-    ref="rootRef"
-    class="in-biz-tabs-header"
-    role="tablist"
-    @keydown="privateOnKeydown"
-  >
-    <button
-      class="tab"
-      type="button"
-      v-for="(tab, index) in tabs"
-      :key="tab.id"
-      :class="{ 'tab-active': model === tab.id }"
-      role="tab"
-      :aria-selected="model === tab.id"
-      :tabindex="model === tab.id ? 0 : -1"
-      :ref="(el) => setTabRef(index, el)"
-      @click="privateOnItemClick(tab.id)"
-    >
-      <span class="inner">
-        {{ tab.title }}
-      </span>
-    </button>
-    <div class="in-biz-tabs-ink" :style="inkStyle" />
+  <div class="in-biz-tabs-header" role="tablist" @keydown="privateOnKeydown">
+    <div ref="rootRef" class="in-biz-tabs-header__bar">
+      <button
+        class="tab"
+        type="button"
+        v-for="(tab, index) in tabs"
+        :key="tab.id"
+        :class="{ 'tab-active': model === tab.id }"
+        role="tab"
+        :aria-selected="model === tab.id"
+        :tabindex="model === tab.id ? 0 : -1"
+        :ref="(el) => setTabRef(index, el)"
+        @click="privateOnItemClick(tab.id)"
+      >
+        <span class="inner">
+          {{ tab.title }}
+        </span>
+      </button>
+      <div class="in-biz-tabs-ink" :style="inkStyle" />
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -128,12 +125,16 @@ watch(
 </script>
 <style scoped lang="postcss">
 .in-biz-tabs-header {
+  padding: 0 var(--in-biz-tabs-inline-padding, var(--in-space-5));
+}
+
+.in-biz-tabs-header__bar {
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: stretch;
   overflow: hidden;
-  padding: 0 var(--in-space-5);
+  gap: var(--in-space-5);
   border-bottom: 1px solid var(--in-border-color);
 
   & .tab {
@@ -141,7 +142,7 @@ watch(
     text-align: center;
     background: transparent;
     border: 0;
-    padding: 12px 16px 10px;
+    padding: 12px 0 10px;
     margin: 0;
     color: var(--in-biz-tabs-color);
     font-size: var(--in-biz-tabs-font-size);

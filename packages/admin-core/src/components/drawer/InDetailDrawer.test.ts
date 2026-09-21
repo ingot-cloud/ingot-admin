@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
+import { h } from "vue";
 import InDetailDrawer from "./InDetailDrawer.vue";
+import InBizTabPanel from "../tabs/InBizTabPanel.vue";
 
 const { confirmUnsavedChanges } = vi.hoisted(() => ({
   confirmUnsavedChanges: vi.fn(),
@@ -76,6 +78,94 @@ describe("InDetailDrawer", () => {
     await Promise.resolve();
     expect(confirmUnsavedChanges).toHaveBeenCalled();
     expect(closed).toBe(false);
+    wrapper.unmount();
+  });
+
+  it("当前 Tab 不可编辑时不显示编辑按钮和页脚", async () => {
+    const wrapper = mount(InDetailDrawer, {
+      props: {
+        modelValue: true,
+        tab: "owner",
+        editing: false,
+        title: "组织详情",
+      },
+      slots: {
+        default: () => [
+          h(InBizTabPanel, { title: "基础信息", name: "base" }, () => "base"),
+          h(InBizTabPanel, { title: "所有者", name: "owner", editable: false }, () => "owner"),
+        ],
+      },
+      global: {
+        stubs: {
+          InDrawer: {
+            template:
+              '<div class="drawer"><slot /><slot name="footer" /></div>',
+          },
+          InBizTabsHeader: { template: "<div />" },
+          InButton: { template: "<button><slot /></button>" },
+        },
+        components: { InBizTabPanel },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.text()).not.toContain("编辑");
+    expect(wrapper.text()).not.toContain("保存");
+
+    await wrapper.setProps({ tab: "base" });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.text()).toContain("编辑");
+    wrapper.unmount();
+  });
+
+  it("加载中展示表单骨架并隐藏页脚", () => {
+    const wrapper = mount(InDetailDrawer, {
+      props: {
+        modelValue: true,
+        tab: "base",
+        editing: false,
+        loading: true,
+        title: "组织详情",
+      },
+      global: {
+        stubs: {
+          InDrawer: {
+            template: '<div class="drawer"><slot /><slot name="footer" /></div>',
+          },
+          InBizTabs: { template: "<div class=\"tabs\"><slot /></div>" },
+          InFormSkeleton: { template: '<div class="in-form-skeleton">加载中</div>' },
+          InButton: { template: "<button><slot /></button>" },
+        },
+      },
+    });
+    expect(wrapper.find(".in-form-skeleton").exists()).toBe(true);
+    expect(wrapper.text()).not.toContain("编辑");
+    wrapper.unmount();
+  });
+
+  it("点击编辑会发出 edit", async () => {
+    const wrapper = mount(InDetailDrawer, {
+      props: {
+        modelValue: true,
+        tab: "base",
+        editing: false,
+        title: "组织详情",
+      },
+      global: {
+        stubs: {
+          InDrawer: {
+            template: '<div class="drawer"><slot /><slot name="footer" /></div>',
+          },
+          InBizTabs: { template: "<div class=\"tabs\"><slot /></div>" },
+          InButton: {
+            template: "<button class=\"edit-btn\" @click=\"$emit('in-click')\"><slot /></button>",
+          },
+        },
+      },
+    });
+    await wrapper.get(".edit-btn").trigger("click");
+    expect(wrapper.emitted("edit")).toHaveLength(1);
+    expect(wrapper.emitted("update:editing")?.[0]).toEqual([true]);
     wrapper.unmount();
   });
 });

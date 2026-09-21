@@ -39,9 +39,13 @@
               <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
             </template>
             <template #displayName="{ item }">
-              <in-button text link @click="handleDetail(item)">
+              <biz-iam-record-link
+                :action="IamAction.PLATFORM_MEMBER_READ"
+                :capabilities="item.capabilities"
+                @click="handleDetail(item)"
+              >
                 {{ item.record.displayName || item.record.id }}
-              </in-button>
+              </biz-iam-record-link>
             </template>
             <template #status="{ item }">
               <in-tag :value="memberStatusEnum.getTagText(item.record.status)" />
@@ -84,9 +88,13 @@
               <in-table-actions variant="toolbar" :actions="groupToolbarActions" :row="emptyGroupRow" />
             </template>
             <template #name="{ item }">
-              <in-button text link @click="handleGroupDetail(item)">
+              <biz-iam-record-link
+                :action="IamAction.PLATFORM_GROUP_READ"
+                :capabilities="item.capabilities"
+                @click="handleGroupDetail(item)"
+              >
                 {{ item.record.name || item.record.id }}
-              </in-button>
+              </biz-iam-record-link>
             </template>
             <template #visibleMemberCount="{ item }">
               {{ item.record.visibleMemberCount ?? "—" }}
@@ -118,7 +126,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { MemberStatus, useMemberStatusEnum } from "@ingot/admin-common";
+import { BizIamRecordLink, IamAction, MemberStatus, useMemberStatusEnum } from "@ingot/admin-common";
 import { PlatformGroupDeleteAPI, PlatformMemberRemoveAPI, PlatformMemberStatusAPI } from "@/api/iam/personnel";
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";

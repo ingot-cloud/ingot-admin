@@ -21,9 +21,9 @@
       </in-loading>
     </div>
 
-    <template #footer>
+    <template v-if="slots.footer" #footer>
       <div class="in-drawer__footer">
-        <slot name="footer"> </slot>
+        <slot name="footer" />
       </div>
     </template>
   </el-drawer>

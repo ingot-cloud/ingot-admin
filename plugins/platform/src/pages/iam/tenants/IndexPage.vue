@@ -42,15 +42,19 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <in-button text link @click="handleEdit(item)">
+          <biz-iam-record-link
+            :action="IamAction.PLATFORM_TENANT_READ"
+            :capabilities="item.capabilities"
+            @click="handleEdit(item)"
+          >
             {{ item.record.name }}
-          </in-button>
+          </biz-iam-record-link>
         </template>
         <template #status="{ item }">
           <biz-iam-status-tag :status="item.record.status" />
         </template>
         <template #ownerMemberId="{ item }">
-          {{ item.record.ownerMemberId }}
+          {{ item.record.ownerDisplayName || item.record.ownerMemberId }}
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -75,8 +79,10 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizIamRecordLink,
   BizIamStatusTag,
   ConfigurationStatus,
+  IamAction,
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import DetailDrawer from "./components/DetailDrawer.vue";

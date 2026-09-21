@@ -30,6 +30,7 @@ import {
   type Preview,
   type ReferenceImpactPreview,
   type ResourceDetail,
+  type TenantRecord,
   type TenantSettingsInput,
   type VersionInput,
 } from "@ingot/admin-common";
@@ -271,14 +272,14 @@ export function TenantGroupPreviewAPI(
   return request.post<Preview<ReferenceImpactPreview>>(`${GROUP_PATH}/${id}/preview`, params, options);
 }
 
-export function TenantSettingsAPI(options?: RequestOptions): Promise<R<ResourceDetail<{ name: string; avatar?: string; ownerMemberId?: string }>>> {
+export function TenantSettingsAPI(options?: RequestOptions): Promise<R<ResourceDetail<TenantRecord>>> {
   return request.get(`${SETTINGS_PATH}`, undefined, options);
 }
 
 export function TenantSettingsUpdateAPI(
   params: TenantSettingsInput,
   options?: RequestOptions,
-): Promise<R<ResourceDetail<{ name: string; avatar?: string }>>> {
+): Promise<R<ResourceDetail<TenantRecord>>> {
   filterParams(params);
   return request.put(`${SETTINGS_PATH}`, params, options);
 }
