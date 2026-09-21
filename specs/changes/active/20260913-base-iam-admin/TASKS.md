@@ -130,6 +130,9 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U05.dev.role-drawers：`BizIamRoleCreateDrawer` / `BizIamRoleDetailDrawer` 已接到平台授权、共享角色、组织授权（含基于共享定制）；Get/Status/Delete/Revisions/Publish API 已封装。三方升级冲突与分配写操作未做，父任务 U05 不勾选。
 - [x] U03.dev.group-paging：平台组编辑改为远程分页添加成员，草稿变化清除预览。
 - [x] U03.dev.tenant-select：租户创建向导用套餐远程分页替代手填 ID；开通追加应用改为远程分页，草稿变化清除预览。父任务 U03 不勾选。
+- [x] U03.dev.tenant-owner-name：组织列表/详情/设置展示 `ownerDisplayName`，缺失时回退 `ownerMemberId`。父任务 U03 不勾选。
+- [x] U03.dev.tenant-entitlements-page：组织详情开通按 `items` 分页信封逐页收齐，替换版本用集合指纹。父任务 U03 不勾选。
+- [x] U13.dev.drawer-form：详情抽屉统一查看/编辑表单（`in-form` + `in-detail-field`），Tab 内容区内边距，无编辑能力的 Tab 隐藏页脚编辑。父任务 U13 不勾选。
 - [x] U08.dev.group-drawers：组织用户组已接创建/详情/更新/删除/预览，成员与部门来源走远程分页。父任务 U08 不勾选。
 - [x] U08.dev.group-impact：组抽屉展示有权范围内有效人数及预览中的可披露引用；无法披露时不以 0 代替。父任务 U08 不勾选。
 - [x] U04.dev.app-status：应用列表已接启停（I033）与状态筛选；资源字段能力含可见性/可编辑/筛选/排序，范围用中文解释；套餐/开通选择改为远程分页。菜单 ANY/ALL/OPEN 说明已补。父任务 U04 不勾选。
