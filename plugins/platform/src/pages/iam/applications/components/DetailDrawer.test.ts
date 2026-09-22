@@ -20,4 +20,10 @@ describe("platform iam application DetailDrawer", () => {
       saveBlock.indexOf("visible.value = false"),
     );
   });
+
+  it("应用、资源和操作编码用可复制标签展示", () => {
+    expect(source).toContain('<in-copy-tag :text="detail.record.code" />');
+    expect(source).toContain('<in-copy-tag :text="asResource(row).record.code" />');
+    expect(source).toContain('<in-copy-tag :text="asAction(row).record.code" />');
+  });
 });

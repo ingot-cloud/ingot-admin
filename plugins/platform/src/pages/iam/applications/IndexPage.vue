@@ -56,7 +56,9 @@
             </el-tag>
           </span>
         </template>
-        <template #code="{ item }">{{ item.record.code }}</template>
+        <template #code="{ item }">
+          <in-copy-tag :text="item.record.code" />
+        </template>
         <template #status="{ item }">
           <biz-iam-status-tag :status="item.record.status" />
         </template>

@@ -13,7 +13,11 @@
   >
     <in-biz-tab-panel title="基本信息" name="base">
       <in-form v-if="detail" :editing="editing">
-        <in-detail-field label="编码" :value="detail.record.code" />
+        <in-detail-field label="编码">
+          <template #view>
+            <in-copy-tag :text="detail.record.code" />
+          </template>
+        </in-detail-field>
         <in-detail-field label="名称" :value="detail.record.name">
           <el-input v-model="draft.name" />
         </in-detail-field>
@@ -51,7 +55,9 @@
             <template #default="{ row }">{{ row.record.name }}</template>
           </el-table-column>
           <el-table-column label="编码" min-width="120">
-            <template #default="{ row }">{{ row.record.code }}</template>
+            <template #default="{ row }">
+              <in-copy-tag :text="asResource(row).record.code" />
+            </template>
           </el-table-column>
           <el-table-column label="范围" min-width="160">
             <template #default="{ row }">{{ formatScopeKinds(row.record.scopeCapabilities) }}</template>
@@ -72,7 +78,9 @@
             <template #default="{ row }">{{ row.record.name }}</template>
           </el-table-column>
           <el-table-column label="操作码" min-width="200">
-            <template #default="{ row }">{{ row.record.code }}</template>
+            <template #default="{ row }">
+              <in-copy-tag :text="asAction(row).record.code" />
+            </template>
           </el-table-column>
           <el-table-column label="状态" width="100">
             <template #default="{ row }">

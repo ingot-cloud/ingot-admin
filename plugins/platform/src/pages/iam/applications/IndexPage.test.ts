@@ -22,4 +22,8 @@ describe("platform iam applications IndexPage", () => {
     expect(source.indexOf('label="状态"')).toBeGreaterThan(source.indexOf("in-filter-panel"));
     expect(source.indexOf('label="组织默认"')).toBeGreaterThan(source.indexOf("in-filter-panel"));
   });
+
+  it("应用编码用可复制标签展示", () => {
+    expect(source).toContain('<in-copy-tag :text="item.record.code" />');
+  });
 });
