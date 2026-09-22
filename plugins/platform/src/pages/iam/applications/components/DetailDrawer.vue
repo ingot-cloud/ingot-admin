@@ -84,7 +84,9 @@
         <template #actions="{ item }">
           <in-button text link @click="privateOpenActions(asResource(item))">操作</in-button>
           <in-button text link @click="privateEditResource(asResource(item))">编辑</in-button>
-          <in-button text link @click="privateDeleteResource(asResource(item))">删除</in-button>
+          <in-button text link type="danger" @click="privateDeleteResource(asResource(item))">
+            删除
+          </in-button>
         </template>
         </in-table>
       </div>
@@ -127,7 +129,9 @@
           </template>
           <template #actions="{ item }">
             <in-button text link @click="privateOpenMenu(asMenu(item))">详情</in-button>
-            <in-button text link @click="privateDeleteMenu(asMenu(item))">删除</in-button>
+            <in-button text link type="danger" @click="privateDeleteMenu(asMenu(item))">
+              删除
+            </in-button>
           </template>
         </in-table>
       </div>

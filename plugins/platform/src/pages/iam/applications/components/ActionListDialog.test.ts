@@ -16,6 +16,7 @@ describe("platform iam application ActionListDialog", () => {
     expect(source).toContain("IAM_DEFAULT_PAGE_SIZE");
     expect(source).toContain('<in-copy-tag :text="asAction(item).record.code" />');
     expect(source).toContain("context.current.record.id, true");
+    expect(source).toContain('type="danger"');
     expect(source).not.toContain("size: 200");
   });
 });

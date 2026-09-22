@@ -38,7 +38,7 @@
         <in-button text link @click="privateToggle(asAction(item))">
           {{ asAction(item).record.status === ConfigurationStatus.ENABLED ? "停用" : "启用" }}
         </in-button>
-        <in-button text link @click="privateDelete(asAction(item))">删除</in-button>
+        <in-button text link type="danger" @click="privateDelete(asAction(item))">删除</in-button>
       </template>
     </in-table>
     <template #footer>

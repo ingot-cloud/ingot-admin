@@ -38,6 +38,7 @@ describe("platform iam application DetailDrawer", () => {
     expect(source).toContain("搜索菜单名");
     expect(source).toContain("in-filter-panel");
     expect(source).toContain("privateOpenMenu(asMenu(item))\">详情");
+    expect(source).toContain('type="danger"');
     expect(source).not.toContain("size: 200");
   });
 });

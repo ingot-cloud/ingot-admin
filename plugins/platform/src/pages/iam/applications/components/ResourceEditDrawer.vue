@@ -1,6 +1,13 @@
 <template>
-  <in-drawer :title="title" v-model="visible" :loading="loading" size="640px">
-    <in-form label-position="top">
+  <in-drawer
+    class="resource-edit-drawer"
+    :title="title"
+    v-model="visible"
+    :loading="loading"
+    layout="pinned"
+    size="720px"
+  >
+    <in-form class="resource-edit-form" label-position="top">
       <el-form-item label="编码" required>
         <el-input v-model="draft.code" :disabled="Boolean(editing)" placeholder="应用内唯一" />
       </el-form-item>
@@ -17,30 +24,52 @@
           范围只声明资源允许的约束类型，实际求值由服务端执行，不是授权本身。
         </div>
       </el-form-item>
-      <el-form-item label="字段能力">
-        <div class="flex flex-col gap-12px">
+      <el-form-item class="field-cap-item">
+        <template #label>
+          <span>字段能力</span>
+          <in-button text type="primary" @click.stop.prevent="privateAddField">添加字段</in-button>
+        </template>
+        <div v-if="draft.fieldCapabilities.length === 0" class="field-cap__empty">暂未声明字段</div>
+        <div v-else class="field-cap">
           <div
             v-for="(field, index) in draft.fieldCapabilities"
             :key="index"
-            class="flex flex-col gap-8px border border-[var(--el-border-color)] rounded-4px p-12px"
+            class="field-cap__group"
           >
-            <div class="flex gap-8px">
-              <el-input v-model="field.key" placeholder="字段键" />
-              <el-input v-model="field.label" placeholder="中文展示名" />
-              <in-button text @click="privateRemoveField(index)">移除</in-button>
+            <div class="field-cap__body">
+              <div class="field-cap__line">
+                <span class="field-cap__label">字段键</span>
+                <el-input v-model="field.key" placeholder="如 phone" />
+              </div>
+              <div class="field-cap__line">
+                <span class="field-cap__label">展示名</span>
+                <el-input v-model="field.label" placeholder="如手机号" />
+              </div>
+              <div class="field-cap__line">
+                <span class="field-cap__label">可见性</span>
+                <el-checkbox-group v-model="field.visibilities">
+                  <el-checkbox
+                    v-for="item in visibilityOptions"
+                    :key="item.value"
+                    :value="item.value"
+                  >
+                    {{ item.label }}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <div class="field-cap__line">
+                <span class="field-cap__label">操作能力</span>
+                <div class="field-cap__flags">
+                  <el-checkbox v-model="field.editable">可编辑</el-checkbox>
+                  <el-checkbox v-model="field.filterable">可筛选</el-checkbox>
+                  <el-checkbox v-model="field.sortable">可排序</el-checkbox>
+                </div>
+              </div>
             </div>
-            <el-checkbox-group v-model="field.visibilities">
-              <el-checkbox v-for="item in visibilityOptions" :key="item.value" :value="item.value">
-                {{ item.label }}
-              </el-checkbox>
-            </el-checkbox-group>
-            <div class="flex flex-wrap gap-12px">
-              <el-checkbox v-model="field.editable">可编辑</el-checkbox>
-              <el-checkbox v-model="field.filterable">可筛选</el-checkbox>
-              <el-checkbox v-model="field.sortable">可排序</el-checkbox>
+            <div class="field-cap__action">
+              <in-button text type="danger" @click="privateRemoveField(index)">移除</in-button>
             </div>
           </div>
-          <in-button @click="privateAddField">添加字段</in-button>
         </div>
       </el-form-item>
     </in-form>
@@ -165,3 +194,107 @@ defineExpose({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.resource-edit-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.field-cap-item {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.field-cap-item :deep(.el-form-item__label) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.field-cap-item :deep(.el-form-item__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.field-cap__empty {
+  color: var(--in-text-color-placeholder);
+  font-size: var(--in-font-size-body);
+  line-height: var(--in-line-height-body);
+}
+
+.field-cap {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--in-space-3);
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.field-cap__group {
+  display: flex;
+  flex: none;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--in-border-color);
+  border-radius: var(--in-radius-control);
+  background: var(--in-bg-color-surface);
+}
+
+.field-cap__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--in-space-3);
+  min-width: 0;
+  padding: var(--in-space-3);
+}
+
+.field-cap__line {
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--in-space-3);
+  min-width: 0;
+}
+
+.field-cap__label {
+  color: var(--in-text-color-placeholder);
+  font-size: var(--in-font-size-caption);
+  line-height: var(--in-line-height-body);
+}
+
+.field-cap__action {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  border-left: 1px solid var(--in-border-color);
+  background: var(--in-bg-color-hover);
+}
+
+.field-cap__flags,
+.field-cap__line :deep(.el-checkbox-group) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  column-gap: var(--in-space-3);
+  row-gap: var(--in-space-1);
+}
+
+.field-cap__line :deep(.el-checkbox) {
+  margin-right: 0;
+  height: auto;
+}
+</style>
