@@ -264,6 +264,7 @@ export interface PlanDraft {
   name: string;
   description?: string;
   applicationIds: string[];
+  status?: ConfigurationStatus;
 }
 
 export interface PlanUpdateInput extends VersionInput {

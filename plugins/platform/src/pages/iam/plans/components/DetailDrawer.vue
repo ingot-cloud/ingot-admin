@@ -13,10 +13,15 @@
     <in-biz-tab-panel title="基本信息" name="base">
       <in-form v-if="detail" :editing="editing">
         <in-detail-field label="名称" :value="detail.record.name">
-          <el-input v-model="draft.name" />
+          <el-input v-model="draft.name" clearable placeholder="请输入套餐名称" />
         </in-detail-field>
         <in-detail-field label="说明" :value="detail.record.description">
-          <el-input v-model="draft.description" type="textarea" :rows="3" />
+          <el-input
+            v-model="draft.description"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入说明"
+          />
         </in-detail-field>
         <in-detail-field label="包含应用">
           <template #view>
@@ -39,6 +44,11 @@
           <template #view>
             <biz-iam-status-tag :status="detail.record.status" />
           </template>
+          <in-select
+            v-model="draft.status"
+            :options="statusEnum.getOptions()"
+            placeholder="请选择状态"
+          />
         </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
@@ -50,8 +60,10 @@ import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-cor
 import {
   BizIamChipPageSelect,
   BizIamStatusTag,
+  ConfigurationStatus,
   createIamListLoader,
   toIamSelectRecords,
+  useConfigurationStatusEnum,
   type PlanRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
@@ -71,6 +83,7 @@ const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();
 const { editing } = session;
+const statusEnum = useConfigurationStatusEnum();
 const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
@@ -80,6 +93,7 @@ const draft = reactive({
   name: "",
   description: "",
   applicationIds: [] as string[],
+  status: ConfigurationStatus.ENABLED,
 });
 const loadGuard = createLoadGuard();
 
@@ -96,6 +110,7 @@ const applyDraft = (record: PlanRecord): void => {
   draft.name = record.name;
   draft.description = record.description ?? "";
   draft.applicationIds = [...record.applicationIds];
+  draft.status = record.status;
 };
 
 const resolveSelectedLabels = (ids: string[]): Promise<void> =>
@@ -116,6 +131,7 @@ const load = (id: string): void => {
   draft.name = "";
   draft.description = "";
   draft.applicationIds = [];
+  draft.status = ConfigurationStatus.ENABLED;
   PlatformPlanDetailAPI(id)
     .then((detailRes) => {
       if (!guard.isCurrent()) {
@@ -150,6 +166,7 @@ const privateSave = (): void => {
       name: draft.name.trim(),
       description: draft.description.trim() || undefined,
       applicationIds: [...draft.applicationIds],
+      status: draft.status,
     },
   })
     .then((response) => {

@@ -2,10 +2,15 @@
   <in-drawer v-model="visible" title="创建套餐" :loading="loading" size="560px">
     <in-form label-position="top">
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" />
+        <el-input v-model="draft.name" clearable placeholder="请输入套餐名称" />
       </el-form-item>
       <el-form-item label="说明">
-        <el-input v-model="draft.description" type="textarea" :rows="3" />
+        <el-input
+          v-model="draft.description"
+          type="textarea"
+          :rows="3"
+          placeholder="请输入说明"
+        />
       </el-form-item>
       <el-form-item label="包含应用">
         <biz-iam-chip-page-select
