@@ -5,19 +5,30 @@
         <el-input v-model="draft.code" placeholder="发布后不可改" />
       </el-form-item>
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" />
+        <el-input v-model="draft.name" placeholder="请输入角色名称" />
       </el-form-item>
       <el-form-item label="说明">
-        <el-input v-model="draft.description" type="textarea" :rows="2" />
+        <el-input v-model="draft.description" type="textarea" :rows="2" placeholder="请输入说明" />
       </el-form-item>
       <el-form-item label="分组">
-        <el-input v-model="draft.groupName" />
+        <el-input v-model="draft.groupName" placeholder="请输入分组，可空" />
       </el-form-item>
       <el-form-item v-if="allowDeltas" label="基础版本 ID" required>
         <el-input v-model="draft.baseRevisionId" placeholder="共享角色固定版本" />
       </el-form-item>
-      <el-form-item label="定义">
-        <biz-iam-grant-editor v-model="draft.definition" :allow-deltas="allowDeltas" />
+      <el-form-item label="操作授权" required>
+        <div
+          v-if="loadApplications && loadActions"
+          class="mb-8px text-12px text-[var(--el-text-color-secondary)]"
+        >
+          先选择应用，再选择该应用下的操作。共享角色请选带「组织」的应用。
+        </div>
+        <biz-iam-grant-editor
+          v-model="draft.definition"
+          :allow-deltas="allowDeltas"
+          :load-applications="loadApplications"
+          :load-actions="loadActions"
+        />
       </el-form-item>
     </in-form>
     <template #footer>
@@ -28,11 +39,12 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from "@ingot/admin-core";
-import type { R } from "@ingot/admin-core";
+import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
+import BizIamGrantEditor from "./BizIamGrantEditor.vue";
 import {
   emptyRoleDefinitionDraft,
   type CreatedResource,
+  type IamSelectOption,
   type RoleCreateInput,
   type RoleCreateKind,
   type RoleDefinitionDraft,
@@ -45,6 +57,8 @@ const props = withDefaults(
     title?: string;
     kind: RoleCreateKind;
     allowDeltas?: boolean;
+    loadApplications?: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
+    loadActions?: (applicationId: string, params: LoadDataParams) => Promise<Page<IamSelectOption>>;
     createApi: (input: RoleCreateInput) => Promise<R<CreatedResource>>;
   }>(),
   {

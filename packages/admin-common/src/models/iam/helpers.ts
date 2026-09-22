@@ -256,6 +256,14 @@ export interface IamSelectOption {
   name: string;
 }
 
+/** 已解析的操作，用于把授权里的操作 ID 显示成应用名和操作名。 */
+export interface IamActionRef {
+  id: string;
+  name: string;
+  applicationId: string;
+  applicationName: string;
+}
+
 export function toIamSelectRecords<T extends { id: string; name?: string; displayName?: string }>(
   page: Page<ResourceDetail<T>>,
 ): Page<IamSelectOption> {
