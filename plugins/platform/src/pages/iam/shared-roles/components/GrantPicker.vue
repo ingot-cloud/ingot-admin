@@ -39,10 +39,11 @@
           node-key="id"
           lazy
           show-checkbox
+          check-strictly
           :props="treeProps"
           :load="privateLoadNode"
           :default-checked-keys="checkedKeys"
-          @check="privateOnCheck"
+          @check-change="privateOnCheckChange"
         >
           <template #default="{ data }">
             <div class="flex items-center gap-8px w-full min-w-0">
@@ -149,10 +150,34 @@ const resourceHasMore = computed(
   () => Boolean(applicationId.value) && resources.value.length < resourceTotal.value,
 );
 
-const selectedIds = computed(() => new Set(grants.value.map((item) => item.actionId)));
-const checkedKeys = computed(() => grants.value.map((item) => `a:${item.actionId}`));
+const applyingChecks = ref(false);
 const treeData = ref<GrantTreeNode[]>([]);
 const actionLoads = new Map<string, Promise<void>>();
+
+const grantByAction = computed(() => new Map(grants.value.map((item) => [item.actionId, item])));
+
+const keysFromGrants = (): string[] => {
+  const keys = grants.value.map((item) => `a:${item.actionId}`);
+  for (const resource of resources.value) {
+    if (!resource.loaded || !resource.actions.length) {
+      continue;
+    }
+    if (resource.actions.every((item) => grantByAction.value.has(item.id))) {
+      keys.push(`r:${resource.id}`);
+    }
+  }
+  return keys;
+};
+
+const checkedKeys = computed(() => keysFromGrants());
+
+const applyTreeChecks = (): void => {
+  applyingChecks.value = true;
+  treeRef.value?.setCheckedKeys(keysFromGrants());
+  nextTick(() => {
+    applyingChecks.value = false;
+  });
+};
 
 watch(
   () => resources.value.map((item) => item.id).join("|"),
@@ -314,43 +339,22 @@ const privateEnsureActions = (resource: CatalogResource): Promise<void> => {
   return request;
 };
 
-const upsertGrant = (resource: CatalogResource, action: CatalogAction): void => {
-  if (selectedIds.value.has(action.id)) {
-    return;
-  }
-  grants.value = [
-    ...grants.value,
-    {
-      actionId: action.id,
-      actionCode: action.code,
-      actionName: action.name,
-      resourceId: resource.id,
-      resourceName: resource.name,
-      applicationId: applicationId.value,
-      applicationName: currentApp.value?.name ?? "",
-      scopes: [defaultScope(resource.scopeCapabilities)],
-      scopeCapabilities: [...resource.scopeCapabilities],
-    },
-  ];
-};
+const toGrant = (resource: CatalogResource, action: CatalogAction): SelectedGrant =>
+  grantByAction.value.get(action.id) ?? {
+    actionId: action.id,
+    actionCode: action.code,
+    actionName: action.name,
+    resourceId: resource.id,
+    resourceName: resource.name,
+    applicationId: applicationId.value,
+    applicationName: currentApp.value?.name ?? "",
+    scopes: [defaultScope(resource.scopeCapabilities)],
+    scopeCapabilities: [...resource.scopeCapabilities],
+  };
 
 const replaceResourceGrants = (resource: CatalogResource, actions: CatalogAction[]): void => {
   const keep = grants.value.filter((item) => item.resourceId !== resource.id);
-  grants.value = keep;
-  actions.forEach((action) => upsertGrant(resource, action));
-};
-
-const syncFromTree = (): void => {
-  const leaves = (treeRef.value?.getCheckedNodes(true) ?? []).filter((item) => item.kind === "action");
-  const nextIds = new Set(leaves.map((item) => item.actionId).filter((id): id is string => Boolean(id)));
-  grants.value = grants.value.filter((item) => nextIds.has(item.actionId));
-  for (const leaf of leaves) {
-    const resource = resourceOf(leaf.resourceId);
-    const action = resource?.actions.find((item) => item.id === leaf.actionId);
-    if (resource && action) {
-      upsertGrant(resource, action);
-    }
-  }
+  grants.value = [...keep, ...actions.map((action) => toGrant(resource, action))];
 };
 
 const privateLoadNode = (
@@ -371,29 +375,40 @@ const privateLoadNode = (
     resolve(actionNodesOf(resource));
     nextTick(() => {
       treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+      applyTreeChecks();
     });
   });
 };
 
-const privateOnCheck = (data: GrantTreeNode): void => {
+const privateOnCheckChange = (data: GrantTreeNode, checked: boolean): void => {
+  if (applyingChecks.value) {
+    return;
+  }
   const resource = resourceOf(data.resourceId);
   if (!resource) {
     return;
   }
+  if (data.kind === "action" && data.actionId) {
+    const action = resource.actions.find((item) => item.id === data.actionId);
+    if (!action) {
+      return;
+    }
+    if (checked) {
+      replaceResourceGrants(resource, [
+        ...resource.actions.filter((item) => grantByAction.value.has(item.id) && item.id !== action.id),
+        action,
+      ]);
+    } else {
+      grants.value = grants.value.filter((item) => item.actionId !== data.actionId);
+    }
+    nextTick(applyTreeChecks);
+    return;
+  }
   void privateEnsureActions(resource).then(() => {
+    replaceResourceGrants(resource, checked ? resource.actions : []);
     nextTick(() => {
-      if (data.kind === "resource") {
-        const checked = (treeRef.value?.getCheckedNodes(false) ?? []).some((item) => item.id === data.id);
-        if (checked) {
-          replaceResourceGrants(resource, resource.actions);
-          treeRef.value?.setCheckedKeys([
-            ...grants.value.map((item) => `a:${item.actionId}`),
-            ...resource.actions.map((item) => `a:${item.id}`),
-          ]);
-          return;
-        }
-      }
-      syncFromTree();
+      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+      applyTreeChecks();
     });
   });
 };
@@ -411,7 +426,8 @@ const privateSelectRead = (resourceId: string): void => {
     }
     replaceResourceGrants(resource, reads);
     nextTick(() => {
-      treeRef.value?.setCheckedKeys(grants.value.map((item) => `a:${item.actionId}`));
+      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+      applyTreeChecks();
     });
   });
 };
