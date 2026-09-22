@@ -57,15 +57,7 @@
     </in-split-layout>
   </in-page-frame>
 
-  <biz-iam-role-create-drawer
-    ref="createRef"
-    title="发布共享角色"
-    :kind="RoleKind.SHARED"
-    :create-api="PlatformSharedRoleCreateAPI"
-    :load-applications="loadGrantApplications"
-    :load-actions="loadGrantActions"
-    @success="refreshData"
-  />
+  <create-wizard ref="createRef" @success="refreshData" />
   <biz-iam-role-detail-drawer
     ref="detailRef"
     :get-api="PlatformSharedRoleDetailAPI"
@@ -97,18 +89,15 @@ import {
 } from "@ingot/admin-core";
 import {
   BizIamRecordLink,
-  BizIamRoleCreateDrawer,
   BizIamRoleDetailDrawer,
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
-  RoleKind,
   useConfigurationStatusEnum,
   useRoleKindEnum,
   type RoleKind as RoleKindValue,
 } from "@ingot/admin-common";
 import {
-  PlatformSharedRoleCreateAPI,
   PlatformSharedRoleDeleteAPI,
   PlatformSharedRoleDetailAPI,
   PlatformSharedRolePreviewAPI,
@@ -116,6 +105,7 @@ import {
   PlatformSharedRoleRevisionPageAPI,
   PlatformSharedRoleStatusAPI,
 } from "@/api/iam/authorization";
+import CreateWizard from "./components/CreateWizard.vue";
 import {
   createRowActions,
   createToolbarActions,
