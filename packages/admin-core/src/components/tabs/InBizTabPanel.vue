@@ -1,5 +1,11 @@
 <template>
-  <div v-if="shouldBeRender" v-show="active" :id="`in-biz-panel-${props.name}`">
+  <div
+    v-if="shouldBeRender"
+    v-show="active"
+    :id="`in-biz-panel-${props.name}`"
+    class="in-biz-tab-panel"
+    :class="{ 'is-fill': fill }"
+  >
     <slot />
   </div>
 </template>
@@ -27,6 +33,10 @@ const props = defineProps({
   editable: {
     type: Boolean,
     default: true,
+  },
+  fill: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -66,3 +76,24 @@ onUnmounted(() => {
   drawerTabs?.unregisterEditable(props.name);
 });
 </script>
+<style lang="postcss" scoped>
+.in-biz-tab-panel {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+}
+
+.in-biz-tab-panel.is-fill {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.in-biz-tab-panel.is-fill > :deep(*) {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+</style>

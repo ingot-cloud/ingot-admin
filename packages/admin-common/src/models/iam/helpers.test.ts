@@ -3,6 +3,9 @@ import {
   AuthorizationDomain,
   ConfigurationStatus,
   FieldVisibility,
+  MenuAccessMode,
+  MenuKind,
+  MenuMatchMode,
   IAM_MASKED_PLACEHOLDER,
   RoleKind,
   ScopeKind,
@@ -15,6 +18,8 @@ import {
   emptySelection,
   entitlementCollectionVersion,
   editablePatch,
+  filterMenuTree,
+  flattenMenuTree,
   formatScopeKinds,
   isFieldEditable,
   isMaskedValue,
@@ -153,6 +158,93 @@ describe("iam helpers", () => {
   it("用中文解释资源范围声明", () => {
     expect(formatScopeKinds([])).toBe("未声明");
     expect(formatScopeKinds([ScopeKind.ALL, ScopeKind.SELF])).toBe("全部、本人");
+  });
+
+  it("展开服务端菜单树为父菜单候选，不在前端组树", () => {
+    const rows = flattenMenuTree([
+      {
+        record: {
+          id: "1",
+          applicationId: "a",
+          name: "组织",
+          kind: MenuKind.DIRECTORY,
+          accessMode: MenuAccessMode.OPEN,
+          matchMode: MenuMatchMode.ANY,
+          actionIds: [],
+          sortOrder: 1,
+          status: ConfigurationStatus.ENABLED,
+        },
+        fieldAccess: {},
+        capabilities: {},
+        version: "0",
+        children: [
+          {
+            record: {
+              id: "2",
+              applicationId: "a",
+              name: "成员",
+              kind: MenuKind.PAGE,
+              accessMode: MenuAccessMode.ACTION,
+              matchMode: MenuMatchMode.ANY,
+              actionIds: [],
+              sortOrder: 1,
+              status: ConfigurationStatus.ENABLED,
+            },
+            fieldAccess: {},
+            capabilities: {},
+            version: "0",
+            children: [],
+          },
+        ],
+      },
+    ]);
+    expect(rows.map((item) => item.record.id)).toEqual(["1", "2"]);
+  });
+
+  it("按名称筛选菜单树时保留匹配节点的父级", () => {
+    const filtered = filterMenuTree(
+      [
+        {
+          record: {
+            id: "1",
+            applicationId: "a",
+            name: "组织",
+            kind: MenuKind.DIRECTORY,
+            accessMode: MenuAccessMode.OPEN,
+            matchMode: MenuMatchMode.ANY,
+            actionIds: [],
+            sortOrder: 1,
+            status: ConfigurationStatus.ENABLED,
+          },
+          fieldAccess: {},
+          capabilities: {},
+          version: "0",
+          children: [
+            {
+              record: {
+                id: "2",
+                applicationId: "a",
+                name: "成员",
+                kind: MenuKind.PAGE,
+                accessMode: MenuAccessMode.ACTION,
+                matchMode: MenuMatchMode.ANY,
+                actionIds: [],
+                sortOrder: 1,
+                status: ConfigurationStatus.ENABLED,
+              },
+              fieldAccess: {},
+              capabilities: {},
+              version: "0",
+              children: [],
+            },
+          ],
+        },
+      ],
+      { name: "成员", kind: MenuKind.PAGE },
+    );
+    expect(filtered).toHaveLength(1);
+    expect(filtered[0]?.record.id).toBe("1");
+    expect(filtered[0]?.children[0]?.record.id).toBe("2");
   });
 
   it("升级冲突未逐项处置或替换范围缺 scopes 时不可提交", () => {

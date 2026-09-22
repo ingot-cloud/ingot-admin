@@ -1,7 +1,23 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
 import { nextTick } from "vue";
 import { mount } from "@vue/test-utils";
 import InBizTabsHeader from "./InBizTabsHeader.vue";
+
+const tabsDir = dirname(fileURLToPath(import.meta.url));
+
+describe("InBizTabs layout", () => {
+  it("内容区定高，表格 Tab 用 fill 让表体滚动", () => {
+    const tabs = readFileSync(resolve(tabsDir, "InBizTabs.vue"), "utf8");
+    const panel = readFileSync(resolve(tabsDir, "InBizTabPanel.vue"), "utf8");
+    expect(tabs).toContain("overflow: hidden");
+    expect(tabs).not.toMatch(/\.inner-container \{[^}]*overflow: auto/);
+    expect(panel).toContain("is-fill");
+    expect(panel).toContain("fill:");
+  });
+});
 
 describe("InBizTabsHeader", () => {
   it("方向键切换页内 Tab", async () => {

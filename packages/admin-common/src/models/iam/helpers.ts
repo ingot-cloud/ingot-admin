@@ -8,12 +8,13 @@ import {
   SubjectType,
   UpgradeResolutionChoice,
 } from "./constants";
-import type {
+import   type {
   AssignmentInput,
   DepartmentRecord,
   EntitlementRecord,
   FieldAccessMap,
   IamPageResponse,
+  MenuTreeRow,
   ResourceDetail,
   RoleDefinitionDraft,
   Selection,
@@ -265,6 +266,43 @@ export function toIamSelectRecords<T extends { id: string; name?: string; displa
       name: item.record.displayName ?? item.record.name ?? item.record.id,
     })),
   };
+}
+
+export interface MenuTreeFilter {
+  name?: string;
+  kind?: string;
+  matchMode?: string;
+  accessMode?: string;
+}
+
+export function flattenMenuTree(nodes: MenuTreeRow[]): MenuTreeRow[] {
+  const rows: MenuTreeRow[] = [];
+  const walk = (items: MenuTreeRow[]): void => {
+    for (const item of items) {
+      rows.push(item);
+      if (item.children?.length) {
+        walk(item.children);
+      }
+    }
+  };
+  walk(nodes);
+  return rows;
+}
+
+export function filterMenuTree(nodes: MenuTreeRow[], filter: MenuTreeFilter): MenuTreeRow[] {
+  const name = filter.name?.trim();
+  return nodes.flatMap((node) => {
+    const children = filterMenuTree(node.children ?? [], filter);
+    const matched =
+      (!name || node.record.name.includes(name)) &&
+      (!filter.kind || node.record.kind === filter.kind) &&
+      (!filter.matchMode || node.record.matchMode === filter.matchMode) &&
+      (!filter.accessMode || node.record.accessMode === filter.accessMode);
+    if (!matched && children.length === 0) {
+      return [];
+    }
+    return [{ ...node, children }];
+  });
 }
 
 export function formatScopeKinds(kinds: readonly ScopeKind[]): string {

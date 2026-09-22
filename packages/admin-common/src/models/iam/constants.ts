@@ -126,6 +126,11 @@ export enum SelectionPurpose {
 /** IAM 管理面列表默认页大小，与后端 `IamPages.DEFAULT_SIZE` 对齐。 */
 export const IAM_DEFAULT_PAGE_SIZE = 20;
 
+export enum CatalogListView {
+  PAGE = "page",
+  TREE = "tree",
+}
+
 export enum MenuAccessMode {
   OPEN = "OPEN",
   ACTION = "ACTION",

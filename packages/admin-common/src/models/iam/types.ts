@@ -125,6 +125,17 @@ export interface IamListQuery {
   domain?: string;
 }
 
+export interface ResourceListQuery {
+  name?: string;
+  code?: string;
+}
+
+export interface ActionListQuery {
+  resourceId?: string;
+  name?: string;
+  ids?: string;
+}
+
 export interface AccountListQuery {
   username?: string;
   phone?: string;
@@ -325,6 +336,10 @@ export interface AppMenuRecord {
   actionIds: string[];
   sortOrder: number;
   status: ConfigurationStatus;
+}
+
+export interface MenuTreeRow extends ResourceDetail<AppMenuRecord> {
+  children: MenuTreeRow[];
 }
 
 export interface AppMenuDraft {

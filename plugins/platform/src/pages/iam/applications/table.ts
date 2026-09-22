@@ -17,6 +17,26 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 
+export const resourceHeaders: Array<TableHeaderRecord> = [
+  { label: "名称", prop: "name", required: true },
+  { label: "编码", prop: "code" },
+  { label: "范围", prop: "scope" },
+  { label: "操作", width: "200", prop: "actions", fixed: "right" },
+];
+
+export const actionHeaders: Array<TableHeaderRecord> = [
+  { label: "名称", prop: "name", required: true, minWidth: 140 },
+  { label: "操作码", prop: "code", minWidth: 320 },
+  { label: "状态", prop: "status", width: "100" },
+  { label: "操作", width: "180", prop: "actions", fixed: "right" },
+];
+
+export const menuHeaders: Array<TableHeaderRecord> = [
+  { label: "名称", prop: "name", required: true },
+  { label: "路径", prop: "path" },
+  { label: "操作", width: "140", prop: "actions", fixed: "right" },
+];
+
 export function createToolbarActions(onCreate: () => void): Array<InTableAction<Row>> {
   return [
     {

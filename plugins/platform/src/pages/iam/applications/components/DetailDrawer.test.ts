@@ -21,9 +21,23 @@ describe("platform iam application DetailDrawer", () => {
     );
   });
 
-  it("应用、资源和操作编码用可复制标签展示", () => {
+  it("应用编码用可复制标签展示", () => {
     expect(source).toContain('<in-copy-tag :text="detail.record.code" />');
-    expect(source).toContain('<in-copy-tag :text="asResource(row).record.code" />');
-    expect(source).toContain('<in-copy-tag :text="asAction(row).record.code" />');
+  });
+
+  it("资源行打开操作对话框，菜单走服务端树和中文枚举", () => {
+    expect(source).toContain("privateOpenActions");
+    expect(source).toContain("ActionListDialog");
+    expect(source).toContain("PlatformMenuTreeAPI");
+    expect(source).toContain('tree-column="name"');
+    expect(source).toContain('name="catalog" :editable="false" fill');
+    expect(source).toContain('name="menus" :editable="false" fill');
+    expect(source).toContain("embedded-table");
+    expect(source).toContain("搜索资源名");
+    expect(source).toContain("搜索资源编码");
+    expect(source).toContain("搜索菜单名");
+    expect(source).toContain("in-filter-panel");
+    expect(source).toContain("privateOpenMenu(asMenu(item))\">详情");
+    expect(source).not.toContain("size: 200");
   });
 });

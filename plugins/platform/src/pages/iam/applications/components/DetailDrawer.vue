@@ -37,131 +37,147 @@
         </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="资源与操作" name="catalog" :editable="false">
-      <div class="flex flex-col gap-16px">
-        <div class="flex items-center justify-between">
-          <span class="font-500">资源</span>
+    <in-biz-tab-panel title="资源与操作" name="catalog" :editable="false" fill>
+      <div class="embedded-table">
+        <in-table
+          :loading="resourceLoading"
+          :data="resourcePage.records"
+          :page="resourcePage"
+          :headers="resourceHeaders"
+          density="compact"
+          :row-key="resourceKeyOf"
+          @handleSizeChange="privateOnResourceSizeChange"
+          @handleCurrentChange="privateOnResourceCurrentChange"
+        >
+          <template #tools-start>
+            <el-input
+              v-model="resourceFilter.name"
+              class="w-200px!"
+              clearable
+              placeholder="搜索资源名"
+              :prefix-icon="Search"
+              @keyup.enter="privateOnResourceSearch"
+              @clear="privateOnResourceSearch"
+            />
+            <el-input
+              v-model="resourceFilter.code"
+              class="w-200px!"
+              clearable
+              placeholder="搜索资源编码"
+              :prefix-icon="Search"
+              @keyup.enter="privateOnResourceSearch"
+              @clear="privateOnResourceSearch"
+            />
+          </template>
+        <template #tools-end>
           <in-button v-auth="IamAction.PLATFORM_RESOURCE_CREATE" @click="privateCreateResource">
             创建资源
           </in-button>
-        </div>
-        <el-table
-          :data="resources"
-          :row-key="resourceKeyOf"
-          highlight-current-row
-          @current-change="privateSelectResource"
-        >
-          <el-table-column label="名称" min-width="140">
-            <template #default="{ row }">{{ row.record.name }}</template>
-          </el-table-column>
-          <el-table-column label="编码" min-width="120">
-            <template #default="{ row }">
-              <in-copy-tag :text="asResource(row).record.code" />
-            </template>
-          </el-table-column>
-          <el-table-column label="范围" min-width="160">
-            <template #default="{ row }">{{ formatScopeKinds(row.record.scopeCapabilities) }}</template>
-          </el-table-column>
-          <el-table-column label="操作" width="140">
-            <template #default="{ row }">
-              <in-button text link @click="privateEditResource(asResource(row))">编辑</in-button>
-              <in-button text link @click="privateDeleteResource(asResource(row))">删除</in-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="flex items-center justify-between">
-          <span class="font-500">操作{{ selectedResource ? ` · ${selectedResource.record.name}` : "" }}</span>
-          <in-button v-auth="IamAction.PLATFORM_ACTION_CREATE" @click="privateCreateAction">创建操作</in-button>
-        </div>
-        <el-table :data="visibleActions" :row-key="actionKeyOf">
-          <el-table-column label="名称" min-width="140">
-            <template #default="{ row }">{{ row.record.name }}</template>
-          </el-table-column>
-          <el-table-column label="操作码" min-width="200">
-            <template #default="{ row }">
-              <in-copy-tag :text="asAction(row).record.code" />
-            </template>
-          </el-table-column>
-          <el-table-column label="状态" width="100">
-            <template #default="{ row }">
-              <biz-iam-status-tag :status="row.record.status" />
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="180">
-            <template #default="{ row }">
-              <in-button text link @click="privateEditAction(asAction(row))">编辑</in-button>
-              <in-button text link @click="privateToggleAction(asAction(row))">
-                {{ asAction(row).record.status === ConfigurationStatus.ENABLED ? "停用" : "启用" }}
-              </in-button>
-              <in-button text link @click="privateDeleteAction(asAction(row))">删除</in-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        </template>
+        <template #name="{ item }">{{ asResource(item).record.name }}</template>
+        <template #code="{ item }">
+          <in-copy-tag :text="asResource(item).record.code" />
+        </template>
+        <template #scope="{ item }">
+          {{ formatScopeKinds(asResource(item).record.scopeCapabilities) }}
+        </template>
+        <template #actions="{ item }">
+          <in-button text link @click="privateOpenActions(asResource(item))">操作</in-button>
+          <in-button text link @click="privateEditResource(asResource(item))">编辑</in-button>
+          <in-button text link @click="privateDeleteResource(asResource(item))">删除</in-button>
+        </template>
+        </in-table>
       </div>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="菜单" name="menus" :editable="false">
-      <div class="flex flex-col gap-12px">
-        <div class="flex justify-end">
-          <in-button v-auth="IamAction.PLATFORM_MENU_CREATE" @click="privateCreateMenu">创建菜单</in-button>
-        </div>
-        <el-table :data="menus" :row-key="menuKeyOf">
-          <el-table-column label="名称" min-width="140">
-            <template #default="{ row }">{{ row.record.name }}</template>
-          </el-table-column>
-          <el-table-column label="类型" width="90">
-            <template #default="{ row }">{{ row.record.kind }}</template>
-          </el-table-column>
-          <el-table-column label="匹配" width="90">
-            <template #default="{ row }">{{ row.record.matchMode }}</template>
-          </el-table-column>
-          <el-table-column label="路径" min-width="160">
-            <template #default="{ row }">{{ row.record.path || row.record.viewPath || "—" }}</template>
-          </el-table-column>
-          <el-table-column label="操作" width="140">
-            <template #default="{ row }">
-              <in-button text link @click="privateEditMenu(asMenu(row))">编辑</in-button>
-              <in-button text link @click="privateDeleteMenu(asMenu(row))">删除</in-button>
-            </template>
-          </el-table-column>
-        </el-table>
+    <in-biz-tab-panel title="菜单" name="menus" :editable="false" fill>
+      <div class="embedded-table">
+        <in-table
+          :loading="menuLoading"
+          :data="filteredMenus"
+          :headers="menuHeaders"
+          density="compact"
+          tree-column="name"
+          :row-key="menuKeyOf"
+        >
+          <template #tools-start>
+            <el-input
+              v-model="menuFilter.name"
+              class="w-200px!"
+              clearable
+              placeholder="搜索菜单名"
+              :prefix-icon="Search"
+            />
+            <in-filter-panel :active-count="menuExtraFilterCount">
+              <in-picker v-model="kindFilter" label="类型" :options="kindOptions" />
+              <in-picker v-model="matchFilter" label="匹配" :options="matchOptions" />
+              <in-picker v-model="accessFilter" label="准入" :options="accessOptions" />
+              <template #footer>
+                <in-button @click="privateOnResetMenuExtra">重置</in-button>
+              </template>
+            </in-filter-panel>
+          </template>
+          <template #tools-end>
+            <in-button v-auth="IamAction.PLATFORM_MENU_CREATE" @click="privateCreateMenu">
+              创建菜单
+            </in-button>
+          </template>
+          <template #name="{ item }">{{ asMenu(item).record.name }}</template>
+          <template #path="{ item }">
+            {{ asMenu(item).record.path || asMenu(item).record.viewPath || "—" }}
+          </template>
+          <template #actions="{ item }">
+            <in-button text link @click="privateOpenMenu(asMenu(item))">详情</in-button>
+            <in-button text link @click="privateDeleteMenu(asMenu(item))">删除</in-button>
+          </template>
+        </in-table>
       </div>
     </in-biz-tab-panel>
   </in-detail-drawer>
 
-  <ResourceEditDrawer ref="resourceRef" @success="loadCatalog" />
-  <ActionEditDrawer ref="actionRef" @success="loadCatalog" />
-  <MenuEditDrawer ref="menuRef" @success="loadCatalog" />
+  <ResourceEditDrawer ref="resourceRef" @success="loadResources" />
+  <ActionListDialog ref="actionListRef" />
+  <MenuEditDrawer ref="menuRef" @success="loadMenus" />
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
+import { Search } from "@element-plus/icons-vue";
+import {
+  Confirm,
+  Message,
+  createLoadGuard,
+  resolveStringPickerFilter,
+  toStringPickerValue,
+  useDetailEditSession,
+  withAllPickerOption,
+  type Page,
+} from "@ingot/admin-core";
 import {
   BizIamStatusTag,
-  ConfigurationStatus,
+  IAM_DEFAULT_PAGE_SIZE,
   IamAction,
+  filterMenuTree,
   formatScopeKinds,
-  type AppActionRecord,
-  type AppMenuRecord,
+  useMenuAccessModeEnum,
+  useMenuKindEnum,
+  useMenuMatchModeEnum,
   type AppResourceRecord,
   type ApplicationRecord,
+  type MenuTreeRow,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
-  PlatformActionDeleteAPI,
-  PlatformActionPageAPI,
-  PlatformActionStatusAPI,
   PlatformApplicationDetailAPI,
   PlatformApplicationUpdateAPI,
   PlatformMenuDeleteAPI,
-  PlatformMenuPageAPI,
+  PlatformMenuTreeAPI,
   PlatformResourceDeleteAPI,
   PlatformResourcePageAPI,
 } from "@/api/iam/catalog";
 import { platformApplicationQueryKeys } from "@/api/iam/catalog.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import type { Row } from "../table";
+import { menuHeaders, resourceHeaders, type Row } from "../table";
 import ResourceEditDrawer from "./ResourceEditDrawer.vue";
-import ActionEditDrawer from "./ActionEditDrawer.vue";
+import ActionListDialog from "./ActionListDialog.vue";
 import MenuEditDrawer from "./MenuEditDrawer.vue";
 
 defineOptions({ name: "ApplicationDetailDrawer" });
@@ -173,27 +189,68 @@ const { editing } = session;
 const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
+const resourceLoading = ref(false);
+const menuLoading = ref(false);
 const detail = ref<ResourceDetail<ApplicationRecord>>();
-const resources = ref<Array<ResourceDetail<AppResourceRecord>>>([]);
-const actions = ref<Array<ResourceDetail<AppActionRecord>>>([]);
-const menus = ref<Array<ResourceDetail<AppMenuRecord>>>([]);
-const selectedResource = ref<ResourceDetail<AppResourceRecord>>();
+const resourcePage = ref<Page<ResourceDetail<AppResourceRecord>>>({
+  current: 1,
+  size: IAM_DEFAULT_PAGE_SIZE,
+  total: 0,
+  records: [],
+});
+const menus = ref<MenuTreeRow[]>([]);
+const resourceFilter = reactive({
+  name: "",
+  code: "",
+});
+const menuFilter = reactive({
+  name: "",
+  kind: undefined as string | undefined,
+  matchMode: undefined as string | undefined,
+  accessMode: undefined as string | undefined,
+});
+const kindEnum = useMenuKindEnum();
+const matchEnum = useMenuMatchModeEnum();
+const accessEnum = useMenuAccessModeEnum();
+const kindOptions = computed(() => withAllPickerOption(kindEnum.getOptions()));
+const matchOptions = computed(() => withAllPickerOption(matchEnum.getOptions()));
+const accessOptions = computed(() => withAllPickerOption(accessEnum.getOptions()));
+const kindFilter = computed({
+  get: () => toStringPickerValue(menuFilter.kind),
+  set: (value: string | number | boolean | null) => {
+    menuFilter.kind = resolveStringPickerFilter(value);
+  },
+});
+const matchFilter = computed({
+  get: () => toStringPickerValue(menuFilter.matchMode),
+  set: (value: string | number | boolean | null) => {
+    menuFilter.matchMode = resolveStringPickerFilter(value);
+  },
+});
+const accessFilter = computed({
+  get: () => toStringPickerValue(menuFilter.accessMode),
+  set: (value: string | number | boolean | null) => {
+    menuFilter.accessMode = resolveStringPickerFilter(value);
+  },
+});
+const menuExtraFilterCount = computed(() => {
+  let count = 0;
+  if (menuFilter.kind) {
+    count += 1;
+  }
+  if (menuFilter.matchMode) {
+    count += 1;
+  }
+  if (menuFilter.accessMode) {
+    count += 1;
+  }
+  return count;
+});
+const filteredMenus = computed(() => filterMenuTree(menus.value, menuFilter));
 const resourceRef = ref<{ show: (appId: string, target?: ResourceDetail<AppResourceRecord>) => void }>();
-const actionRef = ref<{
-  show: (
-    appId: string,
-    resourceList: Array<ResourceDetail<AppResourceRecord>>,
-    target?: ResourceDetail<AppActionRecord>,
-    preferredResourceId?: string,
-  ) => void;
-}>();
+const actionListRef = ref<{ show: (appId: string, target: ResourceDetail<AppResourceRecord>) => void }>();
 const menuRef = ref<{
-  show: (
-    appId: string,
-    actionList: Array<ResourceDetail<AppActionRecord>>,
-    menuList: Array<ResourceDetail<AppMenuRecord>>,
-    target?: ResourceDetail<AppMenuRecord>,
-  ) => void;
+  show: (appId: string, menuList: MenuTreeRow[], target?: MenuTreeRow) => void;
 }>();
 const draft = reactive({
   name: "",
@@ -203,22 +260,12 @@ const draft = reactive({
 });
 const loadGuard = createLoadGuard();
 
-const visibleActions = computed(() => {
-  if (!selectedResource.value) {
-    return actions.value;
-  }
-  return actions.value.filter((item) => item.record.resourceId === selectedResource.value?.record.id);
-});
-
 const resourceKeyOf = (row: ResourceDetail<AppResourceRecord>): string => row.record.id;
-const actionKeyOf = (row: ResourceDetail<AppActionRecord>): string => row.record.id;
-const menuKeyOf = (row: ResourceDetail<AppMenuRecord>): string => row.record.id;
+const menuKeyOf = (row: MenuTreeRow): string => row.record.id;
 
 const asResource = (row: unknown): ResourceDetail<AppResourceRecord> =>
   row as ResourceDetail<AppResourceRecord>;
-const asAction = (row: unknown): ResourceDetail<AppActionRecord> =>
-  row as ResourceDetail<AppActionRecord>;
-const asMenu = (row: unknown): ResourceDetail<AppMenuRecord> => row as ResourceDetail<AppMenuRecord>;
+const asMenu = (row: unknown): MenuTreeRow => row as MenuTreeRow;
 
 const applyDraft = (record: ApplicationRecord): void => {
   draft.name = record.name;
@@ -227,38 +274,89 @@ const applyDraft = (record: ApplicationRecord): void => {
   draft.baseline = record.baseline;
 };
 
-const loadCatalog = (requestId?: string): void => {
+const loadResources = (requestId?: string): void => {
   const id = requestId ?? detail.value?.record.id;
   if (!id) {
     return;
   }
-  Promise.all([PlatformResourcePageAPI(id), PlatformActionPageAPI(id), PlatformMenuPageAPI(id)]).then(
-    ([resourceRes, actionRes, menuRes]) => {
+  resourceLoading.value = true;
+  PlatformResourcePageAPI(
+    id,
+    {
+      current: resourcePage.value.current,
+      size: resourcePage.value.size,
+    },
+    {
+      name: resourceFilter.name.trim() || undefined,
+      code: resourceFilter.code.trim() || undefined,
+    },
+  )
+    .then((response) => {
       if (detail.value?.record.id !== id) {
         return;
       }
-      resources.value = resourceRes.data.records ?? [];
-      actions.value = actionRes.data.records ?? [];
-      menus.value = menuRes.data.records ?? [];
-      if (selectedResource.value) {
-        selectedResource.value =
-          resources.value.find((item) => item.record.id === selectedResource.value?.record.id) ??
-          resources.value[0];
-      } else {
-        selectedResource.value = resources.value[0];
+      resourcePage.value = response.data;
+    })
+    .finally(() => {
+      if (detail.value?.record.id === id) {
+        resourceLoading.value = false;
       }
-    },
-  );
+    });
+};
+
+const loadMenus = (requestId?: string): void => {
+  const id = requestId ?? detail.value?.record.id;
+  if (!id) {
+    return;
+  }
+  menuLoading.value = true;
+  PlatformMenuTreeAPI(id)
+    .then((response) => {
+      if (detail.value?.record.id !== id) {
+        return;
+      }
+      menus.value = response.data ?? [];
+    })
+    .finally(() => {
+      if (detail.value?.record.id === id) {
+        menuLoading.value = false;
+      }
+    });
+};
+
+const privateOnResourceSearch = (): void => {
+  resourcePage.value.current = 1;
+  loadResources();
+};
+
+const privateOnResourceSizeChange = (payload: { value: number }): void => {
+  resourcePage.value.size = payload.value;
+  resourcePage.value.current = 1;
+  loadResources();
+};
+
+const privateOnResourceCurrentChange = (payload: { value: number }): void => {
+  resourcePage.value.current = payload.value;
+  loadResources();
 };
 
 const load = (id: string): void => {
   const guard = loadGuard.begin();
   loading.value = true;
   detail.value = undefined;
-  resources.value = [];
-  actions.value = [];
+  resourcePage.value = {
+    current: 1,
+    size: IAM_DEFAULT_PAGE_SIZE,
+    total: 0,
+    records: [],
+  };
   menus.value = [];
-  selectedResource.value = undefined;
+  resourceFilter.name = "";
+  resourceFilter.code = "";
+  menuFilter.name = "";
+  menuFilter.kind = undefined;
+  menuFilter.matchMode = undefined;
+  menuFilter.accessMode = undefined;
   draft.name = "";
   draft.description = "";
   draft.sortOrder = 0;
@@ -270,7 +368,8 @@ const load = (id: string): void => {
       }
       detail.value = response.data;
       applyDraft(response.data.record);
-      loadCatalog(id);
+      loadResources(id);
+      loadMenus(id);
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -314,10 +413,6 @@ const privateSave = (): void => {
 
 const requireAppId = (): string | undefined => detail.value?.record.id;
 
-const privateSelectResource = (row: unknown): void => {
-  selectedResource.value = row ? asResource(row) : undefined;
-};
-
 const privateCreateResource = (): void => {
   const id = requireAppId();
   if (id) {
@@ -340,71 +435,39 @@ const privateDeleteResource = (row: ResourceDetail<AppResourceRecord>): void => 
   Confirm.warning(`删除资源会阻止仍引用它的操作。是否删除（${row.record.name}）？`).then(() => {
     PlatformResourceDeleteAPI(id, row.record.id).then(() => {
       Message.success("已删除");
-      loadCatalog();
+      loadResources();
     });
   });
 };
 
-const privateCreateAction = (): void => {
+const privateOpenActions = (row: ResourceDetail<AppResourceRecord>): void => {
   const id = requireAppId();
   if (id) {
-    actionRef.value?.show(id, resources.value, undefined, selectedResource.value?.record.id);
+    actionListRef.value?.show(id, row);
   }
 };
 
-const privateEditAction = (row: ResourceDetail<AppActionRecord>): void => {
-  const id = requireAppId();
-  if (id) {
-    actionRef.value?.show(id, resources.value, row);
-  }
-};
-
-const privateToggleAction = (row: ResourceDetail<AppActionRecord>): void => {
-  const id = requireAppId();
-  if (!id) {
-    return;
-  }
-  const next =
-    row.record.status === ConfigurationStatus.ENABLED
-      ? ConfigurationStatus.DISABLED
-      : ConfigurationStatus.ENABLED;
-  PlatformActionStatusAPI(id, row.record.id, {
-    expectedVersion: row.version,
-    status: next,
-  }).then(() => {
-    Message.success(next === ConfigurationStatus.ENABLED ? "已启用" : "已停用");
-    loadCatalog();
-  });
-};
-
-const privateDeleteAction = (row: ResourceDetail<AppActionRecord>): void => {
-  const id = requireAppId();
-  if (!id) {
-    return;
-  }
-  Confirm.warning(`是否删除操作（${row.record.code}）？`).then(() => {
-    PlatformActionDeleteAPI(id, row.record.id).then(() => {
-      Message.success("已删除");
-      loadCatalog();
-    });
-  });
+const privateOnResetMenuExtra = (): void => {
+  menuFilter.kind = undefined;
+  menuFilter.matchMode = undefined;
+  menuFilter.accessMode = undefined;
 };
 
 const privateCreateMenu = (): void => {
   const id = requireAppId();
   if (id) {
-    menuRef.value?.show(id, actions.value, menus.value);
+    menuRef.value?.show(id, menus.value);
   }
 };
 
-const privateEditMenu = (row: ResourceDetail<AppMenuRecord>): void => {
+const privateOpenMenu = (row: MenuTreeRow): void => {
   const id = requireAppId();
   if (id) {
-    menuRef.value?.show(id, actions.value, menus.value, row);
+    menuRef.value?.show(id, menus.value, row);
   }
 };
 
-const privateDeleteMenu = (row: ResourceDetail<AppMenuRecord>): void => {
+const privateDeleteMenu = (row: MenuTreeRow): void => {
   const id = requireAppId();
   if (!id) {
     return;
@@ -412,7 +475,7 @@ const privateDeleteMenu = (row: ResourceDetail<AppMenuRecord>): void => {
   Confirm.warning(`是否删除菜单（${row.record.name}）？`).then(() => {
     PlatformMenuDeleteAPI(id, row.record.id).then(() => {
       Message.success("已删除");
-      loadCatalog();
+      loadMenus();
     });
   });
 };
@@ -422,8 +485,21 @@ defineExpose({
     visible.value = true;
     tab.value = "base";
     session.exitEdit();
-    selectedResource.value = undefined;
     load(row.record.id);
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.embedded-table {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.embedded-table :deep(.in-table) {
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+</style>

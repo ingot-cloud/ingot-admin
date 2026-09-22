@@ -1,9 +1,13 @@
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
+  CatalogListView,
   IAM_API_PREFIX,
+  IAM_DEFAULT_PAGE_SIZE,
   mapIamPage,
   toIamListParams,
+  type ActionListQuery,
+  type ResourceListQuery,
   type AppActionDraft,
   type AppActionRecord,
   type AppActionUpdateInput,
@@ -20,6 +24,7 @@ import {
   type CreatedResource,
   type IamListQuery,
   type IamPageResponse,
+  type MenuTreeRow,
   type PlanDraft,
   type PlanRecord,
   type PlanUpdateInput,
@@ -132,17 +137,21 @@ export function PlatformPlanUpdateAPI(
   return request.put<ResourceDetail<PlanRecord>>(`${PLAN_PATH}/${id}`, params, options);
 }
 
-const catalogPage: Page = { current: 1, size: 200 };
+const defaultCatalogPage = (): Page => ({ current: 1, size: IAM_DEFAULT_PAGE_SIZE });
 
 export function PlatformResourcePageAPI(
   applicationId: string,
-  page: Page = catalogPage,
+  page: Page = defaultCatalogPage(),
+  condition?: ResourceListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<AppResourceRecord>>>> {
+  if (condition) {
+    filterParams(condition);
+  }
   return request
     .get<IamPageResponse<ResourceDetail<AppResourceRecord>>>(
       `${APP_PATH}/${applicationId}/resources`,
-      toIamListParams(page),
+      toIamListParams(page, condition),
       options,
     )
     .then(asPage);
@@ -181,13 +190,17 @@ export function PlatformResourceDeleteAPI(
 
 export function PlatformActionPageAPI(
   applicationId: string,
-  page: Page = catalogPage,
+  page: Page = defaultCatalogPage(),
+  condition?: ActionListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<AppActionRecord>>>> {
+  if (condition) {
+    filterParams(condition);
+  }
   return request
     .get<IamPageResponse<ResourceDetail<AppActionRecord>>>(
       `${APP_PATH}/${applicationId}/actions`,
-      toIamListParams(page),
+      toIamListParams(page, condition),
       options,
     )
     .then(asPage);
@@ -240,16 +253,27 @@ export function PlatformActionDeleteAPI(
 
 export function PlatformMenuPageAPI(
   applicationId: string,
-  page: Page = catalogPage,
+  page: Page = defaultCatalogPage(),
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<AppMenuRecord>>>> {
   return request
     .get<IamPageResponse<ResourceDetail<AppMenuRecord>>>(
       `${APP_PATH}/${applicationId}/menus`,
-      toIamListParams(page),
+      toIamListParams(page, { view: CatalogListView.PAGE }),
       options,
     )
     .then(asPage);
+}
+
+export function PlatformMenuTreeAPI(
+  applicationId: string,
+  options?: RequestOptions,
+): Promise<R<MenuTreeRow[]>> {
+  return request.get<MenuTreeRow[]>(
+    `${APP_PATH}/${applicationId}/menus`,
+    { view: CatalogListView.TREE },
+    options,
+  );
 }
 
 export function PlatformMenuCreateAPI(

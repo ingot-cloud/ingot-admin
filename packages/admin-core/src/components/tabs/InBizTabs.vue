@@ -79,9 +79,12 @@ watch(panes, (value) => {
 }
 
 .inner-container {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  min-width: 0;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .inner-container.is-aligned {

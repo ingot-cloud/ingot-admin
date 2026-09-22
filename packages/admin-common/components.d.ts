@@ -94,6 +94,7 @@ declare module 'vue' {
     InFilterPanel: typeof import('./../admin-core/src/components/table/InFilterPanel.vue')['default']
     InForm: typeof import('./../admin-core/src/components/form/InForm.vue')['default']
     InFormGroupTitle: typeof import('./../admin-core/src/components/form/InFormGroupTitle.vue')['default']
+    InFormSkeleton: typeof import('./../admin-core/src/components/form/InFormSkeleton.vue')['default']
     InFullscreen: typeof import('./../admin-core/src/layouts/widgets/InFullscreen.vue')['default']
     InGlobalLoading: typeof import('./../admin-core/src/components/InGlobalLoading.vue')['default']
     InGlobalSetting: typeof import('./../admin-core/src/layouts/widgets/InGlobalSetting.vue')['default']

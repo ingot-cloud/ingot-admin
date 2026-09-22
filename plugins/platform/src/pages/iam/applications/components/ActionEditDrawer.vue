@@ -2,7 +2,7 @@
   <in-drawer :title="title" v-model="visible" :loading="loading" size="520px">
     <in-form label-position="top">
       <el-form-item label="所属资源" required>
-        <el-select v-model="draft.resourceId" :disabled="Boolean(editing)" filterable>
+        <el-select v-model="draft.resourceId" :disabled="resourceLocked" filterable>
           <el-option
             v-for="item in resources"
             :key="item.record.id"
@@ -38,6 +38,7 @@ const loading = ref(false);
 const applicationId = ref("");
 const resources = ref<Array<ResourceDetail<AppResourceRecord>>>([]);
 const editing = ref<ResourceDetail<AppActionRecord>>();
+const lockResource = ref(false);
 const draft = reactive({
   resourceId: "",
   code: "",
@@ -45,6 +46,7 @@ const draft = reactive({
 });
 
 const title = computed(() => (editing.value ? "编辑操作" : "创建操作"));
+const resourceLocked = computed(() => Boolean(editing.value) || lockResource.value);
 
 const privateSubmit = (): void => {
   if (!draft.resourceId || !draft.name.trim() || (!editing.value && !draft.code.trim())) {
@@ -89,10 +91,12 @@ defineExpose({
     resourceList: Array<ResourceDetail<AppResourceRecord>>,
     target?: ResourceDetail<AppActionRecord>,
     preferredResourceId?: string,
+    locked = false,
   ) {
     applicationId.value = appId;
     resources.value = resourceList;
     editing.value = target;
+    lockResource.value = locked;
     draft.resourceId = target?.record.resourceId || preferredResourceId || resourceList[0]?.record.id || "";
     draft.code = target?.record.code ?? "";
     draft.name = target?.record.name ?? "";
