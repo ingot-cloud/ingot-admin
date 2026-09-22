@@ -12,8 +12,8 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [API.md](./API.md) | `bad7f0a2e82b1d98587c308cc57821152d8881387ef51c97e2564f6530fe5836` |
-| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `06ee92f641b98f6d21af267aeded40483be4d17c1698b004b5bd5a3aae60d440` |
+| `API.md` | [API.md](./API.md) | `0699af320fe2a4cc4cfa1d475b989e1dff5147aa9bb153d626b171b00f6f82a9` |
+| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `3c7b565c407db48ee4d033d178ad717196f904972a585ce7cab461c69fd8e1dc` |
 | `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `13ea82307f6e69eb4c92054ce0386fa0be4d9cf5a242d32fbfca125fd6950f9b` |
 | `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `b1c8632602faac5b502bb0a540bbeae3ff1c2e7d7b319283fdade0d9599be599` |
 | `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `d541108413ee14ff06a174d96828f3333592739bc746e53d3db864c74d1a8d4e` |
@@ -40,8 +40,8 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 | `contracts/examples/role-upgrade.json` | [sources/contracts/examples/role-upgrade.json](./sources/contracts/examples/role-upgrade.json) | `6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b` |
 | `contracts/examples/tenant-create.json` | [sources/contracts/examples/tenant-create.json](./sources/contracts/examples/tenant-create.json) | `bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133` |
 | `contracts/examples/upgrade-conflict.json` | [sources/contracts/examples/upgrade-conflict.json](./sources/contracts/examples/upgrade-conflict.json) | `d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70` |
-| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `8f58b3f5f0efdcdd15b9557ad582049d1522e44561131b5f6d8a451fa84e6e11` |
-| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `455190ae25d863e0cfe9c329c377752752a72d8b89355d282d92c1e383210c04` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `d9beac2a5392dd6c1ab3f955806b5e75997bb8f58d0ac6c5fa527bbff2d65b0e` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `072a4a540295fb581f9e05778fd56260b5d42f546268efdaaa793466a58ca0d3` |
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `0c8a1351e87065e1157dd7564db08d2e7c7c543277069ee7a0604194139bcd5c` |
 
 ## 2026-09-19 新增权威副本
