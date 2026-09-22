@@ -26,6 +26,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件 > 3 个时只直出第一个，其余进 `InFilterPanel`
 - [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
+- [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
 ```
 
 ## 目录约定
@@ -120,6 +121,16 @@ pages/platform/base/app/
 - **少的直出、多的进筛选浮层**：条件总数 ≤ 3 时全部直出（主搜索仍排第一）。条件总数 > 3 时只直出第一个（通常是主搜索），其余一律放 `InFilterPanel`。含远程实体选择（`TenantSelect` / `InPageSelect`）时也进浮层，不占用直出位。按钮文案是「筛选」（`aria-label="筛选条件"`），不要叫「更多」（那是 `InTableActions`），也不要用对话框或抽屉。有已生效额外条件时显示数量角标（不含第一个直出条件）。浮层内仍用 `InPicker` / 无 label 查询，切换或回车即查；底部可「重置」清空额外条件
 - `InPicker` 只用于工具栏单选，不替代表单 `InSelect`；远程实体选择（`InPageSelect` / `TenantSelect`）不是枚举下拉，保持原控件
 - `#top` 只留给会改左树的上下文筛选；字典作用域放左栏（先限制类型树），不要把普通列表查询放回去
+
+### 表单占位
+
+表单、抽屉、对话框里的录入控件都必须带 `placeholder`，不能只靠 label。列表搜索框的「搜索…」是另一条规则，见上一节。
+
+- 文本、多行、数字：`请输入{字段}`。有约束时写进占位，如「发布后不可改」「可空」
+- 枚举下拉（`el-select` / `el-tree-select` / `InSelect`）：`请选择{字段}`。`InSelect` 的 `placeholder` 会传到内部 `el-select`，调用处必须传入
+- 远程分页选择（`InPageSelect` 及封装）：说明怎么选，如「远程分页选择角色」「请选择组织」
+- 只读禁用输入框写「不可修改」或已经确定的含义，不要写成还能录入
+- 开关、复选框、单选按钮、纯文本展示不是录入框，不要求 `placeholder`
 
 ### 列表取数
 
