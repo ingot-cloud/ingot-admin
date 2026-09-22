@@ -7,6 +7,7 @@
           v-model="editForm.pid"
           :data="selectData"
           disabled
+          placeholder="请选择上级部门"
           :node-key="TreeKeyAndProps.nodeKey"
           :value-key="TreeKeyAndProps.nodeKey"
           :props="TreeKeyAndProps.props"

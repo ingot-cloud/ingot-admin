@@ -22,17 +22,17 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="最大失败次数" prop="maxAttempts">
-            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" />
+            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" placeholder="请输入最大失败次数" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="统计窗口(分钟)" prop="windowMinutes">
-            <el-input-number v-model="form.windowMinutes" :min="1" class="w-full" />
+            <el-input-number v-model="form.windowMinutes" :min="1" class="w-full" placeholder="请输入统计窗口分钟数" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="封禁时长(秒)" prop="blockTtlSec">
-            <el-input-number v-model="form.blockTtlSec" :min="60" class="w-full" />
+            <el-input-number v-model="form.blockTtlSec" :min="60" class="w-full" placeholder="请输入封禁秒数" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -50,7 +50,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="封禁 Key 类型">
-            <el-input :model-value="form.blockKeyType" disabled />
+            <el-input :model-value="form.blockKeyType" disabled placeholder="由策略决定，不可改" />
           </el-form-item>
         </el-col>
       </el-row>

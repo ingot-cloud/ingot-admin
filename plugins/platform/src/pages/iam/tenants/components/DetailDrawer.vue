@@ -13,13 +13,13 @@
     <in-biz-tab-panel title="基础信息" name="base">
       <in-form v-if="detail" :editing="editing">
         <in-detail-field label="组织名称" :value="detail.record.name">
-          <el-input v-model="draft.name" />
+          <el-input v-model="draft.name" placeholder="请输入组织名称" />
         </in-detail-field>
         <in-detail-field label="状态">
           <template #view>
             <biz-iam-status-tag :status="detail.record.status" />
           </template>
-          <in-select v-model="draft.status" :options="statusEnum.getOptions()" />
+          <in-select v-model="draft.status" :options="statusEnum.getOptions()" placeholder="请选择状态" />
         </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
@@ -35,7 +35,12 @@
         >
           <div class="flex items-center gap-8px">
             <span class="min-w-160px">{{ nameOf(item.applicationId) }}</span>
-            <in-select v-if="editing" v-model="item.status" :options="statusEnum.getOptions()" />
+            <in-select
+              v-if="editing"
+              v-model="item.status"
+              :options="statusEnum.getOptions()"
+              placeholder="请选择开通状态"
+            />
             <biz-iam-status-tag v-else :status="item.status" />
             <span class="text-12px">来源 {{ sourceOf(item.applicationId) }}</span>
           </div>

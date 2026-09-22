@@ -28,7 +28,7 @@
         />
       </el-form-item>
       <el-form-item label="最大会话数" prop="maxSessions">
-        <el-input-number v-model="editForm.maxSessions" :min="0" class="w-full" />
+        <el-input-number v-model="editForm.maxSessions" :min="0" class="w-full" placeholder="请输入最大会话数" />
         <div class="field-tip">0 表示不限制</div>
       </el-form-item>
       <el-form-item label="超出处置" prop="overflow">

@@ -2,7 +2,7 @@
   <in-drawer v-model="visible" :title="edit ? '编辑部门' : '新增部门'" :loading="loading" size="480px">
     <in-form label-position="top">
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" clearable />
+        <el-input v-model="draft.name" clearable placeholder="请输入部门名称" />
       </el-form-item>
       <el-form-item label="上级部门">
         <in-page-select
@@ -17,7 +17,7 @@
         />
       </el-form-item>
       <el-form-item label="排序">
-        <el-input-number v-model="draft.sortOrder" :min="0" />
+        <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
       </el-form-item>
     </in-form>
     <template #footer>

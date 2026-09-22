@@ -11,7 +11,7 @@
         <el-input v-model="draft.description" type="textarea" :rows="3" placeholder="请输入说明" />
       </el-form-item>
       <el-form-item label="排序">
-        <el-input-number v-model="draft.sortOrder" :min="0" />
+        <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
       </el-form-item>
       <el-form-item label="基础应用">
         <el-switch v-model="draft.baseline" />

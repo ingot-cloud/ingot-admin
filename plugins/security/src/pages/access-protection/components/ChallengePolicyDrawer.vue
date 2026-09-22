@@ -58,19 +58,19 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="PassToken TTL(秒)" prop="passTokenTtlSec">
-            <el-input-number v-model="editForm.passTokenTtlSec" :min="1" class="w-full" />
+            <el-input-number v-model="editForm.passTokenTtlSec" :min="1" class="w-full" placeholder="请输入 PassToken 有效秒数" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="剩余次数" prop="passTokenRemaining">
-            <el-input-number v-model="editForm.passTokenRemaining" :min="1" class="w-full" />
+            <el-input-number v-model="editForm.passTokenRemaining" :min="1" class="w-full" placeholder="请输入剩余次数" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="优先级" prop="priority">
-            <el-input-number v-model="editForm.priority" :min="0" class="w-full" />
+            <el-input-number v-model="editForm.priority" :min="0" class="w-full" placeholder="请输入优先级" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -87,13 +87,13 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="验码失败上限">
-            <el-input-number v-model="editForm.challengeFailureLimit" :min="0" class="w-full" />
+            <el-input-number v-model="editForm.challengeFailureLimit" :min="0" class="w-full" placeholder="请输入验码失败上限" />
             <div class="field-tip">网关当前不执行验码失败拉黑</div>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="拉黑时长(秒)">
-            <el-input-number v-model="editForm.blockTtlSec" :min="0" class="w-full" />
+            <el-input-number v-model="editForm.blockTtlSec" :min="0" class="w-full" placeholder="请输入拉黑秒数" />
             <div class="field-tip">网关当前不执行验码失败拉黑</div>
           </el-form-item>
         </el-col>

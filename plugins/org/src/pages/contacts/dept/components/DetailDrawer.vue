@@ -48,6 +48,7 @@
           <el-tree-select
             w-full
             v-model="editForm.pid"
+            placeholder="请选择上级部门"
             :data="selectData"
             :node-key="TreeKeyAndProps.nodeKey"
             :value-key="TreeKeyAndProps.nodeKey"

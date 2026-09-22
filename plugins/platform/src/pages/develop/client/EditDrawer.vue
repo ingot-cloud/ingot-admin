@@ -75,6 +75,7 @@
             w-full
             v-model="editForm.tokenAuthType"
             :options="tokenAuthMethodEnum.getOptions()"
+            placeholder="请选择 Token 认证类型"
           />
         </el-form-item>
         <el-form-item label="刷新Token失效时间(单位秒)" v-if="grantRefreshToken">

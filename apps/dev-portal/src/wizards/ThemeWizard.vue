@@ -14,10 +14,10 @@
         <el-input v-model="form.id" placeholder="aurora" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="展示名">
-        <el-input v-model="form.name" @change="privateInvalidate" />
+        <el-input v-model="form.name" placeholder="请输入展示名" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="导出名">
-        <el-input v-model="form.exportName" @change="privateInvalidate" />
+        <el-input v-model="form.exportName" placeholder="请输入导出名" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="生成 Shell 示例">
         <el-switch v-model="form.shell" @change="privateInvalidate" />

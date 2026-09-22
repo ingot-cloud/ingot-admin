@@ -16,13 +16,13 @@
           label="显示名"
           :value="detail.record.displayName || detail.record.id"
         >
-          <el-input v-model="draft.displayName" />
+          <el-input v-model="draft.displayName" placeholder="请输入显示名" />
         </in-detail-field>
         <in-detail-field label="手机号" :value="detail.record.phone">
-          <el-input v-model="draft.phone" />
+          <el-input v-model="draft.phone" placeholder="请输入手机号" />
         </in-detail-field>
         <in-detail-field label="邮箱" :value="detail.record.email">
-          <el-input v-model="draft.email" />
+          <el-input v-model="draft.email" placeholder="请输入邮箱" />
         </in-detail-field>
         <in-detail-field label="状态" :value="detail.record.status" />
       </in-form>

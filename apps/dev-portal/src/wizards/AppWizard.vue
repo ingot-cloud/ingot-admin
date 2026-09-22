@@ -20,10 +20,10 @@
             <el-input v-model="form.logo" placeholder="可空" @change="privateInvalidate" />
           </el-form-item>
           <el-form-item label="开发端口">
-            <el-input v-model="form.port" @change="privateOnPort" />
+            <el-input v-model="form.port" placeholder="请输入开发端口" @change="privateOnPort" />
           </el-form-item>
           <el-form-item label="Host">
-            <el-input v-model="form.host" @change="privateInvalidate" />
+            <el-input v-model="form.host" placeholder="请输入 Host" @change="privateInvalidate" />
           </el-form-item>
           <el-form-item label="构建 base">
             <el-input v-model="form.base" placeholder="/" @change="privateInvalidate" />
@@ -55,16 +55,16 @@
           </div>
           <el-button class="mb-16px" @click="privateAddProxy">添加代理</el-button>
           <el-form-item label="Iconify collections（逗号分隔）">
-            <el-input v-model="form.iconCollections" @change="privateInvalidate" />
+            <el-input v-model="form.iconCollections" placeholder="请输入 Iconify collections，逗号分隔" @change="privateInvalidate" />
           </el-form-item>
           <el-form-item label="extra collections">
-            <el-input v-model="form.iconExtra" @change="privateInvalidate" />
+            <el-input v-model="form.iconExtra" placeholder="请输入 extra collections" @change="privateInvalidate" />
           </el-form-item>
           <el-form-item label="扫描源码图标">
             <el-switch v-model="form.iconScan" @change="privateInvalidate" />
           </el-form-item>
           <el-form-item label="usedFile">
-            <el-input v-model="form.iconUsedFile" @change="privateInvalidate" />
+            <el-input v-model="form.iconUsedFile" placeholder="请输入 usedFile" @change="privateInvalidate" />
           </el-form-item>
         </el-collapse-item>
         <el-collapse-item title="插件与主题" name="plugins">

@@ -61,7 +61,7 @@
         </el-popover>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
-        <el-input-number v-model="editForm.sort" :min="0" :max="9999" w-full />
+        <el-input-number v-model="editForm.sort" :min="0" :max="9999" w-full placeholder="请输入排序" />
       </el-form-item>
       <el-form-item label="应用描述" prop="intro">
         <el-input

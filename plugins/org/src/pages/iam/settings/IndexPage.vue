@@ -6,7 +6,7 @@
     <in-split-layout>
       <el-form v-if="detail" label-position="top" class="max-w-480px p-16px">
         <el-form-item label="组织名称">
-          <el-input v-model="draft.name" />
+          <el-input v-model="draft.name" placeholder="请输入组织名称" />
         </el-form-item>
         <el-form-item label="当前所有者">
           <span>{{ detail.record.ownerDisplayName || detail.record.ownerMemberId }}</span>

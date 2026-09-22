@@ -27,7 +27,7 @@
         <span>{{ resourceLabel(item.resourceId) }}</span>
       </template>
       <template #scopeType="{ item }">
-        <in-select w-full v-model="item.scopeType" :options="scopeOptions" />
+        <in-select w-full v-model="item.scopeType" :options="scopeOptions" placeholder="请选择数据范围" />
       </template>
       <template #actions="{ item }">
         <in-button text type="danger" @click="privateOnRemove(item.__key)">删除</in-button>

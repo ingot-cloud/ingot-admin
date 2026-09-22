@@ -27,17 +27,17 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="计数窗口(秒)" prop="windowSec">
-            <el-input-number v-model="form.windowSec" :min="1" class="w-full" />
+            <el-input-number v-model="form.windowSec" :min="1" class="w-full" placeholder="请输入计数窗口秒数" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拒绝次数阈值" prop="blockThreshold">
-            <el-input-number v-model="form.blockThreshold" :min="1" class="w-full" />
+            <el-input-number v-model="form.blockThreshold" :min="1" class="w-full" placeholder="请输入拒绝次数阈值" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="临时封禁 TTL(秒)" prop="tempBlockTtlSec">
-            <el-input-number v-model="form.tempBlockTtlSec" :min="1" class="w-full" />
+            <el-input-number v-model="form.tempBlockTtlSec" :min="1" class="w-full" placeholder="请输入临时封禁秒数" />
           </el-form-item>
         </el-col>
       </el-row>

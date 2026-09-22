@@ -15,6 +15,7 @@
             <el-select
               v-if="field.control === 'enum'"
               :model-value="common[field.key]"
+              :placeholder="`请选择${field.label}`"
               @update:model-value="(value: string) => privateSetCommon(field.key, value)"
             >
               <el-option v-for="option in field.options ?? []" :key="option" :label="option" :value="option" />
@@ -28,6 +29,7 @@
               v-else
               :model-value="common[field.key]"
               :disabled="field.key === 'VITE_APP_CODE'"
+              :placeholder="field.key === 'VITE_APP_CODE' ? '创建后不可改' : `请输入${field.label}`"
               @update:model-value="(value: string) => privateSetCommon(field.key, value)"
             />
             <p v-if="field.hint" class="hint">{{ field.hint }}</p>

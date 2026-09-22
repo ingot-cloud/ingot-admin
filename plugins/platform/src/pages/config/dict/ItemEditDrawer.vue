@@ -4,10 +4,10 @@
       <in-form-group-title title="所属字典类型" hide-action />
       <div p-20px>
         <el-form-item label="字典类型">
-          <el-input :model-value="parentTypeName" disabled />
+          <el-input :model-value="parentTypeName" disabled placeholder="当前字典类型" />
         </el-form-item>
         <el-form-item label="字典编码">
-          <el-input :model-value="editForm.code" disabled />
+          <el-input :model-value="editForm.code" disabled placeholder="创建后不可改" />
         </el-form-item>
       </div>
 
@@ -45,7 +45,7 @@
         </el-form-item>
 
         <el-form-item label="排序" prop="sort">
-          <el-input-number v-model="editForm.sort" :min="0" controls-position="right" />
+          <el-input-number v-model="editForm.sort" :min="0" controls-position="right" placeholder="请输入排序" />
         </el-form-item>
 
         <el-form-item label="状态" prop="status">

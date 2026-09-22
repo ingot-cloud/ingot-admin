@@ -2,7 +2,12 @@
   <in-drawer :title="title" v-model="visible" :loading="loading" size="520px">
     <in-form label-position="top">
       <el-form-item label="所属资源" required>
-        <el-select v-model="draft.resourceId" :disabled="resourceLocked" filterable>
+        <el-select
+          v-model="draft.resourceId"
+          :disabled="resourceLocked"
+          filterable
+          placeholder="请选择所属资源"
+        >
           <el-option
             v-for="item in resources"
             :key="item.record.id"
@@ -15,7 +20,7 @@
         <el-input v-model="draft.code" :disabled="Boolean(editing)" placeholder="不得包含通配符" />
       </el-form-item>
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" />
+        <el-input v-model="draft.name" placeholder="请输入操作名称" />
       </el-form-item>
     </in-form>
     <template #footer>

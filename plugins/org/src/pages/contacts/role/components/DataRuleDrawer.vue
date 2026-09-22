@@ -27,7 +27,12 @@
         <span>{{ item.resourceId || "未绑定资源" }}</span>
       </template>
       <template #scopeType="{ item }">
-        <in-select w-full v-model="item.scopeType" :options="scopeEnum.getOptions()" />
+        <in-select
+          w-full
+          v-model="item.scopeType"
+          :options="scopeEnum.getOptions()"
+          placeholder="请选择数据范围"
+        />
       </template>
       <template #scopes="{ item }">
         <BizDeptSelect

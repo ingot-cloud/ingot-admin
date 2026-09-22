@@ -11,7 +11,7 @@
         <el-input v-model="accountId" clearable placeholder="查找结果或粘贴账号 ID" />
       </el-form-item>
       <el-form-item label="显示名">
-        <el-input v-model="displayName" clearable />
+        <el-input v-model="displayName" clearable placeholder="请输入显示名" />
       </el-form-item>
       <el-form-item label="任职部门">
         <biz-iam-chip-page-select

@@ -2,10 +2,10 @@
   <in-drawer :title="title" v-model="visible" :loading="loading" size="560px">
     <in-form label-position="top">
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" />
+        <el-input v-model="draft.name" placeholder="请输入组名称" />
       </el-form-item>
       <el-form-item label="说明">
-        <el-input v-model="draft.description" type="textarea" :rows="2" />
+        <el-input v-model="draft.description" type="textarea" :rows="2" placeholder="请输入说明" />
       </el-form-item>
       <el-form-item label="成员">
         <div class="flex flex-col gap-8px">

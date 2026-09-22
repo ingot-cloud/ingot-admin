@@ -5,6 +5,7 @@
         <el-tree-select
           w-full
           v-model="editForm.pid"
+          placeholder="请选择上级权限"
           :data="selectData"
           :disabled="edit"
           :node-key="TreeKeyAndProps.nodeKey"

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-8px">
     <div v-for="(item, index) in model" :key="index" class="flex flex-wrap items-center gap-8px">
-      <el-select v-model="item.kind" placeholder="范围" class="w-180px" @change="privateOnChange">
+      <el-select v-model="item.kind" placeholder="请选择范围" class="w-180px" @change="privateOnChange">
         <el-option
           v-for="option in kindOptions"
           :key="option.value"
@@ -12,7 +12,7 @@
       <el-input
         v-if="needsParameter(item.kind)"
         v-model="item.parameterKey"
-        placeholder="参数键"
+        placeholder="请输入参数键"
         class="w-160px"
         @change="privateOnChange"
       />

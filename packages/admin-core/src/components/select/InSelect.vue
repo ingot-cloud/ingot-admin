@@ -1,5 +1,10 @@
 <template>
-  <el-select v-model="selectModel" class="in-select" @change="privateOnChanged">
+  <el-select
+    v-model="selectModel"
+    class="in-select"
+    :placeholder="placeholder"
+    @change="privateOnChanged"
+  >
     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
   </el-select>
 </template>
@@ -19,6 +24,10 @@ const props = defineProps({
     default() {
       return [];
     },
+  },
+  placeholder: {
+    type: String,
+    default: "",
   },
 });
 const emits = defineEmits(["onChanged"]);

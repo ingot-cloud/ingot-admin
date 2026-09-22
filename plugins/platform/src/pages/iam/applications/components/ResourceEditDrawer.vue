@@ -12,7 +12,7 @@
         <el-input v-model="draft.code" :disabled="Boolean(editing)" placeholder="应用内唯一" />
       </el-form-item>
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" />
+        <el-input v-model="draft.name" placeholder="请输入资源名称" />
       </el-form-item>
       <el-form-item label="允许范围">
         <el-checkbox-group v-model="draft.scopeCapabilities">

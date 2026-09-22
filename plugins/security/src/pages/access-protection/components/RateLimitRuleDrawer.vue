@@ -48,24 +48,24 @@
       <el-row :gutter="16">
         <el-col :span="8">
           <el-form-item label="QPS" prop="qps">
-            <el-input-number v-model="editForm.qps" :min="1" class="w-full" />
+            <el-input-number v-model="editForm.qps" :min="1" class="w-full" placeholder="请输入 QPS" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="突发" prop="burst">
-            <el-input-number v-model="editForm.burst" :min="0" class="w-full" />
+            <el-input-number v-model="editForm.burst" :min="0" class="w-full" placeholder="请输入突发" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="窗口(秒)" prop="intervalSec">
-            <el-input-number v-model="editForm.intervalSec" :min="1" class="w-full" />
+            <el-input-number v-model="editForm.intervalSec" :min="1" class="w-full" placeholder="请输入窗口秒数" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="优先级" prop="priority">
-            <el-input-number v-model="editForm.priority" :min="0" class="w-full" />
+            <el-input-number v-model="editForm.priority" :min="0" class="w-full" placeholder="请输入优先级" />
           </el-form-item>
         </el-col>
         <el-col :span="12">

@@ -8,6 +8,7 @@
             w-full
             v-model="editForm.menuType"
             :options="menuTypeEnum.getOptions()"
+            placeholder="请选择菜单类型"
             @onChanged="privateOnMenuTypeChange"
           />
         </el-form-item>
@@ -15,6 +16,7 @@
           <el-tree-select
             w-full
             v-model="editForm.pid"
+            placeholder="请选择上级菜单"
             :data="selectData"
             :disabled="!canEditPid"
             :node-key="TreeKeyAndProps.nodeKey"
@@ -70,7 +72,12 @@
           <el-input v-model="editForm.redirect" placeholder="请输入重定向路由" clearable />
         </el-form-item>
         <el-form-item label="访问模式" prop="accessMode">
-          <in-select w-full v-model="editForm.accessMode" :options="accessModeEnum.getOptions()" />
+          <in-select
+            w-full
+            v-model="editForm.accessMode"
+            :options="accessModeEnum.getOptions()"
+            placeholder="请选择访问模式"
+          />
         </el-form-item>
         <el-form-item
           v-if="needsPermissions"
@@ -92,6 +99,7 @@
             w-full
             v-model="editForm.permissionMatchMode"
             :options="matchModeEnum.getOptions()"
+            placeholder="请选择匹配方式"
           />
         </el-form-item>
         <div v-if="needsPermissions" class="shortcut-create">
@@ -133,7 +141,7 @@
           </el-popover>
         </el-form-item>
         <el-form-item prop="sort" label="排序">
-          <el-input-number v-model="editForm.sort" :min="0" :max="9999" w-full />
+          <el-input-number v-model="editForm.sort" :min="0" :max="9999" w-full placeholder="请输入排序" />
         </el-form-item>
         <el-form-item prop="sort" label="备注">
           <el-input
@@ -143,6 +151,7 @@
             show-word-limit
             type="textarea"
             w-full
+            placeholder="请输入备注"
           />
         </el-form-item>
         <el-form-item prop="status" label="状态">

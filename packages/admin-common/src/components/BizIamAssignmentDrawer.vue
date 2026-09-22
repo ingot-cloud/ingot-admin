@@ -2,7 +2,12 @@
   <in-drawer v-model="visible" :title="title" :loading="loading" size="720px">
     <in-form label-position="top">
       <el-form-item label="接收对象" required>
-        <el-select v-model="subjectType" :disabled="isEditing" class="w-160px mb-8px">
+        <el-select
+          v-model="subjectType"
+          :disabled="isEditing"
+          class="w-160px mb-8px"
+          placeholder="请选择对象类型"
+        >
           <el-option
             v-for="option in subjectOptions"
             :key="option.value"

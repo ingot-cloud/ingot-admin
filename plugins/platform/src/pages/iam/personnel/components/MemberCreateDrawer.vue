@@ -11,7 +11,7 @@
         <span>{{ accountId }}</span>
       </el-form-item>
       <el-form-item label="显示名">
-        <el-input v-model="displayName" clearable />
+        <el-input v-model="displayName" clearable placeholder="请输入显示名" />
       </el-form-item>
     </in-form>
     <template #footer>

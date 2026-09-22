@@ -11,6 +11,7 @@
         <el-tree-select
           w-full
           v-model="editForm.pid"
+          placeholder="请选择上级角色"
           :data="roleList"
           :disabled="isAddChild || isEdit"
           :node-key="TreeKeyAndProps.nodeKey"

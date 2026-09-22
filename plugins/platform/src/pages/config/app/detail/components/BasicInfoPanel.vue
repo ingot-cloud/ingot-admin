@@ -81,7 +81,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="排序" prop="sort">
-              <el-input-number v-model="form.sort" :min="0" :max="9999" w-full />
+              <el-input-number v-model="form.sort" :min="0" :max="9999" w-full placeholder="请输入排序" />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -90,6 +90,7 @@
                 w-full
                 v-model="form.defaultAccessMode"
                 :options="defaultAccessModeEnum.getOptions()"
+                placeholder="请选择默认访问"
               />
             </el-form-item>
           </el-col>

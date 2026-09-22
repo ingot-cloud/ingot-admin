@@ -14,10 +14,10 @@
       <in-form v-if="detail" :editing="editing">
         <in-detail-field label="登录名" :value="detail.record.username" />
         <in-detail-field label="手机号" :value="detail.record.phone">
-          <el-input v-model="draft.phone" />
+          <el-input v-model="draft.phone" placeholder="请输入手机号" />
         </in-detail-field>
         <in-detail-field label="邮箱" :value="detail.record.email">
-          <el-input v-model="draft.email" />
+          <el-input v-model="draft.email" placeholder="请输入邮箱" />
         </in-detail-field>
         <in-detail-field label="启用">
           <template #view>

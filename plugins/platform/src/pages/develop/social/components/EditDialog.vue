@@ -8,7 +8,12 @@
         <el-input v-model="editForm.appSecret" clearable placeholder="请输入AppSecret"></el-input>
       </el-form-item>
       <el-form-item label="社交类型" prop="type">
-        <in-select w-full v-model="editForm.type" :options="socialTypeEnumsEnum.getOptions()" />
+        <in-select
+          w-full
+          v-model="editForm.type"
+          :options="socialTypeEnumsEnum.getOptions()"
+          placeholder="请选择社交类型"
+        />
       </el-form-item>
       <el-form-item label="社交名称" prop="name">
         <el-input v-model="editForm.name" clearable placeholder="请输入社交名称"></el-input>

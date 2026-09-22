@@ -14,6 +14,7 @@
         <el-tree-select
           w-full
           v-model="editForm.pid"
+          placeholder="请选择上级权限"
           :data="selectData"
           :disabled="edit"
           :node-key="TreeKeyAndProps.nodeKey"
@@ -27,6 +28,7 @@
           w-full
           v-model="editForm.nodeType"
           :options="creatableNodeTypeOptions"
+          placeholder="请选择节点类型"
           @onChanged="privateOnNodeTypeChange"
         />
       </el-form-item>

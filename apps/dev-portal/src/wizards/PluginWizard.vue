@@ -14,16 +14,16 @@
         <el-input v-model="form.directoryId" placeholder="sales" @change="privateOnDirectory" />
       </el-form-item>
       <el-form-item label="插件 ID">
-        <el-input v-model="form.pluginId" @change="privateInvalidate" />
+        <el-input v-model="form.pluginId" placeholder="请输入插件 ID" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="导出名">
-        <el-input v-model="form.exportName" @change="privateInvalidate" />
+        <el-input v-model="form.exportName" placeholder="请输入导出名" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="canonical prefix">
-        <el-input v-model="form.canonicalPrefix" @change="privateInvalidate" />
+        <el-input v-model="form.canonicalPrefix" placeholder="请输入 canonical prefix" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="说明">
-        <el-input v-model="form.description" @change="privateInvalidate" />
+        <el-input v-model="form.description" placeholder="请输入说明" @change="privateInvalidate" />
       </el-form-item>
       <el-form-item label="Demo（页面四件套）">
         <el-switch v-model="form.withDemo" @change="privateInvalidate" />

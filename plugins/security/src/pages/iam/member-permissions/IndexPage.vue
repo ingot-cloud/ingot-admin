@@ -28,7 +28,7 @@
             />
             <div v-for="(rule, index) in directoryDraft.rules" :key="index" class="mb-16px border p-12px">
               <el-form-item :label="`规则 ${index + 1}`">
-                <el-select v-model="rule.effect" class="w-160px">
+                <el-select v-model="rule.effect" class="w-160px" placeholder="请选择效果">
                   <el-option
                     v-for="option in effectOptions"
                     :key="option.value"
@@ -82,7 +82,7 @@
             </el-form-item>
             <div v-for="(rule, index) in fieldDraft.rules" :key="index" class="mb-16px border p-12px">
               <el-form-item :label="`字段规则 ${index + 1}`">
-                <el-select v-model="rule.scenario" class="w-160px">
+                <el-select v-model="rule.scenario" class="w-160px" placeholder="请选择场景">
                   <el-option
                     v-for="option in scenarioOptions"
                     :key="option.value"
@@ -96,7 +96,7 @@
                 </in-button>
               </el-form-item>
               <el-form-item label="可见性">
-                <el-select v-model="rule.visibility" class="w-160px">
+                <el-select v-model="rule.visibility" class="w-160px" placeholder="请选择可见性">
                   <el-option
                     v-for="option in visibilityOptions"
                     :key="option.value"

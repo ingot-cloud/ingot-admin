@@ -41,7 +41,7 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="失败次数阈值" prop="maxAttempts">
-            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" />
+            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" placeholder="请输入失败次数阈值" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -51,6 +51,7 @@
               :min="durationMin"
               :disabled="!editing || permanent"
               class="w-full"
+              placeholder="请输入锁定分钟数"
             />
           </el-form-item>
         </el-col>
@@ -58,12 +59,12 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="失败计数窗口(分钟)" prop="attemptWindowMinutes">
-            <el-input-number v-model="form.attemptWindowMinutes" :min="1" class="w-full" />
+            <el-input-number v-model="form.attemptWindowMinutes" :min="1" class="w-full" placeholder="请输入失败计数窗口分钟数" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="提示起始次数" prop="hintAfterAttempts">
-            <el-input-number v-model="form.hintAfterAttempts" :min="1" class="w-full" />
+            <el-input-number v-model="form.hintAfterAttempts" :min="1" class="w-full" placeholder="请输入提示起始次数" />
           </el-form-item>
         </el-col>
       </el-row>

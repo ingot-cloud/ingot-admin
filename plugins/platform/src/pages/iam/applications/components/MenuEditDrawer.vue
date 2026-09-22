@@ -12,7 +12,7 @@
       </in-detail-field>
       <in-detail-field label="类型">
         <template #view>{{ kindEnum.getTagText(draft.kind).text }}</template>
-        <in-select v-model="draft.kind" :options="kindEnum.getOptions()" />
+        <in-select v-model="draft.kind" :options="kindEnum.getOptions()" placeholder="请选择菜单类型" />
       </in-detail-field>
       <in-detail-field label="父菜单" :value="parentName">
         <el-select v-model="draft.parentId" clearable filterable placeholder="根节点为空">
@@ -35,14 +35,22 @@
       </in-detail-field>
       <in-detail-field label="准入方式">
         <template #view>{{ accessEnum.getTagText(draft.accessMode).text }}</template>
-        <in-select v-model="draft.accessMode" :options="accessEnum.getOptions()" />
+        <in-select
+          v-model="draft.accessMode"
+          :options="accessEnum.getOptions()"
+          placeholder="请选择准入方式"
+        />
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           开放不校验操作；按操作时由下方匹配方式决定。
         </div>
       </in-detail-field>
       <in-detail-field label="操作匹配">
         <template #view>{{ matchEnum.getTagText(draft.matchMode).text }}</template>
-        <in-select v-model="draft.matchMode" :options="matchEnum.getOptions()" />
+        <in-select
+          v-model="draft.matchMode"
+          :options="matchEnum.getOptions()"
+          placeholder="请选择操作匹配"
+        />
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           任一操作：具备列表中任一 ACTION 即可进入；全部操作：必须同时具备。
         </div>
@@ -57,7 +65,7 @@
         />
       </in-detail-field>
       <in-detail-field label="排序" :value="draft.sortOrder">
-        <el-input-number v-model="draft.sortOrder" :min="0" />
+        <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
       </in-detail-field>
     </in-form>
     <template #footer>

@@ -19,13 +19,18 @@
           </template>
         </in-detail-field>
         <in-detail-field label="名称" :value="detail.record.name">
-          <el-input v-model="draft.name" />
+            <el-input v-model="draft.name" placeholder="请输入应用名称" />
         </in-detail-field>
         <in-detail-field label="说明" :value="detail.record.description">
-          <el-input v-model="draft.description" type="textarea" :rows="3" />
+            <el-input
+              v-model="draft.description"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入说明"
+            />
         </in-detail-field>
         <in-detail-field label="排序" :value="detail.record.sortOrder">
-          <el-input-number v-model="draft.sortOrder" :min="0" />
+            <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
         </in-detail-field>
         <in-detail-field label="基础应用" :value="detail.record.baseline ? '是' : '否'">
           <el-switch v-model="draft.baseline" />

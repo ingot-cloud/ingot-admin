@@ -10,13 +10,19 @@
           <div class="qrcode-config__title">二维码配置</div>
           <el-form ref="editFormRef" class="form" label-width="100px" :model="editForm">
             <el-form-item label="二维码样式">
-              <in-select w-full v-model="editForm.type" :options="qrcodeTypeEnum.getOptions()" />
+              <in-select
+                w-full
+                v-model="editForm.type"
+                :options="qrcodeTypeEnum.getOptions()"
+                placeholder="请选择二维码样式"
+              />
             </el-form-item>
             <el-form-item label="容错率">
               <in-select
                 w-full
                 v-model="editForm.correctLevel"
                 :options="correctLevelEnum.getOptions()"
+                placeholder="请选择容错率"
               />
             </el-form-item>
             <el-form-item label="码点样式" v-if="editForm.type === QrcodeType.Line">
@@ -24,6 +30,7 @@
                 w-full
                 v-model="editForm.lineOptionsType"
                 :options="lineOptionsTypeEnum.getOptions()"
+                placeholder="请选择码点样式"
               />
             </el-form-item>
             <el-form-item label="码点样式" v-if="editForm.type === QrcodeType.Round">
@@ -31,6 +38,7 @@
                 w-full
                 v-model="editForm.roundOptionsType"
                 :options="roundOptionsTypeEnum.getOptions()"
+                placeholder="请选择码点样式"
               />
             </el-form-item>
             <el-form-item label="码眼样式">
@@ -38,6 +46,7 @@
                 w-full
                 v-model="editForm.posType"
                 :options="optionsPosTypeEnum.getOptions()"
+                placeholder="请选择码眼样式"
               />
             </el-form-item>
             <el-form-item label="码点大小">

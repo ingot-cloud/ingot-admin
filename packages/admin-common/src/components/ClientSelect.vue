@@ -4,6 +4,7 @@
     :page-size="20"
     :value-field="props.valueField"
     :label-field="labelField"
+    :placeholder="placeholder"
     :default-select-index="props.defaultSelectIndex"
   />
 </template>
@@ -15,10 +16,12 @@ const props = withDefaults(
   defineProps<{
     valueField?: string;
     defaultSelectIndex?: number;
+    placeholder?: string;
   }>(),
   {
     valueField: "id",
     defaultSelectIndex: 0,
+    placeholder: "请选择客户端",
   },
 );
 
