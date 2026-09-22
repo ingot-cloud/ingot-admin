@@ -197,6 +197,12 @@ describe("InTable", () => {
     expect(source).toContain("treeColumn");
     expect(source).toContain("headerCheckbox");
     expect(source).toContain("InTableTreeCell");
+    const treeCell = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), "InTableTreeCell.vue"),
+      "utf8",
+    );
+    expect(treeCell).toContain('v-else class="in-table-tree-expand-spacer"');
+    expect(treeCell).not.toContain("v-else-if=\"checkboxMode !== 'off'\"");
     expect(source).toContain("--in-checkbox-size");
     expect(source).toContain("background-position: center");
     expect(source).toContain("background-color var(--in-motion-duration)");

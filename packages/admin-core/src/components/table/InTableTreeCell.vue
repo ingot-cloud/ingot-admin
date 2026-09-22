@@ -8,7 +8,7 @@
       :aria-label="expanded ? '收起' : '展开'"
       @click.stop="privateOnToggleExpand"
     />
-    <span v-else-if="checkboxMode !== 'off'" class="in-table-tree-expand-spacer" />
+    <span v-else class="in-table-tree-expand-spacer" />
     <el-checkbox
       v-if="checkboxMode !== 'off'"
       :model-value="checked"
