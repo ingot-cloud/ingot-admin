@@ -23,7 +23,9 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] emit 使用 kebab-case 语义名（change、success），带类型签名
 - [ ] 样式优先 UnoCSS 原子类，禁止 scss/less
 - [ ] 跨 app / 插件公共逻辑优先放 packages/，具体主题放 themes/，不复制
-- [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件多时用 `InFilterPanel`「筛选」浮层
+- [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件 > 3 个时只直出第一个，其余进 `InFilterPanel`
+- [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量
+- [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
 ```
 
 ## 目录约定
@@ -112,12 +114,22 @@ pages/platform/base/app/
 
 列表、双栏列表的筛选是默认统一标准，参考通讯录成员管理 / 部门管理 / 应用管理：
 
-- 筛选放 `InTable` `#tools-start`（主搜索永远直出 → 可选高频 `InPicker` → 条件多时 `InFilterPanel`「筛选」浮层 → 字段设置），不要用 `#header`，也不要再铺 `InFilterItem` + `InWithLabel`
+- 筛选放 `InTable` `#tools-start`（≤ 3 个条件全部直出；> 3 个只直出第一个，其余进 `InFilterPanel`「筛选」浮层 → 字段设置），不要用 `#header`，也不要再铺 `InFilterItem` + `InWithLabel`
 - **下拉用 `InPicker`**：带 `label`（如「状态」），选项以「全部」为首项；`value: ""` 表示不传该条件；切换后立即重查。用 `withAllPickerOption` / `resolveStringPickerFilter` / `toStringPickerValue`（布尔条件用 `resolveBooleanPickerFilter`）
 - **查询不要 label**：文本搜索用无 label 的 `el-input`，`placeholder` 写成「搜索部门名」这种，`:prefix-icon="Search"`，回车或清空即查；不要 `InWithLabel`，也不要单独的搜索主按钮
-- **少的直出、多的进筛选浮层**：主搜索永远直出；其余条件 ≤ 2 个（例如 1～2 个 `InPicker`）全部直出；其余 ≥ 3 个，或含远程实体选择（`TenantSelect` / `InPageSelect`）时，直出主搜索 + 至多 1 个最高频 `InPicker`，其余放 `InFilterPanel`。按钮文案是「筛选」（`aria-label="筛选条件"`），不要叫「更多」（那是 `InTableActions`），也不要用对话框或抽屉。有已生效额外条件时显示数量角标（不含主搜索）。浮层内仍用 `InPicker` / 无 label 查询，切换或回车即查；底部可「重置」清空额外条件
+- **少的直出、多的进筛选浮层**：条件总数 ≤ 3 时全部直出（主搜索仍排第一）。条件总数 > 3 时只直出第一个（通常是主搜索），其余一律放 `InFilterPanel`。含远程实体选择（`TenantSelect` / `InPageSelect`）时也进浮层，不占用直出位。按钮文案是「筛选」（`aria-label="筛选条件"`），不要叫「更多」（那是 `InTableActions`），也不要用对话框或抽屉。有已生效额外条件时显示数量角标（不含第一个直出条件）。浮层内仍用 `InPicker` / 无 label 查询，切换或回车即查；底部可「重置」清空额外条件
 - `InPicker` 只用于工具栏单选，不替代表单 `InSelect`；远程实体选择（`InPageSelect` / `TenantSelect`）不是枚举下拉，保持原控件
 - `#top` 只留给会改左树的上下文筛选；字典作用域放左栏（先限制类型树），不要把普通列表查询放回去
+
+### 列表取数
+
+列表、选择器和树的取数是默认统一标准，禁止用大页码假装拿全量。
+
+- **普通分页**：列表和远程选择器走服务端分页，默认 `pageSize`/`size` 为 20，翻页或「加载更多」再请求下一页。数据量不大也用正常分页，不要一次拉满。
+- **大数据**：总量大或需要连续滚动时用游标（cursor / `nextToken`），不要靠加大页码或循环翻页拼全集。
+- **树**：页面需要树形结构时，必须消费接口直接返回的树（如 `view=tree` 或独立 `/tree`）。禁止把平铺分页在前端按 `parentId` 组树，也禁止为组树把 `pageSize` 调到上限。
+- **Tab 内表格**：详情抽屉等 Tab 里放 `InTable` 时，面板加 `fill`。Tab 内容区定高，工具栏/分页固定，只滚表体；不要让整个 Tab 跟着列表一起滚。
+- **禁止**：`pageSize`/`size = 200`，或把接口允许的最大页（例如 IAM `MAX_SIZE=200`）当成「一次拿全量」的手段。选择器预填、详情回显用已选 ID 查名称，不要为回显预拉全集。
 
 ### 样式
 

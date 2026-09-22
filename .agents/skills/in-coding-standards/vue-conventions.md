@@ -327,9 +327,22 @@ defineExpose({} as any);
 
 ## 好/坏对比
 
+### 详情 Tab 内表格
+
+`InBizTabPanel` 放 `InTable` 时加 `fill`：内容区定高，只滚表体。表单 Tab 不要加，继续由面板滚动。
+
+```vue
+<in-biz-tab-panel title="基本信息" name="base">
+  <in-form :editing="editing">...</in-form>
+</in-biz-tab-panel>
+<in-biz-tab-panel title="菜单" name="menus" :editable="false" fill>
+  <in-table ... />
+</in-biz-tab-panel>
+```
+
 ### 列表筛选
 
-默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。主搜索永远直出；其余条件少则直出，多则进 `InFilterPanel`「筛选」浮层（不要叫「更多」，也不要用对话框/抽屉）。
+默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。条件总数 ≤ 3 时全部直出（主搜索仍排第一）；> 3 个时只直出第一个，其余进 `InFilterPanel`「筛选」浮层（不要叫「更多」，也不要用对话框/抽屉）。
 
 ```vue
 <template #tools-start>
@@ -351,7 +364,7 @@ defineExpose({} as any);
 </template>
 ```
 
-条件 ≥ 3 个或含远程实体选择时，直出主搜索 + 至多 1 个高频 `InPicker`，其余进浮层：
+条件总数 > 3 个时只直出第一个（通常是主搜索），其余进浮层；远程实体选择也进浮层，不占用直出位：
 
 ```vue
 <template #tools-start>
