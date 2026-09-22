@@ -2,13 +2,13 @@
   <in-drawer v-model="visible" title="创建应用" :loading="loading" size="520px">
     <in-form label-position="top" :model="draft">
       <el-form-item label="编码" required>
-        <el-input v-model="draft.code" clearable placeholder="创建后不可改" />
+        <el-input v-model="draft.code" clearable placeholder="如 contacts，创建后不可改" />
       </el-form-item>
       <el-form-item label="名称" required>
-        <el-input v-model="draft.name" clearable />
+        <el-input v-model="draft.name" clearable placeholder="请输入应用名称" />
       </el-form-item>
       <el-form-item label="说明">
-        <el-input v-model="draft.description" type="textarea" :rows="3" />
+        <el-input v-model="draft.description" type="textarea" :rows="3" placeholder="请输入说明" />
       </el-form-item>
       <el-form-item label="排序">
         <el-input-number v-model="draft.sortOrder" :min="0" />

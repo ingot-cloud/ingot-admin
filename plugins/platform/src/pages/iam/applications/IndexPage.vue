@@ -26,7 +26,13 @@
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
-          <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
+          <in-filter-panel :active-count="extraFilterCount">
+            <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
+            <in-picker v-model="baselineFilter" label="组织默认" :options="baselineOptions" />
+            <template #footer>
+              <in-button @click="privateOnResetExtra">重置</in-button>
+            </template>
+          </in-filter-panel>
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TABLE_ID"
@@ -37,13 +43,18 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <biz-iam-record-link
-            :action="IamAction.PLATFORM_APPLICATION_READ"
-            :capabilities="item.capabilities"
-            @click="handleDetail(item)"
-          >
-            {{ item.record.name || item.record.id }}
-          </biz-iam-record-link>
+          <span class="inline-flex items-center gap-[var(--in-space-2)] min-w-0">
+            <biz-iam-record-link
+              :action="IamAction.PLATFORM_APPLICATION_READ"
+              :capabilities="item.capabilities"
+              @click="handleDetail(item)"
+            >
+              {{ item.record.name || item.record.id }}
+            </biz-iam-record-link>
+            <el-tag v-if="item.record.baseline" type="info" effect="plain" size="small">
+              组织默认
+            </el-tag>
+          </span>
         </template>
         <template #code="{ item }">{{ item.record.code }}</template>
         <template #status="{ item }">
@@ -66,7 +77,9 @@ import {
   applyColumnSelection,
   Confirm,
   Message,
+  resolveBooleanPickerFilter,
   resolveStringPickerFilter,
+  toBooleanPickerValue,
   toStringPickerValue,
   useCapabilities,
   withAllPickerOption,
@@ -107,6 +120,34 @@ const statusFilter = computed({
     refreshData();
   },
 });
+const baselineOptions = computed(() =>
+  withAllPickerOption([
+    { label: "是", value: true },
+    { label: "否", value: false },
+  ]),
+);
+const baselineFilter = computed({
+  get: () => toBooleanPickerValue(paging.condition.baseline),
+  set: (value: string | number | boolean | null) => {
+    paging.condition.baseline = resolveBooleanPickerFilter(value);
+    refreshData();
+  },
+});
+const extraFilterCount = computed(() => {
+  let count = 0;
+  if (paging.condition.status) {
+    count += 1;
+  }
+  if (paging.condition.baseline !== undefined) {
+    count += 1;
+  }
+  return count;
+});
+const privateOnResetExtra = (): void => {
+  paging.condition.status = undefined;
+  paging.condition.baseline = undefined;
+  refreshData();
+};
 const toolbarRow = {
   record: {
     id: "",

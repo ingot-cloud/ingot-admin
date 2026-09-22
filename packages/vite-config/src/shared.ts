@@ -134,6 +134,7 @@ export const createSharedViteConfig = (
   const sharedSrc = resolveWorkspaceSharedSrc(options.rootDir);
   const httpClientSrc = resolveWorkspaceHttpClientSrc(options.rootDir);
   const adminCoreSrc = resolveWorkspacePackageSrc(options.rootDir, "admin-core");
+  const adminCommonSrc = resolveWorkspacePackageSrc(options.rootDir, "admin-common");
   const hostAliases = flattenAliases(options.aliases);
   const hostAt = hostAliases.find((alias) => isHostAtAlias(alias.find));
   const hostSrcDir =
@@ -147,7 +148,7 @@ export const createSharedViteConfig = (
       officialPlugins,
       options.rootDir,
       hostSrcDir,
-      adminCoreSrc ? [adminCoreSrc] : [],
+      [...(adminCoreSrc ? [adminCoreSrc] : []), ...(adminCommonSrc ? [adminCommonSrc] : [])],
     ),
   );
 
@@ -215,11 +216,13 @@ export const createSharedViteConfig = (
         path.join(options.rootDir, "src"),
         ...officialPlugins.map((plugin) => plugin.srcDir),
         ...(adminCoreSrc ? [adminCoreSrc] : []),
+        ...(adminCommonSrc ? [adminCommonSrc] : []),
       ],
       packageDirs: [
         options.rootDir,
         ...officialPlugins.map((plugin) => plugin.rootDir),
         ...(adminCoreSrc ? [path.dirname(adminCoreSrc)] : []),
+        ...(adminCommonSrc ? [path.dirname(adminCommonSrc)] : []),
       ],
       externalizeOnBuild: options.externalizeIconifyOffline,
     }),
@@ -273,6 +276,14 @@ export const createSharedViteConfig = (
                 {
                   find: /^@ingot\/admin-core$/,
                   replacement: path.join(adminCoreSrc, "index.ts"),
+                },
+              ] satisfies Alias[])
+            : []),
+          ...(adminCommonSrc
+            ? ([
+                {
+                  find: /^@ingot\/admin-common$/,
+                  replacement: path.join(adminCommonSrc, "index.ts"),
                 },
               ] satisfies Alias[])
             : []),

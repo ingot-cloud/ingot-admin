@@ -65,6 +65,12 @@ export function useServerPaging<T, C extends object>(options: UseServerPagingOpt
   const search = (): void => {
     submitted.value = cloneCondition(condition);
     current.value = 1;
+    void Promise.resolve().then(() => {
+      if (!enabled.value) {
+        return;
+      }
+      void query.refetch();
+    });
   };
 
   const fetchData = (params?: PageChangeParams): void => {

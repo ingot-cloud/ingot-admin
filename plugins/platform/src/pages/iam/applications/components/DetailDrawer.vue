@@ -295,6 +295,7 @@ const privateSave = (): void => {
       applyDraft(response.data.record);
       Message.success("保存成功");
       session.exitEdit();
+      visible.value = false;
       void queryClient.invalidateQueries({ queryKey: platformApplicationQueryKeys.lists() });
       emits("success");
     })

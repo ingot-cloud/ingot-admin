@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  AuthorizationDomain,
   ConfigurationStatus,
   FieldVisibility,
   IAM_MASKED_PLACEHOLDER,
@@ -71,7 +72,13 @@ describe("iam helpers", () => {
       page: 1,
       pageSize: 20,
     });
+    expect(toIamListParams({ current: 1, size: 20 }, { baseline: false })).toEqual({
+      page: 1,
+      pageSize: 20,
+      baseline: false,
+    });
     expect(ConfigurationStatus.ENABLED).toBe("ENABLED");
+    expect(AuthorizationDomain.PLATFORM).toBe("PLATFORM");
   });
 
   it("按默认页大小逐页收齐记录", async () => {

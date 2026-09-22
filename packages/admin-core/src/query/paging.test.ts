@@ -126,4 +126,41 @@ describe("useServerPaging", () => {
     expect(wrapper.vm.paging.pageInfo.value.records).toEqual([]);
     wrapper.unmount();
   });
+
+  it("相同条件再次搜索会绕过缓存重新拉取", async () => {
+    let fetched = 0;
+    const client = createAdminQueryClient({ staleTime: 30_000 });
+    const Host = defineComponent({
+      setup() {
+        const paging = useServerPaging<{ id: string }, Record<string, never>>({
+          queryOptions: () =>
+            queryOptions({
+              queryKey: ["refresh"],
+              queryFn: async (): Promise<Page<{ id: string }>> => {
+                fetched += 1;
+                return {
+                  current: 1,
+                  size: 20,
+                  total: fetched,
+                  records: [{ id: String(fetched) }],
+                };
+              },
+            }),
+        });
+        return { paging };
+      },
+      render() {
+        return h("div");
+      },
+    });
+    const wrapper = mount(Host, {
+      global: {
+        plugins: [[VueQueryPlugin, { queryClient: client }]],
+      },
+    });
+    await vi.waitFor(() => expect(fetched).toBe(1));
+    wrapper.vm.paging.search();
+    await vi.waitFor(() => expect(fetched).toBe(2));
+    wrapper.unmount();
+  });
 });

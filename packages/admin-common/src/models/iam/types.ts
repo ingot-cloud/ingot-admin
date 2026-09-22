@@ -119,6 +119,7 @@ export interface IamPageResponse<T> {
 export interface IamListQuery {
   name?: string;
   status?: string;
+  baseline?: boolean;
   keyword?: string;
   departmentId?: string;
   domain?: string;
