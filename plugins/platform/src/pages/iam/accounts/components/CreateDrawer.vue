@@ -20,13 +20,14 @@
 
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
+import type { AccountSecret } from "@ingot/admin-common";
 import { PlatformAccountCreateAPI } from "@/api/iam/accounts";
 import { platformAccountQueryKeys } from "@/api/iam/accounts.query";
 import { useQueryClient } from "@tanstack/vue-query";
 
 defineOptions({ name: "AccountCreateDrawer" });
 
-const emits = defineEmits<{ success: [] }>();
+const emits = defineEmits<{ success: [secret: AccountSecret] }>();
 const queryClient = useQueryClient();
 const visible = ref(false);
 const loading = ref(false);
@@ -53,11 +54,11 @@ const privateSubmit = (): void => {
     phone: draft.phone.trim() || undefined,
     email: draft.email.trim() || undefined,
   })
-    .then(() => {
-      Message.success("创建成功，初始口令不会回显，如需登录请重置密码");
+    .then((response) => {
+      Message.success("创建成功，请保存初始密码");
       void queryClient.invalidateQueries({ queryKey: platformAccountQueryKeys.lists() });
       visible.value = false;
-      emits("success");
+      emits("success", response.data);
     })
     .finally(() => {
       loading.value = false;

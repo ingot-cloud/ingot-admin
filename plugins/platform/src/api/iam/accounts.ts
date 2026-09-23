@@ -20,6 +20,12 @@ import {
 
 const PATH = `${IAM_API_PREFIX}/v1/platform/accounts`;
 
+const secretCrypto = {
+  crypto: {
+    response: { mode: "data_only" as const },
+  },
+};
+
 const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
   ...res,
   data: mapIamPage(res.data),
@@ -87,9 +93,9 @@ export function PlatformAccountLookupAPI(
 export function PlatformAccountCreateAPI(
   params: AccountCreateInput,
   options?: RequestOptions,
-): Promise<R<CreatedResource>> {
+): Promise<R<AccountSecret>> {
   filterParams(params);
-  return request.post<CreatedResource>(PATH, params, options);
+  return request.post<AccountSecret>(PATH, params, { ...options, ...secretCrypto });
 }
 
 export function PlatformAccountUpdateAPI(
@@ -152,5 +158,8 @@ export function PlatformAccountResetPasswordAPI(
   options?: RequestOptions,
 ): Promise<R<AccountSecret>> {
   filterParams(params);
-  return request.post<AccountSecret>(`${PATH}/${id}/reset-password`, params, options);
+  return request.post<AccountSecret>(`${PATH}/${id}/reset-password`, params, {
+    ...options,
+    ...secretCrypto,
+  });
 }

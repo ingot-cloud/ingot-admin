@@ -5,7 +5,9 @@
         <span>一次性口令</span>
         <in-copy-tag :text="password" />
       </div>
-      <div class="text-12px text-[var(--el-text-color-secondary)]">关闭后无法再次读取明文。</div>
+      <div class="text-12px text-[var(--el-text-color-secondary)]">
+        点击口令即可复制保存，关闭后无法再次读取明文。
+      </div>
     </div>
     <template #footer>
       <in-button type="primary" @click="privateClose">确定</in-button>

@@ -65,6 +65,47 @@ describe("InTableActions", () => {
     wrapper.unmount();
   });
 
+  it("贴底行的更多菜单向上弹出，避免被视口裁切", async () => {
+    const originalInnerHeight = window.innerHeight;
+    const originalInnerWidth = window.innerWidth;
+    const originalRect = Element.prototype.getBoundingClientRect;
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: 768 });
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1024 });
+    Element.prototype.getBoundingClientRect = function mockBottomTrigger(this: Element) {
+      if (this.getAttribute("aria-label") === "更多") {
+        return {
+          width: 32,
+          height: 32,
+          top: 700,
+          left: 948,
+          bottom: 732,
+          right: 980,
+          x: 948,
+          y: 700,
+          toJSON: () => undefined,
+        } as DOMRect;
+      }
+      return originalRect.call(this);
+    };
+
+    const wrapper = mount(InTableActions, {
+      props: { actions, row },
+      attachTo: document.body,
+      global: { stubs },
+    });
+    await wrapper.get("[aria-label='更多']").trigger("click");
+    await wrapper.vm.$nextTick();
+    const menu = findMenu();
+    expect(menu).not.toBeNull();
+    expect(menu?.classList.contains("is-above")).toBe(true);
+    expect(menu?.style.bottom).toBe("68px");
+    expect(menu?.style.top).toBe("auto");
+    wrapper.unmount();
+    Element.prototype.getBoundingClientRect = originalRect;
+    Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: originalInnerWidth });
+  });
+
   it("指针悬停更多按钮即弹出菜单，离开后关闭", async () => {
     const wrapper = mount(InTableActions, {
       props: { actions, row },

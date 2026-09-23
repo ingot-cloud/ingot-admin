@@ -17,11 +17,11 @@ export const emptyAccountRow: Row = {
 };
 
 export const tableHeaders: Array<TableHeaderRecord> = [
-  { label: "登录名", prop: "username", required: true },
-  { label: "手机号", prop: "phone" },
-  { label: "邮箱", prop: "email" },
-  { label: "启用", prop: "enabled" },
-  { label: "锁定", prop: "locked" },
+  { label: "登录名", prop: "username", required: true, minWidth: 220, showOverflowTooltip: false },
+  { label: "手机号", prop: "phone", minWidth: 140 },
+  { label: "邮箱", prop: "email", minWidth: 180 },
+  { label: "启用", prop: "enabled", width: 80 },
+  { label: "锁定", prop: "locked", width: 80 },
   { label: "操作", width: "220", prop: "actions", fixed: "right" },
 ];
 

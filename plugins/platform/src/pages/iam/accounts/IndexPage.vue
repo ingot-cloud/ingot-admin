@@ -36,13 +36,15 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="emptyAccountRow" />
         </template>
         <template #username="{ item }">
-          <biz-iam-record-link
-            :action="IamAction.PLATFORM_ACCOUNT_READ"
-            :capabilities="item.capabilities"
-            @click="handleDetail(item)"
-          >
-            {{ item.record.username || item.record.id }}
-          </biz-iam-record-link>
+          <div class="whitespace-nowrap">
+            <biz-iam-record-link
+              :action="IamAction.PLATFORM_ACCOUNT_READ"
+              :capabilities="item.capabilities"
+              @click="handleDetail(item)"
+            >
+              {{ item.record.username || item.record.id }}
+            </biz-iam-record-link>
+          </div>
         </template>
         <template #phone="{ item }">{{ item.record.phone || "—" }}</template>
         <template #email="{ item }">{{ item.record.email || "—" }}</template>
@@ -63,7 +65,7 @@
     </in-split-layout>
   </in-page-frame>
 
-  <CreateDrawer ref="createRef" @success="refreshData" />
+  <CreateDrawer ref="createRef" @success="handleCreateSuccess" />
   <DetailDrawer ref="detailRef" @success="refreshData" />
   <LockDrawer ref="lockRef" @success="refreshData" />
   <SecretDialog ref="secretRef" />
@@ -79,7 +81,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamRecordLink, IamAction } from "@ingot/admin-common";
+import { BizIamRecordLink, IamAction, type AccountSecret } from "@ingot/admin-common";
 import {
   PlatformAccountDeleteAPI,
   PlatformAccountDisableAPI,
@@ -124,6 +126,12 @@ const invalidate = (): void => {
 
 const handleCreate = (): void => {
   createRef.value?.show();
+};
+const handleCreateSuccess = (secret: AccountSecret): void => {
+  if (secret.password) {
+    secretRef.value?.show(secret.password);
+  }
+  invalidate();
 };
 
 const consumePrefill = (): void => {

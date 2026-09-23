@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createRowActions, createToolbarActions, TABLE_ID, type Row } from "./table";
+import { createRowActions, createToolbarActions, TABLE_ID, tableHeaders, type Row } from "./table";
 
 vi.mock("@ingot/admin-common", () => ({
   IamAction: {
@@ -56,6 +56,16 @@ describe("platform iam accounts table", () => {
   it("提供稳定 tableId 与创建入口", () => {
     expect(TABLE_ID).toBe("platform-iam-accounts");
     expect(createToolbarActions(() => undefined)[0]?.permission).toBe("iam-platform:account:create");
+  });
+
+  it("登录名完整展示，启用与锁定列收窄", () => {
+    const username = tableHeaders.find((item) => item.prop === "username");
+    const enabled = tableHeaders.find((item) => item.prop === "enabled");
+    const locked = tableHeaders.find((item) => item.prop === "locked");
+    expect(username?.minWidth).toBe(220);
+    expect(username?.showOverflowTooltip).toBe(false);
+    expect(enabled?.width).toBe(80);
+    expect(locked?.width).toBe(80);
   });
 
   it("启停与锁定按账号状态互斥展示", () => {

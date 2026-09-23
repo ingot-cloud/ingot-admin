@@ -96,6 +96,7 @@
           v-if="menuOpen"
           :ref="privateSetMenuRef"
           class="in-table-actions__menu"
+          :class="{ 'is-above': menuPlacement === 'top' }"
           role="menu"
           :style="menuStyle"
           @pointerenter="privateOnMoreEnter"
@@ -157,6 +158,7 @@ import {
   sameActionKeys,
   type RankedTableActions,
 } from "./actionRanking";
+import { estimateOverflowMenuHeight, resolveOverflowMenuBox } from "./overflowMenuPosition";
 import { disabledActionHint } from "@/hooks/biz/actionAccess";
 import { usePermissions } from "@/stores/modules/auth";
 import { useMessageConfirm } from "@/hooks/web/useMessage";
@@ -185,6 +187,7 @@ const measureRef = ref<HTMLElement>();
 const triggerRef = ref<HTMLButtonElement>();
 const menuRef = ref<HTMLElement>();
 const menuOpen = ref(false);
+const menuPlacement = ref<"bottom" | "top">("bottom");
 const menuStyle = ref<Record<string, string>>({});
 const activeIndex = ref(-1);
 let hoverCloseTimer = 0;
@@ -403,9 +406,18 @@ const privatePlaceMenu = () => {
     return;
   }
   const rect = trigger.getBoundingClientRect();
+  const measured = menuRef.value?.offsetHeight ?? 0;
+  const box = resolveOverflowMenuBox({
+    trigger: { top: rect.top, bottom: rect.bottom, right: rect.right },
+    menuHeight: measured > 0 ? measured : estimateOverflowMenuHeight(ranked.value.menu.length),
+    viewport: { width: window.innerWidth, height: window.innerHeight },
+  });
+  menuPlacement.value = box.placement;
   menuStyle.value = {
-    top: `${Math.round(rect.bottom)}px`,
-    right: `${Math.round(window.innerWidth - rect.right)}px`,
+    top: box.top == null ? "auto" : `${Math.round(box.top)}px`,
+    bottom: box.bottom == null ? "auto" : `${Math.round(box.bottom)}px`,
+    right: `${Math.round(box.right)}px`,
+    "--in-table-actions-menu-max-height": `${Math.round(box.maxHeight)}px`,
   };
 };
 
@@ -735,8 +747,13 @@ const privateOnDocumentPointer = (event: MouseEvent) => {
   box-shadow: none;
 }
 
+.in-table-actions__menu.is-above {
+  padding-top: 0;
+  padding-bottom: 4px;
+}
+
 .in-table-actions__menu-list {
-  max-height: 320px;
+  max-height: var(--in-table-actions-menu-max-height, 320px);
   overflow: auto;
   padding: var(--in-space-1);
   border: 1px solid var(--in-border-color);
