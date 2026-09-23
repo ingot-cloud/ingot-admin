@@ -1,7 +1,7 @@
 <template>
   <div class="in-global-loading" role="status" aria-live="polite" :aria-label="hint">
     <div class="in-global-loading-box" aria-hidden="true">
-      <in-loading-mark :size="96" />
+      <in-loading-mark :size="96" :framed="false" />
       <div class="in-global-loading-text">
         <span>{{ hintLabel }}</span>
         <span class="in-global-loading-dots">

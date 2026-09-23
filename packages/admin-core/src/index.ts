@@ -46,6 +46,7 @@ export type {
   InTableFeedback,
   InDialogTone,
   InDrawerLayout,
+  InLoadingOverlay,
   InAvatarSize,
   InPageScrollMode,
   InPageSurface,

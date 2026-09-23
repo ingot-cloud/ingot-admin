@@ -10,6 +10,9 @@ export type InDialogTone = "default" | "danger";
 
 export type InDrawerLayout = "default" | "pinned";
 
+/** 加载遮罩范围：不罩、罩住当前定位容器（抽屉/对话框/页面区块）、罩住整窗。 */
+export type InLoadingOverlay = "none" | "local" | "fullscreen";
+
 export type InAvatarSize = "default" | "lg" | number;
 
 export type InPageScrollMode = "page" | "contained";

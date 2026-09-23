@@ -31,7 +31,7 @@
     </div>
 
     <div v-if="loading" class="in-app-bar-search-panel__loading" data-testid="app-bar-search-loading">
-      <in-loading-mark :size="48" />
+      <in-loading-mark :size="48" :framed="false" />
     </div>
 
     <div

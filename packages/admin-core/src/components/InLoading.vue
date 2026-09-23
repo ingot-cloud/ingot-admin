@@ -3,19 +3,12 @@
     <div class="in-loading__content">
       <slot />
     </div>
-    <div
-      v-if="loading"
-      class="in-loading__cover"
-      role="status"
-      aria-live="polite"
-      :aria-label="hint"
-    >
-      <in-loading-mark :size="size" />
-    </div>
+    <in-loading-mark v-if="loading" :size="size" :overlay="overlay" :hint="hint" />
   </div>
 </template>
 <script lang="ts" setup>
 import InLoadingMark from "./InLoadingMark.vue";
+import type { InLoadingOverlay } from "./types";
 
 defineOptions({
   name: "InLoading",
@@ -26,11 +19,14 @@ withDefaults(
     loading?: boolean;
     hint?: string;
     size?: number;
+    /** 罩住当前容器，或提到全屏。 */
+    overlay?: Exclude<InLoadingOverlay, "none">;
   }>(),
   {
     loading: false,
     hint: "加载中",
     size: 64,
+    overlay: "local",
   },
 );
 </script>
@@ -56,16 +52,5 @@ withDefaults(
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
-}
-
-.in-loading__cover {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  pointer-events: auto;
 }
 </style>

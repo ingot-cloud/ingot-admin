@@ -432,9 +432,12 @@ describe("admin UI visual fixtures", () => {
     expect(mark).toContain("in-loading-light.svg");
     expect(mark).toContain("in-loading-dark.svg");
     expect(mark).toContain("useAdminTheme");
-    expect(local).toContain("background: transparent");
+    expect(local).toContain('overlay: "local"');
     expect(local).toContain("in-loading__content");
     expect(local).not.toContain("el-loading");
+    expect(mark).toContain("in-loading-mark-card");
+    expect(mark).toContain("in-loading-mark-overlay");
+    expect(mark).toContain("InLoadingOverlay");
     expect(loading).toContain("prefers-reduced-motion");
     expect(loading).not.toContain("in-global-loading-box-item");
     expect(loading).not.toContain("in-global-loading-animation");
@@ -443,6 +446,7 @@ describe("admin UI visual fixtures", () => {
       "utf8",
     );
     expect(searchPanel).toContain("InLoadingMark");
+    expect(searchPanel).toContain(':framed="false"');
     expect(searchPanel).not.toContain("is-loading");
     expect(searchPanel).toContain("in-app-bar-search-panel__clear");
     expect(searchPanel).toContain("font-size: 16px");
