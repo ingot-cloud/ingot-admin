@@ -42,22 +42,26 @@
           </div>
         </div>
         <in-biz-tabs v-model="tab" align-content>
-          <in-biz-tab-panel title="权限" name="grants" :editable="false">
-            <div class="flex items-center justify-between mb-16px">
-              <div>拥有 {{ grants.length }} 个权限</div>
-              <in-button v-if="canPublish" @in-click="privateEditGrants">
-                <template #icon>
-                  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="m17.57 7.244-.006-.006.37-.37a1 1 0 0 0 .001-1.412l-3.434-3.453-.002-.002a1 1 0 0 0-1.414 0l-.705.706.01.01L2 13.186V17a1 1 0 0 0 1 1h3.814L17.57 7.244Zm-3.273.389-2.015-2.015 1.487-1.515 2.023 2.034-1.495 1.496Zm-3.415-.587 2.002 2.002-6.913 6.92h-.004l-1.934-1.935v-.003l6.849-6.984ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </template>
-                编辑
-              </in-button>
+          <in-biz-tab-panel title="权限" name="grants" :editable="false" fill>
+            <div class="grant-pane">
+              <div class="grant-pane__toolbar">
+                <div>拥有 {{ grants.length }} 个权限</div>
+                <in-button v-if="canPublish" @in-click="privateEditGrants">
+                  <template #icon>
+                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="m17.57 7.244-.006-.006.37-.37a1 1 0 0 0 .001-1.412l-3.434-3.453-.002-.002a1 1 0 0 0-1.414 0l-.705.706.01.01L2 13.186V17a1 1 0 0 0 1 1h3.814L17.57 7.244Zm-3.273.389-2.015-2.015 1.487-1.515 2.023 2.034-1.495 1.496Zm-3.415-.587 2.002 2.002-6.913 6.92h-.004l-1.934-1.935v-.003l6.849-6.984ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </template>
+                  编辑
+                </in-button>
+              </div>
+              <div class="grant-pane__list">
+                <grant-preview :grants="grants" />
+              </div>
             </div>
-            <grant-preview :grants="grants" />
           </in-biz-tab-panel>
           <in-biz-tab-panel title="版本历史" name="revisions" :editable="false" fill>
             <div class="embedded-table">
@@ -495,6 +499,26 @@ defineExpose<{ show: (id: string) => void }>({
 
 .profile-form :deep(.in-select) {
   --el-select-width: 100%;
+}
+
+.grant-pane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.grant-pane__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+
+.grant-pane__list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
 .embedded-table {
