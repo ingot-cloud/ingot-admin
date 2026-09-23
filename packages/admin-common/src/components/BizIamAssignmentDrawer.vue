@@ -121,6 +121,9 @@
 <script setup lang="ts">
 import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
+import BizIamChipPageSelect from "./BizIamChipPageSelect.vue";
+import BizIamDurationFields from "./BizIamDurationFields.vue";
+import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import {
   RoleKind,
   ScopeBindingKind,

@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+import BizIamScopeEditor from "./BizIamScopeEditor.vue";
 import {
   UpgradeResolutionChoice,
   useUpgradeResolutionChoiceEnum,

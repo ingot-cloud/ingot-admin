@@ -95,6 +95,7 @@
 
 <script setup lang="ts">
 import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
+import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import {
   emptySelectionDepartments,
   type CreatedResource,
