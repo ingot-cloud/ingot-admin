@@ -106,8 +106,10 @@ import { useOps } from "./useOps";
 const { paging, refreshData } = useOps();
 const { unavailable } = useCapabilities();
 const queryClient = useQueryClient();
+const route = useRoute();
+const go = useGo();
 const selectedColumnProps = ref<string[]>([]);
-const createRef = ref<{ show: () => void }>();
+const createRef = ref<{ show: (username?: string) => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
 const lockRef = ref<{ show: (row: Row) => void }>();
 const secretRef = ref<{ show: (password: string) => void }>();
@@ -123,6 +125,27 @@ const invalidate = (): void => {
 const handleCreate = (): void => {
   createRef.value?.show();
 };
+
+const consumePrefill = (): void => {
+  const raw = route.query.username;
+  const prefill = typeof raw === "string" ? raw : Array.isArray(raw) ? String(raw[0] ?? "") : "";
+  if (!prefill) {
+    return;
+  }
+  void nextTick(() => {
+    createRef.value?.show(prefill);
+    if (route.name) {
+      go({ name: route.name, query: {} }, true);
+    }
+  });
+};
+
+watch(
+  () => [route.query.username, createRef.value] as const,
+  () => {
+    consumePrefill();
+  },
+);
 const handleDetail = (item: Row): void => {
   detailRef.value?.show(item);
 };

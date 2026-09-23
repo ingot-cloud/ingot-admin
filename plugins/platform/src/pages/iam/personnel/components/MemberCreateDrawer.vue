@@ -7,12 +7,23 @@
           <in-button @click="privateLookup">查找</in-button>
         </div>
       </el-form-item>
-      <el-form-item v-if="accountId" label="账号 ID">
-        <span>{{ accountId }}</span>
-      </el-form-item>
-      <el-form-item label="显示名">
-        <el-input v-model="displayName" clearable placeholder="请输入显示名" />
-      </el-form-item>
+      <template v-if="accountId">
+        <el-form-item label="头像">
+          <in-common-upload-avatar dir="user/avatar" v-model="avatar" />
+        </el-form-item>
+        <el-form-item label="显示名">
+          <el-input v-model="displayName" clearable placeholder="请输入显示名" />
+        </el-form-item>
+        <el-form-item label="登录名">
+          <el-input :model-value="lookedUpUsername" disabled />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input :model-value="phone || '—'" disabled />
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input :model-value="email || '—'" disabled />
+        </el-form-item>
+      </template>
     </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
@@ -24,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from "@ingot/admin-core";
+import { Confirm, Message, isApiError } from "@ingot/admin-core";
 import { AccountLookupPurpose } from "@ingot/admin-common";
 import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformMemberCreateAPI } from "@/api/iam/personnel";
@@ -33,27 +44,59 @@ import { useQueryClient } from "@tanstack/vue-query";
 
 defineOptions({ name: "MemberCreateDrawer" });
 
+const OBJECT_NOT_FOUND = "ObjectNotFound";
+const ACCOUNTS_ROUTE = "platform.iam.accounts";
+
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
+const go = useGo();
 const visible = ref(false);
 const loading = ref(false);
 const username = ref("");
 const accountId = ref("");
+const lookedUpUsername = ref("");
+const phone = ref("");
+const email = ref("");
 const displayName = ref("");
+const avatar = ref<string | undefined>();
+
+const resetHit = (): void => {
+  accountId.value = "";
+  lookedUpUsername.value = "";
+  phone.value = "";
+  email.value = "";
+  displayName.value = "";
+  avatar.value = undefined;
+};
 
 const privateLookup = (): void => {
-  if (!username.value.trim()) {
+  const loginName = username.value.trim();
+  if (!loginName) {
     Message.warning("请输入登录名");
     return;
   }
   loading.value = true;
+  resetHit();
   PlatformAccountLookupAPI({
     purpose: AccountLookupPurpose.MEMBER_CREATE,
-    username: username.value.trim(),
+    username: loginName,
   })
     .then((response) => {
-      accountId.value = response.data.record.id;
+      const record = response.data.record;
+      accountId.value = record.id;
+      lookedUpUsername.value = record.username;
+      phone.value = record.phone ?? "";
+      email.value = record.email ?? "";
+      displayName.value = record.username;
       Message.success("已定位账号，不展示组织关系");
+    })
+    .catch((error: unknown) => {
+      if (isApiError(error) && error.code === OBJECT_NOT_FOUND) {
+        Confirm.warning("未找到该登录名，是否前往创建全局账号？").then(() => {
+          visible.value = false;
+          go({ name: ACCOUNTS_ROUTE, query: { username: loginName } });
+        });
+      }
     })
     .finally(() => {
       loading.value = false;
@@ -69,6 +112,7 @@ const privateSubmit = (): void => {
   PlatformMemberCreateAPI({
     accountId: accountId.value,
     displayName: displayName.value.trim() || undefined,
+    avatar: avatar.value,
     departments: [],
   })
     .then(() => {
@@ -85,8 +129,7 @@ const privateSubmit = (): void => {
 defineExpose({
   show() {
     username.value = "";
-    accountId.value = "";
-    displayName.value = "";
+    resetHit();
     visible.value = true;
   },
 });

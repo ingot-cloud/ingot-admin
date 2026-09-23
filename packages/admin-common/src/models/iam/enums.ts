@@ -31,12 +31,27 @@ export const ConfigurationStatusExtArray = [
 export const useConfigurationStatusEnum = () => useEnum(ConfigurationStatusExtArray);
 
 export const MemberStatusExtArray = [
-  newEnumExt(MemberStatus.ACTIVE, "在职", "success"),
+  newEnumExt(MemberStatus.ACTIVE, "正常", "info"),
   newEnumExt(MemberStatus.SUSPENDED, "已暂停", "warning"),
-  newEnumExt(MemberStatus.REMOVED, "已移出", "info"),
+  newEnumExt(MemberStatus.REMOVED, "已移出", "danger"),
 ];
 
 export const useMemberStatusEnum = () => useEnum(MemberStatusExtArray);
+
+export function memberStatusTone(
+  status?: string | null,
+): "info" | "warning" | "danger" | undefined {
+  if (status === MemberStatus.ACTIVE) {
+    return "info";
+  }
+  if (status === MemberStatus.SUSPENDED) {
+    return "warning";
+  }
+  if (status === MemberStatus.REMOVED) {
+    return "danger";
+  }
+  return undefined;
+}
 
 export const FieldVisibilityExtArray = [
   newEnumExt(FieldVisibility.HIDDEN, "隐藏", "info"),

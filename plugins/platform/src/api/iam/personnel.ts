@@ -65,7 +65,6 @@ export function PlatformMemberUpdateAPI(
   params: MemberProfileInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
-  filterParams(params);
   return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, params, options);
 }
 
@@ -85,6 +84,20 @@ export function PlatformMemberRemoveAPI(
 ): Promise<R<CreatedResource>> {
   filterParams(params);
   return request.post<CreatedResource>(`${MEMBER_PATH}/${id}/remove`, params, options);
+}
+
+export function PlatformMemberGroupsAPI(
+  id: string,
+  page: Page,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<GroupRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<GroupRecord>>>(
+      `${MEMBER_PATH}/${id}/groups`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformGroupPageAPI(

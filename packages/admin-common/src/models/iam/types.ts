@@ -373,6 +373,7 @@ export interface MemberRecord {
   avatar?: string;
   phone?: string;
   email?: string;
+  username?: string;
   status: MemberStatus;
   departments: MemberDepartmentView[];
 }
@@ -380,6 +381,7 @@ export interface MemberRecord {
 export interface MemberCreateInput {
   accountId: string;
   displayName?: string;
+  avatar?: string;
   departments: MemberDepartmentBinding[];
 }
 

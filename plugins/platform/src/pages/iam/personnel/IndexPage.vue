@@ -39,16 +39,29 @@
               <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
             </template>
             <template #displayName="{ item }">
-              <biz-iam-record-link
-                :action="IamAction.PLATFORM_MEMBER_READ"
-                :capabilities="item.capabilities"
-                @click="handleDetail(item)"
-              >
-                {{ item.record.displayName || item.record.id }}
-              </biz-iam-record-link>
+              <div class="flex items-center gap-8px">
+                <in-avatar
+                  :src="item.record.avatar"
+                  :name="item.record.displayName || item.record.username"
+                  :show-name="false"
+                />
+                <biz-iam-record-link
+                  :action="IamAction.PLATFORM_MEMBER_READ"
+                  :capabilities="item.capabilities"
+                  @click="handleDetail(item)"
+                >
+                  {{ item.record.displayName || item.record.id }}
+                </biz-iam-record-link>
+              </div>
             </template>
+            <template #phone="{ item }">{{ item.record.phone || "—" }}</template>
+            <template #username="{ item }">{{ item.record.username || "—" }}</template>
             <template #status="{ item }">
-              <in-tag :value="memberStatusEnum.getTagText(item.record.status)" />
+              <status-tag
+                v-if="memberStatusTone(item.record.status)"
+                :tone="statusToneOf(item.record.status)"
+                :label="memberStatusEnum.getTagText(item.record.status).text"
+              />
             </template>
             <template #actions="{ item }">
               <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -120,13 +133,20 @@ import {
   Confirm,
   Message,
   resolveStringPickerFilter,
+  StatusTag,
   toStringPickerValue,
   useCapabilities,
   withAllPickerOption,
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamRecordLink, IamAction, MemberStatus, useMemberStatusEnum } from "@ingot/admin-common";
+import {
+  BizIamRecordLink,
+  IamAction,
+  MemberStatus,
+  memberStatusTone,
+  useMemberStatusEnum,
+} from "@ingot/admin-common";
 import { PlatformGroupDeleteAPI, PlatformMemberRemoveAPI, PlatformMemberStatusAPI } from "@/api/iam/personnel";
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";
@@ -152,6 +172,8 @@ const tab = ref("members");
 const { paging, groupPaging, refreshData, refreshGroups } = useOps();
 const { unavailable } = useCapabilities();
 const memberStatusEnum = useMemberStatusEnum();
+const statusToneOf = (status: string): "info" | "warning" | "danger" =>
+  memberStatusTone(status) ?? "info";
 const statusOptions = computed(() => withAllPickerOption(memberStatusEnum.getOptions()));
 const statusFilter = computed({
   get: () => toStringPickerValue(paging.condition.status),

@@ -65,8 +65,11 @@ const privateSubmit = (): void => {
 };
 
 defineExpose({
-  show() {
+  show(username?: string) {
     reset();
+    if (username) {
+      draft.username = username;
+    }
     visible.value = true;
   },
 });
