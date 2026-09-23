@@ -15,6 +15,7 @@ export { default as BizIamDiagnosePanel } from "./components/BizIamDiagnosePanel
 export { default as BizIamScopeEditor } from "./components/BizIamScopeEditor.vue";
 export { default as BizIamSubjectSelect } from "./components/BizIamSubjectSelect.vue";
 export { default as BizIamDeltaTags } from "./components/BizIamDeltaTags.vue";
+export { default as BizIamRevisionDeltaView } from "./components/BizIamRevisionDeltaView.vue";
 export { default as BizIamDurationFields } from "./components/BizIamDurationFields.vue";
 export { default as BizIamUpgradeConflicts } from "./components/BizIamUpgradeConflicts.vue";
 export { default as BizIamGrantEditor } from "./components/BizIamGrantEditor.vue";

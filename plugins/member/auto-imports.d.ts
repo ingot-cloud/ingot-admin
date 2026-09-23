@@ -34,6 +34,7 @@ declare global {
   const createEventHook: typeof import('@vueuse/core').createEventHook
   const createGlobalState: typeof import('@vueuse/core').createGlobalState
   const createInjectionState: typeof import('@vueuse/core').createInjectionState
+  const createLoadGuard: typeof import('../../packages/admin-core/src/hooks/components/createLoadGuard').createLoadGuard
   const createPinia: typeof import('pinia').createPinia
   const createReactiveFn: typeof import('@vueuse/core').createReactiveFn
   const createRef: typeof import('@vueuse/core').createRef
@@ -373,6 +374,9 @@ declare global {
   export type { LoginGoOptions } from '../../packages/admin-core/src/hooks/biz/useLogin'
   import('../../packages/admin-core/src/hooks/biz/useLogin')
   // @ts-ignore
+  export type { LoadGuard } from '../../packages/admin-core/src/hooks/components/createLoadGuard'
+  import('../../packages/admin-core/src/hooks/components/createLoadGuard')
+  // @ts-ignore
   export type { DomainMismatchError } from '../../packages/admin-core/src/stores/modules/auth'
   import('../../packages/admin-core/src/stores/modules/auth')
   // @ts-ignore
@@ -411,6 +415,7 @@ declare module 'vue' {
     readonly createEventHook: UnwrapRef<typeof import('@vueuse/core')['createEventHook']>
     readonly createGlobalState: UnwrapRef<typeof import('@vueuse/core')['createGlobalState']>
     readonly createInjectionState: UnwrapRef<typeof import('@vueuse/core')['createInjectionState']>
+    readonly createLoadGuard: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/components/createLoadGuard')['createLoadGuard']>
     readonly createPinia: UnwrapRef<typeof import('pinia')['createPinia']>
     readonly createReactiveFn: UnwrapRef<typeof import('@vueuse/core')['createReactiveFn']>
     readonly createRef: UnwrapRef<typeof import('@vueuse/core')['createRef']>

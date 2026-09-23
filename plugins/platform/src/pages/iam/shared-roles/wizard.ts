@@ -4,7 +4,9 @@ import {
   ScopeKind,
   formatScopeKinds,
   type RoleCreateInput,
+  type RoleDefinitionDraft,
   type RoleParameterDefinition,
+  type RolePublishInput,
   type ScopeExpression,
 } from "@ingot/admin-common";
 
@@ -14,6 +16,8 @@ export const WIZARD_STEPS = [
   { title: "设置范围", description: "设置角色可管理的数据范围" },
   { title: "预览", description: "预览角色并确认" },
 ] as const;
+
+export const GRANT_WIZARD_STEPS = WIZARD_STEPS.slice(1);
 
 export interface WizardProfile {
   code: string;
@@ -135,6 +139,17 @@ export function formatScopeLine(scope: ScopeExpression): string {
   return label;
 }
 
+export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
+  return {
+    grants: grants.map((item) => ({
+      actionId: item.actionId,
+      scopes: item.scopes.map((scope) => ({ ...scope })),
+    })),
+    deltas: [],
+    parameterDefinitions: collectParameters(grants),
+  };
+}
+
 export function toCreateInput(profile: WizardProfile, grants: SelectedGrant[]): RoleCreateInput {
   return {
     code: profile.code.trim(),
@@ -142,15 +157,24 @@ export function toCreateInput(profile: WizardProfile, grants: SelectedGrant[]): 
     description: profile.description.trim() || undefined,
     groupName: profile.groupName.trim() || undefined,
     kind: RoleKind.SHARED,
-    definition: {
-      grants: grants.map((item) => ({
-        actionId: item.actionId,
-        scopes: item.scopes.map((scope) => ({ ...scope })),
-      })),
-      deltas: [],
-      parameterDefinitions: collectParameters(grants),
-    },
+    definition: toDefinition(grants),
   };
+}
+
+export function toPublishInput(expectedVersion: string, grants: SelectedGrant[]): RolePublishInput {
+  return {
+    expectedVersion,
+    definition: toDefinition(grants),
+  };
+}
+
+export function grantsFingerprint(grants: SelectedGrant[]): string {
+  return JSON.stringify(
+    grants.map((item) => ({
+      actionId: item.actionId,
+      scopes: item.scopes,
+    })),
+  );
 }
 
 export function profileDirty(profile: WizardProfile): boolean {

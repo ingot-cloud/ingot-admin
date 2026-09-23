@@ -11,7 +11,7 @@ export type Row = ResourceDetail<RoleSummary>;
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
-  { label: "来源", prop: "kind" },
+  { label: "编码", prop: "code" },
   { label: "状态", prop: "status" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];

@@ -7,6 +7,7 @@ import {
   MenuKind,
   MenuMatchMode,
   IAM_MASKED_PLACEHOLDER,
+  RoleDeltaOperation,
   RoleKind,
   ScopeKind,
   SubjectType,
@@ -26,13 +27,14 @@ import {
   mapIamPage,
   objectActionAllowed,
   resolveIamActionAccess,
+  revisionDisplayDeltas,
   IAM_OBJECT_ACTION_DENIED_MESSAGE,
   toAssignmentBatchItems,
   toIamListParams,
   toIamSelectRecords,
   unresolvedUpgradeKeys,
 } from "./helpers";
-import type { DepartmentRecord } from "./types";
+import type { DepartmentRecord, RoleRevision } from "./types";
 
 describe("iam helpers", () => {
   it("脱敏占位不进入提交 patch", () => {
@@ -299,6 +301,53 @@ describe("iam helpers", () => {
 
   it("空选择器不携带成员或部门", () => {
     expect(emptySelection()).toEqual({ members: [], departments: [] });
+  });
+
+  it("完整定义角色按相邻版本授权计算差异，定制角色直接展示 deltas", () => {
+    const base: RoleRevision = {
+      id: "r1",
+      roleId: "role",
+      revision: "1",
+      kind: RoleKind.SHARED,
+      grants: [
+        { actionId: "keep", scopes: [{ kind: ScopeKind.ALL }] },
+        { actionId: "removed", scopes: [{ kind: ScopeKind.SELF }] },
+        { actionId: "scope", scopes: [{ kind: ScopeKind.ALL }] },
+      ],
+      deltas: [],
+      parameterDefinitions: [],
+    };
+    const next: RoleRevision = {
+      ...base,
+      id: "r2",
+      revision: "2",
+      grants: [
+        { actionId: "keep", scopes: [{ kind: ScopeKind.ALL }] },
+        { actionId: "added", scopes: [{ kind: ScopeKind.SELF }] },
+        { actionId: "scope", scopes: [{ kind: ScopeKind.SELF }] },
+      ],
+    };
+    expect(revisionDisplayDeltas(base)).toEqual([]);
+    expect(revisionDisplayDeltas(next, base)).toEqual([
+      { actionId: "added", operation: RoleDeltaOperation.ADD, scopes: [{ kind: ScopeKind.SELF }] },
+      {
+        actionId: "scope",
+        operation: RoleDeltaOperation.REPLACE_SCOPE,
+        scopes: [{ kind: ScopeKind.SELF }],
+      },
+      { actionId: "removed", operation: RoleDeltaOperation.REMOVE, scopes: [{ kind: ScopeKind.SELF }] },
+    ]);
+    const customized: RoleRevision = {
+      id: "r3",
+      roleId: "role",
+      revision: "1",
+      kind: RoleKind.TENANT_CUSTOM,
+      baseRevisionId: "r1",
+      grants: [],
+      deltas: [{ actionId: "added", operation: RoleDeltaOperation.ADD, scopes: [{ kind: ScopeKind.ALL }] }],
+      parameterDefinitions: [],
+    };
+    expect(revisionDisplayDeltas(customized, base)).toEqual(customized.deltas);
   });
 
   it("列表未返回对象能力时不禁用，明确拒绝时给出原因", () => {

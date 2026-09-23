@@ -3,13 +3,16 @@ import {
   AuthorizationDomainExtArray,
   ConfigurationStatus,
   IAM_DEFAULT_PAGE_SIZE,
+  collectIamPageRecords,
   createIamListLoader,
   toIamSelectRecords,
+  type ActionGrant,
   type AuthorizationDomain,
   type IamActionRef,
   type IamSelectOption,
 } from "@ingot/admin-common";
-import { PlatformActionPageAPI, PlatformApplicationPageAPI } from "@/api/iam/catalog";
+import { PlatformActionPageAPI, PlatformApplicationPageAPI, PlatformResourcePageAPI } from "@/api/iam/catalog";
+import { defaultScope, type SelectedGrant } from "./wizard";
 
 const domainText = (domain: AuthorizationDomain): string =>
   AuthorizationDomainExtArray.find((item) => item.value === domain)?.text ?? domain;
@@ -92,6 +95,70 @@ export async function resolveGrantActions(ids: string[]): Promise<IamActionRef[]
         found.push(item);
       }
     }
+    const total = response.data.total ?? applications.length;
+    if (current * IAM_DEFAULT_PAGE_SIZE >= total) {
+      break;
+    }
+    current += 1;
+  }
+  return found;
+}
+
+/** 把已发布授权还原成向导勾选模型，补齐应用、资源和范围能力。 */
+export async function resolveSelectedGrants(grants: ActionGrant[]): Promise<SelectedGrant[]> {
+  const pending = new Map(grants.filter((item) => item.actionId).map((item) => [item.actionId, item]));
+  const found: SelectedGrant[] = [];
+  let current = 1;
+  while (pending.size > 0) {
+    const response = await PlatformApplicationPageAPI({
+      current,
+      size: IAM_DEFAULT_PAGE_SIZE,
+    });
+    const applications = response.data.records ?? [];
+    if (!applications.length) {
+      break;
+    }
+    const idList = [...pending.keys()].join(",");
+    const matches = await Promise.all(
+      applications.map(async (application) => {
+        const actions = await PlatformActionPageAPI(
+          application.record.id,
+          { current: 1, size: IAM_DEFAULT_PAGE_SIZE },
+          { ids: idList },
+        );
+        const records = actions.data.records ?? [];
+        if (!records.length) {
+          return [];
+        }
+        const resources = await collectIamPageRecords((page) =>
+          PlatformResourcePageAPI(application.record.id, page),
+        );
+        const resourceById = new Map(resources.map((item) => [item.record.id, item.record]));
+        return records.flatMap((action) => {
+          const grant = pending.get(action.record.id);
+          if (!grant) {
+            return [];
+          }
+          pending.delete(action.record.id);
+          const resource = resourceById.get(action.record.resourceId);
+          const capabilities = resource?.scopeCapabilities ?? [];
+          return [
+            {
+              actionId: action.record.id,
+              actionCode: action.record.code,
+              actionName: action.record.name || action.record.code,
+              resourceId: action.record.resourceId,
+              resourceName: resource?.name ?? action.record.resourceId,
+              applicationId: application.record.id,
+              applicationName: application.record.name,
+              scopes: grant.scopes.length ? grant.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities)],
+              scopeCapabilities: [...capabilities],
+            } satisfies SelectedGrant,
+          ];
+        });
+      }),
+    );
+    found.push(...matches.flat());
     const total = response.data.total ?? applications.length;
     if (current * IAM_DEFAULT_PAGE_SIZE >= total) {
       break;

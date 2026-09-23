@@ -36,7 +36,6 @@
         <template #tools-end>
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
-        <template #kind="{ item }">{{ kindText(item.record.kind) }}</template>
         <template #status="{ item }">
           <biz-iam-status-tag v-if="knownStatus(item.record.status)" :status="item.record.status" />
           <span v-else>-</span>
@@ -50,6 +49,10 @@
             {{ item.record.name || item.record.id }}
           </biz-iam-record-link>
         </template>
+        <template #code="{ item }">
+          <in-copy-tag v-if="item.record.code" :text="item.record.code" />
+          <span v-else>-</span>
+        </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
         </template>
@@ -58,20 +61,7 @@
   </in-page-frame>
 
   <create-wizard ref="createRef" @success="refreshData" />
-  <biz-iam-role-detail-drawer
-    ref="detailRef"
-    :get-api="PlatformSharedRoleDetailAPI"
-    :list-revisions-api="PlatformSharedRoleRevisionPageAPI"
-    :preview-api="PlatformSharedRolePreviewAPI"
-    :publish-api="PlatformSharedRolePublishAPI"
-    :status-api="PlatformSharedRoleStatusAPI"
-    :publish-action="IamAction.PLATFORM_SHARED_ROLE_PUBLISH"
-    :status-action="IamAction.PLATFORM_SHARED_ROLE_STATUS"
-    :load-applications="loadGrantApplications"
-    :load-actions="loadGrantActions"
-    :resolve-actions="resolveGrantActions"
-    @success="refreshData"
-  />
+  <shared-role-detail-drawer ref="detailRef" @success="refreshData" />
 </template>
 
 <script lang="ts" setup>
@@ -89,23 +79,14 @@ import {
 } from "@ingot/admin-core";
 import {
   BizIamRecordLink,
-  BizIamRoleDetailDrawer,
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
   useConfigurationStatusEnum,
-  useRoleKindEnum,
-  type RoleKind as RoleKindValue,
 } from "@ingot/admin-common";
-import {
-  PlatformSharedRoleDeleteAPI,
-  PlatformSharedRoleDetailAPI,
-  PlatformSharedRolePreviewAPI,
-  PlatformSharedRolePublishAPI,
-  PlatformSharedRoleRevisionPageAPI,
-  PlatformSharedRoleStatusAPI,
-} from "@/api/iam/authorization";
+import { PlatformSharedRoleDeleteAPI } from "@/api/iam/authorization";
 import CreateWizard from "./components/CreateWizard.vue";
+import SharedRoleDetailDrawer from "./components/SharedRoleDetailDrawer.vue";
 import {
   createRowActions,
   createToolbarActions,
@@ -113,12 +94,10 @@ import {
   TABLE_ID,
   type Row,
 } from "./table";
-import { loadGrantActions, loadGrantApplications, resolveGrantActions } from "./actionCatalog";
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
 const { unavailable } = useCapabilities();
-const kindEnum = useRoleKindEnum();
 const statusEnum = useConfigurationStatusEnum();
 const statusOptions = computed(() => withAllPickerOption(statusEnum.getOptions()));
 const statusFilter = computed({
@@ -155,13 +134,6 @@ const handleDelete = (item: Row): void => {
       refreshData();
     });
   });
-};
-const kindText = (kind?: RoleKindValue): string => {
-  if (!kind) {
-    return "-";
-  }
-  const text = kindEnum.getTagText(kind, { text: "", tag: "info" }).text;
-  return text || "-";
 };
 const knownStatus = (status?: ConfigurationStatus): status is ConfigurationStatus =>
   status === ConfigurationStatus.ENABLED || status === ConfigurationStatus.DISABLED;

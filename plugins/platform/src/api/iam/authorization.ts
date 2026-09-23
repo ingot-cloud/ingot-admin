@@ -21,6 +21,7 @@ import {
   type RolePublishInput,
   type RoleRevision,
   type RoleSummary,
+  type RoleUpdateInput,
   type AssignmentBatchInput,
   type AssignmentPreviewResult,
   type AssignmentUpdateInput,
@@ -296,6 +297,15 @@ export function PlatformSharedRoleDetailAPI(
 export function PlatformSharedRoleStatusAPI(
   id: string,
   params: ConfigurationStatusInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  filterParams(params);
+  return request.patch<CreatedResource>(`${sharedPath}/${id}`, params, options);
+}
+
+export function PlatformSharedRoleUpdateAPI(
+  id: string,
+  params: RoleUpdateInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);

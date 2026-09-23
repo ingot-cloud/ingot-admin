@@ -4,11 +4,13 @@ import {
   IAM_DEFAULT_PAGE_SIZE,
   IAM_MASKED_PLACEHOLDER,
   FieldVisibility,
+  RoleDeltaOperation,
   ScopeKind,
   SubjectType,
   UpgradeResolutionChoice,
 } from "./constants";
-import   type {
+import type {
+  ActionGrant,
   AssignmentInput,
   DepartmentRecord,
   EntitlementRecord,
@@ -17,6 +19,9 @@ import   type {
   MenuTreeRow,
   ResourceDetail,
   RoleDefinitionDraft,
+  RoleDelta,
+  RoleRevision,
+  ScopeExpression,
   Selection,
   UpgradeConflict,
   UpgradeResolution,
@@ -215,6 +220,66 @@ export function emptyRoleDefinitionDraft(): RoleDefinitionDraft {
     deltas: [],
     parameterDefinitions: [],
   };
+}
+
+function scopeFingerprint(scopes?: ScopeExpression[]): string {
+  return JSON.stringify(
+    [...(scopes ?? [])]
+      .map((item) => ({
+        kind: item.kind,
+        parameterKey: item.parameterKey ?? "",
+        includeDescendants: Boolean(item.includeDescendants),
+      }))
+      .sort((left, right) => {
+        const kind = left.kind.localeCompare(right.kind);
+        return kind !== 0 ? kind : left.parameterKey.localeCompare(right.parameterKey);
+      }),
+  );
+}
+
+function grantDeltas(current: ActionGrant[], previous: ActionGrant[]): RoleDelta[] {
+  const prevMap = new Map(previous.map((item) => [item.actionId, item]));
+  const currMap = new Map(current.map((item) => [item.actionId, item]));
+  const deltas: RoleDelta[] = [];
+  for (const grant of current) {
+    const older = prevMap.get(grant.actionId);
+    if (!older) {
+      deltas.push({
+        actionId: grant.actionId,
+        operation: RoleDeltaOperation.ADD,
+        scopes: grant.scopes,
+      });
+      continue;
+    }
+    if (scopeFingerprint(older.scopes) !== scopeFingerprint(grant.scopes)) {
+      deltas.push({
+        actionId: grant.actionId,
+        operation: RoleDeltaOperation.REPLACE_SCOPE,
+        scopes: grant.scopes,
+      });
+    }
+  }
+  for (const grant of previous) {
+    if (!currMap.has(grant.actionId)) {
+      deltas.push({
+        actionId: grant.actionId,
+        operation: RoleDeltaOperation.REMOVE,
+        scopes: grant.scopes,
+      });
+    }
+  }
+  return deltas;
+}
+
+/** 版本历史展示用差异：定制角色用 deltas，完整定义角色按相邻版本授权计算。 */
+export function revisionDisplayDeltas(current: RoleRevision, previous?: RoleRevision): RoleDelta[] {
+  if (current.deltas?.length) {
+    return current.deltas;
+  }
+  if (!previous) {
+    return [];
+  }
+  return grantDeltas(current.grants ?? [], previous.grants ?? []);
 }
 
 /** 冲突未选处置，或替换范围未带 scopes 时不可提交升级。 */

@@ -34,9 +34,12 @@
           </in-detail-field>
           <in-detail-field label="差异">
             <template #view>
-              <biz-iam-delta-tags
-                v-if="latestRevision?.record.deltas?.length"
-                :items="latestRevision.record.deltas"
+              <biz-iam-revision-delta-view
+                v-if="latestRevision"
+                :items="displayDeltasOf(latestRevision)"
+                :action-names="revisionActionNames"
+                :revision="latestRevision.record.revision"
+                :initial="isInitialRevision(latestRevision)"
               />
               <span v-else>-</span>
             </template>
@@ -93,11 +96,12 @@
           <template #revision="{ item }">{{ asRevision(item).record.revision }}</template>
           <template #id="{ item }">{{ asRevision(item).record.id }}</template>
           <template #deltas="{ item }">
-            <biz-iam-delta-tags
-              v-if="asRevision(item).record.deltas?.length"
-              :items="asRevision(item).record.deltas"
+            <biz-iam-revision-delta-view
+              :items="displayDeltasOf(asRevision(item))"
+              :action-names="revisionActionNames"
+              :revision="asRevision(item).record.revision"
+              :initial="isInitialRevision(asRevision(item))"
             />
-            <span v-else>-</span>
           </template>
         </in-table>
       </div>
@@ -158,8 +162,8 @@ import {
   type TableHeaderRecord,
 } from "@ingot/admin-core";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
-import BizIamDeltaTags from "./BizIamDeltaTags.vue";
 import BizIamGrantEditor from "./BizIamGrantEditor.vue";
+import BizIamRevisionDeltaView from "./BizIamRevisionDeltaView.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import BizIamStatusTag from "./BizIamStatusTag.vue";
 import BizIamUpgradeConflicts from "./BizIamUpgradeConflicts.vue";
@@ -169,6 +173,7 @@ import {
   emptyRoleDefinitionDraft,
   formatScopeKinds,
   objectActionAllowed,
+  revisionDisplayDeltas,
   unresolvedUpgradeKeys,
   useConfigurationStatusEnum,
   useRoleKindEnum,
@@ -181,6 +186,7 @@ import {
   type RoleDefinitionDraft,
   type RoleKind,
   type RolePublishInput,
+  type RoleDelta,
   type RoleRevision,
   type RoleSummary,
   type UpgradeInput,
@@ -233,6 +239,8 @@ const revisionPage = ref<Page<ResourceDetail<RoleRevision>>>({
   records: [],
 });
 const latestRevision = ref<ResourceDetail<RoleRevision>>();
+const revisionDeltas = ref<Record<string, RoleDelta[]>>({});
+const revisionActionNames = ref<Record<string, string>>({});
 const revisionHeaders: Array<TableHeaderRecord> = [
   { label: "版本", prop: "revision", width: 80 },
   { label: "版本 ID", prop: "id", minWidth: 180 },
@@ -277,6 +285,53 @@ watch(upgradeDraft, () => upgradePreviewState.bumpDraft(), { deep: true });
 const revisionKeyOf = (row: ResourceDetail<RoleRevision>): string => row.record.id;
 const asRevision = (row: unknown): ResourceDetail<RoleRevision> =>
   row as ResourceDetail<RoleRevision>;
+const displayDeltasOf = (row: ResourceDetail<RoleRevision>): RoleDelta[] =>
+  revisionDeltas.value[row.record.id] ?? [];
+const isInitialRevision = (row: ResourceDetail<RoleRevision>): boolean =>
+  Number(row.record.revision) === 1 && Boolean(row.record.grants?.length);
+
+const applyRevisionDiffs = (
+  records: ResourceDetail<RoleRevision>[],
+  older?: RoleRevision,
+): RoleDelta[] => {
+  const next: Record<string, RoleDelta[]> = {};
+  const deltas: RoleDelta[] = [];
+  records.forEach((item, index) => {
+    const previous = records[index + 1]?.record ?? (index === records.length - 1 ? older : undefined);
+    const items = revisionDisplayDeltas(item.record, previous);
+    next[item.record.id] = items;
+    deltas.push(...items);
+  });
+  revisionDeltas.value = next;
+  return deltas;
+};
+
+const resolveRevisionNames = (deltas: RoleDelta[]): void => {
+  const ids = [...new Set(deltas.map((item) => item.actionId).filter(Boolean))];
+  if (!ids.length || !props.resolveActions) {
+    return;
+  }
+  void props.resolveActions(ids).then((items) => {
+    revisionActionNames.value = {
+      ...revisionActionNames.value,
+      ...Object.fromEntries(items.map((item) => [item.id, item.name])),
+    };
+  });
+};
+
+const hydrateRevisionDiffs = async (): Promise<void> => {
+  const records = revisionPage.value.records ?? [];
+  const last = records.at(-1);
+  const current = revisionPage.value.current ?? 1;
+  const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
+  const total = revisionPage.value.total ?? 0;
+  let older: RoleRevision | undefined;
+  if (last && Number(last.record.revision) > 1 && current * size < total) {
+    const next = await props.listRevisionsApi(roleId.value, { current: current + 1, size });
+    older = next.data.records?.[0]?.record;
+  }
+  resolveRevisionNames(applyRevisionDiffs(records, older));
+};
 const canStatus = computed(
   () =>
     !!props.statusAction &&
@@ -426,6 +481,8 @@ const load = (id: string): void => {
   detail.value = undefined;
   latestRevision.value = undefined;
   actionRefs.value = {};
+  revisionDeltas.value = {};
+  revisionActionNames.value = {};
   revisionPage.value = { current: 1, size, total: 0, records: [] };
   definition.value = emptyRoleDefinitionDraft();
   Promise.all([
@@ -441,15 +498,20 @@ const load = (id: string): void => {
         ? role.data.record.status
         : ConfigurationStatus.ENABLED;
       assignRevisionPage(page.data, true);
-      const ids = (latestRevision.value?.record.grants ?? []).map((item) => item.actionId).filter(Boolean);
-      if (!props.resolveActions || !ids.length) {
-        return;
-      }
-      return props.resolveActions(ids).then((items) => {
-        if (!guard.isCurrent()) {
+      return hydrateRevisionDiffs().then(() => {
+        if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
           return;
         }
-        actionRefs.value = Object.fromEntries(items.map((item) => [item.id, item]));
+        const ids = (latestRevision.value?.record.grants ?? []).map((item) => item.actionId).filter(Boolean);
+        if (!props.resolveActions || !ids.length) {
+          return;
+        }
+        return props.resolveActions(ids).then((items) => {
+          if (!guard.isCurrent()) {
+            return;
+          }
+          actionRefs.value = Object.fromEntries(items.map((item) => [item.id, item]));
+        });
       });
     })
     .finally(() => {
@@ -477,6 +539,7 @@ const privateLoadRevisionPage = (): void => {
         return;
       }
       assignRevisionPage(page.data, false);
+      return hydrateRevisionDiffs();
     })
     .finally(() => {
       if (guard.isCurrent()) {

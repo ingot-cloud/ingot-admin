@@ -9,23 +9,7 @@
     :before-close="privateOnBeforeClose"
   >
     <div class="flex h-full min-h-0">
-      <aside class="w-240px shrink-0 px-24px py-24px b-r b-r-solid b-[var(--in-border-color)]">
-        <div v-for="(item, index) in WIZARD_STEPS" :key="item.title" class="flex gap-12px mb-24px last:mb-0">
-          <div
-            class="w-24px h-24px rounded-full flex items-center justify-center text-12px shrink-0"
-            :class="stepTone(index)"
-          >
-            <el-icon v-if="index < step"><Check /></el-icon>
-            <span v-else>{{ index + 1 }}</span>
-          </div>
-          <div>
-            <div :class="index === step ? 'text-[var(--el-color-primary)]' : 'text-[var(--in-text-color)]'">
-              {{ item.title }}
-            </div>
-            <div class="text-12px text-[var(--el-text-color-secondary)] mt-4px">{{ item.description }}</div>
-          </div>
-        </div>
-      </aside>
+      <wizard-nav :steps="WIZARD_STEPS" :current="step" />
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
         <div class="mb-24px text-18px shrink-0">{{ WIZARD_STEPS[step].title }}</div>
         <div class="flex-1 min-h-0" :class="step === 1 ? 'overflow-hidden' : 'overflow-auto'">
@@ -60,12 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { Check } from "@element-plus/icons-vue";
 import { confirmUnsavedChanges, Message } from "@ingot/admin-core";
 import { PlatformSharedRoleCreateAPI } from "@/api/iam/authorization";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
 import ScopeStep from "./ScopeStep.vue";
+import WizardNav from "./WizardNav.vue";
 import {
   emptyWizardProfile,
   missingParameterKeys,
@@ -85,16 +69,6 @@ const profile = reactive(emptyWizardProfile());
 const grants = ref<SelectedGrant[]>([]);
 
 const dirty = computed(() => profileDirty(profile) || grants.value.length > 0);
-
-const stepTone = (index: number): string => {
-  if (index < step.value) {
-    return "bg-[var(--el-color-primary)] text-white";
-  }
-  if (index === step.value) {
-    return "bg-[var(--el-color-primary)] text-white";
-  }
-  return "bg-[var(--el-fill-color)] text-[var(--el-text-color-secondary)]";
-};
 
 const reset = (): void => {
   step.value = 0;

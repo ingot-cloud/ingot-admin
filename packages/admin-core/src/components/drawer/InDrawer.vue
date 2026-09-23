@@ -4,6 +4,7 @@
     :class="{ 'in-drawer--pinned': layout === 'pinned' }"
     direction="rtl"
     :close-on-click-modal="false"
+    :show-close="showClose"
     :modal-class="overlayClass"
   >
     <template #header>
@@ -49,10 +50,13 @@ const props = withDefaults(
     overlayColor?: string;
     /** 追加到遮罩上的 class，可与 `overlay-color` 一起用来自定义遮罩 */
     modalClass?: string | string[];
+    /** 是否显示右上角关闭。全屏向导可关掉，改在标题栏放自定义关闭。 */
+    showClose?: boolean;
   }>(),
   {
     padding: "var(--in-section-padding-relaxed)",
     layout: "default",
+    showClose: true,
   },
 );
 const isLoading = computed(() => Boolean(unref(props.loading)));

@@ -46,19 +46,7 @@
           @check-change="privateOnCheckChange"
         >
           <template #default="{ data }">
-            <div class="flex items-center gap-8px w-full min-w-0">
-              <span class="truncate">{{ data.name }}</span>
-              <in-button
-                v-if="data.kind === 'resource'"
-                text
-                type="primary"
-                class="shrink-0"
-                :disabled="isReadDisabled(data.resourceId)"
-                @click.stop="privateSelectRead(data.resourceId)"
-              >
-                仅选查看
-              </in-button>
-            </div>
+            <span class="truncate">{{ data.name }}</span>
           </template>
         </in-tree>
         <div v-if="resourceHasMore" class="flex justify-center py-8px">
@@ -73,7 +61,6 @@
 
 <script setup lang="ts">
 import { Search } from "@element-plus/icons-vue";
-import { Message } from "@ingot/admin-core";
 import {
   AuthorizationDomain,
   ConfigurationStatus,
@@ -85,7 +72,7 @@ import {
   type ResourceDetail,
 } from "@ingot/admin-common";
 import { PlatformActionPageAPI, PlatformApplicationPageAPI, PlatformResourcePageAPI } from "@/api/iam/catalog";
-import { defaultScope, isReadAction, type SelectedGrant } from "../wizard";
+import { defaultScope, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
 
@@ -205,14 +192,6 @@ const actionNodesOf = (resource: CatalogResource): GrantTreeNode[] =>
 
 const resourceOf = (id: string): CatalogResource | undefined => resources.value.find((item) => item.id === id);
 
-const resourceHasRead = (resourceId: string): boolean =>
-  Boolean(resourceOf(resourceId)?.actions.some((item) => isReadAction(item.code)));
-
-const isReadDisabled = (resourceId: string): boolean => {
-  const resource = resourceOf(resourceId);
-  return Boolean(resource?.loaded && !resourceHasRead(resourceId));
-};
-
 const asEnabled = <T extends { status: ConfigurationStatus }>(item: ResourceDetail<T>): boolean =>
   item.record.status === ConfigurationStatus.ENABLED;
 
@@ -246,7 +225,20 @@ const privateLoadApps = async (): Promise<void> => {
         }));
       applications.value = [...applications.value, ...next];
       const exhausted = appPage.value * IAM_DEFAULT_PAGE_SIZE >= appTotal.value || !response.data.records?.length;
-      if (next.length || exhausted) {
+      const preferredId = grants.value[0]?.applicationId;
+      const preferred = preferredId
+        ? applications.value.find((item) => item.id === preferredId)
+        : undefined;
+      if (preferred) {
+        if (!applicationId.value) {
+          privateSelectApp(preferred);
+        }
+        break;
+      }
+      if (!preferredId && (next.length || exhausted)) {
+        break;
+      }
+      if (exhausted) {
         break;
       }
       appPage.value += 1;
@@ -271,6 +263,7 @@ const privateSelectApp = (app: CatalogApp): void => {
     resources.value = cached;
     resourcePage.value = Math.max(1, Math.ceil(cached.length / IAM_DEFAULT_PAGE_SIZE));
     resourceTotal.value = resourceTotals.get(app.id) ?? cached.length;
+    void privateHydrateGrantedResources();
     return;
   }
   resources.value = [];
@@ -301,6 +294,7 @@ const privateLoadResources = async (): Promise<void> => {
     resources.value = resourcePage.value === 1 ? next : [...resources.value, ...next];
     resourceCache.set(appId, resources.value);
     resourceTotals.set(appId, resourceTotal.value);
+    await privateHydrateGrantedResources();
   } finally {
     resourceLoading.value = false;
   }
@@ -413,23 +407,21 @@ const privateOnCheckChange = (data: GrantTreeNode, checked: boolean): void => {
   });
 };
 
-const privateSelectRead = (resourceId: string): void => {
-  const resource = resourceOf(resourceId);
-  if (!resource) {
+const privateHydrateGrantedResources = async (): Promise<void> => {
+  const selected = resources.value.filter((resource) =>
+    grants.value.some((item) => item.resourceId === resource.id),
+  );
+  if (!selected.length) {
+    applyTreeChecks();
     return;
   }
-  void privateEnsureActions(resource).then(() => {
-    const reads = resource.actions.filter((item) => isReadAction(item.code));
-    if (!reads.length) {
-      Message.warning("该资源没有查看操作");
-      return;
-    }
-    replaceResourceGrants(resource, reads);
-    nextTick(() => {
-      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
-      applyTreeChecks();
-    });
-  });
+  await Promise.all(selected.map((resource) => privateEnsureActions(resource)));
+  await nextTick();
+  await nextTick();
+  for (const resource of selected) {
+    treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+  }
+  applyTreeChecks();
 };
 
 onMounted(() => {

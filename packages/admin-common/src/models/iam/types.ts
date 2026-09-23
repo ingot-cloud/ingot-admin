@@ -514,6 +514,13 @@ export interface RoleCreateInput {
   definition: RoleDefinitionDraft;
 }
 
+export interface RoleUpdateInput extends VersionInput {
+  name: string;
+  description?: string;
+  groupName?: string;
+  status: ConfigurationStatus;
+}
+
 export interface RolePublishInput extends VersionInput {
   definition: RoleDefinitionDraft;
 }
