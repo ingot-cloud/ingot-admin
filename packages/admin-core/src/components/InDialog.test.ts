@@ -56,4 +56,12 @@ describe("InDialog", () => {
     expect(wrapper.attributes("data-align-center")).toBe("true");
     expect(wrapper.text()).toContain("杨紫微 来自 英格特云");
   });
+
+  it("pinned 布局只滚中间内容", () => {
+    const wrapper = mount(InDialog, {
+      props: { modelValue: true, title: "选择操作", layout: "pinned" },
+      global,
+    });
+    expect(wrapper.classes()).toContain("in-dialog--pinned");
+  });
 });

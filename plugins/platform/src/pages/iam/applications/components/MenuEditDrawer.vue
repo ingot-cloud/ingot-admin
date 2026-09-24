@@ -4,6 +4,7 @@
     v-model="visible"
     :loading="loading"
     size="560px"
+    layout="pinned"
     :before-close="privateOnBeforeClose"
   >
     <in-form :editing="isCreate || session.editing.value">
@@ -24,11 +25,35 @@
           />
         </el-select>
       </in-detail-field>
-      <in-detail-field label="路径" :value="draft.path">
+      <in-detail-field label="路径">
+        <template #view>
+          <in-copy-tag v-if="draft.path" :text="draft.path" />
+          <span v-else>-</span>
+        </template>
         <el-input v-model="draft.path" placeholder="如 /iam/members，目录可空" />
       </in-detail-field>
-      <in-detail-field label="视图注册键" :value="draft.viewPath">
-        <el-input v-model="draft.viewPath" placeholder="canonical viewPath，如 platform.iam.accounts" />
+      <in-detail-field label="视图注册键">
+        <template #view>
+          <in-copy-tag v-if="draft.viewPath" :text="draft.viewPath" />
+          <span v-else>-</span>
+        </template>
+        <el-select
+          v-model="draft.viewPath"
+          class="w-full"
+          filterable
+          clearable
+          placeholder="请选择视图注册键"
+          @change="privateOnViewPathChange"
+        >
+          <el-option-group v-for="group in viewGroups" :key="group.label" :label="group.label">
+            <el-option
+              v-for="item in group.options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-option-group>
+        </el-select>
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           必须与前端 definePluginPages 注册键一致，不能用浏览器 path 代替。
         </div>
@@ -44,7 +69,7 @@
           开放不校验操作；按操作时由下方匹配方式决定。
         </div>
       </in-detail-field>
-      <in-detail-field label="操作匹配">
+      <in-detail-field v-if="showActionFields" label="操作匹配">
         <template #view>{{ matchEnum.getTagText(draft.matchMode).text }}</template>
         <in-select
           v-model="draft.matchMode"
@@ -55,14 +80,14 @@
           任一操作：具备列表中任一 ACTION 即可进入；全部操作：必须同时具备。
         </div>
       </in-detail-field>
-      <in-detail-field label="关联操作" :value="actionSummary">
-        <biz-iam-chip-page-select
-          v-model="draft.actionIds"
-          :load-data="loadActions"
-          :initial-labels="actionLabels"
-          placeholder="搜索操作名"
-          empty-text="未关联操作"
-        />
+      <in-detail-field v-if="showActionFields" label="关联操作">
+        <template #view>
+          <action-hierarchy :actions="selectedActions" />
+        </template>
+        <div class="flex flex-col gap-12px">
+          <action-hierarchy :actions="selectedActions" />
+          <in-button type="primary" link @in-click="privateOpenPicker">配置操作</in-button>
+        </div>
       </in-detail-field>
       <in-detail-field label="排序" :value="draft.sortOrder">
         <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
@@ -76,28 +101,35 @@
       <in-button v-else type="primary" @in-click="session.enterEdit">编辑</in-button>
     </template>
   </in-drawer>
+  <action-picker-dialog ref="pickerRef" :resolve-catalog="resolveCatalog" @confirm="privateOnPicked" />
 </template>
 
 <script setup lang="ts">
-import { Message, useDetailEditSession, type LoadDataParams, type Page } from "@ingot/admin-core";
+import { Message, toDefaultMenuPath, useDetailEditSession } from "@ingot/admin-core";
 import {
-  BizIamChipPageSelect,
-  collectIamPageRecords,
   flattenMenuTree,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
-  toIamSelectRecords,
   useMenuAccessModeEnum,
   useMenuKindEnum,
   useMenuMatchModeEnum,
   type AppMenuDraft,
-  type IamSelectOption,
   type MenuTreeRow,
 } from "@ingot/admin-common";
-import { PlatformActionPageAPI, PlatformMenuCreateAPI, PlatformMenuUpdateAPI } from "@/api/iam/catalog";
+import { PlatformMenuCreateAPI, PlatformMenuUpdateAPI } from "@/api/iam/catalog";
+import { loadApplicationCatalog, loadMenuAssociatedActions } from "../applicationCatalog";
+import { actionsOfCatalog, type ActionCatalog, type MenuActionOption } from "../menuActions";
+import { viewPathOptionGroups } from "../viewPaths";
+import ActionHierarchy from "./ActionHierarchy.vue";
+import ActionPickerDialog from "./ActionPickerDialog.vue";
 
 defineOptions({ name: "MenuEditDrawer" });
+
+const props = defineProps<{
+  resolveCatalog?: () => Promise<ActionCatalog>;
+  submit?: (draft: AppMenuDraft, target?: MenuTreeRow) => void | Promise<void>;
+}>();
 
 const emits = defineEmits<{ success: [] }>();
 const session = useDetailEditSession();
@@ -107,9 +139,14 @@ const matchEnum = useMenuMatchModeEnum();
 const visible = ref(false);
 const loading = ref(false);
 const applicationId = ref("");
+const applicationName = ref("");
 const menus = ref<MenuTreeRow[]>([]);
 const target = ref<MenuTreeRow>();
-const actionLabels = ref<Record<string, string>>({});
+const selectedActions = ref<MenuActionOption[]>([]);
+const pickerRef = ref<{ show: (current: MenuActionOption[]) => void }>();
+const fullCatalog = ref<ActionCatalog>();
+const lastAutoPath = ref("");
+const viewGroups = computed(() => viewPathOptionGroups());
 const draft = reactive<AppMenuDraft>({
   name: "",
   kind: MenuKind.PAGE,
@@ -121,6 +158,7 @@ const draft = reactive<AppMenuDraft>({
 
 const isCreate = computed(() => !target.value);
 const title = computed(() => (isCreate.value ? "创建菜单" : "菜单详情"));
+const showActionFields = computed(() => draft.accessMode !== MenuAccessMode.OPEN);
 const parentOptions = computed(() =>
   flattenMenuTree(menus.value).filter((item) => item.record.id !== target.value?.record.id),
 );
@@ -130,49 +168,50 @@ const parentName = computed(() => {
   }
   return parentOptions.value.find((item) => item.record.id === draft.parentId)?.record.name || draft.parentId;
 });
-const actionSummary = computed(() => {
-  if (!draft.actionIds.length) {
-    return "未关联操作";
-  }
-  return draft.actionIds.map((id) => actionLabels.value[id] ?? id).join("、");
-});
 
-const loadActions = (params: LoadDataParams): Promise<Page<IamSelectOption>> => {
-  return PlatformActionPageAPI(
-    applicationId.value,
-    {
-      current: params.current,
-      size: params.size,
+const resolveCatalog = async (): Promise<ActionCatalog> => {
+  if (props.resolveCatalog) {
+    return props.resolveCatalog();
+  }
+  if (fullCatalog.value) {
+    return fullCatalog.value;
+  }
+  const catalog = await loadApplicationCatalog(applicationId.value);
+  fullCatalog.value = catalog;
+  return catalog;
+};
+
+const hydrateActions = (ids: string[]): void => {
+  if (!ids.length) {
+    selectedActions.value = [];
+    return;
+  }
+  if (props.resolveCatalog) {
+    void props.resolveCatalog().then((catalog) => {
+      selectedActions.value = actionsOfCatalog(catalog, ids);
+    });
+    return;
+  }
+  if (!target.value) {
+    selectedActions.value = [];
+    return;
+  }
+  void loadMenuAssociatedActions(applicationId.value, target.value.record.id, applicationName.value).then(
+    (actions) => {
+      selectedActions.value = actions;
     },
-    { name: params.query },
-  ).then((response) =>
-    toIamSelectRecords({
-      ...response.data,
-      records: (response.data.records ?? []).map((item) => ({
-        ...item,
-        record: {
-          ...item.record,
-          name: `${item.record.name} (${item.record.code})`,
-        },
-      })),
-    }),
   );
 };
 
-const hydrateActionLabels = (ids: string[]): void => {
-  if (!ids.length || !applicationId.value) {
-    actionLabels.value = {};
+const privateOnViewPathChange = (value?: string): void => {
+  if (!value) {
     return;
   }
-  void collectIamPageRecords((page) =>
-    PlatformActionPageAPI(applicationId.value, page, { ids: ids.join(",") }),
-  ).then((records) => {
-    const labels: Record<string, string> = {};
-    for (const item of records) {
-      labels[item.record.id] = `${item.record.name} (${item.record.code})`;
-    }
-    actionLabels.value = labels;
-  });
+  if (!draft.path || draft.path === lastAutoPath.value) {
+    const nextPath = toDefaultMenuPath(value);
+    lastAutoPath.value = nextPath;
+    draft.path = nextPath;
+  }
 };
 
 const applyDraft = (row?: MenuTreeRow): void => {
@@ -189,19 +228,31 @@ const applyDraft = (row?: MenuTreeRow): void => {
   draft.sortOrder = row?.record.sortOrder ?? 0;
 };
 
-const asDraft = (): AppMenuDraft => ({
-  parentId: draft.parentId || undefined,
-  name: draft.name.trim(),
-  kind: draft.kind,
-  path: draft.path || undefined,
-  viewPath: draft.viewPath || undefined,
-  routeName: draft.routeName || undefined,
-  icon: draft.icon || undefined,
-  accessMode: draft.accessMode,
-  matchMode: draft.matchMode,
-  actionIds: [...draft.actionIds],
-  sortOrder: draft.sortOrder,
-});
+const asDraft = (): AppMenuDraft => {
+  const open = draft.accessMode === MenuAccessMode.OPEN;
+  return {
+    parentId: draft.parentId || undefined,
+    name: draft.name.trim(),
+    kind: draft.kind,
+    path: draft.path || undefined,
+    viewPath: draft.viewPath || undefined,
+    routeName: draft.routeName || undefined,
+    icon: draft.icon || undefined,
+    accessMode: draft.accessMode,
+    matchMode: draft.matchMode,
+    actionIds: open ? [] : selectedActions.value.map((item) => item.id),
+    sortOrder: draft.sortOrder,
+  };
+};
+
+const privateOpenPicker = (): void => {
+  pickerRef.value?.show(selectedActions.value);
+};
+
+const privateOnPicked = (actions: MenuActionOption[]): void => {
+  selectedActions.value = actions;
+  draft.actionIds = actions.map((item) => item.id);
+};
 
 const privateCancel = (): void => {
   if (isCreate.value) {
@@ -210,6 +261,7 @@ const privateCancel = (): void => {
   }
   session.exitEdit();
   applyDraft(target.value);
+  hydrateActions(draft.actionIds);
 };
 
 const privateOnBeforeClose = (done: () => void): void => {
@@ -222,8 +274,19 @@ const privateOnBeforeClose = (done: () => void): void => {
       return;
     }
     applyDraft(target.value);
+    hydrateActions(draft.actionIds);
     done();
   });
+};
+
+const finishLocal = (): void => {
+  Message.success("保存成功");
+  if (isCreate.value) {
+    visible.value = false;
+  } else {
+    session.exitEdit();
+  }
+  emits("success");
 };
 
 const privateSubmit = (): void => {
@@ -232,10 +295,19 @@ const privateSubmit = (): void => {
     return;
   }
   loading.value = true;
+  const payload = asDraft();
+  if (props.submit) {
+    Promise.resolve(props.submit(payload, target.value))
+      .then(finishLocal)
+      .finally(() => {
+        loading.value = false;
+      });
+    return;
+  }
   if (target.value) {
     PlatformMenuUpdateAPI(applicationId.value, target.value.record.id, {
       expectedVersion: target.value.version,
-      menu: asDraft(),
+      menu: payload,
     })
       .then((response) => {
         target.value = {
@@ -244,6 +316,7 @@ const privateSubmit = (): void => {
           version: response.data.version,
         };
         applyDraft(target.value);
+        hydrateActions(draft.actionIds);
         session.exitEdit();
         Message.success("保存成功");
         emits("success");
@@ -253,7 +326,7 @@ const privateSubmit = (): void => {
       });
     return;
   }
-  PlatformMenuCreateAPI(applicationId.value, asDraft())
+  PlatformMenuCreateAPI(applicationId.value, payload)
     .then(() => {
       Message.success("保存成功");
       visible.value = false;
@@ -265,12 +338,15 @@ const privateSubmit = (): void => {
 };
 
 defineExpose({
-  show(appId: string, menuList: MenuTreeRow[], current?: MenuTreeRow) {
+  show(appId: string, menuList: MenuTreeRow[], current?: MenuTreeRow, appName = "") {
     applicationId.value = appId;
+    applicationName.value = appName;
     menus.value = menuList;
+    fullCatalog.value = undefined;
+    lastAutoPath.value = current?.record.path ?? "";
     target.value = current;
     applyDraft(current);
-    hydrateActionLabels(draft.actionIds);
+    hydrateActions(draft.actionIds);
     if (current) {
       session.exitEdit();
     } else {

@@ -33,10 +33,6 @@
         <in-detail-field label="排序" :value="detail.record.sortOrder">
             <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
         </in-detail-field>
-        <in-detail-field v-if="canBaseline" label="基础应用" :value="detail.record.baseline ? '是' : '否'">
-          <el-switch v-model="draft.baseline" />
-        </in-detail-field>
-        <in-detail-field v-else label="基础应用" :value="detail.record.baseline ? '是' : '否'" />
         <in-detail-field label="状态">
           <template #view>
             <biz-iam-status-tag :status="detail.record.status" />
@@ -163,7 +159,6 @@ import {
   type Page,
 } from "@ingot/admin-core";
 import {
-  AuthorizationDomain,
   AuthorizationDomainExtArray,
   BizIamStatusTag,
   IAM_DEFAULT_PAGE_SIZE,
@@ -262,9 +257,11 @@ const menuExtraFilterCount = computed(() => {
 });
 const filteredMenus = computed(() => filterMenuTree(menus.value, menuFilter));
 const resourceRef = ref<{ show: (appId: string, target?: ResourceDetail<AppResourceRecord>) => void }>();
-const actionListRef = ref<{ show: (appId: string, target: ResourceDetail<AppResourceRecord>) => void }>();
+const actionListRef = ref<{
+  show: (appId: string, target: ResourceDetail<AppResourceRecord>, applicationCode: string) => void;
+}>();
 const menuRef = ref<{
-  show: (appId: string, menuList: MenuTreeRow[], target?: MenuTreeRow) => void;
+  show: (appId: string, menuList: MenuTreeRow[], target?: MenuTreeRow, applicationName?: string) => void;
 }>();
 const draft = reactive({
   name: "",
@@ -276,8 +273,6 @@ const loadGuard = createLoadGuard();
 const domainLabel = computed(() =>
   detail.value ? iamEnumLabel(AuthorizationDomainExtArray, detail.value.record.domain) : "-",
 );
-const canBaseline = computed(() => detail.value?.record.domain === AuthorizationDomain.TENANT);
-
 const resourceKeyOf = (row: ResourceDetail<AppResourceRecord>): string => row.record.id;
 const menuKeyOf = (row: MenuTreeRow): string => row.record.id;
 
@@ -460,8 +455,9 @@ const privateDeleteResource = (row: ResourceDetail<AppResourceRecord>): void => 
 
 const privateOpenActions = (row: ResourceDetail<AppResourceRecord>): void => {
   const id = requireAppId();
-  if (id) {
-    actionListRef.value?.show(id, row);
+  const code = detail.value?.record.code;
+  if (id && code) {
+    actionListRef.value?.show(id, row, code);
   }
 };
 
@@ -474,14 +470,14 @@ const privateOnResetMenuExtra = (): void => {
 const privateCreateMenu = (): void => {
   const id = requireAppId();
   if (id) {
-    menuRef.value?.show(id, menus.value);
+    menuRef.value?.show(id, menus.value, undefined, detail.value?.record.name);
   }
 };
 
 const privateOpenMenu = (row: MenuTreeRow): void => {
   const id = requireAppId();
   if (id) {
-    menuRef.value?.show(id, menus.value, row);
+    menuRef.value?.show(id, menus.value, row, detail.value?.record.name);
   }
 };
 

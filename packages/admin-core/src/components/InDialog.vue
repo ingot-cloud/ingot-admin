@@ -7,7 +7,11 @@
     :align-center="true"
     draggable
     class="in-dialog"
-    :class="{ 'is-danger': tone === 'danger', 'is-no-close': !showClose }"
+    :class="{
+      'is-danger': tone === 'danger',
+      'is-no-close': !showClose,
+      'in-dialog--pinned': layout === 'pinned',
+    }"
   >
     <template #header>
       <div class="in-dialog__header-main">
@@ -43,7 +47,7 @@
 </template>
 <script setup lang="ts">
 import InCloseButton from "./InCloseButton.vue";
-import type { InDialogTone } from "./types";
+import type { InDialogLayout, InDialogTone } from "./types";
 
 defineOptions({
   name: "InDialog",
@@ -57,10 +61,13 @@ withDefaults(
     description?: string;
     tone?: InDialogTone;
     showClose?: boolean;
+    /** 钉住头脚，只滚中间内容。双栏选择、长表单用。 */
+    layout?: InDialogLayout;
   }>(),
   {
     tone: "default",
     showClose: true,
+    layout: "default",
   },
 );
 </script>
@@ -151,6 +158,23 @@ withDefaults(
 
   &.is-danger .in-dialog__texts .title {
     color: var(--in-color-danger);
+  }
+
+  &.in-dialog--pinned {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+
+    & .el-dialog__header,
+    & .el-dialog__footer {
+      flex: none;
+    }
+
+    & .el-dialog__body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
   }
 }
 </style>

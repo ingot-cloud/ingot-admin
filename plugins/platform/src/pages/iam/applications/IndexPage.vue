@@ -85,7 +85,7 @@
     </in-split-layout>
   </in-page-frame>
 
-  <CreateDrawer ref="createRef" @success="refreshData" />
+  <CreateWizard ref="createRef" @success="refreshData" />
   <DetailDrawer ref="detailRef" @success="refreshData" />
 </template>
 
@@ -113,7 +113,7 @@ import {
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import { PlatformApplicationDeleteAPI, PlatformApplicationStatusAPI } from "@/api/iam/catalog";
-import CreateDrawer from "./components/CreateDrawer.vue";
+import CreateWizard from "./components/CreateWizard.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import {
   createRowActions,

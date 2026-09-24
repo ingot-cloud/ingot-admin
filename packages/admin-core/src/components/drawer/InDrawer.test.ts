@@ -74,4 +74,40 @@ describe("InDrawer", () => {
     expect(modalClass).toContain("my-mask");
     wrapper.unmount();
   });
+
+  it("close-position=start 时左侧关闭，不再显示右上角关闭", () => {
+    const wrapper = mount(InDrawer, {
+      props: { modelValue: true, title: "编辑权限", closePosition: "start" },
+      global: {
+        stubs: {
+          ElDrawer: {
+            template:
+              "<div class=\"in-drawer\" :data-show-close=\"$attrs.showClose ?? $attrs['show-close']\"><slot name=\"header\" /></div>",
+          },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
+        },
+      },
+    });
+    expect(wrapper.get(".in-drawer__close-start").text()).toContain("关闭");
+    expect(wrapper.get(".in-drawer__start-title").text()).toBe("编辑权限");
+    expect(wrapper.get(".in-drawer").attributes("data-show-close")).toBe("false");
+    wrapper.unmount();
+  });
+
+  it("可指定 z-index，供对话框上再开抽屉", () => {
+    const wrapper = mount(InDrawer, {
+      props: { modelValue: true, title: "创建操作", zIndex: 4000 },
+      global: {
+        stubs: {
+          ElDrawer: {
+            template:
+              "<div class=\"in-drawer\" :data-z-index=\"$attrs.zIndex ?? $attrs['z-index']\"><slot /></div>",
+          },
+          InLoading: { template: '<div class="in-loading"><slot /></div>' },
+        },
+      },
+    });
+    expect(wrapper.get(".in-drawer").attributes("data-z-index")).toBe("4000");
+    wrapper.unmount();
+  });
 });

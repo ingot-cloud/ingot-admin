@@ -8,6 +8,10 @@ import {
   mapIamPage,
   toIamListParams,
   type ActionListQuery,
+  type ActionLookupInput,
+  type ActionLookupRecord,
+  type AppActionCatalogView,
+  type AppMenuActionRecord,
   type ResourceListQuery,
   type AppActionDraft,
   type AppActionRecord,
@@ -18,6 +22,7 @@ import {
   type AppResourceDraft,
   type AppResourceRecord,
   type AppResourceUpdateInput,
+  type ApplicationBundleDraft,
   type ApplicationDraft,
   type ApplicationRecord,
   type ApplicationSummary,
@@ -72,6 +77,13 @@ export function PlatformApplicationCreateAPI(
 ): Promise<R<CreatedResource>> {
   filterParams(params);
   return request.post<CreatedResource>(APP_PATH, params, options);
+}
+
+export function PlatformApplicationBundleCreateAPI(
+  params: ApplicationBundleDraft,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  return request.post<CreatedResource>(`${APP_PATH}/bundles`, params, options);
 }
 
 export function PlatformApplicationUpdateAPI(
@@ -284,6 +296,44 @@ export function PlatformActionDeleteAPI(
   options?: RequestOptions,
 ): Promise<R<void>> {
   return request.delete<void>(`${APP_PATH}/${applicationId}/actions/${actionId}`, null, options);
+}
+
+export function PlatformActionCatalogAPI(
+  applicationId: string,
+  options?: RequestOptions,
+): Promise<R<AppActionCatalogView>> {
+  return request.get<AppActionCatalogView>(`${APP_PATH}/${applicationId}/action-catalog`, undefined, options);
+}
+
+export function PlatformResourceActionsAPI(
+  applicationId: string,
+  resourceId: string,
+  options?: RequestOptions,
+): Promise<R<AppActionRecord[]>> {
+  return request.get<AppActionRecord[]>(
+    `${APP_PATH}/${applicationId}/resources/${resourceId}/actions`,
+    undefined,
+    options,
+  );
+}
+
+export function PlatformMenuActionsAPI(
+  applicationId: string,
+  menuId: string,
+  options?: RequestOptions,
+): Promise<R<AppMenuActionRecord[]>> {
+  return request.get<AppMenuActionRecord[]>(
+    `${APP_PATH}/${applicationId}/menus/${menuId}/actions`,
+    undefined,
+    options,
+  );
+}
+
+export function PlatformActionLookupAPI(
+  params: ActionLookupInput,
+  options?: RequestOptions,
+): Promise<R<ActionLookupRecord[]>> {
+  return request.post<ActionLookupRecord[]>(`${IAM_API_PREFIX}/v1/platform/actions/lookup`, params, options);
 }
 
 export function PlatformMenuPageAPI(

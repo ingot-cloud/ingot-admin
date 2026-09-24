@@ -9,13 +9,24 @@ const source = readFileSync(
 );
 
 describe("platform iam application MenuEditDrawer", () => {
-  it("创建菜单录入框有占位，关联操作远程分页", () => {
+  it("创建菜单录入框有占位，关联操作走专用接口", () => {
     expect(source).toContain('placeholder="如组织与成员"');
     expect(source).toContain('placeholder="如 /iam/members，目录可空"');
-    expect(source).toContain('placeholder="搜索操作名"');
-    expect(source).toContain("biz-iam-chip-page-select");
-    expect(source).toContain("hydrateActionLabels");
+    expect(source).toContain('placeholder="请选择视图注册键"');
+    expect(source).toContain("viewPathOptionGroups");
+    expect(source).toContain("action-picker-dialog");
+    expect(source).toContain("配置操作");
+    expect(source).toContain("action-hierarchy");
+    expect(source).toContain("resolveCatalog");
+    expect(source).toContain("loadApplicationCatalog");
+    expect(source).toContain("loadMenuAssociatedActions");
+    expect(source).toContain('layout="pinned"');
+    expect(source).toContain("hydrateActions");
+    expect(source).not.toContain("resourceId: resource.record.id");
+    expect(source).toContain("MenuAccessMode.OPEN");
+    expect(source).toContain("in-copy-tag");
     expect(source).not.toContain("size: 200");
+    expect(source).not.toContain("collectIamPageRecords");
   });
 
   it("已有菜单先看详情再进入编辑", () => {

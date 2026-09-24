@@ -287,7 +287,7 @@ const resolveRevisionNames = (deltas: RoleDelta[]): void => {
   if (!ids.length) {
     return;
   }
-  void resolveGrantActions(ids, props.grantDomain).then((items) => {
+  void resolveGrantActions(ids).then((items) => {
     revisionActionNames.value = {
       ...revisionActionNames.value,
       ...Object.fromEntries(items.map((item) => [item.id, item.name])),
@@ -361,7 +361,7 @@ const load = (id: string): void => {
       if (!items.length) {
         return;
       }
-      const resolved = await resolveSelectedGrants(items, props.grantDomain);
+      const resolved = await resolveSelectedGrants(items);
       if (!guard.isCurrent()) {
         return;
       }

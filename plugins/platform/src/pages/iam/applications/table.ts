@@ -19,7 +19,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
 
 export const resourceHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
-  { label: "编码", prop: "code" },
+  { label: "编码", prop: "code", hide: true },
   { label: "范围", prop: "scope" },
   { label: "操作", width: "200", prop: "actions", fixed: "right" },
 ];
@@ -33,7 +33,7 @@ export const actionHeaders: Array<TableHeaderRecord> = [
 
 export const menuHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
-  { label: "路径", prop: "path" },
+  { label: "路径", prop: "path", hide: true },
   { label: "操作", width: "140", prop: "actions", fixed: "right" },
 ];
 

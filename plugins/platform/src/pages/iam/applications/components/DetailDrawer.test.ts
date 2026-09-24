@@ -23,6 +23,7 @@ describe("platform iam application DetailDrawer", () => {
 
   it("应用编码用可复制标签展示", () => {
     expect(source).toContain('<in-copy-tag :text="detail.record.code" />');
+    expect(source).not.toContain('label="基础应用"');
   });
 
   it("资源行打开操作对话框，菜单走服务端树和中文枚举", () => {
@@ -38,6 +39,7 @@ describe("platform iam application DetailDrawer", () => {
     expect(source).toContain("搜索菜单名");
     expect(source).toContain("in-filter-panel");
     expect(source).toContain("privateOpenMenu(asMenu(item))\">详情");
+    expect(source).toContain("applicationCode");
     expect(source).toContain('type="danger"');
     expect(source).not.toContain("size: 200");
   });

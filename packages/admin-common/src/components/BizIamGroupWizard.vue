@@ -4,6 +4,7 @@
     :title="title"
     size="100%"
     layout="pinned"
+    close-position="start"
     :loading="loading"
     :before-close="privateOnBeforeClose"
   >

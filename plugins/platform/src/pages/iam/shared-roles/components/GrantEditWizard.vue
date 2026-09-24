@@ -1,28 +1,14 @@
 <template>
   <in-drawer
     v-model="visible"
+    title="编辑权限"
     size="100%"
     layout="pinned"
     padding="0"
-    :show-close="false"
+    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
   >
-    <template #header>
-      <div class="flex items-center gap-12px text-14px">
-        <button type="button" class="grant-close" @click="privateAskClose">
-          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M20.778 20.778a1 1 0 0 0 0-1.414L13.414 12l7.364-7.364a1 1 0 0 0-1.414-1.414L12 10.586 4.636 3.222a1 1 0 0 0-1.414 1.414L10.586 12l-7.364 7.364a1 1 0 1 0 1.414 1.414L12 13.414l7.364 7.364a1 1 0 0 0 1.414 0Z"
-              fill="currentColor"
-            />
-          </svg>
-          关闭
-        </button>
-        <span class="w-1px h-16px bg-[var(--in-border-color)]" />
-        <span>编辑权限</span>
-      </div>
-    </template>
     <div class="flex h-full min-h-0">
       <wizard-nav :steps="GRANT_WIZARD_STEPS" :current="step" />
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
@@ -100,22 +86,6 @@ const reset = (): void => {
   saving.value = false;
 };
 
-const privateClose = (): void => {
-  visible.value = false;
-};
-
-const privateAskClose = (): void => {
-  if (!changed.value) {
-    privateClose();
-    return;
-  }
-  void confirmUnsavedChanges().then((allowed) => {
-    if (allowed) {
-      privateClose();
-    }
-  });
-};
-
 const privateOnBeforeClose = (done: () => void): void => {
   if (!changed.value) {
     done();
@@ -181,34 +151,3 @@ defineExpose({
   },
 });
 </script>
-
-<style lang="postcss" scoped>
-.grant-close {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border: 0;
-  border-radius: var(--in-radius-control);
-  background: transparent;
-  color: var(--in-text-color);
-  cursor: pointer;
-  font-size: 14px;
-  transition:
-    background-color var(--in-motion-duration) var(--in-motion-ease),
-    color var(--in-motion-duration) var(--in-motion-ease);
-}
-
-.grant-close svg {
-  font-size: 16px;
-}
-
-.grant-close:hover {
-  background: var(--in-bg-color-hover);
-  color: var(--in-text-color);
-}
-
-.grant-close:active {
-  background: var(--in-bg-color-active);
-}
-</style>

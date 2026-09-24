@@ -96,6 +96,10 @@ import { PlatformResourceCreateAPI, PlatformResourceUpdateAPI } from "@/api/iam/
 
 defineOptions({ name: "ResourceEditDrawer" });
 
+const props = defineProps<{
+  submit?: (draft: AppResourceDraft, editing?: ResourceDetail<AppResourceRecord>) => void | Promise<void>;
+}>();
+
 const emits = defineEmits<{ success: [] }>();
 const visible = ref(false);
 const loading = ref(false);
@@ -145,11 +149,25 @@ const privateSubmit = (): void => {
   }
   loading.value = true;
   const fields = draft.fieldCapabilities.filter((item) => item.key.trim() && item.label.trim());
+  const payload: AppResourceDraft = {
+    code: draft.code.trim(),
+    name: draft.name.trim(),
+    scopeCapabilities: draft.scopeCapabilities,
+    fieldCapabilities: fields,
+  };
   const done = (): void => {
     Message.success("保存成功");
     visible.value = false;
     emits("success");
   };
+  if (props.submit) {
+    Promise.resolve(props.submit(payload, editing.value))
+      .then(done)
+      .finally(() => {
+        loading.value = false;
+      });
+    return;
+  }
   if (editing.value) {
     PlatformResourceUpdateAPI(applicationId.value, editing.value.record.id, {
       expectedVersion: editing.value.version,
@@ -163,12 +181,7 @@ const privateSubmit = (): void => {
       });
     return;
   }
-  PlatformResourceCreateAPI(applicationId.value, {
-    code: draft.code.trim(),
-    name: draft.name.trim(),
-    scopeCapabilities: draft.scopeCapabilities,
-    fieldCapabilities: fields,
-  })
+  PlatformResourceCreateAPI(applicationId.value, payload)
     .then(done)
     .finally(() => {
       loading.value = false;

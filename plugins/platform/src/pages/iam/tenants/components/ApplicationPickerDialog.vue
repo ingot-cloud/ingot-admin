@@ -1,5 +1,5 @@
 <template>
-  <in-dialog v-model="visible" title="选择应用" width="840px" append-to-body>
+  <in-dialog v-model="visible" title="选择应用" width="840px" layout="pinned" append-to-body>
     <div class="h-420px flex gap-12px">
       <div
         class="w-1/2 min-w-0 flex flex-col border border-[var(--in-border-color)] rounded-4px overflow-hidden"

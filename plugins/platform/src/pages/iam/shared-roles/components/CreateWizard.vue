@@ -5,6 +5,7 @@
     size="100%"
     layout="pinned"
     padding="0"
+    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
   >

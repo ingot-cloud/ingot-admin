@@ -1,5 +1,5 @@
 <template>
-  <in-dialog v-model="visible" :title="title" width="920px" append-to-body>
+  <in-dialog v-model="visible" :title="title" width="920px" layout="pinned" append-to-body>
     <in-table
       :loading="loading"
       :data="page.records"
@@ -22,7 +22,8 @@
         />
       </template>
       <template #tools-end>
-        <in-button v-auth="IamAction.PLATFORM_ACTION_CREATE" @click="privateCreate">
+        <in-button v-if="local" @click="privateCreate">创建操作</in-button>
+        <in-button v-else v-auth="IamAction.PLATFORM_ACTION_CREATE" @click="privateCreate">
           创建操作
         </in-button>
       </template>
@@ -35,7 +36,7 @@
       </template>
       <template #actions="{ item }">
         <in-button text link @click="privateEdit(asAction(item))">编辑</in-button>
-        <in-button text link @click="privateToggle(asAction(item))">
+        <in-button v-if="!local" text link @click="privateToggle(asAction(item))">
           {{ asAction(item).record.status === ConfigurationStatus.ENABLED ? "停用" : "启用" }}
         </in-button>
         <in-button text link type="danger" @click="privateDelete(asAction(item))">删除</in-button>
@@ -46,7 +47,12 @@
     </template>
   </in-dialog>
 
-  <ActionEditDrawer ref="editRef" @success="loadActions" />
+  <ActionEditDrawer
+    ref="editRef"
+    :submit="submitAction"
+    @success="loadActions"
+    @close="privateOnEditorClose"
+  />
 </template>
 
 <script setup lang="ts">
@@ -71,10 +77,26 @@ import ActionEditDrawer from "./ActionEditDrawer.vue";
 
 defineOptions({ name: "ApplicationActionListDialog" });
 
+const props = defineProps<{
+  loadActions?: (input: {
+    current: number;
+    size: number;
+    resourceId: string;
+    name?: string;
+  }) => Promise<Page<ResourceDetail<AppActionRecord>>>;
+  submitAction?: (
+    input: { resourceId: string; code: string; name: string },
+    editing?: ResourceDetail<AppActionRecord>,
+  ) => void | Promise<void>;
+  deleteAction?: (row: ResourceDetail<AppActionRecord>) => void | Promise<void>;
+}>();
+
+const local = computed(() => Boolean(props.loadActions));
 const visible = ref(false);
 const loading = ref(false);
 const applicationId = ref("");
 const resource = ref<ResourceDetail<AppResourceRecord>>();
+const applicationCode = ref("");
 const editRef = ref<{
   show: (
     appId: string,
@@ -82,6 +104,7 @@ const editRef = ref<{
     target?: ResourceDetail<AppActionRecord>,
     preferredResourceId?: string,
     lockResource?: boolean,
+    appCode?: string,
   ) => void;
 }>();
 const nameFilter = ref("");
@@ -98,20 +121,26 @@ const asAction = (row: unknown): ResourceDetail<AppActionRecord> =>
   row as ResourceDetail<AppActionRecord>;
 
 const loadActions = (): void => {
-  if (!applicationId.value || !resource.value) {
+  if (!resource.value) {
     return;
   }
   loading.value = true;
-  PlatformActionPageAPI(
-    applicationId.value,
-    { current: page.value.current, size: page.value.size },
-    {
-      resourceId: resource.value.record.id,
-      name: nameFilter.value.trim() || undefined,
-    },
-  )
-    .then((response) => {
-      page.value = response.data;
+  const query = {
+    current: page.value.current,
+    size: page.value.size,
+    resourceId: resource.value.record.id,
+    name: nameFilter.value.trim() || undefined,
+  };
+  const request = props.loadActions
+    ? props.loadActions(query)
+    : PlatformActionPageAPI(
+        applicationId.value,
+        { current: query.current, size: query.size },
+        { resourceId: query.resourceId, name: query.name },
+      ).then((response) => response.data);
+  request
+    .then((data) => {
+      page.value = data;
     })
     .finally(() => {
       loading.value = false;
@@ -143,17 +172,37 @@ const requireContext = ():
   return { appId: applicationId.value, current: resource.value };
 };
 
-const privateCreate = (): void => {
+const openEditor = (
+  target?: ResourceDetail<AppActionRecord>,
+): void => {
   const context = requireContext();
-  if (context) {
-    editRef.value?.show(context.appId, [context.current], undefined, context.current.record.id, true);
+  if (!context) {
+    return;
   }
+  visible.value = false;
+  nextTick(() => {
+    editRef.value?.show(
+      context.appId,
+      [context.current],
+      target,
+      context.current.record.id,
+      true,
+      applicationCode.value,
+    );
+  });
+};
+
+const privateCreate = (): void => {
+  openEditor();
 };
 
 const privateEdit = (row: ResourceDetail<AppActionRecord>): void => {
-  const context = requireContext();
-  if (context) {
-    editRef.value?.show(context.appId, [context.current], row, context.current.record.id, true);
+  openEditor(row);
+};
+
+const privateOnEditorClose = (): void => {
+  if (resource.value) {
+    visible.value = true;
   }
 };
 
@@ -181,7 +230,10 @@ const privateDelete = (row: ResourceDetail<AppActionRecord>): void => {
     return;
   }
   Confirm.warning(`是否删除操作（${row.record.code}）？`).then(() => {
-    PlatformActionDeleteAPI(context.appId, row.record.id).then(() => {
+    const removed = props.deleteAction
+      ? Promise.resolve(props.deleteAction(row))
+      : PlatformActionDeleteAPI(context.appId, row.record.id);
+    removed.then(() => {
       Message.success("已删除");
       loadActions();
     });
@@ -189,8 +241,9 @@ const privateDelete = (row: ResourceDetail<AppActionRecord>): void => {
 };
 
 defineExpose({
-  show(appId: string, target: ResourceDetail<AppResourceRecord>) {
+  show(appId: string, target: ResourceDetail<AppResourceRecord>, appCode: string) {
     applicationId.value = appId;
+    applicationCode.value = appCode;
     resource.value = target;
     nameFilter.value = "";
     page.value = {

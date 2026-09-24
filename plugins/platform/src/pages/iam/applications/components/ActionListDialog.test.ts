@@ -11,12 +11,15 @@ const source = readFileSync(
 describe("platform iam application ActionListDialog", () => {
   it("按资源分页加载操作并用可复制标签展示操作码", () => {
     expect(source).toContain('width="920px"');
+    expect(source).toContain('layout="pinned"');
     expect(source).toContain("搜索操作名");
     expect(source).toContain("resourceId: resource.value.record.id");
     expect(source).toContain("IAM_DEFAULT_PAGE_SIZE");
     expect(source).toContain('<in-copy-tag :text="asAction(item).record.code" />');
-    expect(source).toContain("context.current.record.id, true");
+    expect(source).toContain("applicationCode.value");
     expect(source).toContain('type="danger"');
+    expect(source).toContain("visible.value = false");
+    expect(source).toContain("privateOnEditorClose");
     expect(source).not.toContain("size: 200");
   });
 });

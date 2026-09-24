@@ -67,13 +67,16 @@ import {
   AuthorizationDomain,
   ConfigurationStatus,
   IAM_DEFAULT_PAGE_SIZE,
-  collectIamPageRecords,
-  type AppActionRecord,
   type AppResourceRecord,
   type ApplicationRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { PlatformActionPageAPI, PlatformApplicationPageAPI, PlatformResourcePageAPI } from "@/api/iam/catalog";
+import {
+  PlatformActionLookupAPI,
+  PlatformApplicationPageAPI,
+  PlatformResourceActionsAPI,
+  PlatformResourcePageAPI,
+} from "@/api/iam/catalog";
 import { defaultScope, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
@@ -320,15 +323,13 @@ const privateEnsureActions = (resource: CatalogResource): Promise<void> => {
     if (!applicationId.value) {
       return;
     }
-    const records = await collectIamPageRecords((page) =>
-      PlatformActionPageAPI(applicationId.value, page, { resourceId: resource.id }),
-    );
-    resource.actions = records
-      .filter((item: ResourceDetail<AppActionRecord>) => asEnabled(item))
+    const response = await PlatformResourceActionsAPI(applicationId.value, resource.id);
+    resource.actions = (response.data ?? [])
+      .filter((item) => item.status === ConfigurationStatus.ENABLED)
       .map((item) => ({
-        id: item.record.id,
-        code: item.record.code,
-        name: item.record.name || item.record.code,
+        id: item.id,
+        code: item.code,
+        name: item.name || item.code,
       }));
     resource.loaded = true;
   })();
@@ -411,18 +412,40 @@ const privateOnCheckChange = (data: GrantTreeNode, checked: boolean): void => {
 };
 
 const privateHydrateGrantedResources = async (): Promise<void> => {
-  const selected = resources.value.filter((resource) =>
-    grants.value.some((item) => item.resourceId === resource.id),
-  );
-  if (!selected.length) {
+  const selectedIds = grants.value
+    .filter((item) => item.applicationId === applicationId.value)
+    .map((item) => item.actionId);
+  if (!selectedIds.length) {
     applyTreeChecks();
     return;
   }
-  await Promise.all(selected.map((resource) => privateEnsureActions(resource)));
+  const response = await PlatformActionLookupAPI({ ids: selectedIds });
+  const byResource = new Map<string, CatalogAction[]>();
+  for (const item of (response.data ?? []).filter(
+    (row) => row.applicationId === applicationId.value && row.status === ConfigurationStatus.ENABLED,
+  )) {
+    const list = byResource.get(item.resourceId) ?? [];
+    list.push({
+      id: item.id,
+      code: item.code,
+      name: item.name || item.code,
+    });
+    byResource.set(item.resourceId, list);
+  }
+  for (const resource of resources.value) {
+    const actions = byResource.get(resource.id);
+    if (!actions) {
+      continue;
+    }
+    resource.actions = actions;
+    resource.loaded = true;
+  }
   await nextTick();
   await nextTick();
-  for (const resource of selected) {
-    treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+  for (const resource of resources.value) {
+    if (resource.loaded) {
+      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
+    }
   }
   applyTreeChecks();
 };

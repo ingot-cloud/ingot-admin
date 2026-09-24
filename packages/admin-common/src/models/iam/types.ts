@@ -253,6 +253,42 @@ export interface ApplicationDraft {
   baseline: boolean;
 }
 
+export interface ApplicationBundleAction {
+  tempId: string;
+  code: string;
+  name: string;
+}
+
+export interface ApplicationBundleResource {
+  tempId: string;
+  code: string;
+  name: string;
+  scopeCapabilities: ScopeKind[];
+  fieldCapabilities: FieldCapability[];
+  actions: ApplicationBundleAction[];
+}
+
+export interface ApplicationBundleMenu {
+  tempId: string;
+  parentTempId?: string;
+  name: string;
+  kind: MenuKind;
+  path?: string;
+  viewPath?: string;
+  routeName?: string;
+  icon?: string;
+  accessMode: MenuAccessMode;
+  matchMode: MenuMatchMode;
+  actionTempIds: string[];
+  sortOrder: number;
+}
+
+export interface ApplicationBundleDraft {
+  application: ApplicationDraft;
+  resources: ApplicationBundleResource[];
+  menus: ApplicationBundleMenu[];
+}
+
 export interface ApplicationUpdateInput extends VersionInput {
   name: string;
   description?: string;
@@ -334,6 +370,55 @@ export interface AppActionDraft {
 
 export interface AppActionUpdateInput extends VersionInput {
   name: string;
+}
+
+export interface AppActionCatalogItem {
+  id: string;
+  resourceId: string;
+  code: string;
+  name: string;
+  status: ConfigurationStatus;
+}
+
+export interface AppActionCatalogResource {
+  id: string;
+  code: string;
+  name: string;
+  actions: AppActionCatalogItem[];
+}
+
+export interface AppActionCatalogView {
+  applicationId: string;
+  applicationCode: string;
+  applicationName: string;
+  resources: AppActionCatalogResource[];
+}
+
+export interface AppMenuActionRecord {
+  id: string;
+  code: string;
+  name: string;
+  resourceId: string;
+  resourceCode: string;
+  resourceName: string;
+}
+
+export interface ActionLookupInput {
+  ids: string[];
+}
+
+export interface ActionLookupRecord {
+  id: string;
+  code: string;
+  name: string;
+  applicationId: string;
+  applicationCode: string;
+  applicationName: string;
+  resourceId: string;
+  resourceCode: string;
+  resourceName: string;
+  scopeCapabilities: ScopeKind[];
+  status: ConfigurationStatus;
 }
 
 export interface AppMenuRecord {

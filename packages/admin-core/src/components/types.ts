@@ -8,7 +8,11 @@ export type InTableFeedback = "none" | "empty" | "no-result" | "error" | "unauth
 
 export type InDialogTone = "default" | "danger";
 
+export type InDialogLayout = "default" | "pinned";
+
 export type InDrawerLayout = "default" | "pinned";
+
+export type InDrawerClosePosition = "end" | "start";
 
 /** 加载遮罩范围：不罩、罩住当前定位容器（抽屉/对话框/页面区块）、罩住整窗。 */
 export type InLoadingOverlay = "none" | "local" | "fullscreen";
