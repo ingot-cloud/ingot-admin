@@ -319,6 +319,7 @@ export function toAssignmentBatchItems(
 export interface IamSelectOption {
   id: string;
   name: string;
+  avatar?: string;
 }
 
 /** 已解析的操作，用于把授权里的操作 ID 显示成应用名和操作名。 */
@@ -329,15 +330,21 @@ export interface IamActionRef {
   applicationName: string;
 }
 
-export function toIamSelectRecords<T extends { id: string; name?: string; displayName?: string }>(
-  page: Page<ResourceDetail<T>>,
-): Page<IamSelectOption> {
+export function toIamSelectRecords<
+  T extends { id: string; name?: string; displayName?: string; avatar?: string },
+>(page: Page<ResourceDetail<T>>): Page<IamSelectOption> {
   return {
     ...page,
-    records: (page.records ?? []).map((item) => ({
-      id: item.record.id,
-      name: item.record.displayName ?? item.record.name ?? item.record.id,
-    })),
+    records: (page.records ?? []).map((item) => {
+      const option: IamSelectOption = {
+        id: item.record.id,
+        name: item.record.displayName ?? item.record.name ?? item.record.id,
+      };
+      if (item.record.avatar) {
+        option.avatar = item.record.avatar;
+      }
+      return option;
+    }),
   };
 }
 

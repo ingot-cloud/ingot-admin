@@ -106,7 +106,7 @@
         aria-haspopup="menu"
         @click="privateToggleMore"
       >
-        <in-icon name="ep:more" class="in-app-bar__icon" />
+        <icon-more-outlined class="in-app-bar__icon" />
       </button>
     </el-tooltip>
 
@@ -134,6 +134,7 @@ import {
 import type { ResolvedHeaderUtilityItem } from "./resolveHeaderConfig";
 import { isVisibleUtilityBadge } from "./isVisibleUtilityBadge";
 import { useAppBarOverlay } from "./useAppBarOverlay";
+import IconMoreOutlined from "@/components/icons/IconMoreOutlined.vue";
 
 defineOptions({
   name: "InAppBarUtilities",

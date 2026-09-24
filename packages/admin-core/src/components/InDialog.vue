@@ -1,26 +1,35 @@
 <template>
   <el-dialog
+    v-model="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :show-close="showClose"
+    :show-close="false"
     :align-center="true"
     draggable
     class="in-dialog"
     :class="{ 'is-danger': tone === 'danger', 'is-no-close': !showClose }"
   >
     <template #header>
-      <div v-if="slots.header">
-        <slot name="header" />
-      </div>
-      <div v-else class="in-dialog__title-row">
-        <div v-if="slots.icon" class="in-dialog__icon">
-          <slot name="icon" />
+      <div class="in-dialog__header-main">
+        <div v-if="slots.header">
+          <slot name="header" />
         </div>
-        <div class="in-dialog__texts">
-          <div class="title">{{ title }}</div>
-          <p v-if="description" class="description">{{ description }}</p>
+        <div v-else class="in-dialog__title-row">
+          <div v-if="slots.icon" class="in-dialog__icon">
+            <slot name="icon" />
+          </div>
+          <div class="in-dialog__texts">
+            <div class="title">{{ title }}</div>
+            <p v-if="description" class="description">{{ description }}</p>
+          </div>
         </div>
       </div>
+      <in-close-button
+        v-if="showClose"
+        class="in-dialog__close"
+        label="关闭"
+        @click="visible = false"
+      />
     </template>
 
     <slot />
@@ -33,12 +42,14 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
+import InCloseButton from "./InCloseButton.vue";
 import type { InDialogTone } from "./types";
 
 defineOptions({
   name: "InDialog",
 });
 
+const visible = defineModel<boolean>({ default: false });
 const slots = useSlots();
 withDefaults(
   defineProps<{
@@ -59,9 +70,20 @@ withDefaults(
   box-shadow: var(--in-shadow-overlay);
 
   & .el-dialog__header {
+    position: relative;
     border-bottom: 1px solid var(--in-border-color);
     margin-right: 0;
     padding: var(--in-space-4) var(--in-section-padding-relaxed);
+  }
+
+  &:not(.is-no-close) .in-dialog__header-main {
+    padding-right: 28px;
+  }
+
+  & .in-dialog__close {
+    position: absolute;
+    top: var(--in-space-4);
+    right: var(--in-section-padding-relaxed);
   }
 
   &.is-no-close .el-dialog__header {

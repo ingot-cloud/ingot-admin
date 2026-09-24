@@ -59,38 +59,22 @@
         @pointerenter="privateOnMoreEnter"
         @pointerleave="privateOnMoreLeave"
       >
-      <button
-        :ref="privateSetTriggerRef"
-        type="button"
-        class="in-table-actions__more-btn"
-        :class="{ 'is-toolbar': variant === 'toolbar', 'is-open': menuOpen }"
-        aria-label="更多"
-        :aria-expanded="menuOpen"
-        aria-haspopup="menu"
-        @click="privateOnTriggerClick"
-        @keydown="privateOnTriggerKeydown"
-      >
-        <svg
-          class="in-table-actions__more-icon"
-          width="1em"
-          height="1em"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
+        <button
+          :ref="privateSetTriggerRef"
+          type="button"
+          class="in-table-actions__more-btn"
+          :class="{ 'is-toolbar': variant === 'toolbar', 'is-open': menuOpen }"
+          aria-label="更多"
+          :aria-expanded="menuOpen"
+          aria-haspopup="menu"
+          @click="privateOnTriggerClick"
+          @keydown="privateOnTriggerKeydown"
         >
-          <path
-            v-if="variant === 'toolbar'"
-            d="M12 5.5a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Zm0 8.225a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Zm0 8.275a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Z"
-            fill="currentColor"
+          <icon-more-outlined
+            class="in-table-actions__more-icon"
+            :vertical="variant === 'toolbar'"
           />
-          <path
-            v-else
-            d="M5.5 11.75a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.225 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Zm8.275 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0Z"
-            fill="currentColor"
-          />
-        </svg>
-      </button>
+        </button>
       <Teleport to="body">
         <div
           v-if="menuOpen"
@@ -159,6 +143,7 @@ import {
   type RankedTableActions,
 } from "./actionRanking";
 import { estimateOverflowMenuHeight, resolveOverflowMenuBox } from "./overflowMenuPosition";
+import IconMoreOutlined from "../icons/IconMoreOutlined.vue";
 import { disabledActionHint } from "@/hooks/biz/actionAccess";
 import { usePermissions } from "@/stores/modules/auth";
 import { useMessageConfirm } from "@/hooks/web/useMessage";

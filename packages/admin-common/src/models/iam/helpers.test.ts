@@ -157,6 +157,29 @@ describe("iam helpers", () => {
     });
   });
 
+  it("选择器记录带上头像", () => {
+    expect(
+      toIamSelectRecords({
+        current: 1,
+        size: 20,
+        total: 1,
+        records: [
+          {
+            record: { id: "m1", displayName: "张三", avatar: "ingot/a.png" },
+            fieldAccess: {},
+            capabilities: {},
+            version: "1",
+          },
+        ],
+      }),
+    ).toEqual({
+      current: 1,
+      size: 20,
+      total: 1,
+      records: [{ id: "m1", name: "张三", avatar: "ingot/a.png" }],
+    });
+  });
+
   it("用中文解释资源范围声明", () => {
     expect(formatScopeKinds([])).toBe("未声明");
     expect(formatScopeKinds([ScopeKind.ALL, ScopeKind.SELF])).toBe("全部、本人");

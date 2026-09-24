@@ -7,6 +7,7 @@ import InContainer from "./container/InContainer.vue";
 import InSplitLayout from "./container/InSplitLayout.vue";
 import InFilterItem from "./container/InFilterItem.vue";
 import InCopyTag from "./InCopyTag.vue";
+import InCloseButton from "./InCloseButton.vue";
 import InDialog from "./InDialog.vue";
 import InDrawer from "./drawer/InDrawer.vue";
 import InDetailDrawer from "./drawer/InDetailDrawer.vue";
@@ -77,6 +78,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InSplitLayout,
   InFilterItem,
   InCopyTag,
+  InCloseButton,
   InDialog,
   InDrawer,
   InDetailDrawer,
@@ -149,6 +151,7 @@ declare module "vue" {
     InSplitLayout: typeof InSplitLayout;
     InFilterItem: typeof InFilterItem;
     InCopyTag: typeof InCopyTag;
+    InCloseButton: typeof InCloseButton;
     InDialog: typeof InDialog;
     InDrawer: typeof InDrawer;
     InDetailDrawer: typeof InDetailDrawer;

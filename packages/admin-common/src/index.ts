@@ -22,6 +22,11 @@ export { default as BizIamGrantEditor } from "./components/BizIamGrantEditor.vue
 export { default as BizIamRoleCreateDrawer } from "./components/BizIamRoleCreateDrawer.vue";
 export { default as BizIamRoleDetailDrawer } from "./components/BizIamRoleDetailDrawer.vue";
 export { default as BizIamGroupEditDrawer } from "./components/BizIamGroupEditDrawer.vue";
+export { default as BizIamGroupWizard } from "./components/BizIamGroupWizard.vue";
+export { default as BizIamMemberPickerDialog } from "./components/BizIamMemberPickerDialog.vue";
+export { default as BizIamMemberChips } from "./components/BizIamMemberChips.vue";
+export { MEMBER_CHIP_LIMIT, overflowCount, visibleMembers } from "./components/memberChipOverflow";
+export type { MemberChip } from "./components/memberChipOverflow";
 export { default as BizIamAssignmentDrawer } from "./components/BizIamAssignmentDrawer.vue";
 export { default as BizIamDelegationDrawer } from "./components/BizIamDelegationDrawer.vue";
 export { default as BizIamDiagnoseDrawer } from "./components/BizIamDiagnoseDrawer.vue";

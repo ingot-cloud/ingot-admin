@@ -148,6 +148,20 @@ export function PlatformGroupDeleteAPI(
   return request.delete<CreatedResource>(`${GROUP_PATH}/${id}`, null, options);
 }
 
+export function PlatformGroupMembersAPI(
+  page: Page,
+  condition?: IamListQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<MemberRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<MemberRecord>>>(
+      `${GROUP_PATH}/${condition?.groupId}/members`,
+      toIamListParams(page, { name: condition?.name }),
+      options,
+    )
+    .then(asPage);
+}
+
 export function PlatformGroupPreviewAPI(
   id: string,
   params: GroupUpdateInput,

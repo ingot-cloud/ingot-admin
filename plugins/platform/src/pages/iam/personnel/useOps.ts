@@ -1,5 +1,5 @@
-import { type IamListQuery, type ResourceDetail, type MemberRecord, type GroupRecord } from "@ingot/admin-common";
-import { PlatformGroupPageQueryOptions, PlatformMemberPageQueryOptions } from "@/api/iam/personnel.query";
+import { type IamListQuery, type ResourceDetail, type MemberRecord } from "@ingot/admin-common";
+import { PlatformMemberPageQueryOptions } from "@/api/iam/personnel.query";
 import { useCapabilities, useServerPaging } from "@ingot/admin-core";
 
 export const useOps = () => {
@@ -9,15 +9,8 @@ export const useOps = () => {
     queryOptions: PlatformMemberPageQueryOptions,
     enabled,
   });
-  const groupPaging = useServerPaging<ResourceDetail<GroupRecord>, IamListQuery>({
-    queryOptions: PlatformGroupPageQueryOptions,
-    enabled,
-  });
   const refreshData = (): void => {
     paging.search();
   };
-  const refreshGroups = (): void => {
-    groupPaging.search();
-  };
-  return { paging, groupPaging, refreshData, refreshGroups };
+  return { paging, refreshData };
 };

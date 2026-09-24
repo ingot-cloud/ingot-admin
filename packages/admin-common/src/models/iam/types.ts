@@ -123,6 +123,8 @@ export interface IamListQuery {
   keyword?: string;
   departmentId?: string;
   domain?: string;
+  ids?: string;
+  groupId?: string;
 }
 
 export interface ResourceListQuery {

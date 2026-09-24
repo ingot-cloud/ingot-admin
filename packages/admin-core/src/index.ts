@@ -120,6 +120,8 @@ export {
 } from "./components/select/pickerFilter";
 export { coreGlobalComponents } from "./components/coreComponents";
 export { default as InAvatar } from "./components/avatar/InAvatar.vue";
+export { default as InCloseButton } from "./components/InCloseButton.vue";
+export { default as IconMoreOutlined } from "./components/icons/IconMoreOutlined.vue";
 export { deptDrawerHeaderAvatar } from "./assets/deptDrawerHeaderAvatar";
 export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";
 export { default as InAccountStatusTag } from "./components/status/InAccountStatusTag.vue";

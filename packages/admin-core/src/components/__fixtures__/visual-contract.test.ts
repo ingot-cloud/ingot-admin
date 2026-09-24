@@ -186,6 +186,8 @@ describe("admin UI visual fixtures", () => {
     const dialog = readFileSync(resolve(root, "../InDialog.vue"), "utf8");
     expect(dialog).toContain("align-center");
     expect(dialog).toContain("showClose");
+    expect(dialog).toContain(':show-close="false"');
+    expect(dialog).toContain("in-dialog__close");
     expect(dialog).toContain("in-dialog__icon");
     expect(dialog).toContain("name=\"icon\"");
     expect(dialog).toContain("& .el-dialog__body");
@@ -377,6 +379,8 @@ describe("admin UI visual fixtures", () => {
     expect(nav).toContain("grid-auto-flow: column");
     expect(nav).toContain("in-app-bar-nav-panel__label");
     expect(nav).toContain("height: 42px");
+    expect(nav).toContain("icon-more-outlined");
+    expect(nav).not.toContain("ep:more");
     expect(nav).toContain("in-app-bar-nav__caret");
     expect(nav).toContain(".in-app-bar-nav__caret svg");
     expect(nav).toContain("width: 12px");
@@ -399,6 +403,8 @@ describe("admin UI visual fixtures", () => {
       resolve(root, "../../layouts/widgets/header/InAppBarUtilities.vue"),
       "utf8",
     );
+    expect(utilities).toContain("icon-more-outlined");
+    expect(utilities).not.toContain("ep:more");
     expect(utilities).toContain("in-app-bar-utilities__icon-wrap");
     expect(utilities).toContain("min-width: 14px");
     expect(utilities).toContain("height: 14px");
@@ -454,6 +460,7 @@ describe("admin UI visual fixtures", () => {
 
   it("InTableActions 直出按钮启用态有 hover，禁用态不响应", () => {
     const actions = readFileSync(resolve(root, "../table/InTableActions.vue"), "utf8");
+    expect(actions).toContain("icon-more-outlined");
     expect(actions).toContain(".in-table-actions__inline:hover:not(:disabled)");
     expect(actions).toContain(".in-table-actions__inline.is-toolbar:hover:not(:disabled)");
     expect(actions).toContain(".in-table-actions__inline.is-toolbar.is-primary:hover:not(:disabled)");

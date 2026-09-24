@@ -12,7 +12,7 @@
         <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
       </span>
       <span data-nav-more class="in-icon-button in-app-bar-nav__more-measure">
-        <in-icon name="ep:more" class="in-app-bar__icon" />
+        <icon-more-outlined class="in-app-bar__icon" />
       </span>
     </div>
 
@@ -74,7 +74,7 @@
         aria-haspopup="menu"
         @click="privateToggleMore"
       >
-        <in-icon name="ep:more" class="in-app-bar__icon" />
+        <icon-more-outlined class="in-app-bar__icon" />
       </button>
     </el-tooltip>
 
@@ -193,6 +193,7 @@ import {
 } from "@/plugin/header";
 import type { ResolvedHeaderNavGroup, ResolvedHeaderNavItem, ResolvedHeaderNavMenuItem } from "./resolveHeaderConfig";
 import { useAppBarOverlay } from "./useAppBarOverlay";
+import IconMoreOutlined from "@/components/icons/IconMoreOutlined.vue";
 
 defineOptions({
   name: "InAppBarNav",
