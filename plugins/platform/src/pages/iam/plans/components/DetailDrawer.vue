@@ -23,23 +23,6 @@
             placeholder="请输入说明"
           />
         </in-detail-field>
-        <in-detail-field label="包含应用">
-          <template #view>
-            <div class="flex flex-col gap-4px">
-              <div v-for="id in detail.record.applicationIds" :key="id">
-                {{ applicationLabels[id] ?? id }}
-              </div>
-              <div v-if="!detail.record.applicationIds.length">未绑定应用</div>
-            </div>
-          </template>
-          <biz-iam-chip-page-select
-            v-model="draft.applicationIds"
-            empty-text="未绑定应用"
-            placeholder="远程分页添加应用"
-            :load-data="loadApplications"
-            :initial-labels="applicationLabels"
-          />
-        </in-detail-field>
         <in-detail-field label="状态">
           <template #view>
             <biz-iam-status-tag :status="detail.record.status" />
@@ -50,33 +33,53 @@
             placeholder="请选择状态"
           />
         </in-detail-field>
+        <in-detail-field label="包含应用">
+          <template #view>
+            <div class="flex flex-col gap-12px min-w-0">
+              <span>已包含 {{ shownApplications.length }} 个应用</span>
+              <div class="text-12px text-[var(--el-text-color-secondary)]">
+                套餐变化不自动应用。开通不等于业务授权。
+              </div>
+              <application-list :items="shownApplications" />
+            </div>
+          </template>
+          <div class="flex flex-col gap-12px min-w-0">
+            <div class="flex items-center justify-between gap-12px">
+              <span>已包含 {{ shownApplications.length }} 个应用</span>
+              <in-button type="primary" link @in-click="privateOpenPicker">配置应用</in-button>
+            </div>
+            <div class="text-12px text-[var(--el-text-color-secondary)]">
+              套餐变化不自动应用。开通不等于业务授权。
+            </div>
+            <application-list :items="shownApplications" />
+          </div>
+        </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
+  <application-picker-dialog
+    ref="pickerRef"
+    :load-applications="loadTenantApplications"
+    @confirm="privateOnPicked"
+  />
 </template>
 
 <script setup lang="ts">
 import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
-  AuthorizationDomain,
-  BizIamChipPageSelect,
   BizIamStatusTag,
   ConfigurationStatus,
-  createIamListLoader,
-  toIamSelectRecords,
   useConfigurationStatusEnum,
   type PlanRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import {
-  PlatformApplicationDetailAPI,
-  PlatformApplicationPageAPI,
-  PlatformPlanDetailAPI,
-  PlatformPlanUpdateAPI,
-} from "@/api/iam/catalog";
+import { PlatformPlanDetailAPI, PlatformPlanUpdateAPI } from "@/api/iam/catalog";
 import { platformPlanQueryKeys } from "@/api/iam/catalog.query";
 import { useQueryClient } from "@tanstack/vue-query";
 import type { Row } from "../table";
+import { loadTenantApplications, toPlanAppOptions, type PlanAppOption } from "../wizard";
+import ApplicationList from "./ApplicationList.vue";
+import ApplicationPickerDialog from "./ApplicationPickerDialog.vue";
 
 defineOptions({ name: "PlanDetailDrawer" });
 
@@ -89,44 +92,22 @@ const visible = ref(false);
 const tab = ref("base");
 const loading = ref(false);
 const detail = ref<ResourceDetail<PlanRecord>>();
-const applicationLabels = reactive<Record<string, string>>({});
 const draft = reactive({
   name: "",
   description: "",
-  applicationIds: [] as string[],
+  applications: [] as PlanAppOption[],
   status: ConfigurationStatus.ENABLED,
 });
 const loadGuard = createLoadGuard();
-
-const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, {
-    ...condition,
-    domain: AuthorizationDomain.TENANT,
-  });
-  const mapped = toIamSelectRecords(response.data);
-  for (const item of mapped.records ?? []) {
-    applicationLabels[item.id] = item.name;
-  }
-  return { data: mapped };
-});
+const pickerRef = ref<{ show: (current: PlanAppOption[]) => void }>();
+const shownApplications = computed(() => (editing.value ? draft.applications : toPlanAppOptions(detail.value?.record.applications)));
 
 const applyDraft = (record: PlanRecord): void => {
   draft.name = record.name;
   draft.description = record.description ?? "";
-  draft.applicationIds = [...record.applicationIds];
+  draft.applications = toPlanAppOptions(record.applications);
   draft.status = record.status;
 };
-
-const resolveSelectedLabels = (ids: string[]): Promise<void> =>
-  Promise.all(
-    ids.map((id) =>
-      applicationLabels[id]
-        ? Promise.resolve()
-        : PlatformApplicationDetailAPI(id).then((response) => {
-            applicationLabels[id] = response.data.record.name;
-          }),
-    ),
-  ).then(() => undefined);
 
 const load = (id: string): void => {
   const guard = loadGuard.begin();
@@ -134,7 +115,7 @@ const load = (id: string): void => {
   detail.value = undefined;
   draft.name = "";
   draft.description = "";
-  draft.applicationIds = [];
+  draft.applications = [];
   draft.status = ConfigurationStatus.ENABLED;
   PlatformPlanDetailAPI(id)
     .then((detailRes) => {
@@ -143,7 +124,6 @@ const load = (id: string): void => {
       }
       detail.value = detailRes.data;
       applyDraft(detailRes.data.record);
-      return resolveSelectedLabels(detailRes.data.record.applicationIds);
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -159,6 +139,14 @@ const privateCancel = (): void => {
   }
 };
 
+const privateOpenPicker = (): void => {
+  pickerRef.value?.show(draft.applications);
+};
+
+const privateOnPicked = (applications: PlanAppOption[]): void => {
+  draft.applications = applications;
+};
+
 const privateSave = (): void => {
   if (!detail.value) {
     return;
@@ -169,7 +157,7 @@ const privateSave = (): void => {
     plan: {
       name: draft.name.trim(),
       description: draft.description.trim() || undefined,
-      applicationIds: [...draft.applicationIds],
+      applicationIds: draft.applications.map((item) => item.id),
       status: draft.status,
     },
   })

@@ -9,11 +9,13 @@ const source = readFileSync(
 );
 
 describe("platform iam plan DetailDrawer", () => {
-  it("编辑状态下录入框有基本占位", () => {
+  it("详情回显应用内容，编辑后打开选择应用对话框", () => {
     expect(source).toContain('placeholder="请输入套餐名称"');
     expect(source).toContain('placeholder="请输入说明"');
-    expect(source).toContain('placeholder="远程分页添加应用"');
     expect(source).toContain('placeholder="请选择状态"');
-    expect(source).toContain("draft.status");
+    expect(source).toContain("record.applications");
+    expect(source).toContain("配置应用");
+    expect(source).toContain("ApplicationPickerDialog");
+    expect(source).not.toContain("远程分页添加应用");
   });
 });

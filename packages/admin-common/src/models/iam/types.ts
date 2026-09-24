@@ -312,11 +312,19 @@ export interface PlanSummary {
   name: string;
 }
 
+export interface PlanApplication {
+  id: string;
+  code: string;
+  name: string;
+  status: ConfigurationStatus;
+}
+
 export interface PlanRecord {
   id: string;
   name: string;
   description?: string;
   applicationIds: string[];
+  applications: PlanApplication[];
   status: ConfigurationStatus;
 }
 
