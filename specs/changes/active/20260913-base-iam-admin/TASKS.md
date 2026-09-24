@@ -135,6 +135,9 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U03.dev.tenant-select：租户创建向导用套餐远程分页替代手填 ID；开通追加应用改为远程分页，草稿变化清除预览。父任务 U03 不勾选。
 - [x] U03.dev.tenant-owner-name：组织列表/详情/设置展示 `ownerDisplayName`，缺失时回退 `ownerMemberId`。父任务 U03 不勾选。
 - [x] U03.dev.tenant-entitlements-page：组织详情开通按 `items` 分页信封逐页收齐，替换版本用集合指纹。父任务 U03 不勾选。
+- [x] U03.dev.tenant-identity-wizard：组织详情改为人员式身份抬头与基础信息/开通两 Tab；开通只读预览，编辑与创建走全屏向导并支持头像；列表展示所有者联系方式。父任务 U03 不勾选。
+- [x] U03.dev.tenant-entitlement-union：创建/编辑开通改为套餐 SUMMARY 下拉 + 双栏选应用，并集走 preview，页内改期限；不在前端计算并集。父任务 U03 不勾选。
+- [x] U03.dev.tenant-entitlement-step：开通面板单根避免回退泄漏；组织默认必显且不可取消；列表只改结束时间，空即无限使用。父任务 U03 不勾选。
 - [x] U13.dev.drawer-form：详情抽屉统一查看/编辑表单（`in-form` + `in-detail-field`），Tab 内容区内边距，无编辑能力的 Tab 隐藏页脚编辑。父任务 U13 不勾选。
 - [x] U08.dev.group-drawers：组织用户组已接创建/详情/更新/删除/预览，成员与部门来源走远程分页。父任务 U08 不勾选。
 - [x] U08.dev.group-impact：组抽屉展示有权范围内有效人数及预览中的可披露引用；无法披露时不以 0 代替。父任务 U08 不勾选。
