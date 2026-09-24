@@ -87,6 +87,7 @@
 
   <CreateWizard ref="createRef" @success="refreshData" />
   <DetailDrawer ref="detailRef" @success="refreshData" />
+  <ApplicationPurgeDialog ref="purgeRef" @success="refreshData" />
 </template>
 
 <script lang="ts" setup>
@@ -94,6 +95,7 @@ import { Search } from "@element-plus/icons-vue";
 import {
   applyColumnSelection,
   Confirm,
+  isApiError,
   Message,
   resolveBooleanPickerFilter,
   resolveStringPickerFilter,
@@ -110,9 +112,11 @@ import {
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
+  IamReasonCode,
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import { PlatformApplicationDeleteAPI, PlatformApplicationStatusAPI } from "@/api/iam/catalog";
+import ApplicationPurgeDialog from "./components/ApplicationPurgeDialog.vue";
 import CreateWizard from "./components/CreateWizard.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import {
@@ -125,7 +129,7 @@ import {
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
-const { unavailable } = useCapabilities();
+const { unavailable, hasAction } = useCapabilities();
 const domainTabs = [
   { name: AuthorizationDomain.PLATFORM, title: "平台应用" },
   { name: AuthorizationDomain.TENANT, title: "组织应用" },
@@ -142,6 +146,7 @@ watch(domainTab, (domain) => {
 const selectedColumnProps = ref<string[]>([]);
 const createRef = ref<{ show: (domain: AuthorizationDomain) => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
+const purgeRef = ref<{ show: (row: Row, message: string) => void }>();
 const statusEnum = useConfigurationStatusEnum();
 const statusOptions = computed(() => withAllPickerOption(statusEnum.getOptions()));
 const statusFilter = computed({
@@ -227,11 +232,27 @@ const handleDisable = (item: Row): void => {
   });
 };
 const handleDelete = (item: Row): void => {
-  Confirm.error(`是否删除应用（${item.record.name}）？`, { confirmButtonText: "删除" }).then(() => {
-    PlatformApplicationDeleteAPI(item.record.id).then(() => {
-      Message.success("已删除");
-      refreshData();
-    });
+  Confirm.error(`是否删除应用（${item.record.name}）？下有资源、菜单或仍被组织开通、套餐引用时无法删除。`, {
+    confirmButtonText: "删除",
+  }).then(() => {
+    PlatformApplicationDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已删除");
+        refreshData();
+      })
+      .catch((error: unknown) => {
+        if (isApiError(error) && error.code === IamReasonCode.OBJECT_IN_USE) {
+          if (hasAction(IamAction.PLATFORM_APPLICATION_PURGE)) {
+            purgeRef.value?.show(item, error.message);
+            return;
+          }
+          Message.warning(error.message);
+          return;
+        }
+        if (isApiError(error)) {
+          Message.warning(error.message);
+        }
+      });
   });
 };
 const toolbarActions = computed(() => createToolbarActions(handleCreate));

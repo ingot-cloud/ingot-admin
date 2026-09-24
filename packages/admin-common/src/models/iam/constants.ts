@@ -12,6 +12,16 @@ export enum ConfigurationStatus {
   DISABLED = "DISABLED",
 }
 
+export enum SensitiveConfirmationKind {
+  LOGIN_PASSWORD = "LOGIN_PASSWORD",
+  OPERATION_PASSWORD = "OPERATION_PASSWORD",
+}
+
+export const IamReasonCode = {
+  OBJECT_IN_USE: "ObjectInUse",
+  STEP_UP_FAILED: "StepUpFailed",
+} as const;
+
 export enum MemberStatus {
   ACTIVE = "ACTIVE",
   SUSPENDED = "SUSPENDED",
@@ -199,6 +209,7 @@ export const IamAction = {
   PLATFORM_APPLICATION_UPDATE: "iam-platform:application:update",
   PLATFORM_APPLICATION_STATUS: "iam-platform:application:status",
   PLATFORM_APPLICATION_DELETE: "iam-platform:application:delete",
+  PLATFORM_APPLICATION_PURGE: "iam-platform:application:purge",
   PLATFORM_RESOURCE_READ: "iam-platform:resource:read",
   PLATFORM_RESOURCE_CREATE: "iam-platform:resource:create",
   PLATFORM_RESOURCE_UPDATE: "iam-platform:resource:update",

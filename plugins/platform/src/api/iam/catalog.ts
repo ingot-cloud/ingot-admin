@@ -24,6 +24,7 @@ import {
   type AppResourceUpdateInput,
   type ApplicationBundleDraft,
   type ApplicationDraft,
+  type ApplicationPurgeInput,
   type ApplicationRecord,
   type ApplicationSummary,
   type ApplicationUpdateInput,
@@ -41,6 +42,12 @@ import {
 
 const APP_PATH = `${IAM_API_PREFIX}/v1/platform/applications`;
 const PLAN_PATH = `${IAM_API_PREFIX}/v1/platform/plans`;
+
+const purgeCrypto = {
+  crypto: {
+    request: { mode: "field" as const, fields: ["secret"] },
+  },
+};
 
 const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
   ...res,
@@ -109,6 +116,17 @@ export function PlatformApplicationDeleteAPI(
   options?: RequestOptions,
 ): Promise<R<void>> {
   return request.delete<void>(`${APP_PATH}/${id}`, null, options);
+}
+
+export function PlatformApplicationPurgeAPI(
+  id: string,
+  params: ApplicationPurgeInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  return request.post<CreatedResource>(`${APP_PATH}/${id}/purge`, params, {
+    ...options,
+    ...purgeCrypto,
+  });
 }
 
 export function PlatformApplicationSummaryPageAPI(

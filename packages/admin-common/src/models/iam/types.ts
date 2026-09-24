@@ -20,6 +20,7 @@ import {
   RoleKind,
   ScopeBindingKind,
   ScopeKind,
+  SensitiveConfirmationKind,
   SubjectType,
   UpgradeResolutionChoice,
 } from "./constants";
@@ -295,6 +296,15 @@ export interface ApplicationUpdateInput extends VersionInput {
   icon?: string;
   sortOrder: number;
   baseline: boolean;
+}
+
+export interface SensitiveConfirmation {
+  kind: SensitiveConfirmationKind;
+  secret: string;
+}
+
+export interface ApplicationPurgeInput extends VersionInput {
+  confirmation: SensitiveConfirmation;
 }
 
 export interface PlanSummary {

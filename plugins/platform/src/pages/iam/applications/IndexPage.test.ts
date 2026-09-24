@@ -26,4 +26,8 @@ describe("platform iam applications IndexPage", () => {
   it("应用编码用可复制标签展示", () => {
     expect(source).toContain('<in-copy-tag :text="item.record.code" />');
   });
+
+  it("删除确认说明资源和外部引用会挡住删除", () => {
+    expect(source).toContain("下有资源、菜单或仍被组织开通、套餐引用时无法删除");
+  });
 });
