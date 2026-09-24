@@ -27,6 +27,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
+- [ ] 普通时间字段按当地墙钟提交和展示；会话类 ISO-8601 UTC 再按本地时区格式化
 ```
 
 ## 目录约定
@@ -154,6 +155,14 @@ pages/platform/base/app/
 - 放 `src/hooks/{biz,web,components}/`
 - Vue/Pinia/VueRouter/VueUse 由 auto-import 提供，无需显式 import
 - 分页逻辑复用 `useServerPaging`（含手机号搜索同样走 Query，Key 用敏感指纹）
+
+### 时间
+
+接口墙钟时间以前端当地时间为准。识别不到时区时后端按 `Asia/Shanghai` 处理。
+
+- 提交 `createdAt` / `updatedAt` / 配置生效时间等墙钟字段时，传当地 `yyyy-MM-dd HH:mm:ss`，不要先转成 UTC 再交给接口。
+- 展示这类返回值时直接格式化，不要再按 UTC 做一次时区换算。
+- 契约明确写成 ISO-8601 UTC 的字段（如会话 `issuedAt` / `expiresAt` / `lastAccessAt`）用 `new Date(str)` 后按本地时区格式化。
 
 ### 命名语言
 
