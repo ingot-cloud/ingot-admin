@@ -3,7 +3,7 @@
     v-if="isSingle"
     :index="singleRoute.path"
     class="in-menu-node"
-    :class="{ 'has-icon': Boolean(itemIcon) }"
+    :class="{ 'has-icon': Boolean(itemIcon), 'is-root': level === 0 }"
     :style="depthStyle"
   >
     <el-icon v-if="itemIcon" class="in-menu-node__icon">
@@ -17,7 +17,7 @@
     v-else
     :index="route.path"
     class="in-menu-node"
-    :class="{ 'has-icon': Boolean(route.icon) }"
+    :class="{ 'has-icon': Boolean(route.icon), 'is-root': level === 0 }"
     :style="depthStyle"
   >
     <template #title>

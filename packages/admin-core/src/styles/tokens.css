@@ -49,6 +49,7 @@
   --in-font-weight-body: 400;
   --in-font-size-caption: 12px;
   --in-line-height-caption: 18px;
+  --in-font-family: LarkHackSafariFont, LarkEmojiFont, LarkChineseQuote, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Tahoma, "PingFang SC", "Microsoft Yahei", Arial, "Hiragino Sans GB", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   /* —— 基础：阴影 / 层级 / 动效 —— */
   --in-shadow-none: none;
@@ -124,16 +125,17 @@
   --in-menu-control-height: 44px;
   --in-menu-control-radius: 6px;
   --in-menu-icon-size: 20px;
+  --in-menu-arrow-size: 14px;
   --in-menu-icon-gap: var(--in-space-2);
   --in-menu-base-level-padding: 16px;
   --in-menu-level-padding: calc(var(--in-menu-icon-size) + var(--in-menu-icon-gap));
-  --in-menu-nested-indent: var(--in-space-5);
+  --in-menu-nested-indent: 2em;
   --in-menu-line-height: 20px;
   --in-menu-bg-color: var(--in-bg-color-sidebar);
   --in-menu-bg-hover-color: var(--in-bg-color-menu-hover);
   --in-menu-text-color: var(--in-text-color-secondary);
-  --in-menu-text-plain-color: var(--in-text-color);
-  --in-menu-text-active-color: var(--in-gray-900);
+  --in-menu-text-plain-color: var(--in-black);
+  --in-menu-text-active-color: var(--in-gray-950);
   --in-menu-item-font-size: var(--in-font-size-body);
   --in-menu-item-font-weight: var(--in-font-weight-body);
   --in-menu-item-font-weight-active: var(--in-font-weight-section-title);

@@ -65,6 +65,7 @@ describe("InSubmenu", () => {
   it("收起态叶子项仍渲染图标", () => {
     const wrapper = mountSubmenu({ collapsed: true, route: leaf });
     expect(wrapper.get(".el-menu-item").classes()).toContain("has-icon");
+    expect(wrapper.get(".el-menu-item").classes()).toContain("is-root");
     expect(wrapper.get(".in-menu-node__icon").exists()).toBe(true);
     expect(wrapper.text()).not.toContain("通讯录");
     wrapper.unmount();
@@ -75,11 +76,13 @@ describe("InSubmenu", () => {
     const wrapper = mountSubmenu();
     expect(wrapper.get(".el-sub-menu").classes()).toContain("in-menu-node");
     expect(wrapper.get(".el-sub-menu").classes()).toContain("has-icon");
+    expect(wrapper.get(".el-sub-menu").classes()).toContain("is-root");
     expect(wrapper.get(".el-sub-menu").attributes("style") ?? "").toContain("--in-menu-depth: 0");
     expect(wrapper.findAll(".in-menu-node__icon")).toHaveLength(1);
     const children = wrapper.findAll(".el-menu-item");
     expect(children).toHaveLength(2);
     expect(children[0].classes()).not.toContain("has-icon");
+    expect(children[0].classes()).not.toContain("is-root");
     expect(children[0].attributes("style") ?? "").toContain("--in-menu-depth: 1");
     wrapper.unmount();
     resetAdminRuntime();

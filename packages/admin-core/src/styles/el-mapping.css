@@ -42,6 +42,7 @@
   --el-component-size: var(--in-control-height);
   --el-component-size-small: var(--in-control-height-small);
   --el-component-size-large: 40px;
+  --el-font-family: var(--in-font-family);
   --el-font-size-base: var(--in-font-size-body);
   --el-font-size-extra-small: var(--in-font-size-caption);
   --el-font-line-height-primary: var(--in-line-height-body);

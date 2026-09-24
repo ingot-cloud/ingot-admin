@@ -256,6 +256,8 @@ const privateOnMenuClick = (event: MouseEvent) => {
 
 :deep(.el-menu-item),
 :deep(.el-sub-menu__title) {
+  display: flex;
+  align-items: center;
   height: var(--in-menu-item-height);
   line-height: var(--in-menu-line-height);
   font-size: var(--in-menu-item-font-size);
@@ -264,6 +266,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
   border-radius: var(--in-menu-item-radius);
   margin-bottom: var(--in-menu-item-gap);
   user-select: none;
+  transition: all 0.2s ease-in-out, color 0s, font-weight 0s;
   padding-left: calc(
     var(--in-menu-base-level-padding) + min(1, var(--in-menu-depth, 0)) *
       (var(--in-menu-icon-size) + var(--in-menu-icon-gap)) +
@@ -271,8 +274,8 @@ const privateOnMenuClick = (event: MouseEvent) => {
   ) !important;
 }
 
-:deep(.in-menu-node.has-icon:not(.is-active)),
-:deep(.in-menu-node.has-icon:not(.is-active) > .el-sub-menu__title) {
+:deep(.in-menu-node.is-root:not(.is-active)),
+:deep(.in-menu-node.is-root:not(.is-active) > .el-sub-menu__title) {
   color: var(--in-menu-text-color);
 }
 
@@ -288,6 +291,7 @@ const privateOnMenuClick = (event: MouseEvent) => {
 }
 
 :deep(.in-menu-node__icon svg),
+:deep(.in-menu-node__icon .in-icon),
 :deep(.el-menu-item .el-icon svg),
 :deep(.el-sub-menu__title > .el-icon:not(.el-sub-menu__icon-arrow) svg) {
   width: var(--in-menu-icon-size);
@@ -314,8 +318,45 @@ const privateOnMenuClick = (event: MouseEvent) => {
   color: var(--in-menu-text-plain-color);
 }
 
-:deep(.el-sub-menu.has-icon.is-active > .el-sub-menu__title) {
+:deep(.el-sub-menu.is-active > .el-sub-menu__title:hover) {
+  background: var(--in-bg-color-menu-hover);
+}
+
+:deep(.el-sub-menu.is-root.is-active > .el-sub-menu__title) {
   color: var(--in-menu-text-color);
+}
+
+:deep(.el-sub-menu__icon-arrow) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--in-menu-arrow-size);
+  height: var(--in-menu-arrow-size);
+  margin-top: calc(var(--in-menu-arrow-size) / -2) !important;
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+}
+
+:deep(.el-sub-menu__icon-arrow svg) {
+  display: none;
+}
+
+:deep(.el-sub-menu__icon-arrow::before) {
+  content: "";
+  display: block;
+  width: var(--in-menu-arrow-size);
+  height: var(--in-menu-arrow-size);
+  background: url("../../assets/down-arrow.svg") center / contain no-repeat;
+}
+
+:deep(.in-menu-node.is-root > .el-sub-menu__title .el-sub-menu__icon-arrow) {
+  opacity: 0;
+}
+
+:deep(.in-menu-node.is-root > .el-sub-menu__title:hover .el-sub-menu__icon-arrow),
+:deep(.in-menu-node.is-root > .el-sub-menu__title:focus-visible .el-sub-menu__icon-arrow) {
+  opacity: 1;
 }
 
 :deep(.el-menu-item:hover),

@@ -10,6 +10,8 @@ body,
   color: var(--in-text-color);
   font-size: var(--in-font-size-body);
   line-height: var(--in-line-height-body);
+  font-family: var(--in-font-family);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::-webkit-scrollbar {

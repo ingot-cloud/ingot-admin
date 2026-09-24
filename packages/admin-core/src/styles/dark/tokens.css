@@ -53,7 +53,7 @@ html.dark {
   --in-app-bar-text: var(--in-text-color);
   --in-menu-bg-color: var(--in-bg-color-sidebar);
   --in-menu-text-plain-color: var(--in-text-color);
-  --in-menu-text-active-color: var(--in-gray-900);
+  --in-menu-text-active-color: var(--in-gray-950);
   --in-table-header-bg: var(--in-bg-color-muted);
   --in-table-cell-text: var(--in-text-color);
   --in-color-info-light-5: color-mix(in srgb, var(--in-color-info) 50%, var(--in-bg-color));
