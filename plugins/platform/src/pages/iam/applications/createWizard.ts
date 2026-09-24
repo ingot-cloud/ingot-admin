@@ -27,6 +27,7 @@ export interface AppWizardProfile {
   code: string;
   name: string;
   description: string;
+  icon?: string;
   sortOrder: number;
   baseline: boolean;
 }
@@ -53,6 +54,7 @@ export interface DraftMenu {
   kind: MenuKind;
   path?: string;
   viewPath?: string;
+  icon?: string;
   accessMode: MenuAccessMode;
   matchMode: MenuMatchMode;
   actionTempIds: string[];
@@ -71,7 +73,7 @@ export function resetDraftIds(): void {
 }
 
 export function emptyAppProfile(): AppWizardProfile {
-  return { code: "", name: "", description: "", sortOrder: 0, baseline: false };
+  return { code: "", name: "", description: "", icon: undefined, sortOrder: 0, baseline: false };
 }
 
 export function emptyDraftResource(): DraftResource {
@@ -102,7 +104,9 @@ export function emptyDraftMenu(): DraftMenu {
 }
 
 export function profileDirty(profile: AppWizardProfile): boolean {
-  return Boolean(profile.code || profile.name || profile.description || profile.sortOrder || profile.baseline);
+  return Boolean(
+    profile.code || profile.name || profile.description || profile.icon || profile.sortOrder || profile.baseline,
+  );
 }
 
 export function catalogDirty(resources: DraftResource[], menus: DraftMenu[]): boolean {
@@ -226,6 +230,7 @@ export function menusToTree(menus: DraftMenu[]): MenuTreeRow[] {
       kind: menu.kind,
       path: menu.path,
       viewPath: menu.viewPath,
+      icon: menu.icon,
       accessMode: menu.accessMode,
       matchMode: menu.matchMode,
       actionIds: [...menu.actionTempIds],
@@ -246,6 +251,7 @@ export function upsertDraftMenu(menus: DraftMenu[], draft: AppMenuDraft, targetI
     kind: draft.kind,
     path: draft.path,
     viewPath: draft.viewPath,
+    icon: draft.icon,
     accessMode: draft.accessMode,
     matchMode: draft.matchMode,
     actionTempIds: draft.accessMode === MenuAccessMode.OPEN ? [] : [...draft.actionIds],
@@ -269,6 +275,7 @@ export function toApplicationBundle(
       domain,
       name: profile.name.trim(),
       description: profile.description.trim() || undefined,
+      icon: profile.icon || undefined,
       sortOrder: profile.sortOrder,
       baseline: profile.baseline,
     },
@@ -291,6 +298,7 @@ export function toApplicationBundle(
       kind: menu.kind,
       path: menu.path || undefined,
       viewPath: menu.viewPath || undefined,
+      icon: menu.icon || undefined,
       accessMode: menu.accessMode,
       matchMode: menu.matchMode,
       actionTempIds: menu.accessMode === MenuAccessMode.OPEN ? [] : [...menu.actionTempIds],

@@ -62,8 +62,8 @@ const emits = defineEmits<{ remove: [id: string] }>();
 const groups = computed(() => groupMenuActions(props.actions));
 const surfaceClass = computed(() =>
   props.framed
-    ? "rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px"
-    : "flex flex-col gap-16px",
+    ? "rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px min-w-0 max-w-full"
+    : "flex flex-col gap-16px min-w-0 max-w-full",
 );
 </script>
 

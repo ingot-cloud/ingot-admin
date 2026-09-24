@@ -11,6 +11,8 @@ const source = readFileSync(
 describe("platform iam application MenuEditDrawer", () => {
   it("创建菜单录入框有占位，关联操作走专用接口", () => {
     expect(source).toContain('placeholder="如组织与成员"');
+    expect(source).toContain("catalog-icon-field");
+    expect(source).toContain("catalog-icon-preview");
     expect(source).toContain('placeholder="如 /iam/members，目录可空"');
     expect(source).toContain('placeholder="请选择视图注册键"');
     expect(source).toContain("viewPathOptionGroups");

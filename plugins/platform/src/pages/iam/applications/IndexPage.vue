@@ -58,6 +58,7 @@
             </template>
             <template #name="{ item }">
               <span class="inline-flex items-center gap-[var(--in-space-2)] min-w-0">
+                <catalog-icon-preview :value="item.record.icon" />
                 <biz-iam-record-link
                   :action="IamAction.PLATFORM_APPLICATION_READ"
                   :capabilities="item.capabilities"
@@ -117,6 +118,7 @@ import {
 } from "@ingot/admin-common";
 import { PlatformApplicationDeleteAPI, PlatformApplicationStatusAPI } from "@/api/iam/catalog";
 import ApplicationPurgeDialog from "./components/ApplicationPurgeDialog.vue";
+import CatalogIconPreview from "./components/CatalogIconPreview.vue";
 import CreateWizard from "./components/CreateWizard.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import {

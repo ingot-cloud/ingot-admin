@@ -11,12 +11,19 @@
       <in-detail-field label="名称" :value="draft.name" required>
         <el-input v-model="draft.name" placeholder="如组织与成员" />
       </in-detail-field>
+      <in-detail-field label="图标">
+        <template #view>
+          <catalog-icon-preview v-if="draft.icon" :value="draft.icon" />
+          <span v-else>-</span>
+        </template>
+        <catalog-icon-field v-model="draft.icon" />
+      </in-detail-field>
       <in-detail-field label="类型">
         <template #view>{{ kindEnum.getTagText(draft.kind).text }}</template>
         <in-select v-model="draft.kind" :options="kindEnum.getOptions()" placeholder="请选择菜单类型" />
       </in-detail-field>
       <in-detail-field label="父菜单" :value="parentName">
-        <el-select v-model="draft.parentId" clearable filterable placeholder="根节点为空">
+        <el-select v-model="draft.parentId" class="w-full min-w-0" clearable filterable placeholder="根节点为空">
           <el-option
             v-for="item in parentOptions"
             :key="item.record.id"
@@ -39,7 +46,7 @@
         </template>
         <el-select
           v-model="draft.viewPath"
-          class="w-full"
+          class="w-full min-w-0"
           filterable
           clearable
           placeholder="请选择视图注册键"
@@ -90,7 +97,7 @@
         </div>
       </in-detail-field>
       <in-detail-field label="排序" :value="draft.sortOrder">
-        <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
+        <el-input-number v-model="draft.sortOrder" class="w-full" :min="0" placeholder="请输入排序" />
       </in-detail-field>
     </in-form>
     <template #footer>
@@ -123,6 +130,8 @@ import { actionsOfCatalog, type ActionCatalog, type MenuActionOption } from "../
 import { viewPathOptionGroups } from "../viewPaths";
 import ActionHierarchy from "./ActionHierarchy.vue";
 import ActionPickerDialog from "./ActionPickerDialog.vue";
+import CatalogIconField from "./CatalogIconField.vue";
+import CatalogIconPreview from "./CatalogIconPreview.vue";
 
 defineOptions({ name: "MenuEditDrawer" });
 

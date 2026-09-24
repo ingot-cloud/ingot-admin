@@ -21,6 +21,9 @@
             <el-form-item label="名称" required>
               <el-input v-model="profile.name" clearable placeholder="请输入应用名称" />
             </el-form-item>
+            <el-form-item label="图标">
+              <application-icon-field v-model="profile.icon" />
+            </el-form-item>
             <el-form-item label="说明">
               <el-input v-model="profile.description" type="textarea" :rows="3" placeholder="请输入说明" />
             </el-form-item>
@@ -80,6 +83,7 @@ import {
   type DraftMenu,
   type DraftResource,
 } from "../createWizard";
+import ApplicationIconField from "./ApplicationIconField.vue";
 import AppPreviewPanel from "./AppPreviewPanel.vue";
 import CatalogDraftPanel from "./CatalogDraftPanel.vue";
 import MenuDraftPanel from "./MenuDraftPanel.vue";

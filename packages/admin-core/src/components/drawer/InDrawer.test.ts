@@ -1,6 +1,11 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import InDrawer from "./InDrawer.vue";
+
+const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InDrawer.vue"), "utf8");
 
 describe("InDrawer", () => {
   it("使用中性标题且操作区固定，不再依赖装饰竖条", () => {
@@ -53,6 +58,9 @@ describe("InDrawer", () => {
       },
     });
     expect(wrapper.html()).toContain("in-drawer--pinned");
+    const body = wrapper.get(".in-drawer__body");
+    expect(body.attributes("style") ?? "").toContain("padding");
+    expect(wrapper.get(".in-loading").attributes("style") ?? "").toContain("padding-bottom");
     wrapper.unmount();
   });
 
@@ -109,5 +117,11 @@ describe("InDrawer", () => {
     });
     expect(wrapper.get(".in-drawer").attributes("data-z-index")).toBe("4000");
     wrapper.unmount();
+  });
+
+  it("钉住内容区禁止横向滚动，左右间距画在滚动容器上", () => {
+    expect(source).toContain("overflow-x: hidden");
+    expect(source).toContain("paddingBottom: \"0\"");
+    expect(source).toContain("paddingBottom: props.padding");
   });
 });

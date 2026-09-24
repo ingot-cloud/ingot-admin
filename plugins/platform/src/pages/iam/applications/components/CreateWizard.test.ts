@@ -11,6 +11,8 @@ describe("platform iam application CreateWizard", () => {
     expect(source).toContain('size="100%"');
     expect(source).toContain('close-position="start"');
     expect(source).toContain("APP_WIZARD_STEPS");
+    expect(source).toContain("application-icon-field");
+    expect(source).toContain('v-model="profile.icon"');
     expect(source).toContain("catalog-draft-panel");
     expect(source).toContain(':profile="profile"');
     expect(source).toContain("menu-draft-panel");

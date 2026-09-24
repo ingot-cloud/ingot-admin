@@ -97,8 +97,11 @@ defineExpose({
   :deep(.in-detail-field),
   :deep(.in-detail-field__editor),
   :deep(.el-input),
-  :deep(.el-textarea) {
+  :deep(.el-textarea),
+  :deep(.el-select),
+  :deep(.el-input-number) {
     width: 100%;
+    max-width: 100%;
     min-width: 0;
   }
 

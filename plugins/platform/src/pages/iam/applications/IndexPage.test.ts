@@ -25,6 +25,8 @@ describe("platform iam applications IndexPage", () => {
 
   it("应用编码用可复制标签展示", () => {
     expect(source).toContain('<in-copy-tag :text="item.record.code" />');
+    expect(source).toContain("catalog-icon-preview");
+    expect(source).toContain("item.record.icon");
   });
 
   it("删除确认说明资源和外部引用会挡住删除", () => {

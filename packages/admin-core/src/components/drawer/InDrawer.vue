@@ -34,8 +34,8 @@
       </div>
     </template>
 
-    <div class="in-drawer__body" :style="`padding: ${padding}`">
-      <in-loading :loading="isLoading">
+    <div class="in-drawer__body" :style="bodyStyle">
+      <in-loading :loading="isLoading" :style="contentStyle">
         <slot />
       </in-loading>
     </div>
@@ -84,6 +84,14 @@ const props = withDefaults(
 );
 const drawerRef = ref<{ handleClose?: () => void }>();
 const isLoading = computed(() => Boolean(unref(props.loading)));
+const bodyStyle = computed(() =>
+  props.layout === "pinned"
+    ? { padding: props.padding, paddingBottom: "0" }
+    : { padding: props.padding },
+);
+const contentStyle = computed(() =>
+  props.layout === "pinned" ? { paddingBottom: props.padding } : undefined,
+);
 const effectiveShowClose = computed(
   () => props.closePosition !== "start" && props.showClose,
 );
@@ -148,9 +156,12 @@ onUnmounted(() => {
   }
 
   & .in-drawer__body > .in-loading {
+    box-sizing: border-box;
     flex: 1;
     min-height: 160px;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
   &.in-drawer--pinned {
@@ -162,11 +173,18 @@ onUnmounted(() => {
     }
 
     & .in-drawer__body {
+      box-sizing: border-box;
       flex: 1;
+      min-width: 0;
       min-height: 0;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: block;
+    }
+
+    & .in-drawer__body > .in-loading {
+      flex: none;
+      min-height: unset;
     }
   }
 

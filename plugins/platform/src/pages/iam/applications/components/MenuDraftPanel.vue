@@ -27,7 +27,12 @@
       <template #tools-end>
         <in-button @in-click="privateCreateMenu">创建菜单</in-button>
       </template>
-      <template #name="{ item }">{{ asMenu(item).record.name }}</template>
+      <template #name="{ item }">
+        <span class="inline-flex items-center gap-8px min-w-0">
+          <catalog-icon-preview :value="asMenu(item).record.icon" />
+          <span class="truncate">{{ asMenu(item).record.name }}</span>
+        </span>
+      </template>
       <template #path="{ item }">
         {{ asMenu(item).record.path || asMenu(item).record.viewPath || "-" }}
       </template>
@@ -66,6 +71,7 @@ import {
 } from "../createWizard";
 import type { ActionCatalog } from "../menuActions";
 import { menuHeaders } from "../table";
+import CatalogIconPreview from "./CatalogIconPreview.vue";
 import MenuEditDrawer from "./MenuEditDrawer.vue";
 
 defineOptions({ name: "MenuDraftPanel" });

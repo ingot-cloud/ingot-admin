@@ -22,6 +22,13 @@
         <in-detail-field label="名称" :value="detail.record.name">
             <el-input v-model="draft.name" placeholder="请输入应用名称" />
         </in-detail-field>
+        <in-detail-field label="图标">
+          <template #view>
+            <catalog-icon-preview v-if="detail.record.icon" :value="detail.record.icon" />
+            <span v-else>-</span>
+          </template>
+          <application-icon-field v-model="draft.icon" />
+        </in-detail-field>
         <in-detail-field label="说明" :value="detail.record.description">
             <el-input
               v-model="draft.description"
@@ -126,7 +133,12 @@
               创建菜单
             </in-button>
           </template>
-          <template #name="{ item }">{{ asMenu(item).record.name }}</template>
+          <template #name="{ item }">
+            <span class="inline-flex items-center gap-8px min-w-0">
+              <catalog-icon-preview :value="asMenu(item).record.icon" />
+              <span class="truncate">{{ asMenu(item).record.name }}</span>
+            </span>
+          </template>
           <template #path="{ item }">
             {{ asMenu(item).record.path || asMenu(item).record.viewPath || "-" }}
           </template>
@@ -185,6 +197,8 @@ import {
 import { platformApplicationQueryKeys } from "@/api/iam/catalog.query";
 import { useQueryClient } from "@tanstack/vue-query";
 import { menuHeaders, resourceHeaders, type Row } from "../table";
+import ApplicationIconField from "./ApplicationIconField.vue";
+import CatalogIconPreview from "./CatalogIconPreview.vue";
 import ResourceEditDrawer from "./ResourceEditDrawer.vue";
 import ActionListDialog from "./ActionListDialog.vue";
 import MenuEditDrawer from "./MenuEditDrawer.vue";
@@ -266,6 +280,7 @@ const menuRef = ref<{
 const draft = reactive({
   name: "",
   description: "",
+  icon: undefined as string | undefined,
   sortOrder: 0,
   baseline: false,
 });
@@ -283,6 +298,7 @@ const asMenu = (row: unknown): MenuTreeRow => row as MenuTreeRow;
 const applyDraft = (record: ApplicationRecord): void => {
   draft.name = record.name;
   draft.description = record.description ?? "";
+  draft.icon = record.icon;
   draft.sortOrder = record.sortOrder;
   draft.baseline = record.baseline;
 };
@@ -407,6 +423,7 @@ const privateSave = (): void => {
     expectedVersion: detail.value.version,
     name: draft.name.trim(),
     description: draft.description.trim() || undefined,
+    icon: draft.icon || undefined,
     sortOrder: draft.sortOrder,
     baseline: draft.baseline,
   })

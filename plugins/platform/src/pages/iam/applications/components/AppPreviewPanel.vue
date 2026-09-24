@@ -2,7 +2,11 @@
   <div class="flex flex-col gap-20px max-w-720px">
     <div class="flex flex-col gap-8px">
       <div>编码：{{ profile.code || "-" }}</div>
-      <div>名称：{{ profile.name || "-" }}</div>
+      <div class="flex items-center gap-8px">
+        名称：
+        <catalog-icon-preview :value="profile.icon" />
+        <span>{{ profile.name || "-" }}</span>
+      </div>
       <div>说明：{{ profile.description || "-" }}</div>
       <div>排序：{{ profile.sortOrder }}</div>
       <div v-if="showBaseline">组织默认：{{ profile.baseline ? "是" : "否" }}</div>
@@ -24,7 +28,10 @@
           :style="{ paddingLeft: `${item.depth * 24}px` }"
         >
           <div v-if="index > 0 && item.depth === 0" class="h-1px bg-[var(--in-border-color)]" />
-          <div>{{ item.row.record.name }}</div>
+          <div class="flex items-center gap-8px">
+            <catalog-icon-preview :value="item.row.record.icon" />
+            <span>{{ item.row.record.name }}</span>
+          </div>
           <div class="text-12px text-[var(--el-text-color-secondary)]">
             {{ kindEnum.getTagText(item.row.record.kind).text }} ·
             {{ accessEnum.getTagText(item.row.record.accessMode).text }}
@@ -45,6 +52,7 @@
 import { MenuAccessMode, useMenuAccessModeEnum, useMenuKindEnum, type MenuTreeRow } from "@ingot/admin-common";
 import { catalogActionsOf, menusToTree, type AppWizardProfile, type DraftMenu, type DraftResource } from "../createWizard";
 import ActionHierarchy from "./ActionHierarchy.vue";
+import CatalogIconPreview from "./CatalogIconPreview.vue";
 
 defineOptions({ name: "AppPreviewPanel" });
 

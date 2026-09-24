@@ -24,6 +24,9 @@ describe("platform iam application DetailDrawer", () => {
   it("应用编码用可复制标签展示", () => {
     expect(source).toContain('<in-copy-tag :text="detail.record.code" />');
     expect(source).not.toContain('label="基础应用"');
+    expect(source).toContain("application-icon-field");
+    expect(source).toContain("catalog-icon-preview");
+    expect(source).toContain("icon: draft.icon");
   });
 
   it("资源行打开操作对话框，菜单走服务端树和中文枚举", () => {
