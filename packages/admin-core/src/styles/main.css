@@ -121,6 +121,16 @@ body,
   --el-border-radius-base: var(--in-radius-control);
 }
 
+.in-split-picker {
+  border: 1px solid #dee0e3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.in-split-picker > * + * {
+  border-left: 1px solid #dee0e3;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .in-anim-fade-in,
   .fade-transform-leave-active,

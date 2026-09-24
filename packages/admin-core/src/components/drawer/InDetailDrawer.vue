@@ -166,6 +166,7 @@ const privateOnSave = (): void => {
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .in-detail-drawer__loaded {
@@ -177,5 +178,27 @@ const privateOnSave = (): void => {
 
 .in-detail-drawer__identity {
   flex: none;
+}
+</style>
+
+<style lang="postcss">
+.in-drawer.in-drawer--pinned .in-drawer__body:has(.in-detail-drawer),
+.in-drawer.in-drawer--pinned .in-drawer__body:has(.in-wizard-frame) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.in-drawer.in-drawer--pinned .in-drawer__body:has(.in-detail-drawer) > .in-loading,
+.in-drawer.in-drawer--pinned .in-drawer__body:has(.in-wizard-frame) > .in-loading {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100%;
+}
+
+.in-wizard-frame {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
 }
 </style>

@@ -87,14 +87,24 @@
           任一操作：具备列表中任一 ACTION 即可进入；全部操作：必须同时具备。
         </div>
       </in-detail-field>
-      <in-detail-field v-if="showActionFields" label="关联操作">
+      <in-detail-field v-if="showActionFields" class="menu-actions-field" label="关联操作">
+        <template #label>
+          <div class="w-full flex items-center justify-between gap-8px">
+            <span>关联操作</span>
+            <in-button
+              v-if="isCreate || session.editing.value"
+              type="primary"
+              link
+              @in-click="privateOpenPicker"
+            >
+              配置操作
+            </in-button>
+          </div>
+        </template>
         <template #view>
           <action-hierarchy :actions="selectedActions" />
         </template>
-        <div class="flex flex-col gap-12px">
-          <action-hierarchy :actions="selectedActions" />
-          <in-button type="primary" link @in-click="privateOpenPicker">配置操作</in-button>
-        </div>
+        <action-hierarchy :actions="selectedActions" />
       </in-detail-field>
       <in-detail-field label="排序" :value="draft.sortOrder">
         <el-input-number v-model="draft.sortOrder" class="w-full" :min="0" placeholder="请输入排序" />
@@ -365,3 +375,11 @@ defineExpose({
   },
 });
 </script>
+
+<style lang="postcss" scoped>
+.menu-actions-field :deep(.el-form-item__label) {
+  display: flex;
+  width: 100% !important;
+  max-width: none;
+}
+</style>

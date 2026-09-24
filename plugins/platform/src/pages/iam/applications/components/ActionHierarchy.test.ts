@@ -10,7 +10,8 @@ const source = readFileSync(
 
 describe("platform iam application ActionHierarchy", () => {
   it("已选清除按钮右对齐", () => {
-    expect(source).toContain('class="ml-auto shrink-0"');
+    expect(source).toContain("grid-template-columns: auto minmax(0, 1fr) auto");
+    expect(source).toContain('class="action-remove"');
     expect(source).toContain("in-close-button");
   });
 });

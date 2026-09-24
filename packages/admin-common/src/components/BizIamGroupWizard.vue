@@ -8,7 +8,7 @@
     :loading="loading"
     :before-close="privateOnBeforeClose"
   >
-    <div class="h-full min-h-0 flex flex-col">
+    <div class="in-wizard-frame h-full min-h-0 flex flex-col">
       <el-steps
         :active="step"
         finish-status="success"

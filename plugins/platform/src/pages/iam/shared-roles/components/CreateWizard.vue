@@ -9,7 +9,7 @@
     :loading="saving"
     :before-close="privateOnBeforeClose"
   >
-    <div class="flex h-full min-h-0">
+    <div class="in-wizard-frame flex h-full min-h-0">
       <wizard-nav :steps="WIZARD_STEPS" :current="step" />
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
         <div class="mb-24px text-18px shrink-0">{{ WIZARD_STEPS[step].title }}</div>

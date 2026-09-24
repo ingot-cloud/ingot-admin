@@ -1,5 +1,8 @@
 <template>
   <el-form-item :label="label" :prop="prop" :required="required">
+    <template v-if="slots.label" #label>
+      <slot name="label" />
+    </template>
     <div
       class="in-detail-field"
       :class="{ 'is-editing': isEditing, 'has-editor': hasEditor }"

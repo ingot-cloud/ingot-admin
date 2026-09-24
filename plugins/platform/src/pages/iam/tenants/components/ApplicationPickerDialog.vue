@@ -1,8 +1,8 @@
 <template>
   <in-dialog v-model="visible" title="选择应用" width="840px" layout="pinned" append-to-body>
-    <div class="h-420px flex gap-12px">
+    <div class="in-split-picker h-420px flex">
       <div
-        class="w-1/2 min-w-0 flex flex-col border border-[var(--in-border-color)] rounded-4px overflow-hidden"
+        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
       >
         <div class="p-12px">
           <el-input
@@ -57,7 +57,7 @@
         />
       </div>
       <div
-        class="w-1/2 min-w-0 flex flex-col border border-[var(--in-border-color)] rounded-4px overflow-hidden"
+        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
       >
         <div class="flex items-center justify-between px-12px py-12px">
           <span>已选：{{ draft.length }} 个应用</span>

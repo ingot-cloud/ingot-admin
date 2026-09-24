@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-240px shrink-0 px-24px py-24px b-r b-r-solid b-[var(--in-border-color)]">
+  <aside class="w-240px shrink-0 h-full px-24px py-24px b-r b-r-solid b-[var(--in-border-color)]">
     <div v-for="(item, index) in steps" :key="item.title" class="flex gap-12px mb-24px last:mb-0">
       <div
         class="w-24px h-24px rounded-full flex items-center justify-center text-12px shrink-0 b b-solid bg-transparent"

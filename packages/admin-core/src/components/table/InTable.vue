@@ -525,11 +525,14 @@ defineExpose<TableAPI<TableRow>>({
   flex: none;
 }
 
+:deep(.el-table__empty-block) {
+  min-height: 100%;
+}
+
 :deep(.el-table__empty-block:has(.in-table-skeleton)) {
   align-items: stretch;
   justify-content: flex-start;
   width: 100%;
-  min-height: 100%;
   padding: 0;
 }
 

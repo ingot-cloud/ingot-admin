@@ -1,8 +1,8 @@
 <template>
   <in-dialog v-model="visible" title="选择操作" width="920px" layout="pinned" append-to-body>
-    <div class="h-420px flex gap-12px">
+    <div class="in-split-picker h-420px flex">
       <div
-        class="w-1/2 min-w-0 flex flex-col border border-[var(--in-border-color)] rounded-4px overflow-hidden"
+        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
       >
         <div class="p-12px">
           <el-input
@@ -16,48 +16,43 @@
             </template>
           </el-input>
         </div>
-        <div class="flex-1 min-h-0 overflow-auto px-8px">
-          <in-tree
-            v-if="treeData.length"
-            ref="treeRef"
-            :data="treeData"
-            node-key="id"
-            show-checkbox
-            check-strictly
-            default-expand-all
-            :props="treeProps"
-            :default-checked-keys="checkedKeys"
-            @check-change="privateOnCheckChange"
-          >
-            <template #default="{ data }">
-              <span class="flex items-center gap-8px min-w-0 w-full pr-8px">
-                <span class="truncate">{{ data.name }}</span>
-                <span
-                  v-if="data.kind === 'action' && data.code"
-                  class="ml-auto text-12px text-[var(--el-text-color-secondary)] truncate"
-                >
-                  {{ data.code }}
-                </span>
-              </span>
-            </template>
-          </in-tree>
-          <div v-else-if="!loading" class="text-[var(--el-text-color-secondary)] px-12px py-16px">
-            暂无操作
+        <in-loading :loading="loading" class="flex-1 min-h-0">
+          <div class="h-full overflow-auto px-8px">
+            <in-tree
+              v-if="treeData.length"
+              ref="treeRef"
+              :data="treeData"
+              node-key="id"
+              show-checkbox
+              check-strictly
+              default-expand-all
+              :props="treeProps"
+              :default-checked-keys="checkedKeys"
+              @check-change="privateOnCheckChange"
+            >
+              <template #default="{ data }">
+                <span class="min-w-0 w-full truncate pr-8px">{{ data.name }}</span>
+              </template>
+            </in-tree>
+            <div v-else-if="!loading" class="text-[var(--el-text-color-secondary)] px-12px py-16px">
+              暂无操作
+            </div>
           </div>
-        </div>
+        </in-loading>
       </div>
       <div
-        class="w-1/2 min-w-0 flex flex-col border border-[var(--in-border-color)] rounded-4px overflow-hidden"
+        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
       >
         <div class="flex items-center justify-between px-12px py-12px">
           <span>已选：{{ draft.length }} 个操作</span>
           <in-button type="primary" link @in-click="privateClear">清空</in-button>
         </div>
-        <div class="flex-1 min-h-0 overflow-auto px-12px pb-12px">
+        <div class="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden px-12px pb-12px">
           <action-hierarchy
             :actions="draft"
             empty-text="尚未选择操作"
             :copyable="false"
+            :show-code="false"
             removable
             :framed="false"
             @remove="privateRemove"

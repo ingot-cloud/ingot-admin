@@ -18,6 +18,7 @@ describe("platform iam application MenuEditDrawer", () => {
     expect(source).toContain("viewPathOptionGroups");
     expect(source).toContain("action-picker-dialog");
     expect(source).toContain("配置操作");
+    expect(source).toContain('template #label');
     expect(source).toContain("action-hierarchy");
     expect(source).toContain("resolveCatalog");
     expect(source).toContain("loadApplicationCatalog");
