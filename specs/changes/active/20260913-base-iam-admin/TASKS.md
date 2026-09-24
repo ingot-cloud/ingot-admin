@@ -138,6 +138,7 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U03.dev.tenant-identity-wizard：组织详情改为人员式身份抬头与基础信息/开通两 Tab；开通只读预览，编辑与创建走全屏向导并支持头像；列表展示所有者联系方式。父任务 U03 不勾选。
 - [x] U03.dev.tenant-entitlement-union：创建/编辑开通改为套餐 SUMMARY 下拉 + 双栏选应用，并集走 preview，页内改期限；不在前端计算并集。父任务 U03 不勾选。
 - [x] U03.dev.tenant-entitlement-step：开通面板单根避免回退泄漏；组织默认必显且不可取消；列表只改结束时间，空即无限使用。父任务 U03 不勾选。
+- [x] U03.dev.tenant-entitlement-status：开通行列可改启用/停用（与结束时间并列）；组织默认不可停用；停用作为该组织覆盖提交，不改应用目录。父任务 U03 不勾选。
 - [x] U13.dev.drawer-form：详情抽屉统一查看/编辑表单（`in-form` + `in-detail-field`），Tab 内容区内边距，无编辑能力的 Tab 隐藏页脚编辑。父任务 U13 不勾选。
 - [x] U08.dev.group-drawers：组织用户组已接创建/详情/更新/删除/预览，成员与部门来源走远程分页。父任务 U08 不勾选。
 - [x] U08.dev.group-impact：组抽屉展示有权范围内有效人数及预览中的可披露引用；无法披露时不以 0 代替。父任务 U08 不勾选。
