@@ -143,6 +143,13 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U08.dev.group-drawers：组织用户组已接创建/详情/更新/删除/预览，成员与部门来源走远程分页。父任务 U08 不勾选。
 - [x] U08.dev.group-impact：组抽屉展示有权范围内有效人数及预览中的可披露引用；无法披露时不以 0 代替。父任务 U08 不勾选。
 - [x] U04.dev.app-status：应用列表已接启停（I033）与状态筛选；资源字段能力含可见性/可编辑/筛选/排序，范围用中文解释；套餐/开通选择改为远程分页。菜单 ANY/ALL/OPEN 说明已补。父任务 U04 不勾选。
+- [x] U04.dev.app-detail-catalog：菜单开放隐藏匹配/关联操作；关联操作用权限式预览+双栏选择；菜单列表默认只显示名称；路径/注册键/操作码可复制；资源列表默认名称/范围/操作；创建操作码由服务器拼接应用与资源编码；详情不展示基础应用。父任务 U04 不勾选。
+- [x] U04.dev.app-action-hierarchy：关联操作预览/已选/候选按应用→资源→操作分层，编码在名称右侧。父任务 U04 不勾选。
+- [x] U04.dev.app-create-wizard：应用创建改为全屏四步（基础信息→资源与操作→菜单→预览创建）。父任务 U04 不勾选。
+- [x] U13.dev.wizard-close-start：全屏向导关闭统一到标题栏左侧，对齐编辑权限。父任务 U13 不勾选。
+- [x] U04.dev.app-catalog-fetch：选择操作左右共用一份应用目录；向导二/三步对齐详情表；对话框 pinned 只滚内容；权限回显不再按资源打散。父任务 U04 不勾选。
+- [x] U04.dev.app-catalog-dedicated-apis：菜单关联操作用 `menus/{id}/actions`；选择操作用 `action-catalog`；权限回显用 `actions/lookup`；展开资源用 `resources/{id}/actions`。不翻页拼装旧列表。父任务 U04 不勾选。
+- [x] U04.dev.app-bundle-create：创建向导预览后只调 `POST /applications/bundles`，同一事务整单创建；失败不留半成品。父任务 U04 不勾选。
 - [x] U04.dev.app-domain：应用目录双 Tab 必带 domain；共享/平台角色、套餐、开通、诊断选应用不再前端筛域。父任务 U04 不勾选。
 - [x] U05.dev.upgrade-conflicts：组织角色详情已接 `upgrade-preview`/`upgrade`；冲突须逐项处置（替换范围必填 scopes），默认不勾选既有授权，409 保留草稿并重新预览。平台/共享角色无租户升级路径。父任务 U05 不勾选。
 - [x] U05.dev.platform-role-workspace：平台角色 Tab 列表去掉固定来源、展示编码；创建/详情对齐共享角色向导；授权记录枚举改中文。父任务 U05 不勾选。
