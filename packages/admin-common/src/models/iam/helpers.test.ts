@@ -86,6 +86,12 @@ describe("iam helpers", () => {
     });
     expect(ConfigurationStatus.ENABLED).toBe("ENABLED");
     expect(AuthorizationDomain.PLATFORM).toBe("PLATFORM");
+    expect(toIamListParams({ current: 1, size: 20 }, { view: "SUMMARY", status: "ENABLED" })).toEqual({
+      page: 1,
+      pageSize: 20,
+      view: "SUMMARY",
+      status: "ENABLED",
+    });
   });
 
   it("按默认页大小逐页收齐记录", async () => {

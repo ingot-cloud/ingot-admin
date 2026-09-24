@@ -23,6 +23,7 @@ import {
   UpgradeResolutionChoice,
   GrantStatus,
   AssignmentSource,
+  EntitlementSource,
 } from "./constants";
 
 export const ConfigurationStatusExtArray = [
@@ -133,6 +134,15 @@ export const AssignmentSourceExtArray = [
 ];
 
 export const useAssignmentSourceEnum = () => useEnum(AssignmentSourceExtArray);
+
+export const EntitlementSourceExtArray = [
+  newEnumExt(EntitlementSource.INITIALIZATION, "初始化"),
+  newEnumExt(EntitlementSource.MANUAL, "手动"),
+  newEnumExt(EntitlementSource.PLAN, "套餐"),
+  newEnumExt(EntitlementSource.MIGRATION, "迁移"),
+];
+
+export const useEntitlementSourceEnum = () => useEnum(EntitlementSourceExtArray);
 
 export function iamEnumLabel<T>(
   items: Array<{ value: T; text: string }>,

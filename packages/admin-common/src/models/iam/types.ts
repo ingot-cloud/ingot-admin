@@ -125,6 +125,7 @@ export interface IamListQuery {
   domain?: string;
   ids?: string;
   groupId?: string;
+  view?: string;
 }
 
 export interface ResourceListQuery {
@@ -188,7 +189,11 @@ export interface TenantRecord {
   avatar?: string;
   ownerMemberId: string;
   ownerDisplayName?: string;
+  ownerPhone?: string;
+  ownerEmail?: string;
   status: ConfigurationStatus;
+  createdAt?: string;
+  planId?: string;
 }
 
 export interface TenantCreateInput {
@@ -198,6 +203,7 @@ export interface TenantCreateInput {
   rootDepartmentName?: string;
   avatar?: string;
   planId?: string;
+  applications?: EntitlementDraft[];
 }
 
 export interface TenantPreviewResult {
@@ -206,6 +212,7 @@ export interface TenantPreviewResult {
   ownerDisplayName: string;
   rootDepartmentName: string;
   applications: ApplicationSummary[];
+  entitlements: EntitlementPreviewItem[];
   planId?: string;
 }
 
@@ -252,6 +259,11 @@ export interface ApplicationUpdateInput extends VersionInput {
   icon?: string;
   sortOrder: number;
   baseline: boolean;
+}
+
+export interface PlanSummary {
+  id: string;
+  name: string;
 }
 
 export interface PlanRecord {
@@ -672,7 +684,18 @@ export interface EntitlementDraft {
   validUntil?: string;
 }
 
+export interface EntitlementPreviewItem {
+  applicationId: string;
+  applicationName?: string;
+  status: ConfigurationStatus;
+  source: EntitlementSource | string;
+  sourceId?: string;
+  validFrom?: string;
+  validUntil?: string;
+}
+
 export interface EntitlementReplaceInput extends VersionInput {
+  planId?: string;
   entitlements: EntitlementDraft[];
 }
 
@@ -776,7 +799,7 @@ export interface CurrentPasswordInput {
 }
 
 export interface EntitlementPreviewResult {
-  entitlements: EntitlementDraft[];
+  entitlements: EntitlementPreviewItem[];
   impactSummary?: Preview["impactSummary"];
 }
 

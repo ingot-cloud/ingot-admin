@@ -2,6 +2,7 @@ import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
   CatalogListView,
+  CatalogRecordView,
   IAM_API_PREFIX,
   IAM_DEFAULT_PAGE_SIZE,
   mapIamPage,
@@ -19,6 +20,7 @@ import {
   type AppResourceUpdateInput,
   type ApplicationDraft,
   type ApplicationRecord,
+  type ApplicationSummary,
   type ApplicationUpdateInput,
   type ConfigurationStatusInput,
   type CreatedResource,
@@ -27,6 +29,7 @@ import {
   type MenuTreeRow,
   type PlanDraft,
   type PlanRecord,
+  type PlanSummary,
   type PlanUpdateInput,
   type ResourceDetail,
 } from "@ingot/admin-common";
@@ -96,6 +99,22 @@ export function PlatformApplicationDeleteAPI(
   return request.delete<void>(`${APP_PATH}/${id}`, null, options);
 }
 
+export function PlatformApplicationSummaryPageAPI(
+  page: Page,
+  condition?: IamListQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<ApplicationSummary>>>> {
+  const query = { ...condition, view: CatalogRecordView.SUMMARY };
+  filterParams(query);
+  return request
+    .get<IamPageResponse<ResourceDetail<ApplicationSummary>>>(
+      APP_PATH,
+      toIamListParams(page, query),
+      options,
+    )
+    .then(asPage);
+}
+
 export function PlatformPlanPageAPI(
   page: Page,
   condition?: IamListQuery,
@@ -108,6 +127,22 @@ export function PlatformPlanPageAPI(
     .get<IamPageResponse<ResourceDetail<PlanRecord>>>(
       PLAN_PATH,
       toIamListParams(page, condition),
+      options,
+    )
+    .then(asPage);
+}
+
+export function PlatformPlanSummaryPageAPI(
+  page: Page,
+  condition?: IamListQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<PlanSummary>>>> {
+  const query = { ...condition, view: CatalogRecordView.SUMMARY };
+  filterParams(query);
+  return request
+    .get<IamPageResponse<ResourceDetail<PlanSummary>>>(
+      PLAN_PATH,
+      toIamListParams(page, query),
       options,
     )
     .then(asPage);

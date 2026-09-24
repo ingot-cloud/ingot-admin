@@ -131,6 +131,12 @@ export enum CatalogListView {
   TREE = "tree",
 }
 
+/** 目录管理完整记录与选择器摘要投影。 */
+export enum CatalogRecordView {
+  CATALOG = "CATALOG",
+  SUMMARY = "SUMMARY",
+}
+
 export enum MenuAccessMode {
   OPEN = "OPEN",
   ACTION = "ACTION",

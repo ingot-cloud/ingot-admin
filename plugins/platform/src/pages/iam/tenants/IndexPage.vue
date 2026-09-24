@@ -42,19 +42,25 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #name="{ item }">
-          <biz-iam-record-link
-            :action="IamAction.PLATFORM_TENANT_READ"
-            :capabilities="item.capabilities"
-            @click="handleEdit(item)"
-          >
-            {{ item.record.name }}
-          </biz-iam-record-link>
+          <div class="flex items-center gap-8px">
+            <in-avatar :src="item.record.avatar" :name="item.record.name" :show-name="false" />
+            <biz-iam-record-link
+              :action="IamAction.PLATFORM_TENANT_READ"
+              :capabilities="item.capabilities"
+              @click="handleEdit(item)"
+            >
+              {{ item.record.name }}
+            </biz-iam-record-link>
+          </div>
         </template>
         <template #status="{ item }">
           <biz-iam-status-tag :status="item.record.status" />
         </template>
         <template #ownerMemberId="{ item }">
-          {{ item.record.ownerDisplayName || item.record.ownerMemberId }}
+          <div class="flex flex-col">
+            <span>{{ item.record.ownerDisplayName || item.record.ownerMemberId }}</span>
+            <span class="text-12px text-[var(--el-text-color-secondary)]">{{ ownerContactOf(item.record) }}</span>
+          </div>
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -95,6 +101,7 @@ import {
   type TenantRow,
 } from "./table";
 import { useOps } from "./useOps";
+import { ownerContactOf } from "./wizard";
 
 const detailRef = ref<{ show: (row: TenantRow) => void }>();
 const createRef = ref<{ show: () => void }>();
