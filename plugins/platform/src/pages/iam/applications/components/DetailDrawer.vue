@@ -18,6 +18,7 @@
             <in-copy-tag :text="detail.record.code" />
           </template>
         </in-detail-field>
+        <in-detail-field label="管理域" :value="domainLabel" />
         <in-detail-field label="名称" :value="detail.record.name">
             <el-input v-model="draft.name" placeholder="请输入应用名称" />
         </in-detail-field>
@@ -32,9 +33,10 @@
         <in-detail-field label="排序" :value="detail.record.sortOrder">
             <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
         </in-detail-field>
-        <in-detail-field label="基础应用" :value="detail.record.baseline ? '是' : '否'">
+        <in-detail-field v-if="canBaseline" label="基础应用" :value="detail.record.baseline ? '是' : '否'">
           <el-switch v-model="draft.baseline" />
         </in-detail-field>
+        <in-detail-field v-else label="基础应用" :value="detail.record.baseline ? '是' : '否'" />
         <in-detail-field label="状态">
           <template #view>
             <biz-iam-status-tag :status="detail.record.status" />
@@ -161,9 +163,12 @@ import {
   type Page,
 } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
+  AuthorizationDomainExtArray,
   BizIamStatusTag,
   IAM_DEFAULT_PAGE_SIZE,
   IamAction,
+  iamEnumLabel,
   filterMenuTree,
   formatScopeKinds,
   useMenuAccessModeEnum,
@@ -268,6 +273,10 @@ const draft = reactive({
   baseline: false,
 });
 const loadGuard = createLoadGuard();
+const domainLabel = computed(() =>
+  detail.value ? iamEnumLabel(AuthorizationDomainExtArray, detail.value.record.domain) : "-",
+);
+const canBaseline = computed(() => detail.value?.record.domain === AuthorizationDomain.TENANT);
 
 const resourceKeyOf = (row: ResourceDetail<AppResourceRecord>): string => row.record.id;
 const menuKeyOf = (row: MenuTreeRow): string => row.record.id;

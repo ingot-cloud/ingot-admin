@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   BizIamChipPageSelect,
   BizIamStatusTag,
   ConfigurationStatus,
@@ -98,7 +99,10 @@ const draft = reactive({
 const loadGuard = createLoadGuard();
 
 const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, condition);
+  const response = await PlatformApplicationPageAPI(page, {
+    ...condition,
+    domain: AuthorizationDomain.TENANT,
+  });
   const mapped = toIamSelectRecords(response.data);
   for (const item of mapped.records ?? []) {
     applicationLabels[item.id] = item.name;

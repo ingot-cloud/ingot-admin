@@ -1,7 +1,7 @@
 <template>
   <in-drawer
     v-model="visible"
-    title="创建共享角色"
+    :title="title"
     size="100%"
     layout="pinned"
     padding="0"
@@ -27,7 +27,7 @@
               <el-input v-model="profile.groupName" placeholder="请输入分组，可空" />
             </el-form-item>
           </in-form>
-          <grant-picker v-else-if="step === 1" v-model="grants" />
+          <grant-picker v-else-if="step === 1" v-model="grants" :domain="grantDomain" />
           <scope-step v-else-if="step === 2" v-model="grants" />
           <preview-panel v-else :profile="profile" :grants="grants" />
         </div>
@@ -44,7 +44,14 @@
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message } from "@ingot/admin-core";
+import { confirmUnsavedChanges, Message, type R } from "@ingot/admin-core";
+import {
+  AuthorizationDomain,
+  RoleKind,
+  type CreatedResource,
+  type RoleCreateInput,
+  type RoleCreateKind,
+} from "@ingot/admin-common";
 import { PlatformSharedRoleCreateAPI } from "@/api/iam/authorization";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
@@ -61,7 +68,23 @@ import {
 
 defineOptions({ name: "CreateWizard" });
 
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    kind?: RoleCreateKind;
+    createApi?: (input: RoleCreateInput) => Promise<R<CreatedResource>>;
+  }>(),
+  {
+    title: "创建共享角色",
+    kind: RoleKind.SHARED,
+  },
+);
+
 const emits = defineEmits<{ success: [] }>();
+const submitApi = computed(() => props.createApi ?? PlatformSharedRoleCreateAPI);
+const grantDomain = computed(() =>
+  props.kind === RoleKind.PLATFORM_CUSTOM ? AuthorizationDomain.PLATFORM : AuthorizationDomain.TENANT,
+);
 const visible = ref(false);
 const saving = ref(false);
 const step = ref(0);
@@ -114,7 +137,7 @@ const privateNext = (): void => {
 
 const privateSubmit = (): void => {
   saving.value = true;
-  PlatformSharedRoleCreateAPI(toCreateInput(profile, grants.value))
+  submitApi.value(toCreateInput(profile, grants.value, props.kind))
     .then(() => {
       Message.success("已创建并发布首个版本，既有授权不会自动升级");
       visible.value = false;

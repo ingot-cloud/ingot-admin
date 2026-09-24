@@ -31,6 +31,7 @@
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   BizIamChipPageSelect,
   createIamListLoader,
   toIamSelectRecords,
@@ -52,7 +53,10 @@ const draft = reactive({
 });
 
 const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, condition);
+  const response = await PlatformApplicationPageAPI(page, {
+    ...condition,
+    domain: AuthorizationDomain.TENANT,
+  });
   return { data: toIamSelectRecords(response.data) };
 });
 

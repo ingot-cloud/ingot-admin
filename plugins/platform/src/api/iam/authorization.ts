@@ -250,6 +250,15 @@ export function PlatformRoleStatusAPI(
   return request.patch<CreatedResource>(`${rolePath("platform")}/${id}`, params, options);
 }
 
+export function PlatformRoleUpdateAPI(
+  id: string,
+  params: RoleUpdateInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  filterParams(params);
+  return request.patch<CreatedResource>(`${rolePath("platform")}/${id}`, params, options);
+}
+
 export function PlatformRoleDeleteAPI(
   id: string,
   options?: RequestOptions,

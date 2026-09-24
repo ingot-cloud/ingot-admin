@@ -93,16 +93,22 @@
       <div v-else class="profile-form">
         <in-form>
           <el-form-item label="名称" required>
-            <el-input v-model="profileDraft.name" placeholder="请输入名称" />
+            <el-input v-model="profileDraft.name" placeholder="请输入名称" :disabled="!canEditProfile" />
           </el-form-item>
           <el-form-item label="分组">
-            <el-input v-model="profileDraft.groupName" placeholder="请输入分组，可空" />
+            <el-input v-model="profileDraft.groupName" placeholder="请输入分组，可空" :disabled="!canEditProfile" />
           </el-form-item>
           <el-form-item label="状态">
             <in-select v-model="profileDraft.status" :options="statusOptions" placeholder="请选择状态" />
           </el-form-item>
           <el-form-item label="说明">
-            <el-input v-model="profileDraft.description" type="textarea" :rows="3" placeholder="请输入说明" />
+            <el-input
+              v-model="profileDraft.description"
+              type="textarea"
+              :rows="3"
+              placeholder="请输入说明"
+              :disabled="!canEditProfile"
+            />
           </el-form-item>
         </in-form>
       </div>
@@ -119,7 +125,12 @@
       </in-button>
     </template>
   </in-drawer>
-  <grant-edit-wizard ref="grantWizardRef" @success="privateOnGrantSaved" />
+  <grant-edit-wizard
+    ref="grantWizardRef"
+    :publish-api="resolvedPublishApi"
+    :domain="grantDomain"
+    @success="privateOnGrantSaved"
+  />
 </template>
 
 <script setup lang="ts">
@@ -127,9 +138,11 @@ import {
   Message,
   createLoadGuard,
   type Page,
+  type R,
   type TableHeaderRecord,
 } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   BizIamRevisionDeltaView,
   BizIamStatusTag,
   ConfigurationStatus,
@@ -138,10 +151,14 @@ import {
   objectActionAllowed,
   useConfigurationStatusEnum,
   revisionDisplayDeltas,
+  type ConfigurationStatusInput,
+  type CreatedResource,
   type ResourceDetail,
   type RoleDelta,
+  type RolePublishInput,
   type RoleRevision,
   type RoleSummary,
+  type RoleUpdateInput,
 } from "@ingot/admin-common";
 import {
   PlatformSharedRoleDetailAPI,
@@ -155,7 +172,29 @@ import type { SelectedGrant } from "../wizard";
 
 defineOptions({ name: "SharedRoleDetailDrawer" });
 
+const props = withDefaults(
+  defineProps<{
+    getApi?: (id: string) => Promise<R<ResourceDetail<RoleSummary>>>;
+    listRevisionsApi?: (id: string, page: Page) => Promise<R<Page<ResourceDetail<RoleRevision>>>>;
+    updateApi?: (id: string, input: RoleUpdateInput) => Promise<R<CreatedResource>>;
+    statusApi?: (id: string, input: ConfigurationStatusInput) => Promise<R<CreatedResource>>;
+    publishApi?: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
+    grantDomain?: AuthorizationDomain;
+    statusAction?: string;
+    publishAction?: string;
+  }>(),
+  {
+    grantDomain: AuthorizationDomain.TENANT,
+    statusAction: IamAction.PLATFORM_SHARED_ROLE_STATUS,
+    publishAction: IamAction.PLATFORM_SHARED_ROLE_PUBLISH,
+  },
+);
+
 const emits = defineEmits<{ success: [] }>();
+const resolvedGetApi = computed(() => props.getApi ?? PlatformSharedRoleDetailAPI);
+const resolvedRevisionsApi = computed(() => props.listRevisionsApi ?? PlatformSharedRoleRevisionPageAPI);
+const resolvedPublishApi = computed(() => props.publishApi);
+const canEditProfile = computed(() => Boolean(props.updateApi ?? !props.statusApi));
 const visible = ref(false);
 const tab = ref("grants");
 const loading = ref(false);
@@ -201,10 +240,10 @@ const knownStatus = (status?: ConfigurationStatus): status is ConfigurationStatu
   status === ConfigurationStatus.ENABLED || status === ConfigurationStatus.DISABLED;
 
 const canStatus = computed(
-  () => objectActionAllowed(detail.value?.capabilities, IamAction.PLATFORM_SHARED_ROLE_STATUS).allowed,
+  () => objectActionAllowed(detail.value?.capabilities, props.statusAction).allowed,
 );
 const canPublish = computed(
-  () => objectActionAllowed(detail.value?.capabilities, IamAction.PLATFORM_SHARED_ROLE_PUBLISH).allowed,
+  () => objectActionAllowed(detail.value?.capabilities, props.publishAction).allowed,
 );
 
 const profileDirty = computed(() => {
@@ -248,7 +287,7 @@ const resolveRevisionNames = (deltas: RoleDelta[]): void => {
   if (!ids.length) {
     return;
   }
-  void resolveGrantActions(ids).then((items) => {
+  void resolveGrantActions(ids, props.grantDomain).then((items) => {
     revisionActionNames.value = {
       ...revisionActionNames.value,
       ...Object.fromEntries(items.map((item) => [item.id, item.name])),
@@ -264,7 +303,7 @@ const hydrateRevisionDiffs = async (): Promise<void> => {
   const total = revisionPage.value.total ?? 0;
   let older: RoleRevision | undefined;
   if (last && Number(last.record.revision) > 1 && current * size < total) {
-    const next = await PlatformSharedRoleRevisionPageAPI(roleId.value, {
+    const next = await resolvedRevisionsApi.value(roleId.value, {
       current: current + 1,
       size,
     });
@@ -304,8 +343,8 @@ const load = (id: string): void => {
   revisionActionNames.value = {};
   revisionPage.value = { current: 1, size, total: 0, records: [] };
   Promise.all([
-    PlatformSharedRoleDetailAPI(id),
-    PlatformSharedRoleRevisionPageAPI(id, { current: 1, size }),
+    resolvedGetApi.value(id),
+    resolvedRevisionsApi.value(id, { current: 1, size }),
   ])
     .then(async ([role, page]) => {
       if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
@@ -322,7 +361,7 @@ const load = (id: string): void => {
       if (!items.length) {
         return;
       }
-      const resolved = await resolveSelectedGrants(items);
+      const resolved = await resolveSelectedGrants(items, props.grantDomain);
       if (!guard.isCurrent()) {
         return;
       }
@@ -343,7 +382,7 @@ const privateLoadRevisionPage = (): void => {
   }
   const guard = revisionGuard.begin();
   revisionLoading.value = true;
-  PlatformSharedRoleRevisionPageAPI(id, {
+  resolvedRevisionsApi.value(id, {
     current: revisionPage.value.current ?? 1,
     size: revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
   })
@@ -387,13 +426,23 @@ const privateSaveProfile = (): void => {
     return;
   }
   saving.value = true;
-  PlatformSharedRoleUpdateAPI(roleId.value, {
-    expectedVersion: detail.value.version,
-    name: profileDraft.name.trim(),
-    description: profileDraft.description.trim() || undefined,
-    groupName: profileDraft.groupName.trim() || undefined,
-    status: profileDraft.status,
-  })
+  const request = canEditProfile.value
+    ? (props.updateApi ?? PlatformSharedRoleUpdateAPI)(roleId.value, {
+        expectedVersion: detail.value.version,
+        name: profileDraft.name.trim(),
+        description: profileDraft.description.trim() || undefined,
+        groupName: profileDraft.groupName.trim() || undefined,
+        status: profileDraft.status,
+      })
+    : props.statusApi?.(roleId.value, {
+        expectedVersion: detail.value.version,
+        status: profileDraft.status,
+      });
+  if (!request) {
+    saving.value = false;
+    return;
+  }
+  request
     .then(() => {
       Message.success("基本信息已更新");
       editingProfile.value = false;

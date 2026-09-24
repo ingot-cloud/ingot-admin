@@ -29,7 +29,10 @@
                 {{ item.record.name || item.record.id }}
               </biz-iam-record-link>
             </template>
-            <template #kind="{ item }">{{ item.record.kind }}</template>
+            <template #code="{ item }">
+              <in-copy-tag v-if="item.record.code" :text="item.record.code" />
+              <span v-else>-</span>
+            </template>
             <template #status="{ item }">
               <biz-iam-status-tag :status="item.record.status" />
             </template>
@@ -58,14 +61,22 @@
               />
             </template>
             <template #subject="{ item }">
-              {{ item.record.assignment.subject.type }} / {{ item.record.assignment.subject.id }}
+              {{ subjectLabel(item.record.assignment.subject.type) }} /
+              {{ item.record.assignment.subject.id }}
             </template>
             <template #roleRevision="{ item }">
-              {{ item.record.assignment.roleRevisionRef.kind }} /
+              {{ roleKindLabel(item.record.assignment.roleRevisionRef.kind) }} /
               {{ item.record.assignment.roleRevisionRef.id }}
             </template>
-            <template #source="{ item }">{{ item.record.source }}</template>
-            <template #status="{ item }">{{ item.record.status }}</template>
+            <template #source="{ item }">{{ sourceLabel(item.record.source) }}</template>
+            <template #status="{ item }">
+              <status-tag
+                v-if="grantStatusTone(item.record.status)"
+                :tone="grantStatusTone(item.record.status)"
+                :label="grantStatusLabel(item.record.status)"
+              />
+              <span v-else>{{ grantStatusLabel(item.record.status) }}</span>
+            </template>
             <template #validUntil="{ item }">
               {{ item.record.assignment.validUntil || "长期" }}
             </template>
@@ -109,24 +120,23 @@
     </in-split-layout>
   </in-page-frame>
 
-  <biz-iam-role-create-drawer
+  <create-wizard
     ref="createRef"
     title="创建平台角色"
     :kind="RoleKind.PLATFORM_CUSTOM"
     :create-api="PlatformRoleCreateAPI"
     @success="refreshRoles"
   />
-  <biz-iam-role-detail-drawer
+  <shared-role-detail-drawer
     ref="detailRef"
     :get-api="PlatformRoleDetailAPI"
     :list-revisions-api="PlatformRoleRevisionPageAPI"
-    :preview-api="PlatformRolePreviewAPI"
-    :publish-api="PlatformRolePublishAPI"
+    :update-api="PlatformRoleUpdateAPI"
     :status-api="PlatformRoleStatusAPI"
-    :delete-api="PlatformRoleDeleteAPI"
-    :publish-action="IamAction.PLATFORM_ROLE_PUBLISH"
+    :publish-api="PlatformRolePublishAPI"
+    :grant-domain="AuthorizationDomain.PLATFORM"
     :status-action="IamAction.PLATFORM_ROLE_STATUS"
-    :delete-action="IamAction.PLATFORM_ROLE_DELETE"
+    :publish-action="IamAction.PLATFORM_ROLE_PUBLISH"
     @success="refreshRoles"
   />
   <biz-iam-assignment-drawer
@@ -161,21 +171,26 @@
 
 <script lang="ts" setup>
 import {
+  AssignmentSourceExtArray,
+  AuthorizationDomain,
   BizIamAssignmentDrawer,
   BizIamDelegationDrawer,
   BizIamDiagnoseDrawer,
   BizIamRecordLink,
-  BizIamRoleCreateDrawer,
-  BizIamRoleDetailDrawer,
   BizIamStatusTag,
+  GrantStatusExtArray,
   IAM_DEFAULT_PAGE_SIZE,
   IamAction,
   RoleKind,
+  RoleKindExtArray,
+  SubjectTypeExtArray,
   createIamListLoader,
+  GrantStatus,
+  iamEnumLabel,
   toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { Confirm, Message, type InTableAction, type LoadDataParams } from "@ingot/admin-core";
+import { Confirm, Message, StatusTag, type InTableAction, type LoadDataParams } from "@ingot/admin-core";
 import {
   PlatformAssignmentCreateAPI,
   PlatformAssignmentDeleteAPI,
@@ -191,11 +206,13 @@ import {
   PlatformRoleDeleteAPI,
   PlatformRoleDetailAPI,
   PlatformRolePageAPI,
-  PlatformRolePreviewAPI,
   PlatformRolePublishAPI,
   PlatformRoleRevisionPageAPI,
   PlatformRoleStatusAPI,
+  PlatformRoleUpdateAPI,
 } from "@/api/iam/authorization";
+import CreateWizard from "../shared-roles/components/CreateWizard.vue";
+import SharedRoleDetailDrawer from "../shared-roles/components/SharedRoleDetailDrawer.vue";
 import { PlatformApplicationPageAPI } from "@/api/iam/catalog";
 import { PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
 import {
@@ -243,15 +260,42 @@ const loadRoles = createIamListLoader(async (page, condition) => {
   return { data: toIamSelectRecords(response.data) };
 });
 const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, condition);
+  const response = await PlatformApplicationPageAPI(page, {
+    ...condition,
+    domain: AuthorizationDomain.PLATFORM,
+  });
   return { data: toIamSelectRecords(response.data) };
 });
+
+const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray, value);
+const roleKindLabel = (value: string): string => iamEnumLabel(RoleKindExtArray, value);
+const sourceLabel = (value: string): string => iamEnumLabel(AssignmentSourceExtArray, value);
+const grantStatusLabel = (value: string): string => iamEnumLabel(GrantStatusExtArray, value);
+const grantStatusTone = (value: GrantStatus | string): "info" | "danger" | undefined => {
+  if (value === GrantStatus.ACTIVE) {
+    return "info";
+  }
+  if (value === GrantStatus.REVOKED) {
+    return "danger";
+  }
+  return undefined;
+};
 
 const handleCreate = (): void => {
   createRef.value?.show();
 };
 const handleDetail = (item: RoleRow): void => {
   detailRef.value?.show(item.record.id);
+};
+const handleRoleDelete = (item: RoleRow): void => {
+  Confirm.error(`未引用角色才会删除。是否删除（${item.record.name || item.record.id}）？`, {
+    confirmButtonText: "删除",
+  }).then(() => {
+    PlatformRoleDeleteAPI(item.record.id).then(() => {
+      Message.success("已删除");
+      refreshRoles();
+    });
+  });
 };
 const handleDiagnose = (preset?: { memberId?: string }): void => {
   diagnoseRef.value?.show(preset);
@@ -294,7 +338,7 @@ const handleDelegationDelete = (item: DelegationRow): void => {
 
 const roleToolbarActions = computed(() => createRoleToolbarActions(handleCreate, () => handleDiagnose()));
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
-  createRoleRowActions(item, { onDetail: handleDetail });
+  createRoleRowActions(item, { onDetail: handleDetail, onDelete: handleRoleDelete });
 const assignmentToolbarActions = computed(() =>
   createAssignmentToolbarActions(handleAssignmentCreate, () => handleDiagnose()),
 );

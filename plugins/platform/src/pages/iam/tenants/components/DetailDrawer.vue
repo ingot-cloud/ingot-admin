@@ -96,6 +96,7 @@
 <script setup lang="ts">
 import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   BizIamPreviewAlert,
   BizIamStatusTag,
   ConfigurationStatus,
@@ -158,7 +159,10 @@ const sourceOf = (applicationId: string): string =>
   "MANUAL";
 
 const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, condition);
+  const response = await PlatformApplicationPageAPI(page, {
+    ...condition,
+    domain: AuthorizationDomain.TENANT,
+  });
   const mapped = toIamSelectRecords(response.data);
   for (const item of mapped.records ?? []) {
     applicationLabels[item.id] = item.name;

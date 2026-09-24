@@ -21,6 +21,8 @@ import {
   SubjectType,
   ScopeBindingKind,
   UpgradeResolutionChoice,
+  GrantStatus,
+  AssignmentSource,
 } from "./constants";
 
 export const ConfigurationStatusExtArray = [
@@ -116,6 +118,32 @@ export const SubjectTypeExtArray = [
 ];
 
 export const useSubjectTypeEnum = () => useEnum(SubjectTypeExtArray);
+
+export const GrantStatusExtArray = [
+  newEnumExt(GrantStatus.ACTIVE, "有效", "success"),
+  newEnumExt(GrantStatus.REVOKED, "已撤销", "danger"),
+];
+
+export const useGrantStatusEnum = () => useEnum(GrantStatusExtArray);
+
+export const AssignmentSourceExtArray = [
+  newEnumExt(AssignmentSource.MANUAL, "手动"),
+  newEnumExt(AssignmentSource.INITIALIZATION, "初始化"),
+  newEnumExt(AssignmentSource.MIGRATION, "迁移"),
+];
+
+export const useAssignmentSourceEnum = () => useEnum(AssignmentSourceExtArray);
+
+export function iamEnumLabel<T>(
+  items: Array<{ value: T; text: string }>,
+  value: T | string | undefined,
+  empty = "-",
+): string {
+  if (value == null || value === "") {
+    return empty;
+  }
+  return items.find((item) => item.value === value)?.text ?? String(value);
+}
 
 export const ScopeBindingKindExtArray = [
   newEnumExt(ScopeBindingKind.DEPARTMENTS, "部门集合"),

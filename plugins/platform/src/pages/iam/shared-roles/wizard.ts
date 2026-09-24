@@ -150,13 +150,17 @@ export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
   };
 }
 
-export function toCreateInput(profile: WizardProfile, grants: SelectedGrant[]): RoleCreateInput {
+export function toCreateInput(
+  profile: WizardProfile,
+  grants: SelectedGrant[],
+  kind = RoleKind.SHARED,
+): RoleCreateInput {
   return {
     code: profile.code.trim(),
     name: profile.name.trim(),
     description: profile.description.trim() || undefined,
     groupName: profile.groupName.trim() || undefined,
-    kind: RoleKind.SHARED,
+    kind,
     definition: toDefinition(grants),
   };
 }

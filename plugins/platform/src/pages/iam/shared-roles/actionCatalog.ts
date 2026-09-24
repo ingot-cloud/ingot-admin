@@ -1,6 +1,5 @@
 import type { LoadDataParams, Page } from "@ingot/admin-core";
 import {
-  AuthorizationDomainExtArray,
   ConfigurationStatus,
   IAM_DEFAULT_PAGE_SIZE,
   collectIamPageRecords,
@@ -14,28 +13,16 @@ import {
 import { PlatformActionPageAPI, PlatformApplicationPageAPI, PlatformResourcePageAPI } from "@/api/iam/catalog";
 import { defaultScope, type SelectedGrant } from "./wizard";
 
-const domainText = (domain: AuthorizationDomain): string =>
-  AuthorizationDomainExtArray.find((item) => item.value === domain)?.text ?? domain;
-
-/** 共享角色授权：按名称分页启用中的应用，名称前标出平台或组织。 */
-export const loadGrantApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, {
-    name: condition.name,
-    status: ConfigurationStatus.ENABLED,
+/** 按管理域分页启用中的应用，供角色向导选择。 */
+export const loadGrantApplications = (domain: AuthorizationDomain) =>
+  createIamListLoader(async (page, condition) => {
+    const response = await PlatformApplicationPageAPI(page, {
+      domain,
+      name: condition.name,
+      status: ConfigurationStatus.ENABLED,
+    });
+    return { data: toIamSelectRecords(response.data) };
   });
-  return {
-    data: toIamSelectRecords({
-      ...response.data,
-      records: (response.data.records ?? []).map((item) => ({
-        ...item,
-        record: {
-          ...item.record,
-          name: `${domainText(item.record.domain)} / ${item.record.name}`,
-        },
-      })),
-    }),
-  };
-});
 
 /** 选定应用后按名称分页该应用下的操作。 */
 export const loadGrantActions = (
@@ -61,15 +48,21 @@ export const loadGrantActions = (
 /**
  * 按应用分页反查操作 ID。操作列表必须带应用，没有跨应用查询接口。
  */
-export async function resolveGrantActions(ids: string[]): Promise<IamActionRef[]> {
+export async function resolveGrantActions(
+  ids: string[],
+  domain: AuthorizationDomain,
+): Promise<IamActionRef[]> {
   const pending = new Set(ids.filter(Boolean));
   const found: IamActionRef[] = [];
   let current = 1;
   while (pending.size > 0) {
-    const response = await PlatformApplicationPageAPI({
-      current,
-      size: IAM_DEFAULT_PAGE_SIZE,
-    });
+    const response = await PlatformApplicationPageAPI(
+      {
+        current,
+        size: IAM_DEFAULT_PAGE_SIZE,
+      },
+      { domain },
+    );
     const applications = response.data.records ?? [];
     if (!applications.length) {
       break;
@@ -105,15 +98,21 @@ export async function resolveGrantActions(ids: string[]): Promise<IamActionRef[]
 }
 
 /** 把已发布授权还原成向导勾选模型，补齐应用、资源和范围能力。 */
-export async function resolveSelectedGrants(grants: ActionGrant[]): Promise<SelectedGrant[]> {
+export async function resolveSelectedGrants(
+  grants: ActionGrant[],
+  domain: AuthorizationDomain,
+): Promise<SelectedGrant[]> {
   const pending = new Map(grants.filter((item) => item.actionId).map((item) => [item.actionId, item]));
   const found: SelectedGrant[] = [];
   let current = 1;
   while (pending.size > 0) {
-    const response = await PlatformApplicationPageAPI({
-      current,
-      size: IAM_DEFAULT_PAGE_SIZE,
-    });
+    const response = await PlatformApplicationPageAPI(
+      {
+        current,
+        size: IAM_DEFAULT_PAGE_SIZE,
+      },
+      { domain },
+    );
     const applications = response.data.records ?? [];
     if (!applications.length) {
       break;

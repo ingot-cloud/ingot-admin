@@ -13,7 +13,7 @@
       <el-form-item label="排序">
         <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
       </el-form-item>
-      <el-form-item label="基础应用">
+      <el-form-item v-if="canBaseline" label="基础应用">
         <el-switch v-model="draft.baseline" />
       </el-form-item>
     </in-form>
@@ -37,6 +37,8 @@ const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const visible = ref(false);
 const loading = ref(false);
+const domain = ref(AuthorizationDomain.PLATFORM);
+const canBaseline = computed(() => domain.value === AuthorizationDomain.TENANT);
 const draft = reactive({
   code: "",
   name: "",
@@ -61,7 +63,7 @@ const privateSubmit = (): void => {
   loading.value = true;
   PlatformApplicationCreateAPI({
     code: draft.code.trim(),
-    domain: AuthorizationDomain.PLATFORM,
+    domain: domain.value,
     name: draft.name.trim(),
     description: draft.description.trim() || undefined,
     sortOrder: draft.sortOrder,
@@ -79,8 +81,9 @@ const privateSubmit = (): void => {
 };
 
 defineExpose({
-  show() {
+  show(next: AuthorizationDomain) {
     reset();
+    domain.value = next;
     visible.value = true;
   },
 });

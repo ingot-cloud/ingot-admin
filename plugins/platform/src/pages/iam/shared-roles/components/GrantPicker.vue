@@ -20,7 +20,7 @@
           @node-click="privateSelectApp"
         />
         <div v-if="!applications.length && !appLoading" class="text-12px text-[var(--el-text-color-secondary)] px-8px">
-          没有可用的组织应用
+          没有可用的{{ appKindLabel }}
         </div>
         <div v-if="appHasMore" class="flex justify-center py-8px">
           <in-button text type="primary" :loading="appLoading" @in-click="privateLoadMoreApps">加载更多</in-button>
@@ -30,7 +30,9 @@
     <section class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px">
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
       <div class="flex-1 min-h-0 overflow-auto">
-        <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">先从左侧选择组织应用</div>
+        <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">
+          先从左侧选择{{ appKindLabel }}
+        </div>
         <in-tree
           v-else
           :key="applicationId"
@@ -75,6 +77,15 @@ import { PlatformActionPageAPI, PlatformApplicationPageAPI, PlatformResourcePage
 import { defaultScope, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
+
+const props = withDefaults(
+  defineProps<{
+    domain?: AuthorizationDomain;
+  }>(),
+  {
+    domain: AuthorizationDomain.TENANT,
+  },
+);
 
 interface CatalogApp {
   id: string;
@@ -125,6 +136,9 @@ const appTotal = ref(0);
 const appLoading = ref(false);
 const applicationId = ref("");
 const currentApp = computed(() => applications.value.find((item) => item.id === applicationId.value));
+const appKindLabel = computed(() =>
+  props.domain === AuthorizationDomain.PLATFORM ? "平台应用" : "组织应用",
+);
 const resources = ref<CatalogResource[]>([]);
 const resourcePage = ref(1);
 const resourceTotal = ref(0);
@@ -208,40 +222,29 @@ const privateSearchApps = (): void => {
 const privateLoadApps = async (): Promise<void> => {
   appLoading.value = true;
   try {
-    while (true) {
-      const response = await PlatformApplicationPageAPI(
-        { current: appPage.value, size: IAM_DEFAULT_PAGE_SIZE },
-        {
-          name: appliedAppQuery.value || undefined,
-          status: ConfigurationStatus.ENABLED,
-        },
-      );
-      appTotal.value = response.data.total ?? 0;
-      const next = (response.data.records ?? [])
-        .filter((item) => item.record.domain === AuthorizationDomain.TENANT)
-        .map((item: ResourceDetail<ApplicationRecord>) => ({
-          id: item.record.id,
-          name: item.record.name,
-        }));
-      applications.value = [...applications.value, ...next];
-      const exhausted = appPage.value * IAM_DEFAULT_PAGE_SIZE >= appTotal.value || !response.data.records?.length;
-      const preferredId = grants.value[0]?.applicationId;
-      const preferred = preferredId
-        ? applications.value.find((item) => item.id === preferredId)
-        : undefined;
-      if (preferred) {
-        if (!applicationId.value) {
-          privateSelectApp(preferred);
-        }
-        break;
+    const response = await PlatformApplicationPageAPI(
+      { current: appPage.value, size: IAM_DEFAULT_PAGE_SIZE },
+      {
+        domain: props.domain,
+        name: appliedAppQuery.value || undefined,
+        status: ConfigurationStatus.ENABLED,
+      },
+    );
+    appTotal.value = response.data.total ?? 0;
+    const next = (response.data.records ?? []).map((item: ResourceDetail<ApplicationRecord>) => ({
+      id: item.record.id,
+      name: item.record.name,
+    }));
+    applications.value = appPage.value === 1 ? next : [...applications.value, ...next];
+    const preferredId = grants.value[0]?.applicationId;
+    const preferred = preferredId
+      ? applications.value.find((item) => item.id === preferredId)
+      : undefined;
+    if (preferred) {
+      if (!applicationId.value) {
+        privateSelectApp(preferred);
       }
-      if (!preferredId && (next.length || exhausted)) {
-        break;
-      }
-      if (exhausted) {
-        break;
-      }
-      appPage.value += 1;
+      return;
     }
     if (!applicationId.value && applications.value[0]) {
       privateSelectApp(applications.value[0]);

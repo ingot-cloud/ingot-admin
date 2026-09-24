@@ -28,7 +28,7 @@
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
         <div class="mb-24px text-18px shrink-0">{{ GRANT_WIZARD_STEPS[step].title }}</div>
         <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
-          <grant-picker v-if="step === 0" :key="session" v-model="grants" />
+          <grant-picker v-if="step === 0" :key="session" v-model="grants" :domain="domain" />
           <scope-step v-else-if="step === 1" v-model="grants" />
           <preview-panel
             v-else
@@ -51,7 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message } from "@ingot/admin-core";
+import { confirmUnsavedChanges, Message, type R } from "@ingot/admin-core";
+import { AuthorizationDomain, type CreatedResource, type RolePublishInput } from "@ingot/admin-common";
 import { PlatformSharedRolePublishAPI } from "@/api/iam/authorization";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
@@ -68,7 +69,18 @@ import {
 
 defineOptions({ name: "GrantEditWizard" });
 
+const props = withDefaults(
+  defineProps<{
+    publishApi?: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
+    domain?: AuthorizationDomain;
+  }>(),
+  {
+    domain: AuthorizationDomain.TENANT,
+  },
+);
+
 const emits = defineEmits<{ success: [] }>();
+const submitApi = computed(() => props.publishApi ?? PlatformSharedRolePublishAPI);
 const visible = ref(false);
 const saving = ref(false);
 const step = ref(0);
@@ -141,7 +153,7 @@ const privateSubmit = (): void => {
     return;
   }
   saving.value = true;
-  PlatformSharedRolePublishAPI(roleId.value, toPublishInput(expectedVersion.value, grants.value))
+  submitApi.value(roleId.value, toPublishInput(expectedVersion.value, grants.value))
     .then(() => {
       Message.success("已发布新版本，既有授权仍钉在旧版本");
       visible.value = false;

@@ -66,7 +66,7 @@ export const emptyDelegationRow: DelegationRow = {
 
 export const roleHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "name", required: true },
-  { label: "来源", prop: "kind" },
+  { label: "编码", prop: "code" },
   { label: "状态", prop: "status" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
@@ -115,9 +115,10 @@ export function createRoleToolbarActions(
 
 export function createRoleRowActions(
   row: RoleRow,
-  handlers: { onDetail: (row: RoleRow) => void },
+  handlers: { onDetail: (row: RoleRow) => void; onDelete: (row: RoleRow) => void },
 ): Array<InTableAction<RoleRow>> {
   const detail = objectActionAllowed(row.capabilities, IamAction.PLATFORM_ROLE_READ);
+  const remove = objectActionAllowed(row.capabilities, IamAction.PLATFORM_ROLE_DELETE);
   return [
     {
       key: "detail",
@@ -127,6 +128,15 @@ export function createRoleRowActions(
       disabled: !detail.allowed,
       disabledReason: detail.message,
       onSelect: handlers.onDetail,
+    },
+    {
+      key: "delete",
+      label: "删除",
+      kind: "danger",
+      permission: IamAction.PLATFORM_ROLE_DELETE,
+      disabled: !remove.allowed,
+      disabledReason: remove.message,
+      onSelect: handlers.onDelete,
     },
   ];
 }
