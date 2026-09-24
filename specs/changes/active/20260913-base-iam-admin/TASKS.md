@@ -150,6 +150,8 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U04.dev.app-catalog-fetch：选择操作左右共用一份应用目录；向导二/三步对齐详情表；对话框 pinned 只滚内容；权限回显不再按资源打散。父任务 U04 不勾选。
 - [x] U04.dev.app-catalog-dedicated-apis：菜单关联操作用 `menus/{id}/actions`；选择操作用 `action-catalog`；权限回显用 `actions/lookup`；展开资源用 `resources/{id}/actions`。不翻页拼装旧列表。父任务 U04 不勾选。
 - [x] U04.dev.app-bundle-create：创建向导预览后只调 `POST /applications/bundles`，同一事务整单创建；失败不留半成品。父任务 U04 不勾选。
+- [x] U04.dev.app-delete-reason：删除应用 `ObjectInUse` 列出资源/菜单/开通/套餐，确认框同步说明。父任务 U04 不勾选。
+- [x] U04.dev.app-purge：`ObjectInUse` 且有 `application:purge` 时弹层输登录密码，只调 purge；无权限只展示原因；密码错误留在弹层。父任务 U04 不勾选。
 - [x] U04.dev.app-domain：应用目录双 Tab 必带 domain；共享/平台角色、套餐、开通、诊断选应用不再前端筛域。父任务 U04 不勾选。
 - [x] U05.dev.upgrade-conflicts：组织角色详情已接 `upgrade-preview`/`upgrade`；冲突须逐项处置（替换范围必填 scopes），默认不勾选既有授权，409 保留草稿并重新预览。平台/共享角色无租户升级路径。父任务 U05 不勾选。
 - [x] U05.dev.platform-role-workspace：平台角色 Tab 列表去掉固定来源、展示编码；创建/详情对齐共享角色向导；授权记录枚举改中文。父任务 U05 不勾选。

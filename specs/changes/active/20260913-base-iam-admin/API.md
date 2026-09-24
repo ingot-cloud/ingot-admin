@@ -110,7 +110,8 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 | /v1/platform/tenants/{id}/entitlements/preview | POST 返回服务器解析后的开通并集 |
 | /v1/platform/applications | GET 列表必填 `domain=PLATFORM|TENANT`，可选 `name` 包含匹配、`status=ENABLED|DISABLED`、`baseline`、`view=CATALOG|SUMMARY`（SUMMARY 返回 ApplicationSummary）；缺省或非法 domain 为 InvalidArgument，不返回混合域全量；POST 仅建应用目录项 |
 | /v1/platform/applications/bundles | POST 一次提交应用及其资源、操作与菜单；同一事务整单创建或整单回滚；资源与菜单可空；父子菜单与关联操作用客户端 tempId |
-| /v1/platform/applications/{id} | GET/PUT/PATCH 状态/DELETE（未引用） |
+| /v1/platform/applications/{id} | GET/PUT/PATCH 状态/DELETE（未引用；被资源、菜单、组织开通或套餐挡住时 `ObjectInUse`，消息列出具体引用，前端直接展示；普通 DELETE 不得带 force） |
+| /v1/platform/applications/{id}/purge | POST `{ expectedVersion, confirmation: { kind, secret } }`；确认必须与清除同一次请求，禁止先调独立验密再删；`crypto.fields` 含 `secret`；需 `iam-platform:application:purge` |
 | /v1/platform/applications/{id}/resources | GET 分页（可选 `name`/`code` 包含匹配）；POST 资源；/{resourceId} PUT/DELETE |
 | /v1/platform/applications/{id}/resources/{resourceId}/actions | GET 该资源全部操作（不分页），供权限树展开 |
 | /v1/platform/applications/{id}/action-catalog | GET 应用资源及操作树（不分页），供菜单选择操作 |
@@ -172,7 +173,9 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 
 未保存草稿保留在前端；退出不产生生效版本。预览返回配置版本，提交同时携带 expectedVersion 和完整待写内容，服务器重新验证。角色发布/升级、批量授权及策略替换均为原子命令。
 
-权限错误：ActionDenied、DataScopeDenied、DelegationExceeded、RoleRevisionUnavailable、ApplicationUnavailable、PolicyConflict、RevisionConflict、ObjectInUse、AuthorizationUnavailable。消息为可展示中文；reasonCode 为稳定枚举，不能只让前端解析文字。
+权限错误：ActionDenied、DataScopeDenied、DelegationExceeded、RoleRevisionUnavailable、ApplicationUnavailable、PolicyConflict、RevisionConflict、ObjectInUse、StepUpFailed、AuthorizationUnavailable。消息为可展示中文；reasonCode 为稳定枚举，不能只让前端解析文字。
+
+强制清除等敏感写不得先调独立验密接口。密码弹层确认后只发 purge，口令走 HYBRID 字段加密。`StepUpFailed` 留在弹层，不关闭、不重发普通删除。
 
 401 重新认证；403 刷新能力后提示；404 显示不存在或不可访问，不区分是否真实存在；409 保留草稿并重新预览；503 禁止受保护提交、重试，不清为游客或成功空数据。
 
