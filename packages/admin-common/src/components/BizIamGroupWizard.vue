@@ -75,11 +75,11 @@
             <div class="bg-[var(--in-bg-color-page)] rounded-8px p-16px flex flex-col gap-12px">
               <div>
                 <div class="text-12px text-[var(--el-text-color-secondary)]">用户组名称</div>
-                <div>{{ draft.name.trim() || "—" }}</div>
+                <div>{{ draft.name.trim() || "-" }}</div>
               </div>
               <div>
                 <div class="text-12px text-[var(--el-text-color-secondary)]">用户组描述</div>
-                <div>{{ draft.description.trim() || "—" }}</div>
+                <div>{{ draft.description.trim() || "-" }}</div>
               </div>
             </div>
           </section>

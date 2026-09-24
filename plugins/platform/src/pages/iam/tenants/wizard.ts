@@ -89,7 +89,7 @@ export function extraDraftsOf(items: EntitlementItem[], extraIds: string[]): Ent
     const item = byId.get(id);
     return {
       applicationId: id,
-      status: ConfigurationStatus.ENABLED,
+      status: item?.status ?? ConfigurationStatus.ENABLED,
       validUntil: item?.validUntil || undefined,
     };
   });
@@ -110,12 +110,26 @@ export function extraIdsForResolve(
   const ids = new Set(extraIds);
   const previousById = new Map(previous.map((item) => [item.applicationId, item]));
   for (const item of items) {
+    if (!isLockedEntitlement(item)) {
+      continue;
+    }
+    if (isOverrideEntitlement(item)) {
+      ids.add(item.applicationId);
+    }
     const before = previousById.get(item.applicationId);
-    if (before && (before.validUntil || undefined) !== (item.validUntil || undefined)) {
+    if (
+      before
+      && ((before.validUntil || undefined) !== (item.validUntil || undefined)
+        || before.status !== item.status)
+    ) {
       ids.add(item.applicationId);
     }
   }
   return [...ids];
+}
+
+export function isOverrideEntitlement(item: EntitlementItem): boolean {
+  return item.status === ConfigurationStatus.DISABLED || Boolean(item.validUntil);
 }
 
 export function isRemovableEntitlement(item: EntitlementItem): boolean {
@@ -124,6 +138,10 @@ export function isRemovableEntitlement(item: EntitlementItem): boolean {
 
 export function isLockedEntitlement(item: EntitlementItem): boolean {
   return item.source === EntitlementSource.INITIALIZATION || item.source === EntitlementSource.PLAN;
+}
+
+export function isStatusEditable(item: EntitlementItem): boolean {
+  return item.source !== EntitlementSource.INITIALIZATION;
 }
 
 export function emptyEntitlement(applicationId: string, applicationName: string): EntitlementItem {

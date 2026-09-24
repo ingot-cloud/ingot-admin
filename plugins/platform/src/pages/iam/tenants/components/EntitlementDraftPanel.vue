@@ -34,7 +34,7 @@
         </el-form-item>
       </in-form>
       <div class="text-12px text-[var(--el-text-color-secondary)]">
-        组织默认应用必须开通，不可取消。套餐贡献的行不可单独移除。选中即开通，不填结束时间则无限使用。开通不等于业务授权。
+        组织默认应用必须开通，不可取消也不可停用。套餐行不可单独移除，但可对该组织停用。不填结束时间则无限使用。开通不等于业务授权。
       </div>
       <div class="rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px">
         <div v-if="resolving" class="text-12px text-[var(--el-text-color-secondary)]">正在解析开通并集</div>
@@ -57,12 +57,22 @@
               移除
             </in-button>
           </div>
-          <el-date-picker
-            v-model="item.validUntil"
-            type="datetime"
-            value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="不填则无限使用"
-          />
+          <div class="flex items-center gap-12px">
+            <in-select
+              v-model="item.status"
+              class="w-120px"
+              :options="statusOptions"
+              placeholder="请选择开通状态"
+              :disabled="!isStatusEditable(item)"
+            />
+            <el-date-picker
+              v-model="item.validUntil"
+              class="flex-1"
+              type="datetime"
+              value-format="YYYY-MM-DD HH:mm:ss"
+              placeholder="不填则无限使用"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -85,6 +95,7 @@ import {
   iamEnumLabel,
   IAM_DEFAULT_PAGE_SIZE,
   toIamSelectRecords,
+  useConfigurationStatusEnum,
   type EntitlementDraft,
   type IamSelectOption,
 } from "@ingot/admin-common";
@@ -97,6 +108,7 @@ import {
   extraSelectOptionsOf,
   isLockedEntitlement,
   isRemovableEntitlement,
+  isStatusEditable,
   toEntitlementDrafts,
   type EntitlementItem,
 } from "../wizard";
@@ -107,6 +119,8 @@ const props = defineProps<{
   resolveUnion: (input: { planId?: string; extras: EntitlementDraft[] }) => Promise<EntitlementItem[]>;
 }>();
 
+const statusEnum = useConfigurationStatusEnum();
+const statusOptions = statusEnum.getOptions();
 const extras = ref<IamSelectOption[]>([]);
 const items = ref<EntitlementItem[]>([]);
 const resolvedDrafts = ref<EntitlementDraft[]>([]);

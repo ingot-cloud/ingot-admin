@@ -35,19 +35,19 @@
   <in-drawer v-model="detailVisible" title="审计详情" size="560px">
     <in-form v-if="detail" :editing="false">
       <el-form-item label="类型">
-        <span>{{ detail.record.changeType || "—" }}</span>
+        <span>{{ detail.record.changeType || "-" }}</span>
       </el-form-item>
       <el-form-item label="时间">
-        <span>{{ detail.record.timestamp || "—" }}</span>
+        <span>{{ detail.record.timestamp || "-" }}</span>
       </el-form-item>
       <el-form-item label="操作者">
-        <span>{{ detail.record.actor?.displayName || detail.record.actor?.memberId || "—" }}</span>
+        <span>{{ detail.record.actor?.displayName || detail.record.actor?.memberId || "-" }}</span>
       </el-form-item>
       <el-form-item label="对象">
-        <span>{{ detail.record.target?.name || detail.record.target?.id || "—" }}</span>
+        <span>{{ detail.record.target?.name || detail.record.target?.id || "-" }}</span>
       </el-form-item>
       <el-form-item label="追踪">
-        <span>{{ detail.record.traceId || "—" }}</span>
+        <span>{{ detail.record.traceId || "-" }}</span>
       </el-form-item>
       <el-form-item label="变更前">
         <pre class="whitespace-pre-wrap text-12px">{{ stringify(detail.record.before) }}</pre>
@@ -98,7 +98,7 @@ const detail = ref<ResourceDetail<AuditEntry>>();
 
 const stringify = (value: unknown): string => {
   if (value === undefined || value === null) {
-    return "—";
+    return "-";
   }
   return JSON.stringify(value, null, 2);
 };

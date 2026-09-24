@@ -46,8 +46,8 @@
             </biz-iam-record-link>
           </div>
         </template>
-        <template #phone="{ item }">{{ item.record.phone || "—" }}</template>
-        <template #email="{ item }">{{ item.record.email || "—" }}</template>
+        <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
+        <template #email="{ item }">{{ item.record.email || "-" }}</template>
         <template #enabled="{ item }">
           <el-tag :type="item.record.enabled ? 'success' : 'info'" effect="plain">
             {{ item.record.enabled ? "启用" : "停用" }}

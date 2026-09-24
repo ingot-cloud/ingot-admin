@@ -7,7 +7,9 @@
         <span>{{ item.applicationName }}</span>
       </div>
       <div class="pl-24px text-12px text-[var(--el-text-color-secondary)]">
-        来源 {{ sourceLabel(item.source) }} · {{ formatValidity(item.validFrom, item.validUntil) }}
+        <span :class="statusClass(item.status)">{{ statusLabel(item.status) }}</span>
+        · 来源 {{ sourceLabel(item.source) }} ·
+        {{ formatValidity(item.validFrom, item.validUntil) }}
       </div>
     </div>
   </div>
@@ -15,7 +17,12 @@
 
 <script setup lang="ts">
 import { Check } from "@element-plus/icons-vue";
-import { iamEnumLabel, EntitlementSourceExtArray } from "@ingot/admin-common";
+import {
+  ConfigurationStatus,
+  ConfigurationStatusExtArray,
+  EntitlementSourceExtArray,
+  iamEnumLabel,
+} from "@ingot/admin-common";
 import { formatValidity, type EntitlementItem } from "../wizard";
 
 defineOptions({ name: "EntitlementPreview" });
@@ -25,6 +32,11 @@ defineProps<{
 }>();
 
 const sourceLabel = (source?: string): string => iamEnumLabel(EntitlementSourceExtArray, source, "手动");
+const statusLabel = (status?: string): string => iamEnumLabel(ConfigurationStatusExtArray, status, "启用");
+const statusClass = (status?: string): string =>
+  status === ConfigurationStatus.DISABLED
+    ? "text-[var(--in-color-warning)]"
+    : "text-[var(--in-color-primary)]";
 </script>
 
 <style lang="postcss" scoped>

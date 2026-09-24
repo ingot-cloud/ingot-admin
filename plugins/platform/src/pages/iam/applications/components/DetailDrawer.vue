@@ -132,7 +132,7 @@
           </template>
           <template #name="{ item }">{{ asMenu(item).record.name }}</template>
           <template #path="{ item }">
-            {{ asMenu(item).record.path || asMenu(item).record.viewPath || "—" }}
+            {{ asMenu(item).record.path || asMenu(item).record.viewPath || "-" }}
           </template>
           <template #actions="{ item }">
             <in-button text link @click="privateOpenMenu(asMenu(item))">详情</in-button>

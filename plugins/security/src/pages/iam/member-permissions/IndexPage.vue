@@ -8,7 +8,7 @@
         <in-biz-tab-panel title="通讯录可见范围" name="directory">
           <el-form v-if="directory" label-position="top" class="p-16px">
             <el-form-item label="默认策略版本">
-              <span>{{ directoryDraft.defaultRevisionId || "—" }}</span>
+              <span>{{ directoryDraft.defaultRevisionId || "-" }}</span>
             </el-form-item>
             <el-form-item label="本地默认范围">
               <el-select v-model="defaultScope" clearable placeholder="继承固定版本" class="w-220px">
@@ -78,7 +78,7 @@
         <in-biz-tab-panel title="字段权限" name="fields">
           <el-form v-if="fields" label-position="top" class="p-16px">
             <el-form-item label="默认策略版本">
-              <span>{{ fieldDraft.defaultRevisionId || "—" }}</span>
+              <span>{{ fieldDraft.defaultRevisionId || "-" }}</span>
             </el-form-item>
             <div v-for="(rule, index) in fieldDraft.rules" :key="index" class="mb-16px border p-12px">
               <el-form-item :label="`字段规则 ${index + 1}`">

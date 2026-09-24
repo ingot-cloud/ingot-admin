@@ -56,7 +56,7 @@
         <in-detail-field label="显示名" :value="detail.record.displayName || detail.record.id">
           <el-input v-model="draft.displayName" clearable placeholder="请输入显示名" />
         </in-detail-field>
-        <in-detail-field label="登录名" :value="detail.record.username || '—'" />
+        <in-detail-field label="登录名" :value="detail.record.username || '-'" />
         <in-detail-field label="手机号" :value="detail.record.phone">
           <el-input v-model="draft.phone" clearable placeholder="请输入手机号" />
         </in-detail-field>

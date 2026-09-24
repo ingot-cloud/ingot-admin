@@ -18,10 +18,10 @@
           <el-input :model-value="lookedUpUsername" disabled />
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input :model-value="phone || '—'" disabled />
+          <el-input :model-value="phone || '-'" disabled />
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input :model-value="email || '—'" disabled />
+          <el-input :model-value="email || '-'" disabled />
         </el-form-item>
       </template>
     </in-form>

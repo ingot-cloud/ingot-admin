@@ -7,6 +7,7 @@ import {
   formatValidity,
   isLockedEntitlement,
   isRemovableEntitlement,
+  isStatusEditable,
   toPreviewItems,
 } from "./wizard";
 
@@ -51,6 +52,32 @@ describe("tenant entitlement drafts", () => {
     expect(isLockedEntitlement(items[0])).toBe(true);
     expect(isLockedEntitlement(items[1])).toBe(false);
     expect(formatValidity(undefined, undefined)).toBe("无限使用");
+    expect(isStatusEditable(items[0])).toBe(true);
+  });
+
+  it("套餐行停用会作为覆盖提交并保留状态，组织默认不可停用", () => {
+    const planDisabled = {
+      applicationId: "1",
+      applicationName: "套餐应用",
+      source: EntitlementSource.PLAN,
+      status: ConfigurationStatus.DISABLED,
+    };
+    const baseline = {
+      applicationId: "3",
+      applicationName: "治理",
+      source: EntitlementSource.INITIALIZATION,
+      status: ConfigurationStatus.ENABLED,
+    };
+    expect(extraIdsForResolve([planDisabled, baseline], [], [])).toEqual(["1"]);
+    expect(extraDraftsOf([planDisabled], ["1"])).toEqual([
+      {
+        applicationId: "1",
+        status: ConfigurationStatus.DISABLED,
+        validUntil: undefined,
+      },
+    ]);
+    expect(isStatusEditable(planDisabled)).toBe(true);
+    expect(isStatusEditable(baseline)).toBe(false);
   });
 
   it("编辑回填只把手动行当自选，不把未见过的默认行当覆盖", () => {

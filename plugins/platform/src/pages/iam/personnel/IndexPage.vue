@@ -54,8 +54,8 @@
                 </biz-iam-record-link>
               </div>
             </template>
-            <template #phone="{ item }">{{ item.record.phone || "—" }}</template>
-            <template #username="{ item }">{{ item.record.username || "—" }}</template>
+            <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
+            <template #username="{ item }">{{ item.record.username || "-" }}</template>
             <template #status="{ item }">
               <status-tag
                 v-if="memberStatusTone(item.record.status)"

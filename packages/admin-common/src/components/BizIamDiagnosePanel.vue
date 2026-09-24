@@ -2,7 +2,7 @@
   <div v-if="decision" class="flex flex-col gap-8px">
     <div>结论：{{ decision.allowed ? "允许" : "拒绝" }}</div>
     <div>说明：{{ decision.message }}</div>
-    <div>范围：{{ decision.scopeSummary || "—" }}</div>
+    <div>范围：{{ decision.scopeSummary || "-" }}</div>
     <div v-if="decision.sources?.length">
       来源：
       <span v-for="(item, index) in decision.sources" :key="`${item.kind}-${item.id}-${index}`">

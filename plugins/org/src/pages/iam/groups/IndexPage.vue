@@ -45,7 +45,7 @@
           </biz-iam-record-link>
         </template>
         <template #visibleMemberCount="{ item }">
-          {{ item.record.visibleMemberCount ?? "—" }}
+          {{ item.record.visibleMemberCount ?? "-" }}
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
