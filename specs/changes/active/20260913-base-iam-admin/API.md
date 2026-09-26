@@ -115,10 +115,11 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 | /v1/platform/applications/{id}/resources | GET 分页（可选 `name`/`code` 包含匹配）；POST 资源；/{resourceId} PUT/DELETE |
 | /v1/platform/applications/{id}/resources/{resourceId}/actions | GET 该资源全部操作（不分页），供权限树展开 |
 | /v1/platform/applications/{id}/action-catalog | GET 应用资源及操作树（不分页），供菜单选择操作 |
+| /v1/platform/applications/{id}/grant-catalog | GET 按资源分页返回启用资源及其启用操作与范围能力，供角色权限选择器；不把已选 ID 标进目录 |
 | /v1/platform/applications/{id}/actions | GET 分页（可选 `resourceId`、`name` 包含匹配、`ids` 逗号分隔回显）；POST 操作；/{actionId} PUT/PATCH/DELETE |
 | /v1/platform/applications/{id}/menus | GET `view=page` 分页或 `view=tree` 整树；POST 导航；/{menuId} PUT/DELETE |
 | /v1/platform/applications/{id}/menus/{menuId}/actions | GET 菜单已绑定操作及资源名称（不分页），供详情回显 |
-| /v1/platform/actions/lookup | POST `{ids}` 按操作 ID 解析应用、资源与范围能力，仅供选择器等已持有 ID 的回显；角色详情权限不走此接口 |
+| /v1/platform/actions/lookup | POST `{ids}` 按操作 ID 解析应用、资源与范围能力，仅供手里只有 ID 的回显；角色详情与编辑权限向导用已选授权，不走此接口 |
 | /v1/platform/plans | GET 可选 `name`、`status`、`view=CATALOG|SUMMARY`（SUMMARY 仅 `{id,name}`；CATALOG 的 PlanRecord 含 `applications` 展示内容）；POST；/{id} GET/PUT；套餐变化不自动改变既有开通 |
 | /v1/tenant/members | GET/POST 成员列表、创建成员关系；列表可选精确 `phone`/`email` |
 | /v1/tenant/members/{id} | GET/PATCH 组织资料，禁止全局凭证字段 |
