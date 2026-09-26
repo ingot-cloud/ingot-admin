@@ -41,7 +41,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权记录" name="assignments">
+        <in-biz-tab-panel title="授权记录" name="assignments" lazy>
           <in-table
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
@@ -85,7 +85,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权管理员" name="delegations">
+        <in-biz-tab-panel title="授权管理员" name="delegations" lazy>
           <in-table
             :loading="delegations.fetching.value"
             :data="delegations.pageInfo.value.records"
@@ -239,7 +239,7 @@ import { useOps } from "./useOps";
 
 const tab = ref("roles");
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
-  useOps();
+  useOps(tab);
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
 const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
