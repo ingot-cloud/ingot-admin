@@ -350,8 +350,24 @@ const privateSaveFields = (): void => {
     });
 };
 
-onMounted(() => {
+const loadDirectory = (): void => {
   SecurityDirectoryPolicyAPI().then((response) => applyDirectory(response.data));
+};
+
+const loadFields = (): void => {
+  if (fields.value) {
+    return;
+  }
   SecurityFieldPolicyAPI().then((response) => applyFields(response.data));
+};
+
+onMounted(() => {
+  loadDirectory();
+});
+
+watch(tab, (name) => {
+  if (name === "fields") {
+    loadFields();
+  }
 });
 </script>

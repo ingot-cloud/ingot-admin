@@ -113,6 +113,7 @@ const detail = ref<ResourceDetail<TenantRecord>>();
 const entitlements = ref<Array<ResourceDetail<EntitlementRecord>>>([]);
 const entitlementsVersion = ref("");
 const loadGuard = createLoadGuard();
+const entitlementsReady = ref(false);
 const entitlementWizardRef = ref<{
   show: (input: {
     tenantId: string;
@@ -153,35 +154,50 @@ const privateReset = (): void => {
   detail.value = undefined;
   entitlements.value = [];
   entitlementsVersion.value = "";
+  entitlementsReady.value = false;
   planName.value = "";
   draft.name = "";
   draft.avatar = undefined;
   draft.status = ConfigurationStatus.ENABLED;
 };
 
+const loadPlanName = (planId: string | undefined, guard = loadGuard): void => {
+  if (!planId) {
+    planName.value = "";
+    return;
+  }
+  PlatformPlanDetailAPI(planId).then((response) => {
+    if (guard.isCurrent()) {
+      planName.value = response.data.record.name;
+    }
+  });
+};
+
+const loadEntitlements = (id: string, guard = loadGuard): void => {
+  entitlementsReady.value = true;
+  collectIamPageRecords((page: { current?: number; size?: number }) =>
+    PlatformTenantEntitlementsAPI(id, page),
+  ).then((items) => {
+    if (!guard.isCurrent()) {
+      return;
+    }
+    applyEntitlements(items);
+    loadPlanName(detail.value?.record.planId, guard);
+  });
+};
+
 const load = (id: string): void => {
   const guard = loadGuard.begin();
   loading.value = true;
   privateReset();
-  Promise.all([
-    PlatformTenantDetailAPI(id),
-    collectIamPageRecords((page: { current?: number; size?: number }) =>
-      PlatformTenantEntitlementsAPI(id, page),
-    ),
-  ])
-    .then(([detailRes, items]) => {
+  PlatformTenantDetailAPI(id)
+    .then((detailRes) => {
       if (!guard.isCurrent()) {
         return;
       }
       applyDetail(detailRes.data);
-      applyEntitlements(items);
-      const currentPlanId = detailRes.data.record.planId;
-      if (currentPlanId) {
-        PlatformPlanDetailAPI(currentPlanId).then((response) => {
-          if (guard.isCurrent()) {
-            planName.value = response.data.record.name;
-          }
-        });
+      if (tab.value === "apps") {
+        loadEntitlements(id, guard);
       }
     })
     .finally(() => {
@@ -190,6 +206,13 @@ const load = (id: string): void => {
       }
     });
 };
+
+watch(tab, (name) => {
+  const id = detail.value?.record.id;
+  if (name === "apps" && id && !entitlementsReady.value) {
+    loadEntitlements(id);
+  }
+});
 
 const privateCancel = (): void => {
   session.exitEdit();
@@ -239,22 +262,9 @@ const privateOnEntitlementsSaved = (): void => {
     return;
   }
   const id = detail.value.record.id;
-  Promise.all([
-    PlatformTenantDetailAPI(id),
-    collectIamPageRecords((page: { current?: number; size?: number }) =>
-      PlatformTenantEntitlementsAPI(id, page),
-    ),
-  ]).then(([detailRes, items]) => {
+  PlatformTenantDetailAPI(id).then((detailRes) => {
     applyDetail(detailRes.data);
-    applyEntitlements(items);
-    const currentPlanId = detailRes.data.record.planId;
-    if (currentPlanId) {
-      PlatformPlanDetailAPI(currentPlanId).then((response) => {
-        planName.value = response.data.record.name;
-      });
-    } else {
-      planName.value = "";
-    }
+    loadEntitlements(id);
   });
   emits("success");
 };

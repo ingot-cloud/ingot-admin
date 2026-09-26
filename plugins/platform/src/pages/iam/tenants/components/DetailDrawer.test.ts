@@ -19,6 +19,8 @@ describe("platform iam tenant detail entitlements", () => {
     expect(apiSource).toContain("IamPageResponse<ResourceDetail<EntitlementRecord>>");
     expect(apiSource).toContain("toIamListParams(page)");
     expect(drawerSource).toContain("collectIamPageRecords");
+    expect(drawerSource).toContain("loadEntitlements");
+    expect(drawerSource).toContain('name === "apps"');
     expect(drawerSource).toContain("entitlementCollectionVersion");
     expect(drawerSource).not.toContain("entitlementRes.data ?? []");
   });

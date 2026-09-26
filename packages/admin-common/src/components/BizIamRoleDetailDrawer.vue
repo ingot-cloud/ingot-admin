@@ -228,6 +228,7 @@ const statusDraft = ref<ConfigurationStatus>(ConfigurationStatus.ENABLED);
 const baselineDefinition = ref("");
 const actionRefs = ref<Record<string, IamActionRef>>({});
 const revisionLoading = ref(false);
+const revisionsHydrated = ref(false);
 const loadGuard = createLoadGuard();
 const revisionGuard = createLoadGuard();
 const roleId = ref("");
@@ -472,12 +473,26 @@ const assignRevisionPage = (
   }
 };
 
+const resolveLatestGrantNames = (guard: { isCurrent: () => boolean }): Promise<void> => {
+  const ids = (latestRevision.value?.record.grants ?? []).map((item) => item.actionId).filter(Boolean);
+  if (!props.resolveActions || !ids.length) {
+    return Promise.resolve();
+  }
+  return props.resolveActions(ids).then((items) => {
+    if (!guard.isCurrent()) {
+      return;
+    }
+    actionRefs.value = Object.fromEntries(items.map((item) => [item.id, item]));
+  });
+};
+
 const load = (id: string): void => {
   const guard = loadGuard.begin();
   const revisionsGuard = revisionGuard.begin();
   const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
   loading.value = true;
   revisionLoading.value = true;
+  revisionsHydrated.value = false;
   detail.value = undefined;
   latestRevision.value = undefined;
   actionRefs.value = {};
@@ -485,34 +500,25 @@ const load = (id: string): void => {
   revisionActionNames.value = {};
   revisionPage.value = { current: 1, size, total: 0, records: [] };
   definition.value = emptyRoleDefinitionDraft();
-  Promise.all([
-    props.getApi(id),
-    props.listRevisionsApi(id, { current: 1, size }),
-  ])
-    .then(([role, page]) => {
-      if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
+  props
+    .getApi(id)
+    .then((role) => {
+      if (!guard.isCurrent()) {
         return;
       }
       detail.value = role.data;
       statusDraft.value = knownStatus(role.data.record.status)
         ? role.data.record.status
         : ConfigurationStatus.ENABLED;
+      return props.listRevisionsApi(id, { current: 1, size });
+    })
+    .then((page) => {
+      if (!page || !guard.isCurrent() || !revisionsGuard.isCurrent()) {
+        return;
+      }
       assignRevisionPage(page.data, true);
-      return hydrateRevisionDiffs().then(() => {
-        if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
-          return;
-        }
-        const ids = (latestRevision.value?.record.grants ?? []).map((item) => item.actionId).filter(Boolean);
-        if (!props.resolveActions || !ids.length) {
-          return;
-        }
-        return props.resolveActions(ids).then((items) => {
-          if (!guard.isCurrent()) {
-            return;
-          }
-          actionRefs.value = Object.fromEntries(items.map((item) => [item.id, item]));
-        });
-      });
+      applyRevisionDiffs(page.data.records ?? []);
+      return resolveLatestGrantNames(guard);
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -521,6 +527,13 @@ const load = (id: string): void => {
       }
     });
 };
+
+watch(tab, (name) => {
+  if (name === "revisions" && latestRevision.value && !revisionsHydrated.value) {
+    revisionsHydrated.value = true;
+    void hydrateRevisionDiffs();
+  }
+});
 
 const privateLoadRevisionPage = (): void => {
   const id = roleId.value;

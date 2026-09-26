@@ -240,7 +240,7 @@ import { useOps } from "./useOps";
 
 const tab = ref("roles");
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
-  useOps();
+  useOps(tab);
 const createRef = ref<{ show: () => void }>();
 const customizeRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();

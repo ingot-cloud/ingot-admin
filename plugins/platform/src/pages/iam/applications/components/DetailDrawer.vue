@@ -214,6 +214,8 @@ const tab = ref("base");
 const loading = ref(false);
 const resourceLoading = ref(false);
 const menuLoading = ref(false);
+const catalogReady = ref(false);
+const menusReady = ref(false);
 const detail = ref<ResourceDetail<ApplicationRecord>>();
 const resourcePage = ref<Page<ResourceDetail<AppResourceRecord>>>({
   current: 1,
@@ -369,6 +371,20 @@ const privateOnResourceCurrentChange = (payload: { value: number }): void => {
   loadResources();
 };
 
+watch(tab, (name) => {
+  if (!detail.value) {
+    return;
+  }
+  if (name === "catalog" && !catalogReady.value) {
+    catalogReady.value = true;
+    loadResources();
+  }
+  if (name === "menus" && !menusReady.value) {
+    menusReady.value = true;
+    loadMenus();
+  }
+});
+
 const load = (id: string): void => {
   const guard = loadGuard.begin();
   loading.value = true;
@@ -380,6 +396,8 @@ const load = (id: string): void => {
     records: [],
   };
   menus.value = [];
+  catalogReady.value = false;
+  menusReady.value = false;
   resourceFilter.name = "";
   resourceFilter.code = "";
   menuFilter.name = "";
@@ -397,8 +415,14 @@ const load = (id: string): void => {
       }
       detail.value = response.data;
       applyDraft(response.data.record);
-      loadResources(id);
-      loadMenus(id);
+      if (tab.value === "catalog") {
+        catalogReady.value = true;
+        loadResources(id);
+      }
+      if (tab.value === "menus") {
+        menusReady.value = true;
+        loadMenus(id);
+      }
     })
     .finally(() => {
       if (guard.isCurrent()) {

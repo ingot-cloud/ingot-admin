@@ -45,5 +45,8 @@ describe("platform iam application DetailDrawer", () => {
     expect(source).toContain("applicationCode");
     expect(source).toContain('type="danger"');
     expect(source).not.toContain("size: 200");
+    expect(source).toContain("catalogReady");
+    expect(source).toContain('name === "catalog"');
+    expect(source).toContain('name === "menus"');
   });
 });
