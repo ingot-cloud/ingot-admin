@@ -412,6 +412,20 @@ export interface AppActionCatalogView {
   resources: AppActionCatalogResource[];
 }
 
+export interface GrantCatalogAction {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface GrantCatalogResource {
+  id: string;
+  code: string;
+  name: string;
+  scopeCapabilities: ScopeKind[];
+  actions: GrantCatalogAction[];
+}
+
 export interface AppMenuActionRecord {
   id: string;
   code: string;

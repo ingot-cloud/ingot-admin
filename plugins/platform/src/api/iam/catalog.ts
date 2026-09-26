@@ -12,6 +12,7 @@ import {
   type ActionLookupRecord,
   type AppActionCatalogView,
   type AppMenuActionRecord,
+  type GrantCatalogResource,
   type ResourceListQuery,
   type AppActionDraft,
   type AppActionRecord,
@@ -321,6 +322,20 @@ export function PlatformActionCatalogAPI(
   options?: RequestOptions,
 ): Promise<R<AppActionCatalogView>> {
   return request.get<AppActionCatalogView>(`${APP_PATH}/${applicationId}/action-catalog`, undefined, options);
+}
+
+export function PlatformGrantCatalogAPI(
+  applicationId: string,
+  page: Page = defaultCatalogPage(),
+  options?: RequestOptions,
+): Promise<R<Page<GrantCatalogResource>>> {
+  return request
+    .get<IamPageResponse<GrantCatalogResource>>(
+      `${APP_PATH}/${applicationId}/grant-catalog`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformResourceActionsAPI(

@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full min-h-0">
-    <aside class="w-240px shrink-0 flex flex-col min-h-0 pr-16px">
+    <aside class="w-220px shrink-0 flex flex-col min-h-0 pr-16px">
       <el-input
         v-model="appQuery"
         class="mb-12px"
@@ -29,7 +29,7 @@
         </div>
       </in-loading>
     </aside>
-    <section class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px">
+    <section class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] px-16px">
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
       <in-loading :loading="resourceLoading" class="flex-1 min-h-0">
         <div class="h-full overflow-auto">
@@ -37,21 +37,24 @@
             先从左侧选择{{ appKindLabel }}
           </div>
           <in-tree
-            v-else
-            :key="applicationId"
+            v-else-if="resourceReady"
+            :key="resourceTreeKey"
             ref="treeRef"
             :data="treeData"
             node-key="id"
-            lazy
             show-checkbox
-            check-strictly
             :props="treeProps"
-            :load="privateLoadNode"
             :default-checked-keys="checkedKeys"
-            @check-change="privateOnCheckChange"
+            @check="privateOnCheck"
           >
             <template #default="{ data }">
               <span class="truncate">{{ data.name }}</span>
+              <span
+                v-if="resourceCheckHint(data)"
+                class="ml-8px shrink-0 text-12px text-[var(--el-text-color-secondary)]"
+              >
+                {{ resourceCheckHint(data) }}
+              </span>
             </template>
           </in-tree>
           <div v-if="resourceHasMore" class="flex justify-center py-8px">
@@ -62,6 +65,29 @@
         </div>
       </in-loading>
     </section>
+    <aside class="w-280px shrink-0 flex flex-col min-h-0 min-w-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px">
+      <div class="mb-12px">已选 {{ grants.length }} 个权限</div>
+      <div class="flex-1 min-h-0 overflow-auto">
+        <div v-if="!selectedGroups.length" class="text-12px text-[var(--el-text-color-secondary)]">
+          尚未选择权限
+        </div>
+        <div v-for="app in selectedGroups" :key="app.applicationId" class="flex flex-col gap-12px mb-16px">
+          <div>{{ app.applicationName }}</div>
+          <div class="h-1px bg-[var(--in-border-color)]" />
+          <div v-for="resource in app.resources" :key="resource.resourceId" class="flex flex-col gap-8px">
+            <div class="truncate">{{ resource.resourceName }}</div>
+            <div
+              v-for="grant in resource.grants"
+              :key="grant.actionId"
+              class="pl-12px flex items-center gap-8px min-w-0"
+            >
+              <span class="truncate flex-1 min-w-0">{{ grant.actionName }}</span>
+              <in-close-button size="sm" :label="`移除 ${grant.actionName}`" @click="privateRemoveGrant(grant.actionId)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
   </div>
 </template>
 
@@ -71,17 +97,14 @@ import {
   AuthorizationDomain,
   ConfigurationStatus,
   IAM_DEFAULT_PAGE_SIZE,
-  type AppResourceRecord,
   type ApplicationRecord,
+  type GrantCatalogAction,
+  type GrantCatalogResource,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import {
-  PlatformActionLookupAPI,
-  PlatformApplicationPageAPI,
-  PlatformResourceActionsAPI,
-  PlatformResourcePageAPI,
-} from "@/api/iam/catalog";
-import { defaultScope, type SelectedGrant } from "../wizard";
+import { InCloseButton } from "@ingot/admin-core";
+import { PlatformApplicationPageAPI, PlatformGrantCatalogAPI } from "@/api/iam/catalog";
+import { defaultScope, groupGrants, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
 
@@ -99,26 +122,11 @@ interface CatalogApp {
   name: string;
 }
 
-interface CatalogAction {
-  id: string;
-  code: string;
-  name: string;
-}
-
-interface CatalogResource {
-  id: string;
-  name: string;
-  scopeCapabilities: SelectedGrant["scopeCapabilities"];
-  actions: CatalogAction[];
-  loaded: boolean;
-}
-
 interface GrantTreeNode {
   id: string;
   name: string;
   kind: "resource" | "action";
   resourceId: string;
-  loaded?: boolean;
   isLeaf: boolean;
   actionId?: string;
   actionCode?: string;
@@ -126,9 +134,8 @@ interface GrantTreeNode {
 }
 
 interface TreeExpose {
-  getCheckedNodes: (leafOnly?: boolean) => GrantTreeNode[];
+  getCheckedKeys: (leafOnly?: boolean) => string[];
   setCheckedKeys: (keys: string[]) => void;
-  getNode: (key: string) => { expand: () => void } | undefined;
 }
 
 const grants = defineModel<SelectedGrant[]>({ default: () => [] });
@@ -146,61 +153,25 @@ const currentApp = computed(() => applications.value.find((item) => item.id === 
 const appKindLabel = computed(() =>
   props.domain === AuthorizationDomain.PLATFORM ? "平台应用" : "组织应用",
 );
-const resources = ref<CatalogResource[]>([]);
+const resources = ref<GrantCatalogResource[]>([]);
 const resourcePage = ref(1);
 const resourceTotal = ref(0);
 const resourceLoading = ref(false);
-const resourceCache = new Map<string, CatalogResource[]>();
+const resourceReady = ref(false);
+const resourceCache = new Map<string, GrantCatalogResource[]>();
 const resourceTotals = new Map<string, number>();
-
-const appHasMore = computed(() => applications.value.length < appTotal.value);
-const resourceHasMore = computed(
-  () => Boolean(applicationId.value) && resources.value.length < resourceTotal.value,
+const resourceTreeKey = computed(
+  () => `${applicationId.value}:${resources.value.map((item) => item.id).join("|")}`,
 );
 
-const applyingChecks = ref(false);
-const treeData = ref<GrantTreeNode[]>([]);
-const actionLoads = new Map<string, Promise<void>>();
+const cloneResources = (rows: GrantCatalogResource[]): GrantCatalogResource[] =>
+  rows.map((item) => ({
+    ...item,
+    scopeCapabilities: [...item.scopeCapabilities],
+    actions: item.actions.map((action) => ({ ...action })),
+  }));
 
-const grantByAction = computed(() => new Map(grants.value.map((item) => [item.actionId, item])));
-
-const keysFromGrants = (): string[] => {
-  const keys = grants.value.map((item) => `a:${item.actionId}`);
-  for (const resource of resources.value) {
-    if (!resource.loaded || !resource.actions.length) {
-      continue;
-    }
-    if (resource.actions.every((item) => grantByAction.value.has(item.id))) {
-      keys.push(`r:${resource.id}`);
-    }
-  }
-  return keys;
-};
-
-const checkedKeys = computed(() => keysFromGrants());
-
-const applyTreeChecks = (): void => {
-  applyingChecks.value = true;
-  treeRef.value?.setCheckedKeys(keysFromGrants());
-  nextTick(() => {
-    applyingChecks.value = false;
-  });
-};
-
-watch(
-  () => resources.value.map((item) => item.id).join("|"),
-  () => {
-    treeData.value = resources.value.map((resource) => ({
-      id: `r:${resource.id}`,
-      name: resource.name,
-      kind: "resource",
-      resourceId: resource.id,
-      isLeaf: false,
-    }));
-  },
-);
-
-const actionNodesOf = (resource: CatalogResource): GrantTreeNode[] =>
+const actionNodesOf = (resource: GrantCatalogResource): GrantTreeNode[] =>
   resource.actions.map((action) => ({
     id: `a:${action.id}`,
     name: action.name,
@@ -211,18 +182,93 @@ const actionNodesOf = (resource: CatalogResource): GrantTreeNode[] =>
     isLeaf: true,
   }));
 
-const resourceOf = (id: string): CatalogResource | undefined => resources.value.find((item) => item.id === id);
+const resourceNodesOf = (): GrantTreeNode[] =>
+  resources.value.map((resource) => ({
+    id: `r:${resource.id}`,
+    name: resource.name,
+    kind: "resource",
+    resourceId: resource.id,
+    isLeaf: resource.actions.length === 0,
+    children: actionNodesOf(resource),
+  }));
 
-const asEnabled = <T extends { status: ConfigurationStatus }>(item: ResourceDetail<T>): boolean =>
-  item.record.status === ConfigurationStatus.ENABLED;
+const appHasMore = computed(() => applications.value.length < appTotal.value);
+const resourceHasMore = computed(
+  () => Boolean(applicationId.value) && resources.value.length < resourceTotal.value,
+);
+
+const applyingChecks = ref(false);
+let treeSyncGeneration = 0;
+const treeData = ref<GrantTreeNode[]>([]);
+
+const grantByAction = computed(() => new Map(grants.value.map((item) => [item.actionId, item])));
+const selectedGroups = computed(() => groupGrants(grants.value));
+
+const selectedCountOf = (resourceId: string): number =>
+  grants.value.filter((item) => item.resourceId === resourceId).length;
+
+const resourceCheckHint = (data: GrantTreeNode): string => {
+  if (data.kind !== "resource") {
+    return "";
+  }
+  const resource = resourceOf(data.resourceId);
+  if (!resource?.actions.length) {
+    return "";
+  }
+  const selected = selectedCountOf(data.resourceId);
+  if (!selected) {
+    return "";
+  }
+  return selected === resource.actions.length ? "全部" : `已选 ${selected}`;
+};
+
+const keysFromGrants = (): string[] =>
+  grants.value
+    .filter((item) => resources.value.some((resource) => resource.actions.some((action) => action.id === item.actionId)))
+    .map((item) => `a:${item.actionId}`);
+
+const checkedKeys = computed(() => keysFromGrants());
+
+const beginTreeSync = (): void => {
+  treeSyncGeneration += 1;
+  applyingChecks.value = true;
+};
+
+const endTreeSync = (): void => {
+  const generation = treeSyncGeneration;
+  nextTick(() => {
+    nextTick(() => {
+      if (generation === treeSyncGeneration) {
+        applyingChecks.value = false;
+      }
+    });
+  });
+};
+
+const applyTreeChecks = (): void => {
+  beginTreeSync();
+  treeRef.value?.setCheckedKeys(keysFromGrants());
+  endTreeSync();
+};
+
+watch(
+  () => resources.value.map((item) => item.id).join("|"),
+  () => {
+    treeData.value = resourceNodesOf();
+  },
+);
+
+const resourceOf = (id: string): GrantCatalogResource | undefined => resources.value.find((item) => item.id === id);
 
 const privateSearchApps = (): void => {
+  beginTreeSync();
   appliedAppQuery.value = appQuery.value.trim();
   applications.value = [];
   appPage.value = 1;
   appTotal.value = 0;
   applicationId.value = "";
   resources.value = [];
+  resourceReady.value = false;
   void privateLoadApps();
 };
 
@@ -267,15 +313,20 @@ const privateLoadMoreApps = (): void => {
 };
 
 const privateSelectApp = (app: CatalogApp): void => {
+  beginTreeSync();
   applicationId.value = app.id;
   const cached = resourceCache.get(app.id);
   if (cached) {
-    resources.value = cached;
+    resourceLoading.value = true;
+    resources.value = cloneResources(cached);
     resourcePage.value = Math.max(1, Math.ceil(cached.length / IAM_DEFAULT_PAGE_SIZE));
     resourceTotal.value = resourceTotals.get(app.id) ?? cached.length;
-    void privateHydrateGrantedResources();
+    resourceReady.value = true;
+    nextTick(applyTreeChecks);
+    resourceLoading.value = false;
     return;
   }
+  resourceReady.value = false;
   resources.value = [];
   resourcePage.value = 1;
   resourceTotal.value = 0;
@@ -289,24 +340,24 @@ const privateLoadResources = async (): Promise<void> => {
   }
   resourceLoading.value = true;
   try {
-    const response = await PlatformResourcePageAPI(appId, {
+    const response = await PlatformGrantCatalogAPI(appId, {
       current: resourcePage.value,
       size: IAM_DEFAULT_PAGE_SIZE,
     });
+    if (applicationId.value !== appId) {
+      return;
+    }
     resourceTotal.value = response.data.total ?? 0;
-    const next = (response.data.records ?? []).filter(asEnabled).map((item: ResourceDetail<AppResourceRecord>) => ({
-      id: item.record.id,
-      name: item.record.name,
-      scopeCapabilities: [...item.record.scopeCapabilities],
-      actions: [] as CatalogAction[],
-      loaded: false,
-    }));
+    const next = cloneResources(response.data.records ?? []);
     resources.value = resourcePage.value === 1 ? next : [...resources.value, ...next];
-    resourceCache.set(appId, resources.value);
+    resourceCache.set(appId, cloneResources(resources.value));
     resourceTotals.set(appId, resourceTotal.value);
-    await privateHydrateGrantedResources();
+    resourceReady.value = true;
+    nextTick(applyTreeChecks);
   } finally {
-    resourceLoading.value = false;
+    if (applicationId.value === appId) {
+      resourceLoading.value = false;
+    }
   }
 };
 
@@ -315,33 +366,7 @@ const privateLoadMoreResources = (): void => {
   void privateLoadResources();
 };
 
-const privateEnsureActions = (resource: CatalogResource): Promise<void> => {
-  if (resource.loaded) {
-    return Promise.resolve();
-  }
-  const pending = actionLoads.get(resource.id);
-  if (pending) {
-    return pending;
-  }
-  const request = (async () => {
-    if (!applicationId.value) {
-      return;
-    }
-    const response = await PlatformResourceActionsAPI(applicationId.value, resource.id);
-    resource.actions = (response.data ?? [])
-      .filter((item) => item.status === ConfigurationStatus.ENABLED)
-      .map((item) => ({
-        id: item.id,
-        code: item.code,
-        name: item.name || item.code,
-      }));
-    resource.loaded = true;
-  })();
-  actionLoads.set(resource.id, request);
-  return request;
-};
-
-const toGrant = (resource: CatalogResource, action: CatalogAction): SelectedGrant =>
+const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): SelectedGrant =>
   grantByAction.value.get(action.id) ?? {
     actionId: action.id,
     actionCode: action.code,
@@ -354,104 +379,35 @@ const toGrant = (resource: CatalogResource, action: CatalogAction): SelectedGran
     scopeCapabilities: [...resource.scopeCapabilities],
   };
 
-const replaceResourceGrants = (resource: CatalogResource, actions: CatalogAction[]): void => {
-  const keep = grants.value.filter((item) => item.resourceId !== resource.id);
-  grants.value = [...keep, ...actions.map((action) => toGrant(resource, action))];
+const replaceLoadedGrants = (actionIds: Set<string>): void => {
+  const loaded = new Set(resources.value.map((item) => item.id));
+  const keep = grants.value.filter(
+    (item) => item.applicationId !== applicationId.value || !loaded.has(item.resourceId),
+  );
+  const next = [...keep];
+  for (const resource of resources.value) {
+    for (const action of resource.actions) {
+      if (actionIds.has(action.id)) {
+        next.push(toGrant(resource, action));
+      }
+    }
+  }
+  grants.value = next;
 };
 
-const privateLoadNode = (
-  node: { level: number; data?: Partial<GrantTreeNode> },
-  resolve: (data: GrantTreeNode[]) => void,
-): void => {
-  const data = node.data;
-  if (node.level === 0 || data?.kind !== "resource" || !data.resourceId) {
-    resolve([]);
-    return;
-  }
-  const resource = resourceOf(data.resourceId);
-  if (!resource) {
-    resolve([]);
-    return;
-  }
-  void privateEnsureActions(resource).then(() => {
-    resolve(actionNodesOf(resource));
-    nextTick(() => {
-      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
-      applyTreeChecks();
-    });
-  });
-};
-
-const privateOnCheckChange = (data: GrantTreeNode, checked: boolean): void => {
+const privateOnCheck = (): void => {
   if (applyingChecks.value) {
     return;
   }
-  const resource = resourceOf(data.resourceId);
-  if (!resource) {
-    return;
-  }
-  if (data.kind === "action" && data.actionId) {
-    const action = resource.actions.find((item) => item.id === data.actionId);
-    if (!action) {
-      return;
-    }
-    if (checked) {
-      replaceResourceGrants(resource, [
-        ...resource.actions.filter((item) => grantByAction.value.has(item.id) && item.id !== action.id),
-        action,
-      ]);
-    } else {
-      grants.value = grants.value.filter((item) => item.actionId !== data.actionId);
-    }
-    nextTick(applyTreeChecks);
-    return;
-  }
-  void privateEnsureActions(resource).then(() => {
-    replaceResourceGrants(resource, checked ? resource.actions : []);
-    nextTick(() => {
-      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
-      applyTreeChecks();
-    });
-  });
+  const keys = treeRef.value?.getCheckedKeys(true) ?? [];
+  replaceLoadedGrants(
+    new Set(keys.filter((key) => key.startsWith("a:")).map((key) => key.slice(2))),
+  );
 };
 
-const privateHydrateGrantedResources = async (): Promise<void> => {
-  const selectedIds = grants.value
-    .filter((item) => item.applicationId === applicationId.value)
-    .map((item) => item.actionId);
-  if (!selectedIds.length) {
-    applyTreeChecks();
-    return;
-  }
-  const response = await PlatformActionLookupAPI({ ids: selectedIds });
-  const byResource = new Map<string, CatalogAction[]>();
-  for (const item of (response.data ?? []).filter(
-    (row) => row.applicationId === applicationId.value && row.status === ConfigurationStatus.ENABLED,
-  )) {
-    const list = byResource.get(item.resourceId) ?? [];
-    list.push({
-      id: item.id,
-      code: item.code,
-      name: item.name || item.code,
-    });
-    byResource.set(item.resourceId, list);
-  }
-  for (const resource of resources.value) {
-    const actions = byResource.get(resource.id);
-    if (!actions) {
-      continue;
-    }
-    resource.actions = actions;
-    resource.loaded = true;
-  }
-  await nextTick();
-  await nextTick();
-  for (const resource of resources.value) {
-    if (resource.loaded) {
-      treeRef.value?.getNode(`r:${resource.id}`)?.expand();
-    }
-  }
-  applyTreeChecks();
+const privateRemoveGrant = (actionId: string): void => {
+  grants.value = grants.value.filter((item) => item.actionId !== actionId);
+  nextTick(applyTreeChecks);
 };
 
 onMounted(() => {
