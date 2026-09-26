@@ -13,7 +13,10 @@
       <wizard-nav :steps="APP_WIZARD_STEPS" :current="step" />
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
         <div class="mb-24px text-18px shrink-0">{{ APP_WIZARD_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 1 || step === 2 ? 'overflow-hidden' : 'overflow-auto'">
+        <div
+          class="flex-1 min-h-0"
+          :class="step === 1 || step === 2 ? 'overflow-hidden' : 'overflow-auto'"
+        >
           <in-form v-if="step === 0" class="max-w-560px" label-position="top">
             <el-form-item label="编码" required>
               <el-input v-model="profile.code" clearable placeholder="如 contacts，创建后不可改" />
@@ -25,7 +28,12 @@
               <application-icon-field v-model="profile.icon" />
             </el-form-item>
             <el-form-item label="说明">
-              <el-input v-model="profile.description" type="textarea" :rows="3" placeholder="请输入说明" />
+              <el-input
+                v-model="profile.description"
+                type="textarea"
+                :rows="3"
+                placeholder="请输入说明"
+              />
             </el-form-item>
             <el-form-item label="排序">
               <el-input-number v-model="profile.sortOrder" :min="0" placeholder="请输入排序" />
@@ -34,11 +42,7 @@
               <el-switch v-model="profile.baseline" />
             </el-form-item>
           </in-form>
-          <catalog-draft-panel
-            v-else-if="step === 1"
-            v-model="resources"
-            :profile="profile"
-          />
+          <catalog-draft-panel v-else-if="step === 1" v-model="resources" :profile="profile" />
           <menu-draft-panel
             v-else-if="step === 2"
             v-model:resources="resources"
@@ -153,7 +157,8 @@ const privateNext = (): void => {
 };
 
 const privateSubmit = async (): Promise<void> => {
-  const firstError = profileError(profile) ?? catalogError(resources.value) ?? menuError(menus.value);
+  const firstError =
+    profileError(profile) ?? catalogError(resources.value) ?? menuError(menus.value);
   if (firstError) {
     Message.warning(firstError);
     return;
