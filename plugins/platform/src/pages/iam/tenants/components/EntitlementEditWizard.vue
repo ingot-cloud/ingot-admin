@@ -93,6 +93,9 @@ const resolveEditUnion = async (input: {
   planId?: string;
   extras: EntitlementDraft[];
 }): Promise<EntitlementItem[]> => {
+  if (!expectedVersion.value) {
+    return previewItems.value;
+  }
   const response = await PlatformTenantEntitlementsPreviewAPI(tenantId.value, {
     expectedVersion: expectedVersion.value,
     planId: input.planId,

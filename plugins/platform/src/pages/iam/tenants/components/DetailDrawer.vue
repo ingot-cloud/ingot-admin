@@ -50,9 +50,10 @@
     <in-biz-tab-panel title="应用开通" name="apps" :editable="false">
       <div class="flex flex-col gap-12px">
         <div class="flex items-center justify-between">
-          <div>已开通 {{ entitlementItems.length }} 个应用</div>
+          <div>已开通 {{ entitlementsLoading ? "—" : entitlementItems.length }} 个应用</div>
           <in-button
             v-auth="IamAction.PLATFORM_ENTITLEMENT_UPDATE"
+            :disabled="!canEditEntitlements"
             @in-click="privateEditEntitlements"
           >
             编辑
@@ -61,7 +62,9 @@
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           套餐变化不自动应用。开通不等于业务授权。
         </div>
-        <entitlement-preview :items="entitlementItems" />
+        <div v-loading="entitlementsLoading" class="min-h-120px">
+          <entitlement-preview v-show="!entitlementsLoading" :items="entitlementItems" />
+        </div>
       </div>
     </in-biz-tab-panel>
   </in-detail-drawer>
@@ -69,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
+import { Message, createLoadGuard, useDetailEditSession, type LoadGuard } from "@ingot/admin-core";
 import {
   BizIamStatusTag,
   ConfigurationStatus,
@@ -113,7 +116,10 @@ const detail = ref<ResourceDetail<TenantRecord>>();
 const entitlements = ref<Array<ResourceDetail<EntitlementRecord>>>([]);
 const entitlementsVersion = ref("");
 const loadGuard = createLoadGuard();
+const inactiveGuard: LoadGuard = { isCurrent: () => false };
+let activeGuard: LoadGuard = inactiveGuard;
 const entitlementsReady = ref(false);
+const entitlementsLoading = ref(false);
 const entitlementWizardRef = ref<{
   show: (input: {
     tenantId: string;
@@ -137,6 +143,9 @@ const entitlementItems = computed(() =>
     entitlements.value.map((item: ResourceDetail<EntitlementRecord>) => item.record),
   ),
 );
+const canEditEntitlements = computed(
+  () => !entitlementsLoading.value && Boolean(entitlementsVersion.value),
+);
 
 const applyDetail = (item: ResourceDetail<TenantRecord>): void => {
   detail.value = item;
@@ -155,13 +164,14 @@ const privateReset = (): void => {
   entitlements.value = [];
   entitlementsVersion.value = "";
   entitlementsReady.value = false;
+  entitlementsLoading.value = false;
   planName.value = "";
   draft.name = "";
   draft.avatar = undefined;
   draft.status = ConfigurationStatus.ENABLED;
 };
 
-const loadPlanName = (planId: string | undefined, guard = loadGuard): void => {
+const loadPlanName = (planId: string | undefined, guard = activeGuard): void => {
   if (!planId) {
     planName.value = "";
     return;
@@ -173,21 +183,29 @@ const loadPlanName = (planId: string | undefined, guard = loadGuard): void => {
   });
 };
 
-const loadEntitlements = (id: string, guard = loadGuard): void => {
+const loadEntitlements = (id: string, guard = activeGuard): void => {
   entitlementsReady.value = true;
+  entitlementsLoading.value = true;
   collectIamPageRecords((page: { current?: number; size?: number }) =>
     PlatformTenantEntitlementsAPI(id, page),
-  ).then((items) => {
-    if (!guard.isCurrent()) {
-      return;
-    }
-    applyEntitlements(items);
-    loadPlanName(detail.value?.record.planId, guard);
-  });
+  )
+    .then((items) => {
+      if (!guard.isCurrent()) {
+        return;
+      }
+      applyEntitlements(items);
+      loadPlanName(detail.value?.record.planId, guard);
+    })
+    .finally(() => {
+      if (guard.isCurrent()) {
+        entitlementsLoading.value = false;
+      }
+    });
 };
 
 const load = (id: string): void => {
   const guard = loadGuard.begin();
+  activeGuard = guard;
   loading.value = true;
   privateReset();
   PlatformTenantDetailAPI(id)
@@ -245,7 +263,7 @@ const privateSave = (): void => {
 };
 
 const privateEditEntitlements = (): void => {
-  if (!detail.value) {
+  if (!detail.value || !canEditEntitlements.value) {
     return;
   }
   entitlementWizardRef.value?.show({

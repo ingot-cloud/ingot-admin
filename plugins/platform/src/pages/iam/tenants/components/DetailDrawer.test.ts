@@ -20,6 +20,8 @@ describe("platform iam tenant detail entitlements", () => {
     expect(apiSource).toContain("toIamListParams(page)");
     expect(drawerSource).toContain("collectIamPageRecords");
     expect(drawerSource).toContain("loadEntitlements");
+    expect(drawerSource).toContain("activeGuard");
+    expect(drawerSource).not.toContain("guard = loadGuard):");
     expect(drawerSource).toContain('name === "apps"');
     expect(drawerSource).toContain("entitlementCollectionVersion");
     expect(drawerSource).not.toContain("entitlementRes.data ?? []");
@@ -62,6 +64,11 @@ describe("platform iam tenant detail entitlements", () => {
     expect(pickerSource).not.toContain("in-avatar");
     expect(catalogSource).toContain("CatalogRecordView.SUMMARY");
     expect(drawerSource).toContain("planId: detail.value.record.planId");
+    expect(drawerSource).toContain("v-loading=\"entitlementsLoading\"");
+    expect(drawerSource).toContain("canEditEntitlements");
+    expect(drawerSource).not.toContain(":loading=\"entitlementsLoading\"");
+    expect(panelSource).toContain("if (input.items)");
+    expect(editSource).toContain("if (!expectedVersion.value)");
     expect(wizardSource).toContain('v-show="step === 2"');
     expect(panelSource).toContain("locked-ids");
     expect(panelSource).toContain("不填则无限使用");

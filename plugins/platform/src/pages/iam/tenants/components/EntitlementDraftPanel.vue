@@ -223,6 +223,9 @@ defineExpose({
       ? extraSelectOptionsOf(items.value)
       : input.extras.map((item) => ({ ...item }));
     resolvedDrafts.value = toEntitlementDrafts(items.value);
+    if (input.items) {
+      return;
+    }
     await privateResolve();
   },
   refresh: privateResolve,
