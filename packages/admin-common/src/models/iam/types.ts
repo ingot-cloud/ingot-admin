@@ -614,6 +614,29 @@ export interface RoleDelta {
   scopes?: ScopeExpression[];
 }
 
+export interface RoleDisplayDelta extends RoleDelta {
+  actionName?: string;
+}
+
+export interface RoleGrantList {
+  items: RoleGrantRecord[];
+}
+
+export interface RoleGrantRecord {
+  actionId: string;
+  actionCode?: string;
+  actionName?: string;
+  applicationId?: string;
+  applicationCode?: string;
+  applicationName?: string;
+  resourceId?: string;
+  resourceCode?: string;
+  resourceName?: string;
+  scopes: ScopeExpression[];
+  scopeCapabilities: ScopeKind[];
+  status?: ConfigurationStatus;
+}
+
 export interface RoleDefinitionDraft {
   grants: ActionGrant[];
   deltas: RoleDelta[];
@@ -699,6 +722,7 @@ export interface RoleRevision {
   deltas: RoleDelta[];
   parameterDefinitions: RoleParameterDefinition[];
   metadataOverrides?: RoleMetadataOverrides;
+  displayDeltas?: RoleDisplayDelta[];
 }
 
 export interface RoleRevisionRef {

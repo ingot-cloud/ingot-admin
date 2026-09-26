@@ -17,6 +17,7 @@ import {
   type ReferenceImpactPreview,
   type ResourceDetail,
   type RoleCreateInput,
+  type RoleGrantList,
   type RolePreviewInput,
   type RolePublishInput,
   type RoleRevision,
@@ -241,6 +242,13 @@ export function PlatformRoleDetailAPI(
   return request.get<ResourceDetail<RoleSummary>>(`${rolePath("platform")}/${id}`, undefined, options);
 }
 
+export function PlatformRoleGrantsAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<RoleGrantList>> {
+  return request.get<RoleGrantList>(`${rolePath("platform")}/${id}/grants`, undefined, options);
+}
+
 export function PlatformRoleStatusAPI(
   id: string,
   params: ConfigurationStatusInput,
@@ -301,6 +309,13 @@ export function PlatformSharedRoleDetailAPI(
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<RoleSummary>>> {
   return request.get<ResourceDetail<RoleSummary>>(`${sharedPath}/${id}`, undefined, options);
+}
+
+export function PlatformSharedRoleGrantsAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<RoleGrantList>> {
+  return request.get<RoleGrantList>(`${sharedPath}/${id}/grants`, undefined, options);
 }
 
 export function PlatformSharedRoleStatusAPI(

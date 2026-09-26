@@ -11,6 +11,9 @@ describe("platform iam GrantPicker", () => {
     expect(source).toContain("PlatformResourceActionsAPI");
     expect(source).toContain("privateEnsureActions");
     expect(source).toContain("privateLoadNode");
+    expect(source).toContain("in-loading");
+    expect(source).toContain(":loading=\"appLoading\"");
+    expect(source).toContain(":loading=\"resourceLoading\"");
     expect(source).not.toContain("collectIamPageRecords");
     expect(source).not.toContain("selected.map((resource) => privateEnsureActions(resource))");
   });

@@ -130,6 +130,7 @@
   <shared-role-detail-drawer
     ref="detailRef"
     :get-api="PlatformRoleDetailAPI"
+    :list-grants-api="PlatformRoleGrantsAPI"
     :list-revisions-api="PlatformRoleRevisionPageAPI"
     :update-api="PlatformRoleUpdateAPI"
     :status-api="PlatformRoleStatusAPI"
@@ -205,6 +206,7 @@ import {
   PlatformRoleCreateAPI,
   PlatformRoleDeleteAPI,
   PlatformRoleDetailAPI,
+  PlatformRoleGrantsAPI,
   PlatformRolePageAPI,
   PlatformRolePublishAPI,
   PlatformRoleRevisionPageAPI,

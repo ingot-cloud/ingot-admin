@@ -7,6 +7,7 @@ import {
   type AuthorizationDomain,
   type IamActionRef,
   type IamSelectOption,
+  type RoleGrantRecord,
 } from "@ingot/admin-common";
 import {
   PlatformActionLookupAPI,
@@ -60,6 +61,26 @@ export async function resolveGrantActions(ids: string[]): Promise<IamActionRef[]
     applicationId: item.applicationId,
     applicationName: item.applicationName,
   }));
+}
+
+/** 把角色当前绑定权限接口还原成向导勾选模型。 */
+export function selectedGrantsOf(records: RoleGrantRecord[]): SelectedGrant[] {
+  return records
+    .filter((item) => item.actionId)
+    .map((item) => {
+      const capabilities = item.scopeCapabilities ?? [];
+      return {
+        actionId: item.actionId,
+        actionCode: item.actionCode ?? "",
+        actionName: item.actionName || item.actionCode || item.actionId,
+        resourceId: item.resourceId ?? "",
+        resourceName: item.resourceName || item.resourceCode || "",
+        applicationId: item.applicationId ?? "",
+        applicationName: item.applicationName || item.applicationCode || "",
+        scopes: item.scopes?.length ? item.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities)],
+        scopeCapabilities: [...capabilities],
+      } satisfies SelectedGrant;
+    });
 }
 
 /** 把已发布授权还原成向导勾选模型，补齐应用、资源和范围能力。 */

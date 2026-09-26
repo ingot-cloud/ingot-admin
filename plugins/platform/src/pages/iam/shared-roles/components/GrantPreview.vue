@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px">
+  <div class="grant-preview rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px">
     <div v-if="!groups.length" class="text-12px text-[var(--el-text-color-secondary)]">暂无权限</div>
     <div v-for="app in groups" :key="app.applicationId" class="flex flex-col gap-12px">
       <div>{{ app.applicationName }}</div>
@@ -38,6 +38,12 @@ const groups = computed(() => groupGrants(props.grants));
 </script>
 
 <style lang="postcss" scoped>
+.grant-preview {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
 .grant-check {
   color: var(--in-color-primary);
 }

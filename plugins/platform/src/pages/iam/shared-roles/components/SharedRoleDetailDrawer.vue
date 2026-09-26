@@ -14,10 +14,10 @@
         <span class="text-[var(--el-text-color-secondary)]">角色详情</span>
       </div>
     </template>
-    <in-form-skeleton v-if="loading" />
-    <template v-else-if="detail">
-      <div v-if="!editingProfile" class="h-full min-h-0 flex flex-col">
-        <div class="px-20px py-20px flex flex-col gap-8px">
+    <div class="in-detail-drawer role-detail-drawer">
+      <in-form-skeleton v-if="loading" />
+      <div v-else-if="detail && !editingProfile" class="role-detail-drawer__body">
+        <div class="role-detail-drawer__identity px-20px py-20px flex flex-col gap-8px">
           <div class="flex items-center gap-8px min-w-0 flex-wrap">
             <span class="text-18px truncate">{{ detail.record.name || "-" }}</span>
             <in-copy-tag v-if="detail.record.code" :text="detail.record.code" />
@@ -43,7 +43,8 @@
         </div>
         <in-biz-tabs v-model="tab" align-content>
           <in-biz-tab-panel title="权限" name="grants" :editable="false" fill>
-            <div class="grant-pane">
+            <in-form-skeleton v-if="grantLoading" />
+            <div v-else class="grant-pane">
               <div class="grant-pane__toolbar">
                 <div>拥有 {{ grants.length }} 个权限</div>
                 <in-button v-if="canPublish" @in-click="privateEditGrants">
@@ -90,7 +91,7 @@
           </in-biz-tab-panel>
         </in-biz-tabs>
       </div>
-      <div v-else class="profile-form">
+      <div v-else-if="detail" class="profile-form">
         <in-form>
           <el-form-item label="名称" required>
             <el-input v-model="profileDraft.name" placeholder="请输入名称" :disabled="!canEditProfile" />
@@ -112,7 +113,7 @@
           </el-form-item>
         </in-form>
       </div>
-    </template>
+    </div>
     <template v-if="editingProfile" #footer>
       <in-button @in-click="privateLeaveProfile">取消</in-button>
       <in-button
@@ -150,11 +151,11 @@ import {
   IamAction,
   objectActionAllowed,
   useConfigurationStatusEnum,
-  revisionDisplayDeltas,
   type ConfigurationStatusInput,
   type CreatedResource,
   type ResourceDetail,
   type RoleDelta,
+  type RoleGrantList,
   type RolePublishInput,
   type RoleRevision,
   type RoleSummary,
@@ -162,10 +163,11 @@ import {
 } from "@ingot/admin-common";
 import {
   PlatformSharedRoleDetailAPI,
+  PlatformSharedRoleGrantsAPI,
   PlatformSharedRoleRevisionPageAPI,
   PlatformSharedRoleUpdateAPI,
 } from "@/api/iam/authorization";
-import { resolveGrantActions, resolveSelectedGrants } from "../actionCatalog";
+import { selectedGrantsOf } from "../actionCatalog";
 import GrantEditWizard from "./GrantEditWizard.vue";
 import GrantPreview from "./GrantPreview.vue";
 import type { SelectedGrant } from "../wizard";
@@ -175,6 +177,7 @@ defineOptions({ name: "SharedRoleDetailDrawer" });
 const props = withDefaults(
   defineProps<{
     getApi?: (id: string) => Promise<R<ResourceDetail<RoleSummary>>>;
+    listGrantsApi?: (id: string) => Promise<R<RoleGrantList>>;
     listRevisionsApi?: (id: string, page: Page) => Promise<R<Page<ResourceDetail<RoleRevision>>>>;
     updateApi?: (id: string, input: RoleUpdateInput) => Promise<R<CreatedResource>>;
     statusApi?: (id: string, input: ConfigurationStatusInput) => Promise<R<CreatedResource>>;
@@ -192,16 +195,20 @@ const props = withDefaults(
 
 const emits = defineEmits<{ success: [] }>();
 const resolvedGetApi = computed(() => props.getApi ?? PlatformSharedRoleDetailAPI);
+const resolvedGrantsApi = computed(() => props.listGrantsApi ?? PlatformSharedRoleGrantsAPI);
 const resolvedRevisionsApi = computed(() => props.listRevisionsApi ?? PlatformSharedRoleRevisionPageAPI);
 const resolvedPublishApi = computed(() => props.publishApi);
 const canEditProfile = computed(() => Boolean(props.updateApi ?? !props.statusApi));
 const visible = ref(false);
 const tab = ref("grants");
 const loading = ref(false);
+const grantLoading = ref(false);
 const saving = ref(false);
 const editingProfile = ref(false);
 const revisionLoading = ref(false);
+const revisionsDirty = ref(true);
 const loadGuard = createLoadGuard();
+const grantGuard = createLoadGuard();
 const revisionGuard = createLoadGuard();
 const roleId = ref("");
 const detail = ref<ResourceDetail<RoleSummary>>();
@@ -228,8 +235,6 @@ const revisionPage = ref<Page<ResourceDetail<RoleRevision>>>({
   total: 0,
   records: [],
 });
-const revisionDeltas = ref<Record<string, RoleDelta[]>>({});
-const revisionActionNames = ref<Record<string, string>>({});
 const revisionHeaders: Array<TableHeaderRecord> = [
   { label: "版本", prop: "revision", width: 80 },
   { label: "版本 ID", prop: "id", minWidth: 180 },
@@ -261,56 +266,20 @@ const profileDirty = computed(() => {
 
 const revisionKeyOf = (row: ResourceDetail<RoleRevision>): string => row.record.id;
 const asRevision = (row: unknown): ResourceDetail<RoleRevision> => row as ResourceDetail<RoleRevision>;
-const displayDeltasOf = (row: ResourceDetail<RoleRevision>): RoleDelta[] =>
-  revisionDeltas.value[row.record.id] ?? [];
+const displayDeltasOf = (row: ResourceDetail<RoleRevision>): RoleDelta[] => row.record.displayDeltas ?? [];
 const isInitialRevision = (row: ResourceDetail<RoleRevision>): boolean =>
-  Number(row.record.revision) === 1 && Boolean(row.record.grants?.length);
-
-const applyRevisionDiffs = (
-  records: ResourceDetail<RoleRevision>[],
-  older?: RoleRevision,
-): RoleDelta[] => {
-  const next: Record<string, RoleDelta[]> = {};
-  const deltas: RoleDelta[] = [];
-  records.forEach((item, index) => {
-    const previous = records[index + 1]?.record ?? (index === records.length - 1 ? older : undefined);
-    const items = revisionDisplayDeltas(item.record, previous);
-    next[item.record.id] = items;
-    deltas.push(...items);
-  });
-  revisionDeltas.value = next;
-  return deltas;
-};
-
-const resolveRevisionNames = (deltas: RoleDelta[]): void => {
-  const ids = [...new Set(deltas.map((item) => item.actionId).filter(Boolean))];
-  if (!ids.length) {
-    return;
+  Number(row.record.revision) === 1 && !(row.record.displayDeltas ?? []).length;
+const revisionActionNames = computed(() => {
+  const names: Record<string, string> = {};
+  for (const row of revisionPage.value.records ?? []) {
+    for (const delta of row.record.displayDeltas ?? []) {
+      if (delta.actionName) {
+        names[delta.actionId] = delta.actionName;
+      }
+    }
   }
-  void resolveGrantActions(ids).then((items) => {
-    revisionActionNames.value = {
-      ...revisionActionNames.value,
-      ...Object.fromEntries(items.map((item) => [item.id, item.name])),
-    };
-  });
-};
-
-const hydrateRevisionDiffs = async (): Promise<void> => {
-  const records = revisionPage.value.records ?? [];
-  const last = records.at(-1);
-  const current = revisionPage.value.current ?? 1;
-  const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
-  const total = revisionPage.value.total ?? 0;
-  let older: RoleRevision | undefined;
-  if (last && Number(last.record.revision) > 1 && current * size < total) {
-    const next = await resolvedRevisionsApi.value(roleId.value, {
-      current: current + 1,
-      size,
-    });
-    older = next.data.records?.[0]?.record;
-  }
-  resolveRevisionNames(applyRevisionDiffs(records, older));
-};
+  return names;
+});
 
 const fillProfile = (): void => {
   const record = detail.value?.record;
@@ -320,60 +289,62 @@ const fillProfile = (): void => {
   profileDraft.status = knownStatus(record?.status) ? record.status : ConfigurationStatus.ENABLED;
 };
 
-const assignRevisionPage = (page: Page<ResourceDetail<RoleRevision>>): ResourceDetail<RoleRevision> | undefined => {
-  const records = page.records ?? [];
+const assignRevisionPage = (page: Page<ResourceDetail<RoleRevision>>): void => {
   revisionPage.value = {
     current: page.current ?? 1,
     size: page.size ?? revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
     total: page.total ?? 0,
-    records,
+    records: page.records ?? [],
   };
-  return (revisionPage.value.current ?? 1) === 1 ? records[0] : undefined;
 };
 
 const load = (id: string): void => {
-  const guard = loadGuard.begin();
-  const revisionsGuard = revisionGuard.begin();
+  const detailToken = loadGuard.begin();
+  const grantsToken = grantGuard.begin();
   const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
   loading.value = true;
-  revisionLoading.value = true;
+  grantLoading.value = true;
+  revisionsDirty.value = true;
   detail.value = undefined;
   grants.value = [];
-  revisionDeltas.value = {};
-  revisionActionNames.value = {};
   revisionPage.value = { current: 1, size, total: 0, records: [] };
-  Promise.all([
-    resolvedGetApi.value(id),
-    resolvedRevisionsApi.value(id, { current: 1, size }),
-  ])
-    .then(async ([role, page]) => {
-      if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
+  resolvedGetApi
+    .value(id)
+    .then((role) => {
+      if (!detailToken.isCurrent()) {
         return;
       }
       detail.value = role.data;
       fillProfile();
-      const latest = assignRevisionPage(page.data);
-      await hydrateRevisionDiffs();
-      if (!guard.isCurrent() || !revisionsGuard.isCurrent()) {
-        return;
-      }
-      const items = latest?.record.grants ?? [];
-      if (!items.length) {
-        return;
-      }
-      const resolved = await resolveSelectedGrants(items);
-      if (!guard.isCurrent()) {
-        return;
-      }
-      grants.value = resolved;
     })
     .finally(() => {
-      if (guard.isCurrent()) {
+      if (detailToken.isCurrent()) {
         loading.value = false;
-        revisionLoading.value = false;
       }
     });
+  resolvedGrantsApi
+    .value(id)
+    .then((response) => {
+      if (!grantsToken.isCurrent()) {
+        return;
+      }
+      grants.value = selectedGrantsOf(response.data?.items ?? []);
+    })
+    .finally(() => {
+      if (grantsToken.isCurrent()) {
+        grantLoading.value = false;
+      }
+    });
+  if (tab.value === "revisions") {
+    privateLoadRevisionPage();
+  }
 };
+
+watch(tab, (name) => {
+  if (name === "revisions" && revisionsDirty.value) {
+    privateLoadRevisionPage();
+  }
+});
 
 const privateLoadRevisionPage = (): void => {
   const id = roleId.value;
@@ -382,16 +353,17 @@ const privateLoadRevisionPage = (): void => {
   }
   const guard = revisionGuard.begin();
   revisionLoading.value = true;
-  resolvedRevisionsApi.value(id, {
-    current: revisionPage.value.current ?? 1,
-    size: revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
-  })
+  resolvedRevisionsApi
+    .value(id, {
+      current: revisionPage.value.current ?? 1,
+      size: revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
+    })
     .then((page) => {
       if (!guard.isCurrent()) {
         return;
       }
       assignRevisionPage(page.data);
-      return hydrateRevisionDiffs();
+      revisionsDirty.value = false;
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -550,10 +522,33 @@ defineExpose<{ show: (id: string) => void }>({
   --el-select-width: 100%;
 }
 
+.role-detail-drawer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+.role-detail-drawer__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.role-detail-drawer__identity {
+  flex-shrink: 0;
+}
+
 .grant-pane {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .grant-pane__toolbar {
@@ -565,9 +560,11 @@ defineExpose<{ show: (id: string) => void }>({
 }
 
 .grant-pane__list {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .embedded-table {

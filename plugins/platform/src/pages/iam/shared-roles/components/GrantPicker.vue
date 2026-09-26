@@ -10,53 +10,57 @@
         @keyup.enter="privateSearchApps"
         @clear="privateSearchApps"
       />
-      <div class="flex-1 min-h-0 overflow-auto">
-        <in-tree
-          :data="applications"
-          node-key="id"
-          :props="{ label: 'name' }"
-          :current-node-key="applicationId"
-          highlight-current
-          @node-click="privateSelectApp"
-        />
-        <div v-if="!applications.length && !appLoading" class="text-12px text-[var(--el-text-color-secondary)] px-8px">
-          没有可用的{{ appKindLabel }}
+      <in-loading :loading="appLoading" class="flex-1 min-h-0">
+        <div class="h-full overflow-auto">
+          <in-tree
+            :data="applications"
+            node-key="id"
+            :props="{ label: 'name' }"
+            :current-node-key="applicationId"
+            highlight-current
+            @node-click="privateSelectApp"
+          />
+          <div v-if="!applications.length && !appLoading" class="text-12px text-[var(--el-text-color-secondary)] px-8px">
+            没有可用的{{ appKindLabel }}
+          </div>
+          <div v-if="appHasMore" class="flex justify-center py-8px">
+            <in-button text type="primary" :loading="appLoading" @in-click="privateLoadMoreApps">加载更多</in-button>
+          </div>
         </div>
-        <div v-if="appHasMore" class="flex justify-center py-8px">
-          <in-button text type="primary" :loading="appLoading" @in-click="privateLoadMoreApps">加载更多</in-button>
-        </div>
-      </div>
+      </in-loading>
     </aside>
     <section class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px">
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
-      <div class="flex-1 min-h-0 overflow-auto">
-        <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">
-          先从左侧选择{{ appKindLabel }}
+      <in-loading :loading="resourceLoading" class="flex-1 min-h-0">
+        <div class="h-full overflow-auto">
+          <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">
+            先从左侧选择{{ appKindLabel }}
+          </div>
+          <in-tree
+            v-else
+            :key="applicationId"
+            ref="treeRef"
+            :data="treeData"
+            node-key="id"
+            lazy
+            show-checkbox
+            check-strictly
+            :props="treeProps"
+            :load="privateLoadNode"
+            :default-checked-keys="checkedKeys"
+            @check-change="privateOnCheckChange"
+          >
+            <template #default="{ data }">
+              <span class="truncate">{{ data.name }}</span>
+            </template>
+          </in-tree>
+          <div v-if="resourceHasMore" class="flex justify-center py-8px">
+            <in-button text type="primary" :loading="resourceLoading" @in-click="privateLoadMoreResources">
+              加载更多
+            </in-button>
+          </div>
         </div>
-        <in-tree
-          v-else
-          :key="applicationId"
-          ref="treeRef"
-          :data="treeData"
-          node-key="id"
-          lazy
-          show-checkbox
-          check-strictly
-          :props="treeProps"
-          :load="privateLoadNode"
-          :default-checked-keys="checkedKeys"
-          @check-change="privateOnCheckChange"
-        >
-          <template #default="{ data }">
-            <span class="truncate">{{ data.name }}</span>
-          </template>
-        </in-tree>
-        <div v-if="resourceHasMore" class="flex justify-center py-8px">
-          <in-button text type="primary" :loading="resourceLoading" @in-click="privateLoadMoreResources">
-            加载更多
-          </in-button>
-        </div>
-      </div>
+      </in-loading>
     </section>
   </div>
 </template>
