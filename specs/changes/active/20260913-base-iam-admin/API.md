@@ -118,7 +118,7 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 | /v1/platform/applications/{id}/actions | GET 分页（可选 `resourceId`、`name` 包含匹配、`ids` 逗号分隔回显）；POST 操作；/{actionId} PUT/PATCH/DELETE |
 | /v1/platform/applications/{id}/menus | GET `view=page` 分页或 `view=tree` 整树；POST 导航；/{menuId} PUT/DELETE |
 | /v1/platform/applications/{id}/menus/{menuId}/actions | GET 菜单已绑定操作及资源名称（不分页），供详情回显 |
-| /v1/platform/actions/lookup | POST `{ids}` 按操作 ID 解析应用、资源与范围能力，供权限回显 |
+| /v1/platform/actions/lookup | POST `{ids}` 按操作 ID 解析应用、资源与范围能力，仅供选择器等已持有 ID 的回显；角色详情权限不走此接口 |
 | /v1/platform/plans | GET 可选 `name`、`status`、`view=CATALOG|SUMMARY`（SUMMARY 仅 `{id,name}`；CATALOG 的 PlanRecord 含 `applications` 展示内容）；POST；/{id} GET/PUT；套餐变化不自动改变既有开通 |
 | /v1/tenant/members | GET/POST 成员列表、创建成员关系；列表可选精确 `phone`/`email` |
 | /v1/tenant/members/{id} | GET/PATCH 组织资料，禁止全局凭证字段 |
@@ -142,13 +142,14 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 
 ## 4. 角色、授权、策略
 
-平台自有角色管理使用 /v1/platform/roles；共享角色发布使用 /v1/platform/shared-roles。租户聚合角色目录使用 /v1/tenant/roles，返回可用共享角色及本地角色，不为展示创建记录。
+平台自有角色管理使用 /v1/platform/roles；共享角色发布使用 /v1/platform/shared-roles（含 `GET /{id}/grants`）。租户聚合角色目录使用 /v1/tenant/roles，返回可用共享角色及本地角色，不为展示创建记录。共享角色与平台角色详情打开时并行拉元数据与当前绑定权限；版本历史仅切入该 Tab 时请求 revisions。
 
 | 路径（角色、授权管理域由 platform/tenant 区分） | 职责 |
 |---|---|
 | /v1/{domain}/roles | GET 目录；POST 自定义角色或 tenant 基于共享角色定制 |
 | /v1/{domain}/roles/{id} | GET 元数据；PATCH 平台角色接受 RoleUpdateInput（名称空白时只改启停），租户角色仍只接受启停；DELETE 仅未引用 |
-| /v1/{domain}/roles/{id}/revisions | GET 版本；POST 发布新版本，不自动升级授权 |
+| /v1/{domain}/roles/{id}/grants | GET 最新已发布版本的当前绑定权限（完整目录内容，不分页）；详情权限 Tab 用此接口，不按 actionId lookup |
+| /v1/{domain}/roles/{id}/revisions | GET 版本（含相对上一版本的 displayDeltas）；切入版本历史 Tab 再请求；POST 发布新版本，不自动升级授权 |
 | /v1/{domain}/roles/{id}/preview | POST 预览待发布最终定义 |
 | /v1/tenant/roles/{id}/upgrade-preview | POST {newBaseRevisionId, resolutions?} 三方比较 |
 | /v1/tenant/roles/{id}/upgrade | POST {expectedVersion,newBaseRevisionId,resolutions,assignmentIds[]}；未解决冲突拒绝 |
