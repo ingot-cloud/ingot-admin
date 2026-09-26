@@ -189,6 +189,8 @@ onUnmounted(() => {
   }
 
   & .el-drawer__footer {
+    position: relative;
+    z-index: 2;
     padding: var(--in-space-3) var(--in-section-padding-relaxed);
     border-top: 1px solid var(--in-border-color);
     background: var(--in-bg-color);

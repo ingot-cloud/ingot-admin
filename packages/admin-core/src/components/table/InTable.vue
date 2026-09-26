@@ -525,8 +525,19 @@ defineExpose<TableAPI<TableRow>>({
   flex: none;
 }
 
+:deep(.el-table__body-wrapper .el-scrollbar__view) {
+  display: block;
+}
+
+:deep(.el-table__body-wrapper .el-scrollbar__view:has(.el-table__empty-block)) {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
 :deep(.el-table__empty-block) {
   min-height: 100%;
+  max-height: 100%;
 }
 
 :deep(.el-table__empty-block:has(.in-table-skeleton)) {

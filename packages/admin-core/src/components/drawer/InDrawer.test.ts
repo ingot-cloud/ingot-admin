@@ -124,4 +124,9 @@ describe("InDrawer", () => {
     expect(source).toContain("paddingBottom: \"0\"");
     expect(source).toContain("paddingBottom: props.padding");
   });
+
+  it("页脚叠在内容区之上，避免空表溢出挡住操作按钮", () => {
+    expect(source).toContain("position: relative;");
+    expect(source).toContain("z-index: 2;");
+  });
 });

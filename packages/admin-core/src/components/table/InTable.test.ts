@@ -213,6 +213,14 @@ describe("InTable", () => {
     expect(source).toContain("justify-content: center");
   });
 
+  it("空表滚动视图改为块级，空块高度不超过表体", () => {
+    const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InTable.vue"), "utf8");
+    expect(source).toContain(".el-table__body-wrapper .el-scrollbar__view");
+    expect(source).toContain("display: block;");
+    expect(source).toContain(".el-scrollbar__view:has(.el-table__empty-block)");
+    expect(source).toContain("max-height: 100%;");
+  });
+
   it("表头插槽不要求单元格 index", () => {
     const types = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "types.ts"), "utf8");
     expect(types).toContain("export interface TableHeaderSlotScope");
