@@ -28,7 +28,7 @@ const props = defineProps({
   },
   lazy: {
     type: Boolean,
-    required: false,
+    default: true,
   },
   editable: {
     type: Boolean,

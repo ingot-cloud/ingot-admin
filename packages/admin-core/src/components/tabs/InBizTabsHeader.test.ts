@@ -16,6 +16,8 @@ describe("InBizTabs layout", () => {
     expect(tabs).not.toMatch(/\.inner-container \{[^}]*overflow: auto/);
     expect(panel).toContain("is-fill");
     expect(panel).toContain("fill:");
+    expect(panel).toContain("lazy:");
+    expect(panel).toContain("default: true");
   });
 });
 

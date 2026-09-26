@@ -16,7 +16,7 @@
 | `InPicker` | 紧凑单选（筛选/工具栏） | 可选 `label` 前缀；32px / 6px 圆角；默认边框 `#d0d3d6`，悬停/展开 `#3370ff`；展开后面板勾选当前项；相邻实例默认 12px 间距；`v-model` + `options` + `change` | 新组件；不替代表单 `InSelect` |
 | `InFilterPanel` | 工具栏筛选浮层 | 32px 描边按钮，文案「筛选」、`aria-label="筛选条件"`；`active-count` 控制数量角标；`#default` 放额外条件，`#footer` 可放重置；Teleport 贴按钮下方；Esc / 点击外部关闭（忽略 `el-popper` / `InPicker` 菜单） | 新组件；不要叫「更多」；不要对话框或抽屉 |
 | `InTableColumnSetting` | 字段显示设置 | 32×32 描边按钮、表格设置 SVG、说明「请选择列表中要展示的信息」、约 213×426 复选列表、“全部”半选、必选列禁用、右侧拖拽调序、浮层 Teleport 到 body、`user + tableId` 前端持久化、Esc/点击外部关闭并恢复焦点 | 原名 `InColumnSetting`；继续发出 `onSelectionChange`；新增 `change`；可用 `headers` 别名；`table-id` 必填才持久化；`change` 按显示顺序返回选中列；持久化前缀仍为 `in-column-setting` |
-| `InBizTabs` | 页内 Tab | 16px；默认 `--in-text-color`，选中 `--in-color-primary`；墨条跟文案同宽、顶部圆角、半条压线；`before-change` 可拦截 | `v-model` + `change`；键盘方向键；懒挂载 `InBizTabPanel` |
+| `InBizTabs` | 页内 Tab | 16px；默认 `--in-text-color`，选中 `--in-color-primary`；墨条跟文案同宽、顶部圆角、半条压线；`before-change` 可拦截 | `v-model` + `change`；键盘方向键；`InBizTabPanel` 默认 `lazy`，未激活不挂载，激活过一次后切走只隐藏 |
 | `InDrawer` | 长任务编辑 | 中性标题、固定操作区、无装饰竖条；`layout="pinned"` 钉住内容头、仅内部滚动；遮罩默认透明；全屏向导用 `close-position="start"` 把关闭放到标题栏左侧 | `v-model`、`title`、`#header`/`#footer`、`loading`；默认 `layout="default"`；需要压暗时设 `overlay-color`（如 `var(--in-overlay-mask)`） |
 | `InDetailDrawer` | 实体详情查看/编辑 | 标题 + `#identity` + 页内 Tab；查看态底部「编辑…」，编辑态取消/保存；编辑中关抽屉或切 Tab 需确认 | `v-model`、`v-model:tab`、`v-model:editing`、`edit-label`、`save` / `cancel` / `edit` |
 | `InDetailIdentity` | 详情身份区 | 大号头像、姓名、`#status`、右侧 `#more`；`editable` 时悬停头像上传；无头像实体固定 `src` 且 `editable=false`；`#more` 下拉用 `.in-dropdown`：无箭头、无分割线、6px 圆角、`--in-shadow-overlay` | `name` / `src` / `v-model:avatar` / `upload-dir` |

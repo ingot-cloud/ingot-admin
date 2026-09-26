@@ -68,7 +68,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="组" name="groups" fill lazy>
+        <in-biz-tab-panel title="组" name="groups" fill>
           <GroupWorkspace />
         </in-biz-tab-panel>
       </in-biz-tabs>

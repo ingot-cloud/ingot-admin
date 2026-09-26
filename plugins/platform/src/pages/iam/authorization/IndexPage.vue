@@ -41,7 +41,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权记录" name="assignments" lazy>
+        <in-biz-tab-panel title="授权记录" name="assignments">
           <in-table
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
@@ -85,7 +85,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权管理员" name="delegations" lazy>
+        <in-biz-tab-panel title="授权管理员" name="delegations">
           <in-table
             :loading="delegations.fetching.value"
             :data="delegations.pageInfo.value.records"
