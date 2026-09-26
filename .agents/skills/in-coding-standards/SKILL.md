@@ -26,6 +26,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件 > 3 个时只直出第一个，其余进 `InFilterPanel`
 - [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
+- [ ] 多 Tab 只请求当前激活 Tab：打开页面不预拉兄弟 Tab 的接口
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
 - [ ] 普通时间字段按当地墙钟提交和展示；会话类 ISO-8601 UTC 再按本地时区格式化
 ```
@@ -141,6 +142,7 @@ pages/platform/base/app/
 - **大数据**：总量大或需要连续滚动时用游标（cursor / `nextToken`），不要靠加大页码或循环翻页拼全集。
 - **树**：页面需要树形结构时，必须消费接口直接返回的树（如 `view=tree` 或独立 `/tree`）。禁止把平铺分页在前端按 `parentId` 组树，也禁止为组树把 `pageSize` 调到上限。
 - **Tab 内表格**：详情抽屉等 Tab 里放 `InTable` 时，面板加 `fill`。Tab 内容区定高，工具栏/分页固定，只滚表体；不要让整个 Tab 跟着列表一起滚。
+- **Tab 请求**：每个 Tab 可以有自己的接口，但打开页面或组件时只跑**当前激活** Tab。`useServerPaging` / `useQuery` / 手写 `onMounted` 的 `enabled` 必须绑当前 `tab`，或把取数放进对应 `InBizTabPanel` 内（面板默认 `lazy`，未激活不挂载）。默认 Tab 的请求可以在打开时发。禁止 `Promise.all` 或多个 paging 无条件同时 `enabled`。只用 `InBizTabsHeader`、没有 Panel 时同样按当前 header 值 gated。切走过的面板保持挂载，不要每次点回来都重打。
 - **禁止**：`pageSize`/`size = 200`，或把接口允许的最大页（例如 IAM `MAX_SIZE=200`）当成「一次拿全量」的手段。选择器预填、详情回显用已选 ID 查名称，不要为回显预拉全集。
 
 ### 样式

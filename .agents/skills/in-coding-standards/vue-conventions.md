@@ -340,6 +340,24 @@ defineExpose({} as any);
 </in-biz-tab-panel>
 ```
 
+### Tab 仅激活时请求
+
+多 Tab 打开时只请求当前 Tab。父级同时声明多个 `useServerPaging` 时，`enabled` 必须绑当前 `tab`：
+
+```ts
+export const useOps = (tab: MaybeRefOrGetter<string>) => {
+  const tabEnabled = (name: string) => () => toValue(tab) === name;
+  const roles = useServerPaging({ queryOptions: RolePageQueryOptions, enabled: tabEnabled("roles") });
+  const assignments = useServerPaging({
+    queryOptions: AssignmentPageQueryOptions,
+    enabled: tabEnabled("assignments"),
+  });
+  return { roles, assignments };
+};
+```
+
+或把取数放进对应 `InBizTabPanel` 内（默认 `lazy`）。禁止打开时 `Promise.all` 预拉兄弟 Tab。
+
 ### 列表筛选
 
 默认统一标准：下拉用 `InPicker`，查询不要 label。筛选放表格 `#tools-start`，不要 `InFilterItem` + `InWithLabel`。条件总数 ≤ 3 时全部直出（主搜索仍排第一）；> 3 个时只直出第一个，其余进 `InFilterPanel`「筛选」浮层（不要叫「更多」，也不要用对话框/抽屉）。
