@@ -26,7 +26,7 @@
             :label="memberStatusEnum.getTagText(detail.record.status).text"
           />
         </template>
-        <template v-if="moreActions.length" #more>
+        <template v-if="overflowActions.length" #more>
           <el-dropdown
             trigger="click"
             placement="bottom-end"
@@ -37,12 +37,12 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item
-                  v-for="action in moreActions"
-                  :key="action.command"
-                  :command="action.command"
+                  v-for="action in overflowActions"
+                  :key="action.key"
+                  :command="action.key"
                   :disabled="action.disabled"
                 >
-                  {{ action.label }}
+                  <span :class="{ 'is-danger': action.kind === 'danger' }">{{ action.label }}</span>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -62,6 +62,13 @@
         </in-detail-field>
         <in-detail-field label="邮箱" :value="detail.record.email">
           <el-input v-model="draft.email" clearable placeholder="请输入邮箱" />
+        </in-detail-field>
+        <in-detail-field label="角色" :value="rolePreview">
+          <biz-iam-option-tag-field
+            v-model="draftRoles"
+            placeholder="请选择角色"
+            @pick="privatePickRoles"
+          />
         </in-detail-field>
         <in-detail-field label="状态">
           <template #view>
@@ -93,36 +100,35 @@
         </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="其他" name="other" :editable="false" fill>
-      <div class="embedded-table">
-        <in-table
-          :loading="groupsLoading"
-          :data="groupsPage.records"
-          :page="groupsPage"
-          :headers="groupHeaders"
-          density="compact"
-          :row-key="groupKeyOf"
-          @handleSizeChange="privateOnGroupsPage"
-          @handleCurrentChange="privateOnGroupsPage"
-        >
-          <template #name="{ item }">{{ item.record.name }}</template>
-        </in-table>
-      </div>
+    <in-biz-tab-panel title="其他" name="other" :editable="false">
+      <in-form>
+        <in-detail-field label="用户组" :value="groupPreview" />
+      </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
+  <biz-iam-member-picker-dialog
+    ref="rolePickerRef"
+    title="选择角色"
+    search-placeholder="请输入角色名称"
+    empty-text="暂无角色"
+    selected-unit="个角色"
+    :show-avatar="false"
+    :load-members="loadPlatformRoleOptions"
+    @confirm="privateOnRolesConfirm"
+  />
 </template>
 
 <script setup lang="ts">
 import { Confirm, Message, StatusTag, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
-import type { Page } from "@ingot/admin-core";
 import {
-  IamAction,
+  BizIamMemberPickerDialog,
+  BizIamOptionTagField,
+  collectIamPageRecords,
   MemberStatus,
   editablePatch,
   memberStatusTone,
-  objectActionAllowed,
   useMemberStatusEnum,
-  type GroupRecord,
+  type IamSelectOption,
   type MemberRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
@@ -130,18 +136,19 @@ import {
   PlatformMemberDetailAPI,
   PlatformMemberGroupsAPI,
   PlatformMemberRemoveAPI,
+  PlatformMemberRolesAPI,
+  PlatformMemberRolesReplaceAPI,
   PlatformMemberStatusAPI,
   PlatformMemberUpdateAPI,
 } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import type { Row } from "../table";
+import { loadPlatformRoleOptions } from "../iamMemberOptions";
+import { createRowActions, type Row } from "../table";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
-type MoreCommand = "suspend" | "restore" | "remove";
-
-const groupHeaders = [{ label: "用户组", prop: "name", required: true }];
+const EMPTY_PREVIEW = "-";
 
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
@@ -150,7 +157,6 @@ const { editing } = session;
 const visible = ref(false);
 const tab = ref("basic");
 const loading = ref(false);
-const groupsLoading = ref(false);
 const detail = ref<ResourceDetail<MemberRecord>>();
 const memberStatusEnum = useMemberStatusEnum();
 const statusToneOf = (status: string): "info" | "warning" | "danger" =>
@@ -162,31 +168,29 @@ const draft = reactive({
   avatar: undefined as string | undefined,
   status: null as MemberStatus | null,
 });
-const groupsPage = reactive<Page<ResourceDetail<GroupRecord>>>({
-  current: 1,
-  size: 20,
-  total: 0,
-  records: [],
-});
+const savedRoles = ref<IamSelectOption[]>([]);
+const draftRoles = ref<IamSelectOption[]>([]);
+const groupNames = ref<string[]>([]);
+const groupsLoaded = ref(false);
+const rolePickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 const loadGuard = createLoadGuard();
 
 const identityName = computed(() => detail.value?.record.displayName || detail.value?.record.id || "");
 const identityAvatar = computed(() => (editing.value ? draft.avatar : detail.value?.record.avatar) || "");
-const moreActions = computed(() => {
+const rolePreview = computed(() =>
+  savedRoles.value.length ? savedRoles.value.map((item) => item.name).join("、") : EMPTY_PREVIEW,
+);
+const groupPreview = computed(() => (groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW));
+const overflowActions = computed(() => {
   if (!detail.value || detail.value.record.status === MemberStatus.REMOVED) {
     return [];
   }
-  const status = objectActionAllowed(detail.value.capabilities, IamAction.PLATFORM_MEMBER_STATUS);
-  const remove = objectActionAllowed(detail.value.capabilities, IamAction.PLATFORM_MEMBER_REMOVE);
-  const actions: Array<{ command: MoreCommand; label: string; disabled: boolean }> = [];
-  if (detail.value.record.status === MemberStatus.ACTIVE) {
-    actions.push({ command: "suspend", label: "暂停", disabled: !status.allowed });
-  }
-  if (detail.value.record.status === MemberStatus.SUSPENDED) {
-    actions.push({ command: "restore", label: "恢复", disabled: !status.allowed });
-  }
-  actions.push({ command: "remove", label: "移出", disabled: !remove.allowed });
-  return actions;
+  return createRowActions(detail.value, {
+    onDetail: () => undefined,
+    onSuspend: () => privateChangeStatus(MemberStatus.SUSPENDED, "暂停"),
+    onRestore: () => privateChangeStatus(MemberStatus.ACTIVE, "恢复"),
+    onRemove: () => privateRemove(),
+  }).filter((action) => action.kind !== "detail");
 });
 
 const applyDraft = (record: MemberRecord): void => {
@@ -197,27 +201,33 @@ const applyDraft = (record: MemberRecord): void => {
   draft.status = record.status;
 };
 
-const resetGroups = (): void => {
-  groupsPage.current = 1;
-  groupsPage.size = 20;
-  groupsPage.total = 0;
-  groupsPage.records = [];
+const applyRoles = (roles: IamSelectOption[]): void => {
+  savedRoles.value = roles.map((item) => ({ ...item }));
+  draftRoles.value = roles.map((item) => ({ ...item }));
 };
+
+const sameRoleIds = (left: IamSelectOption[], right: IamSelectOption[]): boolean => {
+  if (left.length !== right.length) {
+    return false;
+  }
+  const expected = new Set(right.map((item) => item.id));
+  return left.every((item) => expected.has(item.id));
+};
+
+const loadRoles = (id: string): Promise<void> =>
+  PlatformMemberRolesAPI(id).then((response) => {
+    applyRoles(response.data ?? []);
+  });
 
 const loadGroups = (): void => {
   const id = detail.value?.record.id;
-  if (!id) {
+  if (!id || groupsLoaded.value) {
     return;
   }
-  groupsLoading.value = true;
-  PlatformMemberGroupsAPI(id, groupsPage)
-    .then((response) => {
-      groupsPage.records = response.data.records ?? [];
-      groupsPage.total = response.data.total ?? 0;
-    })
-    .finally(() => {
-      groupsLoading.value = false;
-    });
+  collectIamPageRecords((page) => PlatformMemberGroupsAPI(id, page)).then((records) => {
+    groupNames.value = records.map((item) => item.record.name);
+    groupsLoaded.value = true;
+  });
 };
 
 const load = (id: string): void => {
@@ -229,7 +239,9 @@ const load = (id: string): void => {
   draft.email = "";
   draft.avatar = undefined;
   draft.status = null;
-  resetGroups();
+  applyRoles([]);
+  groupNames.value = [];
+  groupsLoaded.value = false;
   PlatformMemberDetailAPI(id)
     .then((response) => {
       if (!guard.isCurrent()) {
@@ -237,20 +249,30 @@ const load = (id: string): void => {
       }
       detail.value = response.data;
       applyDraft(response.data.record);
-      loadGroups();
+      return loadRoles(id);
     })
     .finally(() => {
       if (guard.isCurrent()) {
         loading.value = false;
+        if (tab.value === "other") {
+          loadGroups();
+        }
       }
     });
 };
+
+watch(tab, (name) => {
+  if (name === "other") {
+    loadGroups();
+  }
+});
 
 const privateCancel = (): void => {
   session.exitEdit();
   if (detail.value) {
     applyDraft(detail.value.record);
   }
+  draftRoles.value = savedRoles.value.map((item) => ({ ...item }));
 };
 
 const privateFinish = (): void => {
@@ -258,6 +280,17 @@ const privateFinish = (): void => {
   session.exitEdit();
   void queryClient.invalidateQueries({ queryKey: platformMemberQueryKeys.lists() });
   emits("success");
+};
+
+const privateSaveRoles = (): Promise<void> => {
+  if (!detail.value || sameRoleIds(draftRoles.value, savedRoles.value)) {
+    return Promise.resolve();
+  }
+  return PlatformMemberRolesReplaceAPI(detail.value.record.id, {
+    roleIds: draftRoles.value.map((item) => item.id),
+  }).then((response) => {
+    applyRoles(response.data ?? []);
+  });
 };
 
 const privateSave = (): void => {
@@ -295,7 +328,8 @@ const privateSave = (): void => {
     next.email !== (current.record.email ?? "") ||
     next.avatar !== (current.record.avatar ?? "");
   const statusChanged = Boolean(nextStatus) && nextStatus !== current.record.status;
-  if (!profileChanged && !statusChanged) {
+  const rolesChanged = !sameRoleIds(draftRoles.value, savedRoles.value);
+  if (!profileChanged && !statusChanged && !rolesChanged) {
     session.exitEdit();
     return;
   }
@@ -335,6 +369,7 @@ const privateSave = (): void => {
           applyDraft(reloaded.data.record);
         });
     })
+    .then(() => privateSaveRoles())
     .then(() => {
       privateFinish();
     })
@@ -378,31 +413,20 @@ const privateRemove = (): void => {
 };
 
 const privateOnMoreCommand = (command: string | number | object): void => {
-  const action = command as MoreCommand;
-  if (action === "suspend") {
-    privateChangeStatus(MemberStatus.SUSPENDED, "暂停");
+  const action = overflowActions.value.find((item) => item.key === command);
+  if (!detail.value || !action) {
     return;
   }
-  if (action === "restore") {
-    privateChangeStatus(MemberStatus.ACTIVE, "恢复");
-    return;
-  }
-  if (action === "remove") {
-    privateRemove();
-  }
+  action.onSelect(detail.value);
 };
 
-const privateOnGroupsPage = (payload: { value: number; type: "size" | "current" }): void => {
-  if (payload.type === "size") {
-    groupsPage.size = payload.value;
-    groupsPage.current = 1;
-  } else {
-    groupsPage.current = payload.value;
-  }
-  loadGroups();
+const privatePickRoles = (): void => {
+  rolePickerRef.value?.show(draftRoles.value);
 };
 
-const groupKeyOf = (row: ResourceDetail<GroupRecord>): string => row.record.id;
+const privateOnRolesConfirm = (selected: IamSelectOption[]): void => {
+  draftRoles.value = selected;
+};
 
 defineExpose({
   show(row: Row) {
@@ -415,15 +439,7 @@ defineExpose({
 </script>
 
 <style lang="postcss" scoped>
-.embedded-table {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.embedded-table :deep(.in-table) {
-  flex: 1;
-  min-height: 0;
-  padding: 0;
+.is-danger {
+  color: var(--in-color-danger);
 }
 </style>

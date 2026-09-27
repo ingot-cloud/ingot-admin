@@ -1,6 +1,6 @@
 <template>
   <in-drawer v-model="visible" title="添加平台成员" :loading="loading" size="520px">
-    <in-form label-position="top">
+    <in-form v-if="step === 1" label-position="top">
       <el-form-item label="登录名" required>
         <div class="flex gap-8px">
           <el-input v-model="username" clearable placeholder="精确查找已有全局账号" />
@@ -15,32 +15,82 @@
           <el-input v-model="displayName" clearable placeholder="请输入显示名" />
         </el-form-item>
         <el-form-item label="登录名">
-          <el-input :model-value="lookedUpUsername" disabled />
+          <el-input :model-value="lookedUpUsername" disabled placeholder="不可修改" />
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input :model-value="phone || '-'" disabled />
+          <el-input :model-value="phone || '-'" disabled placeholder="不可修改" />
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input :model-value="email || '-'" disabled />
+          <el-input :model-value="email || '-'" disabled placeholder="不可修改" />
         </el-form-item>
       </template>
     </in-form>
+    <in-form v-else label-position="top">
+      <el-form-item label="角色">
+        <biz-iam-option-tag-field
+          v-model="roles"
+          placeholder="请选择角色"
+          @pick="privatePickRoles"
+        />
+      </el-form-item>
+      <el-form-item label="用户组">
+        <biz-iam-option-tag-field
+          v-model="groups"
+          placeholder="请选择用户组"
+          @pick="privatePickGroups"
+        />
+      </el-form-item>
+    </in-form>
     <template #footer>
-      <in-button @click="visible = false">取消</in-button>
-      <in-button type="primary" :loading="loading" :disabled="!accountId" @in-click="privateSubmit">
-        添加
-      </in-button>
+      <template v-if="step === 1">
+        <in-button @click="visible = false">取消</in-button>
+        <in-button :loading="loading" :disabled="!accountId" @in-click="privateSkip">
+          跳过并添加
+        </in-button>
+        <in-button type="primary" :disabled="!accountId" @in-click="privateNext">下一步</in-button>
+      </template>
+      <template v-else>
+        <in-button @in-click="privateBack">上一步</in-button>
+        <in-button type="primary" :loading="loading" @in-click="privateSubmit">添加</in-button>
+      </template>
     </template>
   </in-drawer>
+  <biz-iam-member-picker-dialog
+    ref="rolePickerRef"
+    title="选择角色"
+    search-placeholder="请输入角色名称"
+    empty-text="暂无角色"
+    selected-unit="个角色"
+    :show-avatar="false"
+    :load-members="loadPlatformRoleOptions"
+    @confirm="privateOnRolesConfirm"
+  />
+  <biz-iam-member-picker-dialog
+    ref="groupPickerRef"
+    title="选择用户组"
+    search-placeholder="请输入用户组名称"
+    empty-text="暂无用户组"
+    selected-unit="个用户组"
+    :show-avatar="false"
+    :load-members="loadPlatformGroupOptions"
+    @confirm="privateOnGroupsConfirm"
+  />
 </template>
 
 <script setup lang="ts">
 import { Confirm, Message, isApiError } from "@ingot/admin-core";
-import { AccountLookupPurpose } from "@ingot/admin-common";
+import {
+  AccountLookupPurpose,
+  AuthorizationDomain,
+  BizIamMemberPickerDialog,
+  BizIamOptionTagField,
+  type IamSelectOption,
+} from "@ingot/admin-common";
 import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformMemberCreateAPI } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
+import { loadPlatformGroupOptions, loadPlatformRoleOptions } from "../iamMemberOptions";
 
 defineOptions({ name: "MemberCreateDrawer" });
 
@@ -52,6 +102,7 @@ const queryClient = useQueryClient();
 const go = useGo();
 const visible = ref(false);
 const loading = ref(false);
+const step = ref<1 | 2>(1);
 const username = ref("");
 const accountId = ref("");
 const lookedUpUsername = ref("");
@@ -59,6 +110,10 @@ const phone = ref("");
 const email = ref("");
 const displayName = ref("");
 const avatar = ref<string | undefined>();
+const roles = ref<IamSelectOption[]>([]);
+const groups = ref<IamSelectOption[]>([]);
+const rolePickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
+const groupPickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 
 const resetHit = (): void => {
   accountId.value = "";
@@ -67,6 +122,14 @@ const resetHit = (): void => {
   email.value = "";
   displayName.value = "";
   avatar.value = undefined;
+};
+
+const resetDraft = (): void => {
+  username.value = "";
+  resetHit();
+  roles.value = [];
+  groups.value = [];
+  step.value = 1;
 };
 
 const privateLookup = (): void => {
@@ -79,6 +142,7 @@ const privateLookup = (): void => {
   resetHit();
   PlatformAccountLookupAPI({
     purpose: AccountLookupPurpose.MEMBER_CREATE,
+    domain: AuthorizationDomain.PLATFORM,
     username: loginName,
   })
     .then((response) => {
@@ -103,6 +167,40 @@ const privateLookup = (): void => {
     });
 };
 
+const privateNext = (): void => {
+  if (!accountId.value) {
+    Message.warning("请先查找账号");
+    return;
+  }
+  step.value = 2;
+};
+
+const privateBack = (): void => {
+  step.value = 1;
+};
+
+const privateSkip = (): void => {
+  roles.value = [];
+  groups.value = [];
+  privateSubmit();
+};
+
+const privatePickRoles = (): void => {
+  rolePickerRef.value?.show(roles.value);
+};
+
+const privatePickGroups = (): void => {
+  groupPickerRef.value?.show(groups.value);
+};
+
+const privateOnRolesConfirm = (selected: IamSelectOption[]): void => {
+  roles.value = selected;
+};
+
+const privateOnGroupsConfirm = (selected: IamSelectOption[]): void => {
+  groups.value = selected;
+};
+
 const privateSubmit = (): void => {
   if (!accountId.value) {
     Message.warning("请先查找账号");
@@ -114,6 +212,8 @@ const privateSubmit = (): void => {
     displayName: displayName.value.trim() || undefined,
     avatar: avatar.value,
     departments: [],
+    roleIds: roles.value.map((item) => item.id),
+    groupIds: groups.value.map((item) => item.id),
   })
     .then(() => {
       Message.success("已添加平台成员");
@@ -128,8 +228,7 @@ const privateSubmit = (): void => {
 
 defineExpose({
   show() {
-    username.value = "";
-    resetHit();
+    resetDraft();
     visible.value = true;
   },
 });

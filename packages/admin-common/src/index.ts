@@ -24,6 +24,7 @@ export { default as BizIamRoleDetailDrawer } from "./components/BizIamRoleDetail
 export { default as BizIamGroupEditDrawer } from "./components/BizIamGroupEditDrawer.vue";
 export { default as BizIamGroupWizard } from "./components/BizIamGroupWizard.vue";
 export { default as BizIamMemberPickerDialog } from "./components/BizIamMemberPickerDialog.vue";
+export { default as BizIamOptionTagField } from "./components/BizIamOptionTagField.vue";
 export { default as BizIamMemberChips } from "./components/BizIamMemberChips.vue";
 export { MEMBER_CHIP_LIMIT, overflowCount, visibleMembers } from "./components/memberChipOverflow";
 export type { MemberChip } from "./components/memberChipOverflow";

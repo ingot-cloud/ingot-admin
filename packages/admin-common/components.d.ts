@@ -24,6 +24,7 @@ declare module 'vue' {
     BizIamGroupWizard: typeof import('./src/components/BizIamGroupWizard.vue')['default']
     BizIamMemberChips: typeof import('./src/components/BizIamMemberChips.vue')['default']
     BizIamMemberPickerDialog: typeof import('./src/components/BizIamMemberPickerDialog.vue')['default']
+    BizIamOptionTagField: typeof import('./src/components/BizIamOptionTagField.vue')['default']
     BizIamPreviewAlert: typeof import('./src/components/BizIamPreviewAlert.vue')['default']
     BizIamRecordLink: typeof import('./src/components/BizIamRecordLink.vue')['default']
     BizIamRevisionDeltaView: typeof import('./src/components/BizIamRevisionDeltaView.vue')['default']

@@ -13,6 +13,8 @@ import {
   type MemberCreateInput,
   type MemberProfileInput,
   type MemberRecord,
+  type MemberRoleReplaceInput,
+  type MemberRoleView,
   type MemberStatusInput,
   type Preview,
   type ReferenceImpactPreview,
@@ -84,6 +86,21 @@ export function PlatformMemberRemoveAPI(
 ): Promise<R<CreatedResource>> {
   filterParams(params);
   return request.post<CreatedResource>(`${MEMBER_PATH}/${id}/remove`, params, options);
+}
+
+export function PlatformMemberRolesAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<MemberRoleView[]>> {
+  return request.get<MemberRoleView[]>(`${MEMBER_PATH}/${id}/roles`, undefined, options);
+}
+
+export function PlatformMemberRolesReplaceAPI(
+  id: string,
+  params: MemberRoleReplaceInput,
+  options?: RequestOptions,
+): Promise<R<MemberRoleView[]>> {
+  return request.put<MemberRoleView[]>(`${MEMBER_PATH}/${id}/roles`, params, options);
 }
 
 export function PlatformMemberGroupsAPI(

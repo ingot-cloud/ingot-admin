@@ -1,5 +1,5 @@
 <template>
-  <in-dialog v-model="visible" title="添加成员" width="840px" append-to-body>
+  <in-dialog v-model="visible" :title="title" width="840px" append-to-body>
     <div class="in-split-picker h-420px flex">
       <div
         class="w-1/2 min-w-0 flex flex-col overflow-hidden"
@@ -8,7 +8,7 @@
           <el-input
             v-model="keyword"
             clearable
-            placeholder="请输入姓名"
+            :placeholder="searchPlaceholder"
             @keyup.enter="privateSearch"
             @clear="privateSearch"
           >
@@ -34,11 +34,11 @@
             class="flex items-center gap-8px py-8px cursor-pointer"
           >
             <el-checkbox :model-value="selectedIds.has(item.id)" @change="privateToggle(item)" />
-            <in-avatar :src="item.avatar" :name="item.name" :show-name="false" />
+            <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
             <span class="truncate">{{ item.name }}</span>
           </label>
           <div v-if="!items.length && !loading" class="text-[var(--el-text-color-secondary)] py-16px">
-            暂无成员
+            {{ emptyText }}
           </div>
         </div>
         <el-pagination
@@ -56,7 +56,7 @@
         class="w-1/2 min-w-0 flex flex-col overflow-hidden"
       >
         <div class="flex items-center justify-between px-12px py-12px">
-          <span>已选：{{ draft.length }} 名成员</span>
+          <span>已选：{{ draft.length }} {{ selectedUnit }}</span>
           <in-button type="primary" link @in-click="privateClear">清空</in-button>
         </div>
         <div class="flex-1 min-h-0 overflow-auto px-12px pb-12px">
@@ -65,7 +65,7 @@
             :key="item.id"
             class="flex items-center gap-8px py-8px"
           >
-            <in-avatar :src="item.avatar" :name="item.name" :show-name="false" />
+            <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
             <span class="truncate flex-1">{{ item.name }}</span>
             <in-close-button size="sm" :label="`移除 ${item.name}`" @click="privateRemove(item.id)" />
           </div>
@@ -85,9 +85,23 @@ import { IAM_DEFAULT_PAGE_SIZE, type IamSelectOption } from "../models/iam";
 
 defineOptions({ name: "BizIamMemberPickerDialog" });
 
-const props = defineProps<{
-  loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
+    title?: string;
+    searchPlaceholder?: string;
+    emptyText?: string;
+    selectedUnit?: string;
+    showAvatar?: boolean;
+  }>(),
+  {
+    title: "添加成员",
+    searchPlaceholder: "请输入姓名",
+    emptyText: "暂无成员",
+    selectedUnit: "名成员",
+    showAvatar: true,
+  },
+);
 
 const emits = defineEmits<{ confirm: [members: IamSelectOption[]] }>();
 

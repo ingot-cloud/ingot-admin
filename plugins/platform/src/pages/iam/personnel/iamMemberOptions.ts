@@ -1,13 +1,28 @@
 import {
   collectIamPageRecords,
+  ConfigurationStatus,
   createIamListLoader,
   toIamSelectRecords,
   type IamSelectOption,
 } from "@ingot/admin-common";
-import { PlatformMemberPageAPI } from "@/api/iam/personnel";
+import { PlatformRolePageAPI } from "@/api/iam/authorization";
+import { PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
 
 export const loadPlatformMemberOptions = createIamListLoader(async (page, condition) => {
   const response = await PlatformMemberPageAPI(page, condition);
+  return { data: toIamSelectRecords(response.data) };
+});
+
+export const loadPlatformRoleOptions = createIamListLoader(async (page, condition) => {
+  const response = await PlatformRolePageAPI(page, {
+    ...condition,
+    status: ConfigurationStatus.ENABLED,
+  });
+  return { data: toIamSelectRecords(response.data) };
+});
+
+export const loadPlatformGroupOptions = createIamListLoader(async (page, condition) => {
+  const response = await PlatformGroupPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };
 });
 

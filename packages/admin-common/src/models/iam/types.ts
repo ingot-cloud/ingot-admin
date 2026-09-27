@@ -178,6 +178,7 @@ export interface AccountLookupInput {
   username?: string;
   phone?: string;
   email?: string;
+  domain?: AuthorizationDomain;
 }
 
 export interface AccountSecret {
@@ -514,6 +515,17 @@ export interface MemberCreateInput {
   displayName?: string;
   avatar?: string;
   departments: MemberDepartmentBinding[];
+  roleIds?: string[];
+  groupIds?: string[];
+}
+
+export interface MemberRoleView {
+  id: string;
+  name: string;
+}
+
+export interface MemberRoleReplaceInput {
+  roleIds: string[];
 }
 
 export interface MemberDepartmentBinding {
