@@ -129,8 +129,9 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U02.dev.editors：admin-common 已补范围/主体/期限/差异/升级冲突组件、`createIamOptionLoader`、`useIamDraftPreview`；平台/组织 RoleCreate/Preview API 改为 `RoleCreateInput` / `RolePreviewInput`。
 - [x] U05.dev.role-drawers：`BizIamRoleCreateDrawer` / `BizIamRoleDetailDrawer` 已接到平台授权、共享角色、组织授权（含基于共享定制）；Get/Status/Delete/Revisions/Publish API 已封装。三方升级冲突与分配写操作未做，父任务 U05 不勾选。
 - [x] U03.dev.group-paging：平台组编辑改为远程分页添加成员，草稿变化清除预览。
-- [x] U03.dev.group-wizard：平台组改为全屏三步向导（基本信息 → 双栏选人 + chip 溢出 → 预览保存）；创建 POST、编辑 preview 后 PUT；成员回显走 `ids` 分页。父任务 U03 不勾选。
+- [x] U03.dev.group-wizard：平台组改为全屏三步向导（基本信息 → 双栏选人 + chip 溢出 → 预览保存）；创建 POST、编辑 preview 后 PUT；已绑定成员走 `GET /groups/{id}/members` 分页，不传 `ids`。父任务 U03 不勾选。
 - [x] U03.dev.group-workspace：平台人员组 Tab 改为左组右成员工作区；左侧平铺组列表，右侧成员可添加/移出（工作区直接 PUT 完整 ID，添加不再 preview/确认）；点选组只拉 members；空组不拉全量成员。父任务 U03 不勾选。
+- [x] U03.dev.group-picker-bound：添加成员对话框左侧仍分页拉平台人员，右侧已绑定走 `GET /groups/{id}/members` 分页加载更多，不再用 `ids` 回查人员列表。父任务 U03 不勾选。
 - [x] U03.dev.group-members-api：组成员表改走 `GET /v1/platform/groups/{id}/members`；左侧三点打开只读详情抽屉，编辑进向导；行内移出直出；空列 `-`。父任务 U03 不勾选。
 - [x] U03.dev.tenant-select：租户创建向导用套餐远程分页替代手填 ID；开通追加应用改为远程分页，草稿变化清除预览。父任务 U03 不勾选。
 - [x] U03.dev.tenant-owner-name：组织列表/详情/设置展示 `ownerDisplayName`，缺失时回退 `ownerMemberId`。父任务 U03 不勾选。

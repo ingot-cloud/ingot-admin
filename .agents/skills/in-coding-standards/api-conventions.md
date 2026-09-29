@@ -219,6 +219,20 @@ export function AppPageQueryOptions(
 
 Token、密码、手机号不得以明文进入 Query Key（由 `snapshotQueryParams` 写成指纹）。登录、挑战、上传下载保持命令式请求。列表分页只用 `useServerPaging`。
 
+### 关联列表与 `ids`
+
+查询 **target 的绑定/关联数据**（组成员、成员所属组、已授权对象）必须调用该关系自己的分页接口，SQL 按关联表过滤。禁止：
+
+```typescript
+// ❌ 用父列表 + ids 冒充「当前组有哪些人」
+PlatformMemberPageAPI(page, { ids: memberIds.join(",") });
+
+// ✅ 独立关联接口，按组分页
+PlatformGroupMembersAPI(page, { groupId, name });
+```
+
+`ids` 只用于表单里已经选中的少量 ID 换名称。选择器右侧「已绑定」与主列表一样分页或加载更多，不要为回显预拉全集。
+
 网络分层、App 追加拦截器与 order 表见 [docs/network.md](../../../docs/network.md)。
 
 ### 请求 config 扩展

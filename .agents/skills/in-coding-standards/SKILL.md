@@ -1,6 +1,6 @@
 ---
 name: in-coding-standards
-description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, or sensitive API encryption.
+description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, sensitive API encryption, or list/selector queries for a target's bound or related records.
 ---
 
 # 编码规范
@@ -24,7 +24,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 样式优先 UnoCSS 原子类，禁止 scss/less
 - [ ] 跨 app / 插件公共逻辑优先放 packages/，具体主题放 themes/，不复制
 - [ ] 列表筛选：下拉用 `InPicker`，查询框无 label，放 `#tools-start`；条件 > 3 个时只直出第一个，其余进 `InFilterPanel`
-- [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量
+- [ ] 列表取数：普通分页默认 20，大数据用游标，树页消费接口树；禁止 `pageSize=200` 冒充全量；target 的绑定/关联列表走独立接口，禁止 `ids` 回查父列表
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
 - [ ] 多 Tab 只请求当前激活 Tab：打开页面不预拉兄弟 Tab 的接口
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
@@ -143,7 +143,9 @@ pages/platform/base/app/
 - **树**：页面需要树形结构时，必须消费接口直接返回的树（如 `view=tree` 或独立 `/tree`）。禁止把平铺分页在前端按 `parentId` 组树，也禁止为组树把 `pageSize` 调到上限。
 - **Tab 内表格**：详情抽屉等 Tab 里放 `InTable` 时，面板加 `fill`。Tab 内容区定高，工具栏/分页固定，只滚表体；不要让整个 Tab 跟着列表一起滚。
 - **Tab 请求**：每个 Tab 可以有自己的接口，但打开页面或组件时只跑**当前激活** Tab。`useServerPaging` / `useQuery` / 手写 `onMounted` 的 `enabled` 必须绑当前 `tab`，或把取数放进对应 `InBizTabPanel` 内（面板默认 `lazy`，未激活不挂载）。默认 Tab 的请求可以在打开时发。禁止 `Promise.all` 或多个 paging 无条件同时 `enabled`。只用 `InBizTabsHeader`、没有 Panel 时同样按当前 header 值 gated。切走过的面板保持挂载，不要每次点回来都重打。
-- **禁止**：`pageSize`/`size = 200`，或把接口允许的最大页（例如 IAM `MAX_SIZE=200`）当成「一次拿全量」的手段。选择器预填、详情回显用已选 ID 查名称，不要为回显预拉全集。
+- **禁止**：`pageSize`/`size = 200`，或把接口允许的最大页（例如 IAM `MAX_SIZE=200`）当成「一次拿全量」的手段。
+- **关联/绑定列表**：查询某 target 已绑定、已引用、已加入的记录（组成员、成员所属组、角色被授权对象等）必须走独立关联接口，例如 `GET /groups/{id}/members`。服务端按关联表过滤分页；前端翻页或「加载更多」。禁止把关系 ID 拼进父资源列表的 `ids`（或循环翻页）再查一遍。组有 100 人就传 100 个 ID 是错误用法。
+- **少量回显**：表单里已经拿在手里的少量 ID（标签、单行选择）才允许用 `ids` 换名称；没有关联接口、且数量不是列表规模时才用，不得当成列表。
 
 ### 样式
 
@@ -191,6 +193,7 @@ pages/platform/base/app/
 | 跨 app 复制 net/utils/组件               | 抽取到 `packages/shared` 或 `packages/admin-core`                |
 | 新增正式主题放进 `packages/`             | 放到 `themes/<id>/`，包名 `@ingot/theme-<id>`                    |
 | 新增无域前缀的同名 store                 | 带域前缀命名                                                     |
+| 用 `ids` 把绑定关系拼回父列表            | 走 `GET /{target}/{id}/members` 这类关联接口分页                 |
 
 ## 修改已有代码时
 
