@@ -1,12 +1,13 @@
 import {
-  collectIamPageRecords,
   ConfigurationStatus,
   createIamListLoader,
+  IAM_DEFAULT_PAGE_SIZE,
   toIamSelectRecords,
   type IamSelectOption,
 } from "@ingot/admin-common";
+import type { LoadDataParams, Page } from "@ingot/admin-core";
 import { PlatformRolePageAPI } from "@/api/iam/authorization";
-import { PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
+import { PlatformGroupMembersAPI, PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
 
 export const loadPlatformMemberOptions = createIamListLoader(async (page, condition) => {
   const response = await PlatformMemberPageAPI(page, condition);
@@ -26,14 +27,13 @@ export const loadPlatformGroupOptions = createIamListLoader(async (page, conditi
   return { data: toIamSelectRecords(response.data) };
 });
 
-export async function loadPlatformMembersByIds(ids: string[]): Promise<IamSelectOption[]> {
-  if (!ids.length) {
-    return [];
-  }
-  const collected = await collectIamPageRecords(async (page) => {
-    const response = await PlatformMemberPageAPI(page, { ids: ids.join(",") });
-    return { data: toIamSelectRecords(response.data) };
-  });
-  const byId = new Map(collected.map((item) => [item.id, item]));
-  return ids.map((id) => byId.get(id) ?? { id, name: id });
+export async function loadPlatformGroupBoundMembers(
+  groupId: string,
+  params: LoadDataParams,
+): Promise<Page<IamSelectOption>> {
+  const response = await PlatformGroupMembersAPI(
+    { current: params.current, size: params.size ?? IAM_DEFAULT_PAGE_SIZE },
+    { groupId, name: params.query },
+  );
+  return toIamSelectRecords(response.data);
 }

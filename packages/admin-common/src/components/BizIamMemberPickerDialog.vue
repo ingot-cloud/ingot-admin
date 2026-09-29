@@ -1,9 +1,7 @@
 <template>
   <in-dialog v-model="visible" :title="title" width="840px" append-to-body>
     <div class="in-split-picker h-420px flex">
-      <div
-        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
-      >
+      <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="p-12px">
           <el-input
             v-model="keyword"
@@ -52,16 +50,14 @@
           @current-change="privateOnPageChange"
         />
       </div>
-      <div
-        class="w-1/2 min-w-0 flex flex-col overflow-hidden"
-      >
+      <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between px-12px py-12px">
-          <span>已选：{{ draft.length }} {{ selectedUnit }}</span>
+          <span>已选：{{ selectedCount }} {{ selectedUnit }}</span>
           <in-button type="primary" link @in-click="privateClear">清空</in-button>
         </div>
         <div class="flex-1 min-h-0 overflow-auto px-12px pb-12px">
           <div
-            v-for="item in draft"
+            v-for="item in rightItems"
             :key="item.id"
             class="flex items-center gap-8px py-8px"
           >
@@ -69,6 +65,14 @@
             <span class="truncate flex-1">{{ item.name }}</span>
             <in-close-button size="sm" :label="`移除 ${item.name}`" @click="privateRemove(item.id)" />
           </div>
+          <div v-if="boundLoading" class="text-[var(--el-text-color-secondary)] py-8px">加载中</div>
+          <in-button
+            v-if="canLoadMoreBound"
+            class="w-full"
+            @in-click="privateLoadMoreBound"
+          >
+            加载更多
+          </in-button>
         </div>
       </div>
     </div>
@@ -85,9 +89,12 @@ import { IAM_DEFAULT_PAGE_SIZE, type IamSelectOption } from "../models/iam";
 
 defineOptions({ name: "BizIamMemberPickerDialog" });
 
+export type MemberPickerShowInput = IamSelectOption[] | { boundIds: string[] };
+
 const props = withDefaults(
   defineProps<{
     loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
+    loadBound?: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
     title?: string;
     searchPlaceholder?: string;
     emptyText?: string;
@@ -109,18 +116,55 @@ const visible = ref(false);
 const keyword = ref("");
 const items = ref<IamSelectOption[]>([]);
 const draft = ref<IamSelectOption[]>([]);
+const added = ref<IamSelectOption[]>([]);
+const boundItems = ref<IamSelectOption[]>([]);
+const boundIdSet = ref<Set<string>>(new Set());
+const removedIds = ref<Set<string>>(new Set());
+const boundMode = ref(false);
 const page = ref(1);
+const boundPage = ref(1);
 const total = ref(0);
+const boundTotal = ref(0);
 const loading = ref(false);
+const boundLoading = ref(false);
 const pageSize = IAM_DEFAULT_PAGE_SIZE;
 
-const selectedIds = computed(() => new Set(draft.value.map((item) => item.id)));
+const selectedIds = computed(() => {
+  if (!boundMode.value) {
+    return new Set(draft.value.map((item) => item.id));
+  }
+  const ids = new Set(boundIdSet.value);
+  for (const id of removedIds.value) {
+    ids.delete(id);
+  }
+  for (const item of added.value) {
+    ids.add(item.id);
+  }
+  return ids;
+});
+const selectedCount = computed(() => selectedIds.value.size);
+const rightItems = computed(() => {
+  if (!boundMode.value) {
+    return draft.value;
+  }
+  const addedIds = new Set(added.value.map((item) => item.id));
+  const boundShown = boundItems.value.filter(
+    (item) => !removedIds.value.has(item.id) && !addedIds.has(item.id),
+  );
+  return [...added.value, ...boundShown];
+});
 const allPageSelected = computed(
   () => items.value.length > 0 && items.value.every((item) => selectedIds.value.has(item.id)),
 );
 const somePageSelected = computed(
   () => !allPageSelected.value && items.value.some((item) => selectedIds.value.has(item.id)),
 );
+const canLoadMoreBound = computed(
+  () => boundMode.value && !boundLoading.value && boundItems.value.length < boundTotal.value,
+);
+
+const isBoundInput = (value: MemberPickerShowInput): value is { boundIds: string[] } =>
+  !Array.isArray(value);
 
 const privateLoad = async (): Promise<void> => {
   if (loading.value) {
@@ -140,6 +184,31 @@ const privateLoad = async (): Promise<void> => {
   }
 };
 
+const privateLoadBound = async (reset: boolean): Promise<void> => {
+  if (!props.loadBound || boundLoading.value) {
+    return;
+  }
+  boundLoading.value = true;
+  try {
+    const nextPage = reset ? 1 : boundPage.value + 1;
+    const data = await props.loadBound({
+      current: nextPage,
+      size: pageSize,
+    });
+    const records = data.records ?? [];
+    boundPage.value = nextPage;
+    boundTotal.value = data.total ?? 0;
+    if (reset) {
+      boundItems.value = records;
+      return;
+    }
+    const seen = new Set(boundItems.value.map((item) => item.id));
+    boundItems.value = [...boundItems.value, ...records.filter((item) => !seen.has(item.id))];
+  } finally {
+    boundLoading.value = false;
+  }
+};
+
 const privateSearch = (): void => {
   page.value = 1;
   void privateLoad();
@@ -150,33 +219,71 @@ const privateOnPageChange = (current: number): void => {
   void privateLoad();
 };
 
-const privateToggle = (item: IamSelectOption): void => {
-  if (selectedIds.value.has(item.id)) {
-    draft.value = draft.value.filter((current) => current.id !== item.id);
+const privateSelect = (item: IamSelectOption): void => {
+  if (!boundMode.value) {
+    draft.value = [...draft.value, item];
     return;
   }
-  draft.value = [...draft.value, item];
+  if (removedIds.value.has(item.id)) {
+    const next = new Set(removedIds.value);
+    next.delete(item.id);
+    removedIds.value = next;
+  }
+  if (!boundIdSet.value.has(item.id) && !added.value.some((current) => current.id === item.id)) {
+    added.value = [...added.value, item];
+  }
+};
+
+const privateDeselect = (id: string): void => {
+  if (!boundMode.value) {
+    draft.value = draft.value.filter((current) => current.id !== id);
+    return;
+  }
+  added.value = added.value.filter((current) => current.id !== id);
+  if (boundIdSet.value.has(id) && !removedIds.value.has(id)) {
+    const next = new Set(removedIds.value);
+    next.add(id);
+    removedIds.value = next;
+  }
+};
+
+const privateToggle = (item: IamSelectOption): void => {
+  if (selectedIds.value.has(item.id)) {
+    privateDeselect(item.id);
+    return;
+  }
+  privateSelect(item);
 };
 
 const privateToggleLoaded = (): void => {
   if (allPageSelected.value) {
-    const loaded = new Set(items.value.map((item) => item.id));
-    draft.value = draft.value.filter((item) => !loaded.has(item.id));
+    for (const item of items.value) {
+      privateDeselect(item.id);
+    }
     return;
   }
-  const merged = new Map(draft.value.map((item) => [item.id, item]));
   for (const item of items.value) {
-    merged.set(item.id, item);
+    if (!selectedIds.value.has(item.id)) {
+      privateSelect(item);
+    }
   }
-  draft.value = [...merged.values()];
 };
 
 const privateRemove = (id: string): void => {
-  draft.value = draft.value.filter((item) => item.id !== id);
+  privateDeselect(id);
 };
 
 const privateClear = (): void => {
-  draft.value = [];
+  if (!boundMode.value) {
+    draft.value = [];
+    return;
+  }
+  added.value = [];
+  removedIds.value = new Set(boundIdSet.value);
+};
+
+const privateLoadMoreBound = (): void => {
+  void privateLoadBound(false);
 };
 
 const privateCancel = (): void => {
@@ -184,18 +291,51 @@ const privateCancel = (): void => {
 };
 
 const privateConfirm = (): void => {
-  emits("confirm", [...draft.value]);
+  if (!boundMode.value) {
+    emits("confirm", [...draft.value]);
+    visible.value = false;
+    return;
+  }
+  const named = new Map<string, IamSelectOption>();
+  for (const item of [...boundItems.value, ...added.value]) {
+    named.set(item.id, item);
+  }
+  const nextIds = [...boundIdSet.value].filter((id) => !removedIds.value.has(id));
+  for (const item of added.value) {
+    if (!nextIds.includes(item.id)) {
+      nextIds.push(item.id);
+    }
+  }
+  emits(
+    "confirm",
+    nextIds.map((id) => named.get(id) ?? { id, name: id }),
+  );
   visible.value = false;
 };
 
 defineExpose({
-  show(current: IamSelectOption[]) {
-    draft.value = current.map((item) => ({ ...item }));
+  show(current: MemberPickerShowInput = []) {
     keyword.value = "";
     page.value = 1;
     total.value = 0;
     items.value = [];
+    draft.value = [];
+    added.value = [];
+    boundItems.value = [];
+    boundPage.value = 1;
+    boundTotal.value = 0;
+    removedIds.value = new Set();
     visible.value = true;
+    if (isBoundInput(current) && props.loadBound) {
+      boundMode.value = true;
+      boundIdSet.value = new Set(current.boundIds);
+      void privateLoad();
+      void privateLoadBound(true);
+      return;
+    }
+    boundMode.value = false;
+    boundIdSet.value = new Set();
+    draft.value = Array.isArray(current) ? current.map((item) => ({ ...item })) : [];
     void privateLoad();
   },
 });

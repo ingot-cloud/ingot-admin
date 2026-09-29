@@ -16,7 +16,7 @@
     </span>
     <span v-if="extra > 0" class="shrink-0 text-[var(--el-text-color-secondary)]">+{{ extra }}</span>
     <span
-      v-if="!members.length"
+      v-if="!shown.length && extra <= 0"
       class="truncate text-[var(--in-text-color-placeholder)]"
     >
       {{ emptyText }}
@@ -26,13 +26,14 @@
 
 <script setup lang="ts">
 import { InAvatar, InCloseButton } from "@ingot/admin-core";
-import { overflowCount, visibleMembers, type MemberChip } from "./memberChipOverflow";
+import { visibleMembers, type MemberChip } from "./memberChipOverflow";
 
 defineOptions({ name: "BizIamMemberChips" });
 
 const props = withDefaults(
   defineProps<{
     members: MemberChip[];
+    total?: number;
     closable?: boolean;
     emptyText?: string;
   }>(),
@@ -45,5 +46,5 @@ const props = withDefaults(
 const emits = defineEmits<{ remove: [id: string] }>();
 
 const shown = computed(() => visibleMembers(props.members));
-const extra = computed(() => overflowCount(props.members.length));
+const extra = computed(() => Math.max(0, (props.total ?? props.members.length) - shown.value.length));
 </script>

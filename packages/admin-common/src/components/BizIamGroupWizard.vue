@@ -46,6 +46,7 @@
               <biz-iam-member-chips
                 class="flex-1 min-w-0"
                 :members="draft.members"
+                :total="draft.memberIds.length"
                 closable
                 empty-text="请选择成员"
                 @remove="privateRemoveMember"
@@ -87,7 +88,7 @@
           <section>
             <div class="mb-12px font-500">用户组成员</div>
             <div class="bg-[var(--in-bg-color-page)] rounded-8px p-16px">
-              <biz-iam-member-chips :members="draft.members" />
+              <biz-iam-member-chips :members="draft.members" :total="draft.memberIds.length" />
             </div>
           </section>
         </div>
@@ -109,7 +110,12 @@
       </in-button>
     </template>
   </in-drawer>
-  <biz-iam-member-picker-dialog ref="pickerRef" :load-members="loadMembers" @confirm="privateOnPicked" />
+  <biz-iam-member-picker-dialog
+    ref="pickerRef"
+    :load-members="loadMembers"
+    :load-bound="pickerLoadBound"
+    @confirm="privateOnPicked"
+  />
 </template>
 
 <script setup lang="ts">
@@ -124,6 +130,7 @@ import BizIamMemberChips from "./BizIamMemberChips.vue";
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import { emptySelectionDepartments } from "../models/iam";
+import { MEMBER_CHIP_LIMIT } from "./memberChipOverflow";
 import type {
   CreatedResource,
   GroupDraft,
@@ -139,7 +146,7 @@ defineOptions({ name: "BizIamGroupWizard" });
 
 const props = defineProps<{
   loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
-  loadSelected: (ids: string[]) => Promise<IamSelectOption[]>;
+  loadBound: (params: LoadDataParams & { groupId: string }) => Promise<Page<IamSelectOption>>;
   createApi: (draft: GroupDraft) => Promise<R<CreatedResource>>;
   getApi: (id: string) => Promise<R<ResourceDetail<GroupRecord>>>;
   updateApi: (id: string, input: GroupUpdateInput) => Promise<R<ResourceDetail<GroupRecord>>>;
@@ -153,11 +160,12 @@ const loading = ref(false);
 const step = ref(0);
 const editing = ref<ResourceDetail<GroupRecord>>();
 const preview = ref<Preview<ReferenceImpactPreview> | null>(null);
-const pickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
+const pickerRef = ref<{ show: (current?: IamSelectOption[] | { boundIds: string[] }) => void }>();
 const draft = reactive({
   name: "",
   description: "",
   members: [] as IamSelectOption[],
+  memberIds: [] as string[],
 });
 
 const title = computed(() => (editing.value ? "编辑用户组" : "新建用户组"));
@@ -166,7 +174,7 @@ const snapshot = (): string =>
   JSON.stringify({
     name: draft.name.trim(),
     description: draft.description.trim(),
-    members: draft.members.map((item) => item.id),
+    members: draft.memberIds,
   });
 const initial = ref(snapshot());
 const dirty = computed(() => snapshot() !== initial.value);
@@ -175,7 +183,7 @@ const asDraft = (): GroupDraft => ({
   name: draft.name.trim(),
   description: draft.description.trim() || undefined,
   selection: {
-    members: draft.members.map((item) => item.id),
+    members: draft.memberIds,
     departments: emptySelectionDepartments(),
   },
 });
@@ -187,6 +195,7 @@ const reset = (): void => {
   draft.name = "";
   draft.description = "";
   draft.members = [];
+  draft.memberIds = [];
   loading.value = false;
   initial.value = snapshot();
 };
@@ -209,16 +218,30 @@ const privateCancel = (): void => {
   });
 };
 
+const pickerLoadBound = (params: LoadDataParams): Promise<Page<IamSelectOption>> => {
+  const groupId = editing.value?.record.id;
+  if (!groupId) {
+    return Promise.resolve({ records: [], total: 0, current: 1, size: params.size });
+  }
+  return props.loadBound({ ...params, groupId });
+};
+
 const privateOpenPicker = (): void => {
+  if (editing.value) {
+    pickerRef.value?.show({ boundIds: draft.memberIds });
+    return;
+  }
   pickerRef.value?.show(draft.members);
 };
 
 const privateOnPicked = (members: IamSelectOption[]): void => {
+  draft.memberIds = members.map((item) => item.id);
   draft.members = members;
   preview.value = null;
 };
 
 const privateRemoveMember = (id: string): void => {
+  draft.memberIds = draft.memberIds.filter((item) => item !== id);
   draft.members = draft.members.filter((item) => item.id !== id);
   preview.value = null;
 };
@@ -308,7 +331,13 @@ defineExpose({
         editing.value = response.data;
         draft.name = response.data.record.name;
         draft.description = response.data.record.description ?? "";
-        draft.members = await props.loadSelected(response.data.record.selection.members);
+        draft.memberIds = [...response.data.record.selection.members];
+        const bound = await props.loadBound({
+          current: 1,
+          size: MEMBER_CHIP_LIMIT,
+          groupId: response.data.record.id,
+        });
+        draft.members = bound.records ?? [];
         initial.value = snapshot();
       })
       .finally(() => {

@@ -8,11 +8,11 @@
     <template #left>
       <group-list
         v-model:name="groupPaging.condition.name"
-        :records="groupPaging.pageInfo.value.records"
+        :records="groupPaging.pageInfo.value.records ?? []"
         :selected-id="selectedId"
         :loading="groupPaging.fetching.value"
-        :current="groupPaging.pageInfo.value.current"
-        :size="groupPaging.pageInfo.value.size"
+        :current="groupPaging.pageInfo.value.current ?? 1"
+        :size="groupPaging.pageInfo.value.size ?? 20"
         :total="groupPaging.pageInfo.value.total ?? 0"
         :can-create="canCreate"
         @search="refreshGroups"
@@ -101,6 +101,7 @@
   <biz-iam-member-picker-dialog
     ref="pickerRef"
     :load-members="loadPlatformMemberOptions"
+    :load-bound="loadBoundMembers"
     @confirm="handlePicked"
   />
 </template>
@@ -114,6 +115,7 @@ import {
   StatusTag,
   useCapabilities,
   type InTableFeedback,
+  type LoadDataParams,
 } from "@ingot/admin-core";
 import {
   BizIamMemberPickerDialog,
@@ -135,7 +137,7 @@ import {
   groupMemberHeaders,
   type GroupMemberRow,
 } from "../groupMembersTable";
-import { loadPlatformMemberOptions, loadPlatformMembersByIds } from "../iamMemberOptions";
+import { loadPlatformGroupBoundMembers, loadPlatformMemberOptions } from "../iamMemberOptions";
 import { useGroupOps } from "../useGroupOps";
 
 defineOptions({ name: "GroupWorkspace" });
@@ -160,13 +162,16 @@ const memberStatusEnum = useMemberStatusEnum();
 const selectedColumns = ref<string[]>([]);
 const wizardRef = ref<{ show: (row?: GroupRow) => void }>();
 const detailRef = ref<{ show: (row: GroupRow) => void; hide: () => void }>();
-const pickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
+const pickerRef = ref<{ show: (current?: { boundIds: string[] }) => void }>();
 const toolbarRow = {
   record: { id: "", status: MemberStatus.ACTIVE, departments: [] },
   fieldAccess: {},
   capabilities: {},
   version: "",
 } satisfies GroupMemberRow;
+
+const loadBoundMembers = (params: LoadDataParams) =>
+  loadPlatformGroupBoundMembers(selectedId.value, params);
 
 const canCreate = computed(() => hasAction(IamAction.PLATFORM_GROUP_CREATE));
 const visibleHeaders = computed(() => applyColumnSelection(groupMemberHeaders, selectedColumns.value));
@@ -210,9 +215,7 @@ const handleAdd = (): void => {
   if (!selectedDetail.value) {
     return;
   }
-  void loadPlatformMembersByIds(memberIds.value).then((current) => {
-    pickerRef.value?.show(current);
-  });
+  pickerRef.value?.show({ boundIds: memberIds.value });
 };
 const handlePicked = (members: IamSelectOption[]): void => {
   void addMembers(members);
