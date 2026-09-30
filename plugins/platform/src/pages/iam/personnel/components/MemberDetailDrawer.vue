@@ -65,11 +65,16 @@
         </in-detail-field>
         <in-detail-field label="角色" :value="rolePreview">
           <biz-iam-option-tag-field
+            v-if="canReplaceDirect"
             v-model="draftRoles"
             placeholder="请选择角色"
             @pick="privatePickRoles"
           />
+          <span v-else>{{ rolePreview }}（只读）</span>
         </in-detail-field>
+        <el-form-item v-if="canOpenAssignment" label="参数化角色分配">
+          <in-button @click="openAssignment">前往角色分配</in-button>
+        </el-form-item>
         <in-detail-field label="状态">
           <template #view>
             <status-tag
@@ -119,12 +124,21 @@
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, StatusTag, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
+import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
+import { useCapabilities, useGo } from "@ingot/admin-core";
+import {
+  Confirm,
+  Message,
+  StatusTag,
+  createLoadGuard,
+  useDetailEditSession,
+} from "@ingot/admin-core";
 import {
   BizIamMemberPickerDialog,
   BizIamOptionTagField,
   collectIamPageRecords,
   MemberStatus,
+  IamAction,
   editablePatch,
   memberStatusTone,
   useMemberStatusEnum,
@@ -148,6 +162,17 @@ import { createRowActions, type Row } from "../table";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
+const { canReplaceDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
+const { hasAction: hasAssignmentAction } = useCapabilities();
+const goAssignments = useGo();
+const canOpenAssignment = computed(() => hasAssignmentAction(IamAction.PLATFORM_ASSIGNMENT_CREATE));
+const openAssignment = (): void => {
+  if (detail.value && canOpenAssignment.value)
+    goAssignments({
+      name: "platform.iam.authorization",
+      query: { assignmentMemberId: detail.value.record.id },
+    });
+};
 const EMPTY_PREVIEW = "-";
 
 const emits = defineEmits<{ success: [] }>();
@@ -175,12 +200,18 @@ const groupsLoaded = ref(false);
 const rolePickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 const loadGuard = createLoadGuard();
 
-const identityName = computed(() => detail.value?.record.displayName || detail.value?.record.id || "");
-const identityAvatar = computed(() => (editing.value ? draft.avatar : detail.value?.record.avatar) || "");
+const identityName = computed(
+  () => detail.value?.record.displayName || detail.value?.record.id || "",
+);
+const identityAvatar = computed(
+  () => (editing.value ? draft.avatar : detail.value?.record.avatar) || "",
+);
 const rolePreview = computed(() =>
   savedRoles.value.length ? savedRoles.value.map((item) => item.name).join("、") : EMPTY_PREVIEW,
 );
-const groupPreview = computed(() => (groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW));
+const groupPreview = computed(() =>
+  groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW,
+);
 const overflowActions = computed(() => {
   if (!detail.value || detail.value.record.status === MemberStatus.REMOVED) {
     return [];
@@ -283,7 +314,7 @@ const privateFinish = (): void => {
 };
 
 const privateSaveRoles = (): Promise<void> => {
-  if (!detail.value || sameRoleIds(draftRoles.value, savedRoles.value)) {
+  if (!canReplaceDirect.value || !detail.value || sameRoleIds(draftRoles.value, savedRoles.value)) {
     return Promise.resolve();
   }
   return PlatformMemberRolesReplaceAPI(detail.value.record.id, {
@@ -379,7 +410,10 @@ const privateSave = (): void => {
     });
 };
 
-const privateChangeStatus = (status: MemberStatus.ACTIVE | MemberStatus.SUSPENDED, label: string): void => {
+const privateChangeStatus = (
+  status: MemberStatus.ACTIVE | MemberStatus.SUSPENDED,
+  label: string,
+): void => {
   if (!detail.value) {
     return;
   }
@@ -403,7 +437,9 @@ const privateRemove = (): void => {
   Confirm.error(`移出不删除全局账号。是否移出（${identityName.value}）？`, {
     confirmButtonText: "移出",
   }).then(() => {
-    PlatformMemberRemoveAPI(detail.value!.record.id, { expectedVersion: detail.value!.version }).then(() => {
+    PlatformMemberRemoveAPI(detail.value!.record.id, {
+      expectedVersion: detail.value!.version,
+    }).then(() => {
       Message.success("已移出");
       visible.value = false;
       void queryClient.invalidateQueries({ queryKey: platformMemberQueryKeys.lists() });
@@ -430,6 +466,7 @@ const privateOnRolesConfirm = (selected: IamSelectOption[]): void => {
 
 defineExpose({
   show(row: Row) {
+    void refreshEligibility();
     visible.value = true;
     tab.value = "basic";
     session.exitEdit();

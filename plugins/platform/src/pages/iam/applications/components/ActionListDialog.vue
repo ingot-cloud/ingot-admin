@@ -126,8 +126,8 @@ const loadActions = (): void => {
   }
   loading.value = true;
   const query = {
-    current: page.value.current,
-    size: page.value.size,
+    current: page.value.current ?? 1,
+    size: page.value.size ?? 20,
     resourceId: resource.value.record.id,
     name: nameFilter.value.trim() || undefined,
   };

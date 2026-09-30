@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./../admin-core/src/components/user/AccountStatusEditButton.vue')['default']
     BizIamAssignmentDrawer: typeof import('./src/components/BizIamAssignmentDrawer.vue')['default']
+    BizIamAuthorizationSelect: typeof import('./src/components/BizIamAuthorizationSelect.vue')['default']
     BizIamChipPageSelect: typeof import('./src/components/BizIamChipPageSelect.vue')['default']
     BizIamDelegationDrawer: typeof import('./src/components/BizIamDelegationDrawer.vue')['default']
     BizIamDeltaTags: typeof import('./src/components/BizIamDeltaTags.vue')['default']
@@ -25,6 +26,9 @@ declare module 'vue' {
     BizIamMemberChips: typeof import('./src/components/BizIamMemberChips.vue')['default']
     BizIamMemberPickerDialog: typeof import('./src/components/BizIamMemberPickerDialog.vue')['default']
     BizIamOptionTagField: typeof import('./src/components/BizIamOptionTagField.vue')['default']
+    BizIamPlatformAssignmentDrawer: typeof import('./src/components/BizIamPlatformAssignmentDrawer.vue')['default']
+    BizIamPlatformDelegationDrawer: typeof import('./src/components/BizIamPlatformDelegationDrawer.vue')['default']
+    BizIamPlatformDiagnoseDrawer: typeof import('./src/components/BizIamPlatformDiagnoseDrawer.vue')['default']
     BizIamPreviewAlert: typeof import('./src/components/BizIamPreviewAlert.vue')['default']
     BizIamRecordLink: typeof import('./src/components/BizIamRecordLink.vue')['default']
     BizIamRevisionDeltaView: typeof import('./src/components/BizIamRevisionDeltaView.vue')['default']
@@ -50,8 +54,10 @@ declare module 'vue' {
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
+    ElRadio: typeof import('element-plus/es')['ElRadio']
     ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElSelect: typeof import('element-plus/es')['ElSelect']
@@ -154,5 +160,8 @@ declare module 'vue' {
     Verify: typeof import('./../admin-core/src/components/verifition/Verify.vue')['default']
     VerifyPoints: typeof import('./../admin-core/src/components/verifition/verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./../admin-core/src/components/verifition/verify/VerifySlide.vue')['default']
+  }
+  export interface GlobalDirectives {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

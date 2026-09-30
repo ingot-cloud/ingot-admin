@@ -26,7 +26,7 @@
       </template>
     </in-form>
     <in-form v-else label-position="top">
-      <el-form-item label="角色">
+      <el-form-item v-if="canGrantDirect" label="角色">
         <biz-iam-option-tag-field
           v-model="roles"
           placeholder="请选择角色"
@@ -91,9 +91,11 @@ import { PlatformMemberCreateAPI } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
 import { loadPlatformGroupOptions, loadPlatformRoleOptions } from "../iamMemberOptions";
+import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
 
 defineOptions({ name: "MemberCreateDrawer" });
 
+const { canGrantDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
 const OBJECT_NOT_FOUND = "ObjectNotFound";
 const ACCOUNTS_ROUTE = "platform.iam.accounts";
 
@@ -212,7 +214,7 @@ const privateSubmit = (): void => {
     displayName: displayName.value.trim() || undefined,
     avatar: avatar.value,
     departments: [],
-    roleIds: roles.value.map((item) => item.id),
+    roleIds: canGrantDirect.value ? roles.value.map((item) => item.id) : [],
     groupIds: groups.value.map((item) => item.id),
   })
     .then(() => {
@@ -228,6 +230,7 @@ const privateSubmit = (): void => {
 
 defineExpose({
   show() {
+    void refreshEligibility();
     resetDraft();
     visible.value = true;
   },

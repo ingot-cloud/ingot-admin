@@ -60,7 +60,7 @@ export const useGroupOps = () => {
   };
 
   const reloadSelected = (): void => {
-    const current = groupPaging.pageInfo.value.records.find((item) => item.record.id === selectedId.value);
+    const current = (groupPaging.pageInfo.value.records ?? []).find((item) => item.record.id === selectedId.value);
     if (current) {
       selectGroup(current);
     } else if (selectedId.value) {
@@ -137,7 +137,8 @@ export const useGroupOps = () => {
 
   watch(
     () => groupPaging.pageInfo.value.records,
-    (records) => {
+    (value) => {
+      const records = value ?? [];
       if (!records.length) {
         if (selectedId.value) {
           selectGroup(undefined);

@@ -5,8 +5,11 @@
     <div>范围：{{ decision.scopeSummary || "-" }}</div>
     <div v-if="decision.sources?.length">
       来源：
-      <span v-for="(item, index) in decision.sources" :key="`${item.kind}-${item.id}-${index}`">
-        {{ item.label || item.id || item.kind }}
+      <span
+        v-for="(item, index) in decision.sources"
+        :key="`${item.assignmentId}-${item.delegationId}-${index}`"
+      >
+        {{ item.summary }}
         <span v-if="index < decision.sources.length - 1">、</span>
       </span>
     </div>

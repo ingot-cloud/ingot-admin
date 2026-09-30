@@ -34,3 +34,10 @@ export { default as BizIamDelegationDrawer } from "./components/BizIamDelegation
 export { default as BizIamDiagnoseDrawer } from "./components/BizIamDiagnoseDrawer.vue";
 export { default as BizIamChipPageSelect } from "./components/BizIamChipPageSelect.vue";
 export { default as BizIamSelectionEditor } from "./components/BizIamSelectionEditor.vue";
+
+export { default as BizIamAuthorizationSelect } from "./components/BizIamAuthorizationSelect.vue";
+export { default as BizIamPlatformAssignmentDrawer } from "./components/BizIamPlatformAssignmentDrawer.vue";
+
+export { default as BizIamPlatformDelegationDrawer } from "./components/BizIamPlatformDelegationDrawer.vue";
+
+export { default as BizIamPlatformDiagnoseDrawer } from "./components/BizIamPlatformDiagnoseDrawer.vue";

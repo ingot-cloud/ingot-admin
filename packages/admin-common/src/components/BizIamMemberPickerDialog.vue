@@ -1,7 +1,7 @@
 <template>
   <in-dialog v-model="visible" :title="title" width="840px" append-to-body>
     <div class="in-split-picker h-420px flex">
-      <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
+      <div v-loading="loading" class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="p-12px">
           <el-input
             v-model="keyword"
@@ -19,7 +19,7 @@
           <el-checkbox
             :model-value="allPageSelected"
             :indeterminate="somePageSelected"
-            :disabled="!items.length"
+            :disabled="loading || !items.length"
             @change="privateToggleLoaded"
           >
             全选本页
@@ -35,7 +35,14 @@
             <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
             <span class="truncate">{{ item.name }}</span>
           </label>
-          <div v-if="!items.length && !loading" class="text-[var(--el-text-color-secondary)] py-16px">
+          <div v-if="loadFailed" class="flex items-center gap-8px py-16px">
+            <span class="text-[var(--el-text-color-secondary)]">加载失败</span>
+            <in-button type="primary" link @in-click="privateLoad">重试</in-button>
+          </div>
+          <div
+            v-else-if="!items.length && !loading"
+            class="text-[var(--el-text-color-secondary)] py-16px"
+          >
             {{ emptyText }}
           </div>
         </div>
@@ -56,21 +63,24 @@
           <in-button type="primary" link @in-click="privateClear">清空</in-button>
         </div>
         <div class="flex-1 min-h-0 overflow-auto px-12px pb-12px">
-          <div
-            v-for="item in rightItems"
-            :key="item.id"
-            class="flex items-center gap-8px py-8px"
-          >
+          <div v-for="item in rightItems" :key="item.id" class="flex items-center gap-8px py-8px">
             <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
             <span class="truncate flex-1">{{ item.name }}</span>
-            <in-close-button size="sm" :label="`移除 ${item.name}`" @click="privateRemove(item.id)" />
+            <in-close-button
+              size="sm"
+              :label="`移除 ${item.name}`"
+              @click="privateRemove(item.id)"
+            />
           </div>
           <div v-if="boundLoading" class="text-[var(--el-text-color-secondary)] py-8px">加载中</div>
           <in-button
-            v-if="canLoadMoreBound"
+            v-if="boundLoadFailed"
             class="w-full"
-            @in-click="privateLoadMoreBound"
+            @in-click="privateLoadBound(!boundItems.length)"
           >
+            加载失败，重试
+          </in-button>
+          <in-button v-if="canLoadMoreBound" class="w-full" @in-click="privateLoadMoreBound">
             加载更多
           </in-button>
         </div>
@@ -78,7 +88,9 @@
     </div>
     <template #footer>
       <in-button @in-click="privateCancel">取消</in-button>
-      <in-button type="primary" @in-click="privateConfirm">确定</in-button>
+      <in-button type="primary" :disabled="loading || boundLoading" @in-click="privateConfirm"
+        >确定</in-button
+      >
     </template>
   </in-dialog>
 </template>
@@ -110,7 +122,11 @@ const props = withDefaults(
   },
 );
 
-const emits = defineEmits<{ confirm: [members: IamSelectOption[]] }>();
+const emits = defineEmits<{
+  confirm: [members: IamSelectOption[]];
+  closed: [];
+  "load-error": [error: unknown];
+}>();
 
 const visible = ref(false);
 const keyword = ref("");
@@ -127,7 +143,13 @@ const total = ref(0);
 const boundTotal = ref(0);
 const loading = ref(false);
 const boundLoading = ref(false);
+const loadFailed = ref(false);
+const boundLoadFailed = ref(false);
 const pageSize = IAM_DEFAULT_PAGE_SIZE;
+let epoch = 0;
+let request = 0;
+const pending = new Map<string, Promise<Page<IamSelectOption>>>();
+const completed = new Map<string, Page<IamSelectOption>>();
 
 const selectedIds = computed(() => {
   if (!boundMode.value) {
@@ -160,27 +182,53 @@ const somePageSelected = computed(
   () => !allPageSelected.value && items.value.some((item) => selectedIds.value.has(item.id)),
 );
 const canLoadMoreBound = computed(
-  () => boundMode.value && !boundLoading.value && boundItems.value.length < boundTotal.value,
+  () =>
+    boundMode.value &&
+    !boundLoading.value &&
+    !boundLoadFailed.value &&
+    boundItems.value.length < boundTotal.value,
 );
 
 const isBoundInput = (value: MemberPickerShowInput): value is { boundIds: string[] } =>
   !Array.isArray(value);
 
 const privateLoad = async (): Promise<void> => {
-  if (loading.value) {
-    return;
-  }
+  const id = ++request;
+  const currentEpoch = epoch;
+  const params = { current: page.value, size: pageSize, query: keyword.value.trim() || undefined };
+  const key = JSON.stringify(params);
   loading.value = true;
+  loadFailed.value = false;
   try {
-    const data = await props.loadMembers({
-      current: page.value,
-      size: pageSize,
-      query: keyword.value.trim() || undefined,
-    });
+    let promise = pending.get(key);
+    if (!promise) {
+      const cached = completed.get(key);
+      const created: Promise<Page<IamSelectOption>> = (
+        cached ? Promise.resolve(cached) : Promise.resolve().then(() => props.loadMembers(params))
+      )
+        .then((data) => {
+          if (epoch === currentEpoch) completed.set(key, data);
+          return data;
+        })
+        .finally(() => {
+          if (pending.get(key) === created) pending.delete(key);
+        });
+      promise = created;
+      pending.set(key, promise);
+    }
+    const data = await promise;
+    if (epoch !== currentEpoch || id !== request) return;
     items.value = data.records ?? [];
     total.value = data.total ?? 0;
+  } catch (error) {
+    if (epoch === currentEpoch && id === request) {
+      items.value = [];
+      total.value = 0;
+      loadFailed.value = true;
+      emits("load-error", error);
+    }
   } finally {
-    loading.value = false;
+    if (epoch === currentEpoch && id === request) loading.value = false;
   }
 };
 
@@ -189,6 +237,8 @@ const privateLoadBound = async (reset: boolean): Promise<void> => {
     return;
   }
   boundLoading.value = true;
+  boundLoadFailed.value = false;
+  const currentEpoch = epoch;
   try {
     const nextPage = reset ? 1 : boundPage.value + 1;
     const data = await props.loadBound({
@@ -196,6 +246,7 @@ const privateLoadBound = async (reset: boolean): Promise<void> => {
       size: pageSize,
     });
     const records = data.records ?? [];
+    if (epoch !== currentEpoch) return;
     boundPage.value = nextPage;
     boundTotal.value = data.total ?? 0;
     if (reset) {
@@ -204,8 +255,13 @@ const privateLoadBound = async (reset: boolean): Promise<void> => {
     }
     const seen = new Set(boundItems.value.map((item) => item.id));
     boundItems.value = [...boundItems.value, ...records.filter((item) => !seen.has(item.id))];
+  } catch (error) {
+    if (epoch === currentEpoch) {
+      boundLoadFailed.value = true;
+      emits("load-error", error);
+    }
   } finally {
-    boundLoading.value = false;
+    if (epoch === currentEpoch) boundLoading.value = false;
   }
 };
 
@@ -315,6 +371,14 @@ const privateConfirm = (): void => {
 
 defineExpose({
   show(current: MemberPickerShowInput = []) {
+    epoch += 1;
+    request += 1;
+    pending.clear();
+    completed.clear();
+    loading.value = false;
+    boundLoading.value = false;
+    loadFailed.value = false;
+    boundLoadFailed.value = false;
     keyword.value = "";
     page.value = 1;
     total.value = 0;
@@ -338,5 +402,25 @@ defineExpose({
     draft.value = Array.isArray(current) ? current.map((item) => ({ ...item })) : [];
     void privateLoad();
   },
+  hide() {
+    visible.value = false;
+  },
+});
+watch(visible, (value) => {
+  if (!value) {
+    epoch += 1;
+    request += 1;
+    pending.clear();
+    completed.clear();
+    loading.value = false;
+    boundLoading.value = false;
+    emits("closed");
+  }
+});
+onBeforeUnmount(() => {
+  epoch += 1;
+  request += 1;
+  pending.clear();
+  completed.clear();
 });
 </script>

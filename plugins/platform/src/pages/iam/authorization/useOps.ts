@@ -1,4 +1,11 @@
-import type { AssignmentRecord, DelegationRecord, IamListQuery, ResourceDetail, RoleSummary } from "@ingot/admin-common";
+import {
+  IamAction,
+  type AssignmentRecord,
+  type DelegationRecord,
+  type IamListQuery,
+  type ResourceDetail,
+  type RoleSummary,
+} from "@ingot/admin-common";
 import { useCapabilities, useServerPaging } from "@ingot/admin-core";
 import type { MaybeRefOrGetter } from "vue";
 import {
@@ -8,8 +15,17 @@ import {
 } from "@/api/iam/authorization.query";
 
 export const useOps = (tab: MaybeRefOrGetter<string>) => {
-  const { unavailable } = useCapabilities();
-  const tabEnabled = (name: string) => () => !unavailable.value && toValue(tab) === name;
+  const { unavailable, hasAction } = useCapabilities();
+  const tabEnabled = (name: string) => () =>
+    !unavailable.value &&
+    toValue(tab) === name &&
+    hasAction(
+      name === "roles"
+        ? IamAction.PLATFORM_ROLE_READ
+        : name === "assignments"
+          ? IamAction.PLATFORM_ASSIGNMENT_READ
+          : IamAction.PLATFORM_DELEGATION_READ,
+    );
   const roles = useServerPaging<ResourceDetail<RoleSummary>, IamListQuery>({
     queryOptions: PlatformRolePageQueryOptions,
     enabled: tabEnabled("roles"),

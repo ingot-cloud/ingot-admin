@@ -322,7 +322,7 @@ const resolveRevisionNames = (deltas: RoleDelta[]): void => {
 
 const hydrateRevisionDiffs = async (): Promise<void> => {
   const records = revisionPage.value.records ?? [];
-  const last = records.at(-1);
+  const last = records[records.length - 1];
   const current = revisionPage.value.current ?? 1;
   const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
   const total = revisionPage.value.total ?? 0;

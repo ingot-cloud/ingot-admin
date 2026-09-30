@@ -1,0 +1,125 @@
+<template>
+  <in-drawer v-model="visible" title="权限诊断" :loading="loading" size="600px">
+    <el-alert
+      type="info"
+      :closable="false"
+      title="只读诊断当前有效权限与可披露来源，不提供代登录或模拟执行。"
+      class="mb-12px"
+    />
+    <in-form label-position="top">
+      <el-form-item label="成员" required
+        ><biz-iam-authorization-select
+          v-model="memberId"
+          :api="candidatesApi"
+          :query="{ kind: 'MEMBER' }"
+      /></el-form-item>
+      <el-form-item label="应用" required
+        ><biz-iam-authorization-select
+          v-model="applicationId"
+          :api="candidatesApi"
+          :query="{ kind: 'APPLICATION' }"
+      /></el-form-item>
+      <el-form-item label="操作" required
+        ><biz-iam-authorization-select
+          v-model="actionId"
+          :api="candidatesApi"
+          :query="{ kind: 'ACTION', applicationId }"
+          :disabled="!applicationId"
+      /></el-form-item>
+      <el-form-item label="目标对象（可选）"
+        ><biz-iam-authorization-select
+          v-model="targetId"
+          :api="candidatesApi"
+          :query="{ kind: 'OBJECT', actionId }"
+          :disabled="!actionId"
+      /></el-form-item>
+      <biz-iam-diagnose-panel :decision="decision" />
+      <div v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)" class="flex flex-wrap gap-8px">
+        <in-button
+          v-for="source in decision?.sources.filter((item) => item.assignmentId) || []"
+          :key="source.assignmentId"
+          @click="openSource(source.assignmentId!)"
+          >查看分配 {{ source.assignmentId }}</in-button
+        >
+      </div>
+    </in-form>
+    <template #footer
+      ><in-button @click="visible = false">关闭</in-button
+      ><in-button type="primary" :loading="loading" @in-click="run">诊断</in-button></template
+    >
+  </in-drawer>
+</template>
+<script setup lang="ts">
+import { Message, useCapabilities, type R } from "@ingot/admin-core";
+import {
+  IamAction,
+  type AuthorizationCandidatesApi,
+  type Decision,
+  type DiagnoseInput,
+} from "../models/iam";
+import { iamEditorFailure } from "../hooks/iamEditorFailure";
+import BizIamAuthorizationSelect from "./BizIamAuthorizationSelect.vue";
+import BizIamDiagnosePanel from "./BizIamDiagnosePanel.vue";
+defineOptions({ name: "BizIamPlatformDiagnoseDrawer" });
+const props = defineProps<{
+  candidatesApi: AuthorizationCandidatesApi;
+  diagnoseApi: (input: DiagnoseInput) => Promise<R<Decision>>;
+}>();
+const emits = defineEmits<{ openAssignment: [id: string] }>();
+const { hasAction, contextEpoch } = useCapabilities();
+const visible = ref(false);
+const loading = ref(false);
+const memberId = ref("");
+const applicationId = ref("");
+const actionId = ref("");
+const targetId = ref("");
+const decision = ref<Decision | null>(null);
+let request = 0;
+watch(applicationId, () => {
+  actionId.value = "";
+  targetId.value = "";
+});
+watch(actionId, () => {
+  targetId.value = "";
+});
+watch([memberId, applicationId, actionId, targetId, contextEpoch, visible], () => {
+  request += 1;
+  decision.value = null;
+  loading.value = false;
+});
+const openSource = (id: string): void => {
+  if (hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)) emits("openAssignment", id);
+};
+const run = async (): Promise<void> => {
+  if (!memberId.value || !applicationId.value || !actionId.value) {
+    Message.warning("请选择成员、应用和操作");
+    return;
+  }
+  if (loading.value) return;
+  const id = ++request;
+  loading.value = true;
+  try {
+    const response = await props.diagnoseApi({
+      memberId: memberId.value,
+      applicationId: applicationId.value,
+      actionId: actionId.value,
+      targetId: targetId.value || undefined,
+    });
+    if (id === request) decision.value = response.data;
+  } catch (error) {
+    await iamEditorFailure(error);
+  } finally {
+    if (id === request) loading.value = false;
+  }
+};
+defineExpose({
+  show(preset?: { memberId?: string }) {
+    memberId.value = preset?.memberId || "";
+    applicationId.value = "";
+    actionId.value = "";
+    targetId.value = "";
+    decision.value = null;
+    visible.value = true;
+  },
+});
+</script>

@@ -2,6 +2,10 @@ import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
   IAM_API_PREFIX,
+  type AssignmentContext,
+  type AuthorizationCandidatesApi,
+  type AuthorizationRoleCandidateQuery,
+  type AuthorizationRoleNode,
   mapIamPage,
   toIamListParams,
   type AssignmentRecord,
@@ -93,7 +97,11 @@ export function PlatformAssignmentCreateAPI(
   params: AssignmentBatchInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/platform/assignments`, params, options);
+  return request.post<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/platform/assignments`,
+    params,
+    options,
+  );
 }
 
 export function PlatformAssignmentPreviewAPI(
@@ -124,7 +132,11 @@ export function PlatformAssignmentDeleteAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.delete<CreatedResource>(`${IAM_API_PREFIX}/v1/platform/assignments/${id}`, null, options);
+  return request.delete<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/platform/assignments/${id}`,
+    null,
+    options,
+  );
 }
 
 export function PlatformDelegationPageAPI(
@@ -148,7 +160,11 @@ export function PlatformDelegationCreateAPI(
   params: DelegationInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/platform/delegations`, params, options);
+  return request.post<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/platform/delegations`,
+    params,
+    options,
+  );
 }
 
 export function PlatformDelegationDetailAPI(
@@ -179,7 +195,11 @@ export function PlatformDelegationDeleteAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.delete<CreatedResource>(`${IAM_API_PREFIX}/v1/platform/delegations/${id}`, null, options);
+  return request.delete<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/platform/delegations/${id}`,
+    null,
+    options,
+  );
 }
 
 export function PlatformDelegationPreviewAPI(
@@ -200,7 +220,11 @@ export function PlatformDiagnoseAPI(
   options?: RequestOptions,
 ): Promise<R<Decision>> {
   filterParams(params);
-  return request.post<Decision>(`${IAM_API_PREFIX}/v1/platform/authorization/diagnose`, params, options);
+  return request.post<Decision>(
+    `${IAM_API_PREFIX}/v1/platform/authorization/diagnose`,
+    params,
+    options,
+  );
 }
 
 export function PlatformAuditPageAPI(
@@ -239,7 +263,11 @@ export function PlatformRoleDetailAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<RoleSummary>>> {
-  return request.get<ResourceDetail<RoleSummary>>(`${rolePath("platform")}/${id}`, undefined, options);
+  return request.get<ResourceDetail<RoleSummary>>(
+    `${rolePath("platform")}/${id}`,
+    undefined,
+    options,
+  );
 }
 
 export function PlatformRoleGrantsAPI(
@@ -373,3 +401,43 @@ export function PlatformSharedRolePreviewAPI(
 ): Promise<R<Preview>> {
   return request.post<Preview>(`${sharedPath}/${id}/preview`, params, options);
 }
+
+export const PlatformAssignmentContextAPI = (): Promise<R<AssignmentContext>> =>
+  request.get<AssignmentContext>(`${IAM_API_PREFIX}/v1/platform/assignments/context`);
+export const PlatformAssignmentDetailAPI = (
+  id: string,
+): Promise<R<ResourceDetail<AssignmentRecord>>> =>
+  request.get<ResourceDetail<AssignmentRecord>>(`${IAM_API_PREFIX}/v1/platform/assignments/${id}`);
+export const PlatformAssignmentUpdatePreviewAPI = (
+  id: string,
+  input: AssignmentUpdateInput,
+): Promise<R<Preview<AssignmentPreviewResult>>> =>
+  request.post<Preview<AssignmentPreviewResult>>(
+    `${IAM_API_PREFIX}/v1/platform/assignments/${id}/preview`,
+    input,
+  );
+export const PlatformAssignmentCandidatesAPI: AuthorizationCandidatesApi = (query) =>
+  request.get(`${IAM_API_PREFIX}/v1/platform/assignments/candidates`, query);
+
+export function PlatformAssignmentRoleCandidatesAPI(
+  query: AuthorizationRoleCandidateQuery,
+): Promise<R<IamPageResponse<AuthorizationRoleNode>>> {
+  const params = { ...query };
+  filterParams(params);
+  return request.get<IamPageResponse<AuthorizationRoleNode>>(
+    `${IAM_API_PREFIX}/v1/platform/assignments/role-candidates`,
+    params,
+  );
+}
+export const PlatformDelegationCandidatesAPI: AuthorizationCandidatesApi = (query) =>
+  request.get(`${IAM_API_PREFIX}/v1/platform/delegations/candidates`, query);
+export const PlatformDiagnoseCandidatesAPI: AuthorizationCandidatesApi = (query) =>
+  request.get(`${IAM_API_PREFIX}/v1/platform/authorization/diagnose/candidates`, query);
+
+export const PlatformDelegationCreatePreviewAPI = (
+  input: DelegationInput,
+): Promise<R<Preview<ReferenceImpactPreview>>> =>
+  request.post<Preview<ReferenceImpactPreview>>(
+    `${IAM_API_PREFIX}/v1/platform/delegations/preview`,
+    input,
+  );

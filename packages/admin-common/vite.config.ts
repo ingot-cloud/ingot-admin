@@ -25,6 +25,7 @@ export default defineInLibraryConfig({
   extend: {
     test: {
       environment: "node",
+      server: { deps: { inline: ["element-plus"] } },
       include: ["src/**/*.{test,spec}.ts"],
     },
   },

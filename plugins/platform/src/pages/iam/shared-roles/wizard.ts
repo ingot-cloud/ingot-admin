@@ -155,6 +155,7 @@ export function toCreateInput(
   grants: SelectedGrant[],
   kind = RoleKind.SHARED,
 ): RoleCreateInput {
+  if (kind === RoleKind.SYSTEM) throw new Error("不能创建系统治理角色");
   return {
     code: profile.code.trim(),
     name: profile.name.trim(),

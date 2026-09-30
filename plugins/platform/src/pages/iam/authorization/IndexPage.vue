@@ -1,24 +1,44 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="角色、授权记录与授权管理员。诊断为工具入口，不提供模拟执行。" />
+      <in-page-header description="角色、角色分配与授权管理员。配置资格独立于本人业务权限。" />
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
-        <in-biz-tab-panel title="角色" name="roles">
+        <in-biz-tab-panel v-if="hasAction(IamAction.PLATFORM_ROLE_READ)" title="角色" name="roles">
           <in-table
             :loading="roles.fetching.value"
             :data="roles.pageInfo.value.records"
             :page="roles.pageInfo.value"
-            :headers="roleHeaders"
+            :headers="visibleRoleHeaders"
             :table-id="ROLE_TABLE_ID"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="roles.fetchData"
             @handleCurrentChange="roles.fetchData"
           >
+            <template #tools-start>
+              <el-input
+                v-model="roles.condition.name"
+                class="w-220px!"
+                clearable
+                placeholder="搜索角色名称"
+                :prefix-icon="Search"
+                @keyup.enter="refreshRoles"
+                @clear="refreshRoles"
+              />
+              <in-table-column-setting
+                :headers="roleHeaders"
+                :table-id="ROLE_TABLE_ID"
+                @change="selectedRoleColumns = $event"
+              />
+            </template>
             <template #tools-end>
-              <in-table-actions variant="toolbar" :actions="roleToolbarActions" :row="emptyRoleRow" />
+              <in-table-actions
+                variant="toolbar"
+                :actions="roleToolbarActions"
+                :row="emptyRoleRow"
+              />
             </template>
             <template #name="{ item }">
               <biz-iam-record-link
@@ -41,18 +61,43 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权记录" name="assignments">
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)"
+          title="角色分配"
+          name="assignments"
+        >
           <in-table
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
             :page="assignments.pageInfo.value"
-            :headers="assignmentHeaders"
-            table-id="platform-iam-assignments"
+            :headers="visibleAssignmentHeaders"
+            :table-id="ASSIGNMENT_TABLE_ID"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="assignments.fetchData"
             @handleCurrentChange="assignments.fetchData"
           >
+            <template #tools-start>
+              <el-input
+                v-model="assignments.condition.keyword"
+                class="w-220px!"
+                clearable
+                placeholder="搜索授权成员或用户组"
+                :prefix-icon="Search"
+                @keyup.enter="refreshAssignments"
+                @clear="refreshAssignments"
+              />
+              <in-picker
+                v-model="assignmentSubjectTypeFilter"
+                label="接收对象"
+                :options="assignmentSubjectTypeOptions"
+              />
+              <in-table-column-setting
+                :headers="assignmentHeaders"
+                :table-id="ASSIGNMENT_TABLE_ID"
+                @change="selectedAssignmentColumns = $event"
+              />
+            </template>
             <template #tools-end>
               <in-table-actions
                 variant="toolbar"
@@ -62,41 +107,67 @@
             </template>
             <template #subject="{ item }">
               {{ subjectLabel(item.record.assignment.subject.type) }} /
-              {{ item.record.assignment.subject.id }}
+              {{ item.record.subjectName || item.record.assignment.subject.id }}
             </template>
             <template #roleRevision="{ item }">
-              {{ roleKindLabel(item.record.assignment.roleRevisionRef.kind) }} /
-              {{ item.record.assignment.roleRevisionRef.id }}
+              {{ item.record.roleName || item.record.assignment.roleRevisionRef.id }} · v{{
+                item.record.revisionNumber || "-"
+              }}
             </template>
-            <template #source="{ item }">{{ sourceLabel(item.record.source) }}</template>
+            <template #source="{ item }">{{
+              item.record.delegationSummary || sourceLabel(item.record.source)
+            }}</template>
+            <template #createdAt="{ item }">{{ item.record.createdAt || "-" }}</template>
+            <template #grantedBy="{ item }">{{ item.record.grantedBy?.name || "未知" }}</template>
+            <template #validFrom="{ item }">{{
+              localInstant(item.record.assignment.validFrom)
+            }}</template>
             <template #status="{ item }">
               <status-tag
-                v-if="grantStatusTone(item.record.status)"
-                :tone="grantStatusTone(item.record.status)"
-                :label="grantStatusLabel(item.record.status)"
+                :tone="item.record.effectiveStatus === 'ACTIVE' ? 'info' : 'warning'"
+                :label="effectiveLabel(item.record.effectiveStatus)"
               />
-              <span v-else>{{ grantStatusLabel(item.record.status) }}</span>
             </template>
             <template #validUntil="{ item }">
-              {{ item.record.assignment.validUntil || "长期" }}
+              {{ localInstant(item.record.assignment.validUntil) }}
             </template>
             <template #actions="{ item }">
               <in-table-actions :actions="assignmentRowActionsOf(item)" :row="item" />
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权管理员" name="delegations">
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.PLATFORM_DELEGATION_READ)"
+          title="授权管理员"
+          name="delegations"
+        >
           <in-table
             :loading="delegations.fetching.value"
             :data="delegations.pageInfo.value.records"
             :page="delegations.pageInfo.value"
-            :headers="delegationHeaders"
-            table-id="platform-iam-delegations"
+            :headers="visibleDelegationHeaders"
+            :table-id="DELEGATION_TABLE_ID"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="delegations.fetchData"
             @handleCurrentChange="delegations.fetchData"
           >
+            <template #tools-start>
+              <el-input
+                v-model="delegations.condition.administratorName"
+                class="w-220px!"
+                clearable
+                placeholder="搜索管理员名称"
+                :prefix-icon="Search"
+                @keyup.enter="refreshDelegations"
+                @clear="refreshDelegations"
+              />
+              <in-table-column-setting
+                :headers="delegationHeaders"
+                :table-id="DELEGATION_TABLE_ID"
+                @change="selectedDelegationColumns = $event"
+              />
+            </template>
             <template #tools-end>
               <in-table-actions
                 variant="toolbar"
@@ -105,7 +176,7 @@
               />
             </template>
             <template #administratorMemberId="{ item }">
-              {{ item.record.delegation.administratorMemberId }}
+              {{ item.record.administratorName || item.record.delegation.administratorMemberId }}
             </template>
             <template #status="{ item }">{{ item.record.status }}</template>
             <template #maxAssignmentDuration="{ item }">
@@ -140,60 +211,75 @@
     :publish-action="IamAction.PLATFORM_ROLE_PUBLISH"
     @success="refreshRoles"
   />
-  <biz-iam-assignment-drawer
+  <biz-iam-platform-assignment-drawer
     ref="assignmentRef"
-    :load-members="loadMembers"
-    :load-groups="loadGroups"
-    :load-roles="loadRoles"
-    :list-revisions-api="PlatformRoleRevisionPageAPI"
+    :candidates-api="PlatformAssignmentCandidatesAPI"
+    :role-candidates-api="PlatformAssignmentRoleCandidatesAPI"
+    :context-api="PlatformAssignmentContextAPI"
+    :get-api="PlatformAssignmentDetailAPI"
     :create-api="PlatformAssignmentCreateAPI"
     :preview-api="PlatformAssignmentPreviewAPI"
+    :update-preview-api="PlatformAssignmentUpdatePreviewAPI"
     :update-api="PlatformAssignmentUpdateAPI"
     @success="refreshAssignments"
   />
-  <biz-iam-delegation-drawer
+  <biz-iam-platform-delegation-drawer
     ref="delegationRef"
-    :load-members="loadMembers"
-    :load-roles="loadRoles"
-    :list-revisions-api="PlatformRoleRevisionPageAPI"
+    :candidates-api="PlatformDelegationCandidatesAPI"
     :create-api="PlatformDelegationCreateAPI"
     :get-api="PlatformDelegationDetailAPI"
     :update-api="PlatformDelegationUpdateAPI"
     :preview-api="PlatformDelegationPreviewAPI"
+    :create-preview-api="PlatformDelegationCreatePreviewAPI"
     @success="refreshDelegations"
   />
-  <biz-iam-diagnose-drawer
+  <biz-iam-platform-diagnose-drawer
     ref="diagnoseRef"
-    :load-members="loadMembers"
-    :load-applications="loadApplications"
+    :candidates-api="PlatformDiagnoseCandidatesAPI"
     :diagnose-api="PlatformDiagnoseAPI"
+    @open-assignment="openAssignment"
   />
 </template>
 
 <script lang="ts" setup>
+import { Search } from "@element-plus/icons-vue";
 import {
   AssignmentSourceExtArray,
   AuthorizationDomain,
-  BizIamAssignmentDrawer,
-  BizIamDelegationDrawer,
-  BizIamDiagnoseDrawer,
+  BizIamPlatformAssignmentDrawer,
+  BizIamPlatformDelegationDrawer,
+  BizIamPlatformDiagnoseDrawer,
   BizIamRecordLink,
   BizIamStatusTag,
-  GrantStatusExtArray,
-  IAM_DEFAULT_PAGE_SIZE,
   IamAction,
   RoleKind,
-  RoleKindExtArray,
+  SubjectType,
   SubjectTypeExtArray,
-  createIamListLoader,
-  GrantStatus,
+  useSubjectTypeEnum,
   iamEnumLabel,
-  toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { Confirm, Message, StatusTag, type InTableAction, type LoadDataParams } from "@ingot/admin-core";
+import {
+  applyColumnSelection,
+  Confirm,
+  Message,
+  resolveStringPickerFilter,
+  StatusTag,
+  toStringPickerValue,
+  type InTableAction,
+  useCapabilities,
+  withAllPickerOption,
+} from "@ingot/admin-core";
 import {
   PlatformAssignmentCreateAPI,
+  PlatformAssignmentCandidatesAPI,
+  PlatformAssignmentRoleCandidatesAPI,
+  PlatformAssignmentContextAPI,
+  PlatformAssignmentDetailAPI,
+  PlatformAssignmentUpdatePreviewAPI,
+  PlatformDelegationCandidatesAPI,
+  PlatformDelegationCreatePreviewAPI,
+  PlatformDiagnoseCandidatesAPI,
   PlatformAssignmentDeleteAPI,
   PlatformAssignmentPreviewAPI,
   PlatformAssignmentUpdateAPI,
@@ -207,7 +293,6 @@ import {
   PlatformRoleDeleteAPI,
   PlatformRoleDetailAPI,
   PlatformRoleGrantsAPI,
-  PlatformRolePageAPI,
   PlatformRolePublishAPI,
   PlatformRoleRevisionPageAPI,
   PlatformRoleStatusAPI,
@@ -215,9 +300,8 @@ import {
 } from "@/api/iam/authorization";
 import CreateWizard from "../shared-roles/components/CreateWizard.vue";
 import SharedRoleDetailDrawer from "../shared-roles/components/SharedRoleDetailDrawer.vue";
-import { PlatformApplicationPageAPI } from "@/api/iam/catalog";
-import { PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
 import {
+  ASSIGNMENT_TABLE_ID,
   assignmentHeaders,
   createAssignmentRowActions,
   createAssignmentToolbarActions,
@@ -225,6 +309,7 @@ import {
   createDelegationToolbarActions,
   createRoleRowActions,
   createRoleToolbarActions,
+  DELEGATION_TABLE_ID,
   delegationHeaders,
   emptyAssignmentRow,
   emptyDelegationRow,
@@ -237,50 +322,73 @@ import {
 } from "./table";
 import { useOps } from "./useOps";
 
-const tab = ref("roles");
+const { hasAction, actionCodes } = useCapabilities();
+const route = useRoute();
+const router = useRouter();
+const tab = ref("");
+const availableTabs = computed(() =>
+  [
+    { name: "roles", action: IamAction.PLATFORM_ROLE_READ },
+    { name: "assignments", action: IamAction.PLATFORM_ASSIGNMENT_READ },
+    { name: "delegations", action: IamAction.PLATFORM_DELEGATION_READ },
+  ].filter((item) => hasAction(item.action)),
+);
+watch(
+  actionCodes,
+  () => {
+    if (!availableTabs.value.some((item) => item.name === tab.value))
+      tab.value = availableTabs.value[0]?.name || "";
+  },
+  { immediate: true },
+);
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
   useOps(tab);
+const selectedRoleColumns = ref<string[]>([]);
+const selectedAssignmentColumns = ref<string[]>([]);
+const selectedDelegationColumns = ref<string[]>([]);
+const visibleRoleHeaders = computed(() =>
+  applyColumnSelection(roleHeaders, selectedRoleColumns.value),
+);
+const visibleAssignmentHeaders = computed(() =>
+  applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
+);
+const visibleDelegationHeaders = computed(() =>
+  applyColumnSelection(delegationHeaders, selectedDelegationColumns.value),
+);
+const assignmentSubjectTypeOptions = withAllPickerOption(useSubjectTypeEnum().getOptions());
+const assignmentSubjectTypeFilter = computed({
+  get: () => toStringPickerValue(assignments.condition.subjectType),
+  set: (value: string | number | boolean | null) => {
+    const selected = resolveStringPickerFilter(value);
+    assignments.condition.subjectType =
+      selected === SubjectType.MEMBER || selected === SubjectType.GROUP ? selected : undefined;
+    refreshAssignments();
+  },
+});
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
-const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
+const assignmentRef = ref<{
+  show: (row?: AssignmentRow, preset?: { memberId?: string }) => void;
+}>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
 const diagnoseRef = ref<{ show: (preset?: { memberId?: string }) => void }>();
 
-const loadMembers = async (params: LoadDataParams) => {
-  const response = await PlatformMemberPageAPI(
-    { current: params.current, size: params.size ?? IAM_DEFAULT_PAGE_SIZE },
-    { name: params.query, keyword: params.query },
-  );
-  return toIamSelectRecords(response.data);
-};
-const loadGroups = createIamListLoader(async (page, condition) => {
-  const response = await PlatformGroupPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
-const loadRoles = createIamListLoader(async (page, condition) => {
-  const response = await PlatformRolePageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
-const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await PlatformApplicationPageAPI(page, {
-    ...condition,
-    domain: AuthorizationDomain.PLATFORM,
-  });
-  return { data: toIamSelectRecords(response.data) };
-});
-
 const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray, value);
-const roleKindLabel = (value: string): string => iamEnumLabel(RoleKindExtArray, value);
 const sourceLabel = (value: string): string => iamEnumLabel(AssignmentSourceExtArray, value);
-const grantStatusLabel = (value: string): string => iamEnumLabel(GrantStatusExtArray, value);
-const grantStatusTone = (value: GrantStatus | string): "info" | "danger" | undefined => {
-  if (value === GrantStatus.ACTIVE) {
-    return "info";
-  }
-  if (value === GrantStatus.REVOKED) {
-    return "danger";
-  }
-  return undefined;
+const effectiveLabel = (state?: string): string =>
+  ({
+    PENDING: "未生效",
+    ACTIVE: "有效",
+    EXPIRED: "已到期",
+    REVOKED: "已撤销",
+    SOURCE_INVALID: "来源失效",
+  })[state || ""] || "未知";
+const localInstant = (instant?: string): string =>
+  instant ? new Date(instant).toLocaleString() : "长期";
+const openAssignment = async (id: string): Promise<void> => {
+  if (!hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)) return;
+  const response = await PlatformAssignmentDetailAPI(id);
+  assignmentRef.value?.show(response.data);
 };
 
 const handleCreate = (): void => {
@@ -338,7 +446,9 @@ const handleDelegationDelete = (item: DelegationRow): void => {
   });
 };
 
-const roleToolbarActions = computed(() => createRoleToolbarActions(handleCreate, () => handleDiagnose()));
+const roleToolbarActions = computed(() =>
+  createRoleToolbarActions(handleCreate, () => handleDiagnose()),
+);
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
   createRoleRowActions(item, { onDetail: handleDetail, onDelete: handleRoleDelete });
 const assignmentToolbarActions = computed(() =>
@@ -350,11 +460,31 @@ const assignmentRowActionsOf = (item: AssignmentRow): Array<InTableAction<Assign
     onDelete: handleAssignmentDelete,
     onDiagnose: handleAssignmentDiagnose,
   });
-const delegationToolbarActions = computed(() => createDelegationToolbarActions(handleDelegationCreate));
+const delegationToolbarActions = computed(() =>
+  createDelegationToolbarActions(handleDelegationCreate),
+);
 const delegationRowActionsOf = (item: DelegationRow): Array<InTableAction<DelegationRow>> =>
   createDelegationRowActions(item, {
     onEdit: handleDelegationEdit,
     onDelete: handleDelegationDelete,
   });
 const rowKeyOf = (row: ResourceDetail<{ id: string }>): string => row.record.id;
+watch(
+  () => [route.query.assignmentMemberId, actionCodes.value, assignmentRef.value] as const,
+  async () => {
+    const memberId = route.query.assignmentMemberId;
+    if (
+      typeof memberId !== "string" ||
+      !assignmentRef.value ||
+      !hasAction(IamAction.PLATFORM_ASSIGNMENT_CREATE)
+    )
+      return;
+    tab.value = "assignments";
+    assignmentRef.value.show(undefined, { memberId });
+    const query = { ...route.query };
+    delete query.assignmentMemberId;
+    await router.replace({ query });
+  },
+  { immediate: true },
+);
 </script>

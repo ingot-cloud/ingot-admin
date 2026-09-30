@@ -120,8 +120,10 @@ export interface IamPageResponse<T> {
 export interface IamListQuery {
   name?: string;
   status?: string;
+  subjectType?: SubjectType;
   baseline?: boolean;
   keyword?: string;
+  administratorName?: string;
   departmentId?: string;
   domain?: string;
   ids?: string;
@@ -796,11 +798,18 @@ export interface DiagnoseInput {
   targetId?: string;
 }
 
+export interface DecisionSource {
+  assignmentId?: string;
+  delegationId?: string;
+  roleRevisionRef?: RoleRevisionRef;
+  summary: string;
+}
+
 export interface Decision {
   allowed: boolean;
   reasonCode?: string;
   message: string;
-  sources: Array<{ kind?: string; id?: string; label?: string }>;
+  sources: DecisionSource[];
   scopeSummary?: string;
   fieldAccess?: FieldAccessMap;
   version: string;
@@ -989,6 +998,13 @@ export interface AssignmentRecord {
   assignment: AssignmentInput;
   status: GrantStatus;
   source: AssignmentSource;
+  subjectName?: string;
+  roleName?: string;
+  revisionNumber?: string;
+  delegationSummary?: string;
+  createdAt?: string;
+  grantedBy?: { memberId?: string; name: string };
+  effectiveStatus?: "PENDING" | "ACTIVE" | "EXPIRED" | "REVOKED" | "SOURCE_INVALID";
 }
 
 export interface ActionScopeCeiling {
@@ -1015,4 +1031,77 @@ export interface DelegationRecord {
   id: string;
   delegation: DelegationInput;
   status: GrantStatus;
+  administratorName?: string;
 }
+
+export interface AssignmentContext {
+  directRead: boolean;
+  directCreate: boolean;
+  directUpdate: boolean;
+  directRevoke: boolean;
+  effectiveDelegationCount: number;
+}
+export type AuthorizationCandidateKind =
+  "DELEGATION" | "ROLE_REVISION" | "MEMBER" | "GROUP" | "OBJECT" | "APPLICATION" | "ACTION";
+export interface AuthorizationActionOption {
+  id: string;
+  name: string;
+  applicationId: string;
+  applicationName: string;
+  resourceId: string;
+  resourceName: string;
+  code: string;
+  scopeCapabilities: ScopeKind[];
+}
+export interface AuthorizationOption {
+  id: string;
+  name: string;
+  summary?: string;
+  roleRevisionRef?: RoleRevisionRef;
+  parameterDefinitions?: RoleParameterDefinition[];
+  grants?: ActionGrant[];
+  actions?: AuthorizationActionOption[];
+  delegation?: DelegationInput;
+}
+export interface AuthorizationCandidateQuery {
+  kind: AuthorizationCandidateKind;
+  delegationGrantId?: string;
+  revisionId?: string;
+  parameterKey?: string;
+  actionId?: string;
+  applicationId?: string;
+  keyword?: string;
+  ids?: string[];
+  page?: number;
+  pageSize?: number;
+}
+export interface AuthorizationCandidatePage extends IamPageResponse<AuthorizationOption> {
+  supported: boolean;
+  unavailableMessage?: string;
+}
+export type AuthorizationCandidatesApi = (
+  query: AuthorizationCandidateQuery,
+) => Promise<import("@ingot/admin-core").R<AuthorizationCandidatePage>>;
+
+export interface AuthorizationRoleNode {
+  id: string;
+  roleId: string;
+  roleName: string;
+  name: string;
+  nodeType: "ROLE" | "REVISION";
+  revisionNumber?: number;
+  roleRevisionRef?: RoleRevisionRef;
+}
+
+export interface AuthorizationRoleCandidateQuery {
+  delegationGrantId?: string;
+  roleId?: string;
+  keyword?: string;
+  ids?: string[];
+  page?: number;
+  pageSize?: number;
+}
+
+export type AuthorizationRoleCandidatesApi = (
+  query: AuthorizationRoleCandidateQuery,
+) => Promise<import("@ingot/admin-core").R<IamPageResponse<AuthorizationRoleNode>>>;

@@ -574,6 +574,16 @@ defineExpose<TableAPI<TableRow>>({
   box-shadow: 8px 0 8px -8px rgba(31, 35, 41, 0.12);
 }
 
+:deep(
+  .el-table
+    .el-table__body
+    tr:is(:hover, .hover-row)
+    > td.el-table__cell:is(.el-table-fixed-column--left, .el-table-fixed-column--right)
+) {
+  background-color: var(--in-bg-color-surface);
+  background-image: linear-gradient(var(--in-bg-color-hover), var(--in-bg-color-hover));
+}
+
 :deep(th.el-table__cell) {
   height: var(--in-table-header-height);
   padding: 0 12px;

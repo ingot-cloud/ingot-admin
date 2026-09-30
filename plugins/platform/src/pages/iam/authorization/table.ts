@@ -14,6 +14,8 @@ import {
 } from "@ingot/admin-common";
 
 export const ROLE_TABLE_ID = "platform-iam-roles";
+export const ASSIGNMENT_TABLE_ID = "platform-iam-assignments";
+export const DELEGATION_TABLE_ID = "platform-iam-delegations";
 export type RoleRow = ResourceDetail<RoleSummary>;
 export type AssignmentRow = ResourceDetail<AssignmentRecord>;
 export type DelegationRow = ResourceDetail<DelegationRecord>;
@@ -72,16 +74,25 @@ export const roleHeaders: Array<TableHeaderRecord> = [
 ];
 
 export const assignmentHeaders: Array<TableHeaderRecord> = [
-  { label: "主体", prop: "subject", required: true },
-  { label: "角色版本", prop: "roleRevision" },
-  { label: "来源", prop: "source" },
-  { label: "状态", prop: "status" },
-  { label: "失效时间", prop: "validUntil" },
-  { label: "操作", width: "200", prop: "actions", fixed: "right" },
+  { label: "主体", prop: "subject", required: true, minWidth: 200, showOverflowTooltip: true },
+  { label: "角色版本", prop: "roleRevision", minWidth: 190, showOverflowTooltip: true },
+  { label: "来源", prop: "source", minWidth: 180, showOverflowTooltip: true },
+  { label: "状态", prop: "status", minWidth: 100 },
+  { label: "授权时间", prop: "createdAt", minWidth: 180, showOverflowTooltip: true },
+  { label: "授权人", prop: "grantedBy", minWidth: 140, showOverflowTooltip: true },
+  { label: "生效时间", prop: "validFrom", minWidth: 180, showOverflowTooltip: true },
+  { label: "失效时间", prop: "validUntil", minWidth: 180, showOverflowTooltip: true },
+  { label: "操作", width: 150, prop: "actions", fixed: "right" },
 ];
 
 export const delegationHeaders: Array<TableHeaderRecord> = [
-  { label: "管理员", prop: "administratorMemberId", required: true },
+  {
+    label: "管理员",
+    prop: "administratorMemberId",
+    required: true,
+    minWidth: 190,
+    showOverflowTooltip: true,
+  },
   { label: "状态", prop: "status" },
   { label: "最长期限", prop: "maxAssignmentDuration" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
@@ -148,7 +159,7 @@ export function createAssignmentToolbarActions(
   return [
     {
       key: "create",
-      label: "分配授权",
+      label: "分配角色",
       kind: "quick",
       overflow: "never",
       priority: 50,
