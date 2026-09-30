@@ -169,3 +169,35 @@ T14/N10归档仍以全部研发/验证完成、current更新为前提。测试�
 - [x] U09.dev.directory-workbench：通讯录已接 DIRECTORY 部门树与只读详情，无创建入口；工作台改为服务端可见菜单入口。父任务 U09 不勾选。
 - [x] U10.dev.policy-editors：成员权限页已用类型化通讯录/字段草稿、预览与 PUT 保存替换 JSON；审计列表可打开详情（列表行 before/after），无导出按钮。父任务 U10 不勾选。
 - [x] U12.dev.guide：已同步后端联调手册副本 `sources/BACKEND_VERIFICATION_GUIDE.md`；真实多身份 E2E 仍属 U12/P26，不勾选父任务。
+
+
+## 2026-09-28 平台角色分配增量（已批准）
+
+- [x] PR00：需求/设计/API/验收已决策并记录用户批准，进入 implementing。
+- [x] PR01（开发完成）：有效委派入口、分配记录边界、人员简单角色门禁及审计。
+- [x] PR02（开发完成）：候选/上下文/详情、记录投影与时间、对象查询适配。
+- [x] PR03（开发完成）：完整委派收窄校验、并发来源锁与失效。
+- [x] PR04（开发完成）：角色分配表单/Tab/列表、人员角色只读与快捷入口。
+- [x] PR05（开发完成）：委派与诊断选择器、期限、真实来源展示。
+- [x] PR06（开发完成）：OpenAPI/夹具/种子/前端副本同步；相关自动化与构建。
+- [ ] PR07：真实平台 HTTP/MySQL/浏览器 PR-A01–PR-A07 证据；与开发完成分开。
+
+2026-09-29 用户已批准角色单选树 RP00–RP04，任务与验收见 [ROLE-PICKER-REFINEMENT](./ROLE-PICKER-REFINEMENT.md)。本轮用户自行测试，不运行测试、构建、类型检查或 lint。
+
+2026-09-30 用户确认平台角色分配的预览优先与并发冲突交互：
+
+- [x] U06.dev.assignment-preview-flow（开发完成）：移除仅刷新版本号的按钮；新建/修改预览通过后才显示提交，草稿变化和预览/提交失败后隐藏提交；修改预览与保存的 409 保留草稿并提示重新打开查看最新内容。
+- [ ] U06.verify.assignment-preview-flow：用户人工检查新建、修改、草稿失效、预览未通过、预览和保存阶段的并发 409，不以开发完成代替验收。
+
+PR01–PR06 仅标记开发及相关自动化完成。PR07 需真实 HTTP 和三类身份浏览器证据；检查结果与恢复条件见 [AUTHORIZATION-REFINEMENT-STATUS](./AUTHORIZATION-REFINEMENT-STATUS.md)。
+
+2026-09-30 角色分配列表体验增量：
+
+- [x] U06.dev.assignment-list-filter（开发完成）：后端按主体类型/成员或组名称、持有人边界执行分页过滤；前端工具栏筛选，列最小宽度与悬浮查看；OpenAPI/来源副本同步。
+- [x] U06.dev.assignment-fixed-column-hover（开发完成）：共享表格的固定操作列在行悬停时使用不透明背景，遮挡横向滚动列的内容。
+- [ ] U06.verify.assignment-list-filter：用户人工检查两类主体、组合条件、翻页、受限身份、特殊字符与窄屏横向滚动。
+
+2026-09-30 角色与授权三个 Tab 的列设置和名称筛选：
+
+- [x] U06.dev.authorization-tab-lists（开发完成）：三个 Tab 独立列设置；角色名称与管理员名称服务端筛选；管理员名称批量回显及缺失回退；接口副本同步。
+- [ ] U06.verify.authorization-tab-lists：人工检查三个 Tab 的列偏好互不影响，回车/清空与分页总数正确，管理员名称匹配、窄屏和治理权限边界正常。

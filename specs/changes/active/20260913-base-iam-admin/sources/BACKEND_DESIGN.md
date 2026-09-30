@@ -148,7 +148,7 @@ Java 新增及变更公共契约按仓库 JavaDoc 规范落盘；业务枚举、
 
 IdentityRepository 对新 iam_account / iam_platform_member / iam_tenant_member / iam_tenant 执行参数化联表查询，按可信身份限制账号、成员、租户并同时检查状态；不读取密码、不回退旧表、不合并域。ActiveIdentityService 区分身份无效与数据库不可用。标识在绑定前按目标数据库无符号整数校验，避免数据库数值隐式转换。
 
-TenantInitializer 是内部事务流程：调用方先验证创建组织 ACTION，再从服务器基础目录生成 TenantInitializationPlan。计划不是 HTTP DTO，不接受客户端决定系统治理版本或基础开通。InitializationCatalog 读取唯一启用的租户域系统角色最新版本、最新默认策略，以及 baseline 租户应用或指定套餐内的启用租户应用；HTTP 只接收 TenantCreateInput。TenantInitializationService 在平台域恢复身份并校验 `iam-platform:tenant:preview|create` 后调用目录与初始化事务。预览无写入；目录表缺少展示名列时预览名称回退为应用 code。事务检查所有者账号、租户域系统治理版本、应用与默认策略版本，写入组织、所有者成员、根部门关系、单条治理授权、基础开通与人群、固定默认引用及审计。没有复制角色/默认条目；审计失败同样回滚。
+TenantInitializer 是内部事务流程：调用方先验证创建组织 ACTION，再从服务器基础目录生成 TenantInitializationPlan。计划不是 HTTP DTO，不接受客户端决定系统治理版本或默认策略。InitializationCatalog 读取唯一启用的租户域系统角色最新版本、最新默认策略，并由 EntitlementResolver 计算开通并集：`planApps ∪ 自选应用`，两者皆空时用 baseline，缺必开 baseline 时自动补齐。HTTP 只接收 TenantCreateInput（可带 planId 与自选 applications）。TenantInitializationService 在平台域恢复身份并校验 `iam-platform:tenant:preview|create` 后调用目录与初始化事务。预览无写入；目录表缺少展示名列时预览名称回退为应用 code。事务检查所有者账号、租户域系统治理版本、应用与默认策略版本，写入组织（含 planId）、所有者成员、根部门关系、单条治理授权、开通（PLAN/MANUAL/INITIALIZATION 及期限）与人群、固定默认引用及审计。没有复制角色/默认条目；审计失败同样回滚。
 
 
 ## 当前实施落点：成员上下文与生命周期（2026-09-14）
@@ -161,7 +161,7 @@ MemberLifecycle 在租户行与成员写锁下进行资格或关系变更。暂�
 
 ## 当前实施落点：管理命令契约与目录计划（2026-09-14）
 
-管理请求已补齐成员/组织/部门/应用/资源/操作/菜单/套餐/开通及角色创建、发布、升级命令。升级冲突必须显式选择 ACCEPT_BASE、KEEP_DELTA 或 REPLACE_SCOPE。目标 OpenAPI 覆盖 API 第 3、4 节管理面路径；组织创建/预览与成员写入 7 个操作标记为已实现，其余仍为 false。InitializationCatalog 从目录生成初始化计划；HTTP 只接收 TenantCreateInput。
+管理请求已补齐成员/组织/部门/应用/资源/操作/菜单/套餐/开通及角色创建、发布、升级命令。升级冲突必须显式选择 ACCEPT_BASE、KEEP_DELTA 或 REPLACE_SCOPE。目标 OpenAPI 覆盖 API 第 3、4 节管理面路径；组织创建/预览与成员写入 7 个操作标记为已实现，其余仍为 false。InitializationCatalog 从目录与 EntitlementResolver 生成初始化计划；HTTP 只接收 TenantCreateInput。
 
 
 ## 2026-09-14 已批准的持久化与注入统一调整
@@ -200,3 +200,15 @@ Bean 默认使用 private final 与 @RequiredArgsConstructor。限定注入、�
 测试数据工具、运行清单、真实接口构建和TD场景以 [TEST-DATA](./TEST-DATA.md) 为唯一方案；不新增生产测试API，不更改既有JSON/授权契约。前端真实验收使用同一runId与TD编号，数据准备和产品验收分别记录。TASKS **测试数据 D01–D05** 与本节及 §2.1 的 **DESIGN D01（平台成员与多身份，2026-09-13 已确认）** 不是同一编号。
 
 TASKS把已有开发子项与父任务验收分开标记，并分列开发状态与自动化/真实接口/端到端；历史实施记录中的旧双读/旧入口说明不恢复为当前设计。当前完成程度依据代码与对应日期证据，不依据早期“尚未实施”标题或控制器implemented数量。
+
+
+## 2026-09-28 平台角色分配增量
+
+已获用户明确实施批准；规格与契约见 [AUTHORIZATION-REFINEMENT](./AUTHORIZATION-REFINEMENT.md)。本轮先完成平台两端，主 change 保留 implementing；真实验收单列记录。
+
+
+2026-09-29 角色选择采用独立轻量层级候选，列表/count 使用同一身份和委派筛选，按 role_id 查询关联版本；不合成整页授权。增量接口、兼容性、任务和验收见 [ROLE-PICKER-REFINEMENT](./ROLE-PICKER-REFINEMENT.md)。
+
+2026-09-30 平台分配列表仅新增可选 `subjectType` 与名称 `keyword`；在既有分配查询的 WHERE 中叠加类型和经绑定的成员/组名称 EXISTS，保持直接治理和委派持有人两种列表边界。分页与 count 共用过滤，候选不参与搜索，也不从当前页做客户端过滤。关键字限 128 字符并转义 SQL LIKE 通配符。前端接收对象搜索和类型选择放表格工具栏；列最小宽度触发横向滚动。租户接口及数据库结构不变。
+
+2026-09-30 平台委派列表按管理员名称筛选：在 domain/tenant 边界限定后的委派查询中用参数化 EXISTS 匹配平台成员 display_name，再由数据库分页和计数；本页平台管理员名称批量读取，平台详情按单条读取，避免列表逐行查询。旧调用保留无筛选委派列表；租户查询与响应不变。无需数据库迁移。

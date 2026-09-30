@@ -136,3 +136,17 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 | 草稿与错误 | 未保存离开确认；409 留草稿并重预览；403 刷新能力；503 可辨识且不空列表；404 不泄露存在性；写请求防重复 |
 | 视觉 | 现有主题 Token 与 UnoCSS；宽/窄屏；统一空态/错误/密度/按钮；不另建品牌色 |
 | 完整性 | 空 handle、JSON 展示、未知 DTO 只能标部分实现；无契约不造按钮；工作台 URL 来自服务端菜单 |
+
+
+## 2026-09-28 平台角色分配增量
+
+已获用户明确实施批准；规格与契约见 [AUTHORIZATION-REFINEMENT](./AUTHORIZATION-REFINEMENT.md)。本轮先完成平台两端，主 change 保留 implementing；真实验收单列记录。
+
+
+2026-09-29 已批准“角色”单选树增量，接口、设计、任务与手动验收见 [ROLE-PICKER-REFINEMENT](./ROLE-PICKER-REFINEMENT.md)。本轮测试由用户执行，开发完成不代表验收通过。
+
+2026-09-30 平台角色分配抽屉沿用既有创建/修改预览接口：修改预览传打开详情时的 expectedVersion，保存再传同一版本并由后端事务重验。仅当当前草稿的 preview.valid 为 true 才渲染提交按钮；失败清除旧预览。修改预览或保存的 409 将抽屉标记为已过期，保留草稿但阻止重试，重新打开时取完整详情并重置该标记；删除仅更新本地 version/capabilities 的入口。租户交互及 API 契约不变。
+
+2026-09-30 角色分配工具栏使用无 label 的接收对象名称搜索框（回车/清空查询）及带 label 的主体类型 InPicker（切换即查询），共享分页条件新增 subjectType；后端先按同一可见边界筛选，再分页/计数。角色分配列全部给定最小宽度，名称与来源单行截断及悬浮查看。租户列表不改；其他两个 Tab 的后续增量见下段。
+
+2026-09-30 追加三个 Tab 的列表工具栏：每个 Tab 以独立 tableId 绑定 InTableColumnSetting，并将选择结果经 applyColumnSelection 传给 InTable；角色复用既有 `name` 查询。平台委派 GET 新增可选 `administratorName`，服务端在平台域和治理资格约束内按平台成员 display_name 包含匹配后再分页；批量解析本页管理员名称返回，避免逐行查询。租户委派查询与写入不变。

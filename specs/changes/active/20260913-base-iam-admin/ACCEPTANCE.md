@@ -58,3 +58,16 @@ A17–A20/A23 同时执行 [BFF-LOGIN L01–L12](./BFF-LOGIN.md)。F08→A17/A20
 视觉验收选择现有主题下的宽屏及窄屏布局，记录组件、页面和状态截图；不把“同为Element Plus”当作样式一致。数据、网络故障和无权状态均需可辨识，不能将503显示为空列表。
 
 完成前将U01–U13与A01–A23、P24–P26逐项对照；本轮仅制定要求，不勾选通过。后端F01/F04/F05/F07同时引用P24/P25，F02/F03/F06/F08/F09引用对应TD和P26证据。联调逐步操作见 [BACKEND_VERIFICATION_GUIDE](./sources/BACKEND_VERIFICATION_GUIDE.md)。
+
+
+## 2026-09-28 平台角色分配增量
+
+已获用户明确实施批准；规格与契约见 [AUTHORIZATION-REFINEMENT](./AUTHORIZATION-REFINEMENT.md)。本轮先完成平台两端，主 change 保留 implementing；真实验收单列记录。
+
+2026-09-28 增量开发与验证证据见 [AUTHORIZATION-REFINEMENT-STATUS](./AUTHORIZATION-REFINEMENT-STATUS.md)，PR07 真实环境验收保持未完成。
+
+## 2026-09-30 角色与授权列表增量（待人工验收）
+
+- 三个 Tab 均可独立隐藏、排序可配置列，刷新后各自偏好保留；主体/名称与操作等锁定列不可隐藏。
+- 角色名称、管理员名称回车和清空后由服务端重新分页，页码回到 1；授权管理员列表显示名称，成员资料缺失时回退 ID。
+- 管理员名称搜索包含匹配且 `%`、`_` 按文字处理；列表总数、第二页与权限边界正确。无权 Tab 不发请求，既有无筛选请求仍兼容。

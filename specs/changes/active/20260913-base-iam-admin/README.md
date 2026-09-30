@@ -44,3 +44,19 @@
 - [联调操作手册](./sources/BACKEND_VERIFICATION_GUIDE.md)：功能测试导读、建库/导入逐步操作、四站登录与按页点击步骤。执行证据不自动勾选 P24–P26。
 
 本轮只更新Spec，不改业务代码、接口契约或数据库，不声明测试通过；用户已确认本次补充方案。原change继续implementing，后续按已列任务推进，实际偏离接口或权限设计时另行对齐。
+
+
+## 2026-09-28 平台角色分配增量
+
+已获用户明确实施批准；规格与契约见 [AUTHORIZATION-REFINEMENT](./AUTHORIZATION-REFINEMENT.md)。本轮先完成平台两端，主 change 保留 implementing；真实验收单列记录。
+
+2026-09-28 增量开发与验证证据见 [AUTHORIZATION-REFINEMENT-STATUS](./AUTHORIZATION-REFINEMENT-STATUS.md)，PR07 真实环境验收保持未完成。
+
+
+2026-09-29 已批准“角色”单选树增量，接口、设计、任务与手动验收见 [ROLE-PICKER-REFINEMENT](./ROLE-PICKER-REFINEMENT.md)。本轮测试由用户执行，开发完成不代表验收通过。
+
+2026-09-30 用户确认平台角色分配采用先预览、通过后展示提交，以及 409 重新打开查看最新内容的流程；增量交互和开发/人工验收任务已补入 INTERACTIONS 与 TASKS。接口契约不变，主状态保持 implementing。
+
+2026-09-30 用户要求角色分配列表按接收主体搜索并改善窄屏列展示，已同步后端新增的可选 GET 筛选参数；开发与用户人工验收分别记录，主状态保持 implementing。
+
+2026-09-30 角色与授权三个 Tab 增加独立列设置；角色名称、授权管理员名称使用服务端查询，委派管理员名称在列表中回显。开发任务已标记，真实页面验收仍待完成。

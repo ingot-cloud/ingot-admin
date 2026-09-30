@@ -60,6 +60,11 @@
           "email" : {
             "type" : "string",
             "description" : "邮箱精确值，可空"
+          },
+          "domain" : {
+            "type" : "string",
+            "description" : "添加成员时的目标管理域，可空；仅 MEMBER_CREATE 且 PLATFORM 时检查平台成员资格",
+            "enum" : [ "PLATFORM", "TENANT" ]
           }
         },
         "description" : "按单一字段精确查找全局账号，必须声明用途且不返回组织关系"
@@ -110,13 +115,13 @@
         "properties" : {
           "password" : {
             "type" : "string",
-            "description" : "新生成的初始密码明文"
+            "description" : "新生成的初始密码明文，HTTP 传输由信封加密"
           }
         },
-        "description" : "一次性返回管理员重置后的明文初始密码，不得再被列表或详情读取"
+        "description" : "一次性返回管理员签发的初始密码，不得再被列表或详情读取"
       },
       "AccountSelfProfile" : {
-        "required" : [ "accountId", "member", "mustChangePassword", "username" ],
+        "required" : [ "accountId", "member", "mustChangePassword", "username", "version" ],
         "type" : "object",
         "properties" : {
           "accountId" : {
@@ -141,6 +146,10 @@
           },
           "member" : {
             "$ref" : "#/components/schemas/CurrentProfile"
+          },
+          "version" : {
+            "type" : "string",
+            "description" : "当前账号资料版本，供 PATCH 携带 expectedVersion"
           }
         },
         "description" : "返回当前认证账号的联系资料，不携带凭证或其他组织身份"
@@ -183,6 +192,86 @@
         },
         "description" : "更新全局账号联系资料，禁止改写凭证、锁定态或组织身份"
       },
+      "ActionCatalogItem" : {
+        "required" : [ "code", "id", "name", "resourceId", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "resourceId" : {
+            "type" : "string",
+            "description" : "所属资源 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "全局唯一精确操作码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "操作名称"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "操作状态",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          }
+        },
+        "description" : "操作目录中的单个精确操作，供选择器组树，不带分页"
+      },
+      "ActionCatalogResource" : {
+        "required" : [ "actions", "code", "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "资源 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "应用内资源编码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "资源名称"
+          },
+          "actions" : {
+            "type" : "array",
+            "description" : "该资源下的精确操作",
+            "items" : {
+              "$ref" : "#/components/schemas/ActionCatalogItem"
+            }
+          }
+        },
+        "description" : "操作目录中的资源节点，内嵌该资源全部操作"
+      },
+      "ActionCatalogView" : {
+        "required" : [ "applicationCode", "applicationId", "applicationName", "resources" ],
+        "type" : "object",
+        "properties" : {
+          "applicationId" : {
+            "type" : "string",
+            "description" : "应用 ID"
+          },
+          "applicationCode" : {
+            "type" : "string",
+            "description" : "应用编码"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "description" : "应用名称"
+          },
+          "resources" : {
+            "type" : "array",
+            "description" : "资源及其操作",
+            "items" : {
+              "$ref" : "#/components/schemas/ActionCatalogResource"
+            }
+          }
+        },
+        "description" : "一次返回某应用的资源及操作树，供菜单选择操作，不走分页列表拼装"
+      },
       "ActionDraft" : {
         "required" : [ "code", "name", "resourceId" ],
         "type" : "object",
@@ -196,7 +285,7 @@
             "minLength" : 0,
             "pattern" : "[^*]+",
             "type" : "string",
-            "description" : "全局唯一精确操作码"
+            "description" : "操作码末段或完整码"
           },
           "name" : {
             "maxLength" : 128,
@@ -205,7 +294,7 @@
             "description" : "操作名称"
           }
         },
-        "description" : "创建绑定资源的精确操作，操作码不得包含通配符"
+        "description" : "创建绑定资源的精确操作；保存时拼成应用编码:资源编码:末段，不得包含通配符"
       },
       "ActionGrant" : {
         "required" : [ "actionId", "scopes" ],
@@ -224,6 +313,78 @@
           }
         },
         "description" : "操作及其范围，不允许脱离操作合并范围"
+      },
+      "ActionLookupInput" : {
+        "required" : [ "ids" ],
+        "type" : "object",
+        "properties" : {
+          "ids" : {
+            "type" : "array",
+            "description" : "待解析的操作 ID",
+            "items" : {
+              "type" : "string",
+              "description" : "待解析的操作 ID"
+            }
+          }
+        },
+        "description" : "按操作 ID 批量解析名称与归属，空列表返回空结果"
+      },
+      "ActionLookupRecord" : {
+        "required" : [ "applicationCode", "applicationId", "applicationName", "code", "id", "name", "resourceCode", "resourceId", "resourceName", "scopeCapabilities", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "全局唯一精确操作码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "操作名称"
+          },
+          "applicationId" : {
+            "type" : "string",
+            "description" : "所属应用 ID"
+          },
+          "applicationCode" : {
+            "type" : "string",
+            "description" : "应用编码"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "description" : "应用名称"
+          },
+          "resourceId" : {
+            "type" : "string",
+            "description" : "所属资源 ID"
+          },
+          "resourceCode" : {
+            "type" : "string",
+            "description" : "资源编码"
+          },
+          "resourceName" : {
+            "type" : "string",
+            "description" : "资源名称"
+          },
+          "scopeCapabilities" : {
+            "type" : "array",
+            "description" : "资源允许的范围种类",
+            "items" : {
+              "type" : "string",
+              "description" : "资源允许的范围种类",
+              "enum" : [ "ALL", "SELF", "MEMBER_DEPARTMENTS", "MANAGED_DEPARTMENTS", "OBJECT_SET" ]
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "操作状态",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          }
+        },
+        "description" : "按 ID 解析出的精确操作，带应用与资源名称及范围能力"
       },
       "ActionOrigin" : {
         "required" : [ "actionId", "origin" ],
@@ -315,6 +476,171 @@
         },
         "description" : "更新操作名称，不能改写操作码或所属资源"
       },
+      "ApplicationBundleAction" : {
+        "required" : [ "code", "name", "tempId" ],
+        "type" : "object",
+        "properties" : {
+          "tempId" : {
+            "maxLength" : 64,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "客户端临时 ID"
+          },
+          "code" : {
+            "maxLength" : 192,
+            "minLength" : 0,
+            "pattern" : "[^*]+",
+            "type" : "string",
+            "description" : "操作码末段或完整码"
+          },
+          "name" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "操作名称"
+          }
+        },
+        "description" : "整包创建时绑定到资源的精确操作，用临时 ID 供菜单引用"
+      },
+      "ApplicationBundleDraft" : {
+        "required" : [ "application", "menus", "resources" ],
+        "type" : "object",
+        "properties" : {
+          "application" : {
+            "$ref" : "#/components/schemas/ApplicationDraft"
+          },
+          "resources" : {
+            "type" : "array",
+            "description" : "资源及内嵌操作，可空",
+            "items" : {
+              "$ref" : "#/components/schemas/ApplicationBundleResource"
+            }
+          },
+          "menus" : {
+            "type" : "array",
+            "description" : "菜单树草稿，可空",
+            "items" : {
+              "$ref" : "#/components/schemas/ApplicationBundleMenu"
+            }
+          }
+        },
+        "description" : "一次提交应用及其资源、操作与菜单，由服务器在同一事务中整单创建"
+      },
+      "ApplicationBundleMenu" : {
+        "required" : [ "accessMode", "actionTempIds", "kind", "matchMode", "name", "sortOrder", "tempId" ],
+        "type" : "object",
+        "properties" : {
+          "tempId" : {
+            "maxLength" : 64,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "客户端临时 ID"
+          },
+          "parentTempId" : {
+            "type" : "string",
+            "description" : "父菜单临时 ID，根节点为空"
+          },
+          "name" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "菜单名称"
+          },
+          "kind" : {
+            "type" : "string",
+            "description" : "目录或页面",
+            "enum" : [ "DIRECTORY", "PAGE" ]
+          },
+          "path" : {
+            "type" : "string",
+            "description" : "路由路径，可空"
+          },
+          "viewPath" : {
+            "type" : "string",
+            "description" : "视图注册键，可空"
+          },
+          "routeName" : {
+            "type" : "string",
+            "description" : "路由名称，可空"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "图标，可空"
+          },
+          "accessMode" : {
+            "type" : "string",
+            "description" : "导航准入方式",
+            "enum" : [ "OPEN", "ACTION" ]
+          },
+          "matchMode" : {
+            "type" : "string",
+            "description" : "操作匹配方式",
+            "enum" : [ "ANY", "ALL" ]
+          },
+          "actionTempIds" : {
+            "type" : "array",
+            "description" : "关联操作的临时 ID",
+            "items" : {
+              "type" : "string",
+              "description" : "关联操作的临时 ID"
+            }
+          },
+          "sortOrder" : {
+            "type" : "integer",
+            "description" : "展示顺序",
+            "format" : "int32"
+          }
+        },
+        "description" : "整包创建时的菜单，父级与关联操作用本次请求的临时 ID"
+      },
+      "ApplicationBundleResource" : {
+        "required" : [ "actions", "code", "fieldCapabilities", "name", "scopeCapabilities", "tempId" ],
+        "type" : "object",
+        "properties" : {
+          "tempId" : {
+            "maxLength" : 64,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "客户端临时 ID"
+          },
+          "code" : {
+            "maxLength" : 64,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "应用内资源编码"
+          },
+          "name" : {
+            "maxLength" : 128,
+            "minLength" : 0,
+            "type" : "string",
+            "description" : "资源名称"
+          },
+          "scopeCapabilities" : {
+            "type" : "array",
+            "description" : "允许的范围种类",
+            "items" : {
+              "type" : "string",
+              "description" : "允许的范围种类",
+              "enum" : [ "ALL", "SELF", "MEMBER_DEPARTMENTS", "MANAGED_DEPARTMENTS", "OBJECT_SET" ]
+            }
+          },
+          "fieldCapabilities" : {
+            "type" : "array",
+            "description" : "已注册字段能力",
+            "items" : {
+              "$ref" : "#/components/schemas/FieldCapability"
+            }
+          },
+          "actions" : {
+            "type" : "array",
+            "description" : "该资源下的精确操作",
+            "items" : {
+              "$ref" : "#/components/schemas/ApplicationBundleAction"
+            }
+          }
+        },
+        "description" : "整包创建时的资源及其操作，用临时 ID 在同一次请求内被菜单引用"
+      },
       "ApplicationDraft" : {
         "required" : [ "baseline", "code", "domain", "name", "sortOrder" ],
         "type" : "object",
@@ -342,7 +668,7 @@
           },
           "icon" : {
             "type" : "string",
-            "description" : "图标，可空"
+            "description" : "Iconify 名或 Logo 对象路径，可空"
           },
           "sortOrder" : {
             "type" : "integer",
@@ -355,6 +681,20 @@
           }
         },
         "description" : "创建应用目录项，基础应用标记仅允许租户域"
+      },
+      "ApplicationPurgeInput" : {
+        "required" : [ "confirmation", "expectedVersion" ],
+        "type" : "object",
+        "properties" : {
+          "expectedVersion" : {
+            "type" : "string",
+            "description" : "应用读取版本"
+          },
+          "confirmation" : {
+            "$ref" : "#/components/schemas/SensitiveConfirmation"
+          }
+        },
+        "description" : "强制清除应用及其全部关联，确认必须与清除出现在同一次请求"
       },
       "ApplicationRecord" : {
         "required" : [ "baseline", "code", "domain", "id", "name", "sortOrder", "status" ],
@@ -383,7 +723,7 @@
           },
           "icon" : {
             "type" : "string",
-            "description" : "图标，可空"
+            "description" : "Iconify 名或已签发的 Logo 链接，可空"
           },
           "sortOrder" : {
             "type" : "integer",
@@ -420,7 +760,7 @@
           },
           "icon" : {
             "type" : "string",
-            "description" : "图标引用，可空"
+            "description" : "Iconify 名或已签发的 Logo 链接，可空"
           },
           "sortOrder" : {
             "type" : "integer",
@@ -450,7 +790,7 @@
           },
           "icon" : {
             "type" : "string",
-            "description" : "图标，可空"
+            "description" : "Iconify 名或 Logo 对象路径，可空"
           },
           "sortOrder" : {
             "type" : "integer",
@@ -463,6 +803,18 @@
           }
         },
         "description" : "更新应用展示信息与基础开通标记，不能改写命名空间或管理域"
+      },
+      "AssignmentAuthor" : {
+        "type" : "object",
+        "properties" : {
+          "memberId" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          }
+        },
+        "description" : "实际创建审计授权人"
       },
       "AssignmentBatchInput" : {
         "required" : [ "items" ],
@@ -477,6 +829,27 @@
           }
         },
         "description" : "承载一次原子批量分配，任一条校验失败均不得保存"
+      },
+      "AssignmentContext" : {
+        "type" : "object",
+        "properties" : {
+          "directRead" : {
+            "type" : "boolean"
+          },
+          "directCreate" : {
+            "type" : "boolean"
+          },
+          "directUpdate" : {
+            "type" : "boolean"
+          },
+          "directRevoke" : {
+            "type" : "boolean"
+          },
+          "effectiveDelegationCount" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
       },
       "AssignmentInput" : {
         "required" : [ "roleRevisionRef", "scopeBindings", "subject" ],
@@ -574,6 +947,35 @@
             "type" : "string",
             "description" : "写入来源",
             "enum" : [ "MANUAL", "INITIALIZATION", "MIGRATION" ]
+          },
+          "subjectName" : {
+            "type" : "string",
+            "description" : "接收对象名称"
+          },
+          "roleName" : {
+            "type" : "string",
+            "description" : "角色名称"
+          },
+          "revisionNumber" : {
+            "type" : "string",
+            "description" : "固定版本号"
+          },
+          "delegationSummary" : {
+            "type" : "string",
+            "description" : "授权依据摘要"
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "授权创建时间，按请求当地时区返回",
+            "example" : "2026-09-28 16:00:00"
+          },
+          "grantedBy" : {
+            "$ref" : "#/components/schemas/AssignmentAuthor"
+          },
+          "effectiveStatus" : {
+            "type" : "string",
+            "description" : "计算后的生效状态",
+            "enum" : [ "PENDING", "ACTIVE", "EXPIRED", "REVOKED", "SOURCE_INVALID" ]
           }
         },
         "description" : "返回可见授权记录，保留主体、固定版本、范围及来源链"
@@ -729,6 +1131,70 @@
         },
         "description" : "标识审计目标，不附带目标业务资料原值"
       },
+      "AuthorizationActionOption" : {
+        "required" : [ "id", "name", "scopeCapabilities" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "applicationId" : {
+            "type" : "string"
+          },
+          "applicationName" : {
+            "type" : "string"
+          },
+          "resourceId" : {
+            "type" : "string"
+          },
+          "resourceName" : {
+            "type" : "string"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "scopeCapabilities" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "ALL", "SELF", "MEMBER_DEPARTMENTS", "MANAGED_DEPARTMENTS", "OBJECT_SET" ]
+            }
+          }
+        }
+      },
+      "AuthorizationCandidatePage" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AuthorizationOption"
+            }
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "supported" : {
+            "type" : "boolean"
+          },
+          "unavailableMessage" : {
+            "type" : "string"
+          }
+        }
+      },
       "AuthorizationContext" : {
         "required" : [ "accountId", "domain", "memberId" ],
         "type" : "object",
@@ -753,6 +1219,111 @@
         },
         "description" : "经认证选择的当前成员身份；不接受客户端直接指定权限域",
         "readOnly" : true
+      },
+      "AuthorizationOption" : {
+        "required" : [ "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "summary" : {
+            "type" : "string"
+          },
+          "roleRevisionRef" : {
+            "$ref" : "#/components/schemas/RoleRevisionRef"
+          },
+          "parameterDefinitions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RoleParameterDefinition"
+            }
+          },
+          "grants" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ActionGrant"
+            }
+          },
+          "actions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AuthorizationActionOption"
+            }
+          },
+          "delegation" : {
+            "$ref" : "#/components/schemas/DelegationInput"
+          }
+        }
+      },
+      "AuthorizationRoleCandidatePage" : {
+        "required" : [
+          "items"
+        ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AuthorizationRoleNode"
+            }
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "description" : "授权角色树层级分页"
+      },
+      "AuthorizationRoleNode" : {
+        "required" : [
+          "id",
+          "name",
+          "nodeType",
+          "roleId",
+          "roleName"
+        ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "roleId" : {
+            "type" : "string"
+          },
+          "roleName" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "nodeType" : {
+            "type" : "string",
+            "enum" : [
+              "ROLE",
+              "REVISION"
+            ]
+          },
+          "revisionNumber" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "roleRevisionRef" : {
+            "$ref" : "#/components/schemas/RoleRevisionRef"
+          }
+        },
+        "description" : "角色分配树的最小展示节点"
       },
       "Bootstrap" : {
         "required" : [ "actionCodes", "applications", "context", "expiresAt", "menus", "profile", "version" ],
@@ -886,7 +1457,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "头像引用，可空"
+            "description" : "头像时效链接，可空"
           }
         },
         "description" : "返回当前成员身份的最小基础资料，不携带全局凭证或其他组织信息"
@@ -902,7 +1473,7 @@
           "reasonCode" : {
             "type" : "string",
             "description" : "拒绝原因，允许时可空",
-            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "AuthorizationUnavailable" ]
+            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "StepUpFailed", "AuthorizationUnavailable" ]
           },
           "message" : {
             "type" : "string",
@@ -1018,6 +1589,10 @@
             "type" : "string",
             "description" : "生效或撤销状态",
             "enum" : [ "ACTIVE", "REVOKED" ]
+          },
+          "administratorName" : {
+            "type" : "string",
+            "description" : "管理员显示名称，成员资料缺失时省略"
           }
         },
         "description" : "返回可见委派定义及撤销状态"
@@ -1262,16 +1837,55 @@
           },
           "validFrom" : {
             "type" : "string",
-            "description" : "UTC 开始时间，可空",
+            "description" : "开始墙钟，可空；按请求时区解释后存 UTC",
             "format" : "date-time"
           },
           "validUntil" : {
             "type" : "string",
-            "description" : "UTC 结束时间，不包含，可空",
+            "description" : "结束墙钟，不包含，可空；按请求时区解释后存 UTC",
             "format" : "date-time"
           }
         },
         "description" : "声明单条显式开通及期限，来源由服务器写入"
+      },
+      "EntitlementPreviewItem" : {
+        "required" : [ "applicationId", "source", "status" ],
+        "type" : "object",
+        "properties" : {
+          "applicationId" : {
+            "type" : "string",
+            "description" : "应用 ID"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "description" : "应用目录名称；应用缺失或名为空时省略"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "显式开通或停用状态",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          },
+          "source" : {
+            "type" : "string",
+            "description" : "开通来源",
+            "enum" : [ "INITIALIZATION", "MANUAL", "PLAN", "MIGRATION" ]
+          },
+          "sourceId" : {
+            "type" : "string",
+            "description" : "来源记录 ID，可空"
+          },
+          "validFrom" : {
+            "type" : "string",
+            "description" : "开始墙钟，可空",
+            "format" : "date-time"
+          },
+          "validUntil" : {
+            "type" : "string",
+            "description" : "结束墙钟，不包含，可空",
+            "format" : "date-time"
+          }
+        },
+        "description" : "返回服务器解析后的单条开通并集，期限和来源不代表业务授权"
       },
       "EntitlementPreviewResult" : {
         "required" : [ "entitlements", "impactSummary" ],
@@ -1279,9 +1893,9 @@
         "properties" : {
           "entitlements" : {
             "type" : "array",
-            "description" : "将写入的开通清单",
+            "description" : "服务器解析后的开通并集",
             "items" : {
-              "$ref" : "#/components/schemas/EntitlementDraft"
+              "$ref" : "#/components/schemas/EntitlementPreviewItem"
             }
           },
           "impactSummary" : {
@@ -1302,6 +1916,10 @@
             "type" : "string",
             "description" : "应用 ID"
           },
+          "applicationName" : {
+            "type" : "string",
+            "description" : "应用目录名称；应用缺失或名为空时省略"
+          },
           "status" : {
             "type" : "string",
             "description" : "显式开通或停用状态",
@@ -1318,12 +1936,12 @@
           },
           "validFrom" : {
             "type" : "string",
-            "description" : "UTC 开始时间，可空",
+            "description" : "开始墙钟，可空",
             "format" : "date-time"
           },
           "validUntil" : {
             "type" : "string",
-            "description" : "UTC 结束时间，不包含，可空",
+            "description" : "结束墙钟，不包含，可空",
             "format" : "date-time"
           }
         },
@@ -1337,15 +1955,19 @@
             "type" : "string",
             "description" : "开通配置读取版本"
           },
+          "planId" : {
+            "type" : "string",
+            "description" : "可选套餐；与自选开通取并集"
+          },
           "entitlements" : {
             "type" : "array",
-            "description" : "完整开通清单，应用不得重复",
+            "description" : "自选应用及期限覆盖，应用不得重复",
             "items" : {
               "$ref" : "#/components/schemas/EntitlementDraft"
             }
           }
         },
-        "description" : "整体替换租户显式开通清单并重验版本"
+        "description" : "提交套餐与自选开通覆盖，由服务器计算并集后整表替换"
       },
       "ExportTask" : {
         "required" : [ "expiresAt", "id", "status", "version" ],
@@ -1502,6 +2124,60 @@
         },
         "description" : "描述场景、字段、查看者和目标范围对应的字段限制"
       },
+      "GrantCatalogAction" : {
+        "required" : [ "code", "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "全局唯一精确操作码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "操作名称"
+          }
+        },
+        "description" : "授权选择目录中的启用操作"
+      },
+      "GrantCatalogResource" : {
+        "required" : [ "actions", "code", "id", "name", "scopeCapabilities" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "资源 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "应用内资源编码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "资源名称"
+          },
+          "scopeCapabilities" : {
+            "type" : "array",
+            "description" : "资源允许的范围种类",
+            "items" : {
+              "type" : "string",
+              "description" : "资源允许的范围种类",
+              "enum" : [ "ALL", "SELF", "MEMBER_DEPARTMENTS", "MANAGED_DEPARTMENTS", "OBJECT_SET" ]
+            }
+          },
+          "actions" : {
+            "type" : "array",
+            "description" : "该资源下的启用操作",
+            "items" : {
+              "$ref" : "#/components/schemas/GrantCatalogAction"
+            }
+          }
+        },
+        "description" : "授权选择目录中的启用资源，内嵌该资源全部启用操作"
+      },
       "GroupDraft" : {
         "required" : [ "name", "selection" ],
         "type" : "object",
@@ -1599,11 +2275,31 @@
             "type" : "string",
             "description" : "当前域显示名，可空"
           },
+          "avatar" : {
+            "type" : "string",
+            "description" : "当前域头像，可空；可提交时效链接或对象路径，入库只保存路径"
+          },
           "departments" : {
             "type" : "array",
             "description" : "租户任职；平台必须为空且最多一个主部门",
             "items" : {
               "$ref" : "#/components/schemas/MemberDepartmentBinding"
+            }
+          },
+          "roleIds" : {
+            "type" : "array",
+            "description" : "选填的直接角色定义 ID，默认为空",
+            "items" : {
+              "type" : "string",
+              "description" : "选填的直接角色定义 ID，默认为空"
+            }
+          },
+          "groupIds" : {
+            "type" : "array",
+            "description" : "选填的用户组 ID，默认为空",
+            "items" : {
+              "type" : "string",
+              "description" : "选填的用户组 ID，默认为空"
             }
           }
         },
@@ -1675,7 +2371,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "头像，可空表示不修改"
+            "description" : "头像，可空表示不修改；可提交时效链接或对象路径，入库只保存路径"
           },
           "phone" : {
             "type" : "string",
@@ -1702,7 +2398,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "可见头像；隐藏时省略"
+            "description" : "可见头像时效链接；隐藏时省略"
           },
           "phone" : {
             "type" : "string",
@@ -1711,6 +2407,10 @@
           "email" : {
             "type" : "string",
             "description" : "允许输出的邮箱字符串；可能已脱敏，隐藏时省略"
+          },
+          "username" : {
+            "type" : "string",
+            "description" : "已关联全局账号的登录名；平台成员填写，租户成员省略"
           },
           "status" : {
             "type" : "string",
@@ -1727,6 +2427,36 @@
         },
         "description" : "返回经字段策略处理的成员资料，隐藏字段以空引用省略，脱敏字段只携带脱敏值"
       },
+      "MemberRoleReplaceInput" : {
+        "required" : [ "roleIds" ],
+        "type" : "object",
+        "properties" : {
+          "roleIds" : {
+            "type" : "array",
+            "description" : "目标角色定义 ID，可空集合",
+            "items" : {
+              "type" : "string",
+              "description" : "目标角色定义 ID，可空集合"
+            }
+          }
+        },
+        "description" : "用角色 ID 列表替换成员的简单直接角色，空列表表示清除"
+      },
+      "MemberRoleView" : {
+        "required" : [ "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "角色定义 ID"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "角色名称"
+          }
+        },
+        "description" : "返回成员直接角色的标识与名称，不含用户组继承或带范围的授权"
+      },
       "MemberStatusInput" : {
         "required" : [ "expectedVersion", "status" ],
         "type" : "object",
@@ -1742,6 +2472,37 @@
           }
         },
         "description" : "暂停或恢复当前域成员资格，移出使用独立命令"
+      },
+      "MenuActionRecord" : {
+        "required" : [ "code", "id", "name", "resourceCode", "resourceId", "resourceName" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "全局唯一精确操作码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "操作名称"
+          },
+          "resourceId" : {
+            "type" : "string",
+            "description" : "所属资源 ID"
+          },
+          "resourceCode" : {
+            "type" : "string",
+            "description" : "资源编码"
+          },
+          "resourceName" : {
+            "type" : "string",
+            "description" : "资源名称"
+          }
+        },
+        "description" : "菜单已绑定的精确操作，带资源名称，供详情回显"
       },
       "MenuDraft" : {
         "required" : [ "accessMode", "actionIds", "kind", "matchMode", "name", "sortOrder" ],
@@ -1952,7 +2713,7 @@
           "reasonCode" : {
             "type" : "string",
             "description" : "拒绝或受限原因，允许时可空",
-            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "AuthorizationUnavailable" ]
+            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "StepUpFailed", "AuthorizationUnavailable" ]
           },
           "message" : {
             "type" : "string",
@@ -1975,6 +2736,30 @@
           }
         },
         "description" : "在当前组织内原子转交所有者职责"
+      },
+      "PageResponseGrantCatalogResource" : {
+        "required" : [ "items", "page", "pageSize", "total" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GrantCatalogResource"
+            }
+          },
+          "total" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "page" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
       },
       "PageResponseResourceDetailAccountRecord" : {
         "required" : [ "items", "page", "pageSize", "total" ],
@@ -2360,6 +3145,30 @@
           }
         }
       },
+      "PlanApplication" : {
+        "required" : [ "code", "id", "name", "status" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "应用 ID"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "应用编码"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "应用名称"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "应用启停状态",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          }
+        },
+        "description" : "描述套餐已关联应用的展示内容"
+      },
       "PlanDraft" : {
         "required" : [ "applicationIds", "name" ],
         "type" : "object",
@@ -2391,7 +3200,7 @@
         "description" : "声明套餐包含的应用清单，修改套餐不自动改变既有租户开通"
       },
       "PlanRecord" : {
-        "required" : [ "applicationIds", "id", "name", "status" ],
+        "required" : [ "applicationIds", "applications", "id", "name", "status" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -2414,6 +3223,13 @@
               "description" : "显式关联的应用 ID"
             }
           },
+          "applications" : {
+            "type" : "array",
+            "description" : "已关联应用的展示内容",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanApplication"
+            }
+          },
           "status" : {
             "type" : "string",
             "description" : "套餐状态",
@@ -2421,6 +3237,21 @@
           }
         },
         "description" : "返回套餐应用清单，修改套餐不自动改变既有租户开通"
+      },
+      "PlanSummary" : {
+        "required" : [ "id", "name" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "套餐 ID"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "套餐名称"
+          }
+        },
+        "description" : "返回套餐选择器所需的最小标识，不附带应用清单"
       },
       "PlanUpdateInput" : {
         "required" : [ "expectedVersion", "plan" ],
@@ -2746,6 +3577,74 @@
           }
         }
       },
+      "RActionCatalogView" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/ActionCatalogView"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RAssignmentContext" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/AssignmentContext"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RAuthorizationCandidatePage" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/AuthorizationCandidatePage"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RAuthorizationRoleCandidatePage" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/AuthorizationRoleCandidatePage"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "RBootstrap" : {
         "type" : "object",
         "properties" : {
@@ -2825,6 +3724,103 @@
           },
           "data" : {
             "$ref" : "#/components/schemas/ExportTask"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RListActionLookupRecord" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ActionLookupRecord"
+            }
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RListActionRecord" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ActionRecord"
+            }
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RListMemberRoleView" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MemberRoleView"
+            }
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RListMenuActionRecord" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MenuActionRecord"
+            }
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "RPageResponseGrantCatalogResource" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/PageResponseGrantCatalogResource"
           },
           "success" : {
             "type" : "boolean"
@@ -3528,6 +4524,23 @@
           }
         }
       },
+      "RRoleGrantList" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "string"
+          },
+          "message" : {
+            "type" : "string"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/RoleGrantList"
+          },
+          "success" : {
+            "type" : "boolean"
+          }
+        }
+      },
       "RVoid" : {
         "type" : "object",
         "properties" : {
@@ -4218,6 +5231,111 @@
         },
         "description" : "共享角色的单操作差异；同版本同操作最多一项"
       },
+      "RoleDisplayDelta" : {
+        "required" : [ "actionId", "operation" ],
+        "type" : "object",
+        "properties" : {
+          "actionId" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "actionName" : {
+            "type" : "string",
+            "description" : "操作名称；目录缺失时为空"
+          },
+          "operation" : {
+            "type" : "string",
+            "description" : "差异操作",
+            "enum" : [ "ADD", "REMOVE", "REPLACE_SCOPE" ]
+          },
+          "scopes" : {
+            "type" : "array",
+            "description" : "仅新增或替换使用；省略时为空集合",
+            "items" : {
+              "$ref" : "#/components/schemas/ScopeExpression"
+            }
+          }
+        },
+        "description" : "版本历史展示差异，含操作名称"
+      },
+      "RoleGrantList" : {
+        "required" : [ "items" ],
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "description" : "当前绑定权限",
+            "items" : {
+              "$ref" : "#/components/schemas/RoleGrantRecord"
+            }
+          }
+        },
+        "description" : "角色当前绑定权限列表，不分页"
+      },
+      "RoleGrantRecord" : {
+        "required" : [ "actionId", "scopeCapabilities", "scopes" ],
+        "type" : "object",
+        "properties" : {
+          "actionId" : {
+            "type" : "string",
+            "description" : "操作 ID"
+          },
+          "actionCode" : {
+            "type" : "string",
+            "description" : "操作码；目录缺失时为空"
+          },
+          "actionName" : {
+            "type" : "string",
+            "description" : "操作名称；目录缺失时为空"
+          },
+          "applicationId" : {
+            "type" : "string",
+            "description" : "所属应用 ID；目录缺失时为空"
+          },
+          "applicationCode" : {
+            "type" : "string",
+            "description" : "应用编码；目录缺失时为空"
+          },
+          "applicationName" : {
+            "type" : "string",
+            "description" : "应用名称；目录缺失时为空"
+          },
+          "resourceId" : {
+            "type" : "string",
+            "description" : "所属资源 ID；目录缺失时为空"
+          },
+          "resourceCode" : {
+            "type" : "string",
+            "description" : "资源编码；目录缺失时为空"
+          },
+          "resourceName" : {
+            "type" : "string",
+            "description" : "资源名称；目录缺失时为空"
+          },
+          "scopes" : {
+            "type" : "array",
+            "description" : "按并集合成的范围项",
+            "items" : {
+              "$ref" : "#/components/schemas/ScopeExpression"
+            }
+          },
+          "scopeCapabilities" : {
+            "type" : "array",
+            "description" : "资源允许的范围种类",
+            "items" : {
+              "type" : "string",
+              "description" : "资源允许的范围种类",
+              "enum" : [ "ALL", "SELF", "MEMBER_DEPARTMENTS", "MANAGED_DEPARTMENTS", "OBJECT_SET" ]
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "操作启停；目录缺失时省略",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          }
+        },
+        "description" : "角色当前绑定权限，带操作、应用与资源展示内容"
+      },
       "RoleMetadataOverrides" : {
         "type" : "object",
         "properties" : {
@@ -4314,6 +5432,13 @@
           },
           "metadataOverrides" : {
             "$ref" : "#/components/schemas/RoleMetadataOverrides"
+          },
+          "displayDeltas" : {
+            "type" : "array",
+            "description" : "相对上一版本的展示差异，含操作名称；仅列表读填充",
+            "items" : {
+              "$ref" : "#/components/schemas/RoleDisplayDelta"
+            }
           }
         },
         "description" : "传输不可变角色版本及原始定义，不持久化租户合成后的完整副本"
@@ -4370,6 +5495,34 @@
           }
         },
         "description" : "返回角色目录元数据，区分固定共享、系统及两域自定义来源"
+      },
+      "RoleUpdateInput" : {
+        "required" : [ "expectedVersion", "status" ],
+        "type" : "object",
+        "properties" : {
+          "expectedVersion" : {
+            "type" : "string",
+            "description" : "读取时的配置版本"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "角色名称；空白时只改启停"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "说明，可空"
+          },
+          "groupName" : {
+            "type" : "string",
+            "description" : "仅展示分组，可空"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "启停状态",
+            "enum" : [ "ENABLED", "DISABLED" ]
+          }
+        },
+        "description" : "更新角色名称、说明、分组与启停，不改编码和已发布版本"
       },
       "ScopeBinding" : {
         "required" : [ "ids", "kind" ],
@@ -4432,6 +5585,22 @@
         },
         "description" : "当前域内的成员与部门选择"
       },
+      "SensitiveConfirmation" : {
+        "required" : [ "kind", "secret" ],
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string",
+            "description" : "确认种类",
+            "enum" : [ "LOGIN_PASSWORD", "OPERATION_PASSWORD" ]
+          },
+          "secret" : {
+            "type" : "string",
+            "description" : "口令明文；传输由 HYBRID 信封保护"
+          }
+        },
+        "description" : "嵌在敏感写请求体内的身份确认，不单独作为验密接口响应"
+      },
       "SubjectRef" : {
         "required" : [ "id", "type" ],
         "type" : "object",
@@ -4476,17 +5645,24 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "组织头像，可空"
+            "description" : "组织头像，可空；可提交时效链接或对象路径，入库只保存路径"
           },
           "planId" : {
             "type" : "string",
-            "description" : "可选套餐；缺省时开通服务器标记的基础应用"
+            "description" : "可选套餐；与自选应用取并集"
+          },
+          "applications" : {
+            "type" : "array",
+            "description" : "自选应用及期限覆盖，可空；不是完整目录",
+            "items" : {
+              "$ref" : "#/components/schemas/EntitlementDraft"
+            }
           }
         },
-        "description" : "提交组织创建所需的资料与所有者账号，基础目录引用由服务器生成"
+        "description" : "提交组织创建所需的资料、所有者账号与开通选择，治理版本由服务器生成"
       },
       "TenantPreviewResult" : {
-        "required" : [ "applications", "name", "ownerAccountId", "ownerDisplayName", "rootDepartmentName" ],
+        "required" : [ "applications", "entitlements", "name", "ownerAccountId", "ownerDisplayName", "rootDepartmentName" ],
         "type" : "object",
         "properties" : {
           "name" : {
@@ -4507,9 +5683,16 @@
           },
           "applications" : {
             "type" : "array",
-            "description" : "将开通的基础或套餐应用",
+            "description" : "将开通应用的摘要",
             "items" : {
               "$ref" : "#/components/schemas/ApplicationSummary"
+            }
+          },
+          "entitlements" : {
+            "type" : "array",
+            "description" : "服务器解析后的开通并集",
+            "items" : {
+              "$ref" : "#/components/schemas/EntitlementPreviewItem"
             }
           },
           "planId" : {
@@ -4533,7 +5716,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "组织头像，可空"
+            "description" : "组织头像时效链接，可空"
           },
           "ownerMemberId" : {
             "type" : "string",
@@ -4543,10 +5726,27 @@
             "type" : "string",
             "description" : "所有者在该组织内的显示名称；成员缺失或名为空时省略"
           },
+          "ownerPhone" : {
+            "type" : "string",
+            "description" : "所有者在该组织内的手机号；成员缺失或为空时省略"
+          },
+          "ownerEmail" : {
+            "type" : "string",
+            "description" : "所有者在该组织内的邮箱；成员缺失或为空时省略"
+          },
           "status" : {
             "type" : "string",
             "description" : "组织启停状态",
             "enum" : [ "ENABLED", "DISABLED" ]
+          },
+          "createdAt" : {
+            "type" : "string",
+            "description" : "组织创建时间，UTC；缺失时省略",
+            "format" : "date-time"
+          },
+          "planId" : {
+            "type" : "string",
+            "description" : "最近一次提交的套餐，未选择时省略"
           }
         },
         "description" : "返回平台可管理的租户实体，不附带租户业务成员列表"
@@ -4567,7 +5767,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "组织头像，可空"
+            "description" : "组织头像，可空；可提交时效链接或对象路径，入库只保存路径"
           }
         },
         "description" : "更新当前组织可编辑设置，所有者转交使用独立命令"
@@ -4588,7 +5788,7 @@
           },
           "avatar" : {
             "type" : "string",
-            "description" : "组织头像，可空"
+            "description" : "组织头像，可空；可提交时效链接或对象路径，入库只保存路径"
           },
           "status" : {
             "type" : "string",
@@ -4647,7 +5847,7 @@
           "reasonCode" : {
             "type" : "string",
             "description" : "冲突原因码",
-            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "AuthorizationUnavailable" ]
+            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "StepUpFailed", "AuthorizationUnavailable" ]
           },
           "message" : {
             "type" : "string",
@@ -4806,7 +6006,7 @@
           "code" : {
             "type" : "string",
             "description" : "稳定业务错误码",
-            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "AuthorizationUnavailable" ]
+            "enum" : [ "InvalidArgument", "IdentityInvalid", "ActionDenied", "DataScopeDenied", "DelegationExceeded", "RoleRevisionUnavailable", "ApplicationUnavailable", "ObjectNotFound", "PolicyConflict", "RevisionConflict", "ObjectInUse", "StepUpFailed", "AuthorizationUnavailable" ]
           },
           "message" : {
             "type" : "string",
