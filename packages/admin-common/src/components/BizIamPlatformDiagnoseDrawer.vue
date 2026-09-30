@@ -53,19 +53,23 @@
         目标对象是所选操作作用的具体资源记录；留空时只诊断操作权限。
       </div>
       <biz-iam-diagnose-panel :decision="decision" />
-      <div v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)" class="flex flex-wrap gap-8px">
+      <div
+        v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)"
+        class="flex flex-wrap gap-8px m-t-8px"
+      >
         <in-button
           v-for="source in decision?.sources.filter((item) => item.assignmentId) || []"
           :key="source.assignmentId"
           @click="openSource(source.assignmentId!)"
-          >查看分配 {{ source.assignmentId }}</in-button
         >
+          查看分配 {{ source.assignmentId }}
+        </in-button>
       </div>
     </in-form>
-    <template #footer
-      ><in-button @click="visible = false">关闭</in-button
-      ><in-button type="primary" :loading="loading" @in-click="run">诊断</in-button></template
-    >
+    <template #footer>
+      <in-button @click="visible = false">关闭</in-button>
+      <in-button type="primary" :loading="loading" @in-click="run">诊断</in-button>
+    </template>
   </in-drawer>
 </template>
 <script setup lang="ts">
