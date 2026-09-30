@@ -17,6 +17,7 @@ declare module 'vue' {
     BizIamChipPageSelect: typeof import('./src/components/BizIamChipPageSelect.vue')['default']
     BizIamDelegationDrawer: typeof import('./src/components/BizIamDelegationDrawer.vue')['default']
     BizIamDeltaTags: typeof import('./src/components/BizIamDeltaTags.vue')['default']
+    BizIamDiagnoseCandidatePicker: typeof import('./src/components/BizIamDiagnoseCandidatePicker.vue')['default']
     BizIamDiagnoseDrawer: typeof import('./src/components/BizIamDiagnoseDrawer.vue')['default']
     BizIamDiagnosePanel: typeof import('./src/components/BizIamDiagnosePanel.vue')['default']
     BizIamDurationFields: typeof import('./src/components/BizIamDurationFields.vue')['default']

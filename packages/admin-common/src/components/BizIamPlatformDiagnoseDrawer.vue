@@ -7,32 +7,51 @@
       class="mb-12px"
     />
     <in-form label-position="top">
-      <el-form-item label="成员" required
-        ><biz-iam-authorization-select
+      <el-form-item label="成员" required>
+        <el-input
+          v-if="memberLocked"
+          :model-value="memberName || memberId"
+          disabled
+          placeholder="该分配记录的成员不可修改"
+        />
+        <biz-iam-diagnose-candidate-picker
+          v-else
           v-model="memberId"
           :api="candidatesApi"
           :query="{ kind: 'MEMBER' }"
-      /></el-form-item>
+          title="选择成员"
+          placeholder="请选择成员"
+        />
+      </el-form-item>
       <el-form-item label="应用" required
-        ><biz-iam-authorization-select
+        ><biz-iam-diagnose-candidate-picker
           v-model="applicationId"
           :api="candidatesApi"
           :query="{ kind: 'APPLICATION' }"
+          title="选择应用"
+          placeholder="请选择应用"
       /></el-form-item>
       <el-form-item label="操作" required
-        ><biz-iam-authorization-select
+        ><biz-iam-diagnose-candidate-picker
           v-model="actionId"
           :api="candidatesApi"
           :query="{ kind: 'ACTION', applicationId }"
           :disabled="!applicationId"
+          title="选择操作"
+          placeholder="请选择操作"
       /></el-form-item>
       <el-form-item label="目标对象（可选）"
-        ><biz-iam-authorization-select
+        ><biz-iam-diagnose-candidate-picker
           v-model="targetId"
           :api="candidatesApi"
           :query="{ kind: 'OBJECT', actionId }"
           :disabled="!actionId"
+          title="选择目标对象"
+          placeholder="请选择目标对象"
       /></el-form-item>
+      <div class="text-12px text-[var(--el-text-color-secondary)] mb-12px">
+        目标对象是所选操作作用的具体资源记录；留空时只诊断操作权限。
+      </div>
       <biz-iam-diagnose-panel :decision="decision" />
       <div v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)" class="flex flex-wrap gap-8px">
         <in-button
@@ -58,7 +77,7 @@ import {
   type DiagnoseInput,
 } from "../models/iam";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
-import BizIamAuthorizationSelect from "./BizIamAuthorizationSelect.vue";
+import BizIamDiagnoseCandidatePicker from "./BizIamDiagnoseCandidatePicker.vue";
 import BizIamDiagnosePanel from "./BizIamDiagnosePanel.vue";
 defineOptions({ name: "BizIamPlatformDiagnoseDrawer" });
 const props = defineProps<{
@@ -70,6 +89,8 @@ const { hasAction, contextEpoch } = useCapabilities();
 const visible = ref(false);
 const loading = ref(false);
 const memberId = ref("");
+const memberName = ref("");
+const memberLocked = ref(false);
 const applicationId = ref("");
 const actionId = ref("");
 const targetId = ref("");
@@ -113,8 +134,10 @@ const run = async (): Promise<void> => {
   }
 };
 defineExpose({
-  show(preset?: { memberId?: string }) {
+  show(preset?: { memberId?: string; memberName?: string }) {
     memberId.value = preset?.memberId || "";
+    memberName.value = preset?.memberName || "";
+    memberLocked.value = Boolean(preset?.memberId);
     applicationId.value = "";
     actionId.value = "";
     targetId.value = "";

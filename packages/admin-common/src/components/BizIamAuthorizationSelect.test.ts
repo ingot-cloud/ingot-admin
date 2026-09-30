@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { mount, flushPromises } from "@vue/test-utils";
+import { createPinia } from "pinia";
 import { describe, expect, it, vi } from "vitest";
 import BizIamAuthorizationSelect from "./BizIamAuthorizationSelect.vue";
 import type { AuthorizationCandidatePage, AuthorizationCandidateQuery } from "../models/iam";
@@ -15,6 +16,7 @@ const stubs = {
   ElAlert: true,
   InButton: true,
 };
+const global = () => ({ stubs, plugins: [createPinia()] });
 describe("授权分页候选", () => {
   it("依据改变后丢弃迟到响应，不覆盖新候选", async () => {
     const pending: Array<(response: R<AuthorizationCandidatePage>) => void> = [];
@@ -23,12 +25,14 @@ describe("授权分页候选", () => {
     );
     const wrapper = mount(BizIamAuthorizationSelect, {
       props: { api, query: { kind: "MEMBER", delegationGrantId: "1" } },
-      global: { stubs },
+      global: global(),
     });
     const vm = wrapper.vm as unknown as { search: (keyword: string) => void };
     vm.search("旧");
+    await vi.waitFor(() => expect(pending).toHaveLength(1));
     await wrapper.setProps({ query: { kind: "MEMBER", delegationGrantId: "2" } });
     vm.search("新");
+    await vi.waitFor(() => expect(pending).toHaveLength(2));
     pending[1](envelope("200"));
     await flushPromises();
     pending[0](envelope("100"));
@@ -56,7 +60,7 @@ describe("授权分页候选", () => {
         multiple: true,
         modelValue: Array.from({ length: 45 }, (_, i) => String(i + 1)),
       },
-      global: { stubs },
+      global: global(),
     });
     await flushPromises();
     expect(api).toHaveBeenCalledTimes(3);
@@ -84,7 +88,7 @@ describe("授权分页候选", () => {
         multiple: true,
         modelValue: ["1", "2"],
       },
-      global: { stubs },
+      global: global(),
     });
     await flushPromises();
     await wrapper.setProps({ query: { kind: "MEMBER", delegationGrantId: "2" } });

@@ -371,7 +371,7 @@ const assignmentRef = ref<{
   show: (row?: AssignmentRow, preset?: { memberId?: string }) => void;
 }>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
-const diagnoseRef = ref<{ show: (preset?: { memberId?: string }) => void }>();
+const diagnoseRef = ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
 
 const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray, value);
 const sourceLabel = (value: string): string => iamEnumLabel(AssignmentSourceExtArray, value);
@@ -407,7 +407,7 @@ const handleRoleDelete = (item: RoleRow): void => {
     });
   });
 };
-const handleDiagnose = (preset?: { memberId?: string }): void => {
+const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
   diagnoseRef.value?.show(preset);
 };
 const handleAssignmentCreate = (): void => {
@@ -427,7 +427,10 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   });
 };
 const handleAssignmentDiagnose = (item: AssignmentRow): void => {
-  handleDiagnose({ memberId: item.record.assignment.subject.id });
+  handleDiagnose({
+    memberId: item.record.assignment.subject.id,
+    memberName: item.record.subjectName,
+  });
 };
 const handleDelegationCreate = (): void => {
   delegationRef.value?.show();
