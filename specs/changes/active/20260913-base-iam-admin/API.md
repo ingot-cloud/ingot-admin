@@ -168,6 +168,10 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 | /v1/tenant/policies/fields | GET/PUT 场景、字段、查看者和目标范围规则 |
 | /v1/tenant/policies/preview | POST {policyDraft, viewerMemberId, target?}；无副作用 |
 | /v1/{domain}/authorization/diagnose | POST {memberId/accountId, applicationId, actionId, targetId?} |
+
+平台诊断目标对象候选按对应资源的读取操作和对象范围过滤，不沿用可诊断成员 ID 作为跨资源目标范围；提交时服务端重验。无目标只判操作，未知资源返回 `supported=false`，现有请求结构保持兼容。
+
+`diagnose/candidates?kind=ACTION` 的 `id` 是单个操作 ID，`name` 保留操作原名称，现有可选 `summary` 返回资源名称；搜索同时匹配资源名称和操作名称。诊断 POST 仍只提交一个 `actionId`。
 | /v1/{domain}/authorization/audits | GET 分页事件；导出需独立权限 |
 | /v1/directory/members | GET 必填 `purpose=DIRECTORY`，分页及可选精确 `phone`/`email`；/{id} GET；均执行普通通讯录规则 |
 | /v1/directory/departments | GET 必填 `purpose=DIRECTORY` 及分页；可见树及必要祖先骨架 |
