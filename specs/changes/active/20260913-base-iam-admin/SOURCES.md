@@ -1,8 +1,8 @@
 # 输入来源与对接边界
 
-同步校准日期：2026-09-30。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮平台角色分配与委派增量已经实施，证据见 AUTHORIZATION-REFINEMENT-STATUS；真实 HTTP/浏览器验收仍未完成。历史来源保留。
+同步校准日期：2026-10-02。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮平台角色分配与委派增量已经实施，证据见 AUTHORIZATION-REFINEMENT-STATUS；真实 HTTP/浏览器验收仍未完成。历史来源保留。
 
-后端API为权威，以下副本逐字节复制；不消费inbox。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面116路径/183操作，包含账号/本人/字典/发号/社交、目录辅助、平台专用候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
+后端API为权威，contracts 与 sources 中标注的后端原文按哈希同步；本地 API/INTERACTIONS 同时含前端增量说明。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面119路径/186操作，包含账号/本人/字典/发号/社交、目录辅助、两域授权候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
 
 ## 阅读顺序
 
@@ -12,15 +12,15 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [API.md](./API.md) | `9a43f95f0fac0ed419d70004e66e033f10e293e392214f279bf996971251bd21` |
-| `FRONTEND.md` | [INTERACTIONS.md](./INTERACTIONS.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `40b8ba3394104ee57ac719c7a005c0e8454c3a725e0d8cb9459c34b4b646a2f8` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
 | `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `bfae7f4e66100a3e32da56933b82bb6a2244a355698a6c377ca7b75aefec172f` |
 | `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `6477fd222241d9f08c534bbe9888c4df89e10ade993b5b5e084529fab0b83d1a` |
 | `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `ef14f33312a1f1744d04bf7b898556bc7127eafb796552678a1045ac726df9f2` |
 | `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
 | `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `71bc2185c1836d044a6c1cabffd730dfb9129c28540014309f5defc990803521` |
 | `endpoint-mapping.json` | [sources/endpoint-mapping.json](./sources/endpoint-mapping.json) | `6eff4056434a6f307b62bccf4dd2170c013d089943dd7c8461b8da89846a16ec` |
-| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `b3fc9826b96b35663e3fb03f03ab8db58e115828eaf6228e04b95c78ef631561` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `ba53c4017dc32a3438a98aba62bd4cef602b3edadeed8587ae0454575cc4cd36` |
 | `contracts/examples/assignment.json` | [sources/contracts/examples/assignment.json](./sources/contracts/examples/assignment.json) | `0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa` |
 | `contracts/examples/audit.json` | [sources/contracts/examples/audit.json](./sources/contracts/examples/audit.json) | `b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1` |
 | `contracts/examples/bootstrap.json` | [sources/contracts/examples/bootstrap.json](./sources/contracts/examples/bootstrap.json) | `0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4` |
@@ -40,9 +40,9 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 | `contracts/examples/role-upgrade.json` | [sources/contracts/examples/role-upgrade.json](./sources/contracts/examples/role-upgrade.json) | `6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b` |
 | `contracts/examples/tenant-create.json` | [sources/contracts/examples/tenant-create.json](./sources/contracts/examples/tenant-create.json) | `bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133` |
 | `contracts/examples/upgrade-conflict.json` | [sources/contracts/examples/upgrade-conflict.json](./sources/contracts/examples/upgrade-conflict.json) | `d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70` |
-| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `64fe6e4a917491c5f23bbfa6f0dc6875a5ddd3c4dceeb5c1bf061b6dd50d5ee1` |
-| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `5f1e708886593b2a8f261a008cbc76dbdd26831b3b7249c8a408cab8e7508e30` |
-| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `1468246774115ef4b5c5f3798ec24bb9512634f3aa8a388d2f24745127b14778` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `d28907ebd12f64bffc44f5cdcbbb81d66f148c966b281daf679fe3159aaeb710` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `8a7c5508c54c225caf66edc89889c402efc122f18813a663cc45a57998c44c0c` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `55783b392670adeb6d336543991da3ffd3d2922758c3d8d09b77a59e41d92b6f` |
 
 ## 2026-09-19 新增权威副本
 
@@ -68,7 +68,7 @@ INTERACTIONS仍是后端FRONTEND的字节副本；前端进展、API消费核对
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `AUTHORIZATION-REFINEMENT.md` | [sources/BACKEND_AUTHORIZATION_REFINEMENT.md](./sources/BACKEND_AUTHORIZATION_REFINEMENT.md) | `82dc7b51a4faeb2d5e3f0a5ab72e9efd9f822773890f82de9b9b9ef2d18b8feb` |
+| `AUTHORIZATION-REFINEMENT.md` | [sources/BACKEND_AUTHORIZATION_REFINEMENT.md](./sources/BACKEND_AUTHORIZATION_REFINEMENT.md) | `f71d5846863e674fdd09679c9642134d21862c5ee059d13735502ba4e9557c58` |
 | `AUTHORIZATION-REFINEMENT-STATUS.md` | [sources/BACKEND_AUTHORIZATION_REFINEMENT_STATUS.md](./sources/BACKEND_AUTHORIZATION_REFINEMENT_STATUS.md) | `9ba413fe167207ed163626f973ac8d50a07e86728a9f2f4ccf25d3e7697bf4c4` |
 | `contracts/examples/assignment-context.json` | [sources/contracts/examples/assignment-context.json](./sources/contracts/examples/assignment-context.json) | `f3f8a4690aa00488056b33036b1c7fdaff3a90e93e4ab24de4c1459d40173e24` |
 | `contracts/examples/assignment-record.json` | [sources/contracts/examples/assignment-record.json](./sources/contracts/examples/assignment-record.json) | `ceb58e46f3e4bb487961a8241100cc4d92cf21064ced0c8a5653ea3dadf86899` |
@@ -86,3 +86,13 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `ROLE-PICKER-REFINEMENT.md` | [sources/BACKEND_ROLE_PICKER_REFINEMENT.md](./sources/BACKEND_ROLE_PICKER_REFINEMENT.md) | `32a59841cc3a01aabaed5e6453afb77e81e76fd62a5ed8159298e0471fb26241` |
 | `contracts/examples/authorization-role-candidates.json` | [sources/contracts/examples/authorization-role-candidates.json](./sources/contracts/examples/authorization-role-candidates.json) | `3002bf2b20aa23025e322a0caa0c46688d6c85312b0f448246f33252ffb01421` |
 | `contracts/examples/authorization-role-versions.json` | [sources/contracts/examples/authorization-role-versions.json](./sources/contracts/examples/authorization-role-versions.json) | `d43205669c3e8b440249b1779a9db822e756dca02e56d72ebcbe13a5ff5f1802` |
+
+## 2026-10-03 权威来源
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `40b8ba3394104ee57ac719c7a005c0e8454c3a725e0d8cb9459c34b4b646a2f8` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
+| `ROLE-WORKSPACE-DELEGATION-REFINEMENT.md` | [sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md](./sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md) | `c262615bcf8f67ea1b670fa9fed280bddc3d86f8a30b91e85e8c337491dda201` |
+| `contracts/examples/delegation-unlimited.json` | [sources/contracts/examples/delegation-unlimited.json](./sources/contracts/examples/delegation-unlimited.json) | `b70d04b8138fae40556a8f2d0505b60b451b6839ad4f7ab044d5456ad2b24e14` |
+| `contracts/examples/role-subject-page.json` | [sources/contracts/examples/role-subject-page.json](./sources/contracts/examples/role-subject-page.json) | `3c16da306274394837943e410d9d7b24f268b990a1a98a7ac2b75e80cc2091ba` |

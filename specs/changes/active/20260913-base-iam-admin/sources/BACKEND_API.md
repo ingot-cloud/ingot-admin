@@ -169,9 +169,9 @@ T01 补充字段精确定义：RoleParameterDefinition 为 `{key,kind}`，kind �
 | /v1/tenant/policies/preview | POST {policyDraft, viewerMemberId, target?}；无副作用 |
 | /v1/{domain}/authorization/diagnose | POST {memberId/accountId, applicationId, actionId, targetId?} |
 
-平台诊断目标对象候选按对应资源的读取操作和对象范围过滤，不沿用可诊断成员 ID 作为跨资源目标范围；提交时服务端重验。无目标只判操作，未知资源返回 `supported=false`，现有请求结构保持兼容。
+平台诊断的 `targetId` 是所选操作所属资源的对象 ID。平台 `diagnose/candidates?kind=MEMBER` 按诊断者可诊断成员范围过滤；`kind=OBJECT` 按该资源读取操作的对象范围过滤，提交诊断时重验同一读取边界。无读取资格返回空候选，资源未接入对象查询返回 `supported=false`；不带 `targetId` 仍可进行操作级诊断。接口路径和请求结构不变。
 
-`diagnose/candidates?kind=ACTION` 的 `id` 是单个操作 ID，`name` 保留操作原名称，现有可选 `summary` 返回资源名称；搜索同时匹配资源名称和操作名称。诊断 POST 仍只提交一个 `actionId`。
+`diagnose/candidates?kind=ACTION` 的每个 Option 使用 `id` 表示单个操作 ID、`name` 表示原始操作名称、`summary` 表示所属资源名称。搜索词匹配资源名称或操作名称，且始终受所选 `applicationId` 限制；诊断 POST 仍只接收单个 `actionId`。
 | /v1/{domain}/authorization/audits | GET 分页事件；导出需独立权限 |
 | /v1/directory/members | GET 必填 `purpose=DIRECTORY`，分页及可选精确 `phone`/`email`；/{id} GET；均执行普通通讯录规则 |
 | /v1/directory/departments | GET 必填 `purpose=DIRECTORY` 及分页；可见树及必要祖先骨架 |
@@ -254,22 +254,21 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 ## 2026-09-30 平台角色及授权管理员列表筛选
 
 `GET /api/iam/v1/platform/roles` 已支持可选 `name`（角色名称包含匹配），前端角色 Tab 使用该参数。`GET /api/iam/v1/platform/delegations` 新增可选 `administratorName`（平台成员显示名称包含匹配）；空白与省略均不筛选，去空白后最多 128 字符，LIKE 通配符按普通文字匹配。筛选在服务端治理边界内先执行，再分页及统计。平台 `DelegationRecord` 新增可选 `administratorName`，缺失时客户端显示 `delegation.administratorMemberId`。两接口的默认分页及权限规则不变；租户委派列表无新增筛选参数，也不增加名称查询。OpenAPI 中同步标注参数与响应字段。
+
 ## 2026-09-30 平台委派角色树候选
 
-新增 `GET /v1/platform/delegations/role-candidates`，可传 `roleId?`、`keyword?`、`ids?`、`page=1`、`pageSize=20`，返回与角色分配相同的 `AuthorizationRoleCandidatePage` 两级角色/固定版本节点。仅按委派治理资格鉴权，不要求角色分配资格。委派原有 `candidates` 分页接口继续提供管理员、接收成员、版本完整详情及操作范围对象。委派预览和保存 DTO 保持不变，所选版本全部操作仍需配置上限。
-
+新增 `GET /api/iam/v1/platform/delegations/role-candidates`，参数 `roleId?`、`keyword?`、`ids?`、`page=1`、`pageSize=20`，响应复用 `AuthorizationRoleCandidatePage`。根层和版本层按启用平台角色及可分配固定版本过滤、分页和统计；`keyword` 匹配角色名称并转义通配符，`ids` 仅用于当前层少量已选回显。此入口仅要求平台委派的 CREATE、UPDATE 或 READ 治理资格，不依赖角色分配或通用角色列表资格。版本详情、人员及资源对象继续使用 `/delegations/candidates`；委派预览与写入 DTO 不变，服务端仍要求所选版本的全部操作各有上限。
 ## 2026-10-02 租户分配范围候选
 
-候选页新增可选 `contextLabel`，用于在多个范围参数之间显示实际资源名称；内部参数键不展示给操作人员。
+候选页新增可选 `contextLabel`，供租户选择器显示参数对应的资源名称；跨同一目标类型的旧共享键可合并显示资源名称。
 
-`GET /v1/tenant/assignments/scope-candidates` 接收 `revisionId`、`parameterKey`、可选 `keyword`、`ids`、`page`、`pageSize`，返回 `AuthorizationCandidatePage`。只有具备当前租户角色分配创建或调整资格的成员可查询。已声明的部门参数返回当前租户部门 ID；对象参数按固定版本中引用该键的操作解析真实资源目标，分页、搜索、已选回显和计数使用同一范围。未接入的资源返回 `supported=false` 和说明，界面不得让用户改为手填 ID 或自动降为全部范围。预览与创建/调整继续由后端校验参数、绑定种类和目标归属，分配 DTO 不变。
-## 2026-10-02 平台成员快捷分配与树候选
+`GET /v1/tenant/assignments/scope-candidates?revisionId=...&parameterKey=...&keyword=&ids=&page=1&pageSize=20` 返回 `AuthorizationCandidatePage`。以当前可信租户身份和角色分配治理资格校验固定版本、参数定义及引用该参数的操作；`ids` 仅用于少量已选回显，搜索、计数和回显同一边界。`DEPARTMENTS` 候选为本租户管理部门真实 ID，`OBJECTS` 候选按已注册资源目标类型查询真实 ID。未知适配器或一个键引用不兼容的对象类型返回 `supported=false`，不接受客户端表名、对象类型或租户 ID。现有分配 DTO 不变；预览和写入重验键、绑定种类、目标归属与来源委派。
+## 2026-10-02 平台成员角色与层级候选增量
 
-平台成员创建可附带 `roleAssignments:[{roleId,roleRevisionRef,scopeBindings,validFrom?,validUntil?}]`；所选固定版本由服务端重验为最新发布版本，整单原子写入。旧 `roleIds` 只适用于无参数版本。成员详情用 `GET /v1/platform/members/{id}/assignments` 读取实际分配及逐条能力，新增和撤销走平台分配接口。平台资源能力拒绝部门范围，历史误配可读但须编辑移除。
-
-平台分配、委派候选及租户范围候选可传 `tree=true&parentId=...`；响应新增 `hierarchical`，树节点可带 `parentId`、`hasChildren`、`ancestorPath`。菜单和管理部门按服务端树分支分页，搜索与少量已选回显不受当前分支限制；普通对象保持原分页列表。
-
-受限平台菜单树可返回导航祖先，标记 `selectable=false`；前端不能勾选这类节点，搜索和已选回显仍以真实允许对象为界。
+- 平台应用资源创建、修改及整包创建时，`scopeCapabilities` 不得包含 `MEMBER_DEPARTMENTS` / `MANAGED_DEPARTMENTS`；租户应用保持原契约。历史平台资源仍可读取，编辑须显式移除误配值。
+- `MemberCreateInput` 新增可选 `roleAssignments:[{roleId,roleRevisionRef,scopeBindings,validFrom?,validUntil?}]`。服务端以角色定义 ID 重验固定版本仍为最新发布版本，并以新成员 ID 构造直接分配；与旧 `roleIds` 重复的角色拒绝。旧 `roleIds` 仅能分配最新无参数版本；成员、组及全部分配同事务提交。租户成员创建拒绝非空 `roleAssignments`。
+- `GET /v1/platform/members/{id}/assignments?page=1&pageSize=20` 按关联表分页返回 `PageResponse<ResourceDetail<AssignmentRecord>>`；须有成员可见资格，并沿用平台分配的治理/本人委派来源边界及逐条能力。
+- 平台 `/assignments/candidates`、`/delegations/candidates` 与租户 `/assignments/scope-candidates` 可选 `tree=true&parentId=...`。仅真实层级资源（平台菜单、租户管理部门）返回 `hierarchical=true`；根分支省略 parentId，子分支按父节点独立分页。带 keyword 时搜索整个可见集合，带 ids 时按原权限边界回显，均不受分支限制。树节点在原 `AuthorizationOption` 增加 `parentId`、`hasChildren`、`ancestorPath`；受限平台菜单的祖先额外返回 `selectable=false`，只用于展开，不能作为已选目标。普通资源仍为列表。
 
 
 2026-10-03 用户批准实施 [平台角色工作区与委派优化](./ROLE-WORKSPACE-DELEGATION-REFINEMENT.md)，含独立关联分页、期限模式、自我授权收紧与统一选择器/样式。

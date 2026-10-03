@@ -28,6 +28,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
 - [ ] 多 Tab 只请求当前激活 Tab：打开页面不预拉兄弟 Tab 的接口
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
+- [ ] 人员、角色、资源对象等实体候选使用点击录入框打开对话框；单选单栏、多选双栏、搜索分页与回显按 [entity-picker-interactions.md](entity-picker-interactions.md)
 - [ ] 普通时间字段按当地墙钟提交和展示；会话类 ISO-8601 UTC 再按本地时区格式化
 ```
 
@@ -207,4 +208,7 @@ pages/platform/base/app/
 
 - Vue 组件/页面/Store/样式示例 → [vue-conventions.md](vue-conventions.md)
 - API/TypeScript/Net 层示例 → [api-conventions.md](api-conventions.md)
+- 人员、角色、资源对象等实体候选的对话框交互 → [entity-picker-interactions.md](entity-picker-interactions.md)
 - Git 提交信息 → [in-conventional-commits](../in-conventional-commits/SKILL.md)
+
+实体选择与权限展示的请求次数、已选集合独立回显、InLoading、权限背景 Token 和范围批量覆盖检查，见 [entity-picker-interactions.md](entity-picker-interactions.md)。
