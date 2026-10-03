@@ -53,7 +53,7 @@
           :page-size="pageSize"
           :total="total"
           layout="prev, pager, next"
-          small
+          size="small"
           @current-change="privateOnPageChange"
         />
       </in-loading>

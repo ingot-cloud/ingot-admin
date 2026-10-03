@@ -24,6 +24,56 @@ const stubs = {
 };
 
 describe("委派实体候选", () => {
+  it.each([false, true])(
+    "外部属性仅作用于录入框，模型更新不产生继承警告（多选=%s）",
+    async (multiple) => {
+      const warnings: string[] = [];
+      const api = vi.fn();
+      const wrapper = mount(BizIamDelegationCandidatePicker, {
+        attrs: {
+          class: "w-320px max-w-full",
+          style: "max-width: 320px",
+          "data-testid": "scope-input",
+        },
+        props: {
+          api,
+          query: { kind: "OBJECT", actionId: "10" },
+          title: "选择范围对象",
+          placeholder: "请选择对象",
+          searchPlaceholder: "搜索对象",
+          modelValue: multiple ? ["1"] : "1",
+          selectedOptions: [{ id: "1", name: "应用一" }],
+          multiple,
+        },
+        global: {
+          plugins: [createPinia()],
+          config: { warnHandler: (message) => warnings.push(message) },
+          stubs: {
+            ...stubs,
+            BizIamMemberPickerDialog: true,
+            BizIamTreeCandidateDialog: true,
+          },
+        },
+      });
+      await flushPromises();
+      await wrapper.setProps({
+        modelValue: multiple ? ["2"] : "2",
+        selectedOptions: [{ id: "2", name: "应用二" }],
+      });
+      await flushPromises();
+      expect(
+        warnings.filter((message) => message.includes("Extraneous non-props attributes")),
+      ).toEqual([]);
+      const field = wrapper.get('[data-testid="scope-input"]');
+      expect(field.classes()).toEqual(expect.arrayContaining(["flex", "w-320px", "max-w-full"]));
+      expect(field.attributes("style")).toContain("max-width: 320px");
+      expect(field.text()).toContain("应用二");
+      expect(wrapper.findAll('[data-testid="scope-input"]')).toHaveLength(1);
+      expect(api).not.toHaveBeenCalled();
+      wrapper.unmount();
+    },
+  );
+
   it("已有对象摘要从草稿回显，树形第一页直接复用，每次打开只请求一页", async () => {
     const show = vi.fn();
     const loadSelected = vi.fn();

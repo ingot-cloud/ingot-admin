@@ -16,3 +16,22 @@ export const durationHours = (value?: string): number => {
     : 0;
 };
 export const hoursDuration = (hours: number): string => `PT${Math.round(hours * 3600)}S`;
+
+/** 将授权 Duration 转为可读中文时长，保持天、小时、分钟和秒的实际含义。 */
+export const formatDuration = (value?: string): string => {
+  let remaining = Number((durationHours(value) * 3600).toFixed(9));
+  if (!Number.isFinite(remaining) || remaining <= 0) return "未设置";
+  const units = [
+    { seconds: 86400, label: "天" },
+    { seconds: 3600, label: "小时" },
+    { seconds: 60, label: "分钟" },
+    { seconds: 1, label: "秒" },
+  ];
+  const parts: string[] = [];
+  for (const unit of units) {
+    const count = unit.seconds === 1 ? remaining : Math.floor(remaining / unit.seconds);
+    if (count > 0) parts.push(`${count} ${unit.label}`);
+    remaining = Number((remaining - count * unit.seconds).toFixed(9));
+  }
+  return parts.join(" ");
+};

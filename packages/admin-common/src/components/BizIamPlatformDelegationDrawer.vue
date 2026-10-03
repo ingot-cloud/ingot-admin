@@ -202,7 +202,7 @@ import {
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import { delegationPeriodError } from "../models/iam/delegationPeriod";
-import { durationHours } from "../models/iam/duration";
+import { formatDuration } from "../models/iam/duration";
 import BizIamDelegationCandidatePicker from "./BizIamDelegationCandidatePicker.vue";
 import BizIamDelegationRolePicker from "./BizIamDelegationRolePicker.vue";
 import BizIamDelegationCeilingStep from "./BizIamDelegationCeilingStep.vue";
@@ -287,9 +287,7 @@ const validUntil = ref<string>();
 const maxDuration = ref<string>("P30D");
 const maxDurationLabel = computed(() => {
   if (durationMode.value === "UNLIMITED") return "不限期限（随来源委派失效）";
-  const hours = durationHours(maxDuration.value);
-  if (!Number.isFinite(hours) || hours <= 0) return "未设置";
-  return hours >= 24 ? `${Number((hours / 24).toFixed(3))} 天` : `${Number(hours.toFixed(3))} 小时`;
+  return formatDuration(maxDuration.value);
 });
 const privateFormatInstant = (value: string | undefined, fallback: string): string =>
   value ? new Date(value).toLocaleString() : fallback;

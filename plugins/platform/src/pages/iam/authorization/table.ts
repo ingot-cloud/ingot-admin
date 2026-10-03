@@ -93,8 +93,8 @@ export const delegationHeaders: Array<TableHeaderRecord> = [
     minWidth: 190,
     showOverflowTooltip: true,
   },
-  { label: "状态", prop: "status" },
-  { label: "最长期限", prop: "maxAssignmentDuration" },
+  { label: "状态", prop: "status", minWidth: 100 },
+  { label: "最长期限", prop: "maxAssignmentDuration", minWidth: 160, showOverflowTooltip: true },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 
@@ -134,7 +134,7 @@ export function createRoleRowActions(
     {
       key: "detail",
       label: "详情",
-      kind: "detail",
+      kind: "default",
       permission: IamAction.PLATFORM_ROLE_READ,
       disabled: !detail.allowed,
       disabledReason: detail.message,

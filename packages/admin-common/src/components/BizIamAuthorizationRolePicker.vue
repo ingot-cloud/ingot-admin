@@ -128,7 +128,7 @@
         :total="picker.total.value"
         :disabled="picker.loading.value || picker.saving.value || picker.restoring.value"
         layout="prev, pager, next"
-        small
+        size="small"
         @current-change="privateOnPageChange"
       />
       <div class="shrink-0 pt-12px text-12px text-[var(--el-text-color-secondary)]">

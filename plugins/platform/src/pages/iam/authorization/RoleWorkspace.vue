@@ -6,10 +6,8 @@
     persistence-key="platform-iam-role-workspace"
   >
     <template #left>
-      <div
-        class="flex h-full min-h-0 flex-col border-r border-solid border-[var(--in-border-color)]"
-      >
-        <div class="p-12px flex flex-col gap-12px">
+      <div class="flex h-full min-h-0 flex-col gap-12px">
+        <div class="flex flex-col gap-12px">
           <el-input
             :model-value="name"
             clearable
@@ -20,24 +18,26 @@
           >
             <template #prefix><in-icon name="ep:search" /></template>
           </el-input>
-          <in-table-actions variant="toolbar" :actions="toolbarActions" :row="emptyRoleRow" />
+          <in-table-actions
+            class="role-workspace__toolbar-actions"
+            variant="toolbar"
+            :actions="toolbarActions"
+            :row="emptyRoleRow"
+          />
         </div>
         <in-loading :loading="loading" class="flex-1 min-h-0 overflow-auto">
           <div
             v-for="row in rows"
             :key="row.record.id"
-            class="flex items-center gap-4px px-12px py-8px"
+            class="flex h-36px items-center gap-4px pl-12px pr-4px mb-4px rounded-8px"
             :class="roleId === row.record.id ? 'bg-[var(--in-permission-panel-bg)]' : ''"
           >
             <button
               type="button"
-              class="flex-1 min-w-0 text-left border-none bg-transparent cursor-pointer text-[var(--in-text-color)]"
+              class="flex-1 h-full min-w-0 p-0 text-left border-none bg-transparent cursor-pointer text-[var(--in-text-color)]"
               @click="selectRole(row)"
             >
               <span class="block truncate" :title="row.record.name">{{ row.record.name }}</span>
-              <span class="text-12px text-[var(--el-text-color-secondary)]">{{
-                row.record.status === "ENABLED" ? "启用" : "停用"
-              }}</span>
             </button>
             <in-table-actions :actions="rowActions(row)" :row="row" />
           </div>
@@ -50,8 +50,8 @@
           :page-size="page.size || 20"
           :total="page.total || 0"
           layout="prev, pager, next"
-          small
-          class="p-12px justify-center"
+          size="small"
+          class="justify-center"
           @current-change="emits('page', $event)"
         />
       </div>
@@ -109,15 +109,6 @@
             @change="selectedColumns[subjectKind] = $event"
           />
         </template>
-        <template #tools-end
-          ><in-button
-            v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_CREATE)"
-            type="primary"
-            :disabled="!selectedRole || selectedRole.record.status !== 'ENABLED'"
-            @in-click="emits('assign', roleId)"
-            >分配角色</in-button
-          ></template
-        >
         <template #name="{ item }">{{ item.name }}</template>
         <template #revisionNumbers="{ item }">{{
           item.revisionNumbers.map((value: number) => `v${value}`).join("、")
@@ -256,7 +247,6 @@ const emits = defineEmits<{
   "update:name": [name: string];
   search: [];
   page: [page: number];
-  assign: [roleId: string];
   assignment: [row: AssignmentRow];
   revoke: [row: AssignmentRow];
 }>();
@@ -342,3 +332,14 @@ watch(versionsVisible, (visible) => {
 });
 defineExpose({ refresh });
 </script>
+
+<style scoped lang="postcss">
+.role-workspace__toolbar-actions :deep(.in-table-actions__hit) {
+  flex: 1 1 0;
+}
+
+.role-workspace__toolbar-actions :deep(.in-table-actions__hit .in-table-actions__inline) {
+  width: 100%;
+  justify-content: center;
+}
+</style>

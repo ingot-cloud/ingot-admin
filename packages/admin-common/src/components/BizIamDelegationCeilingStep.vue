@@ -14,7 +14,7 @@
       :page-size="IAM_DEFAULT_PAGE_SIZE"
       :total="filteredActions.length"
       layout="prev, pager, next"
-      small
+      size="small"
       @current-change="page = $event"
     />
   </div>
@@ -72,7 +72,7 @@
             </div>
             <div
               v-if="scopeKinds(action.id).includes(ScopeKind.OBJECT_SET)"
-              class="delegation-object-field pl-148px flex flex-col items-start gap-8px"
+              class="delegation-object-field flex flex-col items-start gap-8px"
             >
               <biz-iam-delegation-candidate-picker
                 :model-value="objectIds(action.id)"
@@ -108,7 +108,7 @@
       :page-size="IAM_DEFAULT_PAGE_SIZE"
       :total="filteredActions.length"
       layout="prev, pager, next"
-      small
+      size="small"
       @current-change="page = $event"
     />
   </div>
@@ -212,41 +212,54 @@ const pagedGroups = computed(() => {
   return [...applications.values()];
 });
 const objectKey = (action: AuthorizationActionOption): string => `objects_${action.resourceId}`;
-const setScopes = (action: AuthorizationActionOption, values: ScopeKind[]): void => {
-  const previous = scopeKinds(action.id);
+const setScopesInDraft = (
+  draft: Record<string, ActionScopeCeiling>,
+  action: AuthorizationActionOption,
+  values: ScopeKind[],
+): void => {
+  const current = draft[action.id];
+  const previous = current?.scopes.map((scope) => scope.kind) ?? [];
   values = values.includes(ScopeKind.ALL)
     ? previous.includes(ScopeKind.ALL) && values.length > 1
       ? values.filter((kind) => kind !== ScopeKind.ALL)
       : [ScopeKind.ALL]
     : values;
   const key = objectKey(action);
-  const current = model.value[action.id];
-  model.value = {
-    ...model.value,
-    [action.id]: {
-      actionId: action.id,
-      scopes: values.map((kind) =>
-        kind === ScopeKind.OBJECT_SET ? { kind, parameterKey: key } : { kind },
-      ),
-      scopeBindings: values.includes(ScopeKind.OBJECT_SET)
-        ? { [key]: current?.scopeBindings[key] ?? { kind: ScopeBindingKind.OBJECTS, ids: [] } }
-        : {},
+  draft[action.id] = {
+    actionId: action.id,
+    scopes: values.map((kind) =>
+      kind === ScopeKind.OBJECT_SET ? { kind, parameterKey: key } : { kind },
+    ),
+    scopeBindings: values.includes(ScopeKind.OBJECT_SET)
+      ? { [key]: current?.scopeBindings[key] ?? { kind: ScopeBindingKind.OBJECTS, ids: [] } }
+      : {},
+  };
+};
+const setScopes = (action: AuthorizationActionOption, values: ScopeKind[]): void => {
+  const next = { ...model.value };
+  setScopesInDraft(next, action, values);
+  model.value = next;
+};
+const setObjectsInDraft = (
+  draft: Record<string, ActionScopeCeiling>,
+  action: AuthorizationActionOption,
+  ids: string | string[],
+): void => {
+  const key = objectKey(action);
+  const current = draft[action.id];
+  if (!current) return;
+  draft[action.id] = {
+    ...current,
+    scopeBindings: {
+      [key]: { kind: ScopeBindingKind.OBJECTS, ids: Array.isArray(ids) ? [...ids] : [] },
     },
   };
 };
 const setObjects = (action: AuthorizationActionOption, ids: string | string[]): void => {
-  const key = objectKey(action);
-  const current = model.value[action.id];
-  if (!current) return;
-  model.value = {
-    ...model.value,
-    [action.id]: {
-      ...current,
-      scopeBindings: {
-        [key]: { kind: ScopeBindingKind.OBJECTS, ids: Array.isArray(ids) ? ids : [] },
-      },
-    },
-  };
+  if (!model.value[action.id]) return;
+  const next = { ...model.value };
+  setObjectsInDraft(next, action, ids);
+  model.value = next;
 };
 const resourceActions = (id: string): AuthorizationActionOption[] =>
   props.actions.filter((action) => action.resourceId === id);
@@ -260,6 +273,7 @@ const resourceScopes = (id: string): ScopeKind[] => {
 };
 const applyResourceScope = async (id: string, kind: ScopeKind): Promise<void> => {
   const targets = resourceActions(id);
+  if (!targets.length) return;
   if (
     targets.some(
       (action) =>
@@ -273,13 +287,16 @@ const applyResourceScope = async (id: string, kind: ScopeKind): Promise<void> =>
       return;
     }
   }
-  targets.forEach((action) => setScopes(action, [kind]));
+  const next = { ...model.value };
+  targets.forEach((action) => setScopesInDraft(next, action, [kind]));
+  model.value = next;
 };
 const reuseObjects = async (action: AuthorizationActionOption): Promise<void> => {
   const ids = [...objectIds(action.id)];
   const targets = resourceActions(action.resourceId).filter(
     (other) => other.id !== action.id && scopeKinds(other.id).includes(ScopeKind.OBJECT_SET),
   );
+  if (!targets.length) return;
   if (
     targets.some(
       (other) =>
@@ -293,7 +310,9 @@ const reuseObjects = async (action: AuthorizationActionOption): Promise<void> =>
       return;
     }
   }
-  targets.forEach((other) => setObjects(other, [...ids]));
+  const next = { ...model.value };
+  targets.forEach((other) => setObjectsInDraft(next, other, ids));
+  model.value = next;
 };
 watch(
   () => props.actions,

@@ -74,7 +74,7 @@
           :page-size="IAM_DEFAULT_PAGE_SIZE"
           :total="filteredActions.length"
           layout="prev, pager, next"
-          small
+          size="small"
           @current-change="page = $event"
         />
       </div>

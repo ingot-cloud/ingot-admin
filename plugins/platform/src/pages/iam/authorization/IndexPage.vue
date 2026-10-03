@@ -17,7 +17,6 @@
             :row-actions="roleRowActionsOf"
             @search="refreshRoles"
             @page="roles.fetchData({ type: 'current', value: $event })"
-            @assign="(roleId) => assignmentRef?.show(undefined, { roleId })"
             @assignment="handleAssignmentEdit"
             @revoke="handleAssignmentDelete"
           />
@@ -139,12 +138,17 @@
             <template #administratorMemberId="{ item }">
               {{ item.record.administratorName || item.record.delegation.administratorMemberId }}
             </template>
-            <template #status="{ item }">{{ item.record.status }}</template>
+            <template #status="{ item }">
+              <status-tag
+                :tone="item.record.status === 'ACTIVE' ? 'info' : 'warning'"
+                :label="effectiveLabel(item.record.status)"
+              />
+            </template>
             <template #maxAssignmentDuration="{ item }">
               {{
                 item.record.delegation.assignmentDurationMode === "UNLIMITED"
                   ? "不限期限"
-                  : item.record.delegation.maxAssignmentDuration
+                  : formatDuration(item.record.delegation.maxAssignmentDuration)
               }}
             </template>
             <template #actions="{ item }">
@@ -216,6 +220,7 @@ import {
   BizIamPlatformAssignmentDrawer,
   BizIamPlatformDelegationDrawer,
   BizIamPlatformDiagnoseDrawer,
+  formatDuration,
   IamAction,
   RoleKind,
   SubjectType,

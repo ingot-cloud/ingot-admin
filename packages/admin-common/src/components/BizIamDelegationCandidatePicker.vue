@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-6px w-full">
+  <div v-bind="$attrs" class="flex flex-col gap-6px w-full">
     <button
       type="button"
       :disabled="disabled || opening"
@@ -101,7 +101,7 @@
         :page-size="IAM_DEFAULT_PAGE_SIZE"
         :total="total"
         layout="prev, pager, next"
-        small
+        size="small"
         @current-change="privatePage"
       />
     </div>
@@ -131,7 +131,7 @@ import {
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
 import BizIamTreeCandidateDialog from "./BizIamTreeCandidateDialog.vue";
 
-defineOptions({ name: "BizIamDelegationCandidatePicker" });
+defineOptions({ name: "BizIamDelegationCandidatePicker", inheritAttrs: false });
 const props = defineProps<{
   api: AuthorizationCandidatesApi;
   query: AuthorizationCandidateQuery;

@@ -66,7 +66,7 @@
         :page-size="IAM_DEFAULT_PAGE_SIZE"
         :total="total"
         layout="prev, pager, next"
-        small
+        size="small"
         @current-change="privatePage"
       />
     </div>

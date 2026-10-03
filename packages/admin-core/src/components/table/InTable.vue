@@ -124,7 +124,7 @@
 
     <div v-if="page && page.total" class="in-table__pagination">
       <el-pagination
-        :small="componentSize === 'small'"
+        :size="componentSize === 'small' ? 'small' : undefined"
         :current-page="current"
         :page-size="size"
         :total="total"
