@@ -42,7 +42,7 @@
           <template #prefix><in-icon name="ep:search" /></template>
         </el-input>
       </div>
-      <div v-loading="picker.loading.value" class="flex-1 min-h-0 overflow-auto">
+      <in-loading :loading="picker.loading.value" class="flex-1 min-h-0 overflow-auto">
         <div v-if="picker.failed.value" class="flex items-center gap-8px py-16px">
           <span class="text-[var(--el-text-color-secondary)]">加载失败</span>
           <in-button type="primary" link @in-click="picker.loadRoots(picker.page.value)"
@@ -85,12 +85,7 @@
                   <el-radio :value="revision.id">{{ revision.name }}</el-radio>
                 </div>
               </el-radio-group>
-              <div
-                v-if="picker.branches.value[role.id]?.loading"
-                class="py-8px text-[var(--el-text-color-secondary)]"
-              >
-                加载中
-              </div>
+              <in-loading v-if="picker.branches.value[role.id]?.loading" loading class="h-80px" />
               <in-button
                 v-else-if="picker.branches.value[role.id]?.failed"
                 type="primary"
@@ -124,7 +119,7 @@
             暂无可分配角色
           </div>
         </div>
-      </div>
+      </in-loading>
       <el-pagination
         v-if="picker.total.value > IAM_DEFAULT_PAGE_SIZE"
         class="shrink-0 justify-end pt-12px"

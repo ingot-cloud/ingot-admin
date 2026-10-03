@@ -42,7 +42,11 @@
     </in-table>
   </div>
 
-  <resource-edit-drawer ref="resourceRef" :submit="privateSubmitResource" />
+  <resource-edit-drawer
+    ref="resourceRef"
+    :domain="domain"
+    :submit="privateSubmitResource"
+  />
   <action-list-dialog
     ref="actionListRef"
     :load-actions="loadDraftActions"
@@ -60,6 +64,7 @@ import {
   type AppActionRecord,
   type AppResourceDraft,
   type AppResourceRecord,
+  type AuthorizationDomain,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
@@ -78,6 +83,7 @@ defineOptions({ name: "CatalogDraftPanel" });
 
 const props = defineProps<{
   profile: AppWizardProfile;
+  domain: AuthorizationDomain;
 }>();
 
 const resources = defineModel<DraftResource[]>({ default: () => [] });

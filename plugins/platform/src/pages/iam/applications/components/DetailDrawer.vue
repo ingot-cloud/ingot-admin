@@ -153,7 +153,11 @@
     </in-biz-tab-panel>
   </in-detail-drawer>
 
-  <ResourceEditDrawer ref="resourceRef" @success="loadResources" />
+  <ResourceEditDrawer
+    ref="resourceRef"
+    :domain="detail?.record.domain || AuthorizationDomain.PLATFORM"
+    @success="loadResources"
+  />
   <ActionListDialog ref="actionListRef" />
   <MenuEditDrawer ref="menuRef" @success="loadMenus" />
 </template>
@@ -172,6 +176,7 @@ import {
 } from "@ingot/admin-core";
 import {
   AuthorizationDomainExtArray,
+  AuthorizationDomain,
   BizIamStatusTag,
   IAM_DEFAULT_PAGE_SIZE,
   IamAction,

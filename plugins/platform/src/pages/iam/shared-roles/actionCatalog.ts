@@ -77,7 +77,7 @@ export function selectedGrantsOf(records: RoleGrantRecord[]): SelectedGrant[] {
         resourceName: item.resourceName || item.resourceCode || "",
         applicationId: item.applicationId ?? "",
         applicationName: item.applicationName || item.applicationCode || "",
-        scopes: item.scopes?.length ? item.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities)],
+        scopes: item.scopes?.length ? item.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities, item.resourceId ?? "")],
         scopeCapabilities: [...capabilities],
       } satisfies SelectedGrant;
     });
@@ -106,7 +106,7 @@ export async function resolveSelectedGrants(grants: ActionGrant[]): Promise<Sele
         resourceName: item.resourceName,
         applicationId: item.applicationId,
         applicationName: item.applicationName,
-        scopes: grant.scopes.length ? grant.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities)],
+        scopes: grant.scopes.length ? grant.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities, item.resourceId)],
         scopeCapabilities: [...capabilities],
       } satisfies SelectedGrant,
     ];

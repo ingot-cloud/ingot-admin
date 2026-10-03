@@ -15,7 +15,7 @@
         <div class="mb-24px text-18px shrink-0">{{ GRANT_WIZARD_STEPS[step].title }}</div>
         <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
           <grant-picker v-if="step === 0" :key="session" v-model="grants" :domain="domain" />
-          <scope-step v-else-if="step === 1" v-model="grants" />
+          <scope-step v-else-if="step === 1" v-model="grants" :domain="domain" />
           <preview-panel
             v-else
             :profile="profile"
@@ -47,7 +47,6 @@ import WizardNav from "./WizardNav.vue";
 import {
   GRANT_WIZARD_STEPS,
   grantsFingerprint,
-  missingParameterKeys,
   toPublishInput,
   type SelectedGrant,
   type WizardProfile,
@@ -106,13 +105,6 @@ const privateNext = (): void => {
   if (step.value === 0 && !grants.value.length) {
     Message.warning("请至少选择一条操作");
     return;
-  }
-  if (step.value === 1) {
-    const missing = missingParameterKeys(grants.value);
-    if (missing.length) {
-      Message.warning(`请为 ${missing[0]} 填写参数键`);
-      return;
-    }
   }
   step.value = Math.min(2, step.value + 1);
 };

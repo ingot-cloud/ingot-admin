@@ -2,6 +2,7 @@
  * 暗色主题覆盖同一套语义 Token，不另建业务主题分支。
  */
 html.dark {
+  --in-permission-panel-bg: var(--in-bg-color-subtle);
   color-scheme: dark;
 
   --in-gray-950: #e5eaf3;

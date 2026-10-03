@@ -27,11 +27,13 @@
     </in-form>
     <in-form v-else label-position="top">
       <el-form-item v-if="canGrantDirect" label="角色">
-        <biz-iam-option-tag-field
-          v-model="roles"
-          placeholder="请选择角色"
-          @pick="privatePickRoles"
-        />
+        <div class="flex flex-col gap-8px w-full">
+          <div v-for="role in roleDrafts" :key="role.roleId" class="flex items-center gap-8px">
+            <span class="flex-1">{{ role.name }} · v{{ role.revisionNumber }}</span>
+            <in-button text type="danger" @in-click="privateRemoveRole(role.roleId)">移除</in-button>
+          </div>
+          <in-button @in-click="rolePickerRef?.show()">添加角色</in-button>
+        </div>
       </el-form-item>
       <el-form-item label="用户组">
         <biz-iam-option-tag-field
@@ -55,15 +57,10 @@
       </template>
     </template>
   </in-drawer>
-  <biz-iam-member-picker-dialog
+  <member-role-assign-dialog
     ref="rolePickerRef"
-    title="选择角色"
-    search-placeholder="请输入角色名称"
-    empty-text="暂无角色"
-    selected-unit="个角色"
-    :show-avatar="false"
-    :load-members="loadPlatformRoleOptions"
-    @confirm="privateOnRolesConfirm"
+    :selected-role-ids="roleDrafts.map((item) => item.roleId)"
+    @confirm="privateOnRoleConfirm"
   />
   <biz-iam-member-picker-dialog
     ref="groupPickerRef"
@@ -85,13 +82,15 @@ import {
   BizIamMemberPickerDialog,
   BizIamOptionTagField,
   type IamSelectOption,
+  type MemberRoleAssignmentDraft,
 } from "@ingot/admin-common";
 import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformMemberCreateAPI } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import { loadPlatformGroupOptions, loadPlatformRoleOptions } from "../iamMemberOptions";
+import { loadPlatformGroupOptions } from "../iamMemberOptions";
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
+import MemberRoleAssignDialog from "./MemberRoleAssignDialog.vue";
 
 defineOptions({ name: "MemberCreateDrawer" });
 
@@ -112,9 +111,10 @@ const phone = ref("");
 const email = ref("");
 const displayName = ref("");
 const avatar = ref<string | undefined>();
-const roles = ref<IamSelectOption[]>([]);
+type ConfiguredRole = MemberRoleAssignmentDraft & { name: string; revisionNumber: number };
+const roleDrafts = ref<ConfiguredRole[]>([]);
 const groups = ref<IamSelectOption[]>([]);
-const rolePickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
+const rolePickerRef = ref<{ show: () => void }>();
 const groupPickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 
 const resetHit = (): void => {
@@ -129,7 +129,7 @@ const resetHit = (): void => {
 const resetDraft = (): void => {
   username.value = "";
   resetHit();
-  roles.value = [];
+  roleDrafts.value = [];
   groups.value = [];
   step.value = 1;
 };
@@ -182,21 +182,21 @@ const privateBack = (): void => {
 };
 
 const privateSkip = (): void => {
-  roles.value = [];
+  roleDrafts.value = [];
   groups.value = [];
   privateSubmit();
 };
 
-const privatePickRoles = (): void => {
-  rolePickerRef.value?.show(roles.value);
+const privateRemoveRole = (roleId: string): void => {
+  roleDrafts.value = roleDrafts.value.filter((item) => item.roleId !== roleId);
 };
 
 const privatePickGroups = (): void => {
   groupPickerRef.value?.show(groups.value);
 };
 
-const privateOnRolesConfirm = (selected: IamSelectOption[]): void => {
-  roles.value = selected;
+const privateOnRoleConfirm = (role: ConfiguredRole): void => {
+  roleDrafts.value = [...roleDrafts.value.filter((item) => item.roleId !== role.roleId), role];
 };
 
 const privateOnGroupsConfirm = (selected: IamSelectOption[]): void => {
@@ -214,7 +214,14 @@ const privateSubmit = (): void => {
     displayName: displayName.value.trim() || undefined,
     avatar: avatar.value,
     departments: [],
-    roleIds: canGrantDirect.value ? roles.value.map((item) => item.id) : [],
+    roleIds: [],
+    roleAssignments: canGrantDirect.value ? roleDrafts.value.map((role) => ({
+      roleId: role.roleId,
+      roleRevisionRef: role.roleRevisionRef,
+      scopeBindings: role.scopeBindings,
+      validFrom: role.validFrom,
+      validUntil: role.validUntil,
+    })) : [],
     groupIds: groups.value.map((item) => item.id),
   })
     .then(() => {

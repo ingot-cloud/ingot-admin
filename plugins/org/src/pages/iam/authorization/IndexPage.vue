@@ -148,6 +148,7 @@
     :load-roles="loadRoles"
     :list-revisions-api="TenantRoleRevisionPageAPI"
     :load-departments="loadDepartments"
+    :scope-candidates-api="TenantAssignmentScopeCandidatesAPI"
     :create-api="TenantAssignmentCreateAPI"
     :preview-api="TenantAssignmentPreviewAPI"
     :update-api="TenantAssignmentUpdateAPI"
@@ -192,6 +193,7 @@ import {
 import { Confirm, Message, type InTableAction, type LoadDataParams } from "@ingot/admin-core";
 import {
   TenantAssignmentCreateAPI,
+  TenantAssignmentScopeCandidatesAPI,
   TenantAssignmentDeleteAPI,
   TenantAssignmentPreviewAPI,
   TenantAssignmentUpdateAPI,

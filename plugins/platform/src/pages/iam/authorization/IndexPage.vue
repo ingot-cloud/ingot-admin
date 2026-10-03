@@ -6,60 +6,21 @@
     <in-split-layout>
       <in-biz-tabs v-model="tab">
         <in-biz-tab-panel v-if="hasAction(IamAction.PLATFORM_ROLE_READ)" title="角色" name="roles">
-          <in-table
+          <role-workspace
+            ref="roleWorkspaceRef"
+            :active="tab === 'roles'"
+            :rows="roles.pageInfo.value.records || []"
             :loading="roles.fetching.value"
-            :data="roles.pageInfo.value.records"
             :page="roles.pageInfo.value"
-            :headers="visibleRoleHeaders"
-            :table-id="ROLE_TABLE_ID"
-            density="compact"
-            :row-key="rowKeyOf"
-            @handleSizeChange="roles.fetchData"
-            @handleCurrentChange="roles.fetchData"
-          >
-            <template #tools-start>
-              <el-input
-                v-model="roles.condition.name"
-                class="w-220px!"
-                clearable
-                placeholder="搜索角色名称"
-                :prefix-icon="Search"
-                @keyup.enter="refreshRoles"
-                @clear="refreshRoles"
-              />
-              <in-table-column-setting
-                :headers="roleHeaders"
-                :table-id="ROLE_TABLE_ID"
-                @change="selectedRoleColumns = $event"
-              />
-            </template>
-            <template #tools-end>
-              <in-table-actions
-                variant="toolbar"
-                :actions="roleToolbarActions"
-                :row="emptyRoleRow"
-              />
-            </template>
-            <template #name="{ item }">
-              <biz-iam-record-link
-                :action="IamAction.PLATFORM_ROLE_READ"
-                :capabilities="item.capabilities"
-                @click="handleDetail(item)"
-              >
-                {{ item.record.name || item.record.id }}
-              </biz-iam-record-link>
-            </template>
-            <template #code="{ item }">
-              <in-copy-tag v-if="item.record.code" :text="item.record.code" />
-              <span v-else>-</span>
-            </template>
-            <template #status="{ item }">
-              <biz-iam-status-tag :status="item.record.status" />
-            </template>
-            <template #actions="{ item }">
-              <in-table-actions :actions="roleRowActionsOf(item)" :row="item" />
-            </template>
-          </in-table>
+            v-model:name="roles.condition.name"
+            :toolbar-actions="roleToolbarActions"
+            :row-actions="roleRowActionsOf"
+            @search="refreshRoles"
+            @page="roles.fetchData({ type: 'current', value: $event })"
+            @assign="(roleId) => assignmentRef?.show(undefined, { roleId })"
+            @assignment="handleAssignmentEdit"
+            @revoke="handleAssignmentDelete"
+          />
         </in-biz-tab-panel>
         <in-biz-tab-panel
           v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)"
@@ -180,7 +141,11 @@
             </template>
             <template #status="{ item }">{{ item.record.status }}</template>
             <template #maxAssignmentDuration="{ item }">
-              {{ item.record.delegation.maxAssignmentDuration }}
+              {{
+                item.record.delegation.assignmentDurationMode === "UNLIMITED"
+                  ? "不限期限"
+                  : item.record.delegation.maxAssignmentDuration
+              }}
             </template>
             <template #actions="{ item }">
               <in-table-actions :actions="delegationRowActionsOf(item)" :row="item" />
@@ -221,11 +186,13 @@
     :preview-api="PlatformAssignmentPreviewAPI"
     :update-preview-api="PlatformAssignmentUpdatePreviewAPI"
     :update-api="PlatformAssignmentUpdateAPI"
-    @success="refreshAssignments"
+    @success="refreshAssignmentViews"
   />
   <biz-iam-platform-delegation-drawer
     ref="delegationRef"
     :candidates-api="PlatformDelegationCandidatesAPI"
+    :role-candidates-api="PlatformDelegationRoleCandidatesAPI"
+    :selected-candidates-api="PlatformDelegationSelectedCandidatesAPI"
     :create-api="PlatformDelegationCreateAPI"
     :get-api="PlatformDelegationDetailAPI"
     :update-api="PlatformDelegationUpdateAPI"
@@ -249,8 +216,6 @@ import {
   BizIamPlatformAssignmentDrawer,
   BizIamPlatformDelegationDrawer,
   BizIamPlatformDiagnoseDrawer,
-  BizIamRecordLink,
-  BizIamStatusTag,
   IamAction,
   RoleKind,
   SubjectType,
@@ -278,6 +243,8 @@ import {
   PlatformAssignmentDetailAPI,
   PlatformAssignmentUpdatePreviewAPI,
   PlatformDelegationCandidatesAPI,
+  PlatformDelegationSelectedCandidatesAPI,
+  PlatformDelegationRoleCandidatesAPI,
   PlatformDelegationCreatePreviewAPI,
   PlatformDiagnoseCandidatesAPI,
   PlatformAssignmentDeleteAPI,
@@ -313,14 +280,12 @@ import {
   delegationHeaders,
   emptyAssignmentRow,
   emptyDelegationRow,
-  emptyRoleRow,
-  ROLE_TABLE_ID,
-  roleHeaders,
   type AssignmentRow,
   type DelegationRow,
   type RoleRow,
 } from "./table";
 import { useOps } from "./useOps";
+import RoleWorkspace from "./RoleWorkspace.vue";
 
 const { hasAction, actionCodes } = useCapabilities();
 const route = useRoute();
@@ -343,12 +308,8 @@ watch(
 );
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
   useOps(tab);
-const selectedRoleColumns = ref<string[]>([]);
 const selectedAssignmentColumns = ref<string[]>([]);
 const selectedDelegationColumns = ref<string[]>([]);
-const visibleRoleHeaders = computed(() =>
-  applyColumnSelection(roleHeaders, selectedRoleColumns.value),
-);
 const visibleAssignmentHeaders = computed(() =>
   applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
 );
@@ -368,8 +329,13 @@ const assignmentSubjectTypeFilter = computed({
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
 const assignmentRef = ref<{
-  show: (row?: AssignmentRow, preset?: { memberId?: string }) => void;
+  show: (row?: AssignmentRow, preset?: { memberId?: string; roleId?: string }) => void;
 }>();
+const roleWorkspaceRef = ref<InstanceType<typeof RoleWorkspace>>();
+const refreshAssignmentViews = (): void => {
+  refreshAssignments();
+  roleWorkspaceRef.value?.refresh();
+};
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
 const diagnoseRef = ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
 
@@ -422,7 +388,7 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   }).then(() => {
     PlatformAssignmentDeleteAPI(item.record.id).then(() => {
       Message.success("已撤销授权");
-      refreshAssignments();
+      refreshAssignmentViews();
     });
   });
 };

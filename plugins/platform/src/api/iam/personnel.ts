@@ -5,6 +5,7 @@ import {
   mapIamPage,
   toIamListParams,
   type CreatedResource,
+  type AssignmentRecord,
   type GroupDraft,
   type GroupRecord,
   type GroupUpdateInput,
@@ -93,6 +94,20 @@ export function PlatformMemberRolesAPI(
   options?: RequestOptions,
 ): Promise<R<MemberRoleView[]>> {
   return request.get<MemberRoleView[]>(`${MEMBER_PATH}/${id}/roles`, undefined, options);
+}
+
+export function PlatformMemberAssignmentsAPI(
+  id: string,
+  page: Page,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<AssignmentRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<AssignmentRecord>>>(
+      `${MEMBER_PATH}/${id}/assignments`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformMemberRolesReplaceAPI(

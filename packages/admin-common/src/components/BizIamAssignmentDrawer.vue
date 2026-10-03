@@ -53,38 +53,19 @@
       <el-form-item v-if="bindingKeys.length" label="范围参数">
         <div class="flex flex-col gap-12px">
           <div v-for="key in bindingKeys" :key="key" class="flex flex-col gap-4px">
-            <div>{{ key }}（{{ bindingKindLabel(scopeBindings[key]?.kind) }}）</div>
-            <biz-iam-chip-page-select
-              v-if="scopeBindings[key]?.kind === ScopeBindingKind.DEPARTMENTS && loadDepartments"
+            <div>{{ bindingLabels[key] ? `${bindingLabels[key]} · ` : "" }}{{ bindingKindLabel(scopeBindings[key]?.kind) }}{{ bindingKeys.length > 1 ? ` ${bindingKeys.indexOf(key) + 1}` : "" }}</div>
+            <biz-iam-delegation-candidate-picker
+              v-if="scopeCandidatesApi"
               :model-value="scopeBindings[key]?.ids ?? []"
-              :load-data="loadDepartments"
-              placeholder="远程分页添加管理部门"
-              empty-text="未指定部门"
+              :api="scopeCandidatesApi"
+              :query="{ kind: 'OBJECT', revisionId, parameterKey: key }"
+              multiple
+              :title="`选择${bindingKindLabel(scopeBindings[key]?.kind)}`"
+              :placeholder="`请选择${bindingKindLabel(scopeBindings[key]?.kind)}`"
+              :search-placeholder="`搜索${bindingKindLabel(scopeBindings[key]?.kind)}`"
               @update:model-value="(value) => privateSetBindingIds(key, value)"
             />
-            <div v-else class="flex flex-col gap-8px">
-              <div class="flex flex-wrap gap-8px">
-                <el-tag
-                  v-for="id in scopeBindings[key]?.ids ?? []"
-                  :key="id"
-                  closable
-                  @close="privateRemoveBindingId(key, id)"
-                >
-                  {{ id }}
-                </el-tag>
-                <span
-                  v-if="!(scopeBindings[key]?.ids ?? []).length"
-                  class="text-[var(--el-text-color-secondary)]"
-                >
-                  未指定对象
-                </span>
-              </div>
-              <el-input
-                v-model="objectPick[key]"
-                placeholder="输入对象 ID 后回车添加"
-                @keyup.enter="privateAddBindingId(key)"
-              />
-            </div>
+            <span v-else class="text-[var(--el-color-warning)]">范围候选暂不可用</span>
           </div>
         </div>
       </el-form-item>
@@ -122,6 +103,7 @@
 import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
 import BizIamChipPageSelect from "./BizIamChipPageSelect.vue";
+import BizIamDelegationCandidatePicker from "./BizIamDelegationCandidatePicker.vue";
 import BizIamDurationFields from "./BizIamDurationFields.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import {
@@ -142,6 +124,7 @@ import {
   type ResourceDetail,
   type RoleRevision,
   type ScopeBinding,
+  type AuthorizationCandidatesApi,
 } from "../models/iam";
 
 defineOptions({ name: "BizIamAssignmentDrawer" });
@@ -152,6 +135,7 @@ const props = defineProps<{
   loadRoles: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
   listRevisionsApi: (id: string, page: Page) => Promise<R<Page<ResourceDetail<RoleRevision>>>>;
   loadDepartments?: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
+  scopeCandidatesApi?: AuthorizationCandidatesApi;
   createApi: (input: AssignmentBatchInput) => Promise<R<CreatedResource>>;
   previewApi: (input: AssignmentBatchInput) => Promise<R<Preview<AssignmentPreviewResult>>>;
   updateApi: (id: string, input: AssignmentUpdateInput) => Promise<R<ResourceDetail<AssignmentRecord>>>;
@@ -170,7 +154,7 @@ const revisionId = ref("");
 const revisionKind = ref<RoleKind>(RoleKind.TENANT_CUSTOM);
 const revisionOptions = ref<Array<{ id: string; label: string; kind: RoleKind }>>([]);
 const scopeBindings = reactive<Record<string, ScopeBinding>>({});
-const objectPick = reactive<Record<string, string>>({});
+const bindingLabels = reactive<Record<string, string>>({});
 const validFrom = ref<string>();
 const validUntil = ref<string>();
 const delegationGrantId = ref("");
@@ -184,6 +168,23 @@ const subjectLoader = (params: LoadDataParams): Promise<Page<IamSelectOption>> =
 
 const title = computed(() => (editing.value ? "修改授权" : "分配授权"));
 const bindingKeys = computed(() => Object.keys(scopeBindings));
+let bindingLabelEpoch = 0;
+watch([revisionId, bindingKeys], ([revision, keys]) => {
+  const epoch = ++bindingLabelEpoch;
+  Object.keys(bindingLabels).forEach((key) => delete bindingLabels[key]);
+  const api = props.scopeCandidatesApi;
+  if (!revision || !api) return;
+  keys.forEach((key) => {
+    void api({ kind: "OBJECT", revisionId: revision, parameterKey: key,
+      page: 1, pageSize: 1 }).then((response) => {
+      if (epoch === bindingLabelEpoch && response.data.contextLabel) {
+        bindingLabels[key] = response.data.contextLabel;
+      }
+    }).catch(() => {
+      // 对象选择器会展示可重试的实际候选错误；标签保留业务类型文案。
+    });
+  });
+});
 const previewState = useIamDraftPreview<AssignmentBatchInput, AssignmentPreviewResult>({
   contextEpoch,
   preview: async (draft) => {
@@ -249,6 +250,7 @@ const privateOnRoleChange = (id: string): void => {
     return;
   }
   props.listRevisionsApi(id, { current: 1, size: 50 }).then((response) => {
+    if (id !== roleId.value || !visible.value) return;
     revisionOptions.value = (response.data.records ?? []).map((item) => ({
       id: item.record.id,
       kind: item.record.kind,
@@ -258,6 +260,7 @@ const privateOnRoleChange = (id: string): void => {
 };
 
 const privateOnRevisionChange = (id: string): void => {
+  resetBindings();
   const selected = revisionOptions.value.find((item) => item.id === id);
   if (selected) {
     revisionKind.value = selected.kind;
@@ -265,37 +268,20 @@ const privateOnRevisionChange = (id: string): void => {
   if (!roleId.value || !id) {
     return;
   }
-  props.listRevisionsApi(roleId.value, { current: 1, size: 50 }).then((response) => {
+  const selectedRoleId = roleId.value;
+  props.listRevisionsApi(selectedRoleId, { current: 1, size: 50 }).then((response) => {
+    if (revisionId.value !== id || roleId.value !== selectedRoleId || !visible.value) return;
     const revision = (response.data.records ?? []).find((item) => item.record.id === id);
     resetBindings(revision);
   });
 };
 
-const privateSetBindingIds = (key: string, ids: string[]): void => {
+const privateSetBindingIds = (key: string, ids: string | string[]): void => {
   const current = scopeBindings[key];
   if (!current) {
     return;
   }
-  scopeBindings[key] = { ...current, ids };
-};
-
-const privateAddBindingId = (key: string): void => {
-  const value = objectPick[key]?.trim();
-  const current = scopeBindings[key];
-  if (!value || !current || current.ids.includes(value)) {
-    objectPick[key] = "";
-    return;
-  }
-  scopeBindings[key] = { ...current, ids: [...current.ids, value] };
-  objectPick[key] = "";
-};
-
-const privateRemoveBindingId = (key: string, id: string): void => {
-  const current = scopeBindings[key];
-  if (!current) {
-    return;
-  }
-  scopeBindings[key] = { ...current, ids: current.ids.filter((item) => item !== id) };
+  scopeBindings[key] = { ...current, ids: Array.isArray(ids) ? ids : [] };
 };
 
 const privatePreview = (): void => {

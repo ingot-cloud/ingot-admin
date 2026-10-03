@@ -29,7 +29,7 @@
             </el-form-item>
           </in-form>
           <grant-picker v-else-if="step === 1" v-model="grants" :domain="grantDomain" />
-          <scope-step v-else-if="step === 2" v-model="grants" />
+          <scope-step v-else-if="step === 2" v-model="grants" :domain="grantDomain" />
           <preview-panel v-else :profile="profile" :grants="grants" />
         </div>
       </section>
@@ -60,7 +60,6 @@ import ScopeStep from "./ScopeStep.vue";
 import WizardNav from "./WizardNav.vue";
 import {
   emptyWizardProfile,
-  missingParameterKeys,
   profileDirty,
   toCreateInput,
   WIZARD_STEPS,
@@ -125,13 +124,6 @@ const privateNext = (): void => {
   if (step.value === 1 && !grants.value.length) {
     Message.warning("请至少选择一条操作");
     return;
-  }
-  if (step.value === 2) {
-    const missing = missingParameterKeys(grants.value);
-    if (missing.length) {
-      Message.warning(`请为 ${missing[0]} 填写参数键`);
-      return;
-    }
   }
   step.value = Math.min(3, step.value + 1);
 };

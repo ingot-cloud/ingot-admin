@@ -27,6 +27,7 @@ import {
   type AssignmentBatchInput,
   type AssignmentPreviewResult,
   type AssignmentUpdateInput,
+  type AuthorizationCandidatesApi,
   type DelegationInput,
   type DelegationUpdateInput,
 } from "@ingot/admin-common";
@@ -166,6 +167,16 @@ export function TenantAssignmentCreateAPI(
 ): Promise<R<CreatedResource>> {
   return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/assignments`, params, options);
 }
+
+export const TenantAssignmentScopeCandidatesAPI: AuthorizationCandidatesApi = (query) =>
+  request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/scope-candidates`, {
+    revisionId: query.revisionId,
+    parameterKey: query.parameterKey,
+    keyword: query.keyword,
+    ids: query.ids,
+    page: query.page,
+    pageSize: query.pageSize,
+  });
 
 export function TenantAssignmentPreviewAPI(
   params: AssignmentBatchInput,

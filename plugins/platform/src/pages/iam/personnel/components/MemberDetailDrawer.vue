@@ -63,17 +63,44 @@
         <in-detail-field label="邮箱" :value="detail.record.email">
           <el-input v-model="draft.email" clearable placeholder="请输入邮箱" />
         </in-detail-field>
-        <in-detail-field label="角色" :value="rolePreview">
-          <biz-iam-option-tag-field
-            v-if="canReplaceDirect"
-            v-model="draftRoles"
-            placeholder="请选择角色"
-            @pick="privatePickRoles"
-          />
-          <span v-else>{{ rolePreview }}（只读）</span>
-        </in-detail-field>
-        <el-form-item v-if="canOpenAssignment" label="参数化角色分配">
-          <in-button @click="openAssignment">前往角色分配</in-button>
+        <el-form-item label="角色分配">
+          <div class="w-full flex flex-col gap-8px">
+            <div
+              v-for="item in assignments"
+              :key="item.record.id"
+              class="flex items-center gap-8px"
+            >
+              <span class="flex-1">
+                {{ item.record.roleName || item.record.assignment.roleRevisionRef.id }}
+                · v{{ item.record.revisionNumber || "-" }}
+                · {{ item.record.effectiveStatus || item.record.status }}
+              </span>
+              <in-button
+                v-if="privateCanRevoke(item)"
+                text
+                type="danger"
+                @in-click="privateRevoke(item)"
+              >撤销</in-button>
+            </div>
+            <span v-if="!canReadAssignments" class="text-[var(--el-text-color-secondary)]">
+              {{ simpleRoleNames.join("、") || "角色分配只读" }}
+            </span>
+            <span v-else-if="!assignments.length" class="text-[var(--el-text-color-secondary)]">暂无角色分配</span>
+            <in-button
+              v-if="canGrantDirect && canReadAssignments"
+              :disabled="assignmentSaving"
+              @in-click="rolePickerRef?.show()"
+            >添加角色</in-button>
+            <el-pagination
+              v-if="assignmentTotal > 20"
+              :current-page="assignmentPage"
+              :page-size="20"
+              :total="assignmentTotal"
+              layout="prev, pager, next"
+              small
+              @current-change="privateAssignmentPage"
+            />
+          </div>
         </el-form-item>
         <in-detail-field label="状态">
           <template #view>
@@ -111,68 +138,61 @@
       </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
-  <biz-iam-member-picker-dialog
+  <member-role-assign-dialog
     ref="rolePickerRef"
-    title="选择角色"
-    search-placeholder="请输入角色名称"
-    empty-text="暂无角色"
-    selected-unit="个角色"
-    :show-avatar="false"
-    :load-members="loadPlatformRoleOptions"
-    @confirm="privateOnRolesConfirm"
+    :selected-role-ids="[]"
+    @confirm="privateOnRoleConfirm"
   />
 </template>
 
 <script setup lang="ts">
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
-import { useCapabilities, useGo } from "@ingot/admin-core";
+import { useCapabilities } from "@ingot/admin-core";
 import {
   Confirm,
   Message,
   StatusTag,
   createLoadGuard,
+  objectActionAllowed,
   useDetailEditSession,
 } from "@ingot/admin-core";
 import {
-  BizIamMemberPickerDialog,
-  BizIamOptionTagField,
   collectIamPageRecords,
   MemberStatus,
   IamAction,
+  SubjectType,
   editablePatch,
   memberStatusTone,
   useMemberStatusEnum,
-  type IamSelectOption,
+  type AssignmentRecord,
+  type MemberRoleAssignmentDraft,
   type MemberRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
   PlatformMemberDetailAPI,
   PlatformMemberGroupsAPI,
-  PlatformMemberRemoveAPI,
+  PlatformMemberAssignmentsAPI,
   PlatformMemberRolesAPI,
-  PlatformMemberRolesReplaceAPI,
+  PlatformMemberRemoveAPI,
   PlatformMemberStatusAPI,
   PlatformMemberUpdateAPI,
 } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import { loadPlatformRoleOptions } from "../iamMemberOptions";
+import {
+  PlatformAssignmentCreateAPI,
+  PlatformAssignmentDeleteAPI,
+  PlatformAssignmentPreviewAPI,
+} from "@/api/iam/authorization";
+import MemberRoleAssignDialog from "./MemberRoleAssignDialog.vue";
 import { createRowActions, type Row } from "../table";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
-const { canReplaceDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
-const { hasAction: hasAssignmentAction } = useCapabilities();
-const goAssignments = useGo();
-const canOpenAssignment = computed(() => hasAssignmentAction(IamAction.PLATFORM_ASSIGNMENT_CREATE));
-const openAssignment = (): void => {
-  if (detail.value && canOpenAssignment.value)
-    goAssignments({
-      name: "platform.iam.authorization",
-      query: { assignmentMemberId: detail.value.record.id },
-    });
-};
+const { canGrantDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
+const { hasAction } = useCapabilities();
+const canReadAssignments = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_READ));
 const EMPTY_PREVIEW = "-";
 
 const emits = defineEmits<{ success: [] }>();
@@ -193,11 +213,14 @@ const draft = reactive({
   avatar: undefined as string | undefined,
   status: null as MemberStatus | null,
 });
-const savedRoles = ref<IamSelectOption[]>([]);
-const draftRoles = ref<IamSelectOption[]>([]);
+const assignments = ref<ResourceDetail<AssignmentRecord>[]>([]);
+const simpleRoleNames = ref<string[]>([]);
+const assignmentTotal = ref(0);
+const assignmentPage = ref(1);
+const assignmentSaving = ref(false);
 const groupNames = ref<string[]>([]);
 const groupsLoaded = ref(false);
-const rolePickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
+const rolePickerRef = ref<{ show: () => void }>();
 const loadGuard = createLoadGuard();
 
 const identityName = computed(
@@ -205,9 +228,6 @@ const identityName = computed(
 );
 const identityAvatar = computed(
   () => (editing.value ? draft.avatar : detail.value?.record.avatar) || "",
-);
-const rolePreview = computed(() =>
-  savedRoles.value.length ? savedRoles.value.map((item) => item.name).join("、") : EMPTY_PREVIEW,
 );
 const groupPreview = computed(() =>
   groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW,
@@ -232,23 +252,15 @@ const applyDraft = (record: MemberRecord): void => {
   draft.status = record.status;
 };
 
-const applyRoles = (roles: IamSelectOption[]): void => {
-  savedRoles.value = roles.map((item) => ({ ...item }));
-  draftRoles.value = roles.map((item) => ({ ...item }));
-};
-
-const sameRoleIds = (left: IamSelectOption[], right: IamSelectOption[]): boolean => {
-  if (left.length !== right.length) {
-    return false;
-  }
-  const expected = new Set(right.map((item) => item.id));
-  return left.every((item) => expected.has(item.id));
-};
-
-const loadRoles = (id: string): Promise<void> =>
-  PlatformMemberRolesAPI(id).then((response) => {
-    applyRoles(response.data ?? []);
+const loadAssignments = (id: string): Promise<void> =>
+  PlatformMemberAssignmentsAPI(id, { current: assignmentPage.value, size: 20 }).then((response) => {
+    assignments.value = response.data.records ?? [];
+    assignmentTotal.value = response.data.total ?? 0;
   });
+const privateAssignmentPage = (page: number): void => {
+  assignmentPage.value = page;
+  if (detail.value) void loadAssignments(detail.value.record.id);
+};
 
 const loadGroups = (): void => {
   const id = detail.value?.record.id;
@@ -270,7 +282,10 @@ const load = (id: string): void => {
   draft.email = "";
   draft.avatar = undefined;
   draft.status = null;
-  applyRoles([]);
+  assignments.value = [];
+  simpleRoleNames.value = [];
+  assignmentTotal.value = 0;
+  assignmentPage.value = 1;
   groupNames.value = [];
   groupsLoaded.value = false;
   PlatformMemberDetailAPI(id)
@@ -280,7 +295,11 @@ const load = (id: string): void => {
       }
       detail.value = response.data;
       applyDraft(response.data.record);
-      return loadRoles(id);
+      return canReadAssignments.value
+        ? loadAssignments(id)
+        : PlatformMemberRolesAPI(id).then((roles) => {
+            simpleRoleNames.value = roles.data.map((item) => item.name);
+          });
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -303,7 +322,6 @@ const privateCancel = (): void => {
   if (detail.value) {
     applyDraft(detail.value.record);
   }
-  draftRoles.value = savedRoles.value.map((item) => ({ ...item }));
 };
 
 const privateFinish = (): void => {
@@ -311,17 +329,6 @@ const privateFinish = (): void => {
   session.exitEdit();
   void queryClient.invalidateQueries({ queryKey: platformMemberQueryKeys.lists() });
   emits("success");
-};
-
-const privateSaveRoles = (): Promise<void> => {
-  if (!canReplaceDirect.value || !detail.value || sameRoleIds(draftRoles.value, savedRoles.value)) {
-    return Promise.resolve();
-  }
-  return PlatformMemberRolesReplaceAPI(detail.value.record.id, {
-    roleIds: draftRoles.value.map((item) => item.id),
-  }).then((response) => {
-    applyRoles(response.data ?? []);
-  });
 };
 
 const privateSave = (): void => {
@@ -359,8 +366,7 @@ const privateSave = (): void => {
     next.email !== (current.record.email ?? "") ||
     next.avatar !== (current.record.avatar ?? "");
   const statusChanged = Boolean(nextStatus) && nextStatus !== current.record.status;
-  const rolesChanged = !sameRoleIds(draftRoles.value, savedRoles.value);
-  if (!profileChanged && !statusChanged && !rolesChanged) {
+  if (!profileChanged && !statusChanged) {
     session.exitEdit();
     return;
   }
@@ -400,7 +406,6 @@ const privateSave = (): void => {
           applyDraft(reloaded.data.record);
         });
     })
-    .then(() => privateSaveRoles())
     .then(() => {
       privateFinish();
     })
@@ -456,12 +461,38 @@ const privateOnMoreCommand = (command: string | number | object): void => {
   action.onSelect(detail.value);
 };
 
-const privatePickRoles = (): void => {
-  rolePickerRef.value?.show(draftRoles.value);
+const privateCanRevoke = (item: ResourceDetail<AssignmentRecord>): boolean =>
+  objectActionAllowed(item.capabilities, IamAction.PLATFORM_ASSIGNMENT_DELETE).allowed;
+const privateOnRoleConfirm = async (role: MemberRoleAssignmentDraft & { name: string }): Promise<void> => {
+  if (!detail.value || assignmentSaving.value) return;
+  assignmentSaving.value = true;
+  const assignment = {
+    subject: { type: SubjectType.MEMBER, id: detail.value.record.id },
+    roleRevisionRef: role.roleRevisionRef,
+    scopeBindings: role.scopeBindings,
+    validFrom: role.validFrom,
+    validUntil: role.validUntil,
+  };
+  try {
+    const preview = await PlatformAssignmentPreviewAPI({ items: [assignment] });
+    if (!preview.data.valid) {
+      Message.warning("当前角色或范围已变化，请重新选择");
+      return;
+    }
+    await PlatformAssignmentCreateAPI({ items: [assignment] });
+    Message.success("已分配角色");
+    await loadAssignments(detail.value.record.id);
+  } finally {
+    assignmentSaving.value = false;
+  }
 };
-
-const privateOnRolesConfirm = (selected: IamSelectOption[]): void => {
-  draftRoles.value = selected;
+const privateRevoke = (item: ResourceDetail<AssignmentRecord>): void => {
+  if (!detail.value) return;
+  Confirm.warning(`是否撤销角色分配（${item.record.roleName || item.record.id}）？`).then(async () => {
+    await PlatformAssignmentDeleteAPI(item.record.id);
+    Message.success("已撤销角色分配");
+    if (detail.value) await loadAssignments(detail.value.record.id);
+  });
 };
 
 defineExpose({

@@ -13,7 +13,7 @@
       <in-description-item label="用户组描述" :value="detail?.record.description" />
       <in-description-item label="成员数" :value="detail?.record.visibleMemberCount" />
     </in-description-list>
-    <template #footer>
+    <template v-if="!viewOnly" #footer>
       <div class="w-full flex items-center justify-between">
         <in-button type="danger" :disabled="!canDelete" @in-click="privateOnDelete">删除</in-button>
         <in-button type="primary" :disabled="!canUpdate" @in-click="privateOnEdit">编辑</in-button>
@@ -28,6 +28,7 @@ import { PlatformGroupDetailAPI } from "@/api/iam/personnel";
 import type { GroupRow } from "../groupTable";
 
 defineOptions({ name: "GroupDetailDrawer" });
+withDefaults(defineProps<{ viewOnly?: boolean }>(), { viewOnly: false });
 
 const emits = defineEmits<{
   edit: [row: GroupRow];

@@ -3,6 +3,7 @@
  * 分层：基础 → 语义 → 组件。业务页面只消费语义/组件 Token，禁止回写 Element Plus 私有变量。
  */
 :root {
+  --in-permission-panel-bg: #f8f9fa;
   /* —— 基础：颜色阶 —— */
   --in-blue-500: #3370ff;
   --in-blue-600: #245bdb;

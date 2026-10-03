@@ -23,6 +23,16 @@
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           范围只声明资源允许的约束类型，实际求值由服务端执行，不是授权本身。
         </div>
+        <el-alert
+          v-if="legacyDepartmentScopes.length"
+          type="warning"
+          :closable="false"
+          title="平台应用不支持部门范围；请取消已有部门选项后保存。"
+        />
+        <div v-if="legacyDepartmentScopes.length" class="flex gap-8px items-center">
+          <span>{{ legacyDepartmentScopes.map((scope) => scopeEnum.getTagText(scope).text).join("、") }}</span>
+          <in-button text type="danger" @in-click="privateRemoveLegacyScopes">移除部门范围</in-button>
+        </div>
       </el-form-item>
       <el-form-item class="field-cap-item">
         <template #label>
@@ -83,6 +93,7 @@
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   FieldVisibility,
   ScopeKind,
   useFieldVisibilityEnum,
@@ -97,6 +108,7 @@ import { PlatformResourceCreateAPI, PlatformResourceUpdateAPI } from "@/api/iam/
 defineOptions({ name: "ResourceEditDrawer" });
 
 const props = defineProps<{
+  domain: AuthorizationDomain;
   submit?: (draft: AppResourceDraft, editing?: ResourceDetail<AppResourceRecord>) => void | Promise<void>;
 }>();
 
@@ -107,7 +119,17 @@ const applicationId = ref("");
 const editing = ref<ResourceDetail<AppResourceRecord>>();
 const scopeEnum = useScopeKindEnum();
 const visibilityEnum = useFieldVisibilityEnum();
-const scopeOptions = computed(() => scopeEnum.getOptions());
+const departmentScopes = [ScopeKind.MEMBER_DEPARTMENTS, ScopeKind.MANAGED_DEPARTMENTS];
+const scopeOptions = computed(() =>
+  scopeEnum.getOptions().filter((item) =>
+    props.domain !== AuthorizationDomain.PLATFORM || !departmentScopes.includes(item.value),
+  ),
+);
+const legacyDepartmentScopes = computed(() =>
+  props.domain === AuthorizationDomain.PLATFORM
+    ? draft.scopeCapabilities.filter((scope) => departmentScopes.includes(scope))
+    : [],
+);
 const visibilityOptions = computed(() => visibilityEnum.getOptions());
 const draft = reactive<AppResourceDraft>({
   code: "",
@@ -142,7 +164,15 @@ const privateRemoveField = (index: number): void => {
   draft.fieldCapabilities.splice(index, 1);
 };
 
+const privateRemoveLegacyScopes = (): void => {
+  draft.scopeCapabilities = draft.scopeCapabilities.filter((scope) => !departmentScopes.includes(scope));
+};
+
 const privateSubmit = (): void => {
+  if (legacyDepartmentScopes.value.length) {
+    Message.warning("平台应用不支持部门范围，请先移除已有选项");
+    return;
+  }
   if (!draft.name.trim() || (!editing.value && !draft.code.trim())) {
     Message.warning("请填写资源编码和名称");
     return;

@@ -16,6 +16,7 @@ import {
   type DelegationRecord,
   type DiagnoseInput,
   type IamListQuery,
+  type RoleWorkspaceQuery,
   type IamPageResponse,
   type Preview,
   type ReferenceImpactPreview,
@@ -431,6 +432,16 @@ export function PlatformAssignmentRoleCandidatesAPI(
 }
 export const PlatformDelegationCandidatesAPI: AuthorizationCandidatesApi = (query) =>
   request.get(`${IAM_API_PREFIX}/v1/platform/delegations/candidates`, query);
+export function PlatformDelegationRoleCandidatesAPI(
+  query: AuthorizationRoleCandidateQuery,
+): Promise<R<IamPageResponse<AuthorizationRoleNode>>> {
+  const params = { ...query };
+  filterParams(params);
+  return request.get<IamPageResponse<AuthorizationRoleNode>>(
+    `${IAM_API_PREFIX}/v1/platform/delegations/role-candidates`,
+    params,
+  );
+}
 export const PlatformDiagnoseCandidatesAPI: AuthorizationCandidatesApi = (query) =>
   request.get(`${IAM_API_PREFIX}/v1/platform/authorization/diagnose/candidates`, query);
 
@@ -441,3 +452,57 @@ export const PlatformDelegationCreatePreviewAPI = (
     `${IAM_API_PREFIX}/v1/platform/delegations/preview`,
     input,
   );
+
+/** 委派已选实体的真实关系分页，只返回当前候选边界内的内容。 */
+export const PlatformDelegationSelectedCandidatesAPI: import("@ingot/admin-common").DelegationSelectedCandidatesApi =
+  (id, query) =>
+    request.get(`${IAM_API_PREFIX}/v1/platform/delegations/${id}/selected-candidates`, query);
+
+/** 角色所有固定版本的有效接收主体，服务端完成可见性过滤及去重。 */
+export const PlatformRoleSubjectsAPI = (
+  id: string,
+  kind: "members" | "groups",
+  query: RoleWorkspaceQuery,
+): Promise<R<import("@ingot/admin-common").RoleSubjectPage>> =>
+  request.get(`${rolePath("platform")}/${id}/${kind}`, query);
+export const PlatformRoleMemberSourcesAPI = (
+  id: string,
+  memberId: string,
+  query: RoleWorkspaceQuery,
+): Promise<R<IamPageResponse<ResourceDetail<AssignmentRecord>>>> =>
+  request.get(`${rolePath("platform")}/${id}/members/${memberId}/assignments`, query);
+
+export function PlatformRoleSubjectPageAPI(
+  page: Page,
+  condition?: RoleWorkspaceQuery,
+  options?: RequestOptions,
+): Promise<R<Page<import("@ingot/admin-common").RoleSubjectSummary>>> {
+  const { roleId, subjectKind, ...query } = condition || {};
+  return request
+    .get<import("@ingot/admin-common").RoleSubjectPage>(
+      `${rolePath("platform")}/${roleId}/${subjectKind}`,
+      toIamListParams(page, query),
+      options,
+    )
+    .then((response) => ({
+      ...response,
+      data: {
+        ...mapIamPage(response.data),
+        inheritedSourcesRestricted: response.data.inheritedSourcesRestricted,
+      },
+    }));
+}
+export function PlatformRoleSourcePageAPI(
+  page: Page,
+  condition?: RoleWorkspaceQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<AssignmentRecord>>>> {
+  const { roleId, memberId, ...query } = condition || {};
+  return request
+    .get<IamPageResponse<ResourceDetail<AssignmentRecord>>>(
+      `${rolePath("platform")}/${roleId}/members/${memberId}/assignments`,
+      toIamListParams(page, query),
+      options,
+    )
+    .then(asPage);
+}

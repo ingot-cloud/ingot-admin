@@ -5,6 +5,8 @@ import {
   PlatformAuditPageAPI,
   PlatformDelegationPageAPI,
   PlatformRolePageAPI,
+  PlatformRoleSubjectPageAPI,
+  PlatformRoleSourcePageAPI,
   PlatformSharedRolePageAPI,
 } from "./authorization";
 
@@ -33,4 +35,15 @@ export const PlatformDelegationPageQueryOptions = createIamPageQueryOptions(
 export const PlatformAuditPageQueryOptions = createIamPageQueryOptions(
   platformAuditQueryKeys,
   PlatformAuditPageAPI,
+);
+
+const roleSubjectKeys = createResourceQueryKeys("iam-platform", "role-subject");
+const roleSourceKeys = createResourceQueryKeys("iam-platform", "role-source");
+export const PlatformRoleSubjectPageQueryOptions = createIamPageQueryOptions(
+  roleSubjectKeys,
+  PlatformRoleSubjectPageAPI,
+);
+export const PlatformRoleSourcePageQueryOptions = createIamPageQueryOptions(
+  roleSourceKeys,
+  PlatformRoleSourcePageAPI,
 );

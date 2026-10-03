@@ -69,10 +69,7 @@ export function editablePatch<T extends object>(
   return patch;
 }
 
-export function toIamListParams(
-  page: Page,
-  condition?: object,
-): Record<string, unknown> {
+export function toIamListParams(page: Page, condition?: object): Record<string, unknown> {
   const params: Record<string, unknown> = {
     page: page.current ?? 1,
     pageSize: page.size ?? IAM_DEFAULT_PAGE_SIZE,
@@ -132,7 +129,9 @@ export function entitlementCollectionVersion(
   }
   return [...items]
     .sort((left, right) =>
-      left.record.applicationId.localeCompare(right.record.applicationId, undefined, { numeric: true }),
+      left.record.applicationId.localeCompare(right.record.applicationId, undefined, {
+        numeric: true,
+      }),
     )
     .map((item) => {
       const enabled = item.record.status === ConfigurationStatus.ENABLED ? "1" : "0";
@@ -317,9 +316,12 @@ export function toAssignmentBatchItems(
 }
 
 export interface IamSelectOption {
+  /** 已持久化 ID 的显示资料尚未通过当前候选上下文加载。 */
+  labelPending?: boolean;
   id: string;
   name: string;
   avatar?: string;
+  ancestorPath?: string;
 }
 
 /** 已解析的操作，用于把授权里的操作 ID 显示成应用名和操作名。 */

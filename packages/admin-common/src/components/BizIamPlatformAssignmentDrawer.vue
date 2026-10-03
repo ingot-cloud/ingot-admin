@@ -3,9 +3,17 @@
     v-model="visible"
     :title="editing ? '调整角色分配' : '分配角色'"
     :loading="loading"
-    size="720px"
+    size="100%"
+    layout="pinned"
+    padding="0"
+    close-position="start"
   >
-    <in-form v-if="visible" label-position="top">
+    <div v-if="visible" class="in-wizard-frame flex h-full min-h-0">
+      <biz-iam-wizard-nav :steps="wizardSteps" :current="step" />
+      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
+        <div class="mb-24px text-18px shrink-0">{{ wizardSteps[step].title }}</div>
+        <div class="flex-1 min-h-0 overflow-auto">
+    <in-form v-if="step === 0" label-position="top" class="max-w-720px">
       <el-form-item label="授权依据" :required="!editing && !context?.directCreate">
         <div v-if="editing">
           {{ editing.record.delegationSummary || (sourceId ? `来源委派 ${sourceId}` : "直接分配") }}
@@ -57,6 +65,8 @@
           :disabled="!ready || saving"
         />
       </el-form-item>
+    </in-form>
+    <in-form v-else-if="step === 1" label-position="top" class="max-w-720px">
       <el-form-item label="角色" required>
         <div v-if="editing">
           {{ editing.record.roleName || revisionId }} · v{{ editing.record.revisionNumber || "-" }}
@@ -64,7 +74,7 @@
         <biz-iam-authorization-role-picker
           v-else
           v-model="roleSelection"
-          :tree-api="roleCandidatesApi"
+          :tree-api="prefilledRoleCandidatesApi"
           :detail-api="candidatesApi"
           :delegation-grant-id="sourceId || undefined"
           :disabled="!ready || saving"
@@ -76,22 +86,25 @@
           为所有接收对象分配此版本，角色发布新版本后不会自动替换。
         </span>
       </el-form-item>
-      <el-form-item v-for="(binding, key) in bindings" :key="key" :label="`指定对象 · ${key}`">
+    </in-form>
+    <in-form v-else-if="step === 2" label-position="top" class="max-w-720px">
+      <el-form-item v-for="(binding, key) in bindings" :key="key" label="指定对象">
         <span v-if="readonly">{{ binding.ids.join("、") || "无对象范围" }}</span>
-        <biz-iam-authorization-select
+        <biz-iam-delegation-candidate-picker
           v-else
           v-model="binding.ids"
           :api="candidatesApi"
           multiple
           :disabled="loading || saving"
-          :reset-key="selectionKey"
           :query="{
             kind: 'OBJECT',
             delegationGrantId: sourceId || undefined,
             revisionId,
             parameterKey: String(key),
           }"
+          title="选择指定对象"
           placeholder="请选择资源下的范围对象"
+          search-placeholder="搜索范围对象"
         />
       </el-form-item>
       <el-form-item label="生效时间与失效时间">
@@ -105,6 +118,12 @@
           新建时不填生效时间即立即生效；使用委派时，授权期限不得超出委派限制。
         </span>
       </el-form-item>
+    </in-form>
+    <div v-else class="max-w-720px flex flex-col gap-16px">
+      <div>授权依据：{{ basis?.name || (sourceId ? `来源委派 ${sourceId}` : "直接分配") }}</div>
+      <div>接收对象：{{ editing?.record.subjectName || [...members, ...groups].map((item) => item.name).join("、") }}</div>
+      <div>角色版本：{{ editing?.record.roleName || roleSelection?.roleName || revisionId }}</div>
+      <div>有效期：{{ validFrom || "立即" }} 至 {{ validUntil || "长期" }}</div>
       <biz-iam-preview-alert :preview="previewState.preview.value" />
       <el-alert
         v-if="staleVersion"
@@ -113,18 +132,25 @@
         :closable="false"
         title="分配已被他人修改，当前输入暂留在抽屉中；重新打开会载入最新内容。"
       />
-    </in-form>
+    </div>
+        </div>
+      </section>
+    </div>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
+      <in-button v-if="step > 0" @in-click="step -= 1">上一步</in-button>
+      <in-button v-if="step < 3" type="primary" :disabled="!canAdvance" @in-click="privateNext">
+        下一步
+      </in-button>
       <in-button
-        v-if="!readonly"
+        v-if="step === 3 && !readonly"
         :loading="previewState.loading.value"
         :disabled="saving || !ready || staleVersion"
         @in-click="runPreview"
         >预览效果</in-button
       >
       <in-button
-        v-if="!readonly && previewState.preview.value?.valid === true"
+        v-if="step === 3 && !readonly && previewState.preview.value?.valid === true"
         type="primary"
         :loading="saving"
         :disabled="!canSubmit"
@@ -145,10 +171,12 @@ import {
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import BizIamAuthorizationSelect from "./BizIamAuthorizationSelect.vue";
+import BizIamDelegationCandidatePicker from "./BizIamDelegationCandidatePicker.vue";
 import BizIamAuthorizationRecipients from "./BizIamAuthorizationRecipients.vue";
 import BizIamAuthorizationRolePicker from "./BizIamAuthorizationRolePicker.vue";
 import BizIamDurationFields from "./BizIamDurationFields.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
+import BizIamWizardNav from "./BizIamWizardNav.vue";
 import {
   SubjectType,
   RoleKind,
@@ -189,10 +217,21 @@ const props = defineProps<{
 }>();
 const emits = defineEmits<{ success: [] }>();
 const visible = ref(false);
+const step = ref(0);
+const wizardSteps = [
+  { title: "授权依据与接收对象", description: "确定分配资格和接收成员或用户组" },
+  { title: "选择角色", description: "选择一个固定角色版本" },
+  { title: "设置范围与有效期", description: "配置对象范围和生效区间" },
+  { title: "预览与保存", description: "确认效果后提交" },
+];
 const loading = ref(false);
 const saving = ref(false);
 const context = ref<AssignmentContext>();
 const editing = ref<ResourceDetail<AssignmentRecord>>();
+const presetRoleId = ref<string>();
+const prefilledRoleCandidatesApi: AuthorizationRoleCandidatesApi = (query) => props.roleCandidatesApi(
+  presetRoleId.value && !query.roleId ? { ...query, ids: [presetRoleId.value] } : query,
+);
 const sourceId = ref("");
 const basis = ref<AuthorizationOption>();
 const members = ref<IamSelectOption[]>([]);
@@ -256,6 +295,15 @@ const canSubmit = computed(
     !previewState.loading.value &&
     !saving.value,
 );
+const canAdvance = computed(() => {
+  if (loading.value || saving.value || !ready.value) return false;
+  if (step.value === 0) return !!editing.value || members.value.length + groups.value.length > 0;
+  if (step.value === 1) return !!revisionId.value;
+  return true;
+});
+const privateNext = (): void => {
+  if (canAdvance.value && step.value < wizardSteps.length - 1) step.value += 1;
+};
 const handleAssignmentFailure = async (error: unknown): Promise<void> => {
   if (isApiError(error) && error.status === 409) {
     if (editing.value) {
@@ -470,13 +518,15 @@ watch([loading, saving], () => {
 });
 const canPresetRecipient = (): boolean => !!context.value?.directCreate || !!sourceId.value;
 defineExpose({
-  async show(row?: ResourceDetail<AssignmentRecord>, preset?: { memberId?: string }) {
+  async show(row?: ResourceDetail<AssignmentRecord>, preset?: { memberId?: string; roleId?: string }) {
     const epoch = ++opening;
     qualificationRefreshPending = false;
     openingKey.value += 1;
     visible.value = true;
+    step.value = 0;
     loading.value = true;
     editing.value = undefined;
+    presetRoleId.value = preset?.roleId;
     staleVersion.value = false;
     sourceId.value = "";
     basis.value = undefined;

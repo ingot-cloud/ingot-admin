@@ -1,7 +1,7 @@
 <template>
   <in-dialog v-model="visible" :title="title" width="840px" append-to-body>
     <div class="in-split-picker h-420px flex">
-      <div v-loading="loading" class="w-1/2 min-w-0 flex flex-col overflow-hidden">
+      <in-loading :loading="loading" class="w-1/2! min-w-0 flex flex-col overflow-hidden">
         <div class="p-12px">
           <el-input
             v-model="keyword"
@@ -33,7 +33,7 @@
           >
             <el-checkbox :model-value="selectedIds.has(item.id)" @change="privateToggle(item)" />
             <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
-            <span class="truncate">{{ item.name }}</span>
+            <span class="truncate">{{ item.ancestorPath || item.name }}</span>
           </label>
           <div v-if="loadFailed" class="flex items-center gap-8px py-16px">
             <span class="text-[var(--el-text-color-secondary)]">加载失败</span>
@@ -56,7 +56,7 @@
           small
           @current-change="privateOnPageChange"
         />
-      </div>
+      </in-loading>
       <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between px-12px py-12px">
           <span>已选：{{ selectedCount }} {{ selectedUnit }}</span>
@@ -65,14 +65,14 @@
         <div class="flex-1 min-h-0 overflow-auto px-12px pb-12px">
           <div v-for="item in rightItems" :key="item.id" class="flex items-center gap-8px py-8px">
             <in-avatar v-if="showAvatar" :src="item.avatar" :name="item.name" :show-name="false" />
-            <span class="truncate flex-1">{{ item.name }}</span>
+            <span class="truncate flex-1">{{ item.ancestorPath || item.name }}</span>
             <in-close-button
               size="sm"
               :label="`移除 ${item.name}`"
               @click="privateRemove(item.id)"
             />
           </div>
-          <div v-if="boundLoading" class="text-[var(--el-text-color-secondary)] py-8px">加载中</div>
+          <in-loading v-if="boundLoading" loading class="h-80px" />
           <in-button
             v-if="boundLoadFailed"
             class="w-full"
@@ -364,17 +364,19 @@ const privateConfirm = (): void => {
   }
   emits(
     "confirm",
-    nextIds.map((id) => named.get(id) ?? { id, name: id }),
+    nextIds.map((id) => named.get(id) ?? { id, name: id, labelPending: true }),
   );
   visible.value = false;
 };
 
 defineExpose({
-  show(current: MemberPickerShowInput = []) {
+  show(current: MemberPickerShowInput = [], initialPage?: Page<IamSelectOption>) {
     epoch += 1;
     request += 1;
     pending.clear();
     completed.clear();
+    if (initialPage)
+      completed.set(JSON.stringify({ current: 1, size: pageSize, query: undefined }), initialPage);
     loading.value = false;
     boundLoading.value = false;
     loadFailed.value = false;

@@ -519,6 +519,15 @@ export interface MemberCreateInput {
   departments: MemberDepartmentBinding[];
   roleIds?: string[];
   groupIds?: string[];
+  roleAssignments?: MemberRoleAssignmentDraft[];
+}
+
+export interface MemberRoleAssignmentDraft {
+  roleId: string;
+  roleRevisionRef: RoleRevisionRef;
+  scopeBindings: Record<string, ScopeBinding>;
+  validFrom?: string;
+  validUntil?: string;
 }
 
 export interface MemberRoleView {
@@ -1020,7 +1029,8 @@ export interface DelegationInput {
   actionScopeCeilings: ActionScopeCeiling[];
   validFrom?: string;
   validUntil?: string;
-  maxAssignmentDuration: string;
+  assignmentDurationMode?: "LIMITED" | "UNLIMITED";
+  maxAssignmentDuration?: string;
 }
 
 export interface DelegationUpdateInput extends VersionInput {
@@ -1054,6 +1064,8 @@ export interface AuthorizationActionOption {
   scopeCapabilities: ScopeKind[];
 }
 export interface AuthorizationOption {
+  /** 已持久化 ID 的显示资料尚未通过当前候选上下文加载。 */
+  labelPending?: boolean;
   id: string;
   name: string;
   summary?: string;
@@ -1062,6 +1074,10 @@ export interface AuthorizationOption {
   grants?: ActionGrant[];
   actions?: AuthorizationActionOption[];
   delegation?: DelegationInput;
+  parentId?: string;
+  hasChildren?: boolean;
+  ancestorPath?: string;
+  selectable?: boolean;
 }
 export interface AuthorizationCandidateQuery {
   kind: AuthorizationCandidateKind;
@@ -1074,10 +1090,15 @@ export interface AuthorizationCandidateQuery {
   ids?: string[];
   page?: number;
   pageSize?: number;
+  tree?: boolean;
+  parentId?: string;
+  excludeMemberId?: string;
 }
 export interface AuthorizationCandidatePage extends IamPageResponse<AuthorizationOption> {
   supported: boolean;
   unavailableMessage?: string;
+  contextLabel?: string;
+  hierarchical?: boolean;
 }
 export type AuthorizationCandidatesApi = (
   query: AuthorizationCandidateQuery,
@@ -1105,3 +1126,26 @@ export interface AuthorizationRoleCandidateQuery {
 export type AuthorizationRoleCandidatesApi = (
   query: AuthorizationRoleCandidateQuery,
 ) => Promise<import("@ingot/admin-core").R<IamPageResponse<AuthorizationRoleNode>>>;
+
+/** 平台角色工作区的有效接收主体，来源仅包含当前可披露关系。 */
+export interface RoleSubjectSummary {
+  id: string;
+  name: string;
+  revisionNumbers: number[];
+  sourceTypes: SubjectType[];
+  sourceCount: number;
+}
+export interface RoleSubjectPage extends IamPageResponse<RoleSubjectSummary> {
+  inheritedSourcesRestricted: boolean;
+}
+export type DelegationSelectedCandidatesApi = (
+  id: string,
+  query: AuthorizationCandidateQuery,
+) => Promise<import("@ingot/admin-core").R<AuthorizationCandidatePage>>;
+
+export interface RoleWorkspaceQuery extends IamListQuery {
+  roleId?: string;
+  memberId?: string;
+  subjectKind?: "members" | "groups";
+  revisionId?: string;
+}

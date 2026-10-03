@@ -24,6 +24,7 @@ export { default as BizIamRoleDetailDrawer } from "./components/BizIamRoleDetail
 export { default as BizIamGroupEditDrawer } from "./components/BizIamGroupEditDrawer.vue";
 export { default as BizIamGroupWizard } from "./components/BizIamGroupWizard.vue";
 export { default as BizIamMemberPickerDialog } from "./components/BizIamMemberPickerDialog.vue";
+export { default as BizIamDelegationCandidatePicker } from "./components/BizIamDelegationCandidatePicker.vue";
 export type { MemberPickerShowInput } from "./components/BizIamMemberPickerDialog.vue";
 export { default as BizIamOptionTagField } from "./components/BizIamOptionTagField.vue";
 export { default as BizIamMemberChips } from "./components/BizIamMemberChips.vue";
@@ -39,5 +40,6 @@ export { default as BizIamAuthorizationSelect } from "./components/BizIamAuthori
 export { default as BizIamPlatformAssignmentDrawer } from "./components/BizIamPlatformAssignmentDrawer.vue";
 
 export { default as BizIamPlatformDelegationDrawer } from "./components/BizIamPlatformDelegationDrawer.vue";
+export { default as BizIamWizardNav } from "./components/BizIamWizardNav.vue";
 
 export { default as BizIamPlatformDiagnoseDrawer } from "./components/BizIamPlatformDiagnoseDrawer.vue";

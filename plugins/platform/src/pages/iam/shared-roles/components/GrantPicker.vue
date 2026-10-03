@@ -375,7 +375,7 @@ const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): Se
     resourceName: resource.name,
     applicationId: applicationId.value,
     applicationName: currentApp.value?.name ?? "",
-    scopes: [defaultScope(resource.scopeCapabilities)],
+    scopes: [defaultScope(resource.scopeCapabilities, resource.id)],
     scopeCapabilities: [...resource.scopeCapabilities],
   };
 

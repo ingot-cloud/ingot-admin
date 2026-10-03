@@ -42,7 +42,12 @@
               <el-switch v-model="profile.baseline" />
             </el-form-item>
           </in-form>
-          <catalog-draft-panel v-else-if="step === 1" v-model="resources" :profile="profile" />
+          <catalog-draft-panel
+            v-else-if="step === 1"
+            v-model="resources"
+            :profile="profile"
+            :domain="domain"
+          />
           <menu-draft-panel
             v-else-if="step === 2"
             v-model:resources="resources"

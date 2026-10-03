@@ -1,9 +1,24 @@
 <template>
   <div class="flex flex-col gap-8px">
-    <el-date-picker v-model="fromDate" type="datetime" placeholder="生效时间（本地时间）" />
-    <el-date-picker v-model="untilDate" type="datetime" placeholder="失效时间（本地时间）" />
+    <el-date-picker
+      v-if="showValidity"
+      v-model="fromDate"
+      type="datetime"
+      placeholder="生效时间（本地时间）"
+    />
+    <el-date-picker
+      v-if="showValidity"
+      v-model="untilDate"
+      type="datetime"
+      placeholder="失效时间（本地时间）"
+    />
     <div v-if="showMaxDuration" class="flex items-center gap-8px">
-      <el-input-number v-model="durationValue" :min="0.001" :precision="3" />
+      <el-input-number
+        v-model="durationValue"
+        :min="0.001"
+        :precision="3"
+        placeholder="请输入单次分配最长时间"
+      />
       <el-select v-model="unit" class="w-100px">
         <el-option label="天" value="days" /><el-option label="小时" value="hours" />
       </el-select>
@@ -18,7 +33,9 @@ import {
   hoursDuration,
 } from "../models/iam/duration";
 defineOptions({ name: "BizIamDurationFields" });
-defineProps<{ showMaxDuration?: boolean }>();
+withDefaults(defineProps<{ showMaxDuration?: boolean; showValidity?: boolean }>(), {
+  showValidity: true,
+});
 const validFrom = defineModel<string | undefined>("validFrom");
 const validUntil = defineModel<string | undefined>("validUntil");
 const maxAssignmentDuration = defineModel<string | undefined>("maxAssignmentDuration");
@@ -36,7 +53,10 @@ const untilDate = computed({
   },
 });
 const durationValue = computed({
-  get: () => durationHours(maxAssignmentDuration.value) / (unit.value === "days" ? 24 : 1),
+  get: () =>
+    maxAssignmentDuration.value
+      ? durationHours(maxAssignmentDuration.value) / (unit.value === "days" ? 24 : 1)
+      : undefined,
   set: (value: number | undefined) => {
     maxAssignmentDuration.value = value
       ? hoursDuration(value * (unit.value === "days" ? 24 : 1))

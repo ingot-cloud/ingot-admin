@@ -56,11 +56,17 @@ export function isReadAction(code: string): boolean {
   return code.endsWith(":read");
 }
 
-export function defaultScope(capabilities: ScopeKind[]): ScopeExpression {
+export function parameterKeyFor(resourceId: string, kind: ScopeKind): string {
+  return `${kind === ScopeKind.MANAGED_DEPARTMENTS ? "departments" : "objects"}_${resourceId}`;
+}
+
+export function defaultScope(capabilities: ScopeKind[], resourceId = ""): ScopeExpression {
   const kind = capabilities.includes(ScopeKind.ALL)
     ? ScopeKind.ALL
     : (capabilities[0] ?? ScopeKind.ALL);
-  return { kind };
+  return needsParameter(kind) && resourceId
+    ? { kind, parameterKey: parameterKeyFor(resourceId, kind) }
+    : { kind };
 }
 
 export function needsParameter(kind: ScopeKind): boolean {
@@ -130,11 +136,14 @@ export function formatScopeLine(scope: ScopeExpression): string {
   if (scope.kind === ScopeKind.ALL) {
     return `部门范围：${label}`;
   }
+  if (scope.kind === ScopeKind.MANAGED_DEPARTMENTS) {
+    return `${label}：分配时选择管理部门${scope.includeDescendants ? "，含下级" : ""}`;
+  }
   if (allowsDescendants(scope.kind)) {
     return `${label}：${scope.includeDescendants ? "含下级" : "仅本部门"}`;
   }
-  if (scope.parameterKey?.trim()) {
-    return `${label}：${scope.parameterKey.trim()}`;
+  if (scope.kind === ScopeKind.OBJECT_SET) {
+    return `${label}：分配时选择指定对象`;
   }
   return label;
 }
