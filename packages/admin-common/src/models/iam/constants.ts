@@ -39,6 +39,14 @@ export enum SubjectType {
   GROUP = "GROUP",
 }
 
+export enum AssignmentEffectiveStatus {
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
+  EXPIRED = "EXPIRED",
+  REVOKED = "REVOKED",
+  SOURCE_INVALID = "SOURCE_INVALID",
+}
+
 export enum ScopeKind {
   ALL = "ALL",
   SELF = "SELF",

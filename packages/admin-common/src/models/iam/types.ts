@@ -1,6 +1,7 @@
 import {
   AccountLookupPurpose,
   AssignmentSource,
+  AssignmentEffectiveStatus,
   AudienceKind,
   AuthorizationDomain,
   ConfigurationStatus,
@@ -121,6 +122,7 @@ export interface IamListQuery {
   name?: string;
   status?: string;
   subjectType?: SubjectType;
+  effectiveStatus?: AssignmentEffectiveStatus;
   baseline?: boolean;
   keyword?: string;
   administratorName?: string;
@@ -1013,7 +1015,7 @@ export interface AssignmentRecord {
   delegationSummary?: string;
   createdAt?: string;
   grantedBy?: { memberId?: string; name: string };
-  effectiveStatus?: "PENDING" | "ACTIVE" | "EXPIRED" | "REVOKED" | "SOURCE_INVALID";
+  effectiveStatus?: `${AssignmentEffectiveStatus}`;
 }
 
 export interface ActionScopeCeiling {

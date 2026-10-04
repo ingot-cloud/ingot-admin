@@ -52,6 +52,11 @@
                 label="接收对象"
                 :options="assignmentSubjectTypeOptions"
               />
+              <in-picker
+                v-model="assignmentStatusFilter"
+                label="状态"
+                :options="assignmentStatusOptions"
+              />
               <in-table-column-setting
                 :headers="assignmentHeaders"
                 :table-id="ASSIGNMENT_TABLE_ID"
@@ -216,6 +221,8 @@
 import { Search } from "@element-plus/icons-vue";
 import {
   AssignmentSourceExtArray,
+  AssignmentEffectiveStatus,
+  AssignmentEffectiveStatusExtArray,
   AuthorizationDomain,
   BizIamPlatformAssignmentDrawer,
   BizIamPlatformDelegationDrawer,
@@ -226,6 +233,7 @@ import {
   SubjectType,
   SubjectTypeExtArray,
   useSubjectTypeEnum,
+  useAssignmentEffectiveStatusEnum,
   iamEnumLabel,
   type ResourceDetail,
 } from "@ingot/admin-common";
@@ -322,6 +330,17 @@ const visibleDelegationHeaders = computed(() =>
   applyColumnSelection(delegationHeaders, selectedDelegationColumns.value),
 );
 const assignmentSubjectTypeOptions = withAllPickerOption(useSubjectTypeEnum().getOptions());
+const assignmentStatusOptions = withAllPickerOption(useAssignmentEffectiveStatusEnum().getOptions());
+const assignmentStatusFilter = computed({
+  get: () => toStringPickerValue(assignments.condition.effectiveStatus),
+  set: (value: string | number | boolean | null) => {
+    const selected = resolveStringPickerFilter(value);
+    assignments.condition.effectiveStatus = Object.values(AssignmentEffectiveStatus).find(
+      (status) => status === selected,
+    );
+    refreshAssignments();
+  },
+});
 const assignmentSubjectTypeFilter = computed({
   get: () => toStringPickerValue(assignments.condition.subjectType),
   set: (value: string | number | boolean | null) => {
@@ -347,13 +366,7 @@ const diagnoseRef = ref<{ show: (preset?: { memberId?: string; memberName?: stri
 const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray, value);
 const sourceLabel = (value: string): string => iamEnumLabel(AssignmentSourceExtArray, value);
 const effectiveLabel = (state?: string): string =>
-  ({
-    PENDING: "未生效",
-    ACTIVE: "有效",
-    EXPIRED: "已到期",
-    REVOKED: "已撤销",
-    SOURCE_INVALID: "来源失效",
-  })[state || ""] || "未知";
+  AssignmentEffectiveStatusExtArray.find((item) => item.value === state)?.text ?? "未知";
 const localInstant = (instant?: string): string =>
   instant ? new Date(instant).toLocaleString() : "长期";
 const openAssignment = async (id: string): Promise<void> => {

@@ -23,8 +23,19 @@ import {
   UpgradeResolutionChoice,
   GrantStatus,
   AssignmentSource,
+  AssignmentEffectiveStatus,
   EntitlementSource,
 } from "./constants";
+
+export const AssignmentEffectiveStatusExtArray = [
+  newEnumExt(AssignmentEffectiveStatus.PENDING, "未生效", "warning"),
+  newEnumExt(AssignmentEffectiveStatus.ACTIVE, "有效", "info"),
+  newEnumExt(AssignmentEffectiveStatus.EXPIRED, "已到期", "warning"),
+  newEnumExt(AssignmentEffectiveStatus.REVOKED, "已撤销", "warning"),
+  newEnumExt(AssignmentEffectiveStatus.SOURCE_INVALID, "来源失效", "warning"),
+];
+
+export const useAssignmentEffectiveStatusEnum = () => useEnum(AssignmentEffectiveStatusExtArray);
 
 export const ConfigurationStatusExtArray = [
   newEnumExt(ConfigurationStatus.ENABLED, "启用", "success", ConfigurationStatus.DISABLED),
