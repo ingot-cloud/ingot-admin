@@ -167,3 +167,7 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 2026-10-03 委派列表展示优化（用户要求实施）：状态使用与角色分配相同的 StatusTag 和中文映射，有效为 info、撤销为 warning；直接消费后端记录状态，不在此推算有效期状态。公共时长格式化函数将已有 Duration 转为天/小时/分钟/秒，列表和平台委派详情/预览复用；UNLIMITED 显示不限期限，缺失/无效时长显示未设置，不修改提交值和接口契约。
 
 2026-10-03 角色工作区分页弃用警告修复（用户要求处理）：角色左栏、相关授权/委派/诊断选择器将 ElPagination 的 small 改为 size="small"；InTable 的小尺寸使用 size，非小尺寸继续由 ElPagination 的既有全局尺寸决定，保留原行为。遵循 [Element Plus 分页尺寸契约](https://element-plus.org/zh-CN/component/pagination.html)，不升级依赖、不修改页码、分页条件及事件。
+
+## 2026-10-03 角色分配状态筛选（approved → implementing）
+
+复用 InPicker 和 useServerPaging，筛选值写入 `IamListQuery.effectiveStatus` 并通过既有参数与 Query Key 通道传给平台分配接口；全部省略该参数，切换调用现有 search 重置页码。共用计算状态枚举与中文映射，三个查询条件继续在 tools-start 展示，列设置位置及其他 Tab 不变。后端在分页前筛选计算状态，前端不自行推算时间/来源。同步 API 与来源副本，人工验收单列。

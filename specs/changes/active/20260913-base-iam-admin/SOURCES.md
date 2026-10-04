@@ -96,3 +96,13 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `ROLE-WORKSPACE-DELEGATION-REFINEMENT.md` | [sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md](./sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md) | `c262615bcf8f67ea1b670fa9fed280bddc3d86f8a30b91e85e8c337491dda201` |
 | `contracts/examples/delegation-unlimited.json` | [sources/contracts/examples/delegation-unlimited.json](./sources/contracts/examples/delegation-unlimited.json) | `b70d04b8138fae40556a8f2d0505b60b451b6839ad4f7ab044d5456ad2b24e14` |
 | `contracts/examples/role-subject-page.json` | [sources/contracts/examples/role-subject-page.json](./sources/contracts/examples/role-subject-page.json) | `3c16da306274394837943e410d9d7b24f268b990a1a98a7ac2b75e80cc2091ba` |
+
+## 2026-10-03 平台分配状态筛选权威来源
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `f0bc5659bfdb4e378285eab52727e0e9eda451d3f34e22d005d0df9a0e2668fa` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `0f6450c2fad8bc88ea966b24ad29e20236165243985a5e9c1ea5e75f3636d6cf` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `76dfab51cb06e935270d71d8e2080e3f1cc4b9031fb34928d645f1a3d18083e1` |
+
+仅新增平台分配列表的可选计算状态条件，模型及租户查询契约不变；以上为本轮最新来源校验值，人工验收待完成。
