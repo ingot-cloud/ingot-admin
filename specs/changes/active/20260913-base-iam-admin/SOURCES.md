@@ -12,11 +12,11 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `40b8ba3394104ee57ac719c7a005c0e8454c3a725e0d8cb9459c34b4b646a2f8` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
 | `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
 | `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `bfae7f4e66100a3e32da56933b82bb6a2244a355698a6c377ca7b75aefec172f` |
-| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `6477fd222241d9f08c534bbe9888c4df89e10ade993b5b5e084529fab0b83d1a` |
-| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `ef14f33312a1f1744d04bf7b898556bc7127eafb796552678a1045ac726df9f2` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d353187983f9cb902e9e48851dc5f11ee58352e147bc3af5a7596fc4302b316a` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `db16dc98a59328bff53454ba718556bc695d8489121f376afaa02a30168b5cbe` |
 | `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
 | `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `71bc2185c1836d044a6c1cabffd730dfb9129c28540014309f5defc990803521` |
 | `endpoint-mapping.json` | [sources/endpoint-mapping.json](./sources/endpoint-mapping.json) | `6eff4056434a6f307b62bccf4dd2170c013d089943dd7c8461b8da89846a16ec` |
@@ -91,7 +91,7 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `40b8ba3394104ee57ac719c7a005c0e8454c3a725e0d8cb9459c34b4b646a2f8` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
 | `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
 | `ROLE-WORKSPACE-DELEGATION-REFINEMENT.md` | [sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md](./sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md) | `c262615bcf8f67ea1b670fa9fed280bddc3d86f8a30b91e85e8c337491dda201` |
 | `contracts/examples/delegation-unlimited.json` | [sources/contracts/examples/delegation-unlimited.json](./sources/contracts/examples/delegation-unlimited.json) | `b70d04b8138fae40556a8f2d0505b60b451b6839ad4f7ab044d5456ad2b24e14` |
@@ -101,7 +101,7 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `f0bc5659bfdb4e378285eab52727e0e9eda451d3f34e22d005d0df9a0e2668fa` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
 | `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `0f6450c2fad8bc88ea966b24ad29e20236165243985a5e9c1ea5e75f3636d6cf` |
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `76dfab51cb06e935270d71d8e2080e3f1cc4b9031fb34928d645f1a3d18083e1` |
 
@@ -111,7 +111,7 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `e0e1ecf15d9753265370730fe116ddfdbbd9eeeba24c7d8f00e960241f636fa1` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
 
 两个平台授权主列表默认按 ID 倒序；请求/响应结构及 OpenAPI 副本不变，沿用上一节契约校验值。人工验收单列。
 
@@ -120,7 +120,7 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `f35763077e534a26799af425e5955ee3102042da1936fe97543a4603cb7f8584` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
 | `ASSIGNMENT-MULTI-ROLE-REFINEMENT.md` | [sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md](./sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md) | `6de9523a10e6447e4b01c51f98a10204891b029d9cb84dc78ec05c15c7a2d358` |
 | `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `183e5d1d136df7292b24cf1ccddaf1cca577ba55514fc16da52cf6cc51cf52a4` |
 | `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `9472c8980e87ffce826a00ef1a8b67c95c75eb154495e2d70e3cba67f47cc994` |
@@ -132,3 +132,15 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 以上覆盖相应历史校验值，Java 公共类型已重新导出，接口生成源与前端副本保持一致；当前 124 路径 / 191 操作。开发及定向自动化完成，人工验收 MA05 待执行。
 
 本日范围流程追加已同步上述 API/增量副本与 SHA-256。29 项前端定向测试和两管理台构建通过；新增 SF04 人工验收仍待执行，公共 JSON 契约沿用原快照。
+
+
+## 2026-10-05 平台对象资源识别权威来源
+
+后端元数据与适配路径已收紧，52项定向回归通过；公开接口结构及前端代码不变，人工验收独立保留。以下原文与后端逐字节同步。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `db16dc98a59328bff53454ba718556bc695d8489121f376afaa02a30168b5cbe` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d353187983f9cb902e9e48851dc5f11ee58352e147bc3af5a7596fc4302b316a` |
+| `PLATFORM-OBJECT-RESOLUTION-REFINEMENT.md` | [sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md](./sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md) | `b0db713763a38d76757d8afb24261b6a675cafaa083d642b3666ff6151d8e374` |
