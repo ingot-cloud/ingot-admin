@@ -154,6 +154,7 @@ describe("委派实体候选", () => {
     await flushPromises();
     expect(wrapper.find('button[aria-label="请选择授权管理员"]').text()).toContain("张三");
     expect(wrapper.emitted("selection")?.at(-1)).toEqual([[{ id: "1", name: "张三" }]]);
+    expect(wrapper.emitted("confirm")).toBeUndefined();
     await wrapper.find('button[aria-label="请选择授权管理员"]').trigger("click");
     await flushPromises();
     await wrapper.find('button[aria-pressed="false"]').trigger("click");
@@ -163,6 +164,7 @@ describe("委派实体候选", () => {
       ?.trigger("click");
     expect(wrapper.emitted("update:modelValue")?.at(-1)).toEqual(["2"]);
     expect(wrapper.emitted("selection")?.at(-1)).toEqual([[{ id: "2", name: "李四" }]]);
+    expect(wrapper.emitted("confirm")?.at(-1)).toEqual([[{ id: "2", name: "李四" }]]);
     expect(api.mock.calls.some(([query]) => query.page === 1 && query.pageSize === 20)).toBe(true);
   });
 

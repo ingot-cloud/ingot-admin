@@ -144,7 +144,11 @@ const props = defineProps<{
   loadSelected?: AuthorizationCandidatesApi;
   resetKey?: string | number;
 }>();
-const emits = defineEmits<{ selection: [items: IamSelectOption[]] }>();
+const emits = defineEmits<{
+  selection: [items: IamSelectOption[]];
+  /** 用户确认的完整选择快照，不由名称回显触发。 */
+  confirm: [items: IamSelectOption[]];
+}>();
 const model = defineModel<string | string[]>({ default: "" });
 const multiDialog = ref<InstanceType<typeof BizIamMemberPickerDialog>>();
 const treeDialog = ref<InstanceType<typeof BizIamTreeCandidateDialog>>();
@@ -371,12 +375,14 @@ const privateConfirmMulti = (selected: IamSelectOption[]): void => {
   for (const item of selected) if (!item.labelPending) known.value[item.id] = item;
   model.value = selected.map(({ id }) => id);
   emits("selection", selected);
+  emits("confirm", selected);
   unavailableMessage.value = "";
 };
 const privateConfirmTree = (selected: AuthorizationOption[]): void => {
   for (const item of selected) if (!item.labelPending) known.value[item.id] = item;
   model.value = props.multiple ? selected.map((item) => item.id) : selected[0]?.id || "";
   emits("selection", selected);
+  emits("confirm", selected);
   unavailableMessage.value = "";
 };
 const privateConfirmSingle = (): void => {
@@ -384,12 +390,14 @@ const privateConfirmSingle = (): void => {
   known.value[draft.value.id] = draft.value;
   model.value = draft.value.id;
   emits("selection", [draft.value]);
+  emits("confirm", [draft.value]);
   visible.value = false;
   unavailableMessage.value = "";
 };
 const privateClear = (): void => {
   model.value = "";
   emits("selection", []);
+  emits("confirm", []);
   draft.value = undefined;
   visible.value = false;
 };

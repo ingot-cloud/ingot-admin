@@ -68,8 +68,7 @@
           :delegation-grant-id="delegationGrantId"
           :reset-key="resetKey"
           :readonly="readonly"
-          @objects="setObjects(item.roleKey, item.parameterKey, $event)"
-          @names="setNames(item.roleKey, item.parameterKey, $event)"
+          @objects="privateSetObjects(item.roleKey, item.parameterKey, $event)"
         />
       </div>
       <div
@@ -232,7 +231,7 @@ watch(
     );
   },
 );
-const setObjects = (key: string, parameterKey: string, ids: string | string[]): void => {
+const privateSetObjects = (key: string, parameterKey: string, options: IamSelectOption[]): void => {
   roles.value = roles.value.map((role) =>
     assignmentRoleKey(role.option) !== key
       ? role
@@ -242,8 +241,12 @@ const setObjects = (key: string, parameterKey: string, ids: string | string[]): 
             ...role.bindings,
             [parameterKey]: {
               ...role.bindings[parameterKey],
-              ids: Array.isArray(ids) ? ids : ids ? [ids] : [],
+              ids: options.map((option) => option.id),
             },
+          },
+          selectedObjects: {
+            ...role.selectedObjects,
+            [parameterKey]: options.map((option) => ({ ...option })),
           },
         },
   );

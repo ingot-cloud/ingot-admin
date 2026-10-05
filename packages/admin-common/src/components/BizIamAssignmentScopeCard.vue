@@ -34,8 +34,7 @@
             title="选择范围对象"
             :placeholder="`请选择${item.actions[0].resourceName}的范围对象`"
             search-placeholder="搜索范围对象"
-            @update:model-value="emits('objects', $event)"
-            @selection="emits('names', $event)"
+            @confirm="emits('objects', $event)"
           />
         </div>
       </div>
@@ -63,7 +62,6 @@ defineProps<{
   readonly?: boolean;
 }>();
 const emits = defineEmits<{
-  objects: [ids: string | string[]];
-  names: [options: IamSelectOption[]];
+  objects: [options: IamSelectOption[]];
 }>();
 </script>

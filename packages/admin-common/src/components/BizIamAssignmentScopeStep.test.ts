@@ -71,7 +71,7 @@ const stubs = {
   BizIamDelegationCandidatePicker: {
     name: "BizIamDelegationCandidatePicker",
     props: ["query", "modelValue", "selectedOptions", "loadSelected", "disabled"],
-    emits: ["update:modelValue"],
+    emits: ["confirm"],
     template: "<button>对象选择</button>",
   },
 };
@@ -203,13 +203,16 @@ describe("分配范围步骤", () => {
     });
     const picker = wrapper.findComponent({ name: "BizIamDelegationCandidatePicker" });
     expect(picker.props("disabled")).toBe(false);
-    picker.vm.$emit("update:modelValue", []);
+    picker.vm.$emit("confirm", []);
     await flushPromises();
     let next = wrapper.emitted("update:roles")!.at(-1)![0] as PlatformAssignmentRoleDraft[];
     await wrapper.setProps({ roles: next });
     wrapper.findComponent({ name: "ElCheckbox" }).vm.$emit("change", true);
     await flushPromises();
-    picker.vm.$emit("update:modelValue", ["101", "102"]);
+    picker.vm.$emit("confirm", [
+      { id: "101", name: "应用一" },
+      { id: "102", name: "应用二" },
+    ]);
     await flushPromises();
     next = wrapper.emitted("update:roles")!.at(-1)![0] as PlatformAssignmentRoleDraft[];
     await wrapper.setProps({ roles: next });
