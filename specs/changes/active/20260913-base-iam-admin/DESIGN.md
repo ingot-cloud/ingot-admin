@@ -171,3 +171,13 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 2026-10-03 角色分配状态筛选（approved → implementing）
 
 复用 InPicker 和 useServerPaging，筛选值写入 `IamListQuery.effectiveStatus` 并通过既有参数与 Query Key 通道传给平台分配接口；全部省略该参数，切换调用现有 search 重置页码。共用计算状态枚举与中文映射，三个查询条件继续在 tools-start 展示，列设置位置及其他 Tab 不变。后端在分页前筛选计算状态，前端不自行推算时间/来源。同步 API 与来源副本，人工验收单列。
+
+2026-10-04：两个授权主列表统一消费后端 `id DESC` 的页顺序，无需新增前端排序状态、请求参数或本地排序。同步 API 与权威副本；页面验收包含创建后刷新、搜索、状态筛选及跨页顺序。Leaf 号段发号仅趋势递增，默认排序定义为 ID 倒序。
+
+
+## 2026-10-05 平台多角色分配与范围配置
+
+已获用户批准，需求、接口、兼容和任务见 [ASSIGNMENT-MULTI-ROLE-REFINEMENT](./ASSIGNMENT-MULTI-ROLE-REFINEMENT.md)。新建支持多个角色（每个角色一个固定版本），范围沿用角色定义、对象参数独立，统一有效期；编辑仍固定版本。开发与人工验收分别记录，保留已有未提交改动。
+
+
+2026-10-05：用户批准分配范围步骤调整，第二步选择角色与有效期，第三步独立范围配置/全部权限视图、全局进度及跨页遗漏定位；新建和编辑均可调整指定对象。详见 [分配范围配置增量](./ASSIGNMENT-MULTI-ROLE-REFINEMENT.md)，HTTP DTO 与后端范围校验契约保持。

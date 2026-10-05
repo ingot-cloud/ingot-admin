@@ -106,3 +106,29 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `76dfab51cb06e935270d71d8e2080e3f1cc4b9031fb34928d645f1a3d18083e1` |
 
 仅新增平台分配列表的可选计算状态条件，模型及租户查询契约不变；以上为本轮最新来源校验值，人工验收待完成。
+
+## 2026-10-04 平台授权列表默认排序权威来源
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `e0e1ecf15d9753265370730fe116ddfdbbd9eeeba24c7d8f00e960241f636fa1` |
+
+两个平台授权主列表默认按 ID 倒序；请求/响应结构及 OpenAPI 副本不变，沿用上一节契约校验值。人工验收单列。
+
+
+## 2026-10-05 平台多角色分配权威来源
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `f35763077e534a26799af425e5955ee3102042da1936fe97543a4603cb7f8584` |
+| `ASSIGNMENT-MULTI-ROLE-REFINEMENT.md` | [sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md](./sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md) | `6de9523a10e6447e4b01c51f98a10204891b029d9cb84dc78ec05c15c7a2d358` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `183e5d1d136df7292b24cf1ccddaf1cca577ba55514fc16da52cf6cc51cf52a4` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `9472c8980e87ffce826a00ef1a8b67c95c75eb154495e2d70e3cba67f47cc994` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `aa0b875bbbfc51f597fd703ac8b3f59320ed781215e62d2955581e8da8e62c1f` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `564289c4bacff5a5987bd036a6b87fac43a10cd792890bf994abea685f2bdb95` |
+| `contracts/examples/assignment-multi-role.json` | [sources/contracts/examples/assignment-multi-role.json](./sources/contracts/examples/assignment-multi-role.json) | `4d179982f861974708d6fbe0c34c0b8a522926223bc005636d06d490abe18f0a` |
+| `contracts/examples/assignment-selected-candidates.json` | [sources/contracts/examples/assignment-selected-candidates.json](./sources/contracts/examples/assignment-selected-candidates.json) | `cc18ba779fd71bdb03500ea7ca0b6c1734f5247415115da3c7adb57c138a649c` |
+
+以上覆盖相应历史校验值，Java 公共类型已重新导出，接口生成源与前端副本保持一致；当前 124 路径 / 191 操作。开发及定向自动化完成，人工验收 MA05 待执行。
+
+本日范围流程追加已同步上述 API/增量副本与 SHA-256。29 项前端定向测试和两管理台构建通过；新增 SF04 人工验收仍待执行，公共 JSON 契约沿用原快照。
