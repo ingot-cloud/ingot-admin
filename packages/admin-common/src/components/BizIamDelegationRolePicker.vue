@@ -2,7 +2,7 @@
   <button
     type="button"
     :disabled="disabled"
-    aria-label="请选择允许分配的角色版本"
+    :aria-label="placeholder"
     class="flex items-center gap-8px box-border w-full min-h-[var(--in-control-height)] px-11px py-6px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] text-left"
     :class="
       disabled
@@ -19,17 +19,11 @@
           : 'text-[var(--in-text-color-placeholder)]'
       "
     >
-      {{ model.length ? model.map((item) => item.name).join("、") : "请选择允许分配的角色版本" }}
+      {{ model.length ? model.map((item) => item.name).join("、") : placeholder }}
     </span>
     <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
   </button>
-  <in-dialog
-    v-model="visible"
-    title="选择允许分配的角色版本"
-    width="880px"
-    layout="pinned"
-    append-to-body
-  >
+  <in-dialog v-model="visible" :title="title" width="880px" layout="pinned" append-to-body>
     <div class="in-split-picker h-460px flex min-w-0">
       <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="p-12px">
@@ -147,12 +141,22 @@ import {
 } from "../models/iam";
 
 defineOptions({ name: "BizIamDelegationRolePicker" });
-const props = defineProps<{
-  treeApi: AuthorizationRoleCandidatesApi;
-  detailApi: AuthorizationCandidatesApi;
-  disabled?: boolean;
-  resetKey: string | number;
-}>();
+const props = withDefaults(
+  defineProps<{
+    treeApi: AuthorizationRoleCandidatesApi;
+    detailApi: AuthorizationCandidatesApi;
+    disabled?: boolean;
+    resetKey: string | number;
+    oneVersionPerRole?: boolean;
+    placeholder?: string;
+    title?: string;
+  }>(),
+  {
+    oneVersionPerRole: false,
+    placeholder: "请选择允许分配的角色版本",
+    title: "选择允许分配的角色版本",
+  },
+);
 const model = defineModel<AuthorizationOption[]>({ default: () => [] });
 const visible = ref(false);
 const keyword = ref("");
@@ -248,9 +252,14 @@ const privateToggle = (roleId: string): void => {
 const privateToggleVersion = (node: AuthorizationRoleNode): void => {
   if (!node.roleRevisionRef) return;
   pickedNodes.value[node.id] = node;
-  draftIds.value = draftIds.value.includes(node.id)
-    ? draftIds.value.filter((id) => id !== node.id)
-    : [...draftIds.value, node.id];
+  if (draftIds.value.includes(node.id)) {
+    draftIds.value = draftIds.value.filter((id) => id !== node.id);
+    return;
+  }
+  const retained = props.oneVersionPerRole
+    ? draftIds.value.filter((id) => pickedNodes.value[id]?.roleId !== node.roleId)
+    : draftIds.value;
+  draftIds.value = [...retained, node.id];
 };
 const privateRemove = (id: string): void => {
   draftIds.value = draftIds.value.filter((value) => value !== id);
@@ -264,7 +273,9 @@ const privateOpen = (): void => {
   keyword.value = "";
   page.value = 1;
   draftIds.value = model.value.map((item) => item.id);
-  pickedNodes.value = {};
+  pickedNodes.value = Object.fromEntries(
+    model.value.flatMap((option) => (option.roleNode ? [[option.id, option.roleNode]] : [])),
+  );
   visible.value = true;
   void privateLoadRoots();
 };
@@ -304,7 +315,11 @@ const privateConfirm = async (): Promise<void> => {
       Message.warning("部分角色版本已不可用，请重新选择");
       return;
     }
-    model.value = draftIds.value.map((id) => options.find((item) => item.id === id)!);
+    model.value = draftIds.value.map((id) => {
+      const option = options.find((item) => item.id === id)!;
+      const roleNode = pickedNodes.value[id] || option.roleNode;
+      return roleNode ? { ...option, roleNode } : option;
+    });
     visible.value = false;
   } catch (error) {
     if (current === epoch) await iamEditorFailure(error);

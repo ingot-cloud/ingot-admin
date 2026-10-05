@@ -13,6 +13,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./../admin-core/src/components/user/AccountStatusEditButton.vue')['default']
     BizIamAssignmentDrawer: typeof import('./src/components/BizIamAssignmentDrawer.vue')['default']
+    BizIamAssignmentGrantList: typeof import('./src/components/BizIamAssignmentGrantList.vue')['default']
+    BizIamAssignmentScopeCard: typeof import('./src/components/BizIamAssignmentScopeCard.vue')['default']
+    BizIamAssignmentScopeStep: typeof import('./src/components/BizIamAssignmentScopeStep.vue')['default']
     BizIamAuthorizationRecipients: typeof import('./src/components/BizIamAuthorizationRecipients.vue')['default']
     BizIamAuthorizationRolePicker: typeof import('./src/components/BizIamAuthorizationRolePicker.vue')['default']
     BizIamAuthorizationSelect: typeof import('./src/components/BizIamAuthorizationSelect.vue')['default']

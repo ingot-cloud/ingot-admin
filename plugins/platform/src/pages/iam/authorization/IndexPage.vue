@@ -191,6 +191,7 @@
     :role-candidates-api="PlatformAssignmentRoleCandidatesAPI"
     :context-api="PlatformAssignmentContextAPI"
     :get-api="PlatformAssignmentDetailAPI"
+    :selected-candidates-api="PlatformAssignmentSelectedCandidatesAPI"
     :create-api="PlatformAssignmentCreateAPI"
     :preview-api="PlatformAssignmentPreviewAPI"
     :update-preview-api="PlatformAssignmentUpdatePreviewAPI"
@@ -254,6 +255,7 @@ import {
   PlatformAssignmentRoleCandidatesAPI,
   PlatformAssignmentContextAPI,
   PlatformAssignmentDetailAPI,
+  PlatformAssignmentSelectedCandidatesAPI,
   PlatformAssignmentUpdatePreviewAPI,
   PlatformDelegationCandidatesAPI,
   PlatformDelegationSelectedCandidatesAPI,

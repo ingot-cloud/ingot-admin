@@ -1066,6 +1066,8 @@ export interface AuthorizationActionOption {
   scopeCapabilities: ScopeKind[];
 }
 export interface AuthorizationOption {
+  /** 选择器保留的角色树身份快照，仅前端使用。 */
+  roleNode?: AuthorizationRoleNode;
   /** 已持久化 ID 的显示资料尚未通过当前候选上下文加载。 */
   labelPending?: boolean;
   id: string;

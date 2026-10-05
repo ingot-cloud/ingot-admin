@@ -142,6 +142,63 @@ describe("委派角色版本多选", () => {
     ]);
   });
 
+  it("分配角色模式替换同角色版本，取消不改变已选快照", async () => {
+    const previous = {
+      id: "49",
+      name: "平台治理 · v1",
+      roleRevisionRef: { kind: "PLATFORM_CUSTOM", id: "49" },
+      actions: [],
+      grants: [],
+      roleNode: { ...version, id: "49", name: "v1", revisionNumber: 1 },
+    };
+    const treeApi = vi.fn(
+      async (query: AuthorizationRoleCandidateQuery) =>
+        ({
+          data: { items: query.roleId ? [version] : [role], total: 1, page: 1, pageSize: 20 },
+        }) as R<IamPageResponse<AuthorizationRoleNode>>,
+    );
+    const detailApi = vi.fn(
+      async () =>
+        ({
+          data: {
+            items: [
+              {
+                id: "50",
+                name: "平台治理 · v2",
+                roleRevisionRef: version.roleRevisionRef,
+                parameterDefinitions: [],
+                actions: [],
+                grants: [],
+              },
+            ],
+            total: 1,
+            page: 1,
+            pageSize: 20,
+            supported: true,
+          },
+        }) as R<AuthorizationCandidatePage>,
+    );
+    const wrapper = mount(BizIamDelegationRolePicker, {
+      props: { treeApi, detailApi, resetKey: 1, modelValue: [previous], oneVersionPerRole: true },
+      global: { plugins: [createPinia()], stubs },
+    });
+    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await flushPromises();
+    await wrapper.find('[role="treeitem"] > button').trigger("click");
+    await flushPromises();
+    await wrapper.find('input[type="checkbox"]').trigger("change");
+    expect(wrapper.text()).toContain("已选：1 个版本");
+    expect(wrapper.emitted("update:modelValue")).toBeUndefined();
+    await wrapper
+      .findAll("button")
+      .find((item) => item.text() === "确定")
+      ?.trigger("click");
+    await flushPromises();
+    expect(wrapper.emitted("update:modelValue")?.at(-1)?.[0]).toEqual([
+      expect.objectContaining({ id: "50", roleNode: version }),
+    ]);
+  });
+
   it("确认请求尚未返回时关闭弹窗不会写入过期选择", async () => {
     const treeApi = vi.fn(
       async (query: AuthorizationRoleCandidateQuery) =>

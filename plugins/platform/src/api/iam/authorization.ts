@@ -4,6 +4,7 @@ import {
   IAM_API_PREFIX,
   type AssignmentContext,
   type AuthorizationCandidatesApi,
+  type AuthorizationCandidatePage,
   type AuthorizationRoleCandidateQuery,
   type AuthorizationRoleNode,
   mapIamPage,
@@ -419,6 +420,18 @@ export const PlatformAssignmentUpdatePreviewAPI = (
   );
 export const PlatformAssignmentCandidatesAPI: AuthorizationCandidatesApi = (query) =>
   request.get(`${IAM_API_PREFIX}/v1/platform/assignments/candidates`, query);
+
+export function PlatformAssignmentSelectedCandidatesAPI(
+  id: string,
+  query: Parameters<AuthorizationCandidatesApi>[0],
+): Promise<R<AuthorizationCandidatePage>> {
+  return request.get(`${IAM_API_PREFIX}/v1/platform/assignments/${id}/selected-candidates`, {
+    kind: query.kind,
+    parameterKey: query.parameterKey,
+    page: query.page,
+    pageSize: query.pageSize,
+  });
+}
 
 export function PlatformAssignmentRoleCandidatesAPI(
   query: AuthorizationRoleCandidateQuery,
