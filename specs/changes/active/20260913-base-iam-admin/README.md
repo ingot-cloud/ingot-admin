@@ -97,3 +97,8 @@
 2026-10-05：角色字段增量RF01–RF07完成，状态validating；admin-common92、platform118项组件、公共/平台/组织类型、只读lint、依赖边界和两管理台构建通过。共享/租户流程保留，RF08真实账号、视觉、部署及性能验收仍待用户执行，主change保持implementing。来源及SHA-256已同步；未提交、未改current，人工步骤见 [更新后的后端验收清单](sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md)。
 
 2026-10-05最终直接替换：平台旧字段页面/API模型和roleFieldsEnabled标志已清理，字段能力直接用于角色配置。DC01–DC04开发及自动化完成，admin-common92、platform116项、三包类型、只读lint、边界与两管理台构建通过；主change仍implementing，RF08人工待用户。权威来源以SOURCES.md最后一表为准。
+
+
+## 2026-10-06 平台成员联系资料独立存储
+
+用户批准仅调整平台成员联系方式及相关前后端接口、迁移与初始化SQL，需求、设计和任务见 [平台成员联系资料增量](./PLATFORM-MEMBER-CONTACTS-REFINEMENT.md)。主状态保持implementing，不提前更新current。

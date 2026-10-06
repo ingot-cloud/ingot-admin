@@ -260,3 +260,17 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `22d0c0c893eb94e68e11c6fc77a50e28aab4ab7ed489401d841891667f0e8092` |
 | `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `dba95f558ddb8472b3f2a1a310b5642981933262277b5cb473f317fe10667d2c` |
 | `VERIFICATION-GUIDE.md` | [sources/BACKEND_VERIFICATION_GUIDE.md](./sources/BACKEND_VERIFICATION_GUIDE.md) | `13ddacc98d5464464016c1c8ec07b5b085fcf8cca5b79dbfaed38273f88a1ac8` |
+
+
+## 2026-10-06 平台成员联系资料最新来源
+
+以下校验值覆盖相同文件历史哈希。平台成员联系手机号/邮箱独立存储，创建一次复制账号初值，后续编辑或清空不修改登录资料；接口结构和租户逻辑保持。一次性014迁移及权威初始化DDL已补齐，开发与自动化完成，目标库升级和真实身份人工验收待执行。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `efdd4197f3e8f69a8942465abb89dc8ce25df9765537df245dc1420a53d54cfa` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `96ab89bd2f806bcd9ad6be51dde99230a5d1d684d11a94db209080b0732a48cc` |
+| `PLATFORM-MEMBER-CONTACTS-REFINEMENT.md` | [sources/BACKEND_PLATFORM_MEMBER_CONTACTS_REFINEMENT.md](./sources/BACKEND_PLATFORM_MEMBER_CONTACTS_REFINEMENT.md) | `51a10b0c2bc92c7684569602f738f7b31a2651cfb9d6c1d538129b40b48482e7` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `f209da4c53cf5f3090521e169a0b8b4f592843478cde8ed7c85319a24c21e707` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `2d3f4fe666057bd269eebe438b5a6d13dc53a2d86b0d8d6c237bf5f39913ee2a` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `a7a5fac546c4e6b8652218579b16b8426c01480dafa5b80853f2da52005228dc` |
