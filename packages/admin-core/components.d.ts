@@ -76,6 +76,7 @@ declare module 'vue' {
     InAppBarSearchPane: typeof import('./src/layouts/widgets/header/InAppBarSearchPane.vue')['default']
     InAppBarSearchPanel: typeof import('./src/layouts/widgets/search/InAppBarSearchPanel.vue')['default']
     InAppBarUtilities: typeof import('./src/layouts/widgets/header/InAppBarUtilities.vue')['default']
+    InApplicationIcon: typeof import('./src/layouts/widgets/header/InApplicationIcon.vue')['default']
     InAvatar: typeof import('./src/components/avatar/InAvatar.vue')['default']
     InBizTabPanel: typeof import('./src/components/tabs/InBizTabPanel.vue')['default']
     InBizTabs: typeof import('./src/components/tabs/InBizTabs.vue')['default']

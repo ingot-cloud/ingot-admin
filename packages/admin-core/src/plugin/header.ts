@@ -212,6 +212,10 @@ export interface InAdminHeaderNavSelectPayload {
  * `activeKey` 指向不存在或已隐藏的入口时按未选中处理。
  */
 export interface InAdminHeaderNavigationConfig {
+  /** 应用模式复用 IAM bootstrap 并联动侧栏，默认沿用宿主配置菜单。 */
+  source?: "configured" | "applications";
+  /** 直出入口数量上限，宽度不足时继续收纳；默认不限制。 */
+  maxVisibleItems?: number;
   /** 大类入口列表，从左到右排列；宽度不足时按算法收纳 */
   items?: InAdminHeaderReactive<InAdminHeaderNavItem[]>;
   /** 当前选中入口，由 APP 控制；核心只读并高亮 */

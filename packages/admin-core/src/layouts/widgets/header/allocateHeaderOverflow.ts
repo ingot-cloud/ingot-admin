@@ -7,6 +7,7 @@ export interface HeaderOverflowInput {
   availableWidth: number;
   navItems: HeaderOverflowItem[];
   activeNavKey?: string;
+  maxVisibleNavItems?: number;
   navSlotWidth: number;
   searchEnabled: boolean;
   searchFullWidth: number;
@@ -167,7 +168,9 @@ export const allocateHeaderOverflow = (input: HeaderOverflowInput): HeaderOverfl
   const utilityItems = [...input.utilityItems];
   const minNav = navItems.length > 0 ? 1 : 0;
 
-  let overflowNavCount = 0;
+  const maximum = input.maxVisibleNavItems === undefined ? navItems.length
+    : Math.max(minNav, Math.floor(input.maxVisibleNavItems));
+  let overflowNavCount = Math.max(0, navItems.length - maximum);
   let overflowNavSlot = false;
   let searchCompact = false;
   let overflowUtilityCount = 0;

@@ -5,6 +5,8 @@ export {};
 
 declare module "vue-router" {
   interface RouteMeta {
+    /** IAM 应用标识，服务器菜单映射，不能用于后端鉴权。 */
+    applicationId?: string;
     /**
      * 路由名称
      */

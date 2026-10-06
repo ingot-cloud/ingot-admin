@@ -4,85 +4,18 @@ import {
   defineHeaderBuiltinUtility,
   InAdminHeaderBuiltinUserMenuName,
   InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderNavItemType,
-  InAdminHeaderNavGroupTrigger,
   InAdminHeaderUtilityItemType,
   type InAdminHeaderConfig,
 } from "@ingot/admin-core";
 import { ref } from "vue";
 import BizHeaderHelp from "./components/BizHeaderHelp.vue";
 
-/**
- * 顶栏示例配置，便于对照大类菜单、小部件和用户菜单。
- * 选中与点击只做演示提示，未接入侧栏过滤或业务路由。
- */
-const activeNavKey = ref("ops");
+/** 平台导航复用 IAM 当前应用与授权菜单，核心组件联动路由和侧栏。 */
 const notifyCount = ref(3);
 
-const privateOnNavSelect = (entryKey: string, itemKey?: string) => {
-  if (itemKey) {
-    Message.success(`选择分组项：${entryKey} / ${itemKey}`);
-    return;
-  }
-  activeNavKey.value = entryKey;
-  Message.success(`切换大类：${entryKey}`);
-};
-
 export const createAdminHeader = (): InAdminHeaderConfig => ({
-  navigation: {
-    activeKey: activeNavKey,
-    onSelect: ({ entryKey, itemKey }) => {
-      privateOnNavSelect(entryKey, itemKey);
-    },
-    items: [
-      { key: "platform", label: "平台管理", icon: "ep:monitor" },
-      {
-        key: "more",
-        type: InAdminHeaderNavItemType.Group,
-        label: "更多功能",
-        icon: "fluent:home-more-48-regular",
-        trigger: InAdminHeaderNavGroupTrigger.Hover,
-        groups: [
-          {
-            key: "iam",
-            title: "身份",
-            columns: 1,
-            items: [
-              { key: "tenants", label: "租户", icon: "ep:office-building" },
-              { key: "accounts", label: "账号", icon: "ep:user" },
-            ],
-          },
-          {
-            key: "system",
-            title: "系统",
-            items: [
-              { key: "app", label: "应用", icon: "ep:connection" },
-              { key: "dict", label: "字典", icon: "ep:collection" },
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  search: {
-    placeholder: "搜索功能导航",
-    shortcuts: [
-      {
-        key: "tenants",
-        label: "租户",
-        path: "/platform/tenants",
-        icon: "ep:office-building",
-        description: "租户治理",
-      },
-      {
-        key: "accounts",
-        label: "账号",
-        path: "/platform/accounts",
-        icon: "ep:user",
-        description: "平台账号",
-      },
-    ],
-  },
+  navigation: { source: "applications", maxVisibleItems: 2 },
+  search: { placeholder: "搜索功能导航" },
   utilities: [
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Fullscreen),
     {

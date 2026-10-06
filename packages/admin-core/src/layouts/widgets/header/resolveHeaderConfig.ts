@@ -142,6 +142,8 @@ export interface ResolvedHeaderConfig {
   };
   /** 大类菜单解析结果 */
   navigation: {
+    /** 直出数量上限 */
+    maxVisibleItems?: number;
     /** 可见入口 */
     items: ResolvedHeaderNavItem[];
     /** 当前选中入口；无效 key 仍原样返回，渲染时按未选中处理 */
@@ -392,6 +394,7 @@ export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeade
       component: config?.brand?.component,
     },
     navigation: {
+      maxVisibleItems: config?.navigation?.maxVisibleItems,
       items: navItems
         .map((item) => resolveNavItem(item, groupTrigger))
         .filter((item): item is ResolvedHeaderNavItem => Boolean(item)),

@@ -23,6 +23,7 @@ export const generateMenus = (routes: Array<RouteRecordRaw>): Array<MenuRouteRec
     .map((item) => {
       const menu: MenuRouteRecord = {
         path: item.path,
+        applicationId: item.meta?.applicationId,
         title: item.meta?.title,
         icon: item.meta?.icon,
       };
@@ -108,6 +109,7 @@ const transformMenuItem = (route: RouteRecordRaw, menu: MenuTreeNode) => {
 const menuToRoute = (menu: MenuTreeNode) => {
   const meta: RouteRecordRaw["meta"] = {
     title: menu.name,
+    applicationId: menu.appId,
     icon: menu.icon,
     hideMenu: menu.hidden,
     hideBreadcrumb: menu.hideBreadcrumb,

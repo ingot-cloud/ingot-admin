@@ -18,6 +18,20 @@ describe("allocateHeaderOverflow", () => {
     zoneGap: 12,
   };
 
+  it("应用导航宽度充足也最多直出两个，并保留更多中选中的应用", () => {
+    const result = allocateHeaderOverflow({ ...base, availableWidth: 1200,
+      navItems: keys("a", "b", "c"), activeNavKey: "c", maxVisibleNavItems: 2,
+      utilityItems: [] });
+    expect(result.visibleNavKeys).toEqual(["a", "c"]);
+    expect(result.overflowNavKeys).toEqual(["b"]);
+    expect(result.showNavMore).toBe(true);
+    const narrow = allocateHeaderOverflow({ ...base, availableWidth: 180,
+      navItems: keys("a", "b", "c"), activeNavKey: "c", maxVisibleNavItems: 2,
+      utilityItems: [] });
+    expect(narrow.visibleNavKeys).toEqual(["c"]);
+    expect(narrow.searchCompact).toBe(true);
+  });
+
   it("宽度足够时全部直出", () => {
     const result = allocateHeaderOverflow({
       ...base,

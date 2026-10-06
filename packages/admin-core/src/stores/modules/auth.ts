@@ -1,5 +1,5 @@
 import type { UserInfo, UserEffectivePermissionVO } from "@/models/security";
-import type { IamBootstrap, CurrentCapabilities, AuthorizationDomain } from "@/models/iam";
+import type { IamBootstrap, CurrentCapabilities, AuthorizationDomain, IamApplicationSummary } from "@/models/iam";
 import { LogoutAPI } from "@/api/common/auth";
 import { IamBootstrapAPI, IamCapabilitiesAPI } from "@/api/common/iam";
 import { mapIamMenus } from "@/router/helper/iamMenus";
@@ -158,7 +158,7 @@ export const usePermissions = defineStore("security.permissions", () => {
   const tenantId = ref<string | null>();
   const memberId = ref<string>();
   const accountId = ref<string>();
-  const applications = ref<Array<{ id: string; name: string; code?: string }>>([]);
+  const applications = ref<IamApplicationSummary[]>([]);
 
   const updateRoles = (params: Array<string>) => {
     roles.value = params;
@@ -193,11 +193,7 @@ export const usePermissions = defineStore("security.permissions", () => {
     tenantId.value = bootstrap.context.tenantId ?? null;
     memberId.value = bootstrap.context.memberId;
     accountId.value = bootstrap.context.accountId;
-    applications.value = bootstrap.applications.map((item) => ({
-      id: item.id,
-      name: item.name,
-      code: item.code,
-    }));
+    applications.value = bootstrap.applications.map((item) => ({ ...item }));
   };
 
   const clear = (): void => {

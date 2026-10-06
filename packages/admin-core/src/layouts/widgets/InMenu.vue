@@ -50,6 +50,8 @@
 <script lang="ts" setup>
 import { useAppStateStore } from "@/stores/modules/app";
 import { useRouterStore } from "@/stores/modules/router";
+import { adminAppOptionsKey } from "@/config";
+import { applicationMenus } from "./header/applicationNavigation";
 import { getAdminRuntimeConfig } from "@/runtime";
 import { shellLayoutKey } from "@/layouts/main/types";
 
@@ -97,7 +99,10 @@ const activePath = computed(() => {
   return route.path;
 });
 
-const { getMenus } = storeToRefs(useRouterStore());
+const menuStore = useRouterStore();
+const options = inject(adminAppOptionsKey, null);
+const getMenus = computed(() => options?.header?.navigation?.source === "applications"
+  ? applicationMenus(menuStore.getMenus, menuStore.activeApplicationId ?? "") : menuStore.getMenus);
 
 defineSlots<{
   "sidebar-top"?: () => unknown;

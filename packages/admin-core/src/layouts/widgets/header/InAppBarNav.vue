@@ -7,7 +7,7 @@
         class="in-app-bar-nav__item"
         :data-nav-key="item.key"
       >
-        <in-icon v-if="item.icon" :name="item.icon" class="in-app-bar-nav__icon" />
+        <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
         <span class="in-app-bar-nav__label">{{ item.label }}</span>
         <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
       </span>
@@ -53,7 +53,7 @@
       @mouseenter="privateOnEntryEnter(item)"
       @mouseleave="privateOnEntryLeave(item)"
     >
-      <in-icon v-if="item.icon" :name="item.icon" class="in-app-bar-nav__icon" />
+      <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
       <span class="in-app-bar-nav__label">{{ item.label }}</span>
       <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
     </button>
@@ -113,7 +113,7 @@
                 :disabled="entry.disabled"
                 @click="privateOnGroupItemClick(openGroup.key, entry)"
               >
-                <in-icon v-if="entry.icon" :name="entry.icon" class="in-app-bar-nav__icon" />
+                <InApplicationIcon v-if="entry.icon" :icon="entry.icon" class="in-app-bar-nav__icon" />
                 <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
               </button>
             </div>
@@ -154,7 +154,7 @@
           role="menuitem"
           @click="privateOnEntryClick(item)"
         >
-          <in-icon v-if="item.icon" :name="item.icon" class="in-app-bar-nav__icon" />
+          <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
           {{ item.label }}
         </button>
       </template>
@@ -176,7 +176,7 @@
               role="menuitem"
               @click="privateOnGroupItemClick(moreGroup.key, entry)"
             >
-              <in-icon v-if="entry.icon" :name="entry.icon" class="in-app-bar-nav__icon" />
+              <InApplicationIcon v-if="entry.icon" :icon="entry.icon" class="in-app-bar-nav__icon" />
               <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
             </button>
           </div>
@@ -186,6 +186,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import InApplicationIcon from "./InApplicationIcon.vue";
 import type { ComponentPublicInstance } from "vue";
 import {
   InAdminHeaderNavItemType,

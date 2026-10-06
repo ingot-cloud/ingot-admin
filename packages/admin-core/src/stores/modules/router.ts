@@ -15,6 +15,8 @@ export const useRouterStore = defineStore("router", () => {
   const cacheNames = ref<Array<string>>([]);
 
   const getMenus = computed(() => menus.value);
+  const activeApplicationId = ref<string>();
+  const setActiveApplication = (id: string | undefined): void => { activeApplicationId.value = id; };
 
   const applyMergedMenus = (mergedMenus: ReturnType<typeof mergeMenuTrees>) => {
     dynamicRoutes.value = transformMenu(mergedMenus);
@@ -62,5 +64,5 @@ export const useRouterStore = defineStore("router", () => {
     });
   };
 
-  return { menus, cacheNames, getMenus, fetchRoutes, applyRemoteMenus };
+  return { menus, cacheNames, getMenus, activeApplicationId, setActiveApplication, fetchRoutes, applyRemoteMenus };
 });

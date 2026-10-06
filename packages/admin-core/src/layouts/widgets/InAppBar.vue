@@ -219,6 +219,7 @@ const privateMeasure = () => {
     availableWidth,
     navItems: privateCollectNavWidths(),
     activeNavKey: header.value.navigation.activeKey,
+    maxVisibleNavItems: header.value.navigation.maxVisibleItems,
     navSlotWidth: lastNavSlotWidth.value,
     searchEnabled: showSearch.value,
     searchFullWidth,
