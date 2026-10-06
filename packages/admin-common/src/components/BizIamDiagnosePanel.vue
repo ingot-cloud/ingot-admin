@@ -10,6 +10,10 @@
         :key="`${item.assignmentId}-${item.delegationId}-${index}`"
       >
         {{ item.summary }}
+        <biz-iam-role-field-summary
+          v-if="item.resourceFieldPermissions"
+          :permissions="item.resourceFieldPermissions"
+        />
         <span v-if="index < decision.sources.length - 1">、</span>
       </span>
     </div>
@@ -21,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
 import type { Decision } from "../models/iam";
 
 defineOptions({ name: "BizIamDiagnosePanel" });

@@ -19,6 +19,7 @@
             @page="roles.fetchData({ type: 'current', value: $event })"
             @assignment="handleAssignmentEdit"
             @revoke="handleAssignmentDelete"
+            @upgrade="upgradeRef?.open($event)"
           />
         </in-biz-tab-panel>
         <in-biz-tab-panel
@@ -32,6 +33,7 @@
             :page="assignments.pageInfo.value"
             :headers="visibleAssignmentHeaders"
             :table-id="ASSIGNMENT_TABLE_ID"
+            @selection-change="selectedUpgrades = $event"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="assignments.fetchData"
@@ -64,6 +66,12 @@
               />
             </template>
             <template #tools-end>
+              <in-button
+                v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE)"
+                :disabled="!selectedUpgrades.length"
+                @in-click="upgradeRef?.open(selectedUpgrades)"
+                >批量升级版本</in-button
+              >
               <in-table-actions
                 variant="toolbar"
                 :actions="assignmentToolbarActions"
@@ -198,6 +206,14 @@
     :update-api="PlatformAssignmentUpdateAPI"
     @success="refreshAssignmentViews"
   />
+  <biz-iam-assignment-upgrade-drawer
+    ref="upgradeRef"
+    :role-candidates-api="upgradeRoles"
+    :candidates-api="upgradeCandidates"
+    :preview-api="AssignmentUpgradePreviewAPI"
+    :save-api="AssignmentUpgradeAPI"
+    @success="refreshAssignmentViews"
+  />
   <biz-iam-platform-delegation-drawer
     ref="delegationRef"
     :candidates-api="PlatformDelegationCandidatesAPI"
@@ -226,6 +242,7 @@ import {
   AssignmentEffectiveStatusExtArray,
   AuthorizationDomain,
   BizIamPlatformAssignmentDrawer,
+  BizIamAssignmentUpgradeDrawer,
   BizIamPlatformDelegationDrawer,
   BizIamPlatformDiagnoseDrawer,
   formatDuration,
@@ -301,6 +318,22 @@ import {
 } from "./table";
 import { useOps } from "./useOps";
 import RoleWorkspace from "./RoleWorkspace.vue";
+import {
+  AssignmentUpgradePreviewAPI,
+  AssignmentUpgradeAPI,
+  AssignmentUpgradeRoleCandidatesAPI,
+  AssignmentUpgradeCandidatesAPI,
+} from "@/api/iam/resourceExtension";
+const upgradeRoles =
+  (id: string): import("@ingot/admin-common").AuthorizationRoleCandidatesApi =>
+  (query) =>
+    AssignmentUpgradeRoleCandidatesAPI(id, query);
+const upgradeCandidates =
+  (id: string): import("@ingot/admin-common").AuthorizationCandidatesApi =>
+  (query) =>
+    AssignmentUpgradeCandidatesAPI(id, query);
+const upgradeRef = ref<InstanceType<typeof BizIamAssignmentUpgradeDrawer>>();
+const selectedUpgrades = ref<AssignmentRow[]>([]);
 
 const { hasAction, actionCodes } = useCapabilities();
 const route = useRoute();
@@ -323,16 +356,27 @@ watch(
 );
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
   useOps(tab);
+watch(
+  () => assignments.pageInfo.value.records,
+  () => {
+    selectedUpgrades.value = [];
+  },
+);
 const selectedAssignmentColumns = ref<string[]>([]);
 const selectedDelegationColumns = ref<string[]>([]);
-const visibleAssignmentHeaders = computed(() =>
-  applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
-);
+const visibleAssignmentHeaders = computed(() => [
+  ...(hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE)
+    ? [{ type: "selection", prop: "selection", width: 48, required: true }]
+    : []),
+  ...applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
+]);
 const visibleDelegationHeaders = computed(() =>
   applyColumnSelection(delegationHeaders, selectedDelegationColumns.value),
 );
 const assignmentSubjectTypeOptions = withAllPickerOption(useSubjectTypeEnum().getOptions());
-const assignmentStatusOptions = withAllPickerOption(useAssignmentEffectiveStatusEnum().getOptions());
+const assignmentStatusOptions = withAllPickerOption(
+  useAssignmentEffectiveStatusEnum().getOptions(),
+);
 const assignmentStatusFilter = computed({
   get: () => toStringPickerValue(assignments.condition.effectiveStatus),
   set: (value: string | number | boolean | null) => {
@@ -446,6 +490,7 @@ const assignmentToolbarActions = computed(() =>
 const assignmentRowActionsOf = (item: AssignmentRow): Array<InTableAction<AssignmentRow>> =>
   createAssignmentRowActions(item, {
     onEdit: handleAssignmentEdit,
+    onUpgrade: (row) => upgradeRef.value?.open([row]),
     onDelete: handleAssignmentDelete,
     onDiagnose: handleAssignmentDiagnose,
   });

@@ -184,12 +184,27 @@ export function createAssignmentRowActions(
     onEdit: (row: AssignmentRow) => void;
     onDelete: (row: AssignmentRow) => void;
     onDiagnose: (row: AssignmentRow) => void;
+    onUpgrade?: (row: AssignmentRow) => void;
   },
 ): Array<InTableAction<AssignmentRow>> {
   const update = objectActionAllowed(row.capabilities, IamAction.PLATFORM_ASSIGNMENT_UPDATE);
   const remove = objectActionAllowed(row.capabilities, IamAction.PLATFORM_ASSIGNMENT_DELETE);
   const memberSubject = row.record.assignment.subject.type === SubjectType.MEMBER;
+  const upgrade = objectActionAllowed(row.capabilities, IamAction.PLATFORM_ASSIGNMENT_UPGRADE);
   return [
+    ...(handlers.onUpgrade
+      ? [
+          {
+            key: "upgrade",
+            label: "升级版本",
+            kind: "default" as const,
+            permission: IamAction.PLATFORM_ASSIGNMENT_UPGRADE,
+            disabled: !upgrade.allowed,
+            disabledReason: upgrade.message,
+            onSelect: handlers.onUpgrade,
+          },
+        ]
+      : []),
     {
       key: "edit",
       label: "修改",

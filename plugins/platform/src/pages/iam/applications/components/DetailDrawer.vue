@@ -20,7 +20,7 @@
         </in-detail-field>
         <in-detail-field label="管理域" :value="domainLabel" />
         <in-detail-field label="名称" :value="detail.record.name">
-            <el-input v-model="draft.name" placeholder="请输入应用名称" />
+          <el-input v-model="draft.name" placeholder="请输入应用名称" />
         </in-detail-field>
         <in-detail-field label="图标">
           <template #view>
@@ -30,15 +30,15 @@
           <application-icon-field v-model="draft.icon" />
         </in-detail-field>
         <in-detail-field label="说明" :value="detail.record.description">
-            <el-input
-              v-model="draft.description"
-              type="textarea"
-              :rows="3"
-              placeholder="请输入说明"
-            />
+          <el-input
+            v-model="draft.description"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入说明"
+          />
         </in-detail-field>
         <in-detail-field label="排序" :value="detail.record.sortOrder">
-            <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
+          <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
         </in-detail-field>
         <in-detail-field label="状态">
           <template #view>
@@ -79,25 +79,25 @@
               @clear="privateOnResourceSearch"
             />
           </template>
-        <template #tools-end>
-          <in-button v-auth="IamAction.PLATFORM_RESOURCE_CREATE" @click="privateCreateResource">
-            创建资源
-          </in-button>
-        </template>
-        <template #name="{ item }">{{ asResource(item).record.name }}</template>
-        <template #code="{ item }">
-          <in-copy-tag :text="asResource(item).record.code" />
-        </template>
-        <template #scope="{ item }">
-          {{ formatScopeKinds(asResource(item).record.scopeCapabilities) }}
-        </template>
-        <template #actions="{ item }">
-          <in-button text link @click="privateOpenActions(asResource(item))">操作</in-button>
-          <in-button text link @click="privateEditResource(asResource(item))">编辑</in-button>
-          <in-button text link type="danger" @click="privateDeleteResource(asResource(item))">
-            删除
-          </in-button>
-        </template>
+          <template #tools-end>
+            <in-button v-auth="IamAction.PLATFORM_RESOURCE_CREATE" @click="privateCreateResource">
+              创建资源
+            </in-button>
+          </template>
+          <template #name="{ item }">{{ asResource(item).record.name }}</template>
+          <template #code="{ item }">
+            <in-copy-tag :text="asResource(item).record.code" />
+          </template>
+          <template #scope="{ item }">
+            {{ formatScopeKinds(asResource(item).record.scopeCapabilities) }}
+          </template>
+          <template #actions="{ item }">
+            <in-button text link @click="privateOpenActions(asResource(item))">操作</in-button>
+            <in-button text link @click="privateEditResource(asResource(item))">编辑</in-button>
+            <in-button text link type="danger" @click="privateDeleteResource(asResource(item))">
+              删除
+            </in-button>
+          </template>
         </in-table>
       </div>
     </in-biz-tab-panel>
@@ -277,12 +277,19 @@ const menuExtraFilterCount = computed(() => {
   return count;
 });
 const filteredMenus = computed(() => filterMenuTree(menus.value, menuFilter));
-const resourceRef = ref<{ show: (appId: string, target?: ResourceDetail<AppResourceRecord>) => void }>();
+const resourceRef = ref<{
+  show: (appId: string, target?: ResourceDetail<AppResourceRecord>) => void;
+}>();
 const actionListRef = ref<{
   show: (appId: string, target: ResourceDetail<AppResourceRecord>, applicationCode: string) => void;
 }>();
 const menuRef = ref<{
-  show: (appId: string, menuList: MenuTreeRow[], target?: MenuTreeRow, applicationName?: string) => void;
+  show: (
+    appId: string,
+    menuList: MenuTreeRow[],
+    target?: MenuTreeRow,
+    applicationName?: string,
+  ) => void;
 }>();
 const draft = reactive({
   name: "",

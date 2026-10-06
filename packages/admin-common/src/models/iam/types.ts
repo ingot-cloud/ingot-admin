@@ -423,12 +423,16 @@ export interface GrantCatalogAction {
   name: string;
 }
 
+export type ResourceFieldPermissions = Record<string, Record<string, FieldAccess>>;
+
 export interface GrantCatalogResource {
   id: string;
   code: string;
   name: string;
   scopeCapabilities: ScopeKind[];
   actions: GrantCatalogAction[];
+  fieldCapabilities?: FieldCapability[];
+  fieldDefaults?: Record<string, FieldAccess>;
 }
 
 export interface AppMenuActionRecord {
@@ -674,6 +678,9 @@ export interface RoleGrantRecord {
   scopes: ScopeExpression[];
   scopeCapabilities: ScopeKind[];
   status?: ConfigurationStatus;
+  fieldCapabilities?: FieldCapability[];
+  fieldDefaults?: Record<string, FieldAccess>;
+  fieldPermissions?: Record<string, FieldAccess>;
 }
 
 export interface RoleDefinitionDraft {
@@ -681,6 +688,7 @@ export interface RoleDefinitionDraft {
   deltas: RoleDelta[];
   parameterDefinitions: RoleParameterDefinition[];
   metadataOverrides?: RoleMetadataOverrides;
+  resourceFieldPermissions?: ResourceFieldPermissions;
 }
 
 export type RoleCreateKind = RoleKind.SHARED | RoleKind.PLATFORM_CUSTOM | RoleKind.TENANT_CUSTOM;
@@ -761,7 +769,9 @@ export interface RoleRevision {
   deltas: RoleDelta[];
   parameterDefinitions: RoleParameterDefinition[];
   metadataOverrides?: RoleMetadataOverrides;
+  resourceFieldPermissions?: ResourceFieldPermissions;
   displayDeltas?: RoleDisplayDelta[];
+  previousResourceFieldPermissions?: ResourceFieldPermissions;
 }
 
 export interface RoleRevisionRef {
@@ -810,6 +820,7 @@ export interface DiagnoseInput {
 }
 
 export interface DecisionSource {
+  resourceFieldPermissions?: ResourceFieldPermissions;
   assignmentId?: string;
   delegationId?: string;
   roleRevisionRef?: RoleRevisionRef;
@@ -1068,6 +1079,7 @@ export interface AuthorizationActionOption {
 export interface AuthorizationOption {
   /** 选择器保留的角色树身份快照，仅前端使用。 */
   roleNode?: AuthorizationRoleNode;
+  resourceFieldPermissions?: ResourceFieldPermissions;
   /** 已持久化 ID 的显示资料尚未通过当前候选上下文加载。 */
   labelPending?: boolean;
   id: string;

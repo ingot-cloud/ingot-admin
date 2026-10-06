@@ -26,23 +26,25 @@
           />
         </div>
         <in-loading :loading="loading" class="flex-1 min-h-0 overflow-auto">
-          <div
-            v-for="row in rows"
-            :key="row.record.id"
-            class="flex h-36px items-center gap-4px pl-12px pr-4px mb-4px rounded-8px"
-            :class="roleId === row.record.id ? 'bg-[var(--in-permission-panel-bg)]' : ''"
-          >
-            <button
-              type="button"
-              class="flex-1 h-full min-w-0 p-0 text-left border-none bg-transparent cursor-pointer text-[var(--in-text-color)]"
-              @click="selectRole(row)"
+          <div class="flex min-h-0 flex-col">
+            <div
+              v-for="row in rows"
+              :key="row.record.id"
+              class="flex flex-none h-36px items-center gap-4px pl-12px pr-4px mb-4px rounded-8px"
+              :class="roleId === row.record.id ? 'bg-[var(--in-permission-panel-bg)]' : ''"
             >
-              <span class="block truncate" :title="row.record.name">{{ row.record.name }}</span>
-            </button>
-            <in-table-actions :actions="rowActions(row)" :row="row" />
-          </div>
-          <div v-if="!rows.length && !loading" class="p-12px text-[var(--el-text-color-secondary)]">
-            暂无角色
+              <button
+                type="button"
+                class="flex-1 h-full min-w-0 p-0 text-left border-none bg-transparent cursor-pointer text-[var(--in-text-color)]"
+                @click="selectRole(row)"
+              >
+                <span class="block truncate" :title="row.record.name">{{ row.record.name }}</span>
+              </button>
+              <in-table-actions :actions="rowActions(row)" :row="row" />
+            </div>
+            <div v-if="!rows.length && !loading" class="p-12px text-[var(--el-text-color-secondary)]">
+              暂无角色
+            </div>
           </div>
         </in-loading>
         <el-pagination
@@ -249,6 +251,7 @@ const emits = defineEmits<{
   page: [page: number];
   assignment: [row: AssignmentRow];
   revoke: [row: AssignmentRow];
+  upgrade: [rows: AssignmentRow[]];
 }>();
 const { hasAction } = useCapabilities();
 const {
@@ -269,6 +272,7 @@ const selectedRole = ref<RoleRow>();
 const sourceActions = (row: AssignmentRow): InTableAction<AssignmentRow>[] =>
   createAssignmentRowActions(row, {
     onEdit: (item) => emits("assignment", item),
+    onUpgrade: (item) => emits("upgrade", [item]),
     onDelete: (item) => emits("revoke", item),
     onDiagnose: () => {},
   }).filter((action) => action.key !== "diagnose");

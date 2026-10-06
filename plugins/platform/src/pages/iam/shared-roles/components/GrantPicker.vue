@@ -20,16 +20,23 @@
             highlight-current
             @node-click="privateSelectApp"
           />
-          <div v-if="!applications.length && !appLoading" class="text-12px text-[var(--el-text-color-secondary)] px-8px">
+          <div
+            v-if="!applications.length && !appLoading"
+            class="text-12px text-[var(--el-text-color-secondary)] px-8px"
+          >
             没有可用的{{ appKindLabel }}
           </div>
           <div v-if="appHasMore" class="flex justify-center py-8px">
-            <in-button text type="primary" :loading="appLoading" @in-click="privateLoadMoreApps">加载更多</in-button>
+            <in-button text type="primary" :loading="appLoading" @in-click="privateLoadMoreApps"
+              >加载更多</in-button
+            >
           </div>
         </div>
       </in-loading>
     </aside>
-    <section class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] px-16px">
+    <section
+      class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] px-16px"
+    >
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
       <in-loading :loading="resourceLoading" class="flex-1 min-h-0">
         <div class="h-full overflow-auto">
@@ -58,23 +65,38 @@
             </template>
           </in-tree>
           <div v-if="resourceHasMore" class="flex justify-center py-8px">
-            <in-button text type="primary" :loading="resourceLoading" @in-click="privateLoadMoreResources">
+            <in-button
+              text
+              type="primary"
+              :loading="resourceLoading"
+              @in-click="privateLoadMoreResources"
+            >
               加载更多
             </in-button>
           </div>
         </div>
       </in-loading>
     </section>
-    <aside class="w-280px shrink-0 flex flex-col min-h-0 min-w-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px">
+    <aside
+      class="w-280px shrink-0 flex flex-col min-h-0 min-w-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px"
+    >
       <div class="mb-12px">已选 {{ grants.length }} 个权限</div>
       <div class="flex-1 min-h-0 overflow-auto">
         <div v-if="!selectedGroups.length" class="text-12px text-[var(--el-text-color-secondary)]">
           尚未选择权限
         </div>
-        <div v-for="app in selectedGroups" :key="app.applicationId" class="flex flex-col gap-12px mb-16px">
+        <div
+          v-for="app in selectedGroups"
+          :key="app.applicationId"
+          class="flex flex-col gap-12px mb-16px"
+        >
           <div>{{ app.applicationName }}</div>
           <div class="h-1px bg-[var(--in-border-color)]" />
-          <div v-for="resource in app.resources" :key="resource.resourceId" class="flex flex-col gap-8px">
+          <div
+            v-for="resource in app.resources"
+            :key="resource.resourceId"
+            class="flex flex-col gap-8px"
+          >
             <div class="truncate">{{ resource.resourceName }}</div>
             <div
               v-for="grant in resource.grants"
@@ -82,7 +104,11 @@
               class="pl-12px flex items-center gap-8px min-w-0"
             >
               <span class="truncate flex-1 min-w-0">{{ grant.actionName }}</span>
-              <in-close-button size="sm" :label="`移除 ${grant.actionName}`" @click="privateRemoveGrant(grant.actionId)" />
+              <in-close-button
+                size="sm"
+                :label="`移除 ${grant.actionName}`"
+                @click="privateRemoveGrant(grant.actionId)"
+              />
             </div>
           </div>
         </div>
@@ -149,7 +175,9 @@ const appPage = ref(1);
 const appTotal = ref(0);
 const appLoading = ref(false);
 const applicationId = ref("");
-const currentApp = computed(() => applications.value.find((item) => item.id === applicationId.value));
+const currentApp = computed(() =>
+  applications.value.find((item) => item.id === applicationId.value),
+);
 const appKindLabel = computed(() =>
   props.domain === AuthorizationDomain.PLATFORM ? "平台应用" : "组织应用",
 );
@@ -224,7 +252,11 @@ const resourceCheckHint = (data: GrantTreeNode): string => {
 
 const keysFromGrants = (): string[] =>
   grants.value
-    .filter((item) => resources.value.some((resource) => resource.actions.some((action) => action.id === item.actionId)))
+    .filter((item) =>
+      resources.value.some((resource) =>
+        resource.actions.some((action) => action.id === item.actionId),
+      ),
+    )
     .map((item) => `a:${item.actionId}`);
 
 const checkedKeys = computed(() => keysFromGrants());
@@ -258,7 +290,8 @@ watch(
   },
 );
 
-const resourceOf = (id: string): GrantCatalogResource | undefined => resources.value.find((item) => item.id === id);
+const resourceOf = (id: string): GrantCatalogResource | undefined =>
+  resources.value.find((item) => item.id === id);
 
 const privateSearchApps = (): void => {
   beginTreeSync();
@@ -377,6 +410,15 @@ const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): Se
     applicationName: currentApp.value?.name ?? "",
     scopes: [defaultScope(resource.scopeCapabilities, resource.id)],
     scopeCapabilities: [...resource.scopeCapabilities],
+    fieldCapabilities: resource.fieldCapabilities,
+    fieldDefaults: resource.fieldDefaults,
+    fieldPermissions: JSON.parse(
+      JSON.stringify(
+        grants.value.find((grant) => grant.resourceId === resource.id)?.fieldPermissions ??
+          resource.fieldDefaults ??
+          {},
+      ),
+    ),
   };
 
 const replaceLoadedGrants = (actionIds: Set<string>): void => {

@@ -1,12 +1,26 @@
 <template>
-  <el-tag v-if="!items.length && initial" type="info">初始版本</el-tag>
-  <span v-else-if="!items.length">-</span>
+  <el-tag v-if="!items.length && !fieldChanges.length && initial" type="info">初始版本</el-tag>
+  <span v-else-if="!items.length && !fieldChanges.length">-</span>
   <in-button v-else type="primary" text link @in-click="privateOpen">{{ summary }}</in-button>
-  <in-dialog v-model="visible" :title="dialogTitle" :description="dialogDescription" width="560" append-to-body>
+  <in-dialog
+    v-model="visible"
+    :title="dialogTitle"
+    :description="dialogDescription"
+    width="560"
+    append-to-body
+  >
     <div class="flex flex-col gap-16px max-h-420px overflow-auto">
+      <div v-for="change in fieldChanges" :key="change.key">
+        字段变化 · 资源 {{ change.resourceId }} / {{ change.field }}：{{ change.before }} →
+        {{ change.after }}
+      </div>
       <div v-for="group in groups" :key="group.operation" class="flex flex-col gap-8px">
         <div>{{ group.label }}（{{ group.items.length }}）</div>
-        <div v-for="item in group.items" :key="item.actionId + item.operation" class="pl-12px flex flex-col gap-4px">
+        <div
+          v-for="item in group.items"
+          :key="item.actionId + item.operation"
+          class="pl-12px flex flex-col gap-4px"
+        >
           <div>{{ actionLabel(item.actionId) }}</div>
           <div v-if="scopeText(item)" class="text-12px text-[var(--el-text-color-secondary)]">
             {{ scopeText(item) }}
@@ -21,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { fieldPermissionChanges } from "../models/iam/roleFields";
 import {
   RoleDeltaOperation,
   formatScopeKinds,
@@ -36,6 +51,8 @@ const props = withDefaults(
     actionNames?: Record<string, string>;
     revision?: string;
     initial?: boolean;
+    fieldPermissions?: import("../models/iam").ResourceFieldPermissions;
+    previousFieldPermissions?: import("../models/iam").ResourceFieldPermissions;
   }>(),
   {
     items: () => [],
@@ -45,6 +62,9 @@ const props = withDefaults(
   },
 );
 
+const fieldChanges = computed(() =>
+  fieldPermissionChanges(props.previousFieldPermissions, props.fieldPermissions),
+);
 const visible = ref(false);
 const operationEnum = useRoleDeltaOperationEnum();
 const groupOrder = [
@@ -73,7 +93,12 @@ const summary = computed(() => {
       return count ? `${operationLabel(operation)} ${count}` : "";
     })
     .filter(Boolean);
-  return parts.join(" · ") || "查看变更";
+  return (
+    [
+      ...parts,
+      ...(fieldChanges.value.length ? [`字段变化 ${fieldChanges.value.length}`] : []),
+    ].join(" · ") || "查看变更"
+  );
 });
 
 const groups = computed(() =>
@@ -86,9 +111,7 @@ const groups = computed(() =>
     .filter((group) => group.items.length),
 );
 
-const dialogTitle = computed(() =>
-  props.revision ? `版本 ${props.revision} 变更` : "版本变更",
-);
+const dialogTitle = computed(() => (props.revision ? `版本 ${props.revision} 变更` : "版本变更"));
 
 const dialogDescription = computed(() => `共 ${props.items.length} 项变更`);
 

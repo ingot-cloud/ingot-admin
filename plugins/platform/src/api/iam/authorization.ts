@@ -254,6 +254,10 @@ export function PlatformRolePreviewAPI(
   return request.post<Preview>(`${rolePath("platform")}/${id}/preview`, params, options);
 }
 
+export function PlatformRoleCreatePreviewAPI(params: RoleCreateInput): Promise<R<Preview>> {
+  return request.post<Preview>(`${rolePath("platform")}/preview`, params);
+}
+
 export function PlatformRoleCreateAPI(
   params: RoleCreateInput,
   options?: RequestOptions,

@@ -1,9 +1,21 @@
 <template>
-  <in-drawer v-model="visible" :title="editingProfile ? '' : '角色详情'" size="720px" layout="pinned" padding="0">
+  <in-drawer
+    v-model="visible"
+    :title="editingProfile ? '' : '角色详情'"
+    size="720px"
+    layout="pinned"
+    padding="0"
+  >
     <template v-if="editingProfile" #header>
       <div class="flex items-center gap-12px min-w-0">
         <button type="button" class="profile-back" aria-label="返回" @click="privateLeaveProfile">
-          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               d="M16.293 2.293a1 1 0 0 1 0 1.414L8 12l8.293 8.293a1 1 0 0 1-1.414 1.414l-8.293-8.293a2 2 0 0 1 0-2.828l8.293-8.293a1 1 0 0 1 1.414 0Z"
               fill="currentColor"
@@ -21,7 +33,10 @@
           <div class="flex items-center gap-8px min-w-0 flex-wrap">
             <span class="text-18px truncate">{{ detail.record.name || "-" }}</span>
             <in-copy-tag v-if="detail.record.code" :text="detail.record.code" />
-            <biz-iam-status-tag v-if="knownStatus(detail.record.status)" :status="detail.record.status" />
+            <biz-iam-status-tag
+              v-if="knownStatus(detail.record.status)"
+              :status="detail.record.status"
+            />
             <button
               v-if="canStatus"
               type="button"
@@ -29,7 +44,13 @@
               aria-label="编辑基本信息"
               @click="privateEnterProfile"
             >
-              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="m17.57 7.244-.006-.006.37-.37a1 1 0 0 0 .001-1.412l-3.434-3.453-.002-.002a1 1 0 0 0-1.414 0l-.705.706.01.01L2 13.186V17a1 1 0 0 0 1 1h3.814L17.57 7.244Zm-3.273.389-2.015-2.015 1.487-1.515 2.023 2.034-1.495 1.496Zm-3.415-.587 2.002 2.002-6.913 6.92h-.004l-1.934-1.935v-.003l6.849-6.984ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
                   fill="currentColor"
@@ -49,7 +70,13 @@
                 <div>拥有 {{ grants.length }} 个权限</div>
                 <in-button v-if="canPublish" @in-click="privateEditGrants">
                   <template #icon>
-                    <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="1em"
+                      height="1em"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="m17.57 7.244-.006-.006.37-.37a1 1 0 0 0 .001-1.412l-3.434-3.453-.002-.002a1 1 0 0 0-1.414 0l-.705.706.01.01L2 13.186V17a1 1 0 0 0 1 1h3.814L17.57 7.244Zm-3.273.389-2.015-2.015 1.487-1.515 2.023 2.034-1.495 1.496Zm-3.415-.587 2.002 2.002-6.913 6.92h-.004l-1.934-1.935v-.003l6.849-6.984ZM3 20a1 1 0 1 0 0 2h18a1 1 0 1 0 0-2H3Z"
                         fill="currentColor"
@@ -81,6 +108,10 @@
                 <template #deltas="{ item }">
                   <biz-iam-revision-delta-view
                     :items="displayDeltasOf(asRevision(item))"
+                    :field-permissions="asRevision(item).record.resourceFieldPermissions"
+                    :previous-field-permissions="
+                      asRevision(item).record.previousResourceFieldPermissions
+                    "
                     :action-names="revisionActionNames"
                     :revision="asRevision(item).record.revision"
                     :initial="isInitialRevision(asRevision(item))"
@@ -94,13 +125,25 @@
       <div v-else-if="detail" class="profile-form">
         <in-form>
           <el-form-item label="名称" required>
-            <el-input v-model="profileDraft.name" placeholder="请输入名称" :disabled="!canEditProfile" />
+            <el-input
+              v-model="profileDraft.name"
+              placeholder="请输入名称"
+              :disabled="!canEditProfile"
+            />
           </el-form-item>
           <el-form-item label="分组">
-            <el-input v-model="profileDraft.groupName" placeholder="请输入分组，可空" :disabled="!canEditProfile" />
+            <el-input
+              v-model="profileDraft.groupName"
+              placeholder="请输入分组，可空"
+              :disabled="!canEditProfile"
+            />
           </el-form-item>
           <el-form-item label="状态">
-            <in-select v-model="profileDraft.status" :options="statusOptions" placeholder="请选择状态" />
+            <in-select
+              v-model="profileDraft.status"
+              :options="statusOptions"
+              placeholder="请选择状态"
+            />
           </el-form-item>
           <el-form-item label="说明">
             <el-input
@@ -196,7 +239,9 @@ const props = withDefaults(
 const emits = defineEmits<{ success: [] }>();
 const resolvedGetApi = computed(() => props.getApi ?? PlatformSharedRoleDetailAPI);
 const resolvedGrantsApi = computed(() => props.listGrantsApi ?? PlatformSharedRoleGrantsAPI);
-const resolvedRevisionsApi = computed(() => props.listRevisionsApi ?? PlatformSharedRoleRevisionPageAPI);
+const resolvedRevisionsApi = computed(
+  () => props.listRevisionsApi ?? PlatformSharedRoleRevisionPageAPI,
+);
 const resolvedPublishApi = computed(() => props.publishApi);
 const canEditProfile = computed(() => Boolean(props.updateApi ?? !props.statusApi));
 const visible = ref(false);
@@ -265,8 +310,10 @@ const profileDirty = computed(() => {
 });
 
 const revisionKeyOf = (row: ResourceDetail<RoleRevision>): string => row.record.id;
-const asRevision = (row: unknown): ResourceDetail<RoleRevision> => row as ResourceDetail<RoleRevision>;
-const displayDeltasOf = (row: ResourceDetail<RoleRevision>): RoleDelta[] => row.record.displayDeltas ?? [];
+const asRevision = (row: unknown): ResourceDetail<RoleRevision> =>
+  row as ResourceDetail<RoleRevision>;
+const displayDeltasOf = (row: ResourceDetail<RoleRevision>): RoleDelta[] =>
+  row.record.displayDeltas ?? [];
 const isInitialRevision = (row: ResourceDetail<RoleRevision>): boolean =>
   Number(row.record.revision) === 1 && !(row.record.displayDeltas ?? []).length;
 const revisionActionNames = computed(() => {

@@ -8,6 +8,17 @@
     </el-input>
     <div v-for="group in groups" :key="group.key" class="flex flex-col gap-8px">
       <div>{{ group.role.option.name }}</div>
+      <biz-iam-role-field-summary
+        :permissions="group.role.option.resourceFieldPermissions"
+        :names="
+          Object.fromEntries(
+            group.actions.map((action) => [
+              action.resourceId,
+              `${action.applicationName} / ${action.resourceName}`,
+            ]),
+          )
+        "
+      />
       <biz-iam-delegation-operation-tree
         :actions="group.actions"
         :ceilings="group.ceilings"
@@ -39,6 +50,7 @@ import {
   assignmentRoleKey,
   type PlatformAssignmentRoleDraft,
 } from "../models/iam/platformAssignment";
+import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
 import BizIamDelegationOperationTree from "./BizIamDelegationOperationTree.vue";
 
 defineOptions({ name: "BizIamAssignmentGrantList" });

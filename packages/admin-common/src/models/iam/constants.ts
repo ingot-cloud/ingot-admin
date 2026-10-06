@@ -246,6 +246,7 @@ export const IamAction = {
   PLATFORM_SHARED_ROLE_DELETE: "iam-platform:shared-role:delete",
   PLATFORM_SHARED_ROLE_PUBLISH: "iam-platform:shared-role:publish",
   PLATFORM_SHARED_ROLE_PREVIEW: "iam-platform:shared-role:preview",
+  PLATFORM_ASSIGNMENT_UPGRADE: "iam-platform:assignment:upgrade",
   PLATFORM_ASSIGNMENT_READ: "iam-platform:assignment:read",
   PLATFORM_ASSIGNMENT_CREATE: "iam-platform:assignment:create",
   PLATFORM_ASSIGNMENT_UPDATE: "iam-platform:assignment:update",

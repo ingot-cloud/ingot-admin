@@ -77,15 +77,22 @@ export function selectedGrantsOf(records: RoleGrantRecord[]): SelectedGrant[] {
         resourceName: item.resourceName || item.resourceCode || "",
         applicationId: item.applicationId ?? "",
         applicationName: item.applicationName || item.applicationCode || "",
-        scopes: item.scopes?.length ? item.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities, item.resourceId ?? "")],
+        scopes: item.scopes?.length
+          ? item.scopes.map((scope) => ({ ...scope }))
+          : [defaultScope(capabilities, item.resourceId ?? "")],
         scopeCapabilities: [...capabilities],
+        fieldCapabilities: item.fieldCapabilities,
+        fieldDefaults: item.fieldDefaults,
+        fieldPermissions: item.fieldPermissions ?? item.fieldDefaults,
       } satisfies SelectedGrant;
     });
 }
 
 /** 把已发布授权还原成向导勾选模型，补齐应用、资源和范围能力。 */
 export async function resolveSelectedGrants(grants: ActionGrant[]): Promise<SelectedGrant[]> {
-  const pending = new Map(grants.filter((item) => item.actionId).map((item) => [item.actionId, item]));
+  const pending = new Map(
+    grants.filter((item) => item.actionId).map((item) => [item.actionId, item]),
+  );
   if (!pending.size) {
     return [];
   }
@@ -106,7 +113,9 @@ export async function resolveSelectedGrants(grants: ActionGrant[]): Promise<Sele
         resourceName: item.resourceName,
         applicationId: item.applicationId,
         applicationName: item.applicationName,
-        scopes: grant.scopes.length ? grant.scopes.map((scope) => ({ ...scope })) : [defaultScope(capabilities, item.resourceId)],
+        scopes: grant.scopes.length
+          ? grant.scopes.map((scope) => ({ ...scope }))
+          : [defaultScope(capabilities, item.resourceId)],
         scopeCapabilities: [...capabilities],
       } satisfies SelectedGrant,
     ];

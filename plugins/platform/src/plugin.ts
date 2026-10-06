@@ -10,7 +10,7 @@ interface InPageModule {
   default: Component;
 }
 
-const modules = import.meta.glob<InPageModule>("./pages/**/*.vue");
+const modules = import.meta.glob<InPageModule>(["./pages/**/*.vue"]);
 
 export const platformPlugin: InAdminPlugin = {
   id: "ingot-platform",

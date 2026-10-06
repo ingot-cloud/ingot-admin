@@ -1,9 +1,12 @@
 import {
   RoleKind,
+  FieldVisibility,
   ScopeBindingKind,
   ScopeKind,
   formatScopeKinds,
   type RoleCreateInput,
+  type FieldAccess,
+  type FieldCapability,
   type RoleDefinitionDraft,
   type RoleParameterDefinition,
   type RolePublishInput,
@@ -18,6 +21,11 @@ export const WIZARD_STEPS = [
 ] as const;
 
 export const GRANT_WIZARD_STEPS = WIZARD_STEPS.slice(1);
+export const PLATFORM_WIZARD_STEPS = [
+  ...WIZARD_STEPS.slice(0, 3),
+  { title: "字段权限", description: "配置资源字段可见性和可编辑能力" },
+  WIZARD_STEPS[3],
+];
 
 export interface WizardProfile {
   code: string;
@@ -36,6 +44,9 @@ export interface SelectedGrant {
   applicationName: string;
   scopes: ScopeExpression[];
   scopeCapabilities: ScopeKind[];
+  fieldCapabilities?: FieldCapability[];
+  fieldDefaults?: Record<string, FieldAccess>;
+  fieldPermissions?: Record<string, FieldAccess>;
 }
 
 export interface GrantGroup {
@@ -104,7 +115,9 @@ export function collectParameters(grants: SelectedGrant[]): RoleParameterDefinit
 
 export function missingParameterKeys(grants: SelectedGrant[]): string[] {
   return grants
-    .filter((item) => item.scopes.some((scope) => needsParameter(scope.kind) && !scope.parameterKey?.trim()))
+    .filter((item) =>
+      item.scopes.some((scope) => needsParameter(scope.kind) && !scope.parameterKey?.trim()),
+    )
     .map((item) => item.actionName || item.actionId);
 }
 
@@ -156,6 +169,31 @@ export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
     })),
     deltas: [],
     parameterDefinitions: collectParameters(grants),
+    ...(grants.some((grant) => (grant.fieldCapabilities?.length ?? 0) > 0)
+      ? {
+          resourceFieldPermissions: Object.fromEntries(
+            [
+              ...new Map(
+                grants
+                  .filter((grant) => (grant.fieldCapabilities?.length ?? 0) > 0)
+                  .map((grant) => [grant.resourceId, grant]),
+              ).values(),
+            ].map((grant) => [
+              grant.resourceId,
+              Object.fromEntries(
+                (grant.fieldCapabilities ?? []).map((field) => [
+                  field.key,
+                  grant.fieldPermissions?.[field.key] ??
+                    grant.fieldDefaults?.[field.key] ?? {
+                      visibility: FieldVisibility.HIDDEN,
+                      editable: false,
+                    },
+                ]),
+              ),
+            ]),
+          ),
+        }
+      : {}),
   };
 }
 
@@ -187,6 +225,7 @@ export function grantsFingerprint(grants: SelectedGrant[]): string {
     grants.map((item) => ({
       actionId: item.actionId,
       scopes: item.scopes,
+      fieldPermissions: item.fieldPermissions,
     })),
   );
 }
@@ -194,8 +233,8 @@ export function grantsFingerprint(grants: SelectedGrant[]): string {
 export function profileDirty(profile: WizardProfile): boolean {
   return Boolean(
     profile.code.trim() ||
-      profile.name.trim() ||
-      profile.description.trim() ||
-      profile.groupName.trim(),
+    profile.name.trim() ||
+    profile.description.trim() ||
+    profile.groupName.trim(),
   );
 }

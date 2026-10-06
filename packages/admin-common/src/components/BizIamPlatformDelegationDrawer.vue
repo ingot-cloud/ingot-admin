@@ -108,13 +108,27 @@
               />
             </el-form-item>
           </in-form>
-          <biz-iam-delegation-ceiling-step
-            v-else-if="step === 1"
-            v-model="ceilings"
-            :actions="actions"
-            :api="candidatesApi"
-            view-only
-          />
+          <div v-else-if="step === 1" class="flex flex-col gap-16px">
+            <biz-iam-role-field-summary
+              v-for="option in revisionOptions"
+              :key="option.id"
+              :permissions="option.resourceFieldPermissions"
+              :names="
+                Object.fromEntries(
+                  (option.actions || []).map((action) => [
+                    action.resourceId,
+                    `${action.applicationName} / ${action.resourceName}`,
+                  ]),
+                )
+              "
+            />
+            <biz-iam-delegation-ceiling-step
+              v-model="ceilings"
+              :actions="actions"
+              :api="candidatesApi"
+              view-only
+            />
+          </div>
           <biz-iam-delegation-ceiling-step
             v-else-if="step === 2"
             v-model="ceilings"
@@ -192,6 +206,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
 import {
   confirmUnsavedChanges,
   Message,

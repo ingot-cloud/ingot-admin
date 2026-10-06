@@ -8,6 +8,7 @@ export { createIamListLoader, createIamOptionLoader } from "./api/iam/option-loa
 export { useIamDraftPreview } from "./hooks/useIamDraftPreview";
 export { default as TenantSelect } from "./components/TenantSelect.vue";
 export { default as ClientSelect } from "./components/ClientSelect.vue";
+export { default as BizIamRoleFieldSummary } from "./components/BizIamRoleFieldSummary.vue";
 export { default as BizIamStatusTag } from "./components/BizIamStatusTag.vue";
 export { default as BizIamPreviewAlert } from "./components/BizIamPreviewAlert.vue";
 export { default as BizIamRecordLink } from "./components/BizIamRecordLink.vue";
@@ -43,3 +44,6 @@ export { default as BizIamPlatformDelegationDrawer } from "./components/BizIamPl
 export { default as BizIamWizardNav } from "./components/BizIamWizardNav.vue";
 
 export { default as BizIamPlatformDiagnoseDrawer } from "./components/BizIamPlatformDiagnoseDrawer.vue";
+
+export { default as BizIamAssignmentUpgradeDrawer } from "./components/BizIamAssignmentUpgradeDrawer.vue";
+export { iamEditorFailure } from "./hooks/iamEditorFailure";

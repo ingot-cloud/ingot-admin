@@ -3,3 +3,5 @@ export * from "./types";
 export * from "./helpers";
 export * from "./enums";
 export { formatDuration } from "./duration";
+
+export * from "./resourceExtension";
