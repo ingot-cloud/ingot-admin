@@ -21,16 +21,12 @@
         </in-detail-field>
         <in-detail-field label="启用">
           <template #view>
-            <el-tag :type="detail.record.enabled ? 'success' : 'info'" effect="plain">
-              {{ detail.record.enabled ? "已启用" : "已停用" }}
-            </el-tag>
+            <StatusTag :tone="detail.record.enabled ? 'info' : 'warning'" :label="detail.record.enabled ? '已启用' : '已停用'" />
           </template>
         </in-detail-field>
         <in-detail-field label="锁定">
           <template #view>
-            <el-tag :type="detail.record.locked ? 'warning' : 'success'" effect="plain">
-              {{ detail.record.locked ? "已锁定" : "未锁定" }}
-            </el-tag>
+            <StatusTag :tone="detail.record.locked ? 'danger' : 'info'" :label="detail.record.locked ? '已锁定' : '未锁定'" />
           </template>
         </in-detail-field>
         <in-detail-field label="必须改密" :value="detail.record.mustChangePassword ? '是' : '否'" />
@@ -40,6 +36,7 @@
 </template>
 
 <script setup lang="ts">
+import { StatusTag } from "@ingot/admin-core";
 import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
 import { editablePatch, type AccountRecord, type ResourceDetail } from "@ingot/admin-common";
 import { PlatformAccountDetailAPI, PlatformAccountUpdateAPI } from "@/api/iam/accounts";

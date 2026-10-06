@@ -49,14 +49,10 @@
         <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
         <template #email="{ item }">{{ item.record.email || "-" }}</template>
         <template #enabled="{ item }">
-          <el-tag :type="item.record.enabled ? 'success' : 'info'" effect="plain">
-            {{ item.record.enabled ? "启用" : "停用" }}
-          </el-tag>
+          <StatusTag :tone="item.record.enabled ? 'info' : 'warning'" :label="item.record.enabled ? '已启用' : '已停用'" />
         </template>
         <template #locked="{ item }">
-          <el-tag :type="item.record.locked ? 'warning' : 'success'" effect="plain">
-            {{ item.record.locked ? "锁定" : "正常" }}
-          </el-tag>
+          <StatusTag :tone="item.record.locked ? 'danger' : 'info'" :label="item.record.locked ? '已锁定' : '未锁定'" />
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -74,6 +70,7 @@
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
 import {
+  StatusTag,
   applyColumnSelection,
   Confirm,
   Message,

@@ -58,14 +58,14 @@ describe("platform iam accounts table", () => {
     expect(createToolbarActions(() => undefined)[0]?.permission).toBe("iam-platform:account:create");
   });
 
-  it("登录名完整展示，启用与锁定列收窄", () => {
+  it("登录名完整展示，启用与锁定列留足状态组件空间", () => {
     const username = tableHeaders.find((item) => item.prop === "username");
     const enabled = tableHeaders.find((item) => item.prop === "enabled");
     const locked = tableHeaders.find((item) => item.prop === "locked");
     expect(username?.minWidth).toBe(220);
     expect(username?.showOverflowTooltip).toBe(false);
-    expect(enabled?.width).toBe(80);
-    expect(locked?.width).toBe(80);
+    expect(enabled?.minWidth).toBe(100);
+    expect(locked?.minWidth).toBe(100);
   });
 
   it("启停与锁定按账号状态互斥展示", () => {

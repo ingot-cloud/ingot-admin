@@ -20,8 +20,8 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "登录名", prop: "username", required: true, minWidth: 220, showOverflowTooltip: false },
   { label: "手机号", prop: "phone", minWidth: 140 },
   { label: "邮箱", prop: "email", minWidth: 180 },
-  { label: "启用", prop: "enabled", width: 80 },
-  { label: "锁定", prop: "locked", width: 80 },
+  { label: "启用", prop: "enabled", minWidth: 100 },
+  { label: "锁定", prop: "locked", minWidth: 100 },
   { label: "操作", width: "220", prop: "actions", fixed: "right" },
 ];
 
