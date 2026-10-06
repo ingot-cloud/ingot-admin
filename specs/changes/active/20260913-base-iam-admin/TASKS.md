@@ -359,3 +359,24 @@ RW08–RW13 修正代码提交：`af3cf01`；对应开发与自动化证据已�
 ## 2026-10-06 平台成员联系资料独立存储
 
 任务与验收见 [平台成员联系资料增量](./PLATFORM-MEMBER-CONTACTS-REFINEMENT.md)。PC01–PC04开发/自动化已完成，PC05人工验收待执行；范围仅平台成员联系方式，不改全局账号登录资料和租户成员逻辑。
+
+## 2026-10-06 平台超级管理员与应用导航
+
+用户已批准实施，增量 implementing；规则、任务及独立验收见 [PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION](./PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)。
+
+2026-10-06：SN01–SN06开发及相关自动化完成，额外全量基线失败独立记录于[增量证据](PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)。SN07用户目标库/实际身份人工验收未执行，主change保持implementing。
+
+
+## 2026-10-06 平台成员字段展示与编辑边界
+
+用户已批准实施，见 [增量说明与任务](PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md)。本增量开发及相关自动化完成、进入validating，人工MF04待执行；不提前更新current、不提交，保留已有修改。
+
+
+## 平台成员角色配置闭环（2026-10-06）
+
+见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。
+
+MR01–MR03 开发与自动化验证完成，增量状态 validating；MR04 人工待执行，详见 PLATFORM-MEMBER-ROLE-EDITOR.md。
+
+
+2026-10-06：用户批准成员角色对话框增高及中间分割线撑满内容区，修正和独立人工任务见 [MR05–MR06](PLATFORM-MEMBER-ROLE-EDITOR.md)。

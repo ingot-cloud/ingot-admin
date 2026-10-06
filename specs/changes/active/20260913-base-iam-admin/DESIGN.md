@@ -200,3 +200,17 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 2026-10-05 用户批准测试阶段直接替换平台字段模型：删除迁移开关、平台旧页面及启用标志；资源能力与角色字段配置直接生效，租户流程保持原行为。增量任务见[角色字段权限](ROLE-FIELD-AUTHORIZATION-REFINEMENT.md)。
 
 2026-10-05最终直接替换：平台旧字段页面/API模型和roleFieldsEnabled标志已清理，字段能力直接用于角色配置。DC01–DC04开发及自动化完成，admin-common92、platform116项、三包类型、只读lint、边界与两管理台构建通过；主change仍implementing，RF08人工待用户。权威来源以SOURCES.md最后一表为准。
+
+## 2026-10-06 平台超级管理员与应用导航
+
+用户已批准实施，增量 implementing；规则、任务及独立验收见 [PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION](./PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)。
+
+
+## 2026-10-06 平台成员字段展示与编辑边界
+
+用户已批准实施，见 [增量说明与任务](PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md)。本增量开发及相关自动化完成、进入validating，人工MF04待执行；不提前更新current、不提交，保留已有修改。
+
+
+## 平台成员角色配置闭环（2026-10-06）
+
+见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。

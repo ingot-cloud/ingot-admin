@@ -1,8 +1,8 @@
 # 输入来源与对接边界
 
-同步校准日期：2026-10-02。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮平台角色分配与委派增量已经实施，证据见 AUTHORIZATION-REFINEMENT-STATUS；真实 HTTP/浏览器验收仍未完成。历史来源保留。
+同步校准日期：2026-10-06。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮平台角色分配与委派增量已经实施，证据见 AUTHORIZATION-REFINEMENT-STATUS；真实 HTTP/浏览器验收仍未完成。历史来源保留。
 
-后端API为权威，contracts 与 sources 中标注的后端原文按哈希同步；本地 API/INTERACTIONS 同时含前端增量说明。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面119路径/186操作，包含账号/本人/字典/发号/社交、目录辅助、两域授权候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
+后端API为权威，contracts 与 sources 中标注的后端原文按哈希同步；本地 API/INTERACTIONS 同时含前端增量说明。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面130路径/197操作，包含账号/本人/字典/发号/社交、目录辅助、两域授权候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
 
 ## 阅读顺序
 
@@ -274,3 +274,62 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `f209da4c53cf5f3090521e169a0b8b4f592843478cde8ed7c85319a24c21e707` |
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `2d3f4fe666057bd269eebe438b5a6d13dc53a2d86b0d8d6c237bf5f39913ee2a` |
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `a7a5fac546c4e6b8652218579b16b8426c01480dafa5b80853f2da52005228dc` |
+
+## 2026-10-06 平台系统超管与应用导航最新来源
+
+以下哈希覆盖同文件历史来源。平台SYSTEM超级管理员使用Java保留编码，动态覆盖启用的平台应用/操作、ALL和注册业务字段FULL；普通角色/租户流程不变。公开OpenAPI仍129/196，内部快照新增独立服务器超管事实，3个端点。开发及相关自动化完成，全量既有失败单列，目标库和实际身份人工验收未执行。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `e414288cb2f9f95dba89c31d34b993d610dd18d4d147076d366f2bc7ac7af2e6` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `2e6142cf622a59b06344e2206806b44fd2349fd38379665db1411ef03abefdd5` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `13d2531c023b5406f79f922f48214bccfcc31b3198336befa69dfa1acc2a0d5d` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `f83b0cb36739a711de3b422b4dc50c4a469bf710b4a6cdc43f00dd441a30234a` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `8b306e0a2c6985eb6fe3a9ad3447d165da3ab47c246e2f9a9b1291054dfea2cb` |
+| `PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md` | [sources/BACKEND_PLATFORM_SUPER_ADMIN_APPLICATION_NAVIGATION.md](./sources/BACKEND_PLATFORM_SUPER_ADMIN_APPLICATION_NAVIGATION.md) | `a05ea7e73cb5fd84bad1e76e496794bbcc1ece52d6623dedaca2b8e79161a5ab` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `471429a735302b777f3c483a3af9e33e119bf3d3313e592f6123c9eba02a4769` |
+| `contracts/internal-openapi.json` | [sources/contracts/internal-openapi.json](./sources/contracts/internal-openapi.json) | `96d3a23289bdbe0f9d44468e34b11529a01544939f69d8056ad0921f8cd89094` |
+| `contracts/examples/authorization-snapshot.json` | [sources/contracts/examples/authorization-snapshot.json](./sources/contracts/examples/authorization-snapshot.json) | `4921931f10dd6a64ba74a6bad545a4de6526f5991bd08bf2ac841de3440883d8` |
+
+
+## 2026-10-06 平台成员字段展示与编辑最新来源
+
+本表覆盖相同文件历史哈希；公开130路径/197操作。成员context只提供布局/创建字段与原值搜索资格，列表和提交仍按真实目标鉴权；隐藏字段不显示标签/控件，脱敏值不回填草稿，默认邮箱与指定对象编辑入口已完成。相关服务、SDK、Java契约、隔离MySQL/真实HTTP、前端组件与两管理台构建通过；MF04实际身份/页面人工验收未执行。本次无新增DDL，无需因本增量重建库。
+
+sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md 保留历次前端增量，已不是完整字节副本，不覆盖这些本地说明。人工步骤读取 BACKEND_RESOURCE_EXTENSION_VERIFICATION.md 的 MF04 节，后端专属相对链接仍按本表源文件归属解析。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `eb4e5218b4e85040d99e5eb541e15dccfd0c45cccb11b418d4f621918584cc6c` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `c77d3b9c415f69187b9d9895a028cc5f68562ff117f39d99efd4bc7fca06fa9d` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d00cc7696239fd67c03095d7853c803975f0e6112a608a2952df5666b82efa20` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `673c06a37a0aafbdbd29e2afa060b03e4b20a913c1954991f5ad4616f626fe1d` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `2beddb03039a2c9a4046d1aa6d2754356b5e1c424698ac18cfcbd677e4cf8e65` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `24f354ed13729dc14f1f285cf7b661c8d9d4c87f12f960eb1344137f58886e47` |
+| `PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md` | [sources/BACKEND_PLATFORM_MEMBER_FIELD_UI_REFINEMENT.md](./sources/BACKEND_PLATFORM_MEMBER_FIELD_UI_REFINEMENT.md) | `639b90611ddac33467a617225902987736836f7211c3db970c395b94593839dc` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `76985e35fc044eada34417e34962aabd920ab18e96cac4551dfb4af40d5ca359` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `6aed54b86a6b32412050e7a370fc4e57a85529e1a82c9f265148deb275c9d950` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `9d9f7442f118e1e7ec2ad45af62caa8dc5534bdb4de97f0d5ebe30a2f89d98d0` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `9cc89d0192abf503014358f8c7453fdea002166fa0cfb153a65e96d012a85511` |
+| `contracts/examples/platform-member-context.json` | [sources/contracts/examples/platform-member-context.json](./sources/contracts/examples/platform-member-context.json) | `4926fe1833c7ce3290f94bfa6e4a79c1dafde4a0ee4c5b727999af7f84cc0bb3` |
+
+
+## 2026-10-06 平台成员角色配置最新来源
+
+以下校验值覆盖同文件历史值。MR01–MR03开发和自动化完成，MR04人工待执行；无新增DDL。角色参数按已保存assignment独立回显、差量更新，平台编辑与租户资料输入分离。INTERACTIONS保留前端增量，BACKEND_FRONTEND为字节副本。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `ca553b4378ad2406256f58a3eda790cbd876363ab8956636e2cf55efaacfdde7` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `afb53ac681113f5b4537c28d5d6db220fabac2b4d7619e24ac00462c25a6c7f0` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `ded5c542f5d22a1dba70b7d4c7203b2e46dd421ebb1aa9977afc1bce9ec755d2` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `6f00590c9067986eded8bb28979750b11774e40732cfdca836079168847c7d09` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `d562243cc1c8056158cbe9a10fa93b9846f8de968b21686eba222008fa3759ea` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `677ae78f3f16163fd6b9b938910c3b8f8e9d5feb4c9759de53900279a6b45ee7` |
+| `PLATFORM-MEMBER-ROLE-EDITOR.md` | [sources/BACKEND_PLATFORM_MEMBER_ROLE_EDITOR.md](./sources/BACKEND_PLATFORM_MEMBER_ROLE_EDITOR.md) | `298b916ab2a9be6a3079fb8b92071fa7a61e8cfc8f4eec2b35f923bd17559931` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `5520170a5469d5717243a421f42dc6c7d67ee48f08e84dbc2307ed0380f6edaf` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `ee1ef96cb5e5f1d3fe22b897d720b5a7634b519d21134f77c9c23137f905ddaa` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `95b922065e1dcdf79ad2b2de11e893f945016f46fbac889fc741538dcb35ea5d` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `f6158b933cd494d7c3abfa00461014fa682678c974ecc9324112cbca8214a8bd` |
+| `contracts/examples/member-role-edit.json` | [sources/contracts/examples/member-role-edit.json](./sources/contracts/examples/member-role-edit.json) | `d360063c8189b334b666178eb9d2f49c5a7bec7dd8921efb8dae527443cf986b` |
+| `contracts/examples/member-bound-roles.json` | [sources/contracts/examples/member-bound-roles.json](./sources/contracts/examples/member-bound-roles.json) | `f13756efb9b4551c676a61cfc07f565b5bcbd6b2cf91bdc8397e52e80f230711` |

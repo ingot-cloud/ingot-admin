@@ -308,3 +308,24 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 2026-10-05 用户批准测试阶段直接替换平台字段模型：删除迁移开关、平台旧页面及启用标志；资源能力与角色字段配置直接生效，租户流程保持原行为。增量任务见[角色字段权限](ROLE-FIELD-AUTHORIZATION-REFINEMENT.md)。
 
 2026-10-05最终直接替换：平台旧字段页面/API模型和roleFieldsEnabled标志已清理，字段能力直接用于角色配置。DC01–DC04开发及自动化完成，admin-common92、platform116项、三包类型、只读lint、边界与两管理台构建通过；主change仍implementing，RF08人工待用户。权威来源以SOURCES.md最后一表为准。
+
+## 2026-10-06 平台超级管理员与应用导航
+
+用户已批准实施，增量 implementing；规则、任务及独立验收见 [PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION](./PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)。
+
+系统超管增量不改变浏览器提交结构或公开路径。内部在线快照单列platformAdministrator（与业务permissionCodes分离），前端不得生成或推断；平台SYSTEM仅在服务器准许的直接角色分配候选中出现。应用导航保留bootstrap图标、排序及菜单applicationId，切换只过滤展示，不额外查询应用目录或删路由。
+
+
+## 2026-10-06 平台成员字段展示与编辑边界
+
+用户已批准实施，见 [增量说明与任务](PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md)。本增量开发及相关自动化完成、进入validating，人工MF04待执行；不提前更新current、不提交，保留已有修改。
+
+
+新增 `PlatformMemberContextAPI` 消费 `GET /v1/platform/members/context` 的 listFieldVisibility/createFieldAccess/canSearchDisplayName；公共类型位于admin-common。成员/组成员表复用列概览，逐行仍使用fieldAccess；创建查找携带MEMBER_CREATE/PLATFORM并仅显示后端投影。PATCH仍用既有结构，只提交可写且实际改变的字段；DataScopeDenied/ActionDenied按403刷新能力，ObjectNotFound仍保留404含义。
+
+
+## 平台成员角色配置闭环（2026-10-06）
+
+见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。
+
+平台成员 PATCH 使用 PlatformMemberEditInput（平铺资料+roleChanges）；成员角色预览 POST /members/{id}/preview；只读 GET /members/{id}/bound-roles 为有效摘要；可编辑关联 GET /members/{id}/assignments?effectiveStatus=ACTIVE&directOnly=true。新增角色显式选择固定版本；租户 MemberProfileInput 不变。新表单不使用旧简单角色替换接口。

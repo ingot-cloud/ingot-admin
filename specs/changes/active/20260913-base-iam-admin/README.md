@@ -102,3 +102,22 @@
 ## 2026-10-06 平台成员联系资料独立存储
 
 用户批准仅调整平台成员联系方式及相关前后端接口、迁移与初始化SQL，需求、设计和任务见 [平台成员联系资料增量](./PLATFORM-MEMBER-CONTACTS-REFINEMENT.md)。主状态保持implementing，不提前更新current。
+
+## 2026-10-06 平台超级管理员与应用导航
+
+用户已批准实施，增量 implementing；规则、任务及独立验收见 [PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION](./PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)。
+
+
+## 2026-10-06 平台成员字段展示与编辑边界
+
+用户已批准实施，见 [增量说明与任务](PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md)。本增量开发及相关自动化完成、进入validating，人工MF04待执行；不提前更新current、不提交，保留已有修改。
+
+
+## 平台成员角色配置闭环（2026-10-06）
+
+见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。
+
+MR01–MR03 开发与自动化验证完成，增量状态 validating；MR04 人工待执行，详见 PLATFORM-MEMBER-ROLE-EDITOR.md。
+
+
+2026-10-06：用户要求提交已完成的平台应用导航、账号/二维码样式、成员字段交互及角色配置闭环（含 MR05 对话框布局修正）。代码与 Spec 分开记录；SN07、MF04、MR04、MR06 人工验收继续未完成，不更新 current、不归档。
