@@ -13,7 +13,7 @@ describe("platform develop qrcode IndexPage", () => {
     expect(source).toContain('mode="page"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="生成并下载自定义二维码。"');
-    expect(source).toContain("二维码配置");
+    expect(source).not.toContain("二维码配置");
     expect(source).not.toContain("in-custom-title");
     expect(source).not.toContain("#192f48");
     expect(source.replaceAll("===", "")).not.toContain("==");

@@ -4,10 +4,9 @@
       <in-page-header description="生成并下载自定义二维码。" />
     </template>
 
-    <in-split-layout>
+    <in-split-layout :left-width="340">
       <template #left>
         <div class="qrcode-config">
-          <div class="qrcode-config__title">二维码配置</div>
           <el-form ref="editFormRef" class="form" label-width="100px" :model="editForm">
             <el-form-item label="二维码样式">
               <in-select
@@ -106,10 +105,10 @@
         </div>
       </template>
 
-      <div h-full flex flex-col items-center justify-center>
+      <div class="qrcode-preview">
         <in-qrcode :options="editForm" ref="QrcodeRef" />
 
-        <div flex flex-row>
+        <div flex flex-row gap-3 flex-wrap justify-center>
           <in-button type="primary" @click="handleDownload(true)"> 下载SVG </in-button>
           <in-button type="primary" @click="handleDownload(false)"> 下载图片 </in-button>
         </div>
@@ -175,13 +174,12 @@ const handleDownload = (isSvg: boolean) => {
 </script>
 <style scoped lang="postcss">
 .qrcode-config {
-  @apply w-300px flex flex-col gap-10px;
-
-  & .qrcode-config__title {
-    font-weight: bold;
-    font-size: 18px;
-    padding-bottom: var(--in-common-padding);
-    border-bottom: var(--in-border-style);
-  }
+  @apply w-full min-w-0 box-border;
+  padding: var(--in-space-4);
 }
+.qrcode-config :deep(.el-form-item) { margin-bottom: var(--in-space-5); }
+.qrcode-config :deep(.el-form-item__content) { min-width: 0; }
+.qrcode-config :deep(.in-select), .qrcode-config :deep(.el-select) { width: 100%; --el-select-width: 100%; }
+.qrcode-preview { @apply h-full min-w-0 flex flex-col items-center justify-center; padding: var(--in-space-5); gap: var(--in-space-6); }
+.qrcode-preview :deep(svg) { max-width: 100%; height: auto; }
 </style>
