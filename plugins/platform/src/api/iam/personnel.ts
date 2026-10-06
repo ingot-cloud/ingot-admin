@@ -12,7 +12,11 @@ import {
   type IamListQuery,
   type IamPageResponse,
   type MemberCreateInput,
-  type MemberProfileInput,
+  type PlatformMemberContext,
+  type PlatformMemberEditInput,
+  type PlatformMemberEditPreview,
+  type MemberBoundRole,
+  type AssignmentEffectiveStatus,
   type MemberRecord,
   type MemberRoleReplaceInput,
   type MemberRoleView,
@@ -48,6 +52,12 @@ export function PlatformMemberPageAPI(
     .then(asPage);
 }
 
+export function PlatformMemberContextAPI(
+  options?: RequestOptions,
+): Promise<R<PlatformMemberContext>> {
+  return request.get<PlatformMemberContext>(`${MEMBER_PATH}/context`, undefined, options);
+}
+
 export function PlatformMemberDetailAPI(
   id: string,
   options?: RequestOptions,
@@ -65,10 +75,36 @@ export function PlatformMemberCreateAPI(
 
 export function PlatformMemberUpdateAPI(
   id: string,
-  params: MemberProfileInput,
+  params: PlatformMemberEditInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
   return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, params, options);
+}
+
+export function PlatformMemberEditPreviewAPI(
+  id: string,
+  params: PlatformMemberEditInput,
+  options?: RequestOptions,
+): Promise<R<Preview<PlatformMemberEditPreview>>> {
+  return request.post<Preview<PlatformMemberEditPreview>>(
+    `${MEMBER_PATH}/${id}/preview`,
+    params,
+    options,
+  );
+}
+
+export function PlatformMemberBoundRolesAPI(
+  id: string,
+  page: Page,
+  options?: RequestOptions,
+): Promise<R<Page<MemberBoundRole>>> {
+  return request
+    .get<IamPageResponse<MemberBoundRole>>(
+      `${MEMBER_PATH}/${id}/bound-roles`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
 }
 
 export function PlatformMemberStatusAPI(
@@ -100,11 +136,12 @@ export function PlatformMemberAssignmentsAPI(
   id: string,
   page: Page,
   options?: RequestOptions,
+  condition?: { effectiveStatus?: AssignmentEffectiveStatus; directOnly?: boolean },
 ): Promise<R<Page<ResourceDetail<AssignmentRecord>>>> {
   return request
     .get<IamPageResponse<ResourceDetail<AssignmentRecord>>>(
       `${MEMBER_PATH}/${id}/assignments`,
-      toIamListParams(page),
+      { ...toIamListParams(page), ...condition },
       options,
     )
     .then(asPage);
@@ -200,5 +237,9 @@ export function PlatformGroupPreviewAPI(
   options?: RequestOptions,
 ): Promise<R<Preview<ReferenceImpactPreview>>> {
   filterParams(params);
-  return request.post<Preview<ReferenceImpactPreview>>(`${GROUP_PATH}/${id}/preview`, params, options);
+  return request.post<Preview<ReferenceImpactPreview>>(
+    `${GROUP_PATH}/${id}/preview`,
+    params,
+    options,
+  );
 }

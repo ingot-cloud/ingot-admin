@@ -47,7 +47,7 @@ import {
   type AuthorizationActionOption,
 } from "../models/iam";
 import {
-  assignmentRoleKey,
+  assignmentDraftKey,
   type PlatformAssignmentRoleDraft,
 } from "../models/iam/platformAssignment";
 import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
@@ -82,7 +82,7 @@ const groups = computed(() => {
     (page.value - 1) * IAM_DEFAULT_PAGE_SIZE,
     page.value * IAM_DEFAULT_PAGE_SIZE,
   )) {
-    const key = assignmentRoleKey(row.role.option);
+    const key = assignmentDraftKey(row.role);
     let group = result.find((item) => item.key === key);
     if (!group) {
       group = { key, role: row.role, actions: [], ceilings: {} };

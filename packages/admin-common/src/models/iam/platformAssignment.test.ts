@@ -29,6 +29,19 @@ const option = (id: string, resourceId = "100"): AuthorizationOption => ({
   ],
 });
 describe("平台多角色分配草稿", () => {
+  it("同一固定版本的既有分配按记录键隔离参数配置", () => {
+    const first = option("10");
+    const roles = ["81", "82"].map((id) => ({
+      option: first,
+      configurationKey: `assignment:${id}`,
+      bindings: { objects: { kind: ScopeBindingKind.OBJECTS, ids: [id] } },
+      selectedObjects: {},
+    }));
+    const configs = assignmentScopeConfigurations(roles);
+    expect(configs.map((item) => item.roleKey)).toEqual(["assignment:81", "assignment:82"]);
+    expect(new Set(configs.map((item) => item.key)).size).toBe(2);
+    expect(configs.every((item) => item.configured)).toBe(true);
+  });
   it("配置按版本与参数统计，共用操作去重，同名参数互相隔离", () => {
     const first = option("10");
     first.grants!.push({

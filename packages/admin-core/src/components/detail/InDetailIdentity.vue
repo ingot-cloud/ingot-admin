@@ -2,7 +2,7 @@
   <div class="in-detail-identity">
     <div class="in-detail-identity__main">
       <el-upload
-        v-if="editable"
+        v-if="showAvatar && editable"
         class="in-detail-identity__uploader"
         :show-file-list="false"
         :accept="accept"
@@ -17,7 +17,13 @@
           </span>
         </span>
       </el-upload>
-      <in-avatar v-else :src="displaySrc" :name="name" size="lg" :show-name="false" />
+      <in-avatar
+        v-else-if="showAvatar"
+        :src="displaySrc"
+        :name="name"
+        size="lg"
+        :show-name="false"
+      />
       <div class="in-detail-identity__meta">
         <span class="in-detail-identity__name">{{ name }}</span>
         <div v-if="slots.status" class="in-detail-identity__status">
@@ -49,11 +55,13 @@ const props = withDefaults(
     name?: string;
     src?: string;
     editable?: boolean;
+    showAvatar?: boolean;
     uploadDir?: string;
     accept?: string;
   }>(),
   {
     accept: ".jpg, .png, .jpeg",
+    showAvatar: true,
   },
 );
 

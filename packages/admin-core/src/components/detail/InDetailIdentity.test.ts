@@ -3,12 +3,22 @@ import { mount } from "@vue/test-utils";
 import InDetailIdentity from "./InDetailIdentity.vue";
 
 describe("InDetailIdentity", () => {
+  it("隐藏头像时不渲染图片、占位头像或上传入口", () => {
+    const wrapper = mount(InDetailIdentity, {
+      props: { name: "alice", src: "secret.png", showAvatar: false, editable: true },
+    });
+    expect(wrapper.find(".in-avatar").exists()).toBe(false);
+    expect(wrapper.find(".in-detail-identity__uploader").exists()).toBe(false);
+    expect(wrapper.text()).toContain("alice");
+    wrapper.unmount();
+  });
+
   it("渲染姓名、状态和更多操作", () => {
     const wrapper = mount(InDetailIdentity, {
       props: { name: "王超" },
       slots: {
-        status: "<span class=\"status\">正常</span>",
-        more: "<button type=\"button\">更多操作</button>",
+        status: '<span class="status">正常</span>',
+        more: '<button type="button">更多操作</button>',
       },
     });
     expect(wrapper.get(".in-detail-identity__name").text()).toBe("王超");
@@ -25,7 +35,7 @@ describe("InDetailIdentity", () => {
       props: { name: "池鑫", editable: true },
       global: {
         stubs: {
-          ElUpload: { template: "<div class=\"el-upload\"><slot /></div>" },
+          ElUpload: { template: '<div class="el-upload"><slot /></div>' },
         },
       },
     });

@@ -24,7 +24,7 @@
       />
     </template>
     <in-table
-      :loading="memberPaging.fetching.value || saving"
+      :loading="memberPaging.fetching.value || contextLoading || saving"
       :data="memberPaging.pageInfo.value.records"
       :page="memberPaging.pageInfo.value"
       :headers="visibleHeaders"
@@ -35,12 +35,19 @@
       @handleSizeChange="memberPaging.fetchData"
       @handleCurrentChange="memberPaging.fetchData"
     >
+      <template #error
+        ><div class="flex flex-col items-center gap-12px">
+          <span>暂时无法加载成员字段权限</span
+          ><in-button @in-click="refreshContext">重试</in-button>
+        </div></template
+      >
       <template #title>
         <span>{{ selectedDetail?.record.name || "用户组" }}</span>
         <span class="in-table__count">共 {{ memberTotal }} 人</span>
       </template>
       <template #tools-start>
         <el-input
+          v-if="context?.canSearchDisplayName"
           v-model="memberPaging.condition.name"
           class="w-200px!"
           clearable
@@ -51,7 +58,7 @@
           @clear="refreshMembers"
         />
         <in-table-column-setting
-          :headers="groupMemberHeaders"
+          :headers="permissionHeaders"
           :table-id="GROUP_MEMBER_TABLE_ID"
           @change="privateOnColumnChange"
         />
@@ -62,14 +69,26 @@
       <template #displayName="{ item }">
         <div class="flex items-center gap-8px">
           <in-avatar
+            v-if="memberFieldVisible(item.fieldAccess, 'avatar')"
             :src="item.record.avatar"
             :name="item.record.displayName || item.record.username"
             :show-name="false"
           />
-          <span>{{ item.record.displayName || item.record.id }}</span>
+          <span v-if="memberFieldVisible(item.fieldAccess, 'displayName')">{{
+            item.record.displayName || "-"
+          }}</span>
         </div>
       </template>
-      <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
+      <template #phone="{ item }"
+        ><span v-if="memberFieldVisible(item.fieldAccess, 'phone')">{{
+          item.record.phone || "-"
+        }}</span></template
+      >
+      <template #email="{ item }"
+        ><span v-if="memberFieldVisible(item.fieldAccess, 'email')">{{
+          item.record.email || "-"
+        }}</span></template
+      >
       <template #username="{ item }">{{ item.record.username || "-" }}</template>
       <template #status="{ item }">
         <status-tag
@@ -93,11 +112,7 @@
   </in-split-layout>
 
   <group-wizard ref="wizardRef" @success="handleWizardSuccess" />
-  <group-detail-drawer
-    ref="detailRef"
-    @edit="handleGroupEdit"
-    @delete="handleGroupDelete"
-  />
+  <group-detail-drawer ref="detailRef" @edit="handleGroupEdit" @delete="handleGroupDelete" />
   <biz-iam-member-picker-dialog
     ref="pickerRef"
     :load-members="loadPlatformMemberOptions"
@@ -139,8 +154,14 @@ import {
 } from "../groupMembersTable";
 import { loadPlatformGroupBoundMembers, loadPlatformMemberOptions } from "../iamMemberOptions";
 import { useGroupOps } from "../useGroupOps";
+import { useMemberFieldContext } from "../useMemberFieldContext";
+import { memberFieldVisible, memberPermissionHeaders } from "../memberFieldAccess";
 
 defineOptions({ name: "GroupWorkspace" });
+const props = withDefaults(defineProps<{ active?: boolean }>(), { active: true });
+const { context, contextLoading, contextError, refreshContext } = useMemberFieldContext(
+  computed(() => props.active),
+);
 
 const {
   groupPaging,
@@ -174,13 +195,27 @@ const loadBoundMembers = (params: LoadDataParams) =>
   loadPlatformGroupBoundMembers(selectedId.value, params);
 
 const canCreate = computed(() => hasAction(IamAction.PLATFORM_GROUP_CREATE));
-const visibleHeaders = computed(() => applyColumnSelection(groupMemberHeaders, selectedColumns.value));
+const permissionHeaders = computed(() =>
+  memberPermissionHeaders(groupMemberHeaders, context.value),
+);
+const visibleHeaders = computed(() =>
+  applyColumnSelection(permissionHeaders.value, selectedColumns.value),
+);
+watch(context, (value) => {
+  if (value && !value.canSearchDisplayName) memberPaging.condition.name = undefined;
+});
 const memberTotal = computed(
   () => memberPaging.pageInfo.value.total ?? selectedDetail.value?.record.visibleMemberCount ?? 0,
 );
-const memberFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
+const memberFeedback = computed<InTableFeedback>(() =>
+  unavailable.value || contextError.value ? "error" : "empty",
+);
 const memberToolbarActions = computed(() =>
-  createGroupMemberToolbarActions(handleAdd, updateAccess.value.allowed, updateAccess.value.message),
+  createGroupMemberToolbarActions(
+    handleAdd,
+    updateAccess.value.allowed,
+    updateAccess.value.message,
+  ),
 );
 
 const statusToneOf = (status: string): "info" | "warning" | "danger" =>

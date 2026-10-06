@@ -11,7 +11,9 @@ export function useDirectRoleEligibility() {
     context.value = undefined;
     if (
       !hasAction(IamAction.PLATFORM_ASSIGNMENT_CREATE) &&
-      !hasAction(IamAction.PLATFORM_ASSIGNMENT_DELETE)
+      !hasAction(IamAction.PLATFORM_ASSIGNMENT_DELETE) &&
+      !hasAction(IamAction.PLATFORM_ASSIGNMENT_UPDATE) &&
+      !hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)
     )
       return;
     try {
@@ -28,6 +30,9 @@ export function useDirectRoleEligibility() {
     void refresh();
   });
   return {
+    canReadDirect: computed(() => context.value?.directRead === true),
+    canUpdateDirect: computed(() => context.value?.directUpdate === true),
+    canRevokeDirect: computed(() => context.value?.directRevoke === true),
     canGrantDirect: computed(() => context.value?.directCreate === true),
     canReplaceDirect: computed(
       () => context.value?.directCreate === true && context.value?.directRevoke === true,

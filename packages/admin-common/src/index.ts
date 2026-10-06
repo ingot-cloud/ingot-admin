@@ -47,3 +47,7 @@ export { default as BizIamPlatformDiagnoseDrawer } from "./components/BizIamPlat
 
 export { default as BizIamAssignmentUpgradeDrawer } from "./components/BizIamAssignmentUpgradeDrawer.vue";
 export { iamEditorFailure } from "./hooks/iamEditorFailure";
+
+export { default as BizIamAssignmentScopeStep } from "./components/BizIamAssignmentScopeStep.vue";
+export { default as BizIamDelegationRolePicker } from "./components/BizIamDelegationRolePicker.vue";
+export * from "./models/iam/platformAssignment";

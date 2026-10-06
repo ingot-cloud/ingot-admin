@@ -121,7 +121,7 @@
       <in-button
         type="primary"
         :loading="confirming"
-        :disabled="!draftIds.length || loading || confirming"
+        :disabled="(!allowEmpty && !draftIds.length) || loading || confirming"
         @in-click="privateConfirm"
         >确定</in-button
       >
@@ -148,6 +148,7 @@ const props = withDefaults(
     disabled?: boolean;
     resetKey: string | number;
     oneVersionPerRole?: boolean;
+    allowEmpty?: boolean;
     placeholder?: string;
     title?: string;
   }>(),

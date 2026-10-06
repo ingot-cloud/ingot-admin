@@ -4,23 +4,34 @@
       <el-form-item label="登录名" required>
         <div class="flex gap-8px">
           <el-input v-model="username" clearable placeholder="精确查找已有全局账号" />
-          <in-button @click="privateLookup">查找</in-button>
+          <in-button :disabled="!fieldsReady || loading" @click="privateLookup">查找</in-button>
         </div>
       </el-form-item>
       <template v-if="accountId">
-        <el-form-item label="头像">
-          <in-common-upload-avatar dir="user/avatar" v-model="avatar" />
+        <el-form-item v-if="memberFieldVisible(createFields, 'avatar')" label="头像">
+          <in-common-upload-avatar
+            v-if="isFieldEditable(createFields, 'avatar')"
+            dir="user/avatar"
+            v-model="avatar"
+          />
+          <span v-else>不可修改</span>
         </el-form-item>
-        <el-form-item label="显示名">
-          <el-input v-model="displayName" clearable placeholder="请输入显示名" />
+        <el-form-item v-if="memberFieldVisible(createFields, 'displayName')" label="显示名">
+          <el-input
+            v-if="isFieldEditable(createFields, 'displayName')"
+            v-model="displayName"
+            clearable
+            placeholder="请输入显示名"
+          />
+          <span v-else>由系统设置默认显示名</span>
         </el-form-item>
         <el-form-item label="登录名">
           <el-input :model-value="lookedUpUsername" disabled placeholder="不可修改" />
         </el-form-item>
-        <el-form-item label="初始联系手机号">
+        <el-form-item v-if="memberFieldVisible(createFields, 'phone')" label="初始联系手机号">
           <el-input :model-value="phone || '-'" disabled placeholder="不可修改" />
         </el-form-item>
-        <el-form-item label="初始联系邮箱">
+        <el-form-item v-if="memberFieldVisible(createFields, 'email')" label="初始联系邮箱">
           <el-input :model-value="email || '-'" disabled placeholder="不可修改" />
         </el-form-item>
         <div class="text-12px text-[var(--el-text-color-secondary)]">
@@ -30,13 +41,7 @@
     </in-form>
     <in-form v-else label-position="top">
       <el-form-item v-if="canGrantDirect" label="角色">
-        <div class="flex flex-col gap-8px w-full">
-          <div v-for="role in roleDrafts" :key="role.roleId" class="flex items-center gap-8px">
-            <span class="flex-1">{{ role.name }} · v{{ role.revisionNumber }}</span>
-            <in-button text type="danger" @in-click="privateRemoveRole(role.roleId)">移除</in-button>
-          </div>
-          <in-button @in-click="rolePickerRef?.show()">添加角色</in-button>
-        </div>
+        <member-roles-field v-model:draft="roleState" editing editable :can-add="canGrantDirect" />
       </el-form-item>
       <el-form-item label="用户组">
         <biz-iam-option-tag-field
@@ -60,11 +65,6 @@
       </template>
     </template>
   </in-drawer>
-  <member-role-assign-dialog
-    ref="rolePickerRef"
-    :selected-role-ids="roleDrafts.map((item) => item.roleId)"
-    @confirm="privateOnRoleConfirm"
-  />
   <biz-iam-member-picker-dialog
     ref="groupPickerRef"
     title="选择用户组"
@@ -78,22 +78,25 @@
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, isApiError } from "@ingot/admin-core";
+import { Confirm, Message, createLoadGuard, isApiError } from "@ingot/admin-core";
 import {
   AccountLookupPurpose,
   AuthorizationDomain,
   BizIamMemberPickerDialog,
   BizIamOptionTagField,
+  isFieldEditable,
+  type FieldAccessMap,
   type IamSelectOption,
-  type MemberRoleAssignmentDraft,
 } from "@ingot/admin-common";
 import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
-import { PlatformMemberCreateAPI } from "@/api/iam/personnel";
+import { PlatformMemberCreateAPI, PlatformMemberContextAPI } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
 import { loadPlatformGroupOptions } from "../iamMemberOptions";
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
-import MemberRoleAssignDialog from "./MemberRoleAssignDialog.vue";
+import MemberRolesField from "./MemberRolesField.vue";
+import { memberRoleChanges, type MemberRoleEditorState } from "../memberRoleEditor";
+import { memberCreateProfile, memberFieldVisible } from "../memberFieldAccess";
 
 defineOptions({ name: "MemberCreateDrawer" });
 
@@ -106,6 +109,9 @@ const queryClient = useQueryClient();
 const go = useGo();
 const visible = ref(false);
 const loading = ref(false);
+const createFields = ref<FieldAccessMap>({});
+const fieldsReady = ref(false);
+const loadGuard = createLoadGuard();
 const step = ref<1 | 2>(1);
 const username = ref("");
 const accountId = ref("");
@@ -114,10 +120,8 @@ const phone = ref("");
 const email = ref("");
 const displayName = ref("");
 const avatar = ref<string | undefined>();
-type ConfiguredRole = MemberRoleAssignmentDraft & { name: string; revisionNumber: number };
-const roleDrafts = ref<ConfiguredRole[]>([]);
+const roleState = ref<MemberRoleEditorState>();
 const groups = ref<IamSelectOption[]>([]);
-const rolePickerRef = ref<{ show: () => void }>();
 const groupPickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 
 const resetHit = (): void => {
@@ -132,12 +136,14 @@ const resetHit = (): void => {
 const resetDraft = (): void => {
   username.value = "";
   resetHit();
-  roleDrafts.value = [];
+  roleState.value = undefined;
   groups.value = [];
   step.value = 1;
 };
 
 const privateLookup = (): void => {
+  if (!fieldsReady.value || loading.value) return;
+  const guard = loadGuard.begin();
   const loginName = username.value.trim();
   if (!loginName) {
     Message.warning("请输入登录名");
@@ -151,15 +157,18 @@ const privateLookup = (): void => {
     username: loginName,
   })
     .then((response) => {
+      if (!guard.isCurrent() || !visible.value) return;
+      createFields.value = response.data.fieldAccess;
       const record = response.data.record;
       accountId.value = record.id;
       lookedUpUsername.value = record.username;
       phone.value = record.phone ?? "";
       email.value = record.email ?? "";
-      displayName.value = record.username;
+      displayName.value = isFieldEditable(createFields.value, "displayName") ? record.username : "";
       Message.success("已定位账号，不展示组织关系");
     })
     .catch((error: unknown) => {
+      if (!guard.isCurrent() || !visible.value) return;
       if (isApiError(error) && error.code === OBJECT_NOT_FOUND) {
         Confirm.warning("未找到该登录名，是否前往创建全局账号？").then(() => {
           visible.value = false;
@@ -168,7 +177,7 @@ const privateLookup = (): void => {
       }
     })
     .finally(() => {
-      loading.value = false;
+      if (guard.isCurrent()) loading.value = false;
     });
 };
 
@@ -185,21 +194,13 @@ const privateBack = (): void => {
 };
 
 const privateSkip = (): void => {
-  roleDrafts.value = [];
+  roleState.value = undefined;
   groups.value = [];
   privateSubmit();
 };
 
-const privateRemoveRole = (roleId: string): void => {
-  roleDrafts.value = roleDrafts.value.filter((item) => item.roleId !== roleId);
-};
-
 const privatePickGroups = (): void => {
   groupPickerRef.value?.show(groups.value);
-};
-
-const privateOnRoleConfirm = (role: ConfiguredRole): void => {
-  roleDrafts.value = [...roleDrafts.value.filter((item) => item.roleId !== role.roleId), role];
 };
 
 const privateOnGroupsConfirm = (selected: IamSelectOption[]): void => {
@@ -207,24 +208,18 @@ const privateOnGroupsConfirm = (selected: IamSelectOption[]): void => {
 };
 
 const privateSubmit = (): void => {
-  if (!accountId.value) {
+  if (!accountId.value || !fieldsReady.value || loading.value) {
     Message.warning("请先查找账号");
     return;
   }
   loading.value = true;
   PlatformMemberCreateAPI({
     accountId: accountId.value,
-    displayName: displayName.value.trim() || undefined,
-    avatar: avatar.value,
+    ...memberCreateProfile(createFields.value, displayName.value, avatar.value),
     departments: [],
     roleIds: [],
-    roleAssignments: canGrantDirect.value ? roleDrafts.value.map((role) => ({
-      roleId: role.roleId,
-      roleRevisionRef: role.roleRevisionRef,
-      scopeBindings: role.scopeBindings,
-      validFrom: role.validFrom,
-      validUntil: role.validUntil,
-    })) : [],
+    roleAssignments:
+      canGrantDirect.value && roleState.value ? memberRoleChanges(roleState.value).additions : [],
     groupIds: groups.value.map((item) => item.id),
   })
     .then(() => {
@@ -238,11 +233,29 @@ const privateSubmit = (): void => {
     });
 };
 
+watch(visible, (value) => {
+  if (!value) loadGuard.begin();
+});
+
 defineExpose({
   show() {
     void refreshEligibility();
     resetDraft();
+    createFields.value = {};
+    fieldsReady.value = false;
     visible.value = true;
+    const guard = loadGuard.begin();
+    loading.value = true;
+    PlatformMemberContextAPI()
+      .then((response) => {
+        if (!guard.isCurrent() || !visible.value) return;
+        createFields.value = response.data.createFieldAccess;
+        fieldsReady.value = true;
+      })
+      .catch(() => undefined)
+      .finally(() => {
+        if (guard.isCurrent()) loading.value = false;
+      });
   },
 });
 </script>

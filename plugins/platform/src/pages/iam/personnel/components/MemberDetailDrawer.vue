@@ -4,10 +4,10 @@
     v-model:tab="tab"
     v-model:editing="editing"
     title="成员详情"
-    edit-label="编辑基本信息"
+    edit-label="编辑成员"
     :loading="loading"
     :saving="session.saving.value"
-    @edit="session.enterEdit"
+    @edit="privateEnterEdit"
     @cancel="privateCancel"
     @save="privateSave"
   >
@@ -16,7 +16,8 @@
         :name="identityName"
         :src="identityAvatar"
         v-model:avatar="draft.avatar"
-        :editable="editing"
+        :show-avatar="memberFieldVisible(detail?.fieldAccess, 'avatar')"
+        :editable="editing && canEditField('avatar')"
         upload-dir="user/avatar"
       >
         <template #status>
@@ -51,59 +52,57 @@
       </in-detail-identity>
     </template>
 
-    <in-biz-tab-panel title="基本信息" name="basic">
+    <in-biz-tab-panel title="基本信息" name="basic" :editable="canEditMember">
       <in-form v-if="detail" :editing="editing">
-        <in-detail-field label="显示名" :value="detail.record.displayName || detail.record.id">
-          <el-input v-model="draft.displayName" clearable placeholder="请输入显示名" />
+        <in-detail-field
+          v-if="memberFieldVisible(detail.fieldAccess, 'displayName')"
+          label="显示名"
+          :value="detail.record.displayName || detail.record.id"
+        >
+          <el-input
+            v-model="draft.displayName"
+            :disabled="!canEditField('displayName')"
+            clearable
+            :placeholder="canEditField('displayName') ? '请输入显示名' : '不可修改'"
+          />
         </in-detail-field>
         <in-detail-field label="登录名" :value="detail.record.username || '-'" />
-        <in-detail-field label="联系手机号" :value="detail.record.phone">
-          <el-input v-model="draft.phone" clearable placeholder="请输入联系手机号" />
+        <in-detail-field
+          v-if="memberFieldVisible(detail.fieldAccess, 'phone')"
+          label="联系手机号"
+          :value="detail.record.phone"
+        >
+          <el-input
+            v-model="draft.phone"
+            :disabled="!canEditField('phone')"
+            clearable
+            :placeholder="canEditField('phone') ? '请输入联系手机号' : '不可修改'"
+          />
         </in-detail-field>
-        <in-detail-field label="联系邮箱" :value="detail.record.email">
-          <el-input v-model="draft.email" clearable placeholder="请输入联系邮箱" />
+        <in-detail-field
+          v-if="memberFieldVisible(detail.fieldAccess, 'email')"
+          label="联系邮箱"
+          :value="detail.record.email"
+        >
+          <el-input
+            v-model="draft.email"
+            :disabled="!canEditField('email')"
+            clearable
+            :placeholder="canEditField('email') ? '请输入联系邮箱' : '不可修改'"
+          />
         </in-detail-field>
-        <div class="text-12px text-[var(--el-text-color-secondary)]">
-          仅用于平台联系，不影响全局账号登录信息。
-        </div>
+
         <el-form-item label="角色分配">
-          <div class="w-full flex flex-col gap-8px">
-            <div
-              v-for="item in assignments"
-              :key="item.record.id"
-              class="flex items-center gap-8px"
-            >
-              <span class="flex-1">
-                {{ item.record.roleName || item.record.assignment.roleRevisionRef.id }}
-                · v{{ item.record.revisionNumber || "-" }}
-                · {{ item.record.effectiveStatus || item.record.status }}
-              </span>
-              <in-button
-                v-if="privateCanRevoke(item)"
-                text
-                type="danger"
-                @in-click="privateRevoke(item)"
-              >撤销</in-button>
-            </div>
-            <span v-if="!canReadAssignments" class="text-[var(--el-text-color-secondary)]">
-              {{ simpleRoleNames.join("、") || "角色分配只读" }}
-            </span>
-            <span v-else-if="!assignments.length" class="text-[var(--el-text-color-secondary)]">暂无角色分配</span>
-            <in-button
-              v-if="canGrantDirect && canReadAssignments"
-              :disabled="assignmentSaving"
-              @in-click="rolePickerRef?.show()"
-            >添加角色</in-button>
-            <el-pagination
-              v-if="assignmentTotal > 20"
-              :current-page="assignmentPage"
-              :page-size="20"
-              :total="assignmentTotal"
-              layout="prev, pager, next"
-              small
-              @current-change="privateAssignmentPage"
-            />
-          </div>
+          <member-roles-field
+            ref="rolesField"
+            v-model:draft="roleState"
+            :member-id="detail.record.id"
+            :editing="editing"
+            :editable="canEditRoles"
+            :can-add="canGrantDirect"
+            :can-update="canUpdateDirect"
+            :can-remove="canRevokeDirect"
+          />
         </el-form-item>
         <in-detail-field label="状态">
           <template #view>
@@ -113,26 +112,10 @@
               :label="memberStatusEnum.getTagText(detail.record.status).text"
             />
           </template>
-          <el-select
-            v-if="detail.record.status !== MemberStatus.REMOVED"
-            v-model="draft.status"
-            clearable
-            placeholder="请选择状态"
-            class="w-full"
-          >
-            <el-option
-              v-for="option in memberStatusEnum.getOptions()"
-              :key="option.value"
-              :label="option.label"
-              :value="option.value"
-            />
-          </el-select>
-          <status-tag
-            v-else
-            :tone="statusToneOf(detail.record.status)"
-            :label="memberStatusEnum.getTagText(detail.record.status).text"
-          />
         </in-detail-field>
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          仅用于平台联系，不影响全局账号登录信息。
+        </div>
       </in-form>
     </in-biz-tab-panel>
     <in-biz-tab-panel title="其他" name="other" :editable="false">
@@ -141,21 +124,16 @@
       </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
-  <member-role-assign-dialog
-    ref="rolePickerRef"
-    :selected-role-ids="[]"
-    @confirm="privateOnRoleConfirm"
-  />
 </template>
 
 <script setup lang="ts">
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
-import { useCapabilities } from "@ingot/admin-core";
 import {
   Confirm,
   Message,
   StatusTag,
   createLoadGuard,
+  isApiError,
   objectActionAllowed,
   useDetailEditSession,
 } from "@ingot/admin-core";
@@ -163,39 +141,45 @@ import {
   collectIamPageRecords,
   MemberStatus,
   IamAction,
-  SubjectType,
-  editablePatch,
+  isFieldEditable,
   memberStatusTone,
   useMemberStatusEnum,
-  type AssignmentRecord,
-  type MemberRoleAssignmentDraft,
   type MemberRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
   PlatformMemberDetailAPI,
   PlatformMemberGroupsAPI,
-  PlatformMemberAssignmentsAPI,
-  PlatformMemberRolesAPI,
+  PlatformMemberEditPreviewAPI,
   PlatformMemberRemoveAPI,
   PlatformMemberStatusAPI,
   PlatformMemberUpdateAPI,
 } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
+import MemberRolesField from "./MemberRolesField.vue";
 import {
-  PlatformAssignmentCreateAPI,
-  PlatformAssignmentDeleteAPI,
-  PlatformAssignmentPreviewAPI,
-} from "@/api/iam/authorization";
-import MemberRoleAssignDialog from "./MemberRoleAssignDialog.vue";
+  memberRoleChanges,
+  hasMemberRoleChanges,
+  type MemberRoleEditorState,
+} from "../memberRoleEditor";
 import { createRowActions, type Row } from "../table";
+import {
+  memberCanEditProfile,
+  memberFieldVisible,
+  memberProfileDraft,
+  memberProfilePatch,
+} from "../memberFieldAccess";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
-const { canGrantDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
-const { hasAction } = useCapabilities();
-const canReadAssignments = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_READ));
+const {
+  canGrantDirect,
+  canReadDirect,
+  canUpdateDirect,
+  canRevokeDirect,
+  refresh: refreshEligibility,
+} = useDirectRoleEligibility();
 const EMPTY_PREVIEW = "-";
 
 const emits = defineEmits<{ success: [] }>();
@@ -216,21 +200,24 @@ const draft = reactive({
   avatar: undefined as string | undefined,
   status: null as MemberStatus | null,
 });
-const assignments = ref<ResourceDetail<AssignmentRecord>[]>([]);
-const simpleRoleNames = ref<string[]>([]);
-const assignmentTotal = ref(0);
-const assignmentPage = ref(1);
-const assignmentSaving = ref(false);
+const roleState = ref<MemberRoleEditorState>();
+const rolesField = ref<InstanceType<typeof MemberRolesField>>();
 const groupNames = ref<string[]>([]);
 const groupsLoaded = ref(false);
-const rolePickerRef = ref<{ show: () => void }>();
 const loadGuard = createLoadGuard();
 
 const identityName = computed(
-  () => detail.value?.record.displayName || detail.value?.record.id || "",
+  () =>
+    (memberFieldVisible(detail.value?.fieldAccess, "displayName")
+      ? detail.value?.record.displayName
+      : undefined) ||
+    detail.value?.record.username ||
+    detail.value?.record.id ||
+    "",
 );
 const identityAvatar = computed(
-  () => (editing.value ? draft.avatar : detail.value?.record.avatar) || "",
+  () =>
+    (editing.value && canEditField("avatar") ? draft.avatar : detail.value?.record.avatar) || "",
 );
 const groupPreview = computed(() =>
   groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW,
@@ -247,22 +234,27 @@ const overflowActions = computed(() => {
   }).filter((action) => action.kind !== "detail");
 });
 
-const applyDraft = (record: MemberRecord): void => {
-  draft.displayName = record.displayName ?? "";
-  draft.phone = record.phone ?? "";
-  draft.email = record.email ?? "";
-  draft.avatar = record.avatar;
-  draft.status = record.status;
+const canEditProfile = computed(() => memberCanEditProfile(detail.value));
+const canEditRoles = computed(
+  () =>
+    !!detail.value &&
+    detail.value.record.status === MemberStatus.ACTIVE &&
+    objectActionAllowed(detail.value.capabilities, IamAction.PLATFORM_MEMBER_UPDATE).allowed &&
+    canReadDirect.value &&
+    (canGrantDirect.value || canUpdateDirect.value || canRevokeDirect.value),
+);
+const canEditMember = computed(() => canEditProfile.value || canEditRoles.value);
+const canEditField = (key: string): boolean =>
+  canEditProfile.value && isFieldEditable(detail.value?.fieldAccess, key);
+const applyDraft = (value: ResourceDetail<MemberRecord>): void => {
+  Object.assign(draft, memberProfileDraft(value));
+  draft.status = value.record.status;
 };
-
-const loadAssignments = (id: string): Promise<void> =>
-  PlatformMemberAssignmentsAPI(id, { current: assignmentPage.value, size: 20 }).then((response) => {
-    assignments.value = response.data.records ?? [];
-    assignmentTotal.value = response.data.total ?? 0;
-  });
-const privateAssignmentPage = (page: number): void => {
-  assignmentPage.value = page;
-  if (detail.value) void loadAssignments(detail.value.record.id);
+const privateEnterEdit = (): void => {
+  if (!canEditMember.value || !detail.value) return;
+  applyDraft(detail.value);
+  roleState.value = undefined;
+  session.enterEdit();
 };
 
 const loadGroups = (): void => {
@@ -285,10 +277,7 @@ const load = (id: string): void => {
   draft.email = "";
   draft.avatar = undefined;
   draft.status = null;
-  assignments.value = [];
-  simpleRoleNames.value = [];
-  assignmentTotal.value = 0;
-  assignmentPage.value = 1;
+  roleState.value = undefined;
   groupNames.value = [];
   groupsLoaded.value = false;
   PlatformMemberDetailAPI(id)
@@ -297,12 +286,7 @@ const load = (id: string): void => {
         return;
       }
       detail.value = response.data;
-      applyDraft(response.data.record);
-      return canReadAssignments.value
-        ? loadAssignments(id)
-        : PlatformMemberRolesAPI(id).then((roles) => {
-            simpleRoleNames.value = roles.data.map((item) => item.name);
-          });
+      applyDraft(response.data);
     })
     .finally(() => {
       if (guard.isCurrent()) {
@@ -322,8 +306,9 @@ watch(tab, (name) => {
 
 const privateCancel = (): void => {
   session.exitEdit();
+  roleState.value = undefined;
   if (detail.value) {
-    applyDraft(detail.value.record);
+    applyDraft(detail.value);
   }
 };
 
@@ -334,88 +319,58 @@ const privateFinish = (): void => {
   emits("success");
 };
 
-const privateSave = (): void => {
-  if (!detail.value) {
-    return;
-  }
+const privateSave = async (): Promise<void> => {
   const current = detail.value;
-  const displayName = draft.displayName.trim();
-  if (!displayName) {
+  if (!current || !canEditMember.value || session.saving.value) return;
+  const patch = memberProfilePatch(current, draft);
+  if (patch.displayName !== undefined && !patch.displayName) {
     Message.warning("请输入显示名");
     return;
   }
-  if (current.record.status !== MemberStatus.REMOVED && !draft.status) {
-    Message.warning("请选择状态");
-    return;
-  }
-  const nextStatus = draft.status;
-  if (
-    current.record.status === MemberStatus.REMOVED &&
-    nextStatus &&
-    nextStatus !== MemberStatus.REMOVED
-  ) {
-    Message.warning("已移出的成员不能恢复");
-    return;
-  }
-  const next = {
-    displayName,
-    phone: draft.phone.trim(),
-    email: draft.email.trim(),
-    avatar: draft.avatar ?? "",
-  };
-  const profileChanged =
-    next.displayName !== (current.record.displayName ?? "") ||
-    next.phone !== (current.record.phone ?? "") ||
-    next.email !== (current.record.email ?? "") ||
-    next.avatar !== (current.record.avatar ?? "");
-  const statusChanged = Boolean(nextStatus) && nextStatus !== current.record.status;
-  if (!profileChanged && !statusChanged) {
+  const changes = roleState.value ? memberRoleChanges(roleState.value) : undefined;
+  const rolesChanged = hasMemberRoleChanges(changes);
+  if (!Object.keys(patch).length && !rolesChanged) {
     session.exitEdit();
     return;
   }
-  const access = current.fieldAccess;
-  const patch = Object.keys(access).length
-    ? editablePatch(next, access, ["displayName", "phone", "email", "avatar"])
-    : next;
   session.saving.value = true;
-  const saveProfile = profileChanged
-    ? PlatformMemberUpdateAPI(current.record.id, {
-        expectedVersion: current.version,
-        ...patch,
-      })
-    : Promise.resolve(null);
-  saveProfile
-    .then((response) => {
-      const version = response?.data.version ?? current.version;
-      if (!statusChanged || !nextStatus) {
-        if (response) {
-          detail.value = response.data;
-          applyDraft(response.data.record);
-        }
+  try {
+    const input = {
+      expectedVersion: current.version,
+      ...patch,
+      ...(rolesChanged ? { roleChanges: changes } : {}),
+    };
+    if (rolesChanged) {
+      const preview = await PlatformMemberEditPreviewAPI(current.record.id, input);
+      if (!preview.data.valid) {
+        Message.warning(preview.data.errors[0]?.message || "角色配置未通过预览，请检查范围");
         return;
       }
-      if (nextStatus === MemberStatus.REMOVED) {
-        return PlatformMemberRemoveAPI(current.record.id, { expectedVersion: version }).then(() => {
-          visible.value = false;
-        });
+      const impact = preview.data.effectiveResult;
+      await Confirm.warning(
+        `本次新增 ${impact?.additions || 0} 条、调整范围 ${impact?.updates || 0} 条、移除 ${impact?.removals || 0} 条角色分配。与成员资料一起保存？`,
+      );
+      const latest = roleState.value ? memberRoleChanges(roleState.value) : undefined;
+      if (
+        JSON.stringify(latest) !== JSON.stringify(changes) ||
+        JSON.stringify(memberProfilePatch(current, draft)) !== JSON.stringify(patch)
+      ) {
+        Message.warning("草稿已变化，请重新保存并预览");
+        return;
       }
-      return PlatformMemberStatusAPI(current.record.id, {
-        expectedVersion: version,
-        status: nextStatus,
-      })
-        .then(() => PlatformMemberDetailAPI(current.record.id))
-        .then((reloaded) => {
-          detail.value = reloaded.data;
-          applyDraft(reloaded.data.record);
-        });
-    })
-    .then(() => {
-      privateFinish();
-    })
-    .catch(() => undefined)
-    .finally(() => {
-      session.saving.value = false;
-    });
+    }
+    const response = await PlatformMemberUpdateAPI(current.record.id, input);
+    detail.value = response.data;
+    applyDraft(response.data);
+    roleState.value = undefined;
+    await rolesField.value?.refresh();
+    privateFinish();
+  } catch (error: unknown) {
+    if (isApiError(error) && error.status === 403) await refreshEligibility();
+    // 网络层统一显示错误，保留当前草稿供用户检查。
+  } finally {
+    session.saving.value = false;
+  }
 };
 
 const privateChangeStatus = (
@@ -462,40 +417,6 @@ const privateOnMoreCommand = (command: string | number | object): void => {
     return;
   }
   action.onSelect(detail.value);
-};
-
-const privateCanRevoke = (item: ResourceDetail<AssignmentRecord>): boolean =>
-  objectActionAllowed(item.capabilities, IamAction.PLATFORM_ASSIGNMENT_DELETE).allowed;
-const privateOnRoleConfirm = async (role: MemberRoleAssignmentDraft & { name: string }): Promise<void> => {
-  if (!detail.value || assignmentSaving.value) return;
-  assignmentSaving.value = true;
-  const assignment = {
-    subject: { type: SubjectType.MEMBER, id: detail.value.record.id },
-    roleRevisionRef: role.roleRevisionRef,
-    scopeBindings: role.scopeBindings,
-    validFrom: role.validFrom,
-    validUntil: role.validUntil,
-  };
-  try {
-    const preview = await PlatformAssignmentPreviewAPI({ items: [assignment] });
-    if (!preview.data.valid) {
-      Message.warning("当前角色或范围已变化，请重新选择");
-      return;
-    }
-    await PlatformAssignmentCreateAPI({ items: [assignment] });
-    Message.success("已分配角色");
-    await loadAssignments(detail.value.record.id);
-  } finally {
-    assignmentSaving.value = false;
-  }
-};
-const privateRevoke = (item: ResourceDetail<AssignmentRecord>): void => {
-  if (!detail.value) return;
-  Confirm.warning(`是否撤销角色分配（${item.record.roleName || item.record.id}）？`).then(async () => {
-    await PlatformAssignmentDeleteAPI(item.record.id);
-    Message.success("已撤销角色分配");
-    if (detail.value) await loadAssignments(detail.value.record.id);
-  });
 };
 
 defineExpose({

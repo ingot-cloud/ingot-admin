@@ -14,7 +14,7 @@ describe("platform personnel member drawers", () => {
     expect(createSource).toContain("跳过并添加");
     expect(createSource).toContain("下一步");
     expect(createSource).toContain("上一步");
-    expect(createSource).toContain("member-role-assign-dialog");
+    expect(createSource).toContain("member-roles-field");
     expect(createSource).toContain("roleAssignments");
     expect(createSource).toContain("groupIds");
     expect(createSource).toContain("loadPlatformGroupOptions");
@@ -29,9 +29,10 @@ describe("platform personnel member drawers", () => {
     expect(detailSource).toContain('label="角色分配"');
     expect(detailSource).toContain('label="用户组"');
     expect(detailSource).toContain("collectIamPageRecords");
-    expect(detailSource).toContain("PlatformMemberAssignmentsAPI");
-    expect(detailSource).toContain("PlatformAssignmentCreateAPI");
-    expect(detailSource).toContain("PlatformAssignmentDeleteAPI");
+    expect(detailSource).toContain("PlatformMemberEditPreviewAPI");
+    expect(detailSource).toContain("memberRoleChanges");
+    expect(detailSource).not.toContain("PlatformAssignmentCreateAPI");
+    expect(detailSource).not.toContain("PlatformAssignmentDeleteAPI");
     expect(detailSource).not.toContain("前往角色分配");
     expect(detailSource).not.toContain("<in-table");
     expect(apiSource).toContain("PlatformMemberRolesAPI");

@@ -96,6 +96,13 @@ export interface FieldAccess {
 
 export type FieldAccessMap = Record<string, FieldAccess>;
 
+/** 平台成员列布局与新对象创建上下文；逐行权限仍来自 ResourceDetail。 */
+export interface PlatformMemberContext {
+  listFieldVisibility: Record<string, FieldVisibility>;
+  createFieldAccess: FieldAccessMap;
+  canSearchDisplayName: boolean;
+}
+
 export interface ObjectCapability {
   allowed?: boolean;
   reasonCode?: string;
@@ -557,6 +564,36 @@ export interface MemberProfileInput extends VersionInput {
   /** 当前域联系资料；空字符串清空，不修改账号登录信息。 */
   phone?: string;
   email?: string;
+}
+
+/** 平台成员编辑使用差量，不替换未加载、继承或委派记录。 */
+export interface MemberRoleScopeChange extends VersionInput {
+  assignmentId: string;
+  scopeBindings: Record<string, ScopeBinding>;
+}
+export interface MemberRoleRemoval extends VersionInput {
+  assignmentId: string;
+}
+export interface MemberRoleChanges {
+  additions: MemberRoleAssignmentDraft[];
+  updates: MemberRoleScopeChange[];
+  removals: MemberRoleRemoval[];
+}
+export interface PlatformMemberEditInput extends MemberProfileInput {
+  roleChanges?: MemberRoleChanges;
+}
+export interface PlatformMemberEditPreview {
+  profileFields: string[];
+  additions: number;
+  updates: number;
+  removals: number;
+}
+export interface MemberBoundRole {
+  roleId: string;
+  name: string;
+  roleRevisionRef: RoleRevisionRef;
+  revisionNumber: string;
+  sourceTypes: SubjectType[];
 }
 
 export interface MemberStatusInput extends VersionInput {

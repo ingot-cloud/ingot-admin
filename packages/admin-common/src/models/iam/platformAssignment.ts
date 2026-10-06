@@ -11,6 +11,8 @@ import { durationHours } from "./duration";
 
 /** 每个固定版本保存独立参数；已选名称快照不依赖候选当前页。 */
 export interface PlatformAssignmentRoleDraft {
+  /** 编辑关联记录时独立标识，避免相同版本的多条分配参数合并。 */
+  configurationKey?: string;
   option: AuthorizationOption;
   bindings: Record<string, ScopeBinding>;
   selectedObjects: Record<string, AuthorizationOption[]>;
@@ -18,6 +20,9 @@ export interface PlatformAssignmentRoleDraft {
 
 export const assignmentRoleKey = (option: AuthorizationOption): string =>
   `${option.roleRevisionRef?.kind}:${option.id}`;
+
+export const assignmentDraftKey = (role: PlatformAssignmentRoleDraft): string =>
+  role.configurationKey || assignmentRoleKey(role.option);
 
 /** 配置按固定版本及参数去重，与操作列表的分页和搜索无关。 */
 export interface AssignmentScopeConfiguration {
@@ -35,7 +40,7 @@ export function assignmentScopeConfigurations(
   roles: PlatformAssignmentRoleDraft[],
 ): AssignmentScopeConfiguration[] {
   return roles.flatMap((role) => {
-    const roleKey = assignmentRoleKey(role.option);
+    const roleKey = assignmentDraftKey(role);
     return (role.option.parameterDefinitions || []).map((parameter) => {
       const grants = (role.option.grants || []).filter((grant) =>
         grant.scopes.some(

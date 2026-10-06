@@ -64,10 +64,12 @@
         <biz-iam-assignment-scope-card
           :item="item"
           :api="api"
-          :load-selected="selectedApi ? selectedLoader(item.parameterKey) : undefined"
+          :load-selected="
+            hasSelectedApi(item.role) ? selectedLoader(item.role, item.parameterKey) : undefined
+          "
           :delegation-grant-id="delegationGrantId"
           :reset-key="resetKey"
-          :readonly="readonly"
+          :readonly="!!(readonly || readonlyForRole?.(item.role))"
           @objects="privateSetObjects(item.roleKey, item.parameterKey, $event)"
         />
       </div>
@@ -118,7 +120,7 @@ import {
   type IamSelectOption,
 } from "../models/iam";
 import {
-  assignmentRoleKey,
+  assignmentDraftKey,
   assignmentScopeConfigurations,
   assignmentScopeIssues,
   type PlatformAssignmentRoleDraft,
@@ -130,9 +132,14 @@ defineOptions({ name: "BizIamAssignmentScopeStep" });
 const props = defineProps<{
   api: AuthorizationCandidatesApi;
   selectedApi?: AuthorizationCandidatesApi;
+  /** 成员差量编辑按分配记录回显，不能跨记录复用同名参数。 */
+  selectedApiForRole?: (
+    role: PlatformAssignmentRoleDraft,
+  ) => AuthorizationCandidatesApi | undefined;
   delegationGrantId?: string;
   resetKey: string | number;
   readonly?: boolean;
+  readonlyForRole?: (role: PlatformAssignmentRoleDraft) => boolean;
 }>();
 const roles = defineModel<PlatformAssignmentRoleDraft[]>("roles", { required: true });
 const selectedPages = new Map<string, ReturnType<AuthorizationCandidatesApi>>();
@@ -233,7 +240,7 @@ watch(
 );
 const privateSetObjects = (key: string, parameterKey: string, options: IamSelectOption[]): void => {
   roles.value = roles.value.map((role) =>
-    assignmentRoleKey(role.option) !== key
+    assignmentDraftKey(role) !== key
       ? role
       : {
           ...role,
@@ -253,7 +260,7 @@ const privateSetObjects = (key: string, parameterKey: string, options: IamSelect
 };
 const setNames = (key: string, parameterKey: string, options: IamSelectOption[]): void => {
   roles.value = roles.value.map((role) =>
-    assignmentRoleKey(role.option) !== key
+    assignmentDraftKey(role) !== key
       ? role
       : {
           ...role,
@@ -264,13 +271,18 @@ const setNames = (key: string, parameterKey: string, options: IamSelectOption[])
         },
   );
 };
+const hasSelectedApi = (role: PlatformAssignmentRoleDraft): boolean =>
+  !!(props.selectedApiForRole?.(role) || props.selectedApi);
 const selectedLoader =
-  (parameterKey: string): AuthorizationCandidatesApi =>
+  (role: PlatformAssignmentRoleDraft, parameterKey: string): AuthorizationCandidatesApi =>
   (query) => {
-    const key = `${props.resetKey}:${parameterKey}:${query.page || 1}:${query.pageSize || IAM_DEFAULT_PAGE_SIZE}`;
+    const key = `${props.resetKey}:${assignmentDraftKey(role)}:${parameterKey}:${query.page || 1}:${query.pageSize || IAM_DEFAULT_PAGE_SIZE}`;
     const previous = selectedPages.get(key);
     if (previous) return previous;
-    const pending = props.selectedApi!({ ...query, parameterKey });
+    const pending = (props.selectedApiForRole?.(role) || props.selectedApi)!({
+      ...query,
+      parameterKey,
+    });
     selectedPages.set(key, pending);
     void pending.catch(() => {
       if (selectedPages.get(key) === pending) selectedPages.delete(key);
@@ -278,23 +290,28 @@ const selectedLoader =
     return pending;
   };
 const loadStoredNames = async (): Promise<void> => {
-  if (!props.selectedApi || view.value !== ScopeView.Configuration) return;
+  if ((!props.selectedApi && !props.selectedApiForRole) || view.value !== ScopeView.Configuration)
+    return;
   const epoch = selectedEpoch;
   const visibleKeys = new Set(pagedConfigurations.value.map((item) => item.key));
   for (const role of roles.value) {
+    if (!hasSelectedApi(role)) continue;
     for (const [key, binding] of Object.entries(role.bindings)) {
-      if (!visibleKeys.has(JSON.stringify([assignmentRoleKey(role.option), key]))) continue;
+      if (!visibleKeys.has(JSON.stringify([assignmentDraftKey(role), key]))) continue;
       if (!binding.ids.length || role.selectedObjects[key]?.length) continue;
       if (view.value !== ScopeView.Configuration || epoch !== selectedEpoch) return;
       try {
-        const response = await selectedLoader(key)({
+        const response = await selectedLoader(
+          role,
+          key,
+        )({
           kind: "OBJECT",
           page: 1,
           pageSize: IAM_DEFAULT_PAGE_SIZE,
         });
         if (epoch !== selectedEpoch) return;
         setNames(
-          assignmentRoleKey(role.option),
+          assignmentDraftKey(role),
           key,
           response.data.items.filter((item) => binding.ids.includes(item.id)),
         );

@@ -7,7 +7,8 @@ export type GroupMemberRow = ResourceDetail<MemberRecord>;
 
 export const groupMemberHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "displayName", required: true, minWidth: "200" },
-  { label: "手机号", prop: "phone", minWidth: "140" },
+  { label: "联系手机号", prop: "phone", minWidth: "140" },
+  { label: "联系邮箱", prop: "email", minWidth: "200" },
   { label: "登录账号", prop: "username", required: true, minWidth: "140" },
   { label: "状态", prop: "status" },
   { label: "操作", width: "120", prop: "actions", fixed: "right" },

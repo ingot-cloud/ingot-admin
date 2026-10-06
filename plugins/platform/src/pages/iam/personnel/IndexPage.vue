@@ -7,7 +7,7 @@
       <in-biz-tabs v-model="tab">
         <in-biz-tab-panel title="成员" name="members">
           <in-table
-            :loading="paging.fetching.value"
+            :loading="loading"
             :data="paging.pageInfo.value.records"
             :page="paging.pageInfo.value"
             :headers="visibleHeaders"
@@ -18,8 +18,15 @@
             @handleSizeChange="paging.fetchData"
             @handleCurrentChange="paging.fetchData"
           >
+            <template #error>
+              <div class="flex flex-col items-center gap-12px">
+                <span>暂时无法加载成员字段权限</span>
+                <in-button @in-click="refreshContext">重试</in-button>
+              </div>
+            </template>
             <template #tools-start>
               <el-input
+                v-if="context?.canSearchDisplayName"
                 v-model="paging.condition.name"
                 class="w-200px!"
                 clearable
@@ -30,7 +37,7 @@
               />
               <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
               <in-table-column-setting
-                :headers="tableHeaders"
+                :headers="permissionHeaders"
                 :table-id="TABLE_ID"
                 @change="privateOnColumnChange"
               />
@@ -41,6 +48,7 @@
             <template #displayName="{ item }">
               <div class="flex items-center gap-8px">
                 <in-avatar
+                  v-if="memberFieldVisible(item.fieldAccess, 'avatar')"
                   :src="item.record.avatar"
                   :name="item.record.displayName || item.record.username"
                   :show-name="false"
@@ -50,11 +58,22 @@
                   :capabilities="item.capabilities"
                   @click="handleDetail(item)"
                 >
-                  {{ item.record.displayName || item.record.id }}
+                  <span v-if="memberFieldVisible(item.fieldAccess, 'displayName')">{{
+                    item.record.displayName || "-"
+                  }}</span>
                 </biz-iam-record-link>
               </div>
             </template>
-            <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
+            <template #phone="{ item }"
+              ><span v-if="memberFieldVisible(item.fieldAccess, 'phone')">{{
+                item.record.phone || "-"
+              }}</span></template
+            >
+            <template #email="{ item }"
+              ><span v-if="memberFieldVisible(item.fieldAccess, 'email')">{{
+                item.record.email || "-"
+              }}</span></template
+            >
             <template #username="{ item }">{{ item.record.username || "-" }}</template>
             <template #status="{ item }">
               <status-tag
@@ -69,7 +88,7 @@
           </in-table>
         </in-biz-tab-panel>
         <in-biz-tab-panel title="组" name="groups" fill>
-          <GroupWorkspace />
+          <GroupWorkspace :active="tab === 'groups'" />
         </in-biz-tab-panel>
       </in-biz-tabs>
     </in-split-layout>
@@ -104,17 +123,14 @@ import { PlatformMemberRemoveAPI, PlatformMemberStatusAPI } from "@/api/iam/pers
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";
 import GroupWorkspace from "./components/GroupWorkspace.vue";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
+import { memberFieldVisible, memberPermissionHeaders } from "./memberFieldAccess";
 
 const tab = ref("members");
-const { paging, refreshData } = useOps();
+const { paging, refreshData, context, loading, contextError, refreshContext } = useOps(
+  computed(() => tab.value === "members"),
+);
 const { unavailable } = useCapabilities();
 const memberStatusEnum = useMemberStatusEnum();
 const statusToneOf = (status: string): "info" | "warning" | "danger" =>
@@ -137,8 +153,13 @@ const toolbarRow = {
   version: "",
 } satisfies Row;
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
-const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
+const permissionHeaders = computed(() => memberPermissionHeaders(tableHeaders, context.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(permissionHeaders.value, selectedColumnProps.value),
+);
+const tableFeedback = computed<InTableFeedback>(() =>
+  unavailable.value || contextError.value ? "error" : "empty",
+);
 
 const handleCreate = (): void => {
   createRef.value?.show();
@@ -147,17 +168,17 @@ const handleDetail = (item: Row): void => {
   detailRef.value?.show(item);
 };
 const handleSuspend = (item: Row): void => {
-  Confirm.warning(`暂停只影响平台身份，不删除全局账号。是否暂停（${item.record.displayName || item.record.id}）？`).then(
-    () => {
-      PlatformMemberStatusAPI(item.record.id, {
-        expectedVersion: item.version,
-        status: MemberStatus.SUSPENDED,
-      }).then(() => {
-        Message.success("已暂停");
-        refreshData();
-      });
-    },
-  );
+  Confirm.warning(
+    `暂停只影响平台身份，不删除全局账号。是否暂停（${item.record.displayName || item.record.id}）？`,
+  ).then(() => {
+    PlatformMemberStatusAPI(item.record.id, {
+      expectedVersion: item.version,
+      status: MemberStatus.SUSPENDED,
+    }).then(() => {
+      Message.success("已暂停");
+      refreshData();
+    });
+  });
 };
 const handleRestore = (item: Row): void => {
   Confirm.warning(`是否恢复平台成员（${item.record.displayName || item.record.id}）？`).then(() => {
