@@ -12,7 +12,7 @@ export type Row = ResourceDetail<MemberRecord>;
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   { label: "名称", prop: "displayName", required: true, minWidth: "200" },
-  { label: "手机号", prop: "phone", minWidth: "140" },
+  { label: "联系手机号", prop: "phone", minWidth: "140" },
   { label: "登录账号", prop: "username", required: true, minWidth: "140" },
   { label: "状态", prop: "status" },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },

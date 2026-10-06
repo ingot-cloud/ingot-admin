@@ -17,12 +17,15 @@
         <el-form-item label="登录名">
           <el-input :model-value="lookedUpUsername" disabled placeholder="不可修改" />
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="初始联系手机号">
           <el-input :model-value="phone || '-'" disabled placeholder="不可修改" />
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item label="初始联系邮箱">
           <el-input :model-value="email || '-'" disabled placeholder="不可修改" />
         </el-form-item>
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          创建时从账号复制初始联系方式，之后可在成员详情独立修改，不影响账号登录信息。
+        </div>
       </template>
     </in-form>
     <in-form v-else label-position="top">

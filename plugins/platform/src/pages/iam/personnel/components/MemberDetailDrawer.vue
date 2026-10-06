@@ -57,12 +57,15 @@
           <el-input v-model="draft.displayName" clearable placeholder="请输入显示名" />
         </in-detail-field>
         <in-detail-field label="登录名" :value="detail.record.username || '-'" />
-        <in-detail-field label="手机号" :value="detail.record.phone">
-          <el-input v-model="draft.phone" clearable placeholder="请输入手机号" />
+        <in-detail-field label="联系手机号" :value="detail.record.phone">
+          <el-input v-model="draft.phone" clearable placeholder="请输入联系手机号" />
         </in-detail-field>
-        <in-detail-field label="邮箱" :value="detail.record.email">
-          <el-input v-model="draft.email" clearable placeholder="请输入邮箱" />
+        <in-detail-field label="联系邮箱" :value="detail.record.email">
+          <el-input v-model="draft.email" clearable placeholder="请输入联系邮箱" />
         </in-detail-field>
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          仅用于平台联系，不影响全局账号登录信息。
+        </div>
         <el-form-item label="角色分配">
           <div class="w-full flex flex-col gap-8px">
             <div

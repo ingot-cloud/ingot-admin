@@ -511,6 +511,7 @@ export interface MemberRecord {
   id: string;
   displayName?: string;
   avatar?: string;
+  /** 当前域联系资料，可能已脱敏；不回退到账号登录信息。 */
   phone?: string;
   email?: string;
   username?: string;
@@ -553,6 +554,7 @@ export interface MemberDepartmentBinding {
 export interface MemberProfileInput extends VersionInput {
   displayName?: string;
   avatar?: string;
+  /** 当前域联系资料；空字符串清空，不修改账号登录信息。 */
   phone?: string;
   email?: string;
 }
