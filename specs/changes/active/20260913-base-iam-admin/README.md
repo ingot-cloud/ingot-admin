@@ -80,3 +80,20 @@
 后端改为按实际应用/资源关联识别对象候选；同资源自定义操作和内置操作行为一致，全部委派上限继续相交。分配、委派、诊断和已选回显/写入使用相同识别，接口和页面契约不变，本轮无需修改前端代码。未知资源保持不支持，跨资源参数不允许混用。后端实施与定向回归后同步来源，页面人工验收独立记录，主状态保持 implementing，不更新 current。
 
 后端开发及52项定向回归完成；本轮接口和前端代码未变，人工待OR04。来源与人工步骤见 [对象资源识别增量](./sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md)。
+
+
+## 2026-10-05 资源字段策略与分配升级
+
+已批准 [资源扩展增量](./RESOURCE-EXTENSION-REFINEMENT.md)，按后端同源契约实施平台字段策略及升级步骤交互；主状态 implementing，人工验收单列。
+
+资源扩展增量状态validating：开发及自动化完成，人工验收待执行；主change保持implementing，不提前更新current。部署和验收见 [后端验收清单](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md)。
+
+
+## 2026-10-05 平台角色字段权限（用户已批准）
+
+平台角色五步创建/四步编辑、字段权限按资源配置、固定版本只读摘要及预览，独立字段策略入口退出。共享/租户流程不变；宪章符合性：业务留platform插件、复用admin-common，API/R/类型及主题组件保持统一。任务及验收见 [ROLE-FIELD-AUTHORIZATION-REFINEMENT](./ROLE-FIELD-AUTHORIZATION-REFINEMENT.md)。
+
+
+2026-10-05：角色字段增量RF01–RF07完成，状态validating；admin-common92、platform118项组件、公共/平台/组织类型、只读lint、依赖边界和两管理台构建通过。共享/租户流程保留，RF08真实账号、视觉、部署及性能验收仍待用户执行，主change保持implementing。来源及SHA-256已同步；未提交、未改current，人工步骤见 [更新后的后端验收清单](sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md)。
+
+2026-10-05最终直接替换：平台旧字段页面/API模型和roleFieldsEnabled标志已清理，字段能力直接用于角色配置。DC01–DC04开发及自动化完成，admin-common92、platform116项、三包类型、只读lint、边界与两管理台构建通过；主change仍implementing，RF08人工待用户。权威来源以SOURCES.md最后一表为准。

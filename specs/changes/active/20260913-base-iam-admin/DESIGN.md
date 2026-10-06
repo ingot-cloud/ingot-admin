@@ -186,3 +186,17 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 2026-10-05 平台范围对象识别收紧（用户已批准）
 
 后端改为按实际应用/资源关联识别对象候选；同资源自定义操作和内置操作行为一致，全部委派上限继续相交。分配、委派、诊断和已选回显/写入使用相同识别，接口和页面契约不变，本轮无需修改前端代码。未知资源保持不支持，跨资源参数不允许混用。后端实施与定向回归后同步来源，页面人工验收独立记录，主状态保持 implementing，不更新 current。
+
+
+## 2026-10-05 资源字段策略与分配升级
+
+已批准 [资源扩展增量](./RESOURCE-EXTENSION-REFINEMENT.md)，按后端同源契约实施平台字段策略及升级步骤交互；主状态 implementing，人工验收单列。
+
+
+## 2026-10-05 平台角色字段权限（用户已批准）
+
+平台角色五步创建/四步编辑、字段权限按资源配置、固定版本只读摘要及预览，独立字段策略入口退出。共享/租户流程不变；宪章符合性：业务留platform插件、复用admin-common，API/R/类型及主题组件保持统一。任务及验收见 [ROLE-FIELD-AUTHORIZATION-REFINEMENT](./ROLE-FIELD-AUTHORIZATION-REFINEMENT.md)。
+
+2026-10-05 用户批准测试阶段直接替换平台字段模型：删除迁移开关、平台旧页面及启用标志；资源能力与角色字段配置直接生效，租户流程保持原行为。增量任务见[角色字段权限](ROLE-FIELD-AUTHORIZATION-REFINEMENT.md)。
+
+2026-10-05最终直接替换：平台旧字段页面/API模型和roleFieldsEnabled标志已清理，字段能力直接用于角色配置。DC01–DC04开发及自动化完成，admin-common92、platform116项、三包类型、只读lint、边界与两管理台构建通过；主change仍implementing，RF08人工待用户。权威来源以SOURCES.md最后一表为准。

@@ -144,3 +144,119 @@ API/FRONTEND、后端增量、模型/路由/OpenAPI 和两份轻量树夹具已�
 | `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `db16dc98a59328bff53454ba718556bc695d8489121f376afaa02a30168b5cbe` |
 | `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d353187983f9cb902e9e48851dc5f11ee58352e147bc3af5a7596fc4302b316a` |
 | `PLATFORM-OBJECT-RESOLUTION-REFINEMENT.md` | [sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md](./sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md) | `b0db713763a38d76757d8afb24261b6a675cafaa083d642b3666ff6151d8e374` |
+
+
+## 2026-10-05 通用资源、平台字段与分配升级权威来源
+
+以下为本增量最新校验值，覆盖相同文件的历史快照；公开133路径/201操作，内部2操作另列。开发验证完成，部署及人工验收单列，不代表当前线上基线。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `0f34332538cb09317d0b9ef88682db2581d680a4c9b3a009a8b8dbadfe5b18bc` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `56f3e7422de8ad696cd166c31140f12c639a8959a34c3354cc07b105489d6355` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `489516717db9405c002f85736ec9379a5806abe1056a5f9cf2cabcd8eee6d9bb` |
+| `RESOURCE-EXTENSION-REFINEMENT.md` | [sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md](./sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md) | `534d0bbc5d348995162784d5a45086f690bb8dea3fc549fac40c7d0c0dd2c508` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `08d5e50518699a97a532feacae2ac9c50cacc12ce41a88bcd812bcc96ab33360` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `ea8a62b58f498deed0e0434f1237827d60d74f397dd6a4809698ad4444f1a10f` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `b4e0816cd8f2a20d3ab5fc246629933f1c25191c2717a97229107297a96ab80b` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `abe379fcf57f66e45a2eaf9d3995f4a489fc9efde2608af1bea9f5438dba99db` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `5f245e6b10d281715657ec208d616e54430e40ebc4df6fde1f0f90e2ad36b848` |
+| `contracts/internal-openapi.json` | [sources/contracts/internal-openapi.json](./sources/contracts/internal-openapi.json) | `e7dca99bdf2615c176ceabcea9433f73755d6977a2a4330d9cd7c3d4bbddecc0` |
+| `contracts/examples/assignment-upgrade.json` | [sources/contracts/examples/assignment-upgrade.json](./sources/contracts/examples/assignment-upgrade.json) | `692ded7fdad3fd63b6fb22c80e58e4f806ba47d2a0e2572ad7b5185076dfff35` |
+| `contracts/examples/authorization-v2-request.json` | [sources/contracts/examples/authorization-v2-request.json](./sources/contracts/examples/authorization-v2-request.json) | `167abd84380f4a801ad942b36ec762577b52a61636e3b896cdea8746f1296af1` |
+
+## 2026-10-05 IAM 初始化脚本整理来源
+
+以下为SQL整理后的最新副本校验值，覆盖相同文件历史SHA。新建库改用后端生成的 databases/ingot_iam.sql；001–006为权威来源，已有库补丁迁入migrations，真实环境导入未执行。仅同步说明及来源路径，本轮前端业务契约和页面行为不变。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `b7c32b72972a5f85daa49660086e0fba826a08a2b2c12bbcd5d52b0db59acade` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `74335b0bd3429ff58841a9ea45d4b42ae7d9520f940cddb6ed76079aa6fdc088` |
+| `ROLE-WORKSPACE-DELEGATION-REFINEMENT.md` | [sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md](./sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md) | `c438bf6c2cab8aa9075a10c59f858469ab0be70ac9eaea783389788fc4298c5e` |
+| `RESOURCE-EXTENSION-REFINEMENT.md` | [sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md](./sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md) | `4ecfedeb216cdafe313c276851cebbe330bb17b2022f20e2c9bc771c61838bea` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `77d539c5d9b0b4715ef075412d7360d857f95941b7bdf512533c8123add41005` |
+| `VERIFICATION-GUIDE.md` | [sources/BACKEND_VERIFICATION_GUIDE.md](./sources/BACKEND_VERIFICATION_GUIDE.md) | `668b82bb9cc0dd5e039d0b5aff75fee358a3c65814b5b8151b7fc20cc2890c25` |
+| `DATABASE-SCRIPT-REFINEMENT.md` | [sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md](./sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md) | `478db30f3c7307c6df2d03c672cbc24328794e1bb99ea2da45ce5dbbe3b3d76e` |
+
+
+## 2026-10-05 平台角色字段权限最新权威来源
+
+本表覆盖同文件历史哈希；公开129路径/196操作，内部2操作。用户确认框架未投产，平台角色字段为唯一模型：旧独立策略及迁移开关、能力标志、顶层兼容字段、012/013脚本全部删除。租户字段策略与通讯录保持原行为。开发及自动化完成，人工与实际库重建待用户；当前部署按最新完整SQL初始化，不按历史迁移说明操作。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `3a956a159b657c5ebca8e2566e53f8c9d1c86f7664b00a9b02aaa2865d197a3b` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `edba77702096170106b82a077b908efff7c5c10b213ff705ae2bb25fbea3f125` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `6e8e2fb74b6d7a617a89b233cde4e576b0cf8271e0125bde4b44f3f81934e7b2` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `c227a2321998a733560afee91282c77115c6cf2095137d70132bd82b29760ef5` |
+| `RESOURCE-EXTENSION-REFINEMENT.md` | [sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md](./sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md) | `d3c4d9cf71b33850a81f50ca58712cf6e99fb466a265e311bd60b51a306d6075` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `c59912a9c90eea8274459c3a510b289b4a24beb1eea991ab3cbf5c69246ee338` |
+| `ROLE-FIELD-AUTHORIZATION-REFINEMENT.md` | [sources/BACKEND_ROLE_FIELD_AUTHORIZATION_REFINEMENT.md](./sources/BACKEND_ROLE_FIELD_AUTHORIZATION_REFINEMENT.md) | `ef10de1f160370a6db1c68812dac691ec03f13e0bed93526007fc15796d48180` |
+| `contracts/internal-openapi.json` | [sources/contracts/internal-openapi.json](./sources/contracts/internal-openapi.json) | `de75c0bddc10da76343389bf9e5aa93c5978395edba5d8566696c2d0be6f06c9` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `5f0c5c9779b85d527e92df01bf54603911b5b1c22004b2eb01ed1599fcaaf99e` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `da6e83bfd40295163bff70c6f8cc5f0632c5da3633d17c78d701892a0d2fe75d` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `8c838a198f6953a33006662f4699e9d6d495b87ce877e820d3d81ccdc5c1c24e` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `6c7e03c8a312db5f2f4ff68e30835f5b4b2ad4d7647e93d4bbffdb0c52432f89` |
+| `contracts/examples/authorization-candidates.json` | [sources/contracts/examples/authorization-candidates.json](./sources/contracts/examples/authorization-candidates.json) | `c58b40eefc464fe561a65c00789257dc0d338960172a08854fbb25e1ed6cffc8` |
+| `contracts/examples/decision-restricted.json` | [sources/contracts/examples/decision-restricted.json](./sources/contracts/examples/decision-restricted.json) | `0b33df4ccb9c3adad9434d2a4cc4f0b4e93ebe36e9b83610b6429a8607867ce9` |
+| `contracts/examples/field-policy.json` | [sources/contracts/examples/field-policy.json](./sources/contracts/examples/field-policy.json) | `34741450de8a829ef69acff2b368cca63f2fe738304c14cb9e39711097c019f4` |
+| `contracts/examples/member-detail.json` | [sources/contracts/examples/member-detail.json](./sources/contracts/examples/member-detail.json) | `4d834165ab6fc03bd8d51648c58ae9768b5fe39ccd61a298aaebbac7b0a02685` |
+| `contracts/examples/audit.json` | [sources/contracts/examples/audit.json](./sources/contracts/examples/audit.json) | `b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1` |
+| `contracts/examples/assignment-multi-role.json` | [sources/contracts/examples/assignment-multi-role.json](./sources/contracts/examples/assignment-multi-role.json) | `4d179982f861974708d6fbe0c34c0b8a522926223bc005636d06d490abe18f0a` |
+| `contracts/examples/assignment-context.json` | [sources/contracts/examples/assignment-context.json](./sources/contracts/examples/assignment-context.json) | `f3f8a4690aa00488056b33036b1c7fdaff3a90e93e4ab24de4c1459d40173e24` |
+| `contracts/examples/role-publish.json` | [sources/contracts/examples/role-publish.json](./sources/contracts/examples/role-publish.json) | `161f3c178e679952c5f21a320b30f02eb8ba5b432835b686bf8ac7881abfbdae` |
+| `contracts/examples/role-subject-page.json` | [sources/contracts/examples/role-subject-page.json](./sources/contracts/examples/role-subject-page.json) | `3c16da306274394837943e410d9d7b24f268b990a1a98a7ac2b75e80cc2091ba` |
+| `contracts/examples/assignment-record.json` | [sources/contracts/examples/assignment-record.json](./sources/contracts/examples/assignment-record.json) | `ceb58e46f3e4bb487961a8241100cc4d92cf21064ced0c8a5653ea3dadf86899` |
+| `contracts/examples/policy-preview.json` | [sources/contracts/examples/policy-preview.json](./sources/contracts/examples/policy-preview.json) | `95ef6260bc1984d2f3a6aedeb0355fde34cd25f75fcdd8ad8190d8d5c8bb437c` |
+| `contracts/examples/delegation.json` | [sources/contracts/examples/delegation.json](./sources/contracts/examples/delegation.json) | `f1ff9fd992b75c3525226095802b847d87b64226ed2a5cf8120aaa52392b21ae` |
+| `contracts/examples/assignment.json` | [sources/contracts/examples/assignment.json](./sources/contracts/examples/assignment.json) | `0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa` |
+| `contracts/examples/authorization-role-versions.json` | [sources/contracts/examples/authorization-role-versions.json](./sources/contracts/examples/authorization-role-versions.json) | `d43205669c3e8b440249b1779a9db822e756dca02e56d72ebcbe13a5ff5f1802` |
+| `contracts/examples/tenant-create.json` | [sources/contracts/examples/tenant-create.json](./sources/contracts/examples/tenant-create.json) | `bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133` |
+| `contracts/examples/role-shared.json` | [sources/contracts/examples/role-shared.json](./sources/contracts/examples/role-shared.json) | `a6c0f4f037d83d87245fad242f27cf3b69d7fe78beebd60d6058c87cb6326dba` |
+| `contracts/examples/authorization-v2-request.json` | [sources/contracts/examples/authorization-v2-request.json](./sources/contracts/examples/authorization-v2-request.json) | `167abd84380f4a801ad942b36ec762577b52a61636e3b896cdea8746f1296af1` |
+| `contracts/examples/upgrade-conflict.json` | [sources/contracts/examples/upgrade-conflict.json](./sources/contracts/examples/upgrade-conflict.json) | `d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70` |
+| `contracts/examples/role-create.json` | [sources/contracts/examples/role-create.json](./sources/contracts/examples/role-create.json) | `e407fa60b63de59abfc98db91af42a9d23df1903a5340d1361630da4cba3c43d` |
+| `contracts/examples/field-readonly.json` | [sources/contracts/examples/field-readonly.json](./sources/contracts/examples/field-readonly.json) | `5a1d863e3a989311bec29d36f52e2b4960421844b4e635aab010125bddacf042` |
+| `contracts/examples/role-delta.json` | [sources/contracts/examples/role-delta.json](./sources/contracts/examples/role-delta.json) | `af2f8b4456a4075cd77addebf33db78cdefb38edf633777b6eac5136e9fc7fcf` |
+| `contracts/examples/authorization-role-candidates.json` | [sources/contracts/examples/authorization-role-candidates.json](./sources/contracts/examples/authorization-role-candidates.json) | `3002bf2b20aa23025e322a0caa0c46688d6c85312b0f448246f33252ffb01421` |
+| `contracts/examples/role-platform-fields.json` | [sources/contracts/examples/role-platform-fields.json](./sources/contracts/examples/role-platform-fields.json) | `619daf5e8049c832585d08a730fcc7d499adfa550cd89f9f683be47799be708b` |
+| `contracts/examples/delegation-unlimited.json` | [sources/contracts/examples/delegation-unlimited.json](./sources/contracts/examples/delegation-unlimited.json) | `b70d04b8138fae40556a8f2d0505b60b451b6839ad4f7ab044d5456ad2b24e14` |
+| `contracts/examples/member-page.json` | [sources/contracts/examples/member-page.json](./sources/contracts/examples/member-page.json) | `6df8ae4f9aa0e49588d6b46b4022f96a7b593f42dae47e81bc92a961265cdf49` |
+| `contracts/examples/role-upgrade.json` | [sources/contracts/examples/role-upgrade.json](./sources/contracts/examples/role-upgrade.json) | `6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b` |
+| `contracts/examples/directory-policy.json` | [sources/contracts/examples/directory-policy.json](./sources/contracts/examples/directory-policy.json) | `7cbf037239d1f2e5e1de2805e4effec9150e4e6dcd188644bfbb8b97653bd90c` |
+| `contracts/examples/assignment-upgrade.json` | [sources/contracts/examples/assignment-upgrade.json](./sources/contracts/examples/assignment-upgrade.json) | `692ded7fdad3fd63b6fb22c80e58e4f806ba47d2a0e2572ad7b5185076dfff35` |
+| `contracts/examples/preview-invalid.json` | [sources/contracts/examples/preview-invalid.json](./sources/contracts/examples/preview-invalid.json) | `594ce7180a49ab5d478d90ee758e1e40512a166f8ae6e46285c338565cb86d53` |
+| `contracts/examples/bootstrap.json` | [sources/contracts/examples/bootstrap.json](./sources/contracts/examples/bootstrap.json) | `0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4` |
+| `contracts/examples/assignment-selected-candidates.json` | [sources/contracts/examples/assignment-selected-candidates.json](./sources/contracts/examples/assignment-selected-candidates.json) | `cc18ba779fd71bdb03500ea7ca0b6c1734f5247415115da3c7adb57c138a649c` |
+
+
+## 2026-10-06 目录布局与可重复初始化最新来源
+
+以下校验值覆盖相同文件历史哈希。目录菜单默认使用 `layout.main`；完整SQL会先删除manifest内56张表，仅删除阶段关闭外键，建表/种子阶段开启并恢复原会话设置。重复执行清空目标表，重建后须重新导入测试身份；006单独执行仍只补缺。前端业务代码和公开接口不变，本轮未操作实际数据库，人工菜单/登录验收待用户。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `DATABASE-SCRIPT-REFINEMENT.md` | [sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md](./sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md) | `3bdb9ed91203414f422a9b41c7b6d29e4ef097e0897e4f2735e95ade351dcb97` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `92f5775282f4a58dbc99edaad3346c7335cfdc653a50345938eeeb999cd29a05` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `c0beaea88e43796bdcc0ca47f9292fa215f30902e9f3dd65b3ece1ce67b8d119` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `5caec126f19dac3badb26e8c8a33666ad5c92e8952a50945a33eb09ac5faaea5` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `f5099ec570d4dbb3922ddb1c5100cd59971dadc8d71a4afe960474bb2c5c9086` |
+| `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `f09113806361ec83c5ea4eb7883e134e77c89dfade09970728a6a41fd6f5a5a5` |
+| `VERIFICATION-GUIDE.md` | [sources/BACKEND_VERIFICATION_GUIDE.md](./sources/BACKEND_VERIFICATION_GUIDE.md) | `8d62388df9bc868671fa58250b927c16d35e92d42d978634159c4c2b8394cfe1` |
+
+
+## 2026-10-06 全局账号与独立开发者平台最新来源
+
+以下校验值覆盖相同文件历史哈希。全局账号加入平台治理的“平台管理”，独立 `platform:develop` 应用包含生成二维码、客户端管理、社交管理和业务ID管理，页面注册键和原接口精确权限码保留。正式目录为3应用/36资源/138操作/30菜单/54菜单关联，新平台SYSTEM版本覆盖两个平台应用，租户SYSTEM仍只覆盖租户域。完整初始化会清空清单表，单独006不改写已有固定版本；实际库与页面人工验收未执行，前端业务代码不变。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `DATABASE-SCRIPT-REFINEMENT.md` | [sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md](./sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md) | `b4ff8a84d5def1937b7ac965fa22b36d6db34f31c4bed1da0017c11d161c10c7` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `0b2b60420de6865e5d4ad541152cba77f76b9c66efd047ec6342ade2586b53bd` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `0b70440099a9000f844a02336a75f6fbd80ba8af2029417d4c856bba35003d79` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `024e03f1dd17481b661b38e6f4a193c96f31ab945981a2f3d0360580e911a0aa` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `22d0c0c893eb94e68e11c6fc77a50e28aab4ab7ed489401d841891667f0e8092` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `dba95f558ddb8472b3f2a1a310b5642981933262277b5cb473f317fe10667d2c` |
+| `VERIFICATION-GUIDE.md` | [sources/BACKEND_VERIFICATION_GUIDE.md](./sources/BACKEND_VERIFICATION_GUIDE.md) | `13ddacc98d5464464016c1c8ec07b5b085fcf8cca5b79dbfaed38273f88a1ac8` |
