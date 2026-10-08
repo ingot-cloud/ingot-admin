@@ -121,3 +121,9 @@ MR01–MR03 开发与自动化验证完成，增量状态 validating；MR04 人�
 
 
 2026-10-06：用户要求提交已完成的平台应用导航、账号/二维码样式、成员字段交互及角色配置闭环（含 MR05 对话框布局修正）。代码与 Spec 分开记录；SN07、MF04、MR04、MR06 人工验收继续未完成，不更新 current、不归档。
+
+## 强制改密闭环（2026-10-06）
+
+用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
+
+FP01–FP04 开发及限定自动化已完成，增量 validating；FP05 人工验收未执行。原有全量 InUser 列表测试失败单独记录，详见 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md)。

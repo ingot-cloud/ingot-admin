@@ -329,3 +329,7 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。
 
 平台成员 PATCH 使用 PlatformMemberEditInput（平铺资料+roleChanges）；成员角色预览 POST /members/{id}/preview；只读 GET /members/{id}/bound-roles 为有效摘要；可编辑关联 GET /members/{id}/assignments?effectiveStatus=ACTIVE&directOnly=true。新增角色显式选择固定版本；租户 MemberProfileInput 不变。新表单不使用旧简单角色替换接口。
+
+## 强制改密（2026-10-06）
+
+按 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md) 执行：bootstrap 的 PasswordChangeRequired 由最小密码 GET 接管；保护请求受服务端门禁约束，成功改密后清理 BFF 会话并重新登录，不记忆 /init。共享组件覆盖平台和租户入口。

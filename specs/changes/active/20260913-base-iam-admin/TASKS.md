@@ -380,3 +380,13 @@ MR01–MR03 开发与自动化验证完成，增量状态 validating；MR04 人�
 
 
 2026-10-06：用户批准成员角色对话框增高及中间分割线撑满内容区，修正和独立人工任务见 [MR05–MR06](PLATFORM-MEMBER-ROLE-EDITOR.md)。
+
+## 强制改密闭环（2026-10-06）
+
+用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
+
+FP01–FP04 开发及限定自动化已完成，增量 validating；FP05 人工验收未执行。原有全量 InUser 列表测试失败单独记录，详见 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md)。
+
+FP06 按原 HYBRID whole 契约修复密码 PUT 后端解密链路；前端报文不变。实际加密回归与人工重测见 FORCED-PASSWORD-CHANGE.md。
+
+FP06 后端整包解密修复及 28 项限定回归已完成，浏览器重测仍为 FP05 未验收项，无前端代码改动。

@@ -2,7 +2,7 @@
 
 同步校准日期：2026-10-06。后端来源：同级 ingot/specs/changes/active/20260912-iam-identity-access-management。两端主状态implementing；后端B01–B05已落地，前端部分增量已有代码，完整验收未结束。本轮平台角色分配与委派增量已经实施，证据见 AUTHORIZATION-REFINEMENT-STATUS；真实 HTTP/浏览器验收仍未完成。历史来源保留。
 
-后端API为权威，contracts 与 sources 中标注的后端原文按哈希同步；本地 API/INTERACTIONS 同时含前端增量说明。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面130路径/197操作，包含账号/本人/字典/发号/社交、目录辅助、两域授权候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
+后端API为权威，contracts 与 sources 中标注的后端原文按哈希同步；本地 API/INTERACTIONS 同时含前端增量说明。旧来源清单保留于 [历史记录](./sources/history/SOURCES-20260914.md)，其中旧数字与缺口仅为历史。当前管理面132路径/200操作，包含账号/本人/字典/发号/社交、目录辅助、两域授权候选、上下文/详情/预览与导出状态；完整schemas/examples随目录同步。BFF-LOGIN单列登录契约，B06及四站真实验收未完成；不能据契约文件或B01–B05勾选推断产品已验收。
 
 ## 阅读顺序
 
@@ -12,15 +12,15 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 
 | 后端相对路径 | 本地副本 | SHA-256 |
 |---|---|---|
-| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `a5c3f2e2a9add99ed9b656cd7f67792e98232d3f6cc17fbdba011e9835639a9c` |
-| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `3722b0c823cbc26d9590b8af68d114dccc7fc1b9e82fa954927aef99cdadd3a4` |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `2938c9fc02587af782c649ab396e3402bc1e4899c456704c7d60ff0a61208db6` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `0f47f7dc7e30f32526ebf38d76114f38b39d99e6c3bc2563f566cf1f4c2ed4ec` |
 | `BFF-LOGIN.md` | [BFF-LOGIN.md](./BFF-LOGIN.md) | `bfae7f4e66100a3e32da56933b82bb6a2244a355698a6c377ca7b75aefec172f` |
-| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d353187983f9cb902e9e48851dc5f11ee58352e147bc3af5a7596fc4302b316a` |
-| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `db16dc98a59328bff53454ba718556bc695d8489121f376afaa02a30168b5cbe` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `8255cf51362b14fcd9d987d425350a373f9c272e944890df83a1bf4b76513dcd` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `05c0468ce867f8aa96d1573c5fe909175c22fa857c1aa52d8f2c4a47a2806d91` |
 | `MIGRATION.md` | [sources/BACKEND_MIGRATION.md](./sources/BACKEND_MIGRATION.md) | `a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c` |
 | `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `71bc2185c1836d044a6c1cabffd730dfb9129c28540014309f5defc990803521` |
 | `endpoint-mapping.json` | [sources/endpoint-mapping.json](./sources/endpoint-mapping.json) | `6eff4056434a6f307b62bccf4dd2170c013d089943dd7c8461b8da89846a16ec` |
-| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `ba53c4017dc32a3438a98aba62bd4cef602b3edadeed8587ae0454575cc4cd36` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `61b2e5b8a4067eeb7d242fd0d5ce5dd50c029df486ed3aa431bb3a2a2dfdffe0` |
 | `contracts/examples/assignment.json` | [sources/contracts/examples/assignment.json](./sources/contracts/examples/assignment.json) | `0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa` |
 | `contracts/examples/audit.json` | [sources/contracts/examples/audit.json](./sources/contracts/examples/audit.json) | `b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1` |
 | `contracts/examples/bootstrap.json` | [sources/contracts/examples/bootstrap.json](./sources/contracts/examples/bootstrap.json) | `0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4` |
@@ -40,9 +40,9 @@ README → REQUIREMENTS → DESIGN → BFF-LOGIN → API/INTERACTIONS → IMPLEM
 | `contracts/examples/role-upgrade.json` | [sources/contracts/examples/role-upgrade.json](./sources/contracts/examples/role-upgrade.json) | `6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b` |
 | `contracts/examples/tenant-create.json` | [sources/contracts/examples/tenant-create.json](./sources/contracts/examples/tenant-create.json) | `bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133` |
 | `contracts/examples/upgrade-conflict.json` | [sources/contracts/examples/upgrade-conflict.json](./sources/contracts/examples/upgrade-conflict.json) | `d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70` |
-| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `d28907ebd12f64bffc44f5cdcbbb81d66f148c966b281daf679fe3159aaeb710` |
-| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `8a7c5508c54c225caf66edc89889c402efc122f18813a663cc45a57998c44c0c` |
-| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `55783b392670adeb6d336543991da3ffd3d2922758c3d8d09b77a59e41d92b6f` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `6b920ac17807c9b5782f2cba02fde41c2f225b04750df18eb5040c9482e9037c` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `4c930b07d33d62a891498feafe0ce7e9109a8a99405bd4317d4bfe259dc4a49e` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `fd4e6bda498a00b4da0a3a6f0221bc58c126cb74eb93ffb5cc86d869f4c925e6` |
 
 ## 2026-09-19 新增权威副本
 
@@ -333,3 +333,23 @@ sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `f6158b933cd494d7c3abfa00461014fa682678c974ecc9324112cbca8214a8bd` |
 | `contracts/examples/member-role-edit.json` | [sources/contracts/examples/member-role-edit.json](./sources/contracts/examples/member-role-edit.json) | `d360063c8189b334b666178eb9d2f49c5a7bec7dd8921efb8dae527443cf986b` |
 | `contracts/examples/member-bound-roles.json` | [sources/contracts/examples/member-bound-roles.json](./sources/contracts/examples/member-bound-roles.json) | `f13756efb9b4551c676a61cfc07f565b5bcbd6b2cf91bdc8397e52e80f230711` |
+
+## 2026-10-06 强制改密权威来源
+
+以下哈希与最新原文副本一致，覆盖同文件历史值；历史表保留当时记录。FP01–FP04 开发及限定自动化完成，FP05 人工待执行。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `2938c9fc02587af782c649ab396e3402bc1e4899c456704c7d60ff0a61208db6` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `0f47f7dc7e30f32526ebf38d76114f38b39d99e6c3bc2563f566cf1f4c2ed4ec` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `8255cf51362b14fcd9d987d425350a373f9c272e944890df83a1bf4b76513dcd` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `05c0468ce867f8aa96d1573c5fe909175c22fa857c1aa52d8f2c4a47a2806d91` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `53937db3d4a3cc68479b87c76bc656bf93fe2ec8e80f33a4b2658a27abd875a6` |
+| `RESOURCE-EXTENSION-VERIFICATION.md` | [sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md](./sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md) | `0002fdc47a75885a691e67d9b823ab18599a84a75013028be77a1278628545a2` |
+| `FORCED-PASSWORD-CHANGE.md` | [sources/BACKEND_FORCED_PASSWORD_CHANGE.md](./sources/BACKEND_FORCED_PASSWORD_CHANGE.md) | `0d8b6dd0b8648ffdf7eb5adef9786ec80168325aba48add7e8114bcd91033401` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `61b2e5b8a4067eeb7d242fd0d5ce5dd50c029df486ed3aa431bb3a2a2dfdffe0` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `4c930b07d33d62a891498feafe0ce7e9109a8a99405bd4317d4bfe259dc4a49e` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `6b920ac17807c9b5782f2cba02fde41c2f225b04750df18eb5040c9482e9037c` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `fd4e6bda498a00b4da0a3a6f0221bc58c126cb74eb93ffb5cc86d869f4c925e6` |
+| `contracts/internal-openapi.json` | [sources/contracts/internal-openapi.json](./sources/contracts/internal-openapi.json) | `29d4fc22afc03a1e943d562ecf46e9877d809f25afd5b9690338e93ece204454` |
+| `contracts/examples/password-change-state.json` | [sources/contracts/examples/password-change-state.json](./sources/contracts/examples/password-change-state.json) | `077f2c128c3afb0a78bc63d03da8c115b3281d4e195d99d5f984e09071ae5377` |

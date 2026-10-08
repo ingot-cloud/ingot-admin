@@ -235,3 +235,7 @@ Admin 同源 BFF 建立浏览器绑定事务；不向 BFF 传 returnTo 或任何
 ## 平台成员角色配置增量（2026-10-06）
 
 角色录入框打开两步对话框：选择角色/固定版本 → 设置范围。新增角色多选，编辑的有效非委派直接记录分页回显原固定版本和对象，未加载/继承/委派记录保留。确认只更新成员草稿，最终保存先预览增删改数量，再一个PATCH与资料一起提交。只读角色仅显示有效绑定名称+版本，无历史状态。范围/字段展示复用共享组件，按assignment记录隔离同版本参数；取消不落库。详见PLATFORM-MEMBER-ROLE-EDITOR.md，MR04人工全部待执行。
+
+## 强制改密（2026-10-06）
+
+按 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md) 执行：bootstrap 的 PasswordChangeRequired 由最小密码 GET 接管；保护请求受服务端门禁约束，成功改密后清理 BFF 会话并重新登录，不记忆 /init。共享组件覆盖平台和租户入口。

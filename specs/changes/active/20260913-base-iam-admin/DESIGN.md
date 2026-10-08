@@ -214,3 +214,7 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 平台成员角色配置闭环（2026-10-06）
 
 见 [PLATFORM-MEMBER-ROLE-EDITOR.md](PLATFORM-MEMBER-ROLE-EDITOR.md)，approved → implementing；MR04 人工独立验收。
+
+## 强制改密闭环（2026-10-06）
+
+用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
