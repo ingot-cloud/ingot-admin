@@ -4,6 +4,7 @@ export enum StatusCode {
 
   UNAUTHORIZED = "S0401",
   FORBIDDEN = "S0403",
+  PasswordChangeRequired = "PasswordChangeRequired",
   TokenInvalid = "invalid_token",
   TokenSignBack = "user_sign_out",
 

@@ -116,6 +116,7 @@ declare global {
   const refThrottled: typeof import('@vueuse/core').refThrottled
   const refWithControl: typeof import('@vueuse/core').refWithControl
   const refreshSessionPermissions: typeof import('../../packages/admin-core/src/stores/modules/auth').refreshSessionPermissions
+  const requirePasswordChange: typeof import('../../packages/admin-core/src/stores/modules/auth').requirePasswordChange
   const resetSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').resetSessionBootstrap
   const resolveActionAccess: typeof import('../../packages/admin-core/src/hooks/biz/actionAccess').resolveActionAccess
   const resolveComponent: typeof import('vue').resolveComponent
@@ -505,6 +506,7 @@ declare module 'vue' {
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
     readonly refreshSessionPermissions: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['refreshSessionPermissions']>
+    readonly requirePasswordChange: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['requirePasswordChange']>
     readonly resetSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['resetSessionBootstrap']>
     readonly resolveActionAccess: UnwrapRef<typeof import('../../packages/admin-core/src/hooks/biz/actionAccess')['resolveActionAccess']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>

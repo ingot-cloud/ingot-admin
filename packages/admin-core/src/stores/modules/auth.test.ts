@@ -1,8 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
+import { ApiError } from "@ingot/http-client";
+import { StatusCode } from "@/net/status-code";
 
 const IamBootstrapAPI = vi.fn();
 const IamCapabilitiesAPI = vi.fn();
+const PasswordChangeStateAPI = vi.fn();
+vi.mock("@/api/common/password", () => ({
+  PasswordChangeStateAPI: (...args: unknown[]) => PasswordChangeStateAPI(...args),
+}));
 
 vi.mock("@/api/common/iam", () => ({
   IamBootstrapAPI: (...args: unknown[]) => IamBootstrapAPI(...args),
@@ -42,6 +48,7 @@ const {
   DomainMismatchError,
   ensureSessionBootstrap,
   publishIdentityInvalidated,
+  requirePasswordChange,
   refreshSessionPermissions,
   resetSessionBootstrap,
   usePermissions,
@@ -86,6 +93,7 @@ describe("session bootstrap", () => {
     useUserInfoStore().clear();
     IamBootstrapAPI.mockReset();
     IamCapabilitiesAPI.mockReset();
+    PasswordChangeStateAPI.mockReset();
   });
 
   it("一次拉取 bootstrap，不从菜单刮权限码，不以角色名放行", async () => {
@@ -143,6 +151,48 @@ describe("session bootstrap", () => {
     await expect(ensureSessionBootstrap()).rejects.toBeInstanceOf(DomainMismatchError);
     expect(useUserInfoStore().getUserInfoWhetherExist).toBe(false);
     expect(usePermissions().permissions).toEqual([]);
+  });
+
+  it("必须改密时只取最小身份状态，不请求业务能力，清空旧权限及菜单", async () => {
+    usePermissions().permissions = ["iam-platform:member:read"];
+    IamBootstrapAPI.mockRejectedValue(new ApiError({
+      kind: "http", message: "请先改密", status: 403, code: StatusCode.PasswordChangeRequired,
+    }));
+    PasswordChangeStateAPI.mockResolvedValue({ data: { context: bootstrapData.context, mustChangePassword: true } });
+    await Promise.all([ensureSessionBootstrap(), ensureSessionBootstrap()]);
+    expect(IamBootstrapAPI).toHaveBeenCalledTimes(1);
+    expect(PasswordChangeStateAPI).toHaveBeenCalledTimes(1);
+    expect(useUserInfoStore().getIsInitPwd).toBe(true);
+    expect(useUserInfoStore().userInfo.user).toBeUndefined();
+    expect(usePermissions().permissions).toEqual([]);
+    expect(usePermissions().applications).toEqual([]);
+    await refreshSessionPermissions({ refreshMenusIfVersionChanged: true });
+    expect(IamCapabilitiesAPI).not.toHaveBeenCalled();
+  });
+
+  it("受限状态查询合并且迟到能力响应不能恢复业务权限", async () => {
+    IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
+    await ensureSessionBootstrap();
+    let resolveCapabilities!: (value: unknown) => void;
+    IamCapabilitiesAPI.mockImplementation(() => new Promise((resolve) => { resolveCapabilities = resolve; }));
+    const pending = refreshSessionPermissions();
+    PasswordChangeStateAPI.mockResolvedValue({ data: { context: bootstrapData.context, mustChangePassword: true } });
+    await Promise.all([requirePasswordChange(), requirePasswordChange()]);
+    resolveCapabilities({ data: { actionCodes: ["old-full"], version: "old" } });
+    await pending;
+    expect(usePermissions().permissions).toEqual([]);
+    expect(useUserInfoStore().getIsInitPwd).toBe(true);
+    expect(PasswordChangeStateAPI).toHaveBeenCalledOnce();
+  });
+
+  it("改密状态失败或域错误不能恢复旧业务权限", async () => {
+    IamBootstrapAPI.mockRejectedValue(new ApiError({ kind: "http", message: "改密", code: StatusCode.PasswordChangeRequired }));
+    PasswordChangeStateAPI.mockRejectedValueOnce(new Error("offline"));
+    usePermissions().permissions = ["old"];
+    await expect(ensureSessionBootstrap()).rejects.toThrow("offline");
+    expect(usePermissions().permissions).toEqual([]);
+    PasswordChangeStateAPI.mockResolvedValue({ data: { context: { ...bootstrapData.context, domain: "TENANT" }, mustChangePassword: true } });
+    await expect(ensureSessionBootstrap()).rejects.toBeInstanceOf(DomainMismatchError);
   });
 
   it("publishIdentityInvalidated 通知同源标签页", () => {

@@ -1,5 +1,8 @@
 import type { UserInfo, UserEffectivePermissionVO } from "@/models/security";
-import type { IamBootstrap, CurrentCapabilities, AuthorizationDomain, IamApplicationSummary } from "@/models/iam";
+import type { IamBootstrap, CurrentCapabilities, AuthorizationDomain, IamApplicationSummary, PasswordChangeState } from "@/models/iam";
+import { PasswordChangeStateAPI } from "@/api/common/password";
+import { StatusCode } from "@/net/status-code";
+import { ApiError } from "@ingot/http-client";
 import { LogoutAPI } from "@/api/common/auth";
 import { IamBootstrapAPI, IamCapabilitiesAPI } from "@/api/common/iam";
 import { mapIamMenus } from "@/router/helper/iamMenus";
@@ -36,6 +39,7 @@ const toUserInfo = (bootstrap: IamBootstrap): UserInfo => ({
   },
   roles: [],
   allows: [],
+  // 必须改密的账号无法取得业务 bootstrap，只能使用 PasswordChangeState。
   mustChangePwd: false,
   memberId: bootstrap.profile.memberId,
   accountId: bootstrap.context.accountId,
@@ -66,6 +70,7 @@ export const useAuthStore = defineStore(
           );
         }),
       ]).then(() => {
+        usePermissions().bumpContextEpoch();
         resetSessionBootstrap();
         useUserInfoStore().clear();
         usePermissions().clear();
@@ -123,10 +128,7 @@ export const useUserInfoStore = defineStore("security.user", () => {
   };
 
   const fetchUserInfo = (): Promise<UserInfo> => {
-    return IamBootstrapAPI().then((response) => {
-      applyBootstrap(response.data);
-      return useUserInfoStore().userInfo;
-    });
+    return ensureSessionBootstrap().then(() => useUserInfoStore().userInfo);
   };
 
   return {
@@ -286,11 +288,46 @@ const bindVisibilityRefresh = (): void => {
   window.addEventListener("focus", onVisible);
 };
 
-const assertExpectedDomain = (data: IamBootstrap): void => {
+const assertExpectedDomain = (data: Pick<IamBootstrap, "context">): void => {
   const expected = getAdminRuntimeConfig().login.expectedDomain ?? "TENANT";
   if (data.context.domain !== expected) {
     throw new DomainMismatchError(expected, data.context.domain);
   }
+};
+
+const applyPasswordChangeState = (data: PasswordChangeState): void => {
+  assertExpectedDomain(data);
+  if (!data.mustChangePassword) {
+    throw new Error("改密状态已变化，请重新登录");
+  }
+  usePermissions().clear();
+  useRouterStore().clearForPasswordChange();
+  clearAdminQueryCache();
+  useUserInfoStore().applyUserInfo({
+    ...emptyUserInfo(),
+    memberId: data.context.memberId,
+    accountId: data.context.accountId,
+    domain: data.context.domain,
+    tenantId: data.context.tenantId ?? null,
+    mustChangePwd: true,
+  });
+};
+
+let passwordChangePromise: Promise<void> | undefined;
+
+export const requirePasswordChange = (): Promise<void> => {
+  if (useUserInfoStore().getIsInitPwd) return Promise.resolve();
+  if (passwordChangePromise) return passwordChangePromise;
+  // 先清掉旧业务内容，状态失败时也不能继续用已缓存的菜单和权限。
+  usePermissions().bumpContextEpoch();
+  usePermissions().clear();
+  useRouterStore().clearForPasswordChange();
+  clearAdminQueryCache();
+  const epoch = usePermissions().contextEpoch;
+  passwordChangePromise = PasswordChangeStateAPI().then((state) => {
+    if (usePermissions().contextEpoch === epoch) applyPasswordChangeState(state.data);
+  }).finally(() => { passwordChangePromise = undefined; });
+  return passwordChangePromise;
 };
 
 const applyBootstrap = (data: IamBootstrap): void => {
@@ -320,8 +357,13 @@ export const ensureSessionBootstrap = (): Promise<void> => {
     return bootstrapPromise;
   }
   bootstrapPromise = IamBootstrapAPI()
+    .catch(async (error: unknown) => {
+      if (!(error instanceof ApiError) || error.code !== StatusCode.PasswordChangeRequired) throw error;
+      await requirePasswordChange();
+      return undefined;
+    })
     .then((response) => {
-      applyBootstrap(response.data);
+      if (response) applyBootstrap(response.data);
       bootstrapped = true;
       bindVisibilityRefresh();
       bindIdentityChannel();
@@ -336,12 +378,15 @@ export const ensureSessionBootstrap = (): Promise<void> => {
 export const refreshSessionPermissions = (options?: {
   refreshMenusIfVersionChanged?: boolean;
 }): Promise<void> => {
+  if (useUserInfoStore().getIsInitPwd) return Promise.resolve();
   if (refreshPromise) {
     return refreshPromise;
   }
   const previousVersion = usePermissions().version;
+  const epoch = usePermissions().contextEpoch;
   refreshPromise = IamCapabilitiesAPI()
     .then(async (response) => {
+      if (useUserInfoStore().getIsInitPwd || usePermissions().contextEpoch !== epoch) return;
       usePermissions().applyCapabilities(response.data);
       if (
         options?.refreshMenusIfVersionChanged &&
@@ -349,7 +394,7 @@ export const refreshSessionPermissions = (options?: {
         response.data.version !== previousVersion
       ) {
         const bootstrap = await IamBootstrapAPI();
-        applyBootstrap(bootstrap.data);
+        if (!useUserInfoStore().getIsInitPwd && usePermissions().contextEpoch === epoch) applyBootstrap(bootstrap.data);
       }
     })
     .finally(() => {

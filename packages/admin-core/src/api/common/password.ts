@@ -1,8 +1,12 @@
 import { request } from "@/net";
 import type { R } from "@/models";
-import type { CurrentPasswordInput } from "@/models/iam";
+import type { CurrentPasswordInput, PasswordChangeState } from "@/models/iam";
 
 const PATH = "/api/iam/v1/me/password";
+
+export function PasswordChangeStateAPI(): Promise<R<PasswordChangeState>> {
+  return request.get<PasswordChangeState>(PATH);
+}
 
 const cryptoOptions = {
   crypto: {

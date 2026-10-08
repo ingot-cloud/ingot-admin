@@ -3,6 +3,8 @@ import { ApiError } from "@ingot/http-client";
 import { StatusCode } from "./status-code";
 
 const logoutAndReload = vi.fn();
+const refresh = vi.fn(() => Promise.resolve());
+const requirePasswordChange = vi.fn(() => Promise.resolve());
 const warning = vi.fn();
 const confirmWarning = vi.fn(() => Promise.resolve());
 
@@ -11,7 +13,8 @@ vi.mock("@/utils/security", () => ({
 }));
 
 vi.mock("@/stores/modules/auth", () => ({
-  refreshSessionPermissions: vi.fn(() => Promise.resolve()),
+  refreshSessionPermissions: (...args: unknown[]) => refresh(...args),
+  requirePasswordChange: (...args: unknown[]) => requirePasswordChange(...args),
   usePermissions: () => ({ markUnavailable: vi.fn() }),
 }));
 
@@ -35,6 +38,8 @@ const {
 describe("admin failure hooks", () => {
   beforeEach(() => {
     logoutAndReload.mockReset();
+    refresh.mockClear();
+    requirePasswordChange.mockClear();
     warning.mockReset();
     confirmWarning.mockReset();
     confirmWarning.mockResolvedValue(undefined);
@@ -97,6 +102,31 @@ describe("admin failure hooks", () => {
     );
     expect(confirmWarning).toHaveBeenCalled();
     expect(warning).not.toHaveBeenCalled();
+  });
+
+  it("bootstrap 改密错误不触发通用能力刷新或重复状态查询", async () => {
+    handleAdminHttpError(new ApiError({ kind: "http", status: 403, code: StatusCode.PasswordChangeRequired,
+      message: "请先改密", config: { url: "/api/iam/v1/me/bootstrap" } }));
+    await vi.dynamicImportSettled();
+    expect(refresh).not.toHaveBeenCalled();
+    expect(requirePasswordChange).not.toHaveBeenCalled();
+    expect(warning).not.toHaveBeenCalled();
+  });
+
+  it("业务请求遇到必须改密后清理状态并转改密页", async () => {
+    const original = window.location;
+    const replace = vi.fn();
+    Object.defineProperty(window, "location", { configurable: true, value: { pathname: "/platform/members", replace } });
+    try {
+      handleAdminHttpError(new ApiError({ kind: "http", status: 403, code: StatusCode.PasswordChangeRequired,
+        message: "请先改密", config: { url: "/api/iam/v1/platform/members" } }));
+      await vi.dynamicImportSettled();
+      expect(requirePasswordChange).toHaveBeenCalledOnce();
+      expect(replace).toHaveBeenCalledWith("/init");
+      expect(refresh).not.toHaveBeenCalled();
+    } finally {
+      Object.defineProperty(window, "location", { configurable: true, value: original });
+    }
   });
 
   it("普通业务失败提示一次", () => {

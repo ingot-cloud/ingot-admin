@@ -1,3 +1,9 @@
+/** 强制改密期间唯一可读的当前身份状态。 */
+export interface PasswordChangeState {
+  context: AuthorizationContext;
+  mustChangePassword: boolean;
+}
+
 export type AuthorizationDomain = "PLATFORM" | "TENANT";
 
 export type IamMenuKind = "DIRECTORY" | "PAGE";

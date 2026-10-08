@@ -11,32 +11,27 @@ export class UserInfoGuard extends BaseNavigationGuard {
   public exec(): NavigationGuardWithThis<undefined> {
     const globalLoading = useGlobalLoading();
     return async (to) => {
-      const { getUserInfoWhetherExist } = storeToRefs(useUserInfoStore());
-      const exist = getUserInfoWhetherExist.value;
-      if (!to.meta.permitAuth && !exist) {
-        return await new Promise<boolean | { path: string; replace: boolean }>((resolve) => {
-          globalLoading.start();
-          ensureSessionBootstrap()
-            .then(() => {
-              to.meta.dynamicRoutes = true;
-              resolve(true);
-            })
-            .catch((error) => {
-              if (error instanceof DomainMismatchError) {
-                resolve({ path: "/auth/identity-error", replace: true });
-                return;
-              }
-              resolve(false);
-            });
-        });
+      const user = useUserInfoStore();
+      let loaded = false;
+      if (!to.meta.permitAuth && !user.getUserInfoWhetherExist) {
+        globalLoading.start();
+        try {
+          await ensureSessionBootstrap();
+          loaded = true;
+        } catch (error) {
+          globalLoading.stop();
+          if (error instanceof DomainMismatchError) {
+            return { path: "/auth/identity-error", replace: true };
+          }
+          return false;
+        }
       }
-
-      const { getIsInitPwd } = storeToRefs(useUserInfoStore());
-      if (getIsInitPwd.value && to.fullPath !== "/init") {
-        return {
-          path: "/init",
-          replace: true,
-        };
+      if (!to.meta.permitAuth && user.getIsInitPwd) {
+        // 首次 bootstrap 后也必须检查，不能先进入动态业务路由。
+        to.meta.dynamicRoutes = false;
+        if (to.path !== "/init") return { path: "/init", replace: true };
+      } else if (loaded) {
+        to.meta.dynamicRoutes = true;
       }
 
       return true;

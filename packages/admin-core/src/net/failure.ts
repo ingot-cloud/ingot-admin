@@ -37,6 +37,17 @@ const schedulePermissionRefresh = (): void => {
 };
 
 const handleAuthorizationFailure = (error: ApiError): boolean => {
+  if (error.code === StatusCode.PasswordChangeRequired) {
+    // 初始 bootstrap 由 store 处理；禁止进入通用 403 能力刷新，避免重复请求与递归。
+    const url = error.config?.url ?? "";
+    if (!url.endsWith("/me/bootstrap") && !url.endsWith("/me/password")) {
+      void import("@/stores/modules/auth").then(async ({ requirePasswordChange }) => {
+        await requirePasswordChange();
+        if (window.location.pathname !== "/init") window.location.replace("/init");
+      }).catch(() => logoutAndReload(true));
+    }
+    return true;
+  }
   if (isSnapshotUnavailable(error)) {
     Message.warning("授权服务暂时不可用，请稍后重试", { showClose: true });
     void import("@/stores/modules/auth").then(({ usePermissions }) => {

@@ -8,10 +8,10 @@
       <el-main>
         <div class="content-box">
           <div class="header">
-            <div class="title">初始化密码</div>
+            <div class="title">修改密码</div>
           </div>
 
-          <div class="tips">请设置您的登录密码</div>
+          <div class="tips">请先修改登录密码，完成后重新登录</div>
 
           <el-form
             ref="editFormRef"
@@ -42,7 +42,7 @@
           </el-form>
           <el-form-item>
             <div w-full flex flex-row justify-center>
-              <in-button type="primary" @click="handleConfirmClick"> 确定 </in-button>
+              <in-button type="primary" :loading="loading" @click="handleConfirmClick"> 确定 </in-button>
             </div>
           </el-form-item>
         </div>
@@ -53,9 +53,10 @@
   </el-container>
 </template>
 <script lang="ts" setup>
+import type { FormInstance } from "element-plus";
 import { useAppStateStore } from "@/stores/modules/app";
 import { InitPwdAPI } from "@/api/common/password";
-import { useUserInfoStore } from "@/stores/modules/auth";
+import { useAuthStore, useUserInfoStore } from "@/stores/modules/auth";
 import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
 import { useLogin } from "@/hooks/biz/useLogin";
 import { useMessage } from "@/hooks/web/useMessage";
@@ -75,13 +76,14 @@ const appStateStore = useAppStateStore();
 const userInfoStore = useUserInfoStore();
 const { getIsInitPwd } = storeToRefs(userInfoStore);
 const loading = ref(false);
-const editFormRef = ref();
+const editFormRef = ref<FormInstance>();
 const editForm = reactive<EditForm>({});
 const message = useMessage();
 const go = useGo();
 
 const handleConfirmClick = () => {
-  editFormRef.value.validate((valid: boolean) => {
+  if (loading.value) return;
+  editFormRef.value?.validate((valid: boolean) => {
     if (valid) {
       if (editForm.newPassword !== editForm.confirmPassword) {
         message.warning("新密码不一致");
@@ -93,13 +95,13 @@ const handleConfirmClick = () => {
         newPassword: editForm.newPassword ?? "",
         confirmPassword: editForm.confirmPassword ?? "",
       })
-        .then(() => {
-          loading.value = false;
-          message.success("设置成功");
-          userInfoStore.clear();
-          useLogin().go();
+        .then(async () => {
+          message.success("密码设置成功，请重新登录");
+          await useAuthStore().logout();
+          useLogin().go({ rememberReturnTo: false });
         })
-        .catch(() => {
+        .catch(() => undefined)
+        .finally(() => {
           loading.value = false;
         });
     }

@@ -30,6 +30,14 @@ export const useRouterStore = defineStore("router", () => {
     applyMergedMenus(mergeMenuTrees(staticMenus, remoteMenus));
   };
 
+  const clearForPasswordChange = (): void => {
+    allRoutes.value = [];
+    dynamicRoutes.value = [];
+    menus.value = [];
+    cacheNames.value = [];
+    activeApplicationId.value = undefined;
+  };
+
   const fetchRoutes = async (forceRefresh?: boolean) => {
     return new Promise<{
       menus: Array<MenuRouteRecord>;
@@ -64,5 +72,5 @@ export const useRouterStore = defineStore("router", () => {
     });
   };
 
-  return { menus, cacheNames, getMenus, activeApplicationId, setActiveApplication, fetchRoutes, applyRemoteMenus };
+  return { menus, cacheNames, getMenus, activeApplicationId, setActiveApplication, fetchRoutes, applyRemoteMenus, clearForPasswordChange };
 });
