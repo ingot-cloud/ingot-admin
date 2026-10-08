@@ -1,6 +1,9 @@
 # 20260913-base-iam-admin
 
 > 状态：implementing
+> 2026-10-08 用户批准强制改密页面与受限顶栏优化，approved → implementing；设计、任务及人工验收见 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md) 的 FH01–FH04。
+> FH01–FH03 开发、34 项定向回归及双入口宽/窄屏 4 个模拟浏览器检查完成，增量 validating；FH04 与 FP05 真实人工验收待执行。
+> 用户后续授权提交；受限顶栏、表单及 FH05 注入警告修复的代码提交为 `f814199`，文档独立提交；人工验收状态不变。
 > 2026-09-19 状态校准：部分基础能力和平台页面已落地，完整业务流程及验收未结束。开发子项见 TASKS 的 S 系列，剩余 U01–U13；详细证据见 IMPLEMENTATION-STATUS。
 
 ## 目标与范围

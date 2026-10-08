@@ -219,6 +219,8 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 
 用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
 
+2026-10-08：共享顶栏按账号状态执行受限允许列表，/init 显式保持受限模式；禁止挂载自定义业务组件及旧插槽，不改搜索持久化偏好。用户菜单只保留现有 BFF 退出动作，身份中性显示；密码 API 不变。完整兼容设计及任务见同文档 FH01–FH04。
+
 
 ## 2026-10-08 角色分配表格与操作栏
 

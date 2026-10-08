@@ -208,6 +208,10 @@ const privateOnClick = () => {
 
 列表项必须有稳定唯一 `key`。搜索显隐仍只使用 `settings.showSearch` 与设置 store。
 
+强制改密时，`InAppBar` 根据账号状态使用受限顶栏，仅保留默认品牌和用户退出登录入口；导航、搜索、小部件及旧插槽均不挂载，自定义品牌/搜索/用户组件不生效。`InUserDropdown` 同样只允许内置退出登录，不挂载个人资料与普通改密弹窗，缺少资料时显示“当前账号”。该限制不会修改持久化搜索偏好。
+
+`InAppBar` 与 `InUserDropdown` 的可选 `passwordChangeRequired` prop 可显式保持该视图；`/init` 会启用它，让清理会话到跳转登录期间也保持受限。省略时仍按账号状态判断，显式 `false` 不能解除真实限制。正常状态沿用原 APP 配置和设置。增量验收见 [强制改密页面与顶栏](../specs/changes/active/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md)。
+
 ## 默认菜单搜索
 
 未替换 `header.search.component` 时，默认搜索框检索与侧栏相同的 `useRouterStore().getMenus`（权限裁剪后的动态菜单 + 插件 `staticMenus`，已去掉 `hideMenu`）。不要用 `router.getRoutes()`：公共 403/404/init 等静态路由不会出现在侧栏，也不应被搜到。只按菜单名（及祖先标题）匹配叶子节点，选中后 `router.push`。

@@ -54,6 +54,18 @@ pnpm --filter @ingot/admin-platform-app build
 pnpm --filter @ingot/admin-app build
 ```
 
+### FH05 开发环境缺失布局注入警告（2026-10-08）
+
+用户在 /init 实际页面发现 `inShellLayout` 注入缺失警告。独立改密页面按设计不提供主布局，InAppBar 已使用可选访问及 expanded/false 兜底，但 inject 未声明默认值，Vue 开发环境仍发出警告。属于已批准独立页面兼容设计的补齐：明确默认 null，不创建主布局或放宽受限顶栏。原组件测试都提供了 shell，生产浏览器检查未收集开发警告；新增无 provider 的组件回归。无接口、业务行为或主题协议变化。
+
+- [x] FH05：无 inShellLayout provider 的改密顶栏仍显示品牌与唯一退出菜单，使用默认导航状态且不报该注入警告；定向组件回归及类型检查通过。
+
+新增回归在修复前复现警告并失败；将 InAppBar 改为 `inject(shellLayoutKey, null)` 后，顶栏/用户下拉/改密表单 14 项全部通过，类型检查、只读 ESLint 及 admin-core 构建通过。未再次执行真实用户登录，FH04/FP05 保持待验收。
+
+### 提交记录（2026-10-08）
+
+用户后续明确要求“代码提交”，本增量按仓库规范拆分代码与文档提交。代码提交 `f814199`：`fix(admin-core): 强制改密期间仅保留改密与退出操作`，包含受限顶栏、表单、可选布局注入及回归。此前“不提交”记录保留为实施阶段事实；本次提交不代表人工验收完成，增量仍 validating，FH04/FP05 未勾选，current 与归档不变。
+
 实际人工步骤见 RESOURCE-EXTENSION-VERIFICATION 的 FP05；用户实际环境未重启、不执行 SQL、不创建提交、未更新 current。
 
 ## FP06 用户验收缺陷（2026-10-06；validating）
@@ -64,4 +76,43 @@ pnpm --filter @ingot/admin-app build
 
 ```sh
 ./gradlew :ingot-service:ingot-iam:ingot-iam-provider:test --tests '*CurrentPasswordEncryptionTest' --tests '*PasswordChangeBoundaryTest' --tests '*CurrentAccountServiceTest' :ingot-framework:ingot-security:ingot-security-crypto:test --offline --console=plain
+```
+
+## 2026-10-08 强制改密页面与顶栏优化
+
+> 增量状态：validating；用户在交互分析后要求“优化一下这部分内容”，确认本方案，approved → implementing → validating。原 FP05 人工验收保持未完成。
+
+### 需求、设计与兼容
+
+- 平台及租户端共用 admin-core 的受限顶栏，只显示静态品牌和用户入口；用户下拉唯一操作为退出登录。不显示导航、搜索、通知、帮助、全屏、设置、组织切换、个人资料或普通改密弹窗。
+- 以 getIsInitPwd 作为账号受限事实，在共享解析与组件中执行允许列表；不依赖 APP 配置自行隐藏。受限时不读取自定义配置的响应式值、不挂载自定义品牌、搜索、用户触发器、小部件及旧插槽，不保留已打开的业务浮层。
+- InAppBar / InUserDropdown 增加可选 passwordChangeRequired prop，默认 false；有效受限条件为该 prop 或 getIsInitPwd，显式 false 不能解除账号限制。/init 显式启用，确保跳转期间清理 store 后仍保持受限视图。useResolvedHeader 增加可选受限 getter，默认仍检查真实账号状态。现有调用、APP header 配置与主题协议兼容。
+- 品牌复用全局 Logo、名称与主题 Token，无业务跳转及侧栏开关。用户显示“当前账号”和文字头像，不请求 profile 或展示“未登录”。退出登录使用现有 BFF 清理会话流程，不记忆 /init。
+- 搜索显隐临时叠加受限条件，不写入持久化 showSearch；正常状态恢复原 APP 配置与用户偏好。导航选择不在受限状态装配应用上下文。
+- 表单提示说明安全要求及使用新密码重新登录，提交按钮为“修改密码并重新登录”；支持表单 Enter 提交和防重复提交。卡片改为可适应窄屏的满宽上限布局。密码字段、加密、服务端校验、成功登出与重新登录契约不变。
+- 本增量仅修改前端交互及文档，不变更后端、数据模型、HTTP 契约、数据库或权限门禁；不创建提交，不提前更新 current。
+
+### 任务与验收
+
+- [x] FH01：确认需求、设计、兼容和验收，补入现有 active change。共享实现覆盖两个管理台，无未决实现决策。
+- [x] FH02：实现共享受限顶栏、唯一登出菜单、中性身份及表单交互；正常顶栏不受影响。
+- [x] FH03：定向回归覆盖状态切换、自定义配置及旧插槽不挂载、用户菜单允许列表与登出、表单失败/成功与防重复提交；类型、只读 lint、边界、文档及两管理台构建通过。
+- [ ] FH04（人工）：平台及租户强制改密首屏/刷新/窄屏只展示品牌、账号入口和表单；无业务浮层及额外业务请求。失败继续受限，成功使用新密码重新登录；退出可用，正常登录后原导航与搜索设置保持。真实密码策略与会话撤销继续按 FP05 验收。
+
+### 开发与验证证据
+
+2026-10-08：FH02–FH03 完成，增量进入 validating。使用 Node 22.17.0，7 个定向测试文件合计 34 项通过，覆盖顶栏、用户下拉、真实 Element Plus 表单校验、原账号状态/路由/错误处理回归。admin-core 类型检查、指定改动文件的只读 ESLint、分层边界、文档链接及共享包/平台/租户管理台构建通过；构建保留已有图标、动态导入及包体提示。
+
+本机生产构建预览配合隔离 Chromium，模拟 bootstrap 403 PasswordChangeRequired 与密码 GET 状态，对 PLATFORM/TENANT 各做 1440×900 和 390×844 共 4 个浏览器检查。只显示品牌、账号入口和改密表单；菜单唯一退出登录，显示“当前账号”，无横向溢出及脚本错误。捕获 API 请求仅 `/api/iam/v1/me/bootstrap` 与 `/api/iam/v1/me/password`，无 capabilities/profile 或业务请求。已查看宽屏及窄屏截图，布局正常。
+
+截图保存在本机临时路径 `/private/tmp/ingot-password-{platform,tenant}-{1440,390}.png`；模拟 UI 检查不代表真实后端密码策略、登录登出、token/refresh 撤销或四站点联调通过。FH04 与 FP05 保持未完成，不更新 current、不归档、不提交。
+
+```sh
+pnpm --filter @ingot/admin-core exec vitest run src/layouts/widgets/InAppBar.test.ts src/layouts/widgets/user-dropdown/InUserDropdown.test.ts src/layouts/widgets/header/useResolvedHeader.application.test.ts src/pages/common/init/IndexPage.test.ts src/stores/modules/auth.test.ts src/net/failure.test.ts src/router/guard/userGuard.test.ts
+pnpm --filter @ingot/admin-core type-check
+pnpm check:boundaries
+pnpm check:docs
+pnpm --filter @ingot/admin-core build
+pnpm --filter @ingot/admin-platform-app build
+pnpm --filter @ingot/admin-app build
 ```
