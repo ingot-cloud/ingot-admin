@@ -1,23 +1,13 @@
 <template>
   <div v-if="!hasMenu" class="in-user-dropdown is-static" :class="{ 'is-compact': compact }">
-    <component
-      :is="trigger"
-      v-if="trigger"
-      :user="userInfo"
-      :compact="compact"
-    />
-    <in-avatar v-else :src="getAvatar" :name="getUsername" :show-name="false" />
+    <component :is="resolvedTrigger" v-if="resolvedTrigger" :user="userInfo" :compact="compact" />
+    <in-avatar v-else :src="avatar" :name="username" :show-name="false" />
   </div>
   <el-dropdown v-else trigger="click" @command="privateOnCommand">
     <div class="in-user-dropdown" :class="{ 'is-compact': compact }" cursor-pointer>
-      <component
-        :is="trigger"
-        v-if="trigger"
-        :user="userInfo"
-        :compact="compact"
-      />
+      <component :is="resolvedTrigger" v-if="resolvedTrigger" :user="userInfo" :compact="compact" />
       <template v-else>
-        <in-avatar :src="getAvatar" :name="getUsername" :show-name="false" />
+        <in-avatar :src="avatar" :name="username" :show-name="false" />
         <in-icon class="avatar-arrow" name="bxs:down-arrow" />
       </template>
     </div>
@@ -25,9 +15,9 @@
       <el-dropdown-menu class="user-dropdown">
         <li class="in-user-dropdown__profile">
           <div class="username-dropdown">
-            <in-avatar :src="getAvatar" :name="getUsername" :size="36" :show-name="false" />
+            <in-avatar :src="avatar" :name="username" :size="36" :show-name="false" />
             <div class="username">
-              {{ getUsername }}
+              {{ username }}
             </div>
           </div>
         </li>
@@ -61,8 +51,8 @@
     </template>
   </el-dropdown>
 
-  <FixPwdDialog ref="PwdDialogRef" />
-  <ProfileDialog ref="ProfileDialogRef" />
+  <FixPwdDialog v-if="!restricted" ref="PwdDialogRef" />
+  <ProfileDialog v-if="!restricted" ref="ProfileDialogRef" />
 </template>
 <script lang="ts" setup>
 import type { Component } from "vue";
@@ -73,12 +63,13 @@ import { useLogin } from "@/hooks/biz/useLogin";
 import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
 import FixPwdDialog from "./FixPwdDialog.vue";
 import ProfileDialog from "./ProfileDialog.vue";
+import { InAdminHeaderBuiltinUserMenuName, InAdminHeaderUserMenuItemType } from "@/plugin/header";
 import {
-  InAdminHeaderBuiltinUserMenuName,
-  InAdminHeaderUserMenuItemType,
-} from "@/plugin/header";
-import { resolveHeaderConfig, type ResolvedHeaderUserMenuItem } from "../header/resolveHeaderConfig";
+  resolveHeaderConfig,
+  type ResolvedHeaderUserMenuItem,
+} from "../header/resolveHeaderConfig";
 import { normalizeUserMenuItems } from "./normalizeUserMenuItems";
+import { resolvePasswordChangeHeader } from "../header/passwordChangeHeader";
 
 defineOptions({
   name: "InUserDropdown",
@@ -88,25 +79,33 @@ const props = defineProps<{
   menu?: ResolvedHeaderUserMenuItem[];
   compact?: boolean;
   trigger?: Component;
+  /** 强制改密页面在清理会话并跳转前仍只允许退出登录。 */
+  passwordChangeRequired?: boolean;
 }>();
 
 const PwdDialogRef = ref<{ show: () => void }>();
 const ProfileDialogRef = ref<{ show: () => void }>();
 const pendingKey = ref<string>();
-const { getUsername, getAvatar } = storeToRefs(useUserInfoStore());
+const { getUsername, getAvatar, getIsInitPwd } = storeToRefs(useUserInfoStore());
+const restricted = computed(() => Boolean(props.passwordChangeRequired) || getIsInitPwd.value);
+const username = computed(() => (restricted.value ? "当前账号" : getUsername.value));
+const avatar = computed(() => (restricted.value ? "" : getAvatar.value));
+const resolvedTrigger = computed(() => (restricted.value ? undefined : props.trigger));
 const message = useMessage();
 const confirm = useMessageConfirm();
 
-const menuItems = computed(
-  () => props.menu ?? resolveHeaderConfig().user.menu,
+const menuItems = computed(() =>
+  restricted.value
+    ? resolvePasswordChangeHeader().user.menu
+    : (props.menu ?? resolveHeaderConfig().user.menu),
 );
 const displayMenuItems = computed(() => normalizeUserMenuItems(menuItems.value));
 const hasMenu = computed(() =>
   displayMenuItems.value.some((item) => item.type !== InAdminHeaderUserMenuItemType.Divider),
 );
 const userInfo = computed(() => ({
-  username: getUsername.value ?? "",
-  avatar: getAvatar.value,
+  username: username.value ?? "",
+  avatar: avatar.value,
 }));
 
 const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
@@ -134,7 +133,12 @@ const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
 
 const privateOnCommand = async (key: string) => {
   const item = menuItems.value.find((entry) => entry.key === key);
-  if (!item || item.disabled || item.type === InAdminHeaderUserMenuItemType.Divider || pendingKey.value) {
+  if (
+    !item ||
+    item.disabled ||
+    item.type === InAdminHeaderUserMenuItemType.Divider ||
+    pendingKey.value
+  ) {
     return;
   }
   pendingKey.value = key;

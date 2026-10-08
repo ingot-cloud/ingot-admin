@@ -1,5 +1,5 @@
 <template>
-  <div ref="hostRef" class="in-app-bar">
+  <div ref="hostRef" class="in-app-bar" :class="{ 'is-password-change': restricted }">
     <in-app-bar-brand
       ref="brandRef"
       :visible="header.brand.visible"
@@ -9,12 +9,13 @@
       :compact="brandCompact"
       @toggle="toggleSidebar"
     >
-      <template v-if="slots['brand-extra']" #brand-extra>
+      <template v-if="!restricted && slots['brand-extra']" #brand-extra>
         <slot name="brand-extra" />
       </template>
     </in-app-bar-brand>
 
     <in-app-bar-nav
+      v-if="!restricted"
       ref="navRef"
       :items="header.navigation.items"
       :visible-keys="overflow.visibleNavKeys"
@@ -41,6 +42,7 @@
     </in-app-bar-nav>
 
     <in-app-bar-search-pane
+      v-if="!restricted"
       ref="searchRef"
       :enabled="showSearch"
       :compact="overflow.searchCompact"
@@ -53,6 +55,7 @@
     />
 
     <in-app-bar-utilities
+      v-if="!restricted"
       ref="utilitiesRef"
       :items="header.utilities"
       :visible-keys="overflow.visibleUtilityKeys"
@@ -78,6 +81,7 @@
         aria-hidden="true"
       ></span>
       <in-user-dropdown
+        :password-change-required="restricted"
         :menu="header.user.menu"
         :compact="userCompact"
         :trigger="header.user.component"
@@ -89,12 +93,10 @@
 import type { InAppBarUtilityAction } from "@/components/types";
 import type { InAdminHeaderConfig } from "@/plugin/header";
 import { useAppStateStore } from "@/stores/modules/app";
+import { useUserInfoStore } from "@/stores/modules/auth";
 import { shellLayoutKey } from "@/layouts/main/types";
 import InUserDropdown from "./user-dropdown/InUserDropdown.vue";
-import {
-  allocateHeaderOverflow,
-  type HeaderOverflowResult,
-} from "./header/allocateHeaderOverflow";
+import { allocateHeaderOverflow, type HeaderOverflowResult } from "./header/allocateHeaderOverflow";
 import InAppBarBrand from "./header/InAppBarBrand.vue";
 import InAppBarNav from "./header/InAppBarNav.vue";
 import InAppBarSearchPane from "./header/InAppBarSearchPane.vue";
@@ -108,6 +110,8 @@ defineOptions({
 const props = defineProps<{
   header?: InAdminHeaderConfig;
   utilities?: InAppBarUtilityAction[];
+  /** 保持强制改密页面的受限展示；false 不会解除账号本身的限制。 */
+  passwordChangeRequired?: boolean;
 }>();
 
 const slots = defineSlots<{
@@ -121,25 +125,33 @@ const slots = defineSlots<{
 }>();
 
 const ICON_FALLBACK = 32;
+const userInfoStore = useUserInfoStore();
+const restricted = computed(
+  () => Boolean(props.passwordChangeRequired) || userInfoStore.getIsInitPwd,
+);
 const header = useResolvedHeader(
   () => props.header,
   () => props.utilities,
+  () => restricted.value,
 );
 const appStateStore = useAppStateStore();
-const shell = inject(shellLayoutKey);
-const showSearch = computed(() => Boolean(appStateStore.getShowSearch));
-const navigationMode = computed(() => shell?.navigationMode.value ?? "expanded");
+const shell = inject(shellLayoutKey, null);
+const showSearch = computed(() => !restricted.value && Boolean(appStateStore.getShowSearch));
+const navigationMode = computed(() =>
+  restricted.value ? "expanded" : (shell?.navigationMode.value ?? "expanded"),
+);
 const overlayOpen = computed(() => shell?.overlayOpen.value ?? false);
 const isOverlay = computed(() => shell?.isOverlay.value ?? false);
-const brandCompact = computed(() => isOverlay.value);
+const brandCompact = computed(() => !restricted.value && isOverlay.value);
 const userCompact = computed(() => header.value.user.compact || overflow.value.searchCompact);
 const showUserDivider = computed(
   () =>
-    header.value.utilities.length > 0 ||
-    overflow.value.showUtilityMore ||
-    overflow.value.overflowUtilitySlot ||
-    Boolean(slots["header-end"]) ||
-    Boolean(slots.utilities),
+    !restricted.value &&
+    (header.value.utilities.length > 0 ||
+      overflow.value.showUtilityMore ||
+      overflow.value.overflowUtilitySlot ||
+      Boolean(slots["header-end"]) ||
+      Boolean(slots.utilities)),
 );
 const toggleSidebar = () => {
   shell?.toggleSidebar();
@@ -200,9 +212,7 @@ const privateMeasure = () => {
   );
   const moreNode = navRef.value?.measureRef?.querySelector("[data-nav-more]");
   const moreButtonWidth =
-    moreNode instanceof HTMLElement
-      ? moreNode.getBoundingClientRect().width
-      : ICON_FALLBACK;
+    moreNode instanceof HTMLElement ? moreNode.getBoundingClientRect().width : ICON_FALLBACK;
   const navSlotEl = navRef.value?.slotRef;
   if (navSlotEl && !overflow.value.overflowNavSlot) {
     lastNavSlotWidth.value = navSlotEl.getBoundingClientRect().width;
@@ -303,6 +313,17 @@ useResizeObserver(userRef, privateSchedule);
   @apply flex items-center;
   flex: none;
   gap: var(--in-space-3);
+}
+
+.in-app-bar.is-password-change {
+  & :deep(.in-app-bar__brand) {
+    width: auto;
+    flex: 1;
+  }
+
+  & .in-app-bar__user {
+    margin-left: auto;
+  }
 }
 
 .in-app-bar__divider {

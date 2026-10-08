@@ -1,7 +1,7 @@
 <template>
   <el-container w-full h-full>
     <el-header class="in-shell-header">
-      <in-app-bar />
+      <in-app-bar password-change-required />
     </el-header>
 
     <el-container direction="vertical">
@@ -11,7 +11,7 @@
             <div class="title">修改密码</div>
           </div>
 
-          <div class="tips">请先修改登录密码，完成后重新登录</div>
+          <div class="tips">为保障账号安全，请先修改登录密码，完成后使用新密码重新登录</div>
 
           <el-form
             ref="editFormRef"
@@ -20,6 +20,7 @@
             label-position="top"
             :model="editForm"
             :rules="rules"
+            @submit.prevent="privateOnConfirm"
           >
             <el-form-item prop="newPassword" label="新密码">
               <el-input
@@ -28,23 +29,25 @@
                 type="password"
                 clearable
                 show-password
+                autocomplete="new-password"
+                :disabled="loading"
               ></el-input>
             </el-form-item>
             <el-form-item prop="confirmPassword" label="确认密码">
               <el-input
                 v-model="editForm.confirmPassword"
-                placeholder="请确认新密码"
+                placeholder="请再次输入新密码"
                 type="password"
                 clearable
                 show-password
+                autocomplete="new-password"
+                :disabled="loading"
               ></el-input>
             </el-form-item>
+            <in-button w-full type="primary" native-type="submit" :loading="loading">
+              修改密码并重新登录
+            </in-button>
           </el-form>
-          <el-form-item>
-            <div w-full flex flex-row justify-center>
-              <in-button type="primary" :loading="loading" @click="handleConfirmClick"> 确定 </in-button>
-            </div>
-          </el-form-item>
         </div>
       </el-main>
 
@@ -81,31 +84,29 @@ const editForm = reactive<EditForm>({});
 const message = useMessage();
 const go = useGo();
 
-const handleConfirmClick = () => {
+const privateOnConfirm = async () => {
   if (loading.value) return;
-  editFormRef.value?.validate((valid: boolean) => {
-    if (valid) {
-      if (editForm.newPassword !== editForm.confirmPassword) {
-        message.warning("新密码不一致");
-        return;
-      }
-
-      loading.value = true;
-      InitPwdAPI({
-        newPassword: editForm.newPassword ?? "",
-        confirmPassword: editForm.confirmPassword ?? "",
-      })
-        .then(async () => {
-          message.success("密码设置成功，请重新登录");
-          await useAuthStore().logout();
-          useLogin().go({ rememberReturnTo: false });
-        })
-        .catch(() => undefined)
-        .finally(() => {
-          loading.value = false;
-        });
+  const form = editFormRef.value;
+  if (!form) return;
+  loading.value = true;
+  try {
+    await form.validate();
+    if (editForm.newPassword !== editForm.confirmPassword) {
+      message.warning("新密码不一致");
+      return;
     }
-  });
+    await InitPwdAPI({
+      newPassword: editForm.newPassword ?? "",
+      confirmPassword: editForm.confirmPassword ?? "",
+    });
+    message.success("密码设置成功，请使用新密码重新登录");
+    await useAuthStore().logout();
+    await useLogin().go({ rememberReturnTo: false });
+  } catch {
+    // 表单展示字段错误，API 错误由统一请求层反馈；失败仍留在受限页面。
+  } finally {
+    loading.value = false;
+  }
 };
 
 onMounted(() => {
@@ -136,7 +137,8 @@ onMounted(() => {
   @apply box-border bg-[var(--in-bg-color)];
   border: 1px solid var(--in-border-color);
   border-radius: var(--in-radius-card);
-  width: 40%;
+  width: 100%;
+  max-width: 480px;
   padding: var(--in-section-padding-relaxed);
   & .header {
     display: flex;
