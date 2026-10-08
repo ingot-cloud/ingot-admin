@@ -225,3 +225,7 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 2026-10-08 角色分配表格与操作栏
 
 布局、插槽修正与兼容边界见 [角色分配表格增量](./ASSIGNMENT-TABLE-REFINEMENT.md)；不新增公开 API，不改变其他页面的表格或工具栏默认行为。
+
+## 2026-10-08 时间契约替代
+
+时间点交互以 [框架关联前端变更](../20261008-packages-time-contract/DESIGN.md) 为准：请求必须带 Z 或偏移量，响应 UTC Z；模型保留原始 ISO，共享包负责当地展示和时间选择转换。早期普通时间字段的墙钟约定被替代；Duration、日期及协议数字时间保持独立语义。

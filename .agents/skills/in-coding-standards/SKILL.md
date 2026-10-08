@@ -29,7 +29,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 多 Tab 只请求当前激活 Tab：打开页面不预拉兄弟 Tab 的接口
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
 - [ ] 人员、角色、资源对象等实体候选使用点击录入框打开对话框；单选单栏、多选双栏、搜索分页与回显按 [entity-picker-interactions.md](entity-picker-interactions.md)
-- [ ] 普通时间字段按当地墙钟提交和展示；会话类 ISO-8601 UTC 再按本地时区格式化
+- [ ] API 时间点保存 ISO 字符串；共享工具按本地时区展示，DatePicker 提交 UTC ISO；日期/Duration 不转换
 ```
 
 ## 目录约定
@@ -163,11 +163,11 @@ pages/platform/base/app/
 
 ### 时间
 
-接口墙钟时间以前端当地时间为准。识别不到时区时后端按 `Asia/Shanghai` 处理。
-
-- 提交 `createdAt` / `updatedAt` / 配置生效时间等墙钟字段时，传当地 `yyyy-MM-dd HH:mm:ss`，不要先转成 UTC 再交给接口。
-- 展示这类返回值时直接格式化，不要再按 UTC 做一次时区换算。
-- 契约明确写成 ISO-8601 UTC 的字段（如会话 `issuedAt` / `expiresAt` / `lastAccessAt`）用 `new Date(str)` 后按本地时区格式化。
+- API 时间点统一收发带偏移量的 ISO-8601，响应为 UTC Z；旧墙钟和无时区输入返回 400。
+- 模型保留 ISO；使用 @ingot/shared 的 formatDateTime，默认浏览器时区，无法识别时回退 Asia/Shanghai；可显式指定展示时区。
+- DatePicker 使用 parseInstantDate/toApiInstant 适配，不能直接拼 Z；未编辑的原始 ISO 保留小数秒精度。
+- LocalDate、LocalTime、Duration 不调用时间点工具，JWT/OAuth 数字时间和 TTL 遵守自身协议。
+- 不对全部响应字符串做隐式转换。细则见 [时间规范](../../../docs/time-contract.md)。
 
 ### 命名语言
 

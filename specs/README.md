@@ -191,3 +191,5 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 ## 原则
 
 实现前请阅读 [AGENTS.md](../AGENTS.md) 与 [CONSTITUTION.md](./CONSTITUTION.md)。先有输入（inbox 或已生成的 change），状态 `approved` 之后再改业务代码。
+
+- [公共包统一时间契约](./changes/active/20261008-packages-time-contract/README.md)（validating）

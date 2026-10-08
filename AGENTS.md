@@ -37,3 +37,7 @@ type / scope / 何时拆分提交等具体要求只维护在该 skill，不要�
 - 依赖只允许 `apps → plugins/themes/packages`、`plugins → packages`、`themes → packages`；官方插件不得互相依赖；主题不得依赖 App、插件或另一具体主题
 - 跨 app / 插件公共逻辑进入 `packages/`；具体主题不要放进 `packages/`
 - 普通后台直接使用 `apps/admin`，不要把业务页面写回 admin 宿主
+
+## 时间交互
+
+时间点模型保存带偏移量的 ISO，响应 UTC Z，前端共享工具负责当地展示和 DatePicker 转换；无时区/旧格式输入不再支持。日期、日内时间、Duration 及协议数字时间保留各自语义。见 [时间规范](./docs/time-contract.md)。
