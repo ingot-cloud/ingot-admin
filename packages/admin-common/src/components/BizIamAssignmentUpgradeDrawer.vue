@@ -29,8 +29,8 @@
               {{ row.record.roleName }} · v{{
                 row.record.revisionNumber || row.record.assignment.roleRevisionRef.id
               }}<br /><span class="text-12px"
-                >{{ row.record.assignment.validFrom || "立即" }} 至
-                {{ row.record.assignment.validUntil || "长期" }} ·
+                >{{ formatDateTime(row.record.assignment.validFrom, { fallback: "立即" }) }} 至
+                {{ formatDateTime(row.record.assignment.validUntil, { fallback: "长期" }) }} ·
                 {{ row.record.delegationSummary || "直接分配" }}</span
               >
             </div>
@@ -151,6 +151,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import { fieldPermissionChanges } from "../models/iam/roleFields";
 import { Message, useCapabilities } from "@ingot/admin-core";
 import {

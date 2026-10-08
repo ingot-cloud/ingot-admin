@@ -37,14 +37,14 @@ describe("tenant entitlement drafts", () => {
         applicationName: "自选",
         source: EntitlementSource.MANUAL,
         status: ConfigurationStatus.ENABLED,
-        validUntil: "2026-12-31 23:59:59",
+        validUntil: "2026-12-31T15:59:59Z",
       },
     ];
     expect(extraDraftsOf(items, ["2"])).toEqual([
       {
         applicationId: "2",
         status: ConfigurationStatus.ENABLED,
-        validUntil: "2026-12-31 23:59:59",
+        validUntil: "2026-12-31T15:59:59Z",
       },
     ]);
     expect(isRemovableEntitlement(items[0])).toBe(false);
@@ -93,7 +93,7 @@ describe("tenant entitlement drafts", () => {
         applicationName: "自选",
         source: EntitlementSource.MANUAL,
         status: ConfigurationStatus.ENABLED,
-        validUntil: "2026-12-31 23:59:59",
+        validUntil: "2026-12-31T15:59:59Z",
       },
     ];
     expect(extraSelectOptionsOf(items)).toEqual([{ id: "2", name: "自选" }]);

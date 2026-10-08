@@ -50,7 +50,7 @@
         </template>
         <template #endAt="{ item }">
           <div v-if="item.endAt">
-            <el-tag>{{ item.endAt }}</el-tag>
+            <el-tag>{{ formatDateTime(item.endAt) }}</el-tag>
           </div>
           <el-tag v-else>无限期</el-tag>
         </template>
@@ -69,6 +69,7 @@
 </template>
 
 <script lang="ts" setup>
+import { formatDateTime } from "@ingot/shared";
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
 import type { SysTenant } from "@/models";
 import { Search } from "@element-plus/icons-vue";

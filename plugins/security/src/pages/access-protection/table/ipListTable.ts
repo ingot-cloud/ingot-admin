@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { GatewayIpList } from "@/models";
 
@@ -32,11 +33,13 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "生效时间",
     prop: "effectiveAt",
+    transform: formatDateTime,
     minWidth: "160",
   },
   {
     label: "失效时间",
     prop: "expiresAt",
+    transform: formatDateTime,
     minWidth: "160",
   },
   {

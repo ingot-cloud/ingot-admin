@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { OAuth2RegisteredClient } from "@/models";
 
@@ -29,6 +30,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "创建时间",
     prop: "clientIdIssuedAt",
+    transform: formatDateTime,
     hide: true,
     width: "180",
   },

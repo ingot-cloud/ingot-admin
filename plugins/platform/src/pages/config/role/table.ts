@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { RoleTreeNodeVO } from "@/models";
 import { RoleTypeEnums } from "@/models/enums";
@@ -31,6 +32,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "创建时间",
     prop: "createdAt",
+    transform: formatDateTime,
     hide: true,
   },
   {

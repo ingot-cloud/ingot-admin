@@ -22,17 +22,32 @@
       <el-row :gutter="24">
         <el-col :span="8">
           <el-form-item label="最大失败次数" prop="maxAttempts">
-            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" placeholder="请输入最大失败次数" />
+            <el-input-number
+              v-model="form.maxAttempts"
+              :min="1"
+              class="w-full"
+              placeholder="请输入最大失败次数"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="统计窗口(分钟)" prop="windowMinutes">
-            <el-input-number v-model="form.windowMinutes" :min="1" class="w-full" placeholder="请输入统计窗口分钟数" />
+            <el-input-number
+              v-model="form.windowMinutes"
+              :min="1"
+              class="w-full"
+              placeholder="请输入统计窗口分钟数"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="封禁时长(秒)" prop="blockTtlSec">
-            <el-input-number v-model="form.blockTtlSec" :min="60" class="w-full" placeholder="请输入封禁秒数" />
+            <el-input-number
+              v-model="form.blockTtlSec"
+              :min="60"
+              class="w-full"
+              placeholder="请输入封禁秒数"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -54,12 +69,15 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <div v-if="form.updatedAt" class="panel-meta">最近更新：{{ form.updatedAt }}</div>
+      <div v-if="form.updatedAt" class="panel-meta">
+        最近更新：{{ formatDateTime(form.updatedAt) }}
+      </div>
     </in-form>
   </in-loading>
 </template>
 
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import type { LoginFailureProtectionPolicyVO } from "@/models";
 import { getLoginFailureDimensionHint } from "@/models/enums";
 import { copyParams } from "@ingot/admin-core";
@@ -92,8 +110,12 @@ const hint = computed(() => getLoginFailureDimensionHint(props.dimension));
 
 const rules = {
   maxAttempts: [{ required: true, type: "number", min: 1, message: "至少为 1", trigger: "change" }],
-  windowMinutes: [{ required: true, type: "number", min: 1, message: "至少为 1", trigger: "change" }],
-  blockTtlSec: [{ required: true, type: "number", min: 60, message: "至少为 60 秒", trigger: "change" }],
+  windowMinutes: [
+    { required: true, type: "number", min: 1, message: "至少为 1", trigger: "change" },
+  ],
+  blockTtlSec: [
+    { required: true, type: "number", min: 60, message: "至少为 60 秒", trigger: "change" },
+  ],
 };
 
 const syncForm = (config?: LoginFailureProtectionPolicyVO): void => {

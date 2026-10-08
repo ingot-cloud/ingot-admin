@@ -42,7 +42,10 @@
               </button>
               <in-table-actions :actions="rowActions(row)" :row="row" />
             </div>
-            <div v-if="!rows.length && !loading" class="p-12px text-[var(--el-text-color-secondary)]">
+            <div
+              v-if="!rows.length && !loading"
+              class="p-12px text-[var(--el-text-color-secondary)]"
+            >
               暂无角色
             </div>
           </div>
@@ -194,9 +197,9 @@
         <template #version="{ item }">v{{ item.record.revisionNumber }}</template>
         <template #basis="{ item }">{{ item.record.delegationSummary || "直接分配" }}</template>
         <template #validUntil="{ item }">{{
-          item.record.assignment.validUntil
-            ? new Date(item.record.assignment.validUntil).toLocaleString()
-            : "长期（委派来源仍可失效）"
+          formatDateTime(item.record.assignment.validUntil, {
+            fallback: "长期（委派来源仍可失效）",
+          })
         }}</template>
         <template #actions="{ item }">
           <in-button link type="primary" @in-click="emits('assignment', item)">查看分配</in-button>
@@ -218,6 +221,7 @@
   <group-detail-drawer ref="groupDetail" view-only />
 </template>
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import {
   applyColumnSelection,
   useCapabilities,
@@ -288,7 +292,13 @@ const sourceHeaders: TableHeaderRecord[] = [
   { label: "接收对象", prop: "subject", minWidth: 200, showOverflowTooltip: true },
   { label: "版本", prop: "version", minWidth: 100 },
   { label: "授权依据", prop: "basis", minWidth: 180, showOverflowTooltip: true },
-  { label: "失效时间", prop: "validUntil", minWidth: 200, showOverflowTooltip: true },
+  {
+    label: "失效时间",
+    prop: "validUntil",
+    transform: formatDateTime,
+    minWidth: 200,
+    showOverflowTooltip: true,
+  },
   { label: "操作", prop: "actions", width: 330, fixed: "right" },
 ];
 const visibleHeaders = computed(() =>

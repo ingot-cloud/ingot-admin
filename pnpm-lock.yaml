@@ -830,6 +830,9 @@ importers:
       '@ingot/admin-core':
         specifier: workspace:*
         version: link:../admin-core
+      '@ingot/shared':
+        specifier: workspace:*
+        version: link:../shared
     devDependencies:
       '@ingot/vite-config':
         specifier: workspace:*

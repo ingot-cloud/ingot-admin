@@ -13,12 +13,11 @@
       </el-form-item>
       <el-form-item v-if="!locked" label="锁定时间" prop="lockedUntil">
         <el-date-picker
-          v-model="form.lockedUntil"
+          v-model="lockedUntilDate"
           type="datetime"
           placeholder="请选择锁定时间"
           class="w-full"
           format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
         />
       </el-form-item>
     </in-form>
@@ -29,6 +28,7 @@
 </template>
 
 <script lang="ts" setup>
+import { parseInstantDate, toApiInstant } from "@ingot/shared";
 import type { FormInstance } from "element-plus";
 import type { AccountLockDTO, LockAccountAPI, UnlockAccountAPI } from "@ingot/admin-core";
 
@@ -52,6 +52,13 @@ const form = ref<AccountLockDTO>({
   reasonDetail: "",
   lockedUntil: "",
 });
+const lockedUntilDate = computed({
+  get: () => parseInstantDate(form.value.lockedUntil),
+  set: (value: Date | null) => {
+    form.value.lockedUntil = toApiInstant(value) ?? "";
+  },
+});
+
 const rules = {
   reasonDetail: [{ required: true, message: "原因不能为空", trigger: "blur" }],
   lockedUntil: [{ required: true, message: "锁定时间不能为空", trigger: "blur" }],
@@ -74,7 +81,7 @@ const privateOnConfirm = (): void => {
     }
     loading.value = true;
     const request = locked.value ? props.unlockApi : props.lockApi;
-    request?.(userId.value, form.value)
+    request?.(userId.value, { ...form.value, lockedUntil: form.value.lockedUntil || undefined })
       .then(() => {
         message.success("操作成功");
         visible.value = false;

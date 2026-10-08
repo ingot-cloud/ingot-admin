@@ -37,8 +37,12 @@
         组织默认应用必须开通，不可取消也不可停用。套餐行不可单独移除，但可对该组织停用。不填结束时间则无限使用。开通不等于业务授权。
       </div>
       <div class="rounded-4px px-16px py-16px bg-[#f8f9fa] flex flex-col gap-16px">
-        <div v-if="resolving" class="text-12px text-[var(--el-text-color-secondary)]">正在解析开通并集</div>
-        <div v-else-if="!items.length" class="text-12px text-[var(--el-text-color-secondary)]">暂无开通记录</div>
+        <div v-if="resolving" class="text-12px text-[var(--el-text-color-secondary)]">
+          正在解析开通并集
+        </div>
+        <div v-else-if="!items.length" class="text-12px text-[var(--el-text-color-secondary)]">
+          暂无开通记录
+        </div>
         <div v-for="item in items" :key="item.applicationId" class="flex flex-col gap-8px">
           <div class="flex items-center justify-between gap-12px">
             <div class="flex items-center gap-8px min-w-0">
@@ -66,10 +70,14 @@
               :disabled="!isStatusEditable(item)"
             />
             <el-date-picker
-              v-model="item.validUntil"
+              :model-value="parseInstantDate(item.validUntil)"
+              @update:model-value="
+                (value: Date | null) => {
+                  item.validUntil = toApiInstant(value);
+                }
+              "
               class="flex-1"
               type="datetime"
-              value-format="YYYY-MM-DD HH:mm:ss"
               placeholder="不填则无限使用"
             />
           </div>
@@ -86,6 +94,7 @@
 </template>
 
 <script setup lang="ts">
+import { parseInstantDate, toApiInstant } from "@ingot/shared";
 import { Check } from "@element-plus/icons-vue";
 import {
   AuthorizationDomain,
@@ -116,7 +125,10 @@ import {
 defineOptions({ name: "EntitlementDraftPanel" });
 
 const props = defineProps<{
-  resolveUnion: (input: { planId?: string; extras: EntitlementDraft[] }) => Promise<EntitlementItem[]>;
+  resolveUnion: (input: {
+    planId?: string;
+    extras: EntitlementDraft[];
+  }) => Promise<EntitlementItem[]>;
 }>();
 
 const statusEnum = useConfigurationStatusEnum();
@@ -131,7 +143,10 @@ const pickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 
 const extraIds = computed(() => extras.value.map((item) => item.id));
 const lockedIds = computed(
-  () => new Set(items.value.filter((item) => isLockedEntitlement(item)).map((item) => item.applicationId)),
+  () =>
+    new Set(
+      items.value.filter((item) => isLockedEntitlement(item)).map((item) => item.applicationId),
+    ),
 );
 
 const planPick = computed({
@@ -142,13 +157,15 @@ const planPick = computed({
   },
 });
 
-const loadPlans = createIamListLoader(async (page: { current?: number; size?: number }, condition: { name?: string }) => {
-  const response = await PlatformPlanSummaryPageAPI(page, {
-    ...condition,
-    status: ConfigurationStatus.ENABLED,
-  });
-  return { data: toIamSelectRecords(response.data) };
-});
+const loadPlans = createIamListLoader(
+  async (page: { current?: number; size?: number }, condition: { name?: string }) => {
+    const response = await PlatformPlanSummaryPageAPI(page, {
+      ...condition,
+      status: ConfigurationStatus.ENABLED,
+    });
+    return { data: toIamSelectRecords(response.data) };
+  },
+);
 
 const loadApplications = async (params: LoadDataParams): Promise<Page<IamSelectOption>> => {
   const response = await PlatformApplicationSummaryPageAPI(
@@ -165,7 +182,8 @@ const loadApplications = async (params: LoadDataParams): Promise<Page<IamSelectO
 const extrasForResolve = (): EntitlementDraft[] =>
   extraDraftsOf(items.value, extraIdsForResolve(items.value, extraIds.value, resolvedDrafts.value));
 
-const sourceLabel = (source?: string): string => iamEnumLabel(EntitlementSourceExtArray, source, "手动");
+const sourceLabel = (source?: string): string =>
+  iamEnumLabel(EntitlementSourceExtArray, source, "手动");
 
 const privateResolve = async (): Promise<void> => {
   resolving.value = true;
@@ -175,7 +193,8 @@ const privateResolve = async (): Promise<void> => {
       extras: extrasForResolve(),
     });
     extras.value = extras.value.filter(
-      (item) => !items.value.some((row) => row.applicationId === item.id && isLockedEntitlement(row)),
+      (item) =>
+        !items.value.some((row) => row.applicationId === item.id && isLockedEntitlement(row)),
     );
     resolvedDrafts.value = toEntitlementDrafts(items.value);
   } finally {
@@ -212,7 +231,12 @@ defineExpose({
   items,
   extras,
   hasSelection: () => Boolean(planId.value || extras.value.length),
-  async load(input: { planId?: string; planName?: string; extras: IamSelectOption[]; items?: EntitlementItem[] }) {
+  async load(input: {
+    planId?: string;
+    planName?: string;
+    extras: IamSelectOption[];
+    items?: EntitlementItem[];
+  }) {
     reset();
     planId.value = input.planId || "";
     planOptions.value = input.planId

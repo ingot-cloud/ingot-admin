@@ -41,7 +41,12 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="失败次数阈值" prop="maxAttempts">
-            <el-input-number v-model="form.maxAttempts" :min="1" class="w-full" placeholder="请输入失败次数阈值" />
+            <el-input-number
+              v-model="form.maxAttempts"
+              :min="1"
+              class="w-full"
+              placeholder="请输入失败次数阈值"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -59,12 +64,22 @@
       <el-row :gutter="16">
         <el-col :span="12">
           <el-form-item label="失败计数窗口(分钟)" prop="attemptWindowMinutes">
-            <el-input-number v-model="form.attemptWindowMinutes" :min="1" class="w-full" placeholder="请输入失败计数窗口分钟数" />
+            <el-input-number
+              v-model="form.attemptWindowMinutes"
+              :min="1"
+              class="w-full"
+              placeholder="请输入失败计数窗口分钟数"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="提示起始次数" prop="hintAfterAttempts">
-            <el-input-number v-model="form.hintAfterAttempts" :min="1" class="w-full" placeholder="请输入提示起始次数" />
+            <el-input-number
+              v-model="form.hintAfterAttempts"
+              :min="1"
+              class="w-full"
+              placeholder="请输入提示起始次数"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -79,12 +94,15 @@
           placeholder="请输入备注"
         />
       </el-form-item>
-      <div v-if="form.updatedAt" class="lockout-column__meta">最近更新：{{ form.updatedAt }}</div>
+      <div v-if="form.updatedAt" class="lockout-column__meta">
+        最近更新：{{ formatDateTime(form.updatedAt) }}
+      </div>
     </in-form>
   </in-container>
 </template>
 
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import type { AccountLockoutPolicy } from "@/models";
 import { SessionUserTypeEnum } from "@/models/enums";
 import { ROLE_SYSTEM_ADMIN_CODE } from "@ingot/admin-core";

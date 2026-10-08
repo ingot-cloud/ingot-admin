@@ -42,9 +42,9 @@
               <div v-if="basis" class="mt-8px text-[var(--el-text-color-secondary)]">
                 {{ basis.summary }}<br />
                 允许 {{ basis.delegation?.allowedRoleRevisionRefs.length || 0 }} 个角色版本；
-                有效期：{{ basis.delegation?.validFrom || "立即" }}
+                有效期：{{ formatDateTime(basis.delegation?.validFrom, { fallback: "立即" }) }}
                 至
-                {{ basis.delegation?.validUntil || "长期" }}
+                {{ formatDateTime(basis.delegation?.validUntil, { fallback: "长期" }) }}
               </div>
               <span
                 v-if="!editing && !context?.directCreate"
@@ -97,7 +97,10 @@
               </div>
             </el-form-item>
             <el-form-item label="生效时间与失效时间">
-              <span v-if="readonly">{{ validFrom || "立即" }} 至 {{ validUntil || "长期" }}</span>
+              <span v-if="readonly"
+                >{{ formatDateTime(validFrom, { fallback: "立即" }) }} 至
+                {{ formatDateTime(validUntil, { fallback: "长期" }) }}</span
+              >
               <biz-iam-duration-fields
                 v-else
                 v-model:valid-from="validFrom"
@@ -139,7 +142,10 @@
             </div>
             <div>角色版本：{{ roleOptions.map((option) => option.name).join("、") }}</div>
             <div>本次共 {{ draft.items.length }} 条分配</div>
-            <div>有效期：{{ validFrom || "立即" }} 至 {{ validUntil || "长期" }}</div>
+            <div>
+              有效期：{{ formatDateTime(validFrom, { fallback: "立即" }) }} 至
+              {{ formatDateTime(validUntil, { fallback: "长期" }) }}
+            </div>
             <biz-iam-preview-alert :preview="previewState.preview.value" />
             <div
               v-for="(item, index) in previewState.preview.value?.effectiveResult?.items || []"
@@ -194,6 +200,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import {
   isApiError,
   Message,

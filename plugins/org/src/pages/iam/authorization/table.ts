@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import {
   AssignmentSource,
@@ -76,7 +77,7 @@ export const assignmentHeaders: Array<TableHeaderRecord> = [
   { label: "角色版本", prop: "roleRevision" },
   { label: "来源", prop: "source" },
   { label: "状态", prop: "status" },
-  { label: "失效时间", prop: "validUntil" },
+  { label: "失效时间", prop: "validUntil", transform: formatDateTime },
   { label: "操作", width: "200", prop: "actions", fixed: "right" },
 ];
 

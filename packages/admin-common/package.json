@@ -33,7 +33,8 @@
     "@tanstack/vue-query": "^5.102.2"
   },
   "dependencies": {
-    "@ingot/admin-core": "workspace:*"
+    "@ingot/admin-core": "workspace:*",
+    "@ingot/shared": "workspace:*"
   },
   "devDependencies": {
     "@ingot/vite-config": "workspace:*",

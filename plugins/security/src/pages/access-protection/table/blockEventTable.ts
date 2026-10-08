@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { TableHeaderRecord } from "@ingot/admin-core";
 
 export const BLOCK_EVENT_TABLE_ID = "security-access-block-event";
@@ -21,11 +22,13 @@ export const blockEventTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "封禁时间",
     prop: "blockedAt",
+    transform: formatDateTime,
     minWidth: "160",
   },
   {
     label: "失效时间",
     prop: "expiresAt",
+    transform: formatDateTime,
     minWidth: "160",
   },
   {

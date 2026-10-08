@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { BizLeafAlloc } from "@/models";
 
@@ -24,6 +25,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "更新时间",
     prop: "updateTime",
+    transform: formatDateTime,
   },
   {
     label: "操作",

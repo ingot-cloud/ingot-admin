@@ -53,6 +53,7 @@
     "test:themes": "node scripts/run-workspace-script.mjs \"./themes/*\" test:unit",
     "test:boundaries": "node --test scripts/lib/check-boundaries.test.mjs scripts/run-workspace-script.test.mjs",
     "test:pack": "node scripts/verify-pack-consumer.mjs",
+    "test:time-browser": "pnpm build:shared && node scripts/verify-time-contract-browser.mjs",
     "lint": "eslint . --fix",
     "lint:check": "eslint .",
     "format": "prettier --write .",

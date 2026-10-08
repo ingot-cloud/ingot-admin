@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="授权审计。导出为独立操作，当前契约未单列导出路径，本页仅提供查询。" />
+      <in-page-header
+        description="授权审计。导出为独立操作，当前契约未单列导出路径，本页仅提供查询。"
+      />
     </template>
     <in-split-layout>
       <in-table
@@ -27,7 +29,7 @@
             {{ item.record.changeType || item.record.traceId || "详情" }}
           </biz-iam-record-link>
         </template>
-        <template #timestamp="{ item }">{{ item.record.timestamp }}</template>
+        <template #timestamp="{ item }">{{ formatDateTime(item.record.timestamp) }}</template>
       </in-table>
     </in-split-layout>
   </in-page-frame>
@@ -38,7 +40,7 @@
         <span>{{ detail.record.changeType || "-" }}</span>
       </el-form-item>
       <el-form-item label="时间">
-        <span>{{ detail.record.timestamp || "-" }}</span>
+        <span>{{ formatDateTime(detail.record.timestamp, { fallback: "-" }) }}</span>
       </el-form-item>
       <el-form-item label="操作者">
         <span>{{ detail.record.actor?.displayName || detail.record.actor?.memberId || "-" }}</span>
@@ -60,6 +62,7 @@
 </template>
 
 <script lang="ts" setup>
+import { formatDateTime } from "@ingot/shared";
 import {
   useCapabilities,
   useServerPaging,

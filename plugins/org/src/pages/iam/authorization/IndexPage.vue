@@ -18,7 +18,11 @@
             @handleCurrentChange="roles.fetchData"
           >
             <template #tools-end>
-              <in-table-actions variant="toolbar" :actions="roleToolbarActions" :row="emptyRoleRow" />
+              <in-table-actions
+                variant="toolbar"
+                :actions="roleToolbarActions"
+                :row="emptyRoleRow"
+              />
             </template>
             <template #name="{ item }">
               <biz-iam-record-link
@@ -67,7 +71,7 @@
             <template #source="{ item }">{{ item.record.source }}</template>
             <template #status="{ item }">{{ item.record.status }}</template>
             <template #validUntil="{ item }">
-              {{ item.record.assignment.validUntil || "长期" }}
+              {{ formatDateTime(item.record.assignment.validUntil, { fallback: "长期" }) }}
             </template>
             <template #actions="{ item }">
               <in-table-actions :actions="assignmentRowActionsOf(item)" :row="item" />
@@ -175,6 +179,7 @@
 </template>
 
 <script lang="ts" setup>
+import { formatDateTime } from "@ingot/shared";
 import {
   BizIamAssignmentDrawer,
   BizIamDelegationDrawer,
@@ -336,7 +341,9 @@ const assignmentRowActionsOf = (item: AssignmentRow): Array<InTableAction<Assign
     onDelete: handleAssignmentDelete,
     onDiagnose: handleAssignmentDiagnose,
   });
-const delegationToolbarActions = computed(() => createDelegationToolbarActions(handleDelegationCreate));
+const delegationToolbarActions = computed(() =>
+  createDelegationToolbarActions(handleDelegationCreate),
+);
 const delegationRowActionsOf = (item: DelegationRow): Array<InTableAction<DelegationRow>> =>
   createDelegationRowActions(item, {
     onEdit: handleDelegationEdit,

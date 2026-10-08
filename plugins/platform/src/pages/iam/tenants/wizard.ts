@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import {
   ConfigurationStatus,
   EntitlementSource,
@@ -30,17 +31,7 @@ export interface EntitlementItem {
   sourceId?: string;
 }
 
-export function formatDateTime(value?: string): string {
-  if (!value) {
-    return "-";
-  }
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-  const pad = (n: number): string => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
+export { formatDateTime } from "@ingot/shared";
 
 export function formatValidity(_from?: string, until?: string): string {
   return until ? formatDateTime(until) : "无限使用";
@@ -95,7 +86,9 @@ export function extraDraftsOf(items: EntitlementItem[], extraIds: string[]): Ent
   });
 }
 
-export function extraSelectOptionsOf(items: EntitlementItem[]): Array<{ id: string; name: string }> {
+export function extraSelectOptionsOf(
+  items: EntitlementItem[],
+): Array<{ id: string; name: string }> {
   return items.filter(isRemovableEntitlement).map((item) => ({
     id: item.applicationId,
     name: item.applicationName,
@@ -118,9 +111,9 @@ export function extraIdsForResolve(
     }
     const before = previousById.get(item.applicationId);
     if (
-      before
-      && ((before.validUntil || undefined) !== (item.validUntil || undefined)
-        || before.status !== item.status)
+      before &&
+      ((before.validUntil || undefined) !== (item.validUntil || undefined) ||
+        before.status !== item.status)
     ) {
       ids.add(item.applicationId);
     }

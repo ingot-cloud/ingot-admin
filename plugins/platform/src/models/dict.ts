@@ -60,7 +60,7 @@ export interface PlatformDict {
   extra?: Record<string, unknown> | null;
   createdBy?: string | null;
   updatedBy?: string | null;
-  // yyyy-MM-dd HH:mm:ss
+  // ISO-8601 UTC 时间点
   createdAt?: string;
   updatedAt?: string;
   // 通常为 null

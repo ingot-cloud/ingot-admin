@@ -27,7 +27,8 @@ export interface CreateTransactionResult {
 export interface TransactionView {
   transactionId: string;
   stage: LoginStage;
-  expiresAt: number;
+  /** UTC ISO-8601 时间点；内部事务仍使用 epoch seconds。 */
+  expiresAt: string;
   allows?: TenantCandidate[];
   completionUrl?: string;
 }

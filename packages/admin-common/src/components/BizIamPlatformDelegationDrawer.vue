@@ -206,6 +206,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
 import {
   confirmUnsavedChanges,
@@ -305,7 +306,7 @@ const maxDurationLabel = computed(() => {
   return formatDuration(maxDuration.value);
 });
 const privateFormatInstant = (value: string | undefined, fallback: string): string =>
-  value ? new Date(value).toLocaleString() : fallback;
+  formatDateTime(value, { fallback });
 const initialDraftSignature = ref("");
 const recipientSummary = computed(() =>
   recipientNames.value.length === recipientIds.value.length

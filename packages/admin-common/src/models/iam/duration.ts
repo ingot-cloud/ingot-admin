@@ -1,8 +1,8 @@
-/** DatePicker 使用本地 Date，接口存储 UTC Instant，禁止把本地墙钟直接拼接 Z。 */
-export const iamInstantDate = (value?: string): Date | undefined =>
-  value ? new Date(value) : undefined;
-export const iamDateInstant = (value?: Date | null): string | undefined =>
-  value ? value.toISOString() : undefined;
+import { parseInstantDate, toApiInstant } from "@ingot/shared";
+
+/** DatePicker 使用本地 Date，接口使用 UTC ISO；保留现有调用入口。 */
+export const iamInstantDate = parseInstantDate;
+export const iamDateInstant = toApiInstant;
 export const durationHours = (value?: string): number => {
   const match =
     /^(?:P(?:(\d+(?:\.\d+)?)D)?)(?:T(?:(\d+(?:\.\d+)?)H)?(?:(\d+(?:\.\d+)?)M)?(?:(\d+(?:\.\d+)?)S)?)?$/.exec(

@@ -8,12 +8,7 @@
         <el-input v-model="reasonDetail" type="textarea" :rows="3" placeholder="交给安全用例处理" />
       </el-form-item>
       <el-form-item label="到期时间">
-        <el-date-picker
-          v-model="lockedUntil"
-          type="datetime"
-          value-format="YYYY-MM-DDTHH:mm:ss.SSSZ"
-          placeholder="为空表示永久锁定"
-        />
+        <el-date-picker v-model="lockedUntilDate" type="datetime" placeholder="为空表示永久锁定" />
       </el-form-item>
     </in-form>
     <template #footer>
@@ -24,6 +19,7 @@
 </template>
 
 <script setup lang="ts">
+import { parseInstantDate, toApiInstant } from "@ingot/shared";
 import { Message } from "@ingot/admin-core";
 import { PlatformAccountLockAPI } from "@/api/iam/accounts";
 import { platformAccountQueryKeys } from "@/api/iam/accounts.query";
@@ -39,6 +35,12 @@ const loading = ref(false);
 const row = ref<Row>();
 const reasonDetail = ref("");
 const lockedUntil = ref<string>();
+const lockedUntilDate = computed({
+  get: () => parseInstantDate(lockedUntil.value),
+  set: (value: Date | null) => {
+    lockedUntil.value = toApiInstant(value);
+  },
+});
 
 const privateSubmit = (): void => {
   if (!row.value) {

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import {
   AssignmentSource,
@@ -78,10 +79,28 @@ export const assignmentHeaders: Array<TableHeaderRecord> = [
   { label: "角色版本", prop: "roleRevision", minWidth: 190, showOverflowTooltip: true },
   { label: "来源", prop: "source", minWidth: 180, showOverflowTooltip: true },
   { label: "状态", prop: "status", minWidth: 100 },
-  { label: "授权时间", prop: "createdAt", minWidth: 180, showOverflowTooltip: true },
+  {
+    label: "授权时间",
+    prop: "createdAt",
+    transform: formatDateTime,
+    minWidth: 180,
+    showOverflowTooltip: true,
+  },
   { label: "授权人", prop: "grantedBy", minWidth: 140, showOverflowTooltip: true },
-  { label: "生效时间", prop: "validFrom", minWidth: 180, showOverflowTooltip: true },
-  { label: "失效时间", prop: "validUntil", minWidth: 180, showOverflowTooltip: true },
+  {
+    label: "生效时间",
+    prop: "validFrom",
+    transform: formatDateTime,
+    minWidth: 180,
+    showOverflowTooltip: true,
+  },
+  {
+    label: "失效时间",
+    prop: "validUntil",
+    transform: formatDateTime,
+    minWidth: 180,
+    showOverflowTooltip: true,
+  },
   { label: "操作", width: 150, prop: "actions", fixed: "right" },
 ];
 

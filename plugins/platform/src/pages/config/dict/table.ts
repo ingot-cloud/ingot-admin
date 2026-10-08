@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { PlatformDict } from "@/models";
 import { CommonStatus } from "@/models/enums";
@@ -38,7 +39,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     label: "排序",
     prop: "sort",
     width: "80",
-    hide: true
+    hide: true,
   },
   {
     label: "标记",
@@ -60,6 +61,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "更新时间",
     prop: "updatedAt",
+    transform: formatDateTime,
     width: "170",
     hide: true,
   },

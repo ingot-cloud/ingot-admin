@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { SysSocialDetails } from "@/models";
 import {
@@ -45,11 +46,13 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "创建时间",
     prop: "createdAt",
+    transform: formatDateTime,
     hide: true,
   },
   {
     label: "创建时间",
     prop: "updatedAt",
+    transform: formatDateTime,
     hide: true,
   },
   {

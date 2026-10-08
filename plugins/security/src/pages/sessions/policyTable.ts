@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { SessionConcurrencyPolicy } from "@/models";
 import { SessionConcurrencyScopeEnum } from "@/models/enums/sessionEnums";
@@ -49,6 +50,7 @@ export const policyTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "更新时间",
     prop: "updatedAt",
+    transform: formatDateTime,
     minWidth: "170",
   },
   {

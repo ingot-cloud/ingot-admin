@@ -23,9 +23,8 @@
       </el-form-item>
       <el-form-item label="生效时间">
         <el-date-picker
-          v-model="editForm.effectiveAt"
+          v-model="effectiveAtDate"
           type="datetime"
-          value-format="YYYY-MM-DDTHH:mm:ss"
           clearable
           placeholder="留空表示立即生效"
           class="w-full"
@@ -33,9 +32,8 @@
       </el-form-item>
       <el-form-item label="失效时间">
         <el-date-picker
-          v-model="editForm.expiresAt"
+          v-model="expiresAtDate"
           type="datetime"
-          value-format="YYYY-MM-DDTHH:mm:ss"
           clearable
           placeholder="留空表示永久有效"
           class="w-full"
@@ -53,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import { parseInstantDate, toApiInstant } from "@ingot/shared";
 import type { GatewayIpList } from "@/models";
 import {
   IpListKeyTypeEnum,
@@ -61,11 +60,7 @@ import {
   useIpListTypeEnum,
 } from "@/models/enums";
 import { Confirm, copyParams } from "@ingot/admin-core";
-import {
-  CreateIpListAPI,
-  DeleteIpListAPI,
-  UpdateIpListAPI,
-} from "@/api/security/policy";
+import { CreateIpListAPI, DeleteIpListAPI, UpdateIpListAPI } from "@/api/security/policy";
 
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
 
@@ -88,6 +83,18 @@ const ipListKeyTypeEnum = useIpListKeyTypeEnum();
 
 const editFormRef = ref();
 const editForm = reactive<GatewayIpList>(Object.assign({}, defaultEditForm));
+const effectiveAtDate = computed({
+  get: () => parseInstantDate(editForm.effectiveAt),
+  set: (value: Date | null) => {
+    editForm.effectiveAt = toApiInstant(value);
+  },
+});
+const expiresAtDate = computed({
+  get: () => parseInstantDate(editForm.expiresAt),
+  set: (value: Date | null) => {
+    editForm.expiresAt = toApiInstant(value);
+  },
+});
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);

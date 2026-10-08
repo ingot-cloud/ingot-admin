@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { SysUser } from "@/models";
 
@@ -37,6 +38,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "注册时间",
     prop: "createdAt",
+    transform: formatDateTime,
     hide: true,
   },
   {
@@ -47,9 +49,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
 ];
 
-export function createAdminUserToolbarActions(
-  onCreate: () => void,
-): Array<InTableAction<SysUser>> {
+export function createAdminUserToolbarActions(onCreate: () => void): Array<InTableAction<SysUser>> {
   return [
     {
       key: "create",

@@ -1,3 +1,4 @@
+import { formatDateTime } from "@ingot/shared";
 import type { InPickerOption, InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { UserPageItemVO } from "@/models";
 
@@ -43,6 +44,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   {
     label: "注册时间",
     prop: "createdAt",
+    transform: formatDateTime,
     hide: true,
   },
   {

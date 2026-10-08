@@ -35,10 +35,10 @@
         <span v-else>-</span>
       </template>
       <template #effectiveAt="{ item }">
-        <span>{{ item.effectiveAt || "立即生效" }}</span>
+        <span>{{ formatDateTime(item.effectiveAt, { fallback: "立即生效" }) }}</span>
       </template>
       <template #expiresAt="{ item }">
-        <span>{{ item.expiresAt || "永久有效" }}</span>
+        <span>{{ formatDateTime(item.expiresAt, { fallback: "永久有效" }) }}</span>
       </template>
       <template #enabled="{ item }">
         <el-tag :type="item.enabled ? 'success' : 'info'" size="small">
@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import {
   applyColumnSelection,
   resolveBooleanPickerFilter,
@@ -62,11 +63,7 @@ import {
   type InTableAction,
 } from "@ingot/admin-core";
 import type { GatewayIpList } from "@/models";
-import {
-  useIpListKeyTypeEnum,
-  useIpListSourceEnum,
-  useIpListTypeEnum,
-} from "@/models/enums";
+import { useIpListKeyTypeEnum, useIpListSourceEnum, useIpListTypeEnum } from "@/models/enums";
 import { IpListQueryOptions, ipListQueryKeys } from "@/api/security/policy.query";
 import {
   createIpListRowActions,

@@ -98,7 +98,9 @@
             <template #source="{ item }">{{
               item.record.delegationSummary || sourceLabel(item.record.source)
             }}</template>
-            <template #createdAt="{ item }">{{ item.record.createdAt || "-" }}</template>
+            <template #createdAt="{ item }">{{
+              formatDateTime(item.record.createdAt, { fallback: "-" })
+            }}</template>
             <template #grantedBy="{ item }">{{ item.record.grantedBy?.name || "未知" }}</template>
             <template #validFrom="{ item }">{{
               localInstant(item.record.assignment.validFrom)
@@ -243,6 +245,7 @@
 </template>
 
 <script lang="ts" setup>
+import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {
   AssignmentSourceExtArray,
@@ -453,8 +456,7 @@ const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray
 const sourceLabel = (value: string): string => iamEnumLabel(AssignmentSourceExtArray, value);
 const effectiveLabel = (state?: string): string =>
   AssignmentEffectiveStatusExtArray.find((item) => item.value === state)?.text ?? "未知";
-const localInstant = (instant?: string): string =>
-  instant ? new Date(instant).toLocaleString() : "长期";
+const localInstant = (instant?: string): string => formatDateTime(instant, { fallback: "长期" });
 const openAssignment = async (id: string): Promise<void> => {
   if (!hasAction(IamAction.PLATFORM_ASSIGNMENT_READ)) return;
   const response = await PlatformAssignmentDetailAPI(id);
