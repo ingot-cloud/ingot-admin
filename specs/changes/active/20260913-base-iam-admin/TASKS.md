@@ -390,3 +390,11 @@ FP01–FP04 开发及限定自动化已完成，增量 validating；FP05 人工�
 FP06 按原 HYBRID whole 契约修复密码 PUT 后端解密链路；前端报文不变。实际加密回归与人工重测见 FORCED-PASSWORD-CHANGE.md。
 
 FP06 后端整包解密修复及 28 项限定回归已完成，浏览器重测仍为 FP05 未验收项，无前端代码改动。
+
+
+## 2026-10-08 角色分配表格与操作栏
+
+AT01–AT05 任务、开发/自动化/人工分开记录，见 [角色分配表格增量](./ASSIGNMENT-TABLE-REFINEMENT.md)。
+
+
+2026-10-08：AT01–AT04 开发及限定自动化完成（61 项回归、类型/只读 lint/边界/文档与两管理台构建），表格增量 validating；AT05 人工待执行。详见 [角色分配表格证据](./ASSIGNMENT-TABLE-REFINEMENT.md)。

@@ -218,3 +218,8 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 强制改密闭环（2026-10-06）
 
 用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
+
+
+## 2026-10-08 角色分配表格与操作栏
+
+布局、插槽修正与兼容边界见 [角色分配表格增量](./ASSIGNMENT-TABLE-REFINEMENT.md)；不新增公开 API，不改变其他页面的表格或工具栏默认行为。

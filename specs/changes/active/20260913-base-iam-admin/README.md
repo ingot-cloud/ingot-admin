@@ -127,3 +127,11 @@ MR01–MR03 开发与自动化验证完成，增量状态 validating；MR04 人�
 用户已批准实施，approved → implementing；需求、受限登录交互、契约与 FP01–FP05 验收见 [强制改密增量](./FORCED-PASSWORD-CHANGE.md)。不更新 current、不创建提交。
 
 FP01–FP04 开发及限定自动化已完成，增量 validating；FP05 人工验收未执行。原有全量 InUser 列表测试失败单独记录，详见 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md)。
+
+
+## 2026-10-08 角色分配表格与操作栏
+
+用户已批准实施 [角色分配表格增量](./ASSIGNMENT-TABLE-REFINEMENT.md)，含主体列勾选、数量提示、工具栏收纳及原生列插槽修正；主 change 保持 implementing。
+
+
+2026-10-08：AT01–AT04 开发及限定自动化完成（61 项回归、类型/只读 lint/边界/文档与两管理台构建），表格增量 validating；AT05 人工待执行。详见 [角色分配表格证据](./ASSIGNMENT-TABLE-REFINEMENT.md)。
