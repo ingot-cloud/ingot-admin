@@ -28,6 +28,12 @@
           name="assignments"
         >
           <in-table
+            ref="assignmentTableRef"
+            class="assignment-table"
+            :tree-column="canUpgradeAssignments ? 'subject' : ''"
+            :checkbox="assignments.fetching.value ? 'disabled' : assignmentCheckboxModeOf"
+            :header-checkbox="assignments.fetching.value ? 'disabled' : true"
+            :tree-expand="false"
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
             :page="assignments.pageInfo.value"
@@ -36,8 +42,8 @@
             @selection-change="selectedUpgrades = $event"
             density="compact"
             :row-key="rowKeyOf"
-            @handleSizeChange="assignments.fetchData"
-            @handleCurrentChange="assignments.fetchData"
+            @handleSizeChange="handleAssignmentPageChange"
+            @handleCurrentChange="handleAssignmentPageChange"
           >
             <template #tools-start>
               <el-input
@@ -66,17 +72,19 @@
               />
             </template>
             <template #tools-end>
-              <in-button
-                v-if="hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE)"
-                :disabled="!selectedUpgrades.length"
-                @in-click="upgradeRef?.open(selectedUpgrades)"
-                >批量升级版本</in-button
-              >
               <in-table-actions
                 variant="toolbar"
                 :actions="assignmentToolbarActions"
+                :selected-count="selectedUpgrades.length"
                 :row="emptyAssignmentRow"
               />
+            </template>
+            <template #subject-header>
+              <span class="whitespace-nowrap">
+                主体<span v-if="selectedUpgrades.length">
+                  · 已选 {{ selectedUpgrades.length }} 条</span
+                >
+              </span>
             </template>
             <template #subject="{ item }">
               {{ subjectLabel(item.record.assignment.subject.type) }} /
@@ -253,6 +261,7 @@ import {
   useSubjectTypeEnum,
   useAssignmentEffectiveStatusEnum,
   iamEnumLabel,
+  objectActionAllowed,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
@@ -263,6 +272,8 @@ import {
   StatusTag,
   toStringPickerValue,
   type InTableAction,
+  type InTableCheckboxMode,
+  type TableAPI,
   useCapabilities,
   withAllPickerOption,
 } from "@ingot/admin-core";
@@ -335,7 +346,15 @@ const upgradeCandidates =
 const upgradeRef = ref<InstanceType<typeof BizIamAssignmentUpgradeDrawer>>();
 const selectedUpgrades = ref<AssignmentRow[]>([]);
 
-const { hasAction, actionCodes } = useCapabilities();
+const { hasAction, actionCodes, contextEpoch, unavailable } = useCapabilities();
+const canUpgradeAssignments = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE));
+const assignmentTableRef = ref<TableAPI<AssignmentRow>>();
+const assignmentCheckboxModeOf = (row: AssignmentRow): InTableCheckboxMode =>
+  !canUpgradeAssignments.value
+    ? "off"
+    : objectActionAllowed(row.capabilities, IamAction.PLATFORM_ASSIGNMENT_UPGRADE).allowed
+      ? "on"
+      : "disabled";
 const route = useRoute();
 const router = useRouter();
 const tab = ref("");
@@ -354,22 +373,43 @@ watch(
   },
   { immediate: true },
 );
-const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
-  useOps(tab);
+const {
+  roles,
+  assignments,
+  delegations,
+  refreshRoles,
+  refreshAssignments: refreshAssignmentList,
+  refreshDelegations,
+} = useOps(tab);
+const clearAssignmentSelection = (): void => {
+  selectedUpgrades.value = [];
+  assignmentTableRef.value?.clearSelection();
+};
+const refreshAssignments = (): void => {
+  clearAssignmentSelection();
+  refreshAssignmentList();
+};
+const handleAssignmentPageChange = (change: Parameters<typeof assignments.fetchData>[0]): void => {
+  clearAssignmentSelection();
+  assignments.fetchData(change);
+};
 watch(
-  () => assignments.pageInfo.value.records,
-  () => {
-    selectedUpgrades.value = [];
-  },
+  [
+    () => assignments.pageInfo.value.records,
+    () => assignments.fetching.value,
+    canUpgradeAssignments,
+    contextEpoch,
+    unavailable,
+    tab,
+  ],
+  clearAssignmentSelection,
+  { flush: "sync" },
 );
 const selectedAssignmentColumns = ref<string[]>([]);
 const selectedDelegationColumns = ref<string[]>([]);
-const visibleAssignmentHeaders = computed(() => [
-  ...(hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE)
-    ? [{ type: "selection", prop: "selection", width: 48, required: true }]
-    : []),
-  ...applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
-]);
+const visibleAssignmentHeaders = computed(() =>
+  applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
+);
 const visibleDelegationHeaders = computed(() =>
   applyColumnSelection(delegationHeaders, selectedDelegationColumns.value),
 );
@@ -485,7 +525,10 @@ const roleToolbarActions = computed(() =>
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
   createRoleRowActions(item, { onDetail: handleDetail, onDelete: handleRoleDelete });
 const assignmentToolbarActions = computed(() =>
-  createAssignmentToolbarActions(handleAssignmentCreate, () => handleDiagnose()),
+  createAssignmentToolbarActions(handleAssignmentCreate, () => handleDiagnose(), {
+    selectedCount: selectedUpgrades.value.length,
+    onSelect: () => upgradeRef.value?.open(selectedUpgrades.value),
+  }),
 );
 const assignmentRowActionsOf = (item: AssignmentRow): Array<InTableAction<AssignmentRow>> =>
   createAssignmentRowActions(item, {
@@ -522,3 +565,9 @@ watch(
   { immediate: true },
 );
 </script>
+
+<style lang="postcss" scoped>
+:deep(.assignment-table .in-table-tree-expand-spacer) {
+  display: none;
+}
+</style>

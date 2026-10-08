@@ -54,7 +54,10 @@
             </span>
             <slot v-else :name="`${String(item.prop)}-header`" :item="item" />
           </template>
-          <template #default="scope">
+          <template
+            v-if="!item.type || item.type === 'default' || item.type === 'expand' || isTreeColumn(item)"
+            #default="scope"
+          >
             <template v-if="!isTableColumnProbe(scope)">
               <in-table-tree-cell
                 v-if="isTreeColumn(item)"

@@ -74,7 +74,7 @@ export const roleHeaders: Array<TableHeaderRecord> = [
 ];
 
 export const assignmentHeaders: Array<TableHeaderRecord> = [
-  { label: "主体", prop: "subject", required: true, minWidth: 200, showOverflowTooltip: true },
+  { label: "主体", prop: "subject", required: true, minWidth: 248, showOverflowTooltip: true },
   { label: "角色版本", prop: "roleRevision", minWidth: 190, showOverflowTooltip: true },
   { label: "来源", prop: "source", minWidth: 180, showOverflowTooltip: true },
   { label: "状态", prop: "status", minWidth: 100 },
@@ -155,8 +155,20 @@ export function createRoleRowActions(
 export function createAssignmentToolbarActions(
   onCreate: () => void,
   onDiagnose: () => void,
+  upgrade: { selectedCount: number; onSelect: () => void },
 ): Array<InTableAction<AssignmentRow>> {
   return [
+    {
+      key: "upgrade",
+      label: "批量升级版本",
+      kind: "default",
+      overflow: "auto",
+      priority: 10,
+      permission: IamAction.PLATFORM_ASSIGNMENT_UPGRADE,
+      disabled: upgrade.selectedCount === 0,
+      disabledReason: upgrade.selectedCount === 0 ? "请先选择可升级的分配记录" : undefined,
+      onSelect: () => upgrade.onSelect(),
+    },
     {
       key: "create",
       label: "分配角色",
@@ -170,7 +182,7 @@ export function createAssignmentToolbarActions(
       key: "diagnose",
       label: "权限诊断",
       kind: "primary",
-      overflow: "never",
+      overflow: "auto",
       priority: 30,
       permission: IamAction.PLATFORM_AUTHORIZATION_DIAGNOSE,
       onSelect: () => onDiagnose(),
