@@ -370,3 +370,20 @@ sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md
 | `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `ad72f170335f65d4f059796d38621b9d43349d4870a051074549400e8f0dac34` |
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `5fcf7dc86dd064d17fee58735c2fd74b3c481bebb3b65d489c8c956250694062` |
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `2d05982ed0ead72bd5087711250e6686f292f30dc12436a116aac572d624c159` |
+
+## 2026-10-09 菜单高级配置权威来源
+
+以下哈希覆盖相同文件历史值；实现与限定自动化完成，本增量仍需真实环境联调及上线验收，未替主 IAM change 验收。验证记录一并保存来源副本。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `e1e30405bd25a86a479e0ebf6be4986f001ab6c33cb08a5e558cf3f74de1bb12` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `a3585a651414e8820c851468375e0acd3c5ad63458f03dc6949e62356d0bdc60` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `3a1aac24ece284c6106565a3412a973cc4e3a1942648504d99815dbacc905538` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `18036fa33984909fde1d6c74d464da6ceaf69e5e32f1b6589778c06a67d7375f` |
+| `ACCEPTANCE.md` | [sources/BACKEND_ACCEPTANCE.md](./sources/BACKEND_ACCEPTANCE.md) | `d2aa1d54263c5d49b935d88815334fe14378581adce1a278fb40daecce33ff8f` |
+| `MENU-ADVANCED-CONFIGURATION.md` | [sources/BACKEND_MENU_ADVANCED_CONFIGURATION.md](./sources/BACKEND_MENU_ADVANCED_CONFIGURATION.md) | `584ed09a891f17adae26d64e6fe4e618f3c07680f4310735a35366de2c2a2b21` |
+| `MENU-ADVANCED-VERIFICATION.md` | [sources/BACKEND_MENU_ADVANCED_VERIFICATION.md](./sources/BACKEND_MENU_ADVANCED_VERIFICATION.md) | `91e5f7c3cc3e538e2670257ff9c726ec70ff28f4d05c3bfd192a5a051c0eece5` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `e7d465ea5f14c456d460e36887fd0e7151bd23607a073af5b535aca2e8ed8fe1` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `b81a536558379d4937de19916c716e62c17eaea5bb9154544587757da4c811b2` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `b7b7ac6bc68731a6c978c4c326f09598b4110e5e6e950612c11db38360ae0c6d` |

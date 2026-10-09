@@ -80,3 +80,8 @@ AT05 人工项未执行；按 [角色分配表格增量](./ASSIGNMENT-TABLE-REFI
 ## 2026-10-08 强制改密页面与顶栏
 
 FH04 人工项待执行；按 [强制改密增量](./FORCED-PASSWORD-CHANGE.md) 检查双入口首屏/刷新/窄屏、唯一退出菜单、无业务组件或额外业务请求、失败保持受限、成功重新登录及正常搜索偏好恢复。自动化不能替代 FP05 真实密码策略与会话验收。
+
+
+## 2026-10-09 菜单高级配置与步骤编辑
+
+用户已批准实施，增量需求、契约、决策、任务和验收见 [MENU-ADVANCED-CONFIGURATION](./MENU-ADVANCED-CONFIGURATION.md)。本增量 validating，MA01–MA05 与 MA06-A 已完成，MA06-B 真实服务联调及上线验收待执行；证据见 [MENU-ADVANCED-VERIFICATION](./MENU-ADVANCED-VERIFICATION.md)。主 change 保留原状态与未完成事项。

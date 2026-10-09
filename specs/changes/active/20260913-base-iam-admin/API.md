@@ -338,3 +338,8 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 ## 2026-10-08 平台成员详情只读时间
 
 MemberRecord 的可选只读 joinedAt/lastLoginAt/updatedAt 仅平台详情与编辑成功响应填写，UTC ISO；列表与租户省略，写请求不接受。账号登录包含平台及组织身份；详情使用成员 read 与对象范围，编辑响应沿用 update 目标范围。权威契约见 [后端 API 副本](./sources/BACKEND_API.md) 与 [增量来源](./sources/BACKEND_PLATFORM_MEMBER_TIMES.md)，展示见 [本地增量](./PLATFORM-MEMBER-TIMES.md)。
+
+
+## 2026-10-09 菜单高级配置与步骤编辑
+
+用户已批准实施，增量需求、契约、决策、任务和验收见 [MENU-ADVANCED-CONFIGURATION](./MENU-ADVANCED-CONFIGURATION.md)。本增量 validating，MA01–MA05 与 MA06-A 已完成，MA06-B 真实服务联调及上线验收待执行；证据见 [MENU-ADVANCED-VERIFICATION](./MENU-ADVANCED-VERIFICATION.md)。主 change 保留原状态与未完成事项。

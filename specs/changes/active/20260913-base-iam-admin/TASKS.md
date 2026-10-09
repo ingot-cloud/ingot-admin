@@ -407,3 +407,12 @@ AT01–AT05 任务、开发/自动化/人工分开记录，见 [角色分配表�
 ## 2026-10-08 平台成员详情只读时间
 
 MT01–MT04 的实施、契约/定向验证和人工验收在 [PLATFORM-MEMBER-TIMES](./PLATFORM-MEMBER-TIMES.md) 单独跟踪；开发与自动化不代替 MT04。
+
+
+## 2026-10-09 菜单高级配置与步骤编辑
+
+用户已批准实施，增量需求、契约、决策、任务和验收见 [MENU-ADVANCED-CONFIGURATION](./MENU-ADVANCED-CONFIGURATION.md)。本增量 validating，MA01–MA05 与 MA06-A 已完成，MA06-B 真实服务联调及上线验收待执行；证据见 [MENU-ADVANCED-VERIFICATION](./MENU-ADVANCED-VERIFICATION.md)。主 change 保留原状态与未完成事项。
+
+2026-10-09 用户截图验收修正：MA07 步骤关闭位置、菜单详情 Tab 留白及窄屏宽度已修复；4 项交互回归、限定类型/只读 lint/格式和宽窄屏夹具浏览器检查通过，见 [菜单增量](./MENU-ADVANCED-CONFIGURATION.md)。
+
+2026-10-09 用户截图要求参数配置布局与模板主题色修正：MA08 对齐、间距和主题 Token 消费已修复；4 项既有交互回归、类型/只读 lint/格式与宽窄屏/主题夹具浏览器检查通过，任务及证据见 [菜单增量](./MENU-ADVANCED-CONFIGURATION.md)。
