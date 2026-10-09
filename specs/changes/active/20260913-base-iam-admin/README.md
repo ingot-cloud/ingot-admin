@@ -138,3 +138,10 @@ FP01–FP04 开发及限定自动化已完成，增量 validating；FP05 人工�
 
 
 2026-10-08：AT01–AT04 开发及限定自动化完成（61 项回归、类型/只读 lint/边界/文档与两管理台构建），表格增量 validating；AT05 人工待执行。详见 [角色分配表格证据](./ASSIGNMENT-TABLE-REFINEMENT.md)。
+
+
+## 2026-10-08 平台成员详情只读时间
+
+用户已批准实施三项详情只读时间，增量决策与任务见 [PLATFORM-MEMBER-TIMES](./PLATFORM-MEMBER-TIMES.md)。主 change 保持 implementing，真实页面验收独立记录。
+
+MT01–MT03 开发、来源同步与定向自动化完成，时间增量进入 validating；MT04 真实页面验收待执行，主状态保持 implementing。

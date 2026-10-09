@@ -229,3 +229,8 @@ IMPLEMENTATION-STATUS记录现状，IAM-INTEGRATION记录每个操作的API和�
 ## 2026-10-08 时间契约替代
 
 时间点交互以 [框架关联前端变更](../20261008-packages-time-contract/DESIGN.md) 为准：请求必须带 Z 或偏移量，响应 UTC Z；模型保留原始 ISO，共享包负责当地展示和时间选择转换。早期普通时间字段的墙钟约定被替代；Duration、日期及协议数字时间保持独立语义。
+
+
+## 2026-10-08 平台成员详情只读时间
+
+平台详情响应增加可选 joinedAt/lastLoginAt/updatedAt，按成员查看与对象范围开放固定只读元数据，存储 UTC 转 Instant。列表与租户不填，写入仍拒绝时间字段；不新增 DDL。决策、兼容与验收见 [PLATFORM-MEMBER-TIMES](./PLATFORM-MEMBER-TIMES.md)。

@@ -121,12 +121,24 @@
     <in-biz-tab-panel title="其他" name="other" :editable="false">
       <in-form>
         <in-detail-field label="用户组" :value="groupPreview" />
+        <template v-if="detail">
+          <in-detail-field label="加入平台时间" :value="formatDateTime(detail.record.joinedAt)" />
+          <in-detail-field
+            label="账号最后登录时间"
+            :value="formatDateTime(detail.record.lastLoginAt, { fallback: '暂无登录记录' })"
+          />
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            包含平台及组织身份登录。
+          </div>
+          <in-detail-field label="成员更新时间" :value="formatDateTime(detail.record.updatedAt)" />
+        </template>
       </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
 </template>
 
 <script setup lang="ts">
+import { formatDateTime } from "@ingot/shared";
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
 import {
   Confirm,

@@ -524,6 +524,12 @@ export interface MemberRecord {
   username?: string;
   status: MemberStatus;
   departments: MemberDepartmentView[];
+  /** 平台成员首次加入时间，UTC ISO；仅平台详情填写。 */
+  joinedAt?: string;
+  /** 账号最近成功登录时间，包含平台及组织身份；无记录时省略。 */
+  lastLoginAt?: string;
+  /** 平台成员记录更新时间，UTC ISO；不代表最后活跃时间。 */
+  updatedAt?: string;
 }
 
 export interface MemberCreateInput {

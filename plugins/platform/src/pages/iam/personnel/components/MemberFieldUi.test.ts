@@ -1,6 +1,7 @@
 import { mount, flushPromises } from "@vue/test-utils";
 import { defineComponent, h, ref } from "vue";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { formatDateTime } from "@ingot/shared";
 import {
   FieldVisibility,
   IamAction,
@@ -166,10 +167,39 @@ beforeEach(() => {
   api.rolesAllowed = false;
 });
 describe("成员详情字段界面", () => {
+  it.each([
+    ["Asia/Shanghai", "2026-10-08 09:02:03"],
+    ["America/New_York", "2026-10-07 21:02:03"],
+  ])("其他分组按 %s 展示只读时间", async (timeZone, expected) => {
+    const options = new Intl.DateTimeFormat().resolvedOptions();
+    const zone = vi.spyOn(Intl.DateTimeFormat.prototype, "resolvedOptions");
+    zone.mockReturnValue({ ...options, timeZone });
+    const row = detail();
+    row.record.joinedAt = "2026-10-08T01:02:03Z";
+    row.record.lastLoginAt = row.record.joinedAt;
+    row.record.updatedAt = row.record.joinedAt;
+    const wrapper = await open(row);
+    try {
+      const other = wrapper.get('[data-name="other"]');
+      for (const label of ["加入平台时间", "账号最后登录时间", "成员更新时间"]) {
+        expect(other.get(`[data-label="${label}"]`).text()).toBe(expected);
+      }
+      expect(other.text()).toContain("包含平台及组织身份登录");
+      expect(other.find("input").exists()).toBe(false);
+      expect(other.attributes("data-editable")).toBe("false");
+      expect(row.record.joinedAt).toBe("2026-10-08T01:02:03Z");
+    } finally {
+      wrapper.unmount();
+      zone.mockRestore();
+    }
+  });
   it("隐藏邮箱标签，读态显示脱敏手机号，编辑草稿为空且禁用", async () => {
     const wrapper = await open(detail());
     expect(wrapper.find('[data-label="联系邮箱"]').exists()).toBe(false);
     expect(wrapper.get('[data-label="联系手机号"]').text()).toContain("***");
+    expect(wrapper.get('[data-label="加入平台时间"]').text()).toBe("-");
+    expect(wrapper.get('[data-label="成员更新时间"]').text()).toBe("-");
+    expect(wrapper.get('[data-label="账号最后登录时间"]').text()).toBe("暂无登录记录");
     await wrapper.get("button.edit").trigger("click");
     const phone = wrapper.get('[data-label="联系手机号"] input');
     expect((phone.element as HTMLInputElement).value).toBe("");
@@ -192,13 +222,19 @@ describe("成员详情字段界面", () => {
   it("资料全部只读时仍可按直接分配资格编辑角色，最终预览后一次保存", async () => {
     api.rolesAllowed = true;
     const row = detail();
+    row.record.joinedAt = "2026-10-01T01:00:00Z";
+    row.record.lastLoginAt = "2026-10-08T02:00:00Z";
+    row.record.updatedAt = "2026-10-08T03:00:00Z";
     Object.values(row.fieldAccess).forEach((field) => {
       field.editable = false;
     });
     api.preview.mockResolvedValue({
       data: { valid: true, errors: [], effectiveResult: { additions: 1, updates: 0, removals: 0 } },
     });
-    api.update.mockResolvedValue({ data: { ...row, version: "1" } });
+    const updatedAt = "2026-10-08T04:00:00Z";
+    api.update.mockResolvedValue({
+      data: { ...row, record: { ...row.record, updatedAt }, version: "1" },
+    });
     const wrapper = await open(row);
     expect(wrapper.get('[data-name="basic"]').attributes("data-editable")).toBe("true");
     await wrapper.get("button.edit").trigger("click");
@@ -223,6 +259,7 @@ describe("成员详情字段界面", () => {
         removals: [],
       },
     });
+    expect(wrapper.get('[data-label="成员更新时间"]').text()).toBe(formatDateTime(updatedAt));
     wrapper.unmount();
   });
   it("角色预览未通过则不提交成员，保留草稿供重新配置", async () => {

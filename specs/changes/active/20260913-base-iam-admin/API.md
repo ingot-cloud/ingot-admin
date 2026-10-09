@@ -333,3 +333,8 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 ## 强制改密（2026-10-06）
 
 按 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md) 执行：bootstrap 的 PasswordChangeRequired 由最小密码 GET 接管；保护请求受服务端门禁约束，成功改密后清理 BFF 会话并重新登录，不记忆 /init。共享组件覆盖平台和租户入口。
+
+
+## 2026-10-08 平台成员详情只读时间
+
+MemberRecord 的可选只读 joinedAt/lastLoginAt/updatedAt 仅平台详情与编辑成功响应填写，UTC ISO；列表与租户省略，写请求不接受。账号登录包含平台及组织身份；详情使用成员 read 与对象范围，编辑响应沿用 update 目标范围。权威契约见 [后端 API 副本](./sources/BACKEND_API.md) 与 [增量来源](./sources/BACKEND_PLATFORM_MEMBER_TIMES.md)，展示见 [本地增量](./PLATFORM-MEMBER-TIMES.md)。

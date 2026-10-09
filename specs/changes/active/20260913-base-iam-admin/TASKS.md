@@ -402,3 +402,8 @@ AT01–AT05 任务、开发/自动化/人工分开记录，见 [角色分配表�
 
 
 2026-10-08：AT01–AT04 开发及限定自动化完成（61 项回归、类型/只读 lint/边界/文档与两管理台构建），表格增量 validating；AT05 人工待执行。详见 [角色分配表格证据](./ASSIGNMENT-TABLE-REFINEMENT.md)。
+
+
+## 2026-10-08 平台成员详情只读时间
+
+MT01–MT04 的实施、契约/定向验证和人工验收在 [PLATFORM-MEMBER-TIMES](./PLATFORM-MEMBER-TIMES.md) 单独跟踪；开发与自动化不代替 MT04。

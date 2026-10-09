@@ -353,3 +353,20 @@ sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `fd4e6bda498a00b4da0a3a6f0221bc58c126cb74eb93ffb5cc86d869f4c925e6` |
 | `contracts/internal-openapi.json` | [sources/contracts/internal-openapi.json](./sources/contracts/internal-openapi.json) | `29d4fc22afc03a1e943d562ecf46e9877d809f25afd5b9690338e93ece204454` |
 | `contracts/examples/password-change-state.json` | [sources/contracts/examples/password-change-state.json](./sources/contracts/examples/password-change-state.json) | `077f2c128c3afb0a78bc63d03da8c115b3281d4e195d99d5f984e09071ae5377` |
+
+
+## 2026-10-08 平台成员详情时间权威来源
+
+以下哈希覆盖相同文件历史值。三项是固定只读详情元数据，账号登录包含平台/组织；无新增DDL，开发及定向自动化通过，MT04人工待验收。公开契约保持132路径/200操作。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `30112d3508a59fcffa54d1974474c4ae3b574b8a361d9a9de0082c59a34591cc` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `8738ee912c04155a43460bd4e32d13fb2d3909b9227df9d06fe85e59d6656fc5` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `aa9deffb5e4c848d549c260b8c20be66c20cdccdbc86513fd16ab7902ea5f1ae` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `9d4c35e9cea20290c6a09fd1b395ce3b4c12f8fc8280e1dbd16df67fea4d544c` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `91fb36be3444073c1c48c1afa21ab4964569ce9a4014c332d2a71cc2ac41d269` |
+| `PLATFORM-MEMBER-TIMES.md` | [sources/BACKEND_PLATFORM_MEMBER_TIMES.md](./sources/BACKEND_PLATFORM_MEMBER_TIMES.md) | `bee25cd2bf2ba7f4241e9a08538f3e67c1b586637489d1c1e614e3677aa58a06` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `ad72f170335f65d4f059796d38621b9d43349d4870a051074549400e8f0dac34` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `5fcf7dc86dd064d17fee58735c2fd74b3c481bebb3b65d489c8c956250694062` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `2d05982ed0ead72bd5087711250e6686f292f30dc12436a116aac572d624c159` |
