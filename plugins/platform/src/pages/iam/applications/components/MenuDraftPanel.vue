@@ -34,7 +34,12 @@
         </span>
       </template>
       <template #path="{ item }">
-        {{ asMenu(item).record.path || asMenu(item).record.viewPath || "-" }}
+        {{
+          asMenu(item).record.resolvedPath ||
+          asMenu(item).record.path ||
+          asMenu(item).record.viewPath ||
+          "-"
+        }}
       </template>
       <template #actions="{ item }">
         <in-button text link @click="privateOpenMenu(asMenu(item))">详情</in-button>
@@ -43,16 +48,17 @@
     </in-table>
   </div>
 
-  <menu-edit-drawer
-    ref="menuRef"
-    :resolve-catalog="resolveCatalog"
-    :submit="privateSubmitMenu"
-  />
+  <menu-edit-drawer ref="menuRef" :resolve-catalog="resolveCatalog" :submit="privateSubmitMenu" />
 </template>
 
 <script setup lang="ts">
 import { Search } from "@element-plus/icons-vue";
-import { Confirm, resolveStringPickerFilter, toStringPickerValue, withAllPickerOption } from "@ingot/admin-core";
+import {
+  Confirm,
+  resolveStringPickerFilter,
+  toStringPickerValue,
+  withAllPickerOption,
+} from "@ingot/admin-core";
 import {
   filterMenuTree,
   useMenuAccessModeEnum,
@@ -83,7 +89,12 @@ const props = defineProps<{
 const resources = defineModel<DraftResource[]>("resources", { default: () => [] });
 const menus = defineModel<DraftMenu[]>("menus", { default: () => [] });
 const menuRef = ref<{
-  show: (appId: string, menuList: MenuTreeRow[], target?: MenuTreeRow, applicationName?: string) => void;
+  show: (
+    appId: string,
+    menuList: MenuTreeRow[],
+    target?: MenuTreeRow,
+    applicationName?: string,
+  ) => void;
 }>();
 const menuFilter = reactive({
   name: "",
@@ -167,7 +178,9 @@ const privateDeleteMenu = (row: MenuTreeRow): void => {
   Confirm.warning(`是否删除菜单（${row.record.name}）？`).then(() => {
     menus.value = menus.value
       .filter((item) => item.tempId !== row.record.id)
-      .map((item) => (item.parentTempId === row.record.id ? { ...item, parentTempId: undefined } : item));
+      .map((item) =>
+        item.parentTempId === row.record.id ? { ...item, parentTempId: undefined } : item,
+      );
   });
 };
 </script>

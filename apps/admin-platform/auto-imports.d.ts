@@ -115,6 +115,7 @@ declare global {
   const refManualReset: typeof import('@vueuse/core').refManualReset
   const refThrottled: typeof import('@vueuse/core').refThrottled
   const refWithControl: typeof import('@vueuse/core').refWithControl
+  const refreshSessionMenus: typeof import('../../packages/admin-core/src/stores/modules/auth').refreshSessionMenus
   const refreshSessionPermissions: typeof import('../../packages/admin-core/src/stores/modules/auth').refreshSessionPermissions
   const requirePasswordChange: typeof import('../../packages/admin-core/src/stores/modules/auth').requirePasswordChange
   const resetSessionBootstrap: typeof import('../../packages/admin-core/src/stores/modules/auth').resetSessionBootstrap
@@ -505,6 +506,7 @@ declare module 'vue' {
     readonly refManualReset: UnwrapRef<typeof import('@vueuse/core')['refManualReset']>
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
+    readonly refreshSessionMenus: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['refreshSessionMenus']>
     readonly refreshSessionPermissions: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['refreshSessionPermissions']>
     readonly requirePasswordChange: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['requirePasswordChange']>
     readonly resetSessionBootstrap: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['resetSessionBootstrap']>

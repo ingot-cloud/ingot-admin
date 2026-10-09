@@ -1,23 +1,18 @@
 <template>
   <el-main :ref="setContentRef" class="in-content-viewport">
     <div class="in-content-viewport__host">
-      <router-view v-slot="{ Component }">
-        <keep-alive :include="cacheNames">
-          <component :is="Component" />
-        </keep-alive>
-      </router-view>
+      <in-route-renderer />
     </div>
   </el-main>
 </template>
 <script lang="ts" setup>
-import { useRouterStore } from "@/stores/modules/router";
+import InRouteRenderer from "@/router/render/InRouteRenderer.vue";
 import { useContentScroll } from "@/layouts/main/useContentScroll";
 
 defineOptions({
   name: "InAdminThemeContent",
 });
 
-const { cacheNames } = storeToRefs(useRouterStore());
 const contentRef = ref<HTMLElement>();
 const setContentRef = (el: unknown) => {
   if (el && typeof el === "object" && "$el" in el) {

@@ -16,9 +16,7 @@ export class DynamicRouterGuard extends BaseNavigationGuard {
         if (result.dynamicRoutes.length === 0) {
           return false;
         }
-        result.dynamicRoutes.forEach((route) => {
-          router.addRoute(route);
-        });
+        useRouterStore().installDynamicRoutes(router);
         if (router.hasRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP)) {
           router.removeRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP);
         }

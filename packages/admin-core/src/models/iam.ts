@@ -30,6 +30,9 @@ export interface IamApplicationSummary {
 }
 
 export interface IamMenuNode {
+  hidden?: boolean;
+  isCache?: boolean;
+  props?: boolean;
   id: string;
   applicationId: string;
   name: string;

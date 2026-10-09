@@ -5,6 +5,10 @@ export {};
 
 declare module "vue-router" {
   interface RouteMeta {
+    /** 菜单路由类别与缓存配置。 */
+    menuKind?: "DIRECTORY" | "PAGE";
+    isCache?: boolean;
+    menuId?: string;
     /** IAM 应用标识，服务器菜单映射，不能用于后端鉴权。 */
     applicationId?: string;
     /**

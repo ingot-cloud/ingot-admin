@@ -1,5 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
-import { AuthorizationDomain, MenuAccessMode, MenuKind, MenuMatchMode, ScopeKind } from "@ingot/admin-common";
+import { describe, expect, it } from "vitest";
+import {
+  AuthorizationDomain,
+  MenuAccessMode,
+  MenuKind,
+  MenuMatchMode,
+  ScopeKind,
+} from "@ingot/admin-common";
 import {
   APP_WIZARD_STEPS,
   catalogActionsOf,
@@ -11,20 +17,49 @@ import {
   previewActionCode,
   profileError,
   toApplicationBundle,
+  upsertDraftMenu,
   type DraftMenu,
   type DraftResource,
 } from "./createWizard";
 
-vi.mock("@ingot/admin-common", () => ({
-  AuthorizationDomain: { PLATFORM: "PLATFORM", TENANT: "TENANT" },
-  MenuAccessMode: { OPEN: "OPEN", ACTION: "ACTION" },
-  MenuKind: { PAGE: "PAGE", DIRECTORY: "DIRECTORY" },
-  MenuMatchMode: { ANY: "ANY", ALL: "ALL" },
-  ScopeKind: { ALL: "ALL" },
-  ConfigurationStatus: { ENABLED: "ENABLED" },
-}));
-
 describe("application create wizard", () => {
+  it("草稿菜单与整包保留路由名称、参数顺序及备注", () => {
+    const draft = {
+      name: "详情",
+      kind: MenuKind.PAGE,
+      path: "/orders",
+      routeName: "order",
+      accessMode: MenuAccessMode.OPEN,
+      matchMode: MenuMatchMode.ANY,
+      actionIds: [],
+      sortOrder: 0,
+      hidden: true,
+      isCache: true,
+      props: true,
+      routeParams: [{ name: "a", remark: "编号" }, { name: "b" }],
+    };
+    const menus = upsertDraftMenu([], draft);
+    const tree = menusToTree(menus);
+    expect(tree[0]?.record.resolvedPath).toBe("/orders/:a/:b");
+    const bundle = toApplicationBundle(
+      { ...emptyAppProfile(), code: "orders", name: "订单" },
+      AuthorizationDomain.TENANT,
+      [],
+      menus,
+    );
+    expect(bundle.menus[0]).toMatchObject({
+      routeName: "order",
+      hidden: true,
+      isCache: true,
+      props: true,
+      routeParams: draft.routeParams,
+    });
+    draft.routeParams[0]!.name = "changed";
+    expect(bundle.menus[0]?.routeParams?.[0]?.name).toBe("a");
+    const disabled = upsertDraftMenu(menus, { ...draft, props: false }, menus[0]?.tempId);
+    expect(disabled[0]?.routeParams).toEqual([]);
+  });
+
   it("步骤为基础信息、资源与操作、菜单、预览创建", () => {
     expect(APP_WIZARD_STEPS.map((item) => item.title)).toEqual([
       "基础信息",
@@ -36,7 +71,9 @@ describe("application create wizard", () => {
 
   it("基础信息缺少编码或名称时不能进入下一步", () => {
     expect(profileError(emptyAppProfile())).toBe("请填写编码和名称");
-    expect(profileError({ ...emptyAppProfile(), code: "contacts", name: "通讯录" })).toBeUndefined();
+    expect(
+      profileError({ ...emptyAppProfile(), code: "contacts", name: "通讯录" }),
+    ).toBeUndefined();
   });
 
   it("操作码预览带上应用和资源编码", () => {
@@ -54,7 +91,10 @@ describe("application create wizard", () => {
         actions: [{ tempId: "a1", code: "read", name: "查看" }],
       },
     ];
-    const actions = catalogActionsOf({ ...emptyAppProfile(), code: "iam-platform", name: "平台治理" }, resources);
+    const actions = catalogActionsOf(
+      { ...emptyAppProfile(), code: "iam-platform", name: "平台治理" },
+      resources,
+    );
     expect(actions[0]).toMatchObject({
       resourceName: "账号",
       applicationName: "平台治理",

@@ -1,5 +1,8 @@
 import {
   ConfigurationStatus,
+  resolveMenuPath,
+  validateMenu,
+  type MenuAdvancedConfiguration,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
@@ -47,7 +50,8 @@ export interface DraftResource {
   actions: DraftAction[];
 }
 
-export interface DraftMenu {
+export interface DraftMenu extends MenuAdvancedConfiguration {
+  routeName?: string;
   tempId: string;
   parentTempId?: string;
   name: string;
@@ -94,6 +98,10 @@ export function emptyDraftAction(): DraftAction {
 export function emptyDraftMenu(): DraftMenu {
   return {
     tempId: nextDraftId("menu"),
+    hidden: false,
+    isCache: false,
+    props: false,
+    routeParams: [],
     name: "",
     kind: MenuKind.PAGE,
     accessMode: MenuAccessMode.ACTION,
@@ -105,7 +113,12 @@ export function emptyDraftMenu(): DraftMenu {
 
 export function profileDirty(profile: AppWizardProfile): boolean {
   return Boolean(
-    profile.code || profile.name || profile.description || profile.icon || profile.sortOrder || profile.baseline,
+    profile.code ||
+    profile.name ||
+    profile.description ||
+    profile.icon ||
+    profile.sortOrder ||
+    profile.baseline,
   );
 }
 
@@ -147,20 +160,26 @@ export function catalogError(resources: DraftResource[]): string | undefined {
 
 export function menuError(menus: DraftMenu[]): string | undefined {
   for (const menu of menus) {
-    if (!menu.name.trim()) {
-      return "请填写菜单名称";
-    }
+    const error = validateMenu({ ...menu, actionIds: menu.actionTempIds })[0];
+    if (error) return error.message;
   }
   return undefined;
 }
 
-export function previewActionCode(applicationCode: string, resourceCode: string, local: string): string {
+export function previewActionCode(
+  applicationCode: string,
+  resourceCode: string,
+  local: string,
+): string {
   return `${actionCodePrefix(applicationCode, resourceCode)}${local}`;
 }
 
 export const DRAFT_APPLICATION_ID = "draft-application";
 
-export function catalogActionsOf(profile: AppWizardProfile, resources: DraftResource[]): MenuActionOption[] {
+export function catalogActionsOf(
+  profile: AppWizardProfile,
+  resources: DraftResource[],
+): MenuActionOption[] {
   return resources.flatMap((resource) =>
     resource.actions.map((action) => ({
       id: action.tempId,
@@ -174,7 +193,10 @@ export function catalogActionsOf(profile: AppWizardProfile, resources: DraftReso
   );
 }
 
-const emptyMeta = (): Pick<ResourceDetail<AppResourceRecord>, "fieldAccess" | "capabilities" | "version"> => ({
+const emptyMeta = (): Pick<
+  ResourceDetail<AppResourceRecord>,
+  "fieldAccess" | "capabilities" | "version"
+> => ({
   fieldAccess: {},
   capabilities: {},
   version: "0",
@@ -229,6 +251,12 @@ export function menusToTree(menus: DraftMenu[]): MenuTreeRow[] {
       name: menu.name,
       kind: menu.kind,
       path: menu.path,
+      routeName: menu.routeName,
+      hidden: menu.hidden ?? false,
+      isCache: menu.isCache ?? false,
+      props: menu.props ?? false,
+      routeParams: (menu.routeParams ?? []).map((p) => ({ ...p })),
+      resolvedPath: resolveMenuPath(menu.path, menu.props ? menu.routeParams : []),
       viewPath: menu.viewPath,
       icon: menu.icon,
       accessMode: menu.accessMode,
@@ -243,13 +271,22 @@ export function menusToTree(menus: DraftMenu[]): MenuTreeRow[] {
   return (byParent.get("") ?? []).map(toRow);
 }
 
-export function upsertDraftMenu(menus: DraftMenu[], draft: AppMenuDraft, targetId?: string): DraftMenu[] {
+export function upsertDraftMenu(
+  menus: DraftMenu[],
+  draft: AppMenuDraft,
+  targetId?: string,
+): DraftMenu[] {
   const next: DraftMenu = {
     tempId: targetId ?? nextDraftId("menu"),
     parentTempId: draft.parentId,
     name: draft.name.trim(),
     kind: draft.kind,
     path: draft.path,
+    routeName: draft.routeName,
+    hidden: draft.hidden ?? false,
+    isCache: draft.isCache ?? false,
+    props: draft.props ?? false,
+    routeParams: draft.props ? (draft.routeParams ?? []).map((p) => ({ ...p })) : [],
     viewPath: draft.viewPath,
     icon: draft.icon,
     accessMode: draft.accessMode,
@@ -297,6 +334,11 @@ export function toApplicationBundle(
       name: menu.name.trim(),
       kind: menu.kind,
       path: menu.path || undefined,
+      routeName: menu.routeName || undefined,
+      hidden: menu.hidden ?? false,
+      isCache: menu.isCache ?? false,
+      props: menu.props ?? false,
+      routeParams: menu.props ? (menu.routeParams ?? []).map((p) => ({ ...p })) : [],
       viewPath: menu.viewPath || undefined,
       icon: menu.icon || undefined,
       accessMode: menu.accessMode,

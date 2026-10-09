@@ -17,20 +17,30 @@ export interface BreadcrumbRouteMatch {
 
 export const buildBreadcrumbList = (
   matched: Array<BreadcrumbRouteMatch>,
+  params: Record<string, string | string[]> = {},
 ): Array<BreadCrumbRecord> => {
   const list: Array<BreadCrumbRecord> = [];
+  const actualPath = (path: string): string =>
+    path.replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, (placeholder, name: string) => {
+      const value = params[name];
+      return value === undefined
+        ? placeholder
+        : Array.isArray(value)
+          ? value.map(encodeURIComponent).join("/")
+          : encodeURIComponent(value);
+    });
 
   matched
     .filter((item) => !item.meta || !item.meta.hideBreadcrumb)
     .forEach((item) => {
       list.push({
-        path: item.path,
+        path: actualPath(item.path),
         title: item.meta?.title || "",
         icon: item.meta?.icon,
         redirect: item.redirect?.toString(),
         children: item.children?.map((child) => {
           return {
-            path: child.path,
+            path: actualPath(child.path),
             title: child.meta?.title || "",
             icon: child.meta?.icon,
             redirect: child.redirect?.toString(),

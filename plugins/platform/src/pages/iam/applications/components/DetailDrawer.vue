@@ -140,7 +140,12 @@
             </span>
           </template>
           <template #path="{ item }">
-            {{ asMenu(item).record.path || asMenu(item).record.viewPath || "-" }}
+            {{
+              asMenu(item).record.resolvedPath ||
+              asMenu(item).record.path ||
+              asMenu(item).record.viewPath ||
+              "-"
+            }}
           </template>
           <template #actions="{ item }">
             <in-button text link @click="privateOpenMenu(asMenu(item))">详情</in-button>
@@ -167,6 +172,7 @@ import { Search } from "@element-plus/icons-vue";
 import {
   Confirm,
   Message,
+  refreshSessionMenus,
   createLoadGuard,
   resolveStringPickerFilter,
   toStringPickerValue,
@@ -543,6 +549,9 @@ const privateDeleteMenu = (row: MenuTreeRow): void => {
     PlatformMenuDeleteAPI(id, row.record.id).then(() => {
       Message.success("已删除");
       loadMenus();
+      void refreshSessionMenus().catch(() =>
+        Message.warning("菜单已删除，当前会话刷新失败，请刷新页面"),
+      );
     });
   });
 };

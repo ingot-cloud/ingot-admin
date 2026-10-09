@@ -47,6 +47,18 @@ export interface ApplicationSummary {
   sortOrder: number;
 }
 
+export interface MenuRouteParam {
+  name: string;
+  remark?: string;
+}
+
+export interface MenuAdvancedConfiguration {
+  hidden?: boolean;
+  isCache?: boolean;
+  props?: boolean;
+  routeParams?: MenuRouteParam[];
+}
+
 export interface IamMenuNode {
   id: string;
   applicationId: string;
@@ -57,6 +69,9 @@ export interface IamMenuNode {
   routeName?: string;
   icon?: string;
   sortOrder: number;
+  hidden?: boolean;
+  isCache?: boolean;
+  props?: boolean;
   children: IamMenuNode[];
 }
 
@@ -281,7 +296,7 @@ export interface ApplicationBundleResource {
   actions: ApplicationBundleAction[];
 }
 
-export interface ApplicationBundleMenu {
+export interface ApplicationBundleMenu extends MenuAdvancedConfiguration {
   tempId: string;
   parentTempId?: string;
   name: string;
@@ -469,7 +484,8 @@ export interface ActionLookupRecord {
   status: ConfigurationStatus;
 }
 
-export interface AppMenuRecord {
+export interface AppMenuRecord extends MenuAdvancedConfiguration {
+  readonly resolvedPath?: string;
   id: string;
   applicationId: string;
   parentId?: string;
@@ -490,7 +506,7 @@ export interface MenuTreeRow extends ResourceDetail<AppMenuRecord> {
   children: MenuTreeRow[];
 }
 
-export interface AppMenuDraft {
+export interface AppMenuDraft extends MenuAdvancedConfiguration {
   parentId?: string;
   name: string;
   kind: MenuKind;

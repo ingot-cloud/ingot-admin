@@ -36,6 +36,24 @@
             {{ kindEnum.getTagText(item.row.record.kind).text }} ·
             {{ accessEnum.getTagText(item.row.record.accessMode).text }}
           </div>
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            路径：{{ item.row.record.resolvedPath || item.row.record.path || "-" }}
+          </div>
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            隐藏菜单：{{ item.row.record.hidden ? "是" : "否" }}
+            <template v-if="item.row.record.kind === MenuKind.PAGE">
+              · 缓存页面：{{ item.row.record.isCache ? "是" : "否" }} · 传递路由参数：{{
+                item.row.record.props ? "是" : "否"
+              }}
+            </template>
+          </div>
+          <div
+            v-for="param in item.row.record.routeParams"
+            :key="param.name"
+            class="text-12px text-[var(--el-text-color-secondary)]"
+          >
+            {{ param.name }}：{{ param.remark || "-" }}
+          </div>
           <action-hierarchy
             v-if="item.row.record.accessMode !== MenuAccessMode.OPEN"
             :actions="actionsOf(item.row.record.actionIds)"
@@ -49,8 +67,20 @@
 </template>
 
 <script setup lang="ts">
-import { MenuAccessMode, useMenuAccessModeEnum, useMenuKindEnum, type MenuTreeRow } from "@ingot/admin-common";
-import { catalogActionsOf, menusToTree, type AppWizardProfile, type DraftMenu, type DraftResource } from "../createWizard";
+import {
+  MenuKind,
+  MenuAccessMode,
+  useMenuAccessModeEnum,
+  useMenuKindEnum,
+  type MenuTreeRow,
+} from "@ingot/admin-common";
+import {
+  catalogActionsOf,
+  menusToTree,
+  type AppWizardProfile,
+  type DraftMenu,
+  type DraftResource,
+} from "../createWizard";
 import ActionHierarchy from "./ActionHierarchy.vue";
 import CatalogIconPreview from "./CatalogIconPreview.vue";
 
@@ -69,6 +99,9 @@ const actions = computed(() => catalogActionsOf(props.profile, props.resources))
 const previewRows = computed(() => flattenPreview(menusToTree(props.menus)));
 const actionsOf = (ids: string[]) => actions.value.filter((item) => ids.includes(item.id));
 
-const flattenPreview = (rows: MenuTreeRow[], depth = 0): Array<{ row: MenuTreeRow; depth: number }> =>
+const flattenPreview = (
+  rows: MenuTreeRow[],
+  depth = 0,
+): Array<{ row: MenuTreeRow; depth: number }> =>
   rows.flatMap((row) => [{ row, depth }, ...flattenPreview(row.children ?? [], depth + 1)]);
 </script>

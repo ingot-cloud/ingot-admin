@@ -1,11 +1,12 @@
 <template>
   <el-config-provider :button="buttonConfig" :size="componentSize" :locale="zhCn">
-    <router-view />
+    <in-route-renderer />
     <ChallengeHost />
     <component :is="queryDevtools" v-if="queryDevtools" />
   </el-config-provider>
 </template>
 <script lang="ts" setup>
+import InRouteRenderer from "@/router/render/InRouteRenderer.vue";
 import { useAppStateStore } from "@/stores/modules/app";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
 import ChallengeHost from "@/components/challenge/ChallengeHost.vue";

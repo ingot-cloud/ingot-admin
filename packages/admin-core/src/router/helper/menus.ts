@@ -17,12 +17,13 @@ const walkMenus = (
       }
       seenPaths.set(node.path, source);
     }
-    if (node.routeName) {
-      const existing = seenNames.get(node.routeName);
+    const routeName = node.routeName || (node.id ? `iam-menu-${node.id}` : undefined);
+    if (routeName) {
+      const existing = seenNames.get(routeName);
       if (existing) {
-        throw new Error(`菜单 routeName “${node.routeName}” 冲突（${existing} 与 ${source}）`);
+        throw new Error(`菜单 routeName “${routeName}” 冲突（${existing} 与 ${source}）`);
       }
-      seenNames.set(node.routeName, source);
+      seenNames.set(routeName, source);
     }
     if (node.children?.length) {
       walkMenus(node.children, source, seenPaths, seenNames);

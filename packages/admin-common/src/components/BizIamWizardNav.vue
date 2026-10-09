@@ -2,13 +2,24 @@
   <aside
     class="iam-wizard-nav w-240px shrink-0 h-full px-24px py-24px b-r b-r-solid b-[var(--in-border-color)]"
   >
-    <div v-for="(item, index) in steps" :key="item.title" class="flex gap-12px mb-24px last:mb-0">
+    <div
+      v-for="(item, index) in steps"
+      :key="item.title"
+      class="flex gap-12px mb-24px last:mb-0"
+      :class="{ 'cursor-pointer': interactive }"
+      :role="interactive ? 'button' : undefined"
+      :tabindex="interactive ? 0 : undefined"
+      :aria-current="index === current ? 'step' : undefined"
+      @click="privateSelect(index)"
+      @keydown.enter.prevent="privateSelect(index)"
+      @keydown.space.prevent="privateSelect(index)"
+    >
       <div
         class="w-24px h-24px rounded-full flex items-center justify-center text-12px shrink-0 b b-solid bg-transparent"
         :class="privateStepTone(index)"
       >
         <svg
-          v-if="index < current"
+          v-if="statuses ? statuses[index] === 'valid' : index < current"
           width="1em"
           height="1em"
           viewBox="0 0 24 24"
@@ -20,7 +31,7 @@
             fill="currentColor"
           />
         </svg>
-        <span v-else>{{ index + 1 }}</span>
+        <span v-else>{{ statuses?.[index] === "invalid" ? "!" : index + 1 }}</span>
       </div>
       <div>
         <div
@@ -45,11 +56,19 @@ defineOptions({ name: "BizIamWizardNav" });
 const props = defineProps<{
   steps: ReadonlyArray<{ title: string; description: string }>;
   current: number;
+  interactive?: boolean;
+  statuses?: ReadonlyArray<"valid" | "invalid" | "pending">;
 }>();
+const emits = defineEmits<{ change: [index: number] }>();
+const privateSelect = (index: number): void => {
+  if (props.interactive) emits("change", index);
+};
 const privateStepTone = (index: number): string =>
-  index <= props.current
-    ? "b-[var(--el-color-primary)] text-[var(--el-color-primary)]"
-    : "b-[var(--in-border-color)] text-[var(--el-text-color-secondary)]";
+  props.statuses?.[index] === "invalid"
+    ? "b-[var(--el-color-danger)] text-[var(--el-color-danger)]"
+    : index <= props.current
+      ? "b-[var(--el-color-primary)] text-[var(--el-color-primary)]"
+      : "b-[var(--in-border-color)] text-[var(--el-text-color-secondary)]";
 </script>
 
 <style lang="postcss" scoped>

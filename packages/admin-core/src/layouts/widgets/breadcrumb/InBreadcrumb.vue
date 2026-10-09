@@ -1,6 +1,10 @@
 <template>
   <el-breadcrumb :separator-icon="IconArrowRight" v-if="breadcrumbList.length > 1">
-    <el-breadcrumb-item v-for="item in breadcrumbList" :key="item.path" :to="item.path">
+    <el-breadcrumb-item
+      v-for="(item, index) in breadcrumbList"
+      :key="item.path"
+      :to="index < breadcrumbList.length - 1 && !item.path.includes(':') ? item.path : undefined"
+    >
       <div flex items-center class="h-[var(--in-breadcrumb-height)]">
         <in-icon
           v-if="showIcon && item.icon"
@@ -30,5 +34,5 @@ withDefaults(
 );
 
 const route = useRoute();
-const breadcrumbList = computed(() => buildBreadcrumbList(route.matched));
+const breadcrumbList = computed(() => buildBreadcrumbList(route.matched, route.params));
 </script>

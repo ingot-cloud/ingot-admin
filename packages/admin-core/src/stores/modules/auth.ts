@@ -1,5 +1,11 @@
 import type { UserInfo, UserEffectivePermissionVO } from "@/models/security";
-import type { IamBootstrap, CurrentCapabilities, AuthorizationDomain, IamApplicationSummary, PasswordChangeState } from "@/models/iam";
+import type {
+  IamBootstrap,
+  CurrentCapabilities,
+  AuthorizationDomain,
+  IamApplicationSummary,
+  PasswordChangeState,
+} from "@/models/iam";
 import { PasswordChangeStateAPI } from "@/api/common/password";
 import { StatusCode } from "@/net/status-code";
 import { ApiError } from "@ingot/http-client";
@@ -72,6 +78,7 @@ export const useAuthStore = defineStore(
       ]).then(() => {
         usePermissions().bumpContextEpoch();
         resetSessionBootstrap();
+        useRouterStore().clearForPasswordChange();
         useUserInfoStore().clear();
         usePermissions().clear();
         clearAdminQueryCache();
@@ -324,9 +331,13 @@ export const requirePasswordChange = (): Promise<void> => {
   useRouterStore().clearForPasswordChange();
   clearAdminQueryCache();
   const epoch = usePermissions().contextEpoch;
-  passwordChangePromise = PasswordChangeStateAPI().then((state) => {
-    if (usePermissions().contextEpoch === epoch) applyPasswordChangeState(state.data);
-  }).finally(() => { passwordChangePromise = undefined; });
+  passwordChangePromise = PasswordChangeStateAPI()
+    .then((state) => {
+      if (usePermissions().contextEpoch === epoch) applyPasswordChangeState(state.data);
+    })
+    .finally(() => {
+      passwordChangePromise = undefined;
+    });
   return passwordChangePromise;
 };
 
@@ -356,23 +367,31 @@ export const ensureSessionBootstrap = (): Promise<void> => {
   if (bootstrapPromise) {
     return bootstrapPromise;
   }
-  bootstrapPromise = IamBootstrapAPI()
+  let epoch = usePermissions().contextEpoch;
+  const pending = IamBootstrapAPI()
     .catch(async (error: unknown) => {
-      if (!(error instanceof ApiError) || error.code !== StatusCode.PasswordChangeRequired) throw error;
-      await requirePasswordChange();
+      if (epoch !== usePermissions().contextEpoch) return undefined;
+      if (!(error instanceof ApiError) || error.code !== StatusCode.PasswordChangeRequired)
+        throw error;
+      const passwordChange = requirePasswordChange();
+      // 改密门禁自身会推进身份纪元；只接受这一门禁仍属于当前身份的结果。
+      epoch = usePermissions().contextEpoch;
+      await passwordChange;
       return undefined;
     })
     .then((response) => {
+      if (epoch !== usePermissions().contextEpoch) return;
       if (response) applyBootstrap(response.data);
       bootstrapped = true;
       bindVisibilityRefresh();
       bindIdentityChannel();
     })
     .catch((error) => {
-      bootstrapPromise = undefined;
+      if (bootstrapPromise === pending) bootstrapPromise = undefined;
       throw error;
     });
-  return bootstrapPromise;
+  bootstrapPromise = pending;
+  return pending;
 };
 
 export const refreshSessionPermissions = (options?: {
@@ -394,7 +413,8 @@ export const refreshSessionPermissions = (options?: {
         response.data.version !== previousVersion
       ) {
         const bootstrap = await IamBootstrapAPI();
-        if (!useUserInfoStore().getIsInitPwd && usePermissions().contextEpoch === epoch) applyBootstrap(bootstrap.data);
+        if (!useUserInfoStore().getIsInitPwd && usePermissions().contextEpoch === epoch)
+          applyBootstrap(bootstrap.data);
       }
     })
     .finally(() => {
@@ -406,8 +426,17 @@ export const refreshSessionPermissions = (options?: {
 export const beginIdentitySwitch = async (): Promise<void> => {
   usePermissions().bumpContextEpoch();
   resetSessionBootstrap();
+  useRouterStore().clearForPasswordChange();
   useUserInfoStore().clear();
   usePermissions().clear();
   clearAdminQueryCache();
   await ensureSessionBootstrap();
+};
+
+/** 菜单写入后主动获取完整会话配置，替换已注册路由。 */
+export const refreshSessionMenus = async (): Promise<void> => {
+  const epoch = usePermissions().contextEpoch;
+  const response = await IamBootstrapAPI();
+  if (epoch === usePermissions().contextEpoch && !useUserInfoStore().getIsInitPwd)
+    applyBootstrap(response.data);
 };

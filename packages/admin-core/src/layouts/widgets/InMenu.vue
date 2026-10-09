@@ -51,6 +51,7 @@
 import { useAppStateStore } from "@/stores/modules/app";
 import { useRouterStore } from "@/stores/modules/router";
 import { adminAppOptionsKey } from "@/config";
+import { activeMenuPath } from "./activeMenu";
 import { applicationMenus } from "./header/applicationNavigation";
 import { getAdminRuntimeConfig } from "@/runtime";
 import { shellLayoutKey } from "@/layouts/main/types";
@@ -84,25 +85,32 @@ const controlIcon = computed(() => {
   return sidebarExpanded.value || isOverlay.value ? `${prefix}:ic_close` : `${prefix}:ic_expand`;
 });
 
-let lastActivePath = "/";
+const menuStore = useRouterStore();
+const lastSelected = new Map<string, string>();
+watch(
+  () => [router.currentRoute.value.path, menuStore.cacheEpoch] as const,
+  () => {
+    const route = router.currentRoute.value;
+    const path = activeMenuPath(route, menuStore.getMenus);
+    if (path === route.path) lastSelected.set(route.meta.applicationId ?? "", path);
+  },
+  { immediate: true },
+);
 const activePath = computed(() => {
   const route = router.currentRoute.value;
-  if (route.meta.hideMenu) {
-    const matched = route.matched;
-    if (matched.length > 1) {
-      const parent = matched[matched.length - 2];
-      return parent.children.find((item) => item.path === parent.redirect)?.path;
-    }
-    return lastActivePath;
-  }
-  lastActivePath = route.path;
-  return route.path;
+  return activeMenuPath(
+    route,
+    menuStore.getMenus,
+    lastSelected.get(route.meta.applicationId ?? ""),
+  );
 });
 
-const menuStore = useRouterStore();
 const options = inject(adminAppOptionsKey, null);
-const getMenus = computed(() => options?.header?.navigation?.source === "applications"
-  ? applicationMenus(menuStore.getMenus, menuStore.activeApplicationId ?? "") : menuStore.getMenus);
+const getMenus = computed(() =>
+  options?.header?.navigation?.source === "applications"
+    ? applicationMenus(menuStore.getMenus, menuStore.activeApplicationId ?? "")
+    : menuStore.getMenus,
+);
 
 defineSlots<{
   "sidebar-top"?: () => unknown;

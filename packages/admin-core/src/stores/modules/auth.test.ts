@@ -96,6 +96,26 @@ describe("session bootstrap", () => {
     PasswordChangeStateAPI.mockReset();
   });
 
+  it("身份失效后迟到的 bootstrap 不恢复旧页面和权限", async () => {
+    let complete!: (value: { data: typeof bootstrapData }) => void;
+    IamBootstrapAPI.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          complete = resolve;
+        }),
+    );
+    const pending = ensureSessionBootstrap();
+    usePermissions().bumpContextEpoch();
+    resetSessionBootstrap();
+    complete({ data: bootstrapData });
+    await pending;
+    expect(useUserInfoStore().getUserInfoWhetherExist).toBe(false);
+    expect(usePermissions().permissions).toEqual([]);
+    IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
+    await ensureSessionBootstrap();
+    expect(useUserInfoStore().getUserInfoWhetherExist).toBe(true);
+  });
+
   it("一次拉取 bootstrap，不从菜单刮权限码，不以角色名放行", async () => {
     IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
 
@@ -108,6 +128,35 @@ describe("session bootstrap", () => {
     expect(useUserInfoStore().userInfo.memberId).toBe("member-1");
     expect(useUserInfoStore().getIsSystemAdmin).toBe(false);
     expect(useUserInfoStore().getUserInfoWhetherExist).toBe(true);
+  });
+
+  it("旧身份迟到的改密错误不清除新身份权限或触发改密门禁", async () => {
+    let rejectOld!: (reason: unknown) => void;
+    IamBootstrapAPI.mockImplementationOnce(
+      () =>
+        new Promise((_, reject) => {
+          rejectOld = reject;
+        }),
+    );
+    const old = ensureSessionBootstrap();
+    usePermissions().bumpContextEpoch();
+    resetSessionBootstrap();
+    IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
+    await ensureSessionBootstrap();
+    rejectOld(
+      new ApiError({
+        kind: "http",
+        status: 403,
+        code: StatusCode.PasswordChangeRequired,
+        message: "旧身份改密",
+      }),
+    );
+    await old;
+    expect(PasswordChangeStateAPI).not.toHaveBeenCalled();
+    expect(useUserInfoStore().getIsInitPwd).toBe(false);
+    expect(usePermissions().permissions).toEqual(bootstrapData.actionCodes);
+    await ensureSessionBootstrap();
+    expect(IamBootstrapAPI).toHaveBeenCalledTimes(2);
   });
 
   it("刷新能力时 version 变化才再拉 bootstrap，失败不清空已有权限", async () => {
@@ -155,10 +204,17 @@ describe("session bootstrap", () => {
 
   it("必须改密时只取最小身份状态，不请求业务能力，清空旧权限及菜单", async () => {
     usePermissions().permissions = ["iam-platform:member:read"];
-    IamBootstrapAPI.mockRejectedValue(new ApiError({
-      kind: "http", message: "请先改密", status: 403, code: StatusCode.PasswordChangeRequired,
-    }));
-    PasswordChangeStateAPI.mockResolvedValue({ data: { context: bootstrapData.context, mustChangePassword: true } });
+    IamBootstrapAPI.mockRejectedValue(
+      new ApiError({
+        kind: "http",
+        message: "请先改密",
+        status: 403,
+        code: StatusCode.PasswordChangeRequired,
+      }),
+    );
+    PasswordChangeStateAPI.mockResolvedValue({
+      data: { context: bootstrapData.context, mustChangePassword: true },
+    });
     await Promise.all([ensureSessionBootstrap(), ensureSessionBootstrap()]);
     expect(IamBootstrapAPI).toHaveBeenCalledTimes(1);
     expect(PasswordChangeStateAPI).toHaveBeenCalledTimes(1);
@@ -174,9 +230,16 @@ describe("session bootstrap", () => {
     IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
     await ensureSessionBootstrap();
     let resolveCapabilities!: (value: unknown) => void;
-    IamCapabilitiesAPI.mockImplementation(() => new Promise((resolve) => { resolveCapabilities = resolve; }));
+    IamCapabilitiesAPI.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveCapabilities = resolve;
+        }),
+    );
     const pending = refreshSessionPermissions();
-    PasswordChangeStateAPI.mockResolvedValue({ data: { context: bootstrapData.context, mustChangePassword: true } });
+    PasswordChangeStateAPI.mockResolvedValue({
+      data: { context: bootstrapData.context, mustChangePassword: true },
+    });
     await Promise.all([requirePasswordChange(), requirePasswordChange()]);
     resolveCapabilities({ data: { actionCodes: ["old-full"], version: "old" } });
     await pending;
@@ -186,12 +249,16 @@ describe("session bootstrap", () => {
   });
 
   it("改密状态失败或域错误不能恢复旧业务权限", async () => {
-    IamBootstrapAPI.mockRejectedValue(new ApiError({ kind: "http", message: "改密", code: StatusCode.PasswordChangeRequired }));
+    IamBootstrapAPI.mockRejectedValue(
+      new ApiError({ kind: "http", message: "改密", code: StatusCode.PasswordChangeRequired }),
+    );
     PasswordChangeStateAPI.mockRejectedValueOnce(new Error("offline"));
     usePermissions().permissions = ["old"];
     await expect(ensureSessionBootstrap()).rejects.toThrow("offline");
     expect(usePermissions().permissions).toEqual([]);
-    PasswordChangeStateAPI.mockResolvedValue({ data: { context: { ...bootstrapData.context, domain: "TENANT" }, mustChangePassword: true } });
+    PasswordChangeStateAPI.mockResolvedValue({
+      data: { context: { ...bootstrapData.context, domain: "TENANT" }, mustChangePassword: true },
+    });
     await expect(ensureSessionBootstrap()).rejects.toBeInstanceOf(DomainMismatchError);
   });
 

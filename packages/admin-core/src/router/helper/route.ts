@@ -16,22 +16,20 @@ import {
  * @param routes 路由表
  */
 export const generateMenus = (routes: Array<RouteRecordRaw>): Array<MenuRouteRecord> => {
-  return routes
-    .filter((item) => {
-      return !item.meta?.hideMenu;
-    })
-    .map((item) => {
-      const menu: MenuRouteRecord = {
+  return routes.flatMap((item) => {
+    if (item.meta?.hideMenu || /:[A-Za-z_]/.test(item.path ?? "")) return [];
+    const children = item.children ? generateMenus(item.children) : undefined;
+    if (item.meta?.menuKind === "DIRECTORY" && !children?.length) return [];
+    return [
+      {
         path: item.path,
         applicationId: item.meta?.applicationId,
         title: item.meta?.title,
         icon: item.meta?.icon,
-      };
-      if (item.children) {
-        menu.children = generateMenus(item.children);
-      }
-      return menu;
-    });
+        ...(children ? { children } : {}),
+      },
+    ];
+  });
 };
 
 export const cacheRoutes: Array<string> = [];
@@ -41,6 +39,7 @@ export const cacheRoutes: Array<string> = [];
  * @param menus 菜单
  */
 export const transformMenu = (menus: Array<MenuTreeNode>): Array<RouteRecordRaw> => {
+  cacheRoutes.length = 0;
   const result: Array<RouteRecordRaw> = [];
   menus
     .filter((item) => {
@@ -50,9 +49,6 @@ export const transformMenu = (menus: Array<MenuTreeNode>): Array<RouteRecordRaw>
       const route: RouteRecordRaw = menuToRoute(menu);
       if (menu.children?.length) {
         transformMenuItem(route, menu);
-      }
-      if (menu.isCache && menu.routeName) {
-        cacheRoutes.push(menu.routeName);
       }
       result.push(route);
     });
@@ -72,24 +68,14 @@ export const transformMenu = (menus: Array<MenuTreeNode>): Array<RouteRecordRaw>
  * 查询入口路径
  */
 const findEntryPath = (menus: Array<MenuTreeNode>): string => {
-  // 如果菜单不存在，那么代表没有权限，重定向到403
-  if (menus.length === 0) {
-    return "/403";
+  for (const menu of menus) {
+    if (menu.hidden || menu.menuType === LEGACY_MENU_TYPE_BUTTON) continue;
+    if (menu.menuType === MenuType.Menu && menu.path && !/:[A-Za-z_]/.test(menu.path))
+      return menu.path;
+    const child = findEntryPath(menu.children ?? []);
+    if (child !== "/403") return child;
   }
-  const menu = menus[0];
-  if (menu.menuType === LEGACY_MENU_TYPE_BUTTON) {
-    return findEntryPath(menus.slice(1));
-  }
-  switch (menu.menuType) {
-    case MenuType.Directory:
-      if (menu.children && menu.children.length > 0) {
-        return findEntryPath(menu.children);
-      }
-      break;
-    case MenuType.Menu:
-      return menu.path as string;
-  }
-  return "/";
+  return "/403";
 };
 
 const transformMenuItem = (route: RouteRecordRaw, menu: MenuTreeNode) => {
@@ -113,27 +99,32 @@ const menuToRoute = (menu: MenuTreeNode) => {
     icon: menu.icon,
     hideMenu: menu.hidden,
     hideBreadcrumb: menu.hideBreadcrumb,
+    menuId: menu.id,
+    menuKind: menu.menuType === MenuType.Directory ? "DIRECTORY" : "PAGE",
+    isCache: menu.menuType !== MenuType.Directory && Boolean(menu.isCache),
   };
   if (menu.linkType !== MenuLinkType.Default) {
     meta.linkURL = menu.linkUrl;
   }
 
+  const routeName = menu.routeName || (menu.id ? `iam-menu-${menu.id}` : undefined);
+  if (menu.isCache && menu.menuType !== MenuType.Directory && routeName)
+    cacheRoutes.push(routeName);
   const viewPath =
-    menu.viewPath ||
-    (menu.menuType === MenuType.Directory ? PageLayoutViewPath.SIMPLE : undefined);
+    menu.viewPath || (menu.menuType === MenuType.Directory ? PageLayoutViewPath.SIMPLE : undefined);
   const pageRegistered = viewPath ? isPageRegistered(viewPath) : false;
   return {
-    path: menu.path as string,
-    name: menu.routeName,
+    path: (menu.path || (menu.id ? `/__iam/menu-${menu.id}` : "")) as string,
+    name: routeName,
     redirect: menu.redirect,
     meta,
     component: importComponent(viewPath ?? ""),
     props: pageRegistered
       ? menu.props
       : {
-        appCode: getConfiguredAppCode(),
-        viewPath: viewPath ?? "",
-      },
+          appCode: getConfiguredAppCode(),
+          viewPath: viewPath ?? "",
+        },
     children: [],
   };
 };
