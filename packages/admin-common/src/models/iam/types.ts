@@ -116,6 +116,8 @@ export interface PlatformMemberContext {
   listFieldVisibility: Record<string, FieldVisibility>;
   createFieldAccess: FieldAccessMap;
   canSearchDisplayName: boolean;
+  fieldOperations: Record<string, Record<string, FieldOperations>>;
+  masks: Record<string, MaskSpec>;
 }
 
 export interface ObjectCapability {
@@ -141,6 +143,8 @@ export interface IamPageResponse<T> {
 }
 
 export interface IamListQuery {
+  phone?: string;
+  email?: string;
   name?: string;
   status?: string;
   subjectType?: SubjectType;
@@ -372,7 +376,7 @@ export interface FieldCapability {
   visibilities: FieldVisibility[];
   editable: boolean;
   filterable: boolean;
-  sortable: boolean;
+  mask?: MaskSpec;
 }
 
 export interface AppResourceRecord {
@@ -445,7 +449,44 @@ export interface GrantCatalogAction {
   name: string;
 }
 
-export type ResourceFieldPermissions = Record<string, Record<string, FieldAccess>>;
+export interface FieldOperations {
+  editable: boolean;
+  filterable: boolean;
+}
+export interface MaskSpec {
+  kind: import("./constants").MaskKind;
+  prefix?: number;
+  suffix?: number;
+  start?: number;
+  end?: number;
+}
+export interface FieldResourceKey {
+  domain: AuthorizationDomain;
+  applicationCode: string;
+  resourceCode: string;
+}
+export interface ResourceFieldDefinition {
+  visibility: Record<string, FieldVisibility>;
+  operations: Record<string, FieldOperations>;
+}
+export type ResourceFieldPermissions = Record<string, ResourceFieldDefinition>;
+export interface ResourceFieldContext {
+  fieldVisibility: Record<string, FieldVisibility>;
+  fieldOperations: Record<string, Record<string, FieldOperations>>;
+  masks: Record<string, MaskSpec>;
+}
+export interface FieldBindingManifest {
+  resource: FieldResourceKey;
+  version: string;
+  bindings: Array<{
+    actionCode: string;
+    use: "READ" | "WRITE" | "FILTER";
+    valueType: string;
+    property: string;
+    fieldKey: string;
+    textual: boolean;
+  }>;
+}
 
 export interface GrantCatalogResource {
   id: string;
@@ -581,11 +622,11 @@ export interface MemberDepartmentBinding {
 }
 
 export interface MemberProfileInput extends VersionInput {
-  displayName?: string;
-  avatar?: string;
-  /** 当前域联系资料；空字符串清空，不修改账号登录信息。 */
-  phone?: string;
-  email?: string;
+  displayName?: string | null;
+  avatar?: string | null;
+  /** 当前域联系资料；缺键不修改，显式 null 清空，不修改账号登录信息。 */
+  phone?: string | null;
+  email?: string | null;
 }
 
 /** 平台成员编辑使用差量，不替换未加载、继承或委派记录。 */
@@ -741,7 +782,7 @@ export interface RoleGrantRecord {
   status?: ConfigurationStatus;
   fieldCapabilities?: FieldCapability[];
   fieldDefaults?: Record<string, FieldAccess>;
-  fieldPermissions?: Record<string, FieldAccess>;
+  fieldPermissions?: ResourceFieldDefinition;
 }
 
 export interface RoleDefinitionDraft {
@@ -991,12 +1032,21 @@ export interface FieldRule {
   targetScope: ScopeExpression[];
   scopeBindings: Record<string, ScopeBinding>;
   visibility: FieldVisibility;
-  editable: boolean;
+}
+
+export interface FieldOperationRule {
+  resource: FieldResourceKey;
+  scenario: PolicyScenario;
+  actionCode: string;
+  fieldKey: string;
+  viewerSelection: Selection;
+  operations: FieldOperations;
 }
 
 export interface FieldPolicyDraft {
   defaultRevisionId: string;
   rules: FieldRule[];
+  operationRules: FieldOperationRule[];
 }
 
 export interface FieldPolicyInput extends VersionInput {

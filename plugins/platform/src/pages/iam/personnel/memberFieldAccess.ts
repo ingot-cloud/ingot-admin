@@ -2,6 +2,7 @@ import {
   FieldVisibility,
   IamAction,
   isFieldEditable,
+  fieldTextPatch,
   type FieldAccessMap,
   type MemberRecord,
   type PlatformMemberContext,
@@ -10,7 +11,7 @@ import {
 import type { TableHeaderRecord } from "@ingot/admin-core";
 
 export const MEMBER_PROFILE_FIELDS = ["displayName", "avatar", "phone", "email"] as const;
-type ProfileKey = (typeof MEMBER_PROFILE_FIELDS)[number];
+export type ProfileKey = (typeof MEMBER_PROFILE_FIELDS)[number];
 export type MemberProfileDraft = Record<Exclude<ProfileKey, "avatar">, string> & {
   avatar: string | undefined;
 };
@@ -47,15 +48,26 @@ export function memberProfileDraft(detail: ResourceDetail<MemberRecord>): Member
 export function memberProfilePatch(
   detail: ResourceDetail<MemberRecord>,
   draft: MemberProfileDraft,
-): Partial<Record<ProfileKey, string>> {
+  dirty?: ReadonlySet<ProfileKey>,
+): Partial<Record<ProfileKey, string | null>> {
   if (!memberCanEditProfile(detail)) return {};
-  const patch: Partial<Record<ProfileKey, string>> = {};
-  for (const key of MEMBER_PROFILE_FIELDS) {
-    if (!isFieldEditable(detail.fieldAccess, key)) continue;
-    const next = key === "avatar" ? (draft[key] ?? "") : draft[key].trim();
-    if (next !== (detail.record[key] ?? "")) patch[key] = next;
-  }
-  return patch;
+  const initial = memberProfileDraft(detail);
+  const values = {
+    ...draft,
+    displayName: draft.displayName.trim(),
+    phone: draft.phone.trim(),
+    email: draft.email.trim(),
+  };
+  const actual =
+    dirty ?? new Set(MEMBER_PROFILE_FIELDS.filter((key) => values[key] !== initial[key]));
+  return fieldTextPatch(
+    values,
+    initial,
+    { displayName: "displayName", avatar: "avatar", phone: "phone", email: "email" },
+    detail.fieldAccess,
+    actual,
+    new Set<ProfileKey>(["avatar", "phone", "email"]),
+  );
 }
 
 /** 创建时不可写显示名不回传登录名，交由服务器采用既定默认值。 */

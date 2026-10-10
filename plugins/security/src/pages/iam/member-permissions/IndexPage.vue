@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="通讯录可见范围与字段权限。预览来自后端，浏览器不重做策略引擎。" />
+      <in-page-header
+        description="通讯录可见范围与字段权限。预览来自后端，浏览器不重做策略引擎。"
+      />
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
@@ -11,7 +13,12 @@
               <span>{{ directoryDraft.defaultRevisionId || "-" }}</span>
             </el-form-item>
             <el-form-item label="本地默认范围">
-              <el-select v-model="defaultScope" clearable placeholder="继承固定版本" class="w-220px">
+              <el-select
+                v-model="defaultScope"
+                clearable
+                placeholder="继承固定版本"
+                class="w-220px"
+              >
                 <el-option
                   v-for="option in defaultScopeOptions"
                   :key="option.value"
@@ -26,7 +33,11 @@
               :load-members="loadMembers"
               :load-departments="loadDepartments"
             />
-            <div v-for="(rule, index) in directoryDraft.rules" :key="index" class="mb-16px border p-12px">
+            <div
+              v-for="(rule, index) in directoryDraft.rules"
+              :key="index"
+              class="mb-16px border p-12px"
+            >
               <el-form-item :label="`规则 ${index + 1}`">
                 <el-select v-model="rule.effect" class="w-160px" placeholder="请选择效果">
                   <el-option
@@ -36,7 +47,12 @@
                     :value="option.value"
                   />
                 </el-select>
-                <in-button class="ml-8px" text type="danger" @click="privateRemoveDirectoryRule(index)">
+                <in-button
+                  class="ml-8px"
+                  text
+                  type="danger"
+                  @click="privateRemoveDirectoryRule(index)"
+                >
                   删除
                 </in-button>
               </el-form-item>
@@ -80,7 +96,11 @@
             <el-form-item label="默认策略版本">
               <span>{{ fieldDraft.defaultRevisionId || "-" }}</span>
             </el-form-item>
-            <div v-for="(rule, index) in fieldDraft.rules" :key="index" class="mb-16px border p-12px">
+            <div
+              v-for="(rule, index) in fieldDraft.rules"
+              :key="index"
+              class="mb-16px border p-12px"
+            >
               <el-form-item :label="`字段规则 ${index + 1}`">
                 <el-select v-model="rule.scenario" class="w-160px" placeholder="请选择场景">
                   <el-option
@@ -104,13 +124,6 @@
                     :value="option.value"
                   />
                 </el-select>
-                <el-checkbox
-                  v-model="rule.editable"
-                  class="ml-12px"
-                  :disabled="rule.visibility !== FieldVisibility.FULL"
-                >
-                  可编辑
-                </el-checkbox>
               </el-form-item>
               <div class="mb-8px">查看者</div>
               <biz-iam-selection-editor
@@ -122,6 +135,63 @@
                 <biz-iam-scope-editor v-model="rule.targetScope" />
               </el-form-item>
             </div>
+            <div class="mb-12px">字段操作能力（按查看者与具体操作，全局生效）</div>
+            <div
+              v-for="(rule, index) in fieldDraft.operationRules"
+              :key="index"
+              class="mb-16px border p-12px"
+            >
+              <el-form-item label="场景">
+                <el-select
+                  v-model="rule.scenario"
+                  placeholder="请选择场景"
+                  @change="privateOperationScenario(rule)"
+                >
+                  <el-option
+                    v-for="option in scenarioOptions"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="操作">
+                <el-select v-model="rule.actionCode" placeholder="请选择操作">
+                  <el-option
+                    v-for="option in operationActions(rule.scenario)"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                  />
+                </el-select>
+                <el-input
+                  v-model="rule.fieldKey"
+                  class="ml-8px w-180px"
+                  placeholder="已接入的逻辑字段键"
+                />
+              </el-form-item>
+              <el-form-item label="能力">
+                <el-checkbox
+                  v-model="rule.operations.editable"
+                  :disabled="rule.actionCode.endsWith(':read')"
+                  >可编辑</el-checkbox
+                >
+                <el-checkbox
+                  v-model="rule.operations.filterable"
+                  :disabled="!rule.actionCode.endsWith(':read')"
+                  >可筛选</el-checkbox
+                >
+              </el-form-item>
+              <biz-iam-selection-editor
+                v-model="rule.viewerSelection"
+                :load-members="loadMembers"
+                :load-departments="loadDepartments"
+              />
+              <in-button text type="danger" @click="fieldDraft.operationRules.splice(index, 1)"
+                >删除操作规则</in-button
+              >
+            </div>
+            <in-button class="mb-12px" @click="privateAddOperationRule">添加操作规则</in-button>
             <el-form-item label="预览查看者">
               <in-page-select
                 v-model="viewerMemberId"
@@ -137,7 +207,9 @@
             <div class="flex flex-wrap gap-8px">
               <in-button @click="privateAddFieldRule">添加规则</in-button>
               <in-button @click="privatePreviewFields">预览</in-button>
-              <in-button type="primary" :loading="savingFields" @in-click="privateSaveFields">保存</in-button>
+              <in-button type="primary" :loading="savingFields" @in-click="privateSaveFields"
+                >保存</in-button
+              >
             </div>
             <biz-iam-preview-alert :preview="fieldPreview" />
           </el-form>
@@ -158,6 +230,9 @@ import {
   FieldVisibility,
   PolicyEffect,
   PolicyScenario,
+  AuthorizationDomain,
+  IamAction,
+  type FieldOperationRule,
   createIamListLoader,
   emptySelection,
   toIamSelectRecords,
@@ -191,6 +266,7 @@ const directoryDraft = reactive<DirectoryPolicyDraft>({
 const fieldDraft = reactive<FieldPolicyDraft>({
   defaultRevisionId: "",
   rules: [],
+  operationRules: [],
 });
 const defaultScope = ref<DirectoryDefaultScope | "">("");
 const defaultSelection = ref<Selection>(emptySelection());
@@ -235,6 +311,7 @@ const applyDirectory = (detail: ResourceDetail<DirectoryPolicyDraft>): void => {
 const applyFields = (detail: ResourceDetail<FieldPolicyDraft>): void => {
   fields.value = detail;
   fieldDraft.defaultRevisionId = detail.record.defaultRevisionId;
+  fieldDraft.operationRules = structuredClone(detail.record.operationRules ?? []);
   fieldDraft.rules = detail.record.rules.map((item) => ({
     ...item,
     viewerSelection: {
@@ -252,7 +329,9 @@ const currentDirectoryPolicy = (): DirectoryPolicyDraft => ({
     ? {
         scope: defaultScope.value,
         selection:
-          defaultScope.value === DirectoryDefaultScope.SELECTED ? defaultSelection.value : undefined,
+          defaultScope.value === DirectoryDefaultScope.SELECTED
+            ? defaultSelection.value
+            : undefined,
       }
     : undefined,
   rules: directoryDraft.rules,
@@ -278,10 +357,40 @@ const privateAddFieldRule = (): void => {
     targetScope: [],
     scopeBindings: {},
     visibility: FieldVisibility.FULL,
-    editable: false,
   });
 };
 
+const operationActions = (scenario: PolicyScenario) =>
+  scenario === PolicyScenario.DIRECTORY
+    ? [{ value: IamAction.TENANT_DIRECTORY_READ, label: "通讯录查询" }]
+    : [
+        { value: IamAction.TENANT_MEMBER_READ, label: "成员查询" },
+        { value: IamAction.TENANT_MEMBER_CREATE, label: "成员创建" },
+        { value: IamAction.TENANT_MEMBER_UPDATE, label: "成员编辑" },
+      ];
+const privateOperationScenario = (rule: FieldOperationRule): void => {
+  rule.resource = {
+    domain: AuthorizationDomain.TENANT,
+    applicationCode: "iam-tenant",
+    resourceCode: rule.scenario === PolicyScenario.DIRECTORY ? "directory" : "member",
+  };
+  rule.actionCode = operationActions(rule.scenario)[0]!.value;
+  rule.operations = { editable: false, filterable: false };
+};
+const privateAddOperationRule = (): void => {
+  fieldDraft.operationRules.push({
+    resource: {
+      domain: AuthorizationDomain.TENANT,
+      applicationCode: "iam-tenant",
+      resourceCode: "member",
+    },
+    scenario: PolicyScenario.MANAGEMENT,
+    actionCode: IamAction.TENANT_MEMBER_UPDATE,
+    fieldKey: "",
+    viewerSelection: emptySelection(),
+    operations: { editable: false, filterable: false },
+  });
+};
 const privateRemoveFieldRule = (index: number): void => {
   fieldDraft.rules.splice(index, 1);
 };

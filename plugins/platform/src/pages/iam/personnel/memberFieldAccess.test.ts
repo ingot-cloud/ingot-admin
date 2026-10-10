@@ -78,7 +78,7 @@ describe("平台成员字段与对象编辑", () => {
     row.record.phone = "13900000000";
     expect(memberProfilePatch(row, memberProfileDraft(row))).toEqual({});
     expect(memberProfilePatch(row, { ...memberProfileDraft(row), phone: "" })).toEqual({
-      phone: "",
+      phone: null,
     });
     row.fieldAccess.avatar.editable = false;
     row.fieldAccess.phone.editable = false;

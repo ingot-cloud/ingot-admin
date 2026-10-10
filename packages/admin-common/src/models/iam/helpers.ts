@@ -40,14 +40,14 @@ export function isMaskedValue(value: unknown): boolean {
 export function isFieldVisible(access: FieldAccessMap | undefined, key: string): boolean {
   const item = access?.[key];
   if (!item) {
-    return true;
+    return false;
   }
   return item.visibility !== FieldVisibility.HIDDEN;
 }
 
 export function isFieldEditable(access: FieldAccessMap | undefined, key: string): boolean {
   const item = access?.[key];
-  return item?.visibility === FieldVisibility.FULL && item.editable === true;
+  return Boolean(item && item.visibility !== FieldVisibility.HIDDEN && item.editable === true);
 }
 
 export function editablePatch<T extends object>(
@@ -61,9 +61,6 @@ export function editablePatch<T extends object>(
       continue;
     }
     const value = draft[key];
-    if (isMaskedValue(value)) {
-      continue;
-    }
     patch[key] = value;
   }
   return patch;

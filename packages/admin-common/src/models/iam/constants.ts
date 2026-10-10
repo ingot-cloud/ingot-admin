@@ -318,3 +318,12 @@ export const IamAction = {
 } as const;
 
 export type IamActionCode = (typeof IamAction)[keyof typeof IamAction];
+
+/** 参数化文本脱敏，不接受脚本或任意正则。 */
+export enum MaskKind {
+  PHONE = "PHONE",
+  EMAIL = "EMAIL",
+  ALL = "ALL",
+  KEEP_EDGES = "KEEP_EDGES",
+  RANGE = "RANGE",
+}

@@ -1,6 +1,7 @@
 import { computed, watch, type Ref } from "vue";
 import {
   IamAction,
+  pruneFieldFilters,
   type IamListQuery,
   type ResourceDetail,
   type MemberRecord,
@@ -22,7 +23,16 @@ export const useOps = (active: Ref<boolean>) => {
     enabled,
   });
   watch(fields.context, (value) => {
-    if (value && !value.canSearchDisplayName) paging.condition.name = undefined;
+    const result = pruneFieldFilters(
+      paging.condition,
+      { name: "displayName" },
+      value?.fieldOperations,
+      IamAction.PLATFORM_MEMBER_READ,
+    );
+    if (result.changed) {
+      paging.condition.name = undefined;
+      paging.search();
+    }
   });
   const refreshData = (): void => {
     paging.search();

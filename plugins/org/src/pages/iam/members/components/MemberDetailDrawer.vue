@@ -6,28 +6,55 @@
     title="成员详情"
     :loading="loading"
     :saving="session.saving.value"
-    @edit="session.enterEdit"
+    @edit="privateEnterEdit"
     @cancel="privateCancel"
     @save="privateSave"
   >
-    <in-biz-tab-panel title="基本资料" name="base">
+    <in-biz-tab-panel title="基本资料" name="base" :editable="canEditProfile">
       <in-form v-if="detail" :editing="editing">
         <in-detail-field
+          v-if="isFieldVisible(detail.fieldAccess, 'displayName')"
           label="显示名"
           :value="detail.record.displayName || detail.record.id"
         >
-          <el-input v-model="draft.displayName" placeholder="请输入显示名" />
+          <el-input
+            v-model="draft.displayName"
+            :disabled="!isFieldEditable(detail.fieldAccess, 'displayName')"
+            placeholder="请输入显示名"
+            @update:model-value="dirty.add('displayName')"
+            clearable
+          />
         </in-detail-field>
-        <in-detail-field label="手机号" :value="detail.record.phone">
-          <el-input v-model="draft.phone" placeholder="请输入手机号" />
+        <in-detail-field
+          v-if="isFieldVisible(detail.fieldAccess, 'phone')"
+          label="手机号"
+          :value="detail.record.phone"
+        >
+          <el-input
+            v-model="draft.phone"
+            :disabled="!isFieldEditable(detail.fieldAccess, 'phone')"
+            placeholder="请输入手机号"
+            @update:model-value="dirty.add('phone')"
+            clearable
+          />
         </in-detail-field>
-        <in-detail-field label="邮箱" :value="detail.record.email">
-          <el-input v-model="draft.email" placeholder="请输入邮箱" />
+        <in-detail-field
+          v-if="isFieldVisible(detail.fieldAccess, 'email')"
+          label="邮箱"
+          :value="detail.record.email"
+        >
+          <el-input
+            v-model="draft.email"
+            :disabled="!isFieldEditable(detail.fieldAccess, 'email')"
+            placeholder="请输入邮箱"
+            @update:model-value="dirty.add('email')"
+            clearable
+          />
         </in-detail-field>
         <in-detail-field label="状态" :value="detail.record.status" />
       </in-form>
     </in-biz-tab-panel>
-    <in-biz-tab-panel title="任职部门" name="departments">
+    <in-biz-tab-panel title="任职部门" name="departments" :editable="canEditDepartments">
       <in-form :editing="editing">
         <in-detail-field label="部门" :value="departmentIds">
           <biz-iam-chip-page-select
@@ -47,7 +74,11 @@ import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-cor
 import {
   BizIamChipPageSelect,
   createIamListLoader,
-  editablePatch,
+  fieldTextDraft,
+  fieldTextPatch,
+  isFieldVisible,
+  isFieldEditable,
+  IamAction,
   toIamSelectRecords,
   type MemberRecord,
   type ResourceDetail,
@@ -79,6 +110,20 @@ const draft = reactive({
   email: "",
 });
 const loadGuard = createLoadGuard();
+const bindings = { displayName: "displayName", phone: "phone", email: "email" } as const;
+type ProfileKey = keyof typeof bindings;
+const dirty = reactive(new Set<ProfileKey>());
+const canEditProfile = computed(
+  () =>
+    detail.value?.capabilities[IamAction.TENANT_MEMBER_UPDATE]?.allowed === true &&
+    Object.values(bindings).some((key) => isFieldEditable(detail.value?.fieldAccess, key)),
+);
+const canEditDepartments = computed(
+  () => detail.value?.capabilities[IamAction.TENANT_MEMBER_DEPARTMENTS]?.allowed === true,
+);
+const privateEnterEdit = (): void => {
+  if (tab.value === "base" ? canEditProfile.value : canEditDepartments.value) session.enterEdit();
+};
 
 const loadDepartments = createIamListLoader(async (page, condition) => {
   const response = await TenantDepartmentPageAPI(page, condition);
@@ -86,9 +131,11 @@ const loadDepartments = createIamListLoader(async (page, condition) => {
 });
 
 const applyDraft = (record: MemberRecord): void => {
-  draft.displayName = record.displayName ?? "";
-  draft.phone = record.phone ?? "";
-  draft.email = record.email ?? "";
+  dirty.clear();
+  const safe = fieldTextDraft(record, bindings, detail.value?.fieldAccess ?? {});
+  draft.displayName = safe.displayName ?? "";
+  draft.phone = safe.phone ?? "";
+  draft.email = safe.email ?? "";
   departmentIds.value = record.departments.map((item) => item.id);
 };
 
@@ -130,15 +177,25 @@ const privateSave = (): void => {
     privateSaveDepartments();
     return;
   }
+  if (!canEditProfile.value) return;
   const access = detail.value.fieldAccess;
-  const next = {
-    displayName: draft.displayName.trim() || undefined,
-    phone: draft.phone.trim() || undefined,
-    email: draft.email.trim() || undefined,
-  };
-  const patch = Object.keys(access).length
-    ? editablePatch(next, access, ["displayName", "phone", "email"])
-    : next;
+  const initial = fieldTextDraft(detail.value.record, bindings, access);
+  const patch = fieldTextPatch(
+    { displayName: draft.displayName.trim(), phone: draft.phone.trim(), email: draft.email.trim() },
+    initial,
+    bindings,
+    access,
+    dirty,
+    new Set<ProfileKey>(["phone", "email"]),
+  );
+  if (patch.displayName !== undefined && !patch.displayName) {
+    Message.warning("请输入显示名");
+    return;
+  }
+  if (!Object.keys(patch).length) {
+    session.exitEdit();
+    return;
+  }
   session.saving.value = true;
   TenantMemberUpdateAPI(detail.value.record.id, {
     expectedVersion: detail.value.version,
@@ -158,7 +215,7 @@ const privateSave = (): void => {
 };
 
 const privateSaveDepartments = (): void => {
-  if (!detail.value) {
+  if (!detail.value || !canEditDepartments.value) {
     return;
   }
   session.saving.value = true;

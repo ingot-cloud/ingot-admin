@@ -16,6 +16,7 @@
         :name="identityName"
         :src="identityAvatar"
         v-model:avatar="draft.avatar"
+        @update:avatar="dirty.add('avatar')"
         :show-avatar="memberFieldVisible(detail?.fieldAccess, 'avatar')"
         :editable="editing && canEditField('avatar')"
         upload-dir="user/avatar"
@@ -61,6 +62,7 @@
         >
           <el-input
             v-model="draft.displayName"
+            @update:model-value="dirty.add('displayName')"
             :disabled="!canEditField('displayName')"
             clearable
             :placeholder="canEditField('displayName') ? '请输入显示名' : '不可修改'"
@@ -74,6 +76,7 @@
         >
           <el-input
             v-model="draft.phone"
+            @update:model-value="dirty.add('phone')"
             :disabled="!canEditField('phone')"
             clearable
             :placeholder="canEditField('phone') ? '请输入联系手机号' : '不可修改'"
@@ -86,6 +89,7 @@
         >
           <el-input
             v-model="draft.email"
+            @update:model-value="dirty.add('email')"
             :disabled="!canEditField('email')"
             clearable
             :placeholder="canEditField('email') ? '请输入联系邮箱' : '不可修改'"
@@ -122,15 +126,24 @@
       <in-form>
         <in-detail-field label="用户组" :value="groupPreview" />
         <template v-if="detail">
-          <in-detail-field label="加入平台时间" :value="formatDateTime(detail.record.joinedAt)" />
           <in-detail-field
+            v-if="memberFieldVisible(detail.fieldAccess, 'joinedAt')"
+            label="加入平台时间"
+            :value="formatDateTime(detail.record.joinedAt)"
+          />
+          <in-detail-field
+            v-if="memberFieldVisible(detail.fieldAccess, 'lastLoginAt')"
             label="账号最后登录时间"
             :value="formatDateTime(detail.record.lastLoginAt, { fallback: '暂无登录记录' })"
           />
           <div class="text-12px text-[var(--el-text-color-secondary)]">
             包含平台及组织身份登录。
           </div>
-          <in-detail-field label="成员更新时间" :value="formatDateTime(detail.record.updatedAt)" />
+          <in-detail-field
+            v-if="memberFieldVisible(detail.fieldAccess, 'updatedAt')"
+            label="成员更新时间"
+            :value="formatDateTime(detail.record.updatedAt)"
+          />
         </template>
       </in-form>
     </in-biz-tab-panel>
@@ -212,6 +225,7 @@ const draft = reactive({
   avatar: undefined as string | undefined,
   status: null as MemberStatus | null,
 });
+const dirty = reactive(new Set<"displayName" | "avatar" | "phone" | "email">());
 const roleState = ref<MemberRoleEditorState>();
 const rolesField = ref<InstanceType<typeof MemberRolesField>>();
 const groupNames = ref<string[]>([]);
@@ -259,6 +273,7 @@ const canEditMember = computed(() => canEditProfile.value || canEditRoles.value)
 const canEditField = (key: string): boolean =>
   canEditProfile.value && isFieldEditable(detail.value?.fieldAccess, key);
 const applyDraft = (value: ResourceDetail<MemberRecord>): void => {
+  dirty.clear();
   Object.assign(draft, memberProfileDraft(value));
   draft.status = value.record.status;
 };
@@ -334,7 +349,7 @@ const privateFinish = (): void => {
 const privateSave = async (): Promise<void> => {
   const current = detail.value;
   if (!current || !canEditMember.value || session.saving.value) return;
-  const patch = memberProfilePatch(current, draft);
+  const patch = memberProfilePatch(current, draft, dirty);
   if (patch.displayName !== undefined && !patch.displayName) {
     Message.warning("请输入显示名");
     return;
@@ -365,7 +380,7 @@ const privateSave = async (): Promise<void> => {
       const latest = roleState.value ? memberRoleChanges(roleState.value) : undefined;
       if (
         JSON.stringify(latest) !== JSON.stringify(changes) ||
-        JSON.stringify(memberProfilePatch(current, draft)) !== JSON.stringify(patch)
+        JSON.stringify(memberProfilePatch(current, draft, dirty)) !== JSON.stringify(patch)
       ) {
         Message.warning("草稿已变化，请重新保存并预览");
         return;

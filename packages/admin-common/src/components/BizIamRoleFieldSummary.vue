@@ -9,15 +9,17 @@
     </div>
     <div v-for="(fields, resourceId) in permissions" :key="resourceId" class="mb-8px">
       <div>{{ names[resourceId] || `资源 ${resourceId}` }}</div>
-      <div v-for="(access, field) in fields" :key="field" class="pl-12px">
-        {{ field }}：{{ fieldAccessLabel(access) }}
+      <div v-for="field in resourceFieldKeys(fields)" :key="field" class="pl-12px">
+        {{ field }}：{{
+          fieldAccessLabel(resourceFieldAccess(fields, field), fields.operations[field])
+        }}
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import type { ResourceFieldPermissions } from "../models/iam";
-import { fieldAccessLabel } from "../models/iam/roleFields";
+import { fieldAccessLabel, resourceFieldAccess, resourceFieldKeys } from "../models/iam/roleFields";
 defineOptions({ name: "BizIamRoleFieldSummary" });
 withDefaults(
   defineProps<{ permissions?: ResourceFieldPermissions | null; names?: Record<string, string> }>(),

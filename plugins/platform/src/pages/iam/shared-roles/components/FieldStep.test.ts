@@ -4,11 +4,10 @@ import { defineComponent } from "vue";
 import FieldStep from "./FieldStep.vue";
 import { FieldVisibility, ScopeKind } from "@ingot/admin-common";
 import type { SelectedGrant } from "../wizard";
-vi.mock("@ingot/admin-common", () => ({
-  FieldVisibility: { HIDDEN: "HIDDEN", MASKED: "MASKED", FULL: "FULL" },
-  ScopeKind: { ALL: "ALL" },
+vi.mock("@ingot/admin-core", async (original) => ({
+  ...(await original<object>()),
+  Message: { warning: vi.fn() },
 }));
-vi.mock("@ingot/admin-core", () => ({ Message: { warning: vi.fn() } }));
 const select = defineComponent({
   props: ["modelValue"],
   emits: ["change"],
@@ -36,7 +35,7 @@ const data = (): SelectedGrant[] => [
       visibilities: [FieldVisibility.MASKED, FieldVisibility.FULL],
       editable: true,
       filterable: false,
-      sortable: false,
+      mask: { kind: "ALL" },
     })),
     fieldDefaults: Object.fromEntries(
       Array.from({ length: 25 }, (_, index) => [
@@ -82,14 +81,20 @@ describe("角色字段步骤", () => {
     await wrapper.find(".page").trigger("click");
     await flushPromises();
     expect(wrapper.find("select").element.value).toBe("FULL");
-    expect(draft[0].fieldPermissions?.field20.visibility).toBe(FieldVisibility.FULL);
+    expect(draft[0].fieldPermissions?.visibility.field20).toBe(FieldVisibility.FULL);
     await wrapper.setProps({ modelValue: [] });
     expect(wrapper.text()).toContain("当前权限没有可配置字段");
   });
   it("全局校验定位第二页的非法配置", async () => {
     const draft = data();
     draft[0].fieldPermissions = {
-      field24: { visibility: FieldVisibility.HIDDEN, editable: false },
+      visibility: {
+        ...Object.fromEntries(
+          Array.from({ length: 25 }, (_, index) => [`field${index}`, FieldVisibility.MASKED]),
+        ),
+        field24: FieldVisibility.HIDDEN,
+      },
+      operations: {},
     };
     const wrapper = mount(FieldStep, { ...options, props: { modelValue: draft } });
     expect((wrapper.vm as unknown as { validate(): boolean }).validate()).toBe(false);

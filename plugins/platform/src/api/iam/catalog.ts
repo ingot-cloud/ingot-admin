@@ -39,6 +39,7 @@ import {
   type PlanSummary,
   type PlanUpdateInput,
   type ResourceDetail,
+  type FieldBindingManifest,
 } from "@ingot/admin-common";
 
 const APP_PATH = `${IAM_API_PREFIX}/v1/platform/applications`;
@@ -251,7 +252,11 @@ export function PlatformResourceDeleteAPI(
   resourceId: string,
   options?: RequestOptions,
 ): Promise<R<void>> {
-  return request.delete<void>(`${APP_PATH}/${applicationId}/resources/${resourceId}`, null, options);
+  return request.delete<void>(
+    `${APP_PATH}/${applicationId}/resources/${resourceId}`,
+    null,
+    options,
+  );
 }
 
 export function PlatformActionPageAPI(
@@ -321,7 +326,11 @@ export function PlatformActionCatalogAPI(
   applicationId: string,
   options?: RequestOptions,
 ): Promise<R<AppActionCatalogView>> {
-  return request.get<AppActionCatalogView>(`${APP_PATH}/${applicationId}/action-catalog`, undefined, options);
+  return request.get<AppActionCatalogView>(
+    `${APP_PATH}/${applicationId}/action-catalog`,
+    undefined,
+    options,
+  );
 }
 
 export function PlatformGrantCatalogAPI(
@@ -366,7 +375,11 @@ export function PlatformActionLookupAPI(
   params: ActionLookupInput,
   options?: RequestOptions,
 ): Promise<R<ActionLookupRecord[]>> {
-  return request.post<ActionLookupRecord[]>(`${IAM_API_PREFIX}/v1/platform/actions/lookup`, params, options);
+  return request.post<ActionLookupRecord[]>(
+    `${IAM_API_PREFIX}/v1/platform/actions/lookup`,
+    params,
+    options,
+  );
 }
 
 export function PlatformMenuPageAPI(
@@ -423,4 +436,17 @@ export function PlatformMenuDeleteAPI(
   options?: RequestOptions,
 ): Promise<R<void>> {
   return request.delete<void>(`${APP_PATH}/${applicationId}/menus/${menuId}`, null, options);
+}
+
+/** 资源实际绑定清单，仅包含能力和属性声明。 */
+export function PlatformResourceBindingsAPI(
+  appId: string,
+  resourceId: string,
+  options?: RequestOptions,
+): Promise<R<FieldBindingManifest>> {
+  return request.get<FieldBindingManifest>(
+    `${APP_PATH}/${appId}/resources/${resourceId}/field-bindings`,
+    undefined,
+    options,
+  );
 }

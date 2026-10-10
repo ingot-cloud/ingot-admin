@@ -10,7 +10,7 @@
       <el-form-item label="账号 ID" required>
         <el-input v-model="accountId" clearable placeholder="查找结果或粘贴账号 ID" />
       </el-form-item>
-      <el-form-item label="显示名">
+      <el-form-item v-if="canEditName" label="显示名">
         <el-input v-model="displayName" clearable placeholder="请输入显示名" />
       </el-form-item>
       <el-form-item label="任职部门">
@@ -24,7 +24,12 @@
     </in-form>
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
-      <in-button type="primary" :loading="loading" :disabled="!accountId.trim()" @in-click="privateSubmit">
+      <in-button
+        type="primary"
+        :loading="loading"
+        :disabled="!accountId.trim() || !fields.context.value"
+        @in-click="privateSubmit"
+      >
         添加
       </in-button>
     </template>
@@ -39,8 +44,14 @@ import {
   IamAction,
   createIamListLoader,
   toIamSelectRecords,
+  useFieldContext,
 } from "@ingot/admin-common";
-import { TenantAccountLookupAPI, TenantDepartmentPageAPI, TenantMemberCreateAPI } from "@/api/iam/directory";
+import {
+  TenantAccountLookupAPI,
+  TenantDepartmentPageAPI,
+  TenantMemberCreateAPI,
+  TenantMemberContextAPI,
+} from "@/api/iam/directory";
 import { tenantMemberQueryKeys } from "@/api/iam/directory.query";
 import { useQueryClient } from "@tanstack/vue-query";
 
@@ -55,6 +66,12 @@ const username = ref("");
 const accountId = ref("");
 const displayName = ref("");
 const departmentIds = ref<string[]>([]);
+const fields = useFieldContext(IamAction.TENANT_MEMBER_CREATE, TenantMemberContextAPI, visible);
+const canEditName = computed(
+  () =>
+    fields.context.value?.fieldOperations[IamAction.TENANT_MEMBER_CREATE]?.displayName?.editable ===
+    true,
+);
 const canLookup = computed(() => hasAction(IamAction.PLATFORM_ACCOUNT_LOOKUP));
 
 const loadDepartments = createIamListLoader(async (page, condition) => {
@@ -89,7 +106,9 @@ const privateSubmit = (): void => {
   loading.value = true;
   TenantMemberCreateAPI({
     accountId: accountId.value.trim(),
-    displayName: displayName.value.trim() || undefined,
+    ...(canEditName.value && displayName.value.trim()
+      ? { displayName: displayName.value.trim() }
+      : {}),
     departments: departmentIds.value.map((id, index) => ({ id, primary: index === 0 })),
   })
     .then(() => {

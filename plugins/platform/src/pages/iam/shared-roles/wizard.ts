@@ -7,6 +7,7 @@ import {
   type RoleCreateInput,
   type FieldAccess,
   type FieldCapability,
+  type ResourceFieldDefinition,
   type RoleDefinitionDraft,
   type RoleParameterDefinition,
   type RolePublishInput,
@@ -23,7 +24,7 @@ export const WIZARD_STEPS = [
 export const GRANT_WIZARD_STEPS = WIZARD_STEPS.slice(1);
 export const PLATFORM_WIZARD_STEPS = [
   ...WIZARD_STEPS.slice(0, 3),
-  { title: "字段权限", description: "配置资源字段可见性和可编辑能力" },
+  { title: "字段权限", description: "配置字段可见性、编辑和筛选能力" },
   WIZARD_STEPS[3],
 ];
 
@@ -46,7 +47,7 @@ export interface SelectedGrant {
   scopeCapabilities: ScopeKind[];
   fieldCapabilities?: FieldCapability[];
   fieldDefaults?: Record<string, FieldAccess>;
-  fieldPermissions?: Record<string, FieldAccess>;
+  fieldPermissions?: ResourceFieldDefinition;
 }
 
 export interface GrantGroup {
@@ -180,16 +181,25 @@ export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
               ).values(),
             ].map((grant) => [
               grant.resourceId,
-              Object.fromEntries(
-                (grant.fieldCapabilities ?? []).map((field) => [
-                  field.key,
-                  grant.fieldPermissions?.[field.key] ??
-                    grant.fieldDefaults?.[field.key] ?? {
-                      visibility: FieldVisibility.HIDDEN,
-                      editable: false,
+              {
+                visibility: Object.fromEntries(
+                  (grant.fieldCapabilities ?? []).map((field) => [
+                    field.key,
+                    grant.fieldPermissions?.visibility[field.key] ??
+                      grant.fieldDefaults?.[field.key]?.visibility ??
+                      FieldVisibility.HIDDEN,
+                  ]),
+                ),
+                operations: Object.fromEntries(
+                  (grant.fieldCapabilities ?? []).map((field) => [
+                    field.key,
+                    grant.fieldPermissions?.operations[field.key] ?? {
+                      editable: grant.fieldDefaults?.[field.key]?.editable ?? false,
+                      filterable: false,
                     },
-                ]),
-              ),
+                  ]),
+                ),
+              },
             ]),
           ),
         }
@@ -237,4 +247,21 @@ export function profileDirty(profile: WizardProfile): boolean {
     profile.description.trim() ||
     profile.groupName.trim(),
   );
+}
+
+/** 将目录默认值转换为可见性与操作分开的角色定义。 */
+export function defaultFieldDefinition(
+  defaults: Record<string, FieldAccess> = {},
+): ResourceFieldDefinition {
+  return {
+    visibility: Object.fromEntries(
+      Object.entries(defaults).map(([key, value]) => [key, value.visibility]),
+    ),
+    operations: Object.fromEntries(
+      Object.entries(defaults).map(([key, value]) => [
+        key,
+        { editable: value.editable === true, filterable: false },
+      ]),
+    ),
+  };
 }

@@ -1,14 +1,23 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="成员与部门。账号与成员分离；对象操作看后端能力，脱敏值不回传。" />
+      <in-page-header
+        description="成员与部门。账号与成员分离；对象操作看后端能力，脱敏值不回传。"
+      />
     </template>
     <in-split-layout left-collapsible persistence-key="org-iam-members">
       <template #left>
         <div class="mb-8px flex flex-wrap gap-8px">
           <in-button size="small" @click="handleDeptCreate">新增部门</in-button>
-          <in-button size="small" :disabled="!selectedDeptId" @click="handleDeptEdit">编辑</in-button>
-          <in-button size="small" type="danger" :disabled="!selectedDeptId" @click="handleDeptDelete">
+          <in-button size="small" :disabled="!selectedDeptId" @click="handleDeptEdit"
+            >编辑</in-button
+          >
+          <in-button
+            size="small"
+            type="danger"
+            :disabled="!selectedDeptId"
+            @click="handleDeptDelete"
+          >
             删除
           </in-button>
         </div>
@@ -33,11 +42,20 @@
       >
         <template #tools-start>
           <el-input
-            v-model="paging.condition.name"
+            v-if="canFilter('phone')"
+            v-model="paging.condition.phone"
             class="w-200px!"
             clearable
-            placeholder="搜索成员"
-            :prefix-icon="Search"
+            placeholder="手机号精确筛选"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
+          <el-input
+            v-if="canFilter('email')"
+            v-model="paging.condition.email"
+            class="w-200px!"
+            clearable
+            placeholder="邮箱精确筛选"
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
@@ -47,11 +65,12 @@
         </template>
         <template #displayName="{ item }">
           <biz-iam-record-link
+            v-if="isFieldVisible(item.fieldAccess, 'displayName')"
             :action="IamAction.TENANT_MEMBER_READ"
             :capabilities="item.capabilities"
             @click="handleDetail(item)"
           >
-            {{ item.record.displayName || item.record.id }}
+            {{ item.record.displayName }}
           </biz-iam-record-link>
         </template>
         <template #status="{ item }">{{ item.record.status }}</template>
@@ -69,10 +88,13 @@
 </template>
 
 <script lang="ts" setup>
-import { Search } from "@element-plus/icons-vue";
 import { Confirm, Message, type InTableAction } from "@ingot/admin-core";
-import { BizIamRecordLink, IamAction, MemberStatus } from "@ingot/admin-common";
-import { TenantDepartmentDeleteAPI, TenantMemberRemoveAPI, TenantMemberStatusAPI } from "@/api/iam/directory";
+import { BizIamRecordLink, IamAction, MemberStatus, isFieldVisible } from "@ingot/admin-common";
+import {
+  TenantDepartmentDeleteAPI,
+  TenantMemberRemoveAPI,
+  TenantMemberStatusAPI,
+} from "@/api/iam/directory";
 import MemberCreateDrawer from "./components/MemberCreateDrawer.vue";
 import MemberDetailDrawer from "./components/MemberDetailDrawer.vue";
 import DepartmentEditDrawer from "./components/DepartmentEditDrawer.vue";
@@ -82,6 +104,7 @@ import { useOps } from "./useOps";
 
 const {
   paging,
+  canFilter,
   deptTree,
   visibleHeaders,
   loadDepts,
@@ -146,17 +169,17 @@ const handleDeptDelete = (): void => {
   });
 };
 const handleSuspend = (item: Row): void => {
-  Confirm.warning(`暂停只影响组织身份，不删除全局账号。是否暂停（${item.record.displayName || item.record.id}）？`).then(
-    () => {
-      TenantMemberStatusAPI(item.record.id, {
-        expectedVersion: item.version,
-        status: MemberStatus.SUSPENDED,
-      }).then(() => {
-        Message.success("已暂停");
-        refreshData();
-      });
-    },
-  );
+  Confirm.warning(
+    `暂停只影响组织身份，不删除全局账号。是否暂停（${item.record.displayName || item.record.id}）？`,
+  ).then(() => {
+    TenantMemberStatusAPI(item.record.id, {
+      expectedVersion: item.version,
+      status: MemberStatus.SUSPENDED,
+    }).then(() => {
+      Message.success("已暂停");
+      refreshData();
+    });
+  });
 };
 const handleRestore = (item: Row): void => {
   Confirm.warning(`是否恢复组织成员（${item.record.displayName || item.record.id}）？`).then(() => {

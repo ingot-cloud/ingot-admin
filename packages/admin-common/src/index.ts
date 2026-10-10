@@ -9,6 +9,7 @@ export { useIamDraftPreview } from "./hooks/useIamDraftPreview";
 export { default as TenantSelect } from "./components/TenantSelect.vue";
 export { default as ClientSelect } from "./components/ClientSelect.vue";
 export { default as BizIamRoleFieldSummary } from "./components/BizIamRoleFieldSummary.vue";
+export { default as BizIamMaskEditor } from "./components/BizIamMaskEditor.vue";
 export { default as BizIamStatusTag } from "./components/BizIamStatusTag.vue";
 export { default as BizIamPreviewAlert } from "./components/BizIamPreviewAlert.vue";
 export { default as BizIamRecordLink } from "./components/BizIamRecordLink.vue";

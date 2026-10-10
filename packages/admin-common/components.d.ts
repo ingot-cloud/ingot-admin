@@ -35,6 +35,7 @@ declare module 'vue' {
     BizIamGrantEditor: typeof import('./src/components/BizIamGrantEditor.vue')['default']
     BizIamGroupEditDrawer: typeof import('./src/components/BizIamGroupEditDrawer.vue')['default']
     BizIamGroupWizard: typeof import('./src/components/BizIamGroupWizard.vue')['default']
+    BizIamMaskEditor: typeof import('./src/components/BizIamMaskEditor.vue')['default']
     BizIamMemberChips: typeof import('./src/components/BizIamMemberChips.vue')['default']
     BizIamMemberPickerDialog: typeof import('./src/components/BizIamMemberPickerDialog.vue')['default']
     BizIamOptionTagField: typeof import('./src/components/BizIamOptionTagField.vue')['default']

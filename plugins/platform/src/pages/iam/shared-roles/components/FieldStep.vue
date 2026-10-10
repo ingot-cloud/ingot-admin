@@ -2,7 +2,7 @@
   <in-loading :loading="false" class="h-full min-h-0 flex flex-col">
     <div class="mb-16px text-[var(--el-text-color-secondary)]">
       已配置 {{ configured }} /
-      {{ allRows.length }} 个字段。各操作共用本资源字段权限，执行仍受操作与对象范围限制。
+      {{ allRows.length }} 个字段。可见性按对象判断；编辑和筛选按当前身份与具体操作判断。
     </div>
     <el-empty
       v-if="!allRows.length"
@@ -43,9 +43,15 @@
             </el-select>
             <el-checkbox
               :model-value="row.access.editable"
-              :disabled="!row.field.editable || row.access.visibility !== FieldVisibility.FULL"
+              :disabled="!row.field.editable || row.access.visibility === FieldVisibility.HIDDEN"
               @change="privateEditable(row, Boolean($event))"
               >可编辑</el-checkbox
+            >
+            <el-checkbox
+              :model-value="row.operations.filterable"
+              :disabled="!row.field.filterable || row.access.visibility !== FieldVisibility.FULL"
+              @change="privateFilterable(row, Boolean($event))"
+              >可筛选</el-checkbox
             >
           </div>
         </div>
@@ -61,9 +67,15 @@
   </in-loading>
 </template>
 <script setup lang="ts">
-import { FieldVisibility, type FieldAccess, type FieldCapability } from "@ingot/admin-common";
+import {
+  FieldVisibility,
+  type FieldAccess,
+  type FieldCapability,
+  type FieldOperations,
+  resourceFieldAccess,
+} from "@ingot/admin-common";
 import { Message } from "@ingot/admin-core";
-import type { SelectedGrant } from "../wizard";
+import { defaultFieldDefinition, type SelectedGrant } from "../wizard";
 defineOptions({ name: "RoleFieldStep" });
 const grants = defineModel<SelectedGrant[]>({ required: true });
 const keyword = ref("");
@@ -76,6 +88,7 @@ interface Row {
   resource: string;
   field: FieldCapability;
   access: FieldAccess;
+  operations: FieldOperations;
 }
 const allRows = computed<Row[]>(() =>
   [
@@ -91,14 +104,25 @@ const allRows = computed<Row[]>(() =>
       application: grant.applicationName,
       resource: grant.resourceName,
       field,
-      access: grant.fieldPermissions?.[field.key] ??
-        grant.fieldDefaults?.[field.key] ?? { visibility: FieldVisibility.HIDDEN, editable: false },
+      access: grant.fieldPermissions
+        ? resourceFieldAccess(grant.fieldPermissions, field.key)
+        : (grant.fieldDefaults?.[field.key] ?? {
+            visibility: FieldVisibility.HIDDEN,
+            editable: false,
+          }),
+      operations: grant.fieldPermissions?.operations[field.key] ?? {
+        editable: grant.fieldDefaults?.[field.key]?.editable ?? false,
+        filterable: false,
+      },
     })),
   ),
 );
 const valid = (row: Row) =>
   row.field.visibilities.includes(row.access.visibility) &&
-  (!row.access.editable || (row.field.editable && row.access.visibility === FieldVisibility.FULL));
+  (!row.access.editable ||
+    (row.field.editable && row.access.visibility !== FieldVisibility.HIDDEN)) &&
+  (!row.operations.filterable ||
+    (row.field.filterable && row.access.visibility === FieldVisibility.FULL));
 const configured = computed(() => allRows.value.filter(valid).length);
 const filtered = computed(() =>
   allRows.value.filter((row) =>
@@ -111,27 +135,35 @@ const pageRows = computed(() => filtered.value.slice((page.value - 1) * 20, page
 watch(keyword, () => {
   page.value = 1;
 });
-const update = (row: Row, access: FieldAccess): void => {
-  grants.value = grants.value.map((grant) =>
-    grant.resourceId === row.resourceId
-      ? {
-          ...grant,
-          fieldPermissions: {
-            ...grant.fieldDefaults,
-            ...grant.fieldPermissions,
-            [row.field.key]: access,
-          },
-        }
-      : grant,
-  );
+const update = (row: Row, access: FieldAccess, filterable = row.operations.filterable): void => {
+  grants.value = grants.value.map((grant) => {
+    if (grant.resourceId !== row.resourceId) return grant;
+    const current = grant.fieldPermissions ?? defaultFieldDefinition(grant.fieldDefaults);
+    return {
+      ...grant,
+      fieldPermissions: {
+        visibility: { ...current.visibility, [row.field.key]: access.visibility },
+        operations: {
+          ...current.operations,
+          [row.field.key]: { editable: access.editable === true, filterable },
+        },
+      },
+    };
+  });
 };
 const privateVisibility = (row: Row, visibility: FieldVisibility): void =>
-  update(row, {
-    visibility,
-    editable: visibility === FieldVisibility.FULL && row.field.editable && row.access.editable,
-  });
+  update(
+    row,
+    {
+      visibility,
+      editable: visibility !== FieldVisibility.HIDDEN && row.field.editable && row.access.editable,
+    },
+    visibility === FieldVisibility.FULL && row.operations.filterable,
+  );
 const privateEditable = (row: Row, editable: boolean): void =>
   update(row, { ...row.access, editable });
+const privateFilterable = (row: Row, filterable: boolean): void =>
+  update(row, row.access, filterable);
 defineExpose({
   validate: () => {
     const invalid = allRows.value.findIndex((row) => !valid(row));

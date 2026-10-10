@@ -27,27 +27,37 @@
       >
         <template #tools-start>
           <el-input
-            v-model="paging.condition.name"
+            v-if="canFilter('phone')"
+            v-model="paging.condition.phone"
             class="w-200px!"
             clearable
-            placeholder="搜索成员"
-            :prefix-icon="Search"
+            placeholder="手机号精确筛选"
+            @keyup.enter="refreshData"
+            @clear="refreshData"
+          />
+          <el-input
+            v-if="canFilter('email')"
+            v-model="paging.condition.email"
+            class="w-200px!"
+            clearable
+            placeholder="邮箱精确筛选"
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
           <in-table-column-setting
-            :headers="tableHeaders"
+            :headers="availableHeaders"
             :table-id="TABLE_ID"
             @change="privateOnColumnChange"
           />
         </template>
         <template #displayName="{ item }">
           <biz-iam-record-link
+            v-if="isFieldVisible(item.fieldAccess, 'displayName')"
             :action="IamAction.TENANT_DIRECTORY_READ"
             :capabilities="item.capabilities"
             @click="handleDetail(item)"
           >
-            {{ item.record.displayName || item.record.id }}
+            {{ item.record.displayName }}
           </biz-iam-record-link>
         </template>
         <template #actions="{ item }">
@@ -61,24 +71,33 @@
 </template>
 
 <script lang="ts" setup>
-import { Search } from "@element-plus/icons-vue";
 import {
   applyColumnSelection,
   useCapabilities,
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamRecordLink, IamAction } from "@ingot/admin-common";
+import { BizIamRecordLink, IamAction, FieldVisibility, isFieldVisible } from "@ingot/admin-common";
 import DirectoryMemberDrawer from "./components/DirectoryMemberDrawer.vue";
 import { createRowActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
-const { paging, deptTree, loadDepts, refreshData, privateOnDept } = useOps();
+const { paging, canFilter, context, deptTree, loadDepts, refreshData, privateOnDept } = useOps();
 const { unavailable } = useCapabilities();
 const selectedColumnProps = ref<string[]>([]);
 const detailRef = ref<{ show: (row: Row) => void }>();
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const availableHeaders = computed(() =>
+  tableHeaders.filter(
+    (header) =>
+      header.prop !== "displayName" ||
+      (context.value?.fieldVisibility.displayName ?? FieldVisibility.HIDDEN) !==
+        FieldVisibility.HIDDEN,
+  ),
+);
+const visibleHeaders = computed(() =>
+  applyColumnSelection(availableHeaders.value, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 const handleDetail = (item: Row): void => {
   detailRef.value?.show(item);

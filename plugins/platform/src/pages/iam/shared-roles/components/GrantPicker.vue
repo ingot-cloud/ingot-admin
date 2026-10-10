@@ -130,7 +130,7 @@ import {
 } from "@ingot/admin-common";
 import { InCloseButton } from "@ingot/admin-core";
 import { PlatformApplicationPageAPI, PlatformGrantCatalogAPI } from "@/api/iam/catalog";
-import { defaultScope, groupGrants, type SelectedGrant } from "../wizard";
+import { defaultScope, defaultFieldDefinition, groupGrants, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
 
@@ -415,8 +415,7 @@ const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): Se
     fieldPermissions: JSON.parse(
       JSON.stringify(
         grants.value.find((grant) => grant.resourceId === resource.id)?.fieldPermissions ??
-          resource.fieldDefaults ??
-          {},
+          defaultFieldDefinition(resource.fieldDefaults),
       ),
     ),
   };

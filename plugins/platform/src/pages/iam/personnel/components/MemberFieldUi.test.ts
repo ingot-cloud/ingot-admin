@@ -60,6 +60,9 @@ const detail = (): ResourceDetail<MemberRecord> => ({
     departments: [],
   },
   fieldAccess: {
+    joinedAt: { visibility: FieldVisibility.FULL, editable: false },
+    lastLoginAt: { visibility: FieldVisibility.FULL, editable: false },
+    updatedAt: { visibility: FieldVisibility.FULL, editable: false },
     displayName: { visibility: FieldVisibility.FULL, editable: false },
     avatar: { visibility: FieldVisibility.FULL, editable: true },
     phone: { visibility: FieldVisibility.MASKED, editable: false },
@@ -207,6 +210,23 @@ describe("成员详情字段界面", () => {
     expect(wrapper.get('[data-label="显示名"] input').attributes("disabled")).toBeDefined();
     await wrapper.get("button.save").trigger("click");
     expect(api.update).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+  it("脱敏且可编辑的手机号留空不提交，实际输入后只提交手机号", async () => {
+    const row = detail();
+    row.fieldAccess.phone = { visibility: FieldVisibility.MASKED, editable: true };
+    api.update.mockResolvedValue({ data: row });
+    const wrapper = await open(row);
+    await wrapper.get("button.edit").trigger("click");
+    const phone = wrapper.get('[data-label="联系手机号"] input');
+    expect((phone.element as HTMLInputElement).value).toBe("");
+    expect(phone.attributes("disabled")).toBeUndefined();
+    await wrapper.get("button.save").trigger("click");
+    expect(api.update).not.toHaveBeenCalled();
+    await phone.setValue("13900000002");
+    await wrapper.get("button.save").trigger("click");
+    await flushPromises();
+    expect(api.update).toHaveBeenCalledWith("1001", { expectedVersion: "0", phone: "13900000002" });
     wrapper.unmount();
   });
   it("对象范围不允许更新时基本信息面板不可编辑，模拟编辑保存不发请求", async () => {

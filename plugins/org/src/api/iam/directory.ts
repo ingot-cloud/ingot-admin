@@ -30,6 +30,7 @@ import {
   type Preview,
   type ReferenceImpactPreview,
   type ResourceDetail,
+  type ResourceFieldContext,
   type TenantRecord,
   type TenantSettingsInput,
   type VersionInput,
@@ -99,7 +100,6 @@ export function TenantMemberUpdateAPI(
   params: MemberProfileInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
-  filterParams(params);
   return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, params, options);
 }
 
@@ -109,7 +109,11 @@ export function TenantMemberDepartmentsAPI(
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
   filterParams(params);
-  return request.put<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}/departments`, params, options);
+  return request.put<ResourceDetail<MemberRecord>>(
+    `${MEMBER_PATH}/${id}/departments`,
+    params,
+    options,
+  );
 }
 
 export function TenantMemberStatusAPI(
@@ -269,10 +273,16 @@ export function TenantGroupPreviewAPI(
   options?: RequestOptions,
 ): Promise<R<Preview<ReferenceImpactPreview>>> {
   filterParams(params);
-  return request.post<Preview<ReferenceImpactPreview>>(`${GROUP_PATH}/${id}/preview`, params, options);
+  return request.post<Preview<ReferenceImpactPreview>>(
+    `${GROUP_PATH}/${id}/preview`,
+    params,
+    options,
+  );
 }
 
-export function TenantSettingsAPI(options?: RequestOptions): Promise<R<ResourceDetail<TenantRecord>>> {
+export function TenantSettingsAPI(
+  options?: RequestOptions,
+): Promise<R<ResourceDetail<TenantRecord>>> {
   return request.get(`${SETTINGS_PATH}`, undefined, options);
 }
 
@@ -313,7 +323,11 @@ export function TenantApplicationAudienceAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<AudienceDraft>>> {
-  return request.get<ResourceDetail<AudienceDraft>>(`${APP_PATH}/${id}/audience`, undefined, options);
+  return request.get<ResourceDetail<AudienceDraft>>(
+    `${APP_PATH}/${id}/audience`,
+    undefined,
+    options,
+  );
 }
 
 export function TenantApplicationAudienceUpdateAPI(
@@ -372,4 +386,17 @@ export function DirectoryDepartmentPageAPI(
       options,
     )
     .then(asPage);
+}
+
+/** 当前身份的成员全局字段能力。 */
+export function TenantMemberContextAPI(options?: RequestOptions): Promise<R<ResourceFieldContext>> {
+  return request.get<ResourceFieldContext>(`${MEMBER_PATH}/context`, undefined, options);
+}
+/** 当前通讯录完整查询范围的字段能力。 */
+export function DirectoryContextAPI(options?: RequestOptions): Promise<R<ResourceFieldContext>> {
+  return request.get<ResourceFieldContext>(
+    `${IAM_API_PREFIX}/v1/directory/context`,
+    undefined,
+    options,
+  );
 }

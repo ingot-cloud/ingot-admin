@@ -69,14 +69,17 @@ describe("平台角色字段固定快照", () => {
           visibilities: ["FULL", "MASKED"],
           editable: true,
           filterable: false,
-          sortable: false,
+          mask: { kind: "ALL" },
         },
       ],
       fieldDefaults: { phone: { visibility: "MASKED", editable: false } },
     } as SelectedGrant;
     const second = { ...first, actionId: "update" };
     expect(toDefinition([first, second]).resourceFieldPermissions).toEqual({
-      "201": { phone: { visibility: "MASKED", editable: false } },
+      "201": {
+        visibility: { phone: "MASKED" },
+        operations: { phone: { editable: false, filterable: false } },
+      },
     });
     expect(toDefinition([grant("202", ScopeKind.ALL)]).resourceFieldPermissions).toBeUndefined();
   });
@@ -84,7 +87,10 @@ describe("平台角色字段固定快照", () => {
     const first = grant("201", ScopeKind.OBJECT_SET);
     const changed = {
       ...first,
-      fieldPermissions: { phone: { visibility: "FULL", editable: false } },
+      fieldPermissions: {
+        visibility: { phone: "FULL" },
+        operations: { phone: { editable: false, filterable: false } },
+      },
     } as SelectedGrant;
     expect(grantsFingerprint([first])).not.toEqual(grantsFingerprint([changed]));
     expect(toDefinition([changed]).grants).toEqual(toDefinition([first]).grants);

@@ -14,7 +14,7 @@ import {
   PlatformActionPageAPI,
   PlatformApplicationPageAPI,
 } from "@/api/iam/catalog";
-import { defaultScope, type SelectedGrant } from "./wizard";
+import { defaultFieldDefinition, defaultScope, type SelectedGrant } from "./wizard";
 
 /** 按管理域分页启用中的应用，供角色向导选择。 */
 export const loadGrantApplications = (domain: AuthorizationDomain) =>
@@ -83,7 +83,7 @@ export function selectedGrantsOf(records: RoleGrantRecord[]): SelectedGrant[] {
         scopeCapabilities: [...capabilities],
         fieldCapabilities: item.fieldCapabilities,
         fieldDefaults: item.fieldDefaults,
-        fieldPermissions: item.fieldPermissions ?? item.fieldDefaults,
+        fieldPermissions: item.fieldPermissions ?? defaultFieldDefinition(item.fieldDefaults),
       } satisfies SelectedGrant;
     });
 }

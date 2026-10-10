@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { Check } from "@element-plus/icons-vue";
-import { ScopeKind } from "@ingot/admin-common";
+import { ScopeKind, resourceFieldAccess, fieldAccessLabel } from "@ingot/admin-common";
 import { formatScopeLine, groupGrants, type SelectedGrant } from "../wizard";
 
 defineOptions({ name: "GrantPreview" });
@@ -55,8 +55,10 @@ const props = defineProps<{
 }>();
 
 const fieldLabel = (grant: SelectedGrant, key: string): string => {
-  const access = grant.fieldPermissions?.[key] ?? grant.fieldDefaults?.[key];
-  return `${{ HIDDEN: "隐藏", MASKED: "脱敏", FULL: "完整可见" }[access?.visibility ?? "HIDDEN"]}${access?.editable ? "，可编辑" : "，只读"}`;
+  const access = grant.fieldPermissions
+    ? resourceFieldAccess(grant.fieldPermissions, key)
+    : grant.fieldDefaults?.[key];
+  return fieldAccessLabel(access, grant.fieldPermissions?.operations[key]);
 };
 const groups = computed(() => groupGrants(props.grants));
 </script>
