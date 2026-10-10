@@ -11,6 +11,7 @@
 | `tooltip.css` | 默认文字提示：深色底（`--in-text-color`）、反白字、带箭头；对应 `ElTooltip` `effect="dark"` |
 | `message.css` | 全局 Toast：最小 204×54、描边浅底、`--in-shadow-overlay` |
 | `button.css` | `plain` 按钮：默认白底描边，悬停填满类型色 |
+| `tag.css` | InTag / 原生 ElTag 五种类型、三尺寸与三种效果的统一外观；StatusTag、InTagEnum 共用 |
 | `el-mapping.css` | `--el-*` 只从 `--in-*` 读取 |
 | `dark/tokens.css` | 同一语义集的暗色覆盖 |
 | `dark/el-css-vars.css` | 暗色 Element Plus 映射 |
@@ -65,6 +66,10 @@
 侧栏主内容位移为沟槽 + 面板，即 `244px` / `60px`。旧名 `--in-bg-color`、`--in-bg-color-page`、`--in-menu-show` / `--in-menu-hide` 仍指向新语义 Token。
 
 ## 兼容
+
+通用标签使用 `--in-tag-*`：默认高度 24px、small 20px、large 32px，圆角 4px，默认字号 14px、字重 500。`light` 使用类型色浅底，`plain` 使用工作面背景与描边，`dark` 使用实色背景与白字。通过公开主题 Token 同步覆盖明暗样式。原生 ElTag、可关闭选择标签和复制标签自动继承同一外观。
+
+`InTag` 保留 `value: { text, tag }`，支持默认内容与可选 `#icon` 插槽；ElTag 的属性与事件继续透传。`InTagEnum` 只负责枚举映射。`StatusTag` 组合 InTag 和业务状态图标，旧 `tone="info"` 仍代表蓝色正常状态（内部映射 primary），普通 info 标签保持中性色。旧 `--in-status-tag-*` 是通用变量的兼容别名，已有覆盖仍对状态组件生效，不需要修改既有调用。
 
 旧名如 `--in-app-bar-bg`、`--in-common-padding`、`--in-text-color-light` 仍可用，已指向新语义 Token。不要再让 `--in-*` 依赖 `--el-*`。
 
