@@ -22,6 +22,9 @@ html.dark {
   --in-color-danger: #f56c6c;
   --in-color-info: #909399;
 
+  --in-tag-primary-color: var(--in-color-primary);
+  --in-tag-warning-color: var(--in-color-warning);
+
   --in-text-color: #e5eaf3;
   --in-text-color-secondary: #cfd3dc;
   --in-text-color-placeholder: #a3a6ad;

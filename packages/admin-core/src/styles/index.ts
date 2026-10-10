@@ -14,3 +14,4 @@ import "./dropdown.css";
 import "./tooltip.css";
 import "./message.css";
 import "./button.css";
+import "./tag.css";

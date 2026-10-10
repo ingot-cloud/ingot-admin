@@ -1,0 +1,125 @@
+/** 通用标签外观；提高优先级，避免被 Element Plus 的按需样式覆盖。 */
+:root:root .el-tag {
+  --in-tag-tone-color: var(--in-tag-primary-color);
+  --in-tag-tone-bg: var(--in-tag-primary-bg);
+  --el-tag-text-color: var(--in-tag-tone-color);
+  --el-tag-bg-color: var(--in-tag-tone-bg);
+  --el-tag-border-color: transparent;
+  --el-tag-hover-color: var(--in-tag-tone-color);
+  --el-tag-font-size: var(--in-tag-font-size);
+  --el-tag-border-radius: var(--in-tag-radius);
+  --el-icon-size: var(--in-tag-icon-size);
+  flex-shrink: 0;
+  height: var(--in-tag-height);
+  padding: 0 var(--in-tag-padding-inline);
+  font-weight: var(--in-tag-font-weight);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--in-line-height-body);
+  transition:
+    color var(--in-motion-duration) var(--in-motion-ease),
+    background-color var(--in-motion-duration) var(--in-motion-ease),
+    border-color var(--in-motion-duration) var(--in-motion-ease);
+}
+
+:root:root .el-tag.el-tag--success {
+  --in-tag-tone-color: var(--in-tag-success-color);
+  --in-tag-tone-bg: var(--in-tag-success-bg);
+}
+
+:root:root .el-tag.el-tag--info {
+  --in-tag-tone-color: var(--in-tag-info-color);
+  --in-tag-tone-bg: var(--in-tag-info-bg);
+}
+
+:root:root .el-tag.el-tag--warning {
+  --in-tag-tone-color: var(--in-tag-warning-color);
+  --in-tag-tone-bg: var(--in-tag-warning-bg);
+}
+
+:root:root .el-tag.el-tag--danger {
+  --in-tag-tone-color: var(--in-tag-danger-color);
+  --in-tag-tone-bg: var(--in-tag-danger-bg);
+}
+
+:root:root .el-tag.el-tag--plain {
+  --el-tag-bg-color: var(--in-bg-color-surface);
+  --el-tag-border-color: var(--in-tag-tone-color);
+}
+
+:root:root .el-tag.el-tag--dark {
+  --el-tag-text-color: var(--in-tag-solid-text-color);
+  --el-tag-bg-color: var(--in-tag-tone-color);
+  --el-tag-hover-color: color-mix(
+    in srgb,
+    var(--in-tag-tone-color) 80%,
+    var(--in-tag-solid-text-color)
+  );
+}
+
+:root:root .el-tag.el-tag--small {
+  --el-tag-font-size: var(--in-font-size-caption);
+  --el-icon-size: var(--in-font-size-caption);
+  height: var(--in-tag-height-small);
+  line-height: var(--in-line-height-caption);
+}
+
+:root:root .el-tag.el-tag--large {
+  height: var(--in-tag-height-large);
+}
+
+:root:root .el-tag.is-round {
+  border-radius: var(--el-tag-border-radius-rounded);
+}
+
+:root:root .el-tag.is-hit {
+  --el-tag-border-color: var(--in-tag-tone-color);
+  border-color: var(--el-tag-border-color);
+}
+
+:root:root .el-tag .el-tag__content {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--in-tag-gap);
+}
+
+:root:root .el-tag .el-tag__close {
+  margin-left: var(--in-tag-gap);
+  color: var(--el-tag-text-color);
+}
+
+:root:root .el-tag .el-tag__close:hover {
+  color: var(--in-tag-solid-text-color);
+}
+
+:root:root .el-tag .el-tag__close:focus-visible {
+  outline-color: var(--in-focus-ring-color);
+}
+
+:root:root .in-tag:has(.in-tag__icon) {
+  padding-inline-start: var(--in-tag-gap);
+}
+
+.in-tag__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: var(--el-icon-size);
+  height: var(--el-icon-size);
+  font-size: var(--el-icon-size);
+}
+
+.in-tag__icon svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+
+.in-tag__content {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:root .el-tag {
+    transition: none;
+  }
+}
