@@ -327,3 +327,16 @@ export enum MaskKind {
   KEEP_EDGES = "KEEP_EDGES",
   RANGE = "RANGE",
 }
+
+/** 授权审计变更类型，与后端 AuditChangeType 保持一致。 */
+export enum AuditChangeType {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+  ENABLE = "ENABLE",
+  DISABLE = "DISABLE",
+  REMOVE = "REMOVE",
+  REVOKE = "REVOKE",
+  PUBLISH = "PUBLISH",
+  UPGRADE = "UPGRADE",
+  OWNER_TRANSFER = "OWNER_TRANSFER",
+}

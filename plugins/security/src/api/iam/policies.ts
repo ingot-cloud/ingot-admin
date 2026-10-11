@@ -1,7 +1,9 @@
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
+  AuthorizationDomain,
   IAM_API_PREFIX,
+  type AuthorizationAuditQuery,
   mapIamPage,
   toIamListParams,
   type AuditEntry,
@@ -9,7 +11,6 @@ import {
   type DirectoryPolicyInput,
   type FieldPolicyDraft,
   type FieldPolicyInput,
-  type IamListQuery,
   type IamPageResponse,
   type PolicyPreviewInput,
   type PolicyPreviewResult,
@@ -78,20 +79,33 @@ export function SecurityPolicyPreviewAPI(
   );
 }
 
+/** 当前域由会话 Query 捕获，筛选条件不参与选择管理域。 */
 export function SecurityAuditPageAPI(
+  domain: string | undefined,
   page: Page,
-  condition?: IamListQuery & { domain?: string },
+  condition?: AuthorizationAuditQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<AuditEntry>>>> {
-  if (condition) {
-    filterParams(condition);
+  let path: string;
+  if (domain === AuthorizationDomain.PLATFORM) {
+    path = "platform";
+  } else if (domain === AuthorizationDomain.TENANT) {
+    path = "tenant";
+  } else {
+    return Promise.reject(new Error("当前管理身份无效，请重新认证"));
   }
-  const domain = condition?.domain === "PLATFORM" ? "platform" : "tenant";
-  const query = { ...condition };
-  delete query.domain;
+  const query: AuthorizationAuditQuery = {
+    actorMemberId: condition?.actorMemberId,
+    targetType: condition?.targetType,
+    targetId: condition?.targetId,
+    changeType: condition?.changeType,
+    from: condition?.from,
+    until: condition?.until,
+  };
+  filterParams(query);
   return request
     .get<IamPageResponse<ResourceDetail<AuditEntry>>>(
-      `${IAM_API_PREFIX}/v1/${domain}/authorization/audits`,
+      `${IAM_API_PREFIX}/v1/${path}/authorization/audits`,
       toIamListParams(page, query),
       options,
     )

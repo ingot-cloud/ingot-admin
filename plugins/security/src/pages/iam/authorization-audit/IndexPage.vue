@@ -2,120 +2,134 @@
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
       <in-page-header
-        description="授权审计。导出为独立操作，当前契约未单列导出路径，本页仅提供查询。"
+        :title="title"
+        description="查看当前管理范围内的授权变更、配置差异与关联记录。"
       />
     </template>
     <in-split-layout>
       <in-table
         :loading="paging.fetching.value"
-        :data="paging.pageInfo.value.records"
-        :page="paging.pageInfo.value"
-        :headers="tableHeaders"
-        table-id="security-iam-authorization-audit"
+        :data="pageInfo.records"
+        :page="pageInfo"
+        :headers="visibleHeaders"
+        :table-id="TABLE_ID"
+        :feedback="feedback"
         density="compact"
         :row-key="rowKeyOf"
         @handleSizeChange="paging.fetchData"
         @handleCurrentChange="paging.fetchData"
       >
-        <template #tools-start>
-          <in-picker v-model="domainFilter" label="管理域" :options="domainOptions" />
-        </template>
-        <template #changeType="{ item }">
-          <biz-iam-record-link
-            :action="auditReadActionOf(item)"
-            :capabilities="item.capabilities"
-            @click="handleDetail(item)"
-          >
-            {{ item.record.changeType || item.record.traceId || "详情" }}
-          </biz-iam-record-link>
+        <template v-if="canRead" #tools-start>
+          <el-input
+            v-model="paging.condition.actorMemberId"
+            class="w-220px!"
+            clearable
+            placeholder="精确查询操作者成员 ID"
+            :prefix-icon="Search"
+            @keyup.enter="paging.search"
+            @clear="paging.search"
+          />
+          <in-filter-panel :active-count="extraFilterCount">
+            <in-picker v-model="changeFilter" label="变更类型" :options="changeOptions" />
+            <el-input
+              v-model="paging.condition.targetType"
+              clearable
+              placeholder="精确查询对象类型编码"
+              :prefix-icon="Search"
+              @keyup.enter="paging.search"
+              @clear="paging.search"
+            />
+            <el-input
+              v-model="paging.condition.targetId"
+              clearable
+              placeholder="精确查询对象 ID"
+              :prefix-icon="Search"
+              @keyup.enter="paging.search"
+              @clear="paging.search"
+            />
+            <el-date-picker
+              v-model="timeRange"
+              type="datetimerange"
+              class="w-full!"
+              clearable
+              start-placeholder="开始时间"
+              end-placeholder="结束时间"
+              range-separator="至"
+            />
+            <span class="text-12px text-[var(--in-text-color-secondary)]"
+              >包含开始时间，不包含结束时间</span
+            >
+            <template #footer><in-button @click="resetExtraFilters">重置</in-button></template>
+          </in-filter-panel>
+          <in-table-column-setting
+            :headers="tableHeaders"
+            :table-id="TABLE_ID"
+            @change="privateOnColumnChange"
+          />
         </template>
         <template #timestamp="{ item }">{{ formatDateTime(item.record.timestamp) }}</template>
+        <template #actor="{ item }">{{ auditActor(item.record) }}</template>
+        <template #changeType="{ item }">
+          <biz-iam-record-link
+            v-if="action"
+            :action="action"
+            :capabilities="item.capabilities"
+            @click="openDetail(item)"
+          >
+            {{ auditChange(item.record) }}
+          </biz-iam-record-link>
+        </template>
+        <template #target="{ item }">{{ auditTarget(item.record) }}</template>
+        <template #changeSummary="{ item }"
+          ><span :title="auditSummary(item.record)">{{ auditSummary(item.record) }}</span></template
+        >
+        <template #error>
+          <el-empty description="暂时无法加载授权审计">
+            <in-button v-if="canRead" @click="paging.search">重试</in-button>
+          </el-empty>
+        </template>
+        <template #unauthorized><el-empty description="没有查看当前域授权审计的权限" /></template>
       </in-table>
     </in-split-layout>
+    <AuditDetailDrawer v-model="detailVisible" :entry="detail?.record" />
   </in-page-frame>
-
-  <in-drawer v-model="detailVisible" title="审计详情" size="560px">
-    <in-form v-if="detail" :editing="false">
-      <el-form-item label="类型">
-        <span>{{ detail.record.changeType || "-" }}</span>
-      </el-form-item>
-      <el-form-item label="时间">
-        <span>{{ formatDateTime(detail.record.timestamp, { fallback: "-" }) }}</span>
-      </el-form-item>
-      <el-form-item label="操作者">
-        <span>{{ detail.record.actor?.displayName || detail.record.actor?.memberId || "-" }}</span>
-      </el-form-item>
-      <el-form-item label="对象">
-        <span>{{ detail.record.target?.name || detail.record.target?.id || "-" }}</span>
-      </el-form-item>
-      <el-form-item label="追踪">
-        <span>{{ detail.record.traceId || "-" }}</span>
-      </el-form-item>
-      <el-form-item label="变更前">
-        <pre class="whitespace-pre-wrap text-12px">{{ stringify(detail.record.before) }}</pre>
-      </el-form-item>
-      <el-form-item label="变更后">
-        <pre class="whitespace-pre-wrap text-12px">{{ stringify(detail.record.after) }}</pre>
-      </el-form-item>
-    </in-form>
-  </in-drawer>
 </template>
-
-<script lang="ts" setup>
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { Search } from "@element-plus/icons-vue";
 import { formatDateTime } from "@ingot/shared";
+import { applyColumnSelection, withAllPickerOption } from "@ingot/admin-core";
 import {
-  useCapabilities,
-  useServerPaging,
-  withAllPickerOption,
-  resolveStringPickerFilter,
-  toStringPickerValue,
-} from "@ingot/admin-core";
-import {
-  AuthorizationDomain,
   BizIamRecordLink,
-  IamAction,
-  useAuthorizationDomainEnum,
+  useAuditChangeTypeEnum,
   type AuditEntry,
-  type IamListQuery,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { SecurityAuditPageQueryOptions } from "@/api/iam/policies.query";
-import { tableHeaders } from "./table";
-
-const { unavailable } = useCapabilities();
-const paging = useServerPaging<ResourceDetail<AuditEntry>, IamListQuery>({
-  queryOptions: SecurityAuditPageQueryOptions,
-  enabled: () => !unavailable.value,
-});
-const domainEnum = useAuthorizationDomainEnum();
-const domainOptions = computed(() => withAllPickerOption(domainEnum.getOptions()));
-const domainFilter = computed({
-  get: () => toStringPickerValue(paging.condition.domain),
-  set: (value: string | number | boolean | null) => {
-    paging.condition.domain = resolveStringPickerFilter(value);
-    paging.search();
-  },
-});
-const detailVisible = ref(false);
-const detail = ref<ResourceDetail<AuditEntry>>();
-
-const stringify = (value: unknown): string => {
-  if (value === undefined || value === null) {
-    return "-";
-  }
-  return JSON.stringify(value, null, 2);
+import { tableHeaders, TABLE_ID } from "./table";
+import { useOps } from "./useOps";
+import { auditActor, auditChange, auditTarget, auditSummary } from "./display";
+import AuditDetailDrawer from "./components/AuditDetailDrawer.vue";
+const {
+  paging,
+  pageInfo,
+  title,
+  feedback,
+  canRead,
+  action,
+  changeFilter,
+  timeRange,
+  extraFilterCount,
+  resetExtraFilters,
+  detail,
+  detailVisible,
+  openDetail,
+} = useOps();
+const changeEnum = useAuditChangeTypeEnum();
+const changeOptions = computed(() => withAllPickerOption(changeEnum.getOptions()));
+const selectedColumns = ref<string[]>([]);
+const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumns.value));
+const privateOnColumnChange = (columns: string[]): void => {
+  selectedColumns.value = columns;
 };
-
-const handleDetail = (row: ResourceDetail<AuditEntry>): void => {
-  detail.value = row;
-  detailVisible.value = true;
-};
-
-const auditReadActionOf = (row: ResourceDetail<AuditEntry>): string =>
-  row.record.context?.domain === AuthorizationDomain.TENANT
-    ? IamAction.TENANT_AUDIT_READ
-    : IamAction.PLATFORM_AUDIT_READ;
-
-const rowKeyOf = (row: ResourceDetail<AuditEntry>): string =>
-  row.record.traceId || row.record.timestamp || row.version;
+const rowKeyOf = (row: ResourceDetail<AuditEntry>): string => row.record.id;
 </script>

@@ -1,4 +1,5 @@
 import {
+  AuditChangeType,
   AccountLookupPurpose,
   AssignmentSource,
   AssignmentEffectiveStatus,
@@ -952,15 +953,28 @@ export interface Decision {
   expiresAt: string;
 }
 
+/** 当前域审计的精确筛选；时间范围为 [from, until)。 */
+export interface AuthorizationAuditQuery {
+  actorMemberId?: string;
+  targetType?: string;
+  targetId?: string;
+  changeType?: AuditChangeType;
+  from?: string;
+  until?: string;
+}
+
 export interface AuditEntry {
-  actor?: { memberId?: string; displayName?: string };
-  context?: AuthorizationContext;
-  target?: { type?: string; id?: string; name?: string };
-  changeType?: string;
-  before?: unknown;
-  after?: unknown;
-  revisions?: string[];
-  timestamp?: string;
+  id: string;
+  actor: { accountId: string; memberId: string; displayName?: string };
+  context: AuthorizationContext;
+  target: { resource: string; id: string };
+  changeType: AuditChangeType;
+  before: Record<string, string | null>;
+  after: Record<string, string | null>;
+  revisions: Record<string, string>;
+  delegationId?: string;
+  assignmentId?: string;
+  timestamp: string;
   traceId?: string;
 }
 

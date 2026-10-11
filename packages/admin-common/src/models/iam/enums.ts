@@ -1,5 +1,6 @@
 import { newEnumExt, useEnum } from "@ingot/admin-core";
 import {
+  AuditChangeType,
   AccountLookupPurpose,
   AudienceKind,
   ConfigurationStatus,
@@ -247,3 +248,16 @@ export const ExportTaskStatusExtArray = [
 ];
 
 export const useExportTaskStatusEnum = () => useEnum(ExportTaskStatusExtArray);
+
+export const AuditChangeTypeExtArray = [
+  newEnumExt(AuditChangeType.CREATE, "创建"),
+  newEnumExt(AuditChangeType.UPDATE, "修改"),
+  newEnumExt(AuditChangeType.ENABLE, "启用"),
+  newEnumExt(AuditChangeType.DISABLE, "停用"),
+  newEnumExt(AuditChangeType.REMOVE, "移出"),
+  newEnumExt(AuditChangeType.REVOKE, "撤销"),
+  newEnumExt(AuditChangeType.PUBLISH, "发布版本"),
+  newEnumExt(AuditChangeType.UPGRADE, "升级版本"),
+  newEnumExt(AuditChangeType.OWNER_TRANSFER, "转交所有者"),
+];
+export const useAuditChangeTypeEnum = () => useEnum(AuditChangeTypeExtArray);
