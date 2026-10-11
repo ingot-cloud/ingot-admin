@@ -197,3 +197,5 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 - [公共字段访问控制](./changes/archive/2026/20261010-common-field-access-control/README.md)（completed，2026-10-10 人工验收完成并归档）；[当前能力](./current/common/field-access-control/README.md)
 
 - [框架标签统一](./changes/active/20261010-packages-unified-tags/README.md)（validating，统一通用与状态标签样式，自动化及浏览器验证通过）
+
+- [角色版本信息与批量应用](./changes/archive/2026/20261010-base-role-version-application/README.md)（completed，2026-10-11 人工验收完成并归档）；[当前能力](./current/base/role-version-application/README.md)
