@@ -50,7 +50,7 @@
               class="flex items-center gap-8px p-12px bg-[var(--in-permission-panel-bg)] rounded-4px"
             >
               <span class="flex-1"
-                >{{ item.record.roleName }} · v{{ item.record.revisionNumber }}</span
+                >{{ item.record.roleName }} · {{ assignmentVersionLabel(item.record) }}</span
               >
               <in-button
                 v-if="canRemove && recordAllowed(item, IamAction.PLATFORM_ASSIGNMENT_DELETE)"
@@ -109,6 +109,7 @@
   </in-dialog>
 </template>
 <script setup lang="ts">
+import { assignmentVersionLabel } from "@ingot/admin-common";
 import { Message, objectActionAllowed } from "@ingot/admin-core";
 import {
   BizIamAssignmentScopeStep,

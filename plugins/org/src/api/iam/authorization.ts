@@ -141,7 +141,11 @@ export function TenantRoleUpgradeAPI(
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
-  return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/roles/${id}/upgrade`, params, options);
+  return request.post<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/upgrade`,
+    params,
+    options,
+  );
 }
 
 export function TenantAssignmentPageAPI(
@@ -206,7 +210,11 @@ export function TenantAssignmentDeleteAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.delete<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/assignments/${id}`, null, options);
+  return request.delete<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/tenant/assignments/${id}`,
+    null,
+    options,
+  );
 }
 
 export function TenantDelegationPageAPI(
@@ -261,7 +269,11 @@ export function TenantDelegationDeleteAPI(
   id: string,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.delete<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/delegations/${id}`, null, options);
+  return request.delete<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/tenant/delegations/${id}`,
+    null,
+    options,
+  );
 }
 
 export function TenantDelegationPreviewAPI(
@@ -282,7 +294,11 @@ export function TenantDiagnoseAPI(
   options?: RequestOptions,
 ): Promise<R<Decision>> {
   filterParams(params);
-  return request.post<Decision>(`${IAM_API_PREFIX}/v1/tenant/authorization/diagnose`, params, options);
+  return request.post<Decision>(
+    `${IAM_API_PREFIX}/v1/tenant/authorization/diagnose`,
+    params,
+    options,
+  );
 }
 
 export function TenantAuditPageAPI(
@@ -315,4 +331,42 @@ export function TenantPolicyPreviewAPI(
   options?: RequestOptions,
 ): Promise<R<Preview>> {
   return request.post<Preview>(`${IAM_API_PREFIX}/v1/tenant/policies/preview`, params, options);
+}
+
+export function TenantRoleRevisionDetailAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<ResourceDetail<RoleRevision>>> {
+  return request.get<ResourceDetail<RoleRevision>>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}`,
+  );
+}
+export function TenantRoleRevisionMetadataAPI(
+  id: string,
+  revisionId: string,
+  input: import("@ingot/admin-common").RoleRevisionMetadataInput,
+): Promise<R<CreatedResource>> {
+  return request.patch<CreatedResource>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}/metadata`,
+    input,
+  );
+}
+export function TenantRoleRevisionGrantsAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<import("@ingot/admin-common").RoleGrantList>> {
+  return request.get<import("@ingot/admin-common").RoleGrantList>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}/grants`,
+  );
+}
+
+export function TenantRoleSourcePreviewAPI(
+  id: string,
+  draft: RolePreviewInput,
+  sourceId?: string,
+): Promise<R<Preview>> {
+  return request.post<Preview>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/preview${sourceId ? `?sourceRevisionId=${encodeURIComponent(sourceId)}` : ""}`,
+    draft,
+  );
 }

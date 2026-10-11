@@ -134,6 +134,8 @@
     :get-api="TenantRoleDetailAPI"
     :list-revisions-api="TenantRoleRevisionPageAPI"
     :preview-api="TenantRolePreviewAPI"
+    :source-preview-api="TenantRoleSourcePreviewAPI"
+    :metadata-api="TenantRoleRevisionMetadataAPI"
     :publish-api="TenantRolePublishAPI"
     :status-api="TenantRoleStatusAPI"
     :delete-api="TenantRoleDeleteAPI"
@@ -213,6 +215,8 @@ import {
   TenantRoleDetailAPI,
   TenantRolePageAPI,
   TenantRolePreviewAPI,
+  TenantRoleSourcePreviewAPI,
+  TenantRoleRevisionMetadataAPI,
   TenantRolePublishAPI,
   TenantRoleRevisionPageAPI,
   TenantRoleStatusAPI,

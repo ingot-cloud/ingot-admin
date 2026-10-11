@@ -523,3 +523,55 @@ export function PlatformRoleSourcePageAPI(
     )
     .then(asPage);
 }
+
+export function PlatformRoleRevisionDetailAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<ResourceDetail<RoleRevision>>> {
+  return request.get<ResourceDetail<RoleRevision>>(
+    `${rolePath("platform")}/${id}/revisions/${revisionId}`,
+  );
+}
+export function PlatformRoleRevisionMetadataAPI(
+  id: string,
+  revisionId: string,
+  input: import("@ingot/admin-common").RoleRevisionMetadataInput,
+): Promise<R<CreatedResource>> {
+  return request.patch<CreatedResource>(
+    `${rolePath("platform")}/${id}/revisions/${revisionId}/metadata`,
+    input,
+  );
+}
+export function PlatformRoleRevisionGrantsAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<import("@ingot/admin-common").RoleGrantList>> {
+  return request.get<import("@ingot/admin-common").RoleGrantList>(
+    `${rolePath("platform")}/${id}/revisions/${revisionId}/grants`,
+  );
+}
+
+export function PlatformSharedRoleRevisionDetailAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<ResourceDetail<RoleRevision>>> {
+  return request.get<ResourceDetail<RoleRevision>>(`${sharedPath}/${id}/revisions/${revisionId}`);
+}
+export function PlatformSharedRoleRevisionMetadataAPI(
+  id: string,
+  revisionId: string,
+  input: import("@ingot/admin-common").RoleRevisionMetadataInput,
+): Promise<R<CreatedResource>> {
+  return request.patch<CreatedResource>(
+    `${sharedPath}/${id}/revisions/${revisionId}/metadata`,
+    input,
+  );
+}
+export function PlatformSharedRoleRevisionGrantsAPI(
+  id: string,
+  revisionId: string,
+): Promise<R<import("@ingot/admin-common").RoleGrantList>> {
+  return request.get<import("@ingot/admin-common").RoleGrantList>(
+    `${sharedPath}/${id}/revisions/${revisionId}/grants`,
+  );
+}

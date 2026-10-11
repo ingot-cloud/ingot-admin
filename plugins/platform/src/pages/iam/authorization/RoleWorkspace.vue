@@ -104,7 +104,9 @@
             ><template #prefix><in-icon name="ep:search" /></template
           ></el-input>
           <in-button :disabled="!roleId" @in-click="showVersions">{{
-            version ? `固定版本 v${version.number}` : "所有版本"
+            version
+              ? `固定版本 ${roleVersionLabel({ revision: version.number, versionName: version.name })}`
+              : "所有版本"
           }}</in-button>
           <in-button v-if="version" link @in-click="version = undefined">清除版本</in-button>
           <in-table-column-setting
@@ -116,7 +118,14 @@
         </template>
         <template #name="{ item }">{{ item.name }}</template>
         <template #revisionNumbers="{ item }">{{
-          item.revisionNumbers.map((value: number) => `v${value}`).join("、")
+          item.revisionNumbers
+            .map((value: number) =>
+              roleVersionLabel({
+                revision: String(value),
+                versionName: item.versionNames?.[String(value)],
+              }),
+            )
+            .join("、")
         }}</template>
         <template #sourceTypes="{ item }"
           >{{
@@ -153,7 +162,7 @@
             v-for="row in versions.pageInfo.value.records"
             :key="row.record.id"
             :value="row.record.id"
-            >v{{ row.record.revision }}</el-radio
+            >{{ roleVersionLabel(row.record) }}</el-radio
           >
         </el-radio-group>
       </in-loading>
@@ -194,7 +203,7 @@
           >{{ item.record.assignment.subject.type === "MEMBER" ? "成员直接分配" : "用户组继承" }} /
           {{ item.record.subjectName }}</template
         >
-        <template #version="{ item }">v{{ item.record.revisionNumber }}</template>
+        <template #version="{ item }">{{ assignmentVersionLabel(item.record) }}</template>
         <template #basis="{ item }">{{ item.record.delegationSummary || "直接分配" }}</template>
         <template #validUntil="{ item }">{{
           formatDateTime(item.record.assignment.validUntil, {
@@ -229,7 +238,12 @@ import {
   type Page,
   type TableHeaderRecord,
 } from "@ingot/admin-core";
-import { IamAction, type RoleSubjectSummary } from "@ingot/admin-common";
+import {
+  IamAction,
+  roleVersionLabel,
+  assignmentVersionLabel,
+  type RoleSubjectSummary,
+} from "@ingot/admin-common";
 import GroupDetailDrawer from "../personnel/components/GroupDetailDrawer.vue";
 import {
   createAssignmentRowActions,
@@ -305,12 +319,16 @@ const visibleHeaders = computed(() =>
   applyColumnSelection(headers, selectedColumns.value[subjectKind.value]),
 );
 const draftVersionId = ref("");
-const knownVersions = ref(new Map<string, { id: string; number: string }>());
+const knownVersions = ref(new Map<string, { id: string; number: string; name?: string }>());
 watch(
   () => versions.pageInfo.value.records,
   (rows) => {
     for (const row of rows || [])
-      knownVersions.value.set(row.record.id, { id: row.record.id, number: row.record.revision });
+      knownVersions.value.set(row.record.id, {
+        id: row.record.id,
+        number: row.record.revision,
+        name: row.record.versionName,
+      });
   },
 );
 watch(roleId, () => knownVersions.value.clear());

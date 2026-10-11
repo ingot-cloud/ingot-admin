@@ -54,3 +54,7 @@ export { default as BizIamDelegationRolePicker } from "./components/BizIamDelega
 export * from "./models/iam/platformAssignment";
 
 export * from "./models/iam/menuConfiguration";
+
+export { default as BizIamRoleVersionForm } from "./components/BizIamRoleVersionForm.vue";
+export { default as BizIamRoleVersionMetadataDialog } from "./components/BizIamRoleVersionMetadataDialog.vue";
+export { default as BizIamRoleApplicationDrawer } from "./components/BizIamRoleApplicationDrawer.vue";

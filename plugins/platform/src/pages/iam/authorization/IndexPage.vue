@@ -91,9 +91,8 @@
               {{ item.record.subjectName || item.record.assignment.subject.id }}
             </template>
             <template #roleRevision="{ item }">
-              {{ item.record.roleName || item.record.assignment.roleRevisionRef.id }} · v{{
-                item.record.revisionNumber || "-"
-              }}
+              {{ item.record.roleName || item.record.assignment.roleRevisionRef.id }} ·
+              {{ assignmentVersionLabel(item.record) }}
             </template>
             <template #source="{ item }">{{
               item.record.delegationSummary || sourceLabel(item.record.source)
@@ -198,6 +197,10 @@
     :update-api="PlatformRoleUpdateAPI"
     :status-api="PlatformRoleStatusAPI"
     :publish-api="PlatformRolePublishAPI"
+    :metadata-api="PlatformRoleRevisionMetadataAPI"
+    :revision-detail-api="PlatformRoleRevisionDetailAPI"
+    :revision-grants-api="PlatformRoleRevisionGrantsAPI"
+    :application-api="platformRoleApplicationApi"
     :grant-domain="AuthorizationDomain.PLATFORM"
     :status-action="IamAction.PLATFORM_ROLE_STATUS"
     :publish-action="IamAction.PLATFORM_ROLE_PUBLISH"
@@ -245,6 +248,7 @@
 </template>
 
 <script lang="ts" setup>
+import { assignmentVersionLabel } from "@ingot/admin-common";
 import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {
@@ -308,10 +312,14 @@ import {
   PlatformRoleGrantsAPI,
   PlatformRolePublishAPI,
   PlatformRoleRevisionPageAPI,
+  PlatformRoleRevisionMetadataAPI,
+  PlatformRoleRevisionDetailAPI,
+  PlatformRoleRevisionGrantsAPI,
   PlatformRoleStatusAPI,
   PlatformRoleUpdateAPI,
 } from "@/api/iam/authorization";
 import CreateWizard from "../shared-roles/components/CreateWizard.vue";
+import { platformRoleApplicationApi } from "@/api/iam/roleApplication";
 import SharedRoleDetailDrawer from "../shared-roles/components/SharedRoleDetailDrawer.vue";
 import {
   ASSIGNMENT_TABLE_ID,

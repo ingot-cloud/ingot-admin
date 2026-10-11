@@ -18,7 +18,7 @@
           model ? 'text-[var(--el-text-color-regular)]' : 'text-[var(--in-text-color-placeholder)]'
         "
       >
-        {{ model ? `${model.roleName} · v${model.revisionNumber}` : "请选择角色" }}
+        {{ model ? `${model.roleName} · ${model.name}` : "请选择角色" }}
       </span>
       <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
     </button>
@@ -134,7 +134,7 @@
       <div class="shrink-0 pt-12px text-12px text-[var(--el-text-color-secondary)]">
         {{
           picker.draft.value
-            ? `当前选择：${picker.draft.value.roleName} · v${picker.draft.value.revisionNumber}`
+            ? `当前选择：${picker.draft.value.roleName} · ${picker.draft.value.name}`
             : "展开角色后选择一个版本"
         }}
       </div>

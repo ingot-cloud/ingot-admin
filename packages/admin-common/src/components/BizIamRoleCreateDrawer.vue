@@ -31,9 +31,12 @@
         />
       </el-form-item>
     </in-form>
+    <biz-iam-role-version-form v-model:name="draft.versionName" v-model:remark="draft.remark" />
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
-      <in-button type="primary" :loading="loading" @in-click="privateSubmit">创建并发布首个版本</in-button>
+      <in-button type="primary" :loading="loading" @in-click="privateSubmit"
+        >创建并发布首个版本</in-button
+      >
     </template>
   </in-drawer>
 </template>
@@ -49,6 +52,8 @@ import {
   type RoleCreateKind,
   type RoleDefinitionDraft,
 } from "../models/iam";
+
+import BizIamRoleVersionForm from "./BizIamRoleVersionForm.vue";
 
 defineOptions({ name: "BizIamRoleCreateDrawer" });
 
@@ -76,6 +81,8 @@ const draft = reactive({
   description: "",
   groupName: "",
   baseRevisionId: "",
+  versionName: "",
+  remark: "",
   definition: emptyRoleDefinitionDraft() as RoleDefinitionDraft,
 });
 
@@ -85,6 +92,8 @@ const reset = (): void => {
   draft.description = "";
   draft.groupName = "";
   draft.baseRevisionId = "";
+  draft.versionName = "";
+  draft.remark = "";
   draft.definition = emptyRoleDefinitionDraft();
 };
 
@@ -103,6 +112,8 @@ const privateSubmit = (): void => {
   }
   loading.value = true;
   const input: RoleCreateInput = {
+    versionName: draft.versionName.trim(),
+    remark: draft.remark.trim(),
     code: draft.code.trim(),
     name: draft.name.trim(),
     description: draft.description.trim() || undefined,
@@ -110,6 +121,7 @@ const privateSubmit = (): void => {
     kind: props.kind,
     baseRevisionId: draft.baseRevisionId.trim() || undefined,
     definition: {
+      ...JSON.parse(JSON.stringify(draft.definition)),
       grants: draft.definition.grants.filter((item) => item.actionId.trim()),
       deltas: draft.definition.deltas.filter((item) => item.actionId.trim()),
       parameterDefinitions: draft.definition.parameterDefinitions.filter((item) => item.key.trim()),

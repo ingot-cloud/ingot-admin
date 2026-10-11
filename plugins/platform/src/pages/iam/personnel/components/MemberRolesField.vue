@@ -12,7 +12,7 @@
     </el-input>
     <in-loading v-else :loading="loading">
       <div v-for="role in bound" :key="role.roleRevisionRef.id" class="py-4px">
-        {{ role.name }} · v{{ role.revisionNumber }}
+        {{ role.name }} · {{ assignmentVersionLabel(role) }}
         <span
           v-if="role.sourceTypes.includes(SubjectType.GROUP)"
           class="text-12px text-[var(--el-text-color-secondary)]"
@@ -51,6 +51,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { assignmentVersionLabel } from "@ingot/admin-common";
 import { IAM_DEFAULT_PAGE_SIZE, SubjectType, type MemberBoundRole } from "@ingot/admin-common";
 import { PlatformMemberBoundRolesAPI } from "@/api/iam/personnel";
 import {
@@ -83,10 +84,10 @@ const hasChanges = computed(
 );
 const draftLabel = computed(() => {
   if (!draft.value)
-    return bound.value.map((role) => `${role.name} · v${role.revisionNumber}`).join("、");
+    return bound.value.map((role) => `${role.name} · ${assignmentVersionLabel(role)}`).join("、");
   const labels = draft.value.stored
     .filter((row) => !draft.value!.removed.includes(row.record.id))
-    .map((row) => `${row.record.roleName} · v${row.record.revisionNumber}`);
+    .map((row) => `${row.record.roleName} · ${assignmentVersionLabel(row.record)}`);
   labels.push(
     ...draft.value.roles
       .filter((role) => !role.configurationKey)

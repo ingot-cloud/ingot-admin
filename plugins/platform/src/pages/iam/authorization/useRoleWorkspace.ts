@@ -28,7 +28,7 @@ export const useRoleWorkspace = (active: MaybeRefOrGetter<boolean>) => {
   const roleId = ref("");
   const memberId = ref("");
   const subjectKind = ref<"members" | "groups">("members");
-  const version = ref<{ id: string; number: string }>();
+  const version = ref<{ id: string; number: string; name?: string }>();
   const versionsVisible = ref(false);
   const sourcesVisible = ref(false);
   const enabled = () =>

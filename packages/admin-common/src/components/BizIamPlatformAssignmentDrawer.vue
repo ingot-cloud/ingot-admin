@@ -71,9 +71,8 @@
           <in-form v-else-if="step === 1" label-position="top" class="max-w-720px">
             <el-form-item label="角色" required>
               <div v-if="editing">
-                {{ editing.record.roleName || revisionId }} · v{{
-                  editing.record.revisionNumber || "-"
-                }}
+                {{ editing.record.roleName || revisionId }} ·
+                {{ assignmentVersionLabel(editing.record) }}
               </div>
               <biz-iam-delegation-role-picker
                 v-else
@@ -200,6 +199,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { assignmentVersionLabel } from "../models/iam";
 import { formatDateTime } from "@ingot/shared";
 import {
   isApiError,
@@ -491,7 +491,7 @@ const apply = (row: ResourceDetail<AssignmentRecord>): void => {
     {
       option: {
         id: input.roleRevisionRef.id,
-        name: `${row.record.roleName || "角色"} · v${row.record.revisionNumber || "-"}`,
+        name: `${row.record.roleName || "角色"} · ${assignmentVersionLabel(row.record)}`,
         roleRevisionRef: input.roleRevisionRef,
       },
       bindings: Object.fromEntries(

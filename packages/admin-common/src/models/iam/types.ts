@@ -652,6 +652,7 @@ export interface PlatformMemberEditPreview {
   removals: number;
 }
 export interface MemberBoundRole {
+  versionName?: string;
   roleId: string;
   name: string;
   roleRevisionRef: RoleRevisionRef;
@@ -796,6 +797,8 @@ export interface RoleDefinitionDraft {
 export type RoleCreateKind = RoleKind.SHARED | RoleKind.PLATFORM_CUSTOM | RoleKind.TENANT_CUSTOM;
 
 export interface RoleCreateInput {
+  versionName?: string;
+  remark?: string;
   code: string;
   name: string;
   description?: string;
@@ -813,6 +816,9 @@ export interface RoleUpdateInput extends VersionInput {
 }
 
 export interface RolePublishInput extends VersionInput {
+  versionName?: string;
+  remark?: string;
+  sourceRevisionId?: string;
   definition: RoleDefinitionDraft;
 }
 
@@ -832,6 +838,8 @@ export interface UpgradeResolution {
 }
 
 export interface UpgradeInput extends VersionInput {
+  versionName?: string;
+  remark?: string;
   newBaseRevisionId: string;
   resolutions: UpgradeResolution[];
   assignmentIds: string[];
@@ -862,6 +870,10 @@ export interface RoleSummary {
 }
 
 export interface RoleRevision {
+  versionName?: string;
+  remark?: string;
+  metadataVersion?: string;
+  publishedAt?: string;
   id: string;
   roleId: string;
   revision: string;
@@ -1127,6 +1139,7 @@ export interface AssignmentPreviewResult {
 }
 
 export interface AssignmentRecord {
+  versionName?: string;
   id: string;
   assignment: AssignmentInput;
   status: GrantStatus;
@@ -1259,6 +1272,7 @@ export interface RoleSubjectSummary {
   id: string;
   name: string;
   revisionNumbers: number[];
+  versionNames?: Record<string, string>;
   sourceTypes: SubjectType[];
   sourceCount: number;
 }

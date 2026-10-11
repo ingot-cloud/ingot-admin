@@ -36,7 +36,14 @@
           <grant-picker v-else-if="step === 1" v-model="grants" :domain="grantDomain" />
           <scope-step v-else-if="step === 2" v-model="grants" :domain="grantDomain" />
           <field-step v-else-if="platform && step === 3" ref="fieldStep" v-model="grants" />
-          <preview-panel v-else :profile="profile" :grants="grants" />
+          <div v-else>
+            <preview-panel :profile="profile" :grants="grants" />
+            <biz-iam-role-version-form
+              v-model:name="versionName"
+              v-model:remark="versionRemark"
+              class="mt-24px max-w-640px"
+            />
+          </div>
         </div>
       </section>
     </div>
@@ -62,6 +69,7 @@
 import { confirmUnsavedChanges, Message, type R } from "@ingot/admin-core";
 import {
   AuthorizationDomain,
+  BizIamRoleVersionForm,
   RoleKind,
   type CreatedResource,
   type RoleCreateInput,
@@ -109,6 +117,8 @@ const steps = computed(() => (platform.value ? PLATFORM_WIZARD_STEPS : WIZARD_ST
 const fieldStep = ref<InstanceType<typeof FieldStep>>();
 const previewed = ref("");
 const previewSession = ref(0);
+const versionName = ref(""),
+  versionRemark = ref("");
 const visible = ref(false);
 const saving = ref(false);
 const step = ref(0);
@@ -118,6 +128,8 @@ const grants = ref<SelectedGrant[]>([]);
 const dirty = computed(() => profileDirty(profile) || grants.value.length > 0);
 
 const reset = (): void => {
+  versionName.value = "";
+  versionRemark.value = "";
   previewSession.value += 1;
   step.value = 0;
   Object.assign(profile, emptyWizardProfile());
@@ -186,7 +198,11 @@ const privateSubmit = (): void => {
   }
   saving.value = true;
   submitApi
-    .value(toCreateInput(profile, grants.value, props.kind))
+    .value({
+      ...toCreateInput(profile, grants.value, props.kind),
+      versionName: versionName.value.trim(),
+      remark: versionRemark.value.trim(),
+    })
     .then(() => {
       Message.success("已创建并发布首个版本，既有授权不会自动升级");
       visible.value = false;

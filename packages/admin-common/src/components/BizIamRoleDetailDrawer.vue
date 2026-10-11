@@ -18,12 +18,15 @@
           <in-detail-field label="来源" :value="kindLabel(detail.record.kind)" />
           <in-detail-field label="状态">
             <template #view>
-              <biz-iam-status-tag v-if="knownStatus(detail.record.status)" :status="detail.record.status" />
+              <biz-iam-status-tag
+                v-if="knownStatus(detail.record.status)"
+                :status="detail.record.status"
+              />
               <span v-else>-</span>
             </template>
             <in-select v-model="statusDraft" :options="statusOptions" placeholder="请选择状态" />
           </in-detail-field>
-          <in-detail-field label="当前版本" :value="latestRevision?.record.revision || '-'" />
+          <in-detail-field label="最新发布版本" :value="roleVersionLabel(latestRevision?.record)" />
           <in-detail-field label="操作授权">
             <template #view>
               <div v-if="grantLines.length" class="flex flex-col gap-4px">
@@ -52,6 +55,9 @@
     </in-biz-tab-panel>
     <in-biz-tab-panel title="发布新版本" name="publish" :editable="false">
       <div class="flex flex-col gap-12px">
+        <div v-if="sourceRevision" class="text-12px">
+          编辑来源：{{ roleVersionLabel(sourceRevision) }}
+        </div>
         <in-form :editing="true">
           <in-detail-field label="操作授权">
             <div class="mb-8px text-12px text-[var(--el-text-color-secondary)]">
@@ -69,13 +75,23 @@
             />
           </in-detail-field>
         </in-form>
+        <biz-iam-role-version-form v-model:name="versionName" v-model:remark="versionRemark" />
         <biz-iam-preview-alert :preview="previewApi ? previewState.preview.value : null" />
         <div v-if="canPublish" class="flex flex-wrap gap-8px">
           <in-button v-if="allowDeltas" @in-click="privateRestoreDeltas">恢复平台设置</in-button>
-          <in-button v-if="previewApi" :loading="previewState.loading.value" @in-click="privatePreview">
+          <in-button
+            v-if="previewApi"
+            :loading="previewState.loading.value"
+            @in-click="privatePreview"
+          >
             预览
           </in-button>
-          <in-button type="primary" :loading="saving" :disabled="!canRelease" @in-click="privatePublish">
+          <in-button
+            type="primary"
+            :loading="saving"
+            :disabled="!canRelease"
+            @in-click="privatePublish"
+          >
             发布（不自动升级授权）
           </in-button>
         </div>
@@ -93,8 +109,29 @@
           @handleSizeChange="privateOnRevisionSizeChange"
           @handleCurrentChange="privateOnRevisionCurrentChange"
         >
-          <template #revision="{ item }">{{ asRevision(item).record.revision }}</template>
-          <template #id="{ item }">{{ asRevision(item).record.id }}</template>
+          <template #revision="{ item }">{{ roleVersionLabel(asRevision(item).record) }}</template>
+          <template #id="{ item }"
+            >{{ asRevision(item).record.id }}
+            <div class="text-12px">{{ asRevision(item).record.remark || "-" }}</div>
+            <div class="text-12px">
+              {{ formatDateTime(asRevision(item).record.publishedAt) }}
+            </div></template
+          >
+          <template #actions="{ item }">
+            <in-button
+              v-if="canPublish"
+              link
+              type="primary"
+              @in-click="privateEditRevision(asRevision(item))"
+              >基于此版本编辑</in-button
+            >
+            <in-button
+              v-if="metadataApi && canStatus"
+              link
+              @in-click="metadataDialog?.show(roleId, asRevision(item).record)"
+              >编辑版本信息</in-button
+            >
+          </template>
           <template #deltas="{ item }">
             <biz-iam-revision-delta-view
               :items="displayDeltasOf(asRevision(item))"
@@ -119,6 +156,10 @@
           :closable="false"
           title="默认不升级既有授权。发布共享新版本不会自动扩大本组织权限。"
         />
+        <biz-iam-role-version-form
+          v-model:name="upgradeVersionName"
+          v-model:remark="upgradeRemark"
+        />
         <biz-iam-upgrade-conflicts v-model="resolutions" :conflicts="upgradeConflicts" />
         <div v-if="affectedAssignments.length" class="flex flex-col gap-8px">
           <div>受影响授权（默认全不选）</div>
@@ -128,7 +169,10 @@
             </el-checkbox>
           </el-checkbox-group>
         </div>
-        <div v-if="upgradeImpact?.restricted" class="text-12px text-[var(--el-text-color-secondary)]">
+        <div
+          v-if="upgradeImpact?.restricted"
+          class="text-12px text-[var(--el-text-color-secondary)]"
+        >
           部分影响当前身份无法披露，不以 0 代替
         </div>
         <biz-iam-preview-alert :preview="upgradePreviewState.preview.value" />
@@ -148,6 +192,12 @@
       </div>
     </in-biz-tab-panel>
   </in-detail-drawer>
+  <biz-iam-role-version-metadata-dialog
+    v-if="metadataApi"
+    ref="metadataDialog"
+    :update-api="metadataApi"
+    @success="load(roleId)"
+  />
 </template>
 
 <script setup lang="ts">
@@ -161,7 +211,10 @@ import {
   type R,
   type TableHeaderRecord,
 } from "@ingot/admin-core";
+import { formatDateTime } from "@ingot/shared";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
+import BizIamRoleVersionForm from "./BizIamRoleVersionForm.vue";
+import BizIamRoleVersionMetadataDialog from "./BizIamRoleVersionMetadataDialog.vue";
 import BizIamGrantEditor from "./BizIamGrantEditor.vue";
 import BizIamRevisionDeltaView from "./BizIamRevisionDeltaView.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
@@ -169,6 +222,9 @@ import BizIamStatusTag from "./BizIamStatusTag.vue";
 import BizIamUpgradeConflicts from "./BizIamUpgradeConflicts.vue";
 import {
   ConfigurationStatus,
+  cloneRevisionDefinition,
+  roleVersionLabel,
+  type RoleRevisionMetadataApi,
   IAM_DEFAULT_PAGE_SIZE,
   emptyRoleDefinitionDraft,
   formatScopeKinds,
@@ -208,8 +264,17 @@ const props = defineProps<{
   publishApi: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
   statusApi?: (id: string, input: ConfigurationStatusInput) => Promise<R<CreatedResource>>;
   deleteApi?: (id: string) => Promise<R<CreatedResource>>;
-  upgradePreviewApi?: (id: string, input: UpgradePreviewInput) => Promise<R<Preview<UpgradePreview>>>;
+  upgradePreviewApi?: (
+    id: string,
+    input: UpgradePreviewInput,
+  ) => Promise<R<Preview<UpgradePreview>>>;
   upgradeApi?: (id: string, input: UpgradeInput) => Promise<R<CreatedResource>>;
+  metadataApi?: RoleRevisionMetadataApi;
+  sourcePreviewApi?: (
+    id: string,
+    draft: RoleDefinitionDraft,
+    sourceId?: string,
+  ) => Promise<R<Preview>>;
   publishAction: string;
   statusAction?: string;
   deleteAction?: string;
@@ -218,6 +283,12 @@ const props = defineProps<{
 
 const emits = defineEmits<{ success: [] }>();
 const visible = ref(false);
+const sourceRevision = ref<RoleRevision>();
+const versionName = ref(""),
+  versionRemark = ref("");
+const upgradeVersionName = ref(""),
+  upgradeRemark = ref("");
+const metadataDialog = ref<InstanceType<typeof BizIamRoleVersionMetadataDialog>>();
 const tab = ref("base");
 const editing = ref(false);
 const loading = ref(false);
@@ -243,13 +314,16 @@ const latestRevision = ref<ResourceDetail<RoleRevision>>();
 const revisionDeltas = ref<Record<string, RoleDelta[]>>({});
 const revisionActionNames = ref<Record<string, string>>({});
 const revisionHeaders: Array<TableHeaderRecord> = [
-  { label: "版本", prop: "revision", width: 80 },
+  { label: "版本", prop: "revision", minWidth: 160 },
   { label: "版本 ID", prop: "id", minWidth: 180 },
   { label: "差异", prop: "deltas", minWidth: 160 },
+  { label: "操作", prop: "actions", minWidth: 150 },
 ];
 const definition = ref<RoleDefinitionDraft>(emptyRoleDefinitionDraft());
 const kindEnum = useRoleKindEnum();
-const contextEpoch = computed(() => detail.value?.version ?? "0");
+const contextEpoch = computed(
+  () => `${detail.value?.version ?? "0"}:${sourceRevision.value?.id ?? ""}`,
+);
 const newBaseRevisionId = ref("");
 const resolutions = ref<UpgradeResolution[]>([]);
 const selectedAssignmentIds = ref<string[]>([]);
@@ -298,7 +372,8 @@ const applyRevisionDiffs = (
   const next: Record<string, RoleDelta[]> = {};
   const deltas: RoleDelta[] = [];
   records.forEach((item, index) => {
-    const previous = records[index + 1]?.record ?? (index === records.length - 1 ? older : undefined);
+    const previous =
+      records[index + 1]?.record ?? (index === records.length - 1 ? older : undefined);
     const items = revisionDisplayDeltas(item.record, previous);
     next[item.record.id] = items;
     deltas.push(...items);
@@ -347,7 +422,10 @@ const canPublish = computed(
   () => objectActionAllowed(detail.value?.capabilities, props.publishAction).allowed,
 );
 const showUpgrade = computed(
-  () => !!props.upgradePreviewApi && !!props.upgradeApi && !!latestRevision.value?.record.baseRevisionId,
+  () =>
+    !!props.upgradePreviewApi &&
+    !!props.upgradeApi &&
+    !!latestRevision.value?.record.baseRevisionId,
 );
 const canUpgrade = computed(
   () =>
@@ -399,16 +477,23 @@ const definitionKey = (draft: RoleDefinitionDraft): string =>
       kind: item.kind,
     })),
     metadataOverrides: draft.metadataOverrides ?? null,
+    resourceFieldPermissions: draft.resourceFieldPermissions ?? null,
   });
 
-const definitionChanged = computed(() => definitionKey(definition.value) !== baselineDefinition.value);
+const definitionChanged = computed(
+  () =>
+    definitionKey(definition.value) !== baselineDefinition.value ||
+    (!!sourceRevision.value && sourceRevision.value.id !== latestRevision.value?.record.id),
+);
 const grantApplicationIds = computed(() =>
   (latestRevision.value?.record.grants ?? []).map(
     (grant) => actionRefs.value[grant.actionId]?.applicationId ?? "",
   ),
 );
 const applicationNames = computed(() =>
-  Object.fromEntries(Object.values(actionRefs.value).map((item) => [item.applicationId, item.applicationName])),
+  Object.fromEntries(
+    Object.values(actionRefs.value).map((item) => [item.applicationId, item.applicationName]),
+  ),
 );
 const actionNames = computed(() =>
   Object.fromEntries(Object.values(actionRefs.value).map((item) => [item.id, item.name])),
@@ -437,21 +522,18 @@ const canRelease = computed(() => {
 
 const applyRevision = (revision: ResourceDetail<RoleRevision> | undefined): void => {
   definition.value = revision
-    ? {
-        grants: revision.record.grants.map((item) => ({
-          actionId: item.actionId,
-          scopes: [...item.scopes],
-        })),
-        deltas: revision.record.deltas.map((item) => ({
-          actionId: item.actionId,
-          operation: item.operation,
-          scopes: item.scopes ? [...item.scopes] : undefined,
-        })),
-        parameterDefinitions: [...revision.record.parameterDefinitions],
-        metadataOverrides: revision.record.metadataOverrides,
-      }
+    ? cloneRevisionDefinition(revision.record)
     : emptyRoleDefinitionDraft();
+  sourceRevision.value = revision?.record;
+  versionName.value = "";
+  versionRemark.value = "";
   baselineDefinition.value = definitionKey(definition.value);
+};
+
+const privateEditRevision = (row: ResourceDetail<RoleRevision>): void => {
+  applyRevision(row);
+  previewState.bumpDraft();
+  tab.value = "publish";
 };
 
 const assignRevisionPage = (
@@ -474,7 +556,9 @@ const assignRevisionPage = (
 };
 
 const resolveLatestGrantNames = (guard: { isCurrent: () => boolean }): Promise<void> => {
-  const ids = (latestRevision.value?.record.grants ?? []).map((item) => item.actionId).filter(Boolean);
+  const ids = (latestRevision.value?.record.grants ?? [])
+    .map((item) => item.actionId)
+    .filter(Boolean);
   if (!props.resolveActions || !ids.length) {
     return Promise.resolve();
   }
@@ -631,7 +715,10 @@ const privatePublish = (): void => {
   props
     .publishApi(roleId.value, {
       expectedVersion: detail.value.version,
-      definition: definition.value,
+      definition: JSON.parse(JSON.stringify(definition.value)),
+      sourceRevisionId: sourceRevision.value?.id,
+      versionName: versionName.value.trim(),
+      remark: versionRemark.value.trim(),
     })
     .then(() => {
       Message.success("已发布新版本，既有授权仍钉在旧版本");
@@ -678,6 +765,8 @@ const privateUpgrade = (): void => {
   props
     .upgradeApi(roleId.value, {
       expectedVersion: upgradePreviewState.preview.value?.version ?? detail.value.version,
+      versionName: upgradeVersionName.value.trim(),
+      remark: upgradeRemark.value.trim(),
       newBaseRevisionId: newBaseRevisionId.value.trim(),
       resolutions: resolutions.value,
       assignmentIds: selectedAssignmentIds.value,

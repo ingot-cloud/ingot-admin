@@ -26,9 +26,8 @@
               class="p-12px mb-8px rounded-8px bg-[var(--in-permission-panel-bg)]"
             >
               {{ row.record.subjectName || row.record.assignment.subject.id }} ·
-              {{ row.record.roleName }} · v{{
-                row.record.revisionNumber || row.record.assignment.roleRevisionRef.id
-              }}<br /><span class="text-12px"
+              {{ row.record.roleName }} · {{ assignmentVersionLabel(row.record) }}<br /><span
+                class="text-12px"
                 >{{ formatDateTime(row.record.assignment.validFrom, { fallback: "立即" }) }} 至
                 {{ formatDateTime(row.record.assignment.validUntil, { fallback: "长期" }) }} ·
                 {{ row.record.delegationSummary || "直接分配" }}</span
@@ -151,6 +150,7 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { assignmentVersionLabel } from "../models/iam";
 import { formatDateTime } from "@ingot/shared";
 import { fieldPermissionChanges } from "../models/iam/roleFields";
 import { Message, useCapabilities } from "@ingot/admin-core";

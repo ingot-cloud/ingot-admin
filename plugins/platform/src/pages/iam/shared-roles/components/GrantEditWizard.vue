@@ -17,13 +17,22 @@
           <grant-picker v-if="step === 0" :key="session" v-model="grants" :domain="domain" />
           <scope-step v-else-if="step === 1" v-model="grants" :domain="domain" />
           <field-step v-else-if="platform && step === 2" ref="fieldStep" v-model="grants" />
-          <preview-panel
-            v-else
-            :profile="profile"
-            :grants="grants"
-            :show-profile="false"
-            hint="发布新版本不会自动升级已有授权。"
-          />
+          <div v-else>
+            <preview-panel
+              :profile="profile"
+              :grants="grants"
+              :show-profile="false"
+              hint="发布新版本后可独立确认版本应用。"
+            />
+            <biz-iam-role-version-form
+              v-model:name="versionName"
+              v-model:remark="versionRemark"
+              v-model:mode="publishMode"
+              :allow-application="!!applicationApi && canApply"
+              :source-revision-id="sourceRevision?.id"
+              class="mt-24px max-w-640px"
+            />
+          </div>
         </div>
       </section>
     </div>
@@ -46,9 +55,14 @@
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message, type R } from "@ingot/admin-core";
+import { confirmUnsavedChanges, Message, useCapabilities, type R } from "@ingot/admin-core";
 import {
   AuthorizationDomain,
+  BizIamRoleVersionForm,
+  IamAction,
+  type RoleApplicationApi,
+  type RoleApplicationTask,
+  type RoleRevision,
   type CreatedResource,
   type RolePublishInput,
 } from "@ingot/admin-common";
@@ -73,13 +87,22 @@ const props = withDefaults(
   defineProps<{
     publishApi?: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
     domain?: AuthorizationDomain;
+    applicationApi?: RoleApplicationApi;
   }>(),
   {
     domain: AuthorizationDomain.TENANT,
   },
 );
 
-const emits = defineEmits<{ success: [] }>();
+const emits = defineEmits<{ success: []; prepared: [task: RoleApplicationTask] }>();
+const { hasAction } = useCapabilities();
+const canApply = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE));
+const sourceRevision = ref<RoleRevision>();
+const latestRevisionId = ref("");
+const versionName = ref(""),
+  versionRemark = ref("");
+const publishMode = ref<"PUBLISH" | "SOURCE_REVISIONS" | "ALL">("PUBLISH");
+const publishKey = ref("");
 const submitApi = computed(() => props.publishApi ?? PlatformSharedRolePublishAPI);
 const platform = computed(() => props.domain === AuthorizationDomain.PLATFORM);
 const steps = computed(() =>
@@ -98,10 +121,20 @@ const grants = ref<SelectedGrant[]>([]);
 const baseline = ref("");
 const session = ref(0);
 
-const changed = computed(() => grantsFingerprint(grants.value) !== baseline.value);
+const changed = computed(
+  () =>
+    grantsFingerprint(grants.value) !== baseline.value ||
+    (!!sourceRevision.value &&
+      !!latestRevisionId.value &&
+      sourceRevision.value.id !== latestRevisionId.value),
+);
 
 const reset = (): void => {
   previewSession.value += 1;
+  versionName.value = "";
+  versionRemark.value = "";
+  publishMode.value = "PUBLISH";
+  publishKey.value = crypto.randomUUID();
   step.value = 0;
   grants.value = [];
   baseline.value = "";
@@ -159,6 +192,24 @@ const privateNext = async (): Promise<void> => {
 };
 
 const fingerprint = computed(() => grantsFingerprint(grants.value));
+const buildPublishInput = (): RolePublishInput => {
+  const input = toPublishInput(expectedVersion.value, grants.value);
+  input.sourceRevisionId = sourceRevision.value?.id;
+  input.versionName = versionName.value.trim();
+  input.remark = versionRemark.value.trim();
+  if (sourceRevision.value?.metadataOverrides)
+    input.definition.metadataOverrides = JSON.parse(
+      JSON.stringify(sourceRevision.value.metadataOverrides),
+    );
+  return input;
+};
+watch(
+  [grants, versionName, versionRemark, publishMode],
+  () => {
+    publishKey.value = crypto.randomUUID();
+  },
+  { deep: true },
+);
 const privateSubmit = (): void => {
   if (platform.value && previewed.value !== fingerprint.value) {
     Message.warning("草稿已变化，请重新预览");
@@ -169,10 +220,25 @@ const privateSubmit = (): void => {
     return;
   }
   saving.value = true;
-  submitApi
-    .value(roleId.value, toPublishInput(expectedVersion.value, grants.value))
-    .then(() => {
-      Message.success("已发布新版本，既有授权仍钉在旧版本");
+  const input = buildPublishInput();
+  const submit: Promise<R<CreatedResource | RoleApplicationTask>> =
+    publishMode.value === "PUBLISH" || !props.applicationApi
+      ? submitApi.value(roleId.value, input)
+      : props.applicationApi.publish(roleId.value, {
+          publish: input,
+          selection: publishMode.value,
+          sourceRevisionIds:
+            publishMode.value === "SOURCE_REVISIONS" && sourceRevision.value
+              ? [sourceRevision.value.id]
+              : undefined,
+          idempotencyKey: publishKey.value,
+        });
+  submit
+    .then((response) => {
+      if ("targetRevisionId" in response.data) {
+        Message.success("新版本已发布，应用计划已准备；确认执行后切换分配");
+        emits("prepared", response.data);
+      } else Message.success("已发布新版本，既有分配保留原版本");
       visible.value = false;
       emits("success");
     })
@@ -187,16 +253,18 @@ defineExpose({
     version: string;
     profile: WizardProfile;
     grants: SelectedGrant[];
+    sourceRevision?: RoleRevision;
+    latestRevisionId?: string;
   }) {
     reset();
     roleId.value = input.roleId;
     expectedVersion.value = input.version;
     Object.assign(profile, input.profile);
-    grants.value = input.grants.map((item) => ({
-      ...item,
-      scopes: item.scopes.map((scope) => ({ ...scope })),
-      scopeCapabilities: [...item.scopeCapabilities],
-    }));
+    latestRevisionId.value = input.latestRevisionId ?? "";
+    sourceRevision.value = input.sourceRevision
+      ? JSON.parse(JSON.stringify(input.sourceRevision))
+      : undefined;
+    grants.value = JSON.parse(JSON.stringify(input.grants));
     baseline.value = grantsFingerprint(grants.value);
     session.value += 1;
     visible.value = true;
