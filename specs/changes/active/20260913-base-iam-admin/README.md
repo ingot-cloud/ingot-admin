@@ -150,3 +150,10 @@ MT01–MT03 开发、来源同步与定向自动化完成，时间增量进入 v
 ## 2026-10-09 菜单高级配置与步骤编辑
 
 用户已批准实施，增量需求、契约、决策、任务和验收见 [MENU-ADVANCED-CONFIGURATION](./MENU-ADVANCED-CONFIGURATION.md)。本增量 validating，MA01–MA05 与 MA06-A 已完成，MA06-B 真实服务联调及上线验收待执行；证据见 [MENU-ADVANCED-VERIFICATION](./MENU-ADVANCED-VERIFICATION.md)。主 change 保留原状态与未完成事项。
+
+
+## 2026-10-11 授权审计收敛
+
+用户已批准并要求实施 [授权审计增量](./AUTHORIZATION-AUDIT-REFINEMENT.md)。固定当前域、统一审计文本格式、补齐服务端筛选与页面状态；保留平台/租户隔离及历史审计。主 change 保持 implementing。
+
+2026-10-11：授权审计 AU01–AU04 开发与限定自动化完成，本增量 validating；AU05 真实服务发布和两站验收待执行。主 change 保持 implementing，证据见 [授权审计增量](./AUTHORIZATION-AUDIT-REFINEMENT.md)。

@@ -387,3 +387,19 @@ sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md
 | `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `e7d465ea5f14c456d460e36887fd0e7151bd23607a073af5b535aca2e8ed8fe1` |
 | `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `b81a536558379d4937de19916c716e62c17eaea5bb9154544587757da4c811b2` |
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `b7b7ac6bc68731a6c978c4c326f09598b4110e5e6e950612c11db38360ae0c6d` |
+
+
+## 2026-10-11 授权审计权威来源
+
+本节为授权审计增量及受影响文档/契约的最新 SHA-256；历史节保留。当前契约 152 路径/222 操作，本增量 validating；实际部署验收 AU05 未完成。
+
+| 后端相对路径 | 本地副本 | SHA-256 |
+|---|---|---|
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `cc5c3e017eda8802542d06f2d5edbb7469f9ab86ad9311d2425843df2b2db385` |
+| `FRONTEND.md` | [sources/BACKEND_FRONTEND.md](./sources/BACKEND_FRONTEND.md) | `23755c63aad1f36c1e33d8b088ab630ce76d7905b48e5380abcb3cdb92d6da12` |
+| `REQUIREMENTS.md` | [sources/BACKEND_REQUIREMENTS.md](./sources/BACKEND_REQUIREMENTS.md) | `d819c6def76b51777fad049c9dddcdbe5e16df1349e7b649a6c6f6fcd01cbad3` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `efd1a2071efd91d08f095f1dc9baa0cac544dd48c3683f68db4e0b7f3fa7382f` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `f95c5cedf3960be56e1a34226d84f04ced69d27facc552d13b24abaeb25b7b2a` |
+| `AUTHORIZATION-AUDIT-REFINEMENT.md` | [sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md](./sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md) | `60b4ccbe35390da77fba33b045ac0863a7b52693f0d139f7e037a331b5df52e3` |
+| `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `afb64591567e5ecf0509533a90758c8e2e760b835d3635e292471029f63d2bd7` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `5856eb9de250002f6e149a6d8672beaada2f400d40b816db84d48cab24243f7e` |
