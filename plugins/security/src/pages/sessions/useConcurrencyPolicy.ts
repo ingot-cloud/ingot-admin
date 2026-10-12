@@ -1,3 +1,4 @@
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
 import type { SessionConcurrencyPolicy } from "@/models";
 import { SessionConcurrencyScopeEnum } from "@/models/enums";
 import { DeleteConcurrencyPolicyAPI } from "@/api/security/concurrencyPolicy";
@@ -5,7 +6,7 @@ import {
   ConcurrencyPolicyListQueryOptions,
   concurrencyPolicyQueryKeys,
 } from "@/api/security/concurrencyPolicy.query";
-import { Confirm, Message, silentQueryRequest } from "@ingot/admin-core";
+import { Confirm, Message, silentQueryRequest, useCapabilities } from "@ingot/admin-core";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const SCOPE_ORDER: Record<string, number> = {
@@ -30,8 +31,13 @@ const sortPolicies = (list: Array<SessionConcurrencyPolicy>): Array<SessionConcu
 };
 
 export const useConcurrencyPolicy = () => {
+  const { hasAction } = useCapabilities();
+  const enabled = useActiveSecurityRead(SecurityAction.CONCURRENCY_READ, "policy");
   const queryClient = useQueryClient();
-  const query = useQuery(() => ConcurrencyPolicyListQueryOptions());
+  const query = useQuery(() => ({
+    ...ConcurrencyPolicyListQueryOptions(),
+    enabled: enabled.value,
+  }));
   const tableData = computed(() => sortPolicies(query.data.value ?? []));
 
   const removeMutation = useMutation({
@@ -42,11 +48,11 @@ export const useConcurrencyPolicy = () => {
   });
 
   const loadAll = async (): Promise<void> => {
-    await query.refetch();
+    if (enabled.value) await query.refetch();
   };
 
   const removePolicy = (policy: SessionConcurrencyPolicy): void => {
-    if (!policy.id) {
+    if (!hasAction(SecurityAction.CONCURRENCY_UPDATE) || !policy.id) {
       return;
     }
     if (policy.scope === SessionConcurrencyScopeEnum.GLOBAL) {

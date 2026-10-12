@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
+import { SecurityAction } from "@/models/securityActions";
 import { SESSION_POLICY_UPDATE_PERMISSION } from "./constants";
 
 vi.mock("@/models/enums/sessionEnums", () => ({
@@ -56,7 +57,8 @@ describe("security sessions policy table contract", () => {
       "detail:detail",
       "danger:delete",
     ]);
-    expect(globalActions[0]?.permission).toBe(SESSION_POLICY_UPDATE_PERMISSION);
+    expect(globalActions[0]?.permission).toBe(SecurityAction.CONCURRENCY_READ);
+    expect(globalActions[0]?.label).toBe("详情");
     expect(globalActions[1]?.disabled).toBe(true);
     expect(globalActions[1]?.disabledReason).toBe(
       "全局兜底策略不可删除，可将最大会话数改为 0 以关闭限制",

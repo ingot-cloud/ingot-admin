@@ -1,3 +1,4 @@
+import { securityQueryContext } from "./context";
 import { queryOptions } from "@tanstack/vue-query";
 import { createResourceQueryKeys, silentQueryRequest } from "@ingot/admin-core";
 import type { SessionConcurrencyPolicy } from "@/models";
@@ -7,7 +8,7 @@ export const concurrencyPolicyQueryKeys = createResourceQueryKeys("security", "c
 
 export function ConcurrencyPolicyListQueryOptions() {
   return queryOptions({
-    queryKey: concurrencyPolicyQueryKeys.lists(),
+    queryKey: [...concurrencyPolicyQueryKeys.lists(), securityQueryContext()],
     staleTime: 0,
     queryFn: ({ signal }): Promise<Array<SessionConcurrencyPolicy>> =>
       GetConcurrencyPoliciesAPI(silentQueryRequest(signal)).then(({ data }) => data ?? []),

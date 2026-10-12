@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10px">
+  <div class="security-access-list-panel">
     <in-table
       :loading="groupQuery.isFetching.value"
       :data="tableData"
@@ -41,7 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "endpoint-group");
+
+import { applyColumnSelection, useCapabilities, type InTableAction } from "@ingot/admin-core";
 import type { GatewayEndpointGroup } from "@/models";
 import { EndpointGroupListQueryOptions, endpointGroupQueryKeys } from "@/api/security/policy.query";
 import {
@@ -53,8 +56,12 @@ import {
 import EndpointGroupDrawer from "./EndpointGroupDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
+import { DeleteEndpointGroupAPI } from "@/api/security/policy";
+
+const { hasAction } = useCapabilities();
+const message = useMessage();
 const queryClient = useQueryClient();
-const groupQuery = useQuery(() => EndpointGroupListQueryOptions());
+const groupQuery = useQuery(() => ({ ...EndpointGroupListQueryOptions(), enabled: enabled.value }));
 const tableData = computed(() => groupQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof EndpointGroupDrawer>>();
 const selectedColumnProps = ref<string[]>([]);
@@ -76,11 +83,23 @@ const privateOnEdit = (item: GatewayEndpointGroup): void => {
   drawerRef.value?.show(item);
 };
 
+const privateOnDelete = async (item: GatewayEndpointGroup): Promise<void> => {
+  if (!item.id || !hasAction(SecurityAction.POLICY_DELETE)) return;
+  try {
+    await DeleteEndpointGroupAPI(item.id);
+    message.success("删除成功");
+    privateRefresh();
+  } catch {
+    // 请求层统一反馈失败，保留当前列表。
+  }
+};
+
 const toolbarActions = computed(() => createEndpointGroupToolbarActions(privateOnCreate));
 
 const rowActionsOf = (item: GatewayEndpointGroup): Array<InTableAction<GatewayEndpointGroup>> =>
   createEndpointGroupRowActions(item, {
     onDetail: privateOnEdit,
+    onDelete: privateOnDelete,
   });
 
 const privateOnColumnChange = (value: string[]): void => {

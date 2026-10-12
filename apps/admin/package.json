@@ -19,7 +19,6 @@
     "@element-plus/icons-vue": "catalog:",
     "@ingot/admin-core": "workspace:*",
     "@ingot/org-plugin": "workspace:*",
-    "@ingot/security-plugin": "workspace:*",
     "@ingot/shared": "workspace:*",
     "@vue/shared": "catalog:",
     "@vueuse/core": "catalog:",

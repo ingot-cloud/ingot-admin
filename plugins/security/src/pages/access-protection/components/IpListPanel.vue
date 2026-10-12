@@ -1,5 +1,5 @@
 <template>
-  <div class="ip-list-panel">
+  <div class="ip-list-panel security-access-list-panel">
     <in-table
       :loading="ipQuery.isFetching.value"
       :data="filteredData"
@@ -54,9 +54,13 @@
 </template>
 
 <script setup lang="ts">
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "ip-list");
+
 import { formatDateTime } from "@ingot/shared";
 import {
   applyColumnSelection,
+  useCapabilities,
   resolveBooleanPickerFilter,
   toBooleanPickerValue,
   withAllPickerOption,
@@ -80,8 +84,12 @@ interface IpListFilter {
   enabled?: boolean;
 }
 
+import { DeleteIpListAPI } from "@/api/security/policy";
+
+const { hasAction } = useCapabilities();
+const message = useMessage();
 const queryClient = useQueryClient();
-const ipQuery = useQuery(() => IpListQueryOptions());
+const ipQuery = useQuery(() => ({ ...IpListQueryOptions(), enabled: enabled.value }));
 const tableData = computed(() => ipQuery.data.value ?? []);
 const filter = reactive<IpListFilter>({
   listType: undefined,
@@ -155,11 +163,23 @@ const privateOnEdit = (item: GatewayIpList): void => {
   drawerRef.value?.show(item);
 };
 
+const privateOnDelete = async (item: GatewayIpList): Promise<void> => {
+  if (!item.id || !hasAction(SecurityAction.POLICY_DELETE)) return;
+  try {
+    await DeleteIpListAPI(item.id);
+    message.success("删除成功");
+    privateRefresh();
+  } catch {
+    // 请求层统一反馈失败，保留当前列表。
+  }
+};
+
 const toolbarActions = computed(() => createIpListToolbarActions(privateOnCreate));
 
 const rowActionsOf = (item: GatewayIpList): Array<InTableAction<GatewayIpList>> =>
   createIpListRowActions(item, {
     onDetail: privateOnEdit,
+    onDelete: privateOnDelete,
   });
 
 const privateOnColumnChange = (value: string[]): void => {

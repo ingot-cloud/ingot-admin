@@ -1,3 +1,4 @@
+import { securityQueryContext } from "./context";
 import { queryOptions } from "@tanstack/vue-query";
 import { createResourceQueryKeys, silentQueryRequest } from "@ingot/admin-core";
 import type { CredentialPolicyConfig } from "@/models";
@@ -7,7 +8,7 @@ export const credentialPolicyQueryKeys = createResourceQueryKeys("security", "cr
 
 export function CredentialPolicyListQueryOptions() {
   return queryOptions({
-    queryKey: credentialPolicyQueryKeys.lists(),
+    queryKey: [...credentialPolicyQueryKeys.lists(), securityQueryContext()],
     queryFn: ({ signal }): Promise<Array<CredentialPolicyConfig>> =>
       GetPolicyConfigList(silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });

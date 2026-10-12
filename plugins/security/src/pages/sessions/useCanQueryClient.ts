@@ -1,14 +1,7 @@
-import { usePermissions } from "@ingot/admin-core";
+import { computed } from "vue";
+import { useCapabilities } from "@ingot/admin-core";
 import { CLIENT_QUERY_PERMISSION } from "./constants";
-
 export const useCanQueryClient = () => {
-  const permissionsStore = usePermissions();
-
-  const canQueryClient = computed(() => {
-    return permissionsStore.permissions.some((code) => CLIENT_QUERY_PERMISSION.startsWith(code));
-  });
-
-  return {
-    canQueryClient,
-  };
+  const { hasAction } = useCapabilities();
+  return { canQueryClient: computed(() => hasAction(CLIENT_QUERY_PERMISSION)) };
 };

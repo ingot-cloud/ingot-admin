@@ -23,8 +23,14 @@ describe("security access ip list table contract", () => {
         overflow: "never",
       }),
     ]);
-    const rows = createIpListRowActions({ id: 1, keyValue: "1.1.1.1" }, { onDetail: () => undefined });
-    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual(["detail:detail"]);
-    expect(rows[0]?.label).toBe("编辑");
+    const rows = createIpListRowActions(
+      { id: 1, keyValue: "1.1.1.1" },
+      { onDetail: () => undefined, onDelete: () => undefined },
+    );
+    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual([
+      "detail:detail",
+      "danger:delete",
+    ]);
+    expect(rows[0]?.label).toBe("详情");
   });
 });

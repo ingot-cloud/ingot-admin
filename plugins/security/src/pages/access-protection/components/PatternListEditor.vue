@@ -111,18 +111,29 @@ const privateOnRemove = (index: number): void => {
 
 <style lang="postcss" scoped>
 .pattern-list-editor {
-  @apply w-full flex flex-col gap-2;
+  @apply w-full min-w-0 flex flex-col gap-2;
 
   & .pattern-list-editor__row {
-    @apply flex flex-row items-start gap-2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 8rem) auto;
+    gap: var(--in-space-2);
+    align-items: start;
   }
 
   & .pattern-list-editor__path {
-    @apply flex-1 mb-0;
+    @apply min-w-0 mb-0;
   }
 
   & .pattern-list-editor__method {
-    @apply w-140px mb-0;
+    @apply min-w-0 mb-0;
+  }
+}
+@media (max-width: 540px) {
+  .pattern-list-editor__row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+  }
+  .pattern-list-editor__path {
+    grid-column: 1 / -1;
   }
 }
 </style>

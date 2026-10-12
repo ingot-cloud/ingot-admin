@@ -333,9 +333,6 @@ importers:
       '@ingot/org-plugin':
         specifier: workspace:*
         version: link:../../plugins/org
-      '@ingot/security-plugin':
-        specifier: workspace:*
-        version: link:../../plugins/security
       '@ingot/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -834,6 +831,9 @@ importers:
         specifier: workspace:*
         version: link:../shared
     devDependencies:
+      '@element-plus/icons-vue':
+        specifier: 'catalog:'
+        version: 2.3.2(vue@3.5.42(typescript@6.0.3))
       '@ingot/vite-config':
         specifier: workspace:*
         version: link:../vite-config

@@ -24,15 +24,20 @@ describe("account-protection IndexPage", () => {
     expect(source).toContain("in-biz-tabs-header");
     expect(source).toMatch(/<in-page-header[\s\S]*?\/>\s*<\/template>\s*<template #tabs>/);
     expect(source).toContain("visitedTabs");
-    expect(source).toContain('v-if="visitedTabs[AccountProtectionTabEnum.LOCKOUT]"');
+    expect(source).toMatch(
+      /v-if="\s*allowed\(AccountProtectionTabEnum.ADMIN_LOCKOUT\)\s*&&\s*visitedTabs\[AccountProtectionTabEnum.ADMIN_LOCKOUT\]\s*"/,
+    );
     expect(source).not.toContain("@refresh");
   });
 
-  it("B/C 两栏保持独立保存入口", () => {
+  it("B/C 独立 Tab 使用相同正文容器与单端保存入口", () => {
     expect(panelSource).toContain("SessionUserTypeEnum.ADMIN");
-    expect(panelSource).toContain("SessionUserTypeEnum.APP");
+    expect(source).toContain("AccountProtectionTabEnum.APP_LOCKOUT");
+    expect(source).toContain(':user-type="SessionUserTypeEnum.APP"');
+    expect(panelSource).toContain("useLockoutPolicy(props.userType, props.tab)");
     expect(panelSource).toContain(':save-policy="savePolicy"');
-    expect(columnSource).toContain('variant="bordered"');
+    expect(source).toContain("in-form-content");
+    expect(columnSource).toContain('<section class="lockout-column"');
     expect(columnSource).toContain("privateOnSaveClick");
     expect(columnSource).toContain("allowPermanent");
   });

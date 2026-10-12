@@ -1,0 +1,15 @@
+export const SecurityAction = {
+  POLICY_READ: "iam-platform:security-policy:read",
+  POLICY_CREATE: "iam-platform:security-policy:create",
+  POLICY_UPDATE: "iam-platform:security-policy:update",
+  POLICY_DELETE: "iam-platform:security-policy:delete",
+  LOGIN_READ: "iam-platform:login-failure-policy:read",
+  LOGIN_UPDATE: "iam-platform:login-failure-policy:update",
+  SESSION_READ: "iam-platform:session:read",
+  CONCURRENCY_UPDATE: "iam-platform:session-policy:update",
+  CONCURRENCY_READ: "iam-platform:session-policy:read",
+  CREDENTIAL_READ: "iam-platform:credential-policy:read",
+  CREDENTIAL_CREATE: "iam-platform:credential-policy:create",
+  CREDENTIAL_UPDATE: "iam-platform:credential-policy:update",
+  LOCKOUT_READ: "iam-platform:lockout-policy:read",
+} as const;

@@ -1,74 +1,117 @@
 <template>
-  <in-drawer :title="title" v-model="visible" size="520px" :loading="loading">
-    <div class="session-detail">
-      <in-with-label title="会话 ID">
-        <in-copy-tag v-if="session.sid" :text="session.sid" />
-        <span v-else>-</span>
-      </in-with-label>
-      <in-with-label title="Token ID">
-        <in-copy-tag v-if="session.jti" :text="session.jti" />
-        <span v-else>-</span>
-      </in-with-label>
-      <in-with-label title="用户">
-        {{ displaySessionUser(session) }}
-      </in-with-label>
-      <in-with-label title="账号">
-        {{ session.username || "-" }}
-      </in-with-label>
-      <in-with-label title="组织">
-        {{ displaySessionTenant(session) }}
-      </in-with-label>
-      <in-with-label title="客户端">
-        {{ session.clientId || "-" }}
-      </in-with-label>
-      <in-with-label title="客户端缺省">
-        <in-tag-enum
-          v-if="session.authType"
-          :value="session.authType"
-          :enumObj="tokenAuthMethodEnum"
-        />
-        <span v-else>-</span>
-      </in-with-label>
-      <in-with-label title="用户类型">
-        <in-tag-enum
-          v-if="session.userType"
-          :value="session.userType"
-          :enumObj="sessionUserTypeEnum"
-        />
-        <span v-else>-</span>
-      </in-with-label>
-      <in-with-label title="登录 IP">
-        {{ session.ipAddress || "-" }}
-      </in-with-label>
-      <in-with-label title="位置">
-        {{ session.location || "-" }}
-      </in-with-label>
-      <in-with-label title="设备">
-        {{ session.deviceType || "-" }}
-      </in-with-label>
-      <in-with-label title="操作系统">
-        {{ session.os || "-" }}
-      </in-with-label>
-      <in-with-label title="浏览器">
-        {{ session.browser || "-" }}
-      </in-with-label>
-      <in-with-label title="颁发时间">
-        {{ formatSessionTime(session.issuedAt) }}
-      </in-with-label>
-      <in-with-label title="过期时间">
-        {{ formatSessionTime(session.expiresAt) }}
-      </in-with-label>
-      <in-with-label title="最近凭据活动">
-        {{ formatSessionTime(session.lastAccessAt) }}
-      </in-with-label>
-      <in-with-label title="User-Agent">
-        <span class="session-detail__ua">{{ session.userAgent || "-" }}</span>
-      </in-with-label>
-    </div>
+  <in-drawer
+    :title="title"
+    v-model="visible"
+    size="min(640px, 100vw)"
+    layout="pinned"
+    class="security-policy-drawer"
+    :loading="loading"
+  >
+    <in-form :editing="false" class="session-detail">
+      <in-detail-field label="会话 ID">
+        <template #view>
+          <in-copy-tag v-if="session.sid" :text="session.sid" />
+          <span v-else>-</span>
+        </template>
+      </in-detail-field>
+      <in-detail-field label="Token ID">
+        <template #view>
+          <in-copy-tag v-if="session.jti" :text="session.jti" />
+          <span v-else>-</span>
+        </template>
+      </in-detail-field>
+      <in-detail-field label="用户">
+        <template #view>
+          {{ displaySessionUser(session) }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="账号">
+        <template #view>
+          {{ session.username || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="组织">
+        <template #view>
+          {{ displaySessionTenant(session) }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="客户端">
+        <template #view>
+          {{ session.clientId || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="认证方式">
+        <template #view>
+          <in-tag-enum
+            v-if="session.authType"
+            :value="session.authType"
+            :enumObj="tokenAuthMethodEnum"
+          />
+          <span v-else>-</span>
+        </template>
+      </in-detail-field>
+      <in-detail-field label="用户类型">
+        <template #view>
+          <in-tag-enum
+            v-if="session.userType"
+            :value="session.userType"
+            :enumObj="sessionUserTypeEnum"
+          />
+          <span v-else>-</span>
+        </template>
+      </in-detail-field>
+      <in-detail-field label="登录 IP">
+        <template #view>
+          {{ session.ipAddress || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="位置">
+        <template #view>
+          {{ session.location || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="设备">
+        <template #view>
+          {{ session.deviceType || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="操作系统">
+        <template #view>
+          {{ session.os || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="浏览器">
+        <template #view>
+          {{ session.browser || "-" }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="颁发时间">
+        <template #view>
+          {{ formatSessionTime(session.issuedAt) }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="过期时间">
+        <template #view>
+          {{ formatSessionTime(session.expiresAt) }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="最近凭据活动">
+        <template #view>
+          {{ formatSessionTime(session.lastAccessAt) }}
+        </template>
+      </in-detail-field>
+      <in-detail-field label="User-Agent">
+        <template #view>
+          <span class="session-detail__ua">{{ session.userAgent || "-" }}</span>
+        </template>
+      </in-detail-field>
+    </in-form>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const canRead = useActiveSecurityRead(SecurityAction.SESSION_READ, "session");
 import type { PlatformSessionVO } from "@/models";
 import { useSessionUserTypeEnum, useTokenAuthMethodEnum } from "@/models/enums";
 import { SessionDetailQueryOptions } from "@/api/security/session.query";
@@ -88,7 +131,7 @@ const sessionUserTypeEnum = useSessionUserTypeEnum();
 
 const detailQuery = useQuery(() => ({
   ...SessionDetailQueryOptions(activeSid),
-  enabled: visible.value && Boolean(activeSid.value),
+  enabled: canRead.value && visible.value && Boolean(activeSid.value),
 }));
 
 const loading = computed(() => detailQuery.isFetching.value);

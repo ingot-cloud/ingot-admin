@@ -1,3 +1,4 @@
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
 import type { ViolationEscalationConfig } from "@/models";
 import { UpdateViolationEscalationAPI } from "@/api/security/policy";
 import {
@@ -9,14 +10,15 @@ import { useQuery, useQueryClient } from "@tanstack/vue-query";
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
 
 export function useViolationEscalation() {
+  const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "violation-escalation");
   const queryClient = useQueryClient();
-  const query = useQuery(() => ViolationEscalationQueryOptions());
+  const query = useQuery(() => ({ ...ViolationEscalationQueryOptions(), enabled: enabled.value }));
   const saving = ref(false);
   const config = computed(() => query.data.value);
   const message = useMessage();
 
   const load = async (): Promise<void> => {
-    await query.refetch();
+    if (enabled.value) await query.refetch();
   };
 
   const save = async (payload: ViolationEscalationConfig): Promise<void> => {

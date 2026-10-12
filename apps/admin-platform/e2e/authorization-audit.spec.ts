@@ -75,9 +75,9 @@ const fixture = async (page: Page, domain: "PLATFORM" | "TENANT", canRead = true
           {
             id: "100",
             applicationId: "1",
-            name: "安全与运维",
+            name: domain === "PLATFORM" ? "平台管理" : "安全与合规",
             kind: "DIRECTORY",
-            path: "/security",
+            path: domain === "PLATFORM" ? "/platform/iam/manage" : "/org/iam/compliance",
             viewPath: "layout.main",
             children: [
               {
@@ -85,8 +85,11 @@ const fixture = async (page: Page, domain: "PLATFORM" | "TENANT", canRead = true
                 applicationId: "1",
                 name: "授权审计",
                 kind: "PAGE",
-                path: "/security/iam/authorization/audit",
-                viewPath: "security.iam.authorization.audit",
+                path: auditPath(domain),
+                viewPath:
+                  domain === "PLATFORM"
+                    ? "platform.iam.authorization.audit"
+                    : "org.iam.authorization.audit",
                 children: [],
               },
             ],
@@ -144,13 +147,14 @@ const fixture = async (page: Page, domain: "PLATFORM" | "TENANT", canRead = true
 };
 const domainOf = (name: string): "PLATFORM" | "TENANT" =>
   name === "tenant" ? "TENANT" : "PLATFORM";
-const path = "/security/iam/authorization/audit";
+const auditPath = (domain: "PLATFORM" | "TENANT") =>
+  domain === "PLATFORM" ? "/platform/authorization-audit" : "/org/authorization-audit";
 
 test("当前域查询、筛选与安全详情在宽窄屏正常展示", async ({ page }, testInfo) => {
   const domain = domainOf(testInfo.project.name);
   const { reads } = await fixture(page, domain);
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(path);
+  await page.goto(auditPath(domainOf(testInfo.project.name)));
   await expect(
     page.getByText(domain === "PLATFORM" ? "平台授权审计" : "当前组织授权审计", { exact: true }),
   ).toBeVisible();
@@ -196,7 +200,7 @@ test("当前域查询、筛选与安全详情在宽窄屏正常展示", async ({
 
 test("无审计资格展示权限状态且不发请求", async ({ page }, testInfo) => {
   const { reads } = await fixture(page, domainOf(testInfo.project.name), false);
-  await page.goto(path);
+  await page.goto(auditPath(domainOf(testInfo.project.name)));
   await expect(page.getByText("没有查看当前域授权审计的权限", { exact: true })).toBeVisible();
   expect(reads.filter((url) => url.pathname.endsWith("/authorization/audits"))).toHaveLength(0);
 });
@@ -204,7 +208,7 @@ test("无审计资格展示权限状态且不发请求", async ({ page }, testIn
 test("请求错误、服务端拒绝与合法空结果分别展示", async ({ page }, testInfo) => {
   const { changeState } = await fixture(page, domainOf(testInfo.project.name));
   changeState("error");
-  await page.goto(path);
+  await page.goto(auditPath(domainOf(testInfo.project.name)));
   await expect(page.getByText("暂时无法加载授权审计", { exact: true })).toBeVisible();
   changeState("empty");
   await page.getByRole("button", { name: "重试", exact: true }).click();

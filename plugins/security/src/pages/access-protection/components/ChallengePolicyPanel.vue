@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10px">
+  <div class="security-access-list-panel">
     <in-table
       :loading="policyQuery.isFetching.value"
       :data="tableData"
@@ -39,17 +39,19 @@
         <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
-    <ChallengePolicyDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
+    <ChallengePolicyDrawer ref="drawerRef" @success="privateRefresh" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "challenge");
+
+import { applyColumnSelection, useCapabilities, type InTableAction } from "@ingot/admin-core";
 import type { GatewayChallengePolicy } from "@/models";
 import { useChallengeTriggerEnum, useChallengeTypeEnum } from "@/models/enums";
 import {
   ChallengePolicyListQueryOptions,
-  EndpointGroupListQueryOptions,
   challengePolicyQueryKeys,
 } from "@/api/security/policy.query";
 import {
@@ -61,11 +63,16 @@ import {
 import ChallengePolicyDrawer from "./ChallengePolicyDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
+import { DeleteChallengePolicyAPI } from "@/api/security/policy";
+
+const { hasAction } = useCapabilities();
+const message = useMessage();
 const queryClient = useQueryClient();
-const policyQuery = useQuery(() => ChallengePolicyListQueryOptions());
-const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
+const policyQuery = useQuery(() => ({
+  ...ChallengePolicyListQueryOptions(),
+  enabled: enabled.value,
+}));
 const tableData = computed(() => policyQuery.data.value ?? []);
-const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof ChallengePolicyDrawer>>();
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: GatewayChallengePolicy = {};
@@ -101,13 +108,23 @@ const privateOnEdit = (item: GatewayChallengePolicy): void => {
   drawerRef.value?.show(item);
 };
 
+const privateOnDelete = async (item: GatewayChallengePolicy): Promise<void> => {
+  if (!item.id || !hasAction(SecurityAction.POLICY_DELETE)) return;
+  try {
+    await DeleteChallengePolicyAPI(item.id);
+    message.success("删除成功");
+    privateRefresh();
+  } catch {
+    // 请求层统一反馈失败，保留当前列表。
+  }
+};
+
 const toolbarActions = computed(() => createChallengePolicyToolbarActions(privateOnCreate));
 
-const rowActionsOf = (
-  item: GatewayChallengePolicy,
-): Array<InTableAction<GatewayChallengePolicy>> =>
+const rowActionsOf = (item: GatewayChallengePolicy): Array<InTableAction<GatewayChallengePolicy>> =>
   createChallengePolicyRowActions(item, {
     onDetail: privateOnEdit,
+    onDelete: privateOnDelete,
   });
 
 const privateOnColumnChange = (value: string[]): void => {

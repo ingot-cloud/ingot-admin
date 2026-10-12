@@ -7,6 +7,7 @@ import {
 
 vi.mock("@ingot/admin-core", () => ({
   REALTIME_QUERY_STALE_TIME: 0,
+  usePermissions: () => ({ contextEpoch: 1, domain: "PLATFORM", memberId: "1", tenantId: null }),
   createResourceQueryKeys: (domain: string, resource: string) => {
     const all = [domain, resource] as const;
     return {

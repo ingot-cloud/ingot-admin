@@ -1,3 +1,4 @@
+import { securityQueryContext } from "./context";
 import { queryOptions } from "@tanstack/vue-query";
 import { createResourceQueryKeys, silentQueryRequest } from "@ingot/admin-core";
 import type {
@@ -29,7 +30,7 @@ export const blockEventQueryKeys = createResourceQueryKeys("security", "block-ev
 
 export function EndpointGroupListQueryOptions() {
   return queryOptions({
-    queryKey: endpointGroupQueryKeys.lists(),
+    queryKey: [...endpointGroupQueryKeys.lists(), securityQueryContext()],
     queryFn: ({ signal }): Promise<Array<GatewayEndpointGroup>> =>
       GetEndpointGroupsAPI(silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
@@ -37,7 +38,7 @@ export function EndpointGroupListQueryOptions() {
 
 export function RateLimitRuleListQueryOptions() {
   return queryOptions({
-    queryKey: rateLimitRuleQueryKeys.lists(),
+    queryKey: [...rateLimitRuleQueryKeys.lists(), securityQueryContext()],
     queryFn: ({ signal }): Promise<Array<GatewayRateLimitRule>> =>
       GetRateLimitRulesAPI(silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
@@ -45,7 +46,7 @@ export function RateLimitRuleListQueryOptions() {
 
 export function IpListQueryOptions() {
   return queryOptions({
-    queryKey: ipListQueryKeys.lists(),
+    queryKey: [...ipListQueryKeys.lists(), securityQueryContext()],
     queryFn: ({ signal }): Promise<Array<GatewayIpList>> =>
       GetIpListAPI(silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
@@ -53,7 +54,7 @@ export function IpListQueryOptions() {
 
 export function ChallengePolicyListQueryOptions() {
   return queryOptions({
-    queryKey: challengePolicyQueryKeys.lists(),
+    queryKey: [...challengePolicyQueryKeys.lists(), securityQueryContext()],
     queryFn: ({ signal }): Promise<Array<GatewayChallengePolicy>> =>
       GetChallengePoliciesAPI(silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
@@ -61,7 +62,7 @@ export function ChallengePolicyListQueryOptions() {
 
 export function ViolationEscalationQueryOptions() {
   return queryOptions({
-    queryKey: violationEscalationQueryKeys.detail("current"),
+    queryKey: [...violationEscalationQueryKeys.detail("current"), securityQueryContext()],
     queryFn: ({ signal }): Promise<ViolationEscalationConfig> =>
       GetViolationEscalationAPI(silentQueryRequest(signal)).then(({ data }) => data),
   });
@@ -69,9 +70,8 @@ export function ViolationEscalationQueryOptions() {
 
 export function BlockEventListQueryOptions(limit = 100) {
   return queryOptions({
-    queryKey: blockEventQueryKeys.list({ limit }),
+    queryKey: blockEventQueryKeys.list({ limit, ...securityQueryContext() }),
     queryFn: ({ signal }): Promise<Array<GatewayBlacklistEvent>> =>
       GetBlockEventsAPI(limit, silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
 }
-

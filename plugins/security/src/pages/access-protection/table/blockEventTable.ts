@@ -7,7 +7,7 @@ export const blockEventTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "Key 类型",
     prop: "keyType",
-    width: "110",
+    width: "140",
   },
   {
     label: "匹配值",
@@ -34,6 +34,6 @@ export const blockEventTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "来源",
     prop: "source",
-    width: "90",
+    width: "100",
   },
 ];

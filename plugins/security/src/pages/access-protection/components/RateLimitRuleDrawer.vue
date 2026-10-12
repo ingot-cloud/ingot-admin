@@ -1,16 +1,37 @@
 <template>
-  <in-drawer :title="title" v-model="visible" size="640px">
-    <in-form ref="editFormRef" :model="editForm" :rules="rules">
-      <el-form-item label="编码" prop="code">
+  <in-drawer
+    :title="title"
+    v-model="visible"
+    class="security-policy-drawer"
+    layout="pinned"
+    size="min(640px, 100vw)"
+    :before-close="beforeClose"
+  >
+    <in-form
+      class="policy-form"
+      :editing="editing"
+      ref="editFormRef"
+      :model="editForm"
+      :rules="rules"
+    >
+      <in-detail-field label="编码" prop="code" :value="editForm.code">
         <el-input
+          v-if="editing"
           v-model="editForm.code"
           :disabled="edit"
           clearable
           placeholder="英文、数字、连字符"
         />
-      </el-form-item>
-      <el-form-item label="关联分组">
+      </in-detail-field>
+      <in-detail-field
+        label="关联分组"
+        :value="
+          groupOptions.find((item) => item.value === editForm.groupCode)?.label ??
+          editForm.groupCode
+        "
+      >
         <in-select
+          v-if="editing"
           v-model="editForm.groupCode"
           clearable
           :disabled="hasInlinePattern"
@@ -18,86 +39,146 @@
           placeholder="与路径规则二选一"
         />
         <div v-if="hasInlinePattern" class="field-tip">已配置路径规则，请先清空后再关联分组</div>
-      </el-form-item>
-      <el-form-item v-if="hasGroupScope" label="路径规则">
-        <div class="field-tip">已关联分组，将使用分组内的路径规则</div>
-      </el-form-item>
-      <el-form-item v-else label="路径规则" prop="patternList">
-        <PatternListEditor v-model="editForm.patternList" prop-prefix="patternList" />
-      </el-form-item>
+      </in-detail-field>
+      <in-detail-field v-if="hasGroupScope" label="路径规则" value="使用关联分组内的路径规则" />
+      <in-detail-field v-else label="路径规则" prop="patternList" :value="editForm.patternList">
+        <PatternListEditor
+          v-if="editing"
+          v-model="editForm.patternList"
+          prop-prefix="patternList"
+        />
+
+        <template #view><PatternListPreview :patterns="editForm.patternList" /></template>
+      </in-detail-field>
       <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="限流维度" prop="dimension">
+        <el-col :xs="24" :sm="12">
+          <in-detail-field
+            label="限流维度"
+            prop="dimension"
+            :value="
+              rateLimitDimensionEnum.getOptions().find((item) => item.value === editForm.dimension)
+                ?.label ?? editForm.dimension
+            "
+          >
             <in-select
+              v-if="editing"
               v-model="editForm.dimension"
               :options="rateLimitDimensionEnum.getOptions()"
               placeholder="请选择限流维度"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="控制行为" prop="controlBehavior">
+        <el-col :xs="24" :sm="12">
+          <in-detail-field
+            label="控制行为"
+            prop="controlBehavior"
+            :value="
+              controlBehaviorEnum
+                .getOptions()
+                .find((item) => item.value === editForm.controlBehavior)?.label ??
+              editForm.controlBehavior
+            "
+          >
             <in-select
+              v-if="editing"
               v-model="editForm.controlBehavior"
               :options="controlBehaviorEnum.getOptions()"
               placeholder="请选择控制行为"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
       </el-row>
       <el-row :gutter="16">
-        <el-col :span="8">
-          <el-form-item label="QPS" prop="qps">
-            <el-input-number v-model="editForm.qps" :min="1" class="w-full" placeholder="请输入 QPS" />
-          </el-form-item>
+        <el-col :xs="24" :sm="12">
+          <in-detail-field label="QPS" prop="qps" :value="editForm.qps">
+            <el-input-number
+              v-if="editing"
+              v-model="editForm.qps"
+              :min="1"
+              class="w-full"
+              placeholder="请输入 QPS"
+            />
+          </in-detail-field>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="突发" prop="burst">
-            <el-input-number v-model="editForm.burst" :min="0" class="w-full" placeholder="请输入突发" />
-          </el-form-item>
+        <el-col :xs="24" :sm="12">
+          <in-detail-field label="突发" prop="burst" :value="editForm.burst">
+            <el-input-number
+              v-if="editing"
+              v-model="editForm.burst"
+              :min="0"
+              class="w-full"
+              placeholder="请输入突发"
+            />
+          </in-detail-field>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="窗口(秒)" prop="intervalSec">
-            <el-input-number v-model="editForm.intervalSec" :min="1" class="w-full" placeholder="请输入窗口秒数" />
-          </el-form-item>
+        <el-col :xs="24" :sm="12">
+          <in-detail-field label="窗口(秒)" prop="intervalSec" :value="editForm.intervalSec">
+            <el-input-number
+              v-if="editing"
+              v-model="editForm.intervalSec"
+              :min="1"
+              class="w-full"
+              placeholder="请输入窗口秒数"
+            />
+          </in-detail-field>
         </el-col>
       </el-row>
       <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="优先级" prop="priority">
-            <el-input-number v-model="editForm.priority" :min="0" class="w-full" placeholder="请输入优先级" />
-          </el-form-item>
+        <el-col :xs="24" :sm="12">
+          <in-detail-field label="优先级" prop="priority" :value="editForm.priority">
+            <el-input-number
+              v-if="editing"
+              v-model="editForm.priority"
+              :min="0"
+              class="w-full"
+              placeholder="请输入优先级"
+            />
+          </in-detail-field>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="是否启用">
+        <el-col :xs="24" :sm="12">
+          <in-detail-field label="是否启用" :value="editForm.enabled ? '启用' : '停用'">
             <el-switch
+              v-if="editing"
               v-model="editForm.enabled"
               inline-prompt
               active-text="是"
               inactive-text="否"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
       </el-row>
-      <el-form-item label="备注">
+      <in-detail-field label="备注" :value="editForm.remark">
         <el-input
+          v-if="editing"
           v-model="editForm.remark"
           type="textarea"
           :rows="3"
           clearable
           placeholder="请输入备注"
         />
-      </el-form-item>
+      </in-detail-field>
     </in-form>
     <template #footer>
-      <in-button v-if="edit" type="danger" @click="privateOnRemoveClick"> 删除 </in-button>
-      <in-button :loading="loading" type="primary" @click="privateOnConfirmClick"> 确定 </in-button>
+      <template v-if="editing">
+        <in-button :disabled="loading" @click="cancelEdit">取消</in-button>
+        <in-button v-if="canWrite" :loading="loading" type="primary" @click="privateOnConfirmClick"
+          >保存</in-button
+        >
+      </template>
+      <in-button v-else-if="canWrite" type="primary" @click="enterEdit">编辑</in-button>
     </template>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
-import type { GatewayEndpointGroup, GatewayEndpointPattern, GatewayRateLimitRule } from "@/models";
+import type { FormInstance } from "element-plus";
+import { useSecurityPolicyDrawer } from "@/hooks/useSecurityPolicyDrawer";
+import { useCapabilities } from "@ingot/admin-core";
+const { hasAction } = useCapabilities();
+import { SecurityAction, useActiveSecurityRead } from "@/hooks/useSecurityTabs";
+import { useQuery } from "@tanstack/vue-query";
+import { EndpointGroupListQueryOptions } from "@/api/security/policy.query";
+import type { GatewayEndpointPattern, GatewayRateLimitRule } from "@/models";
 import {
   ControlBehaviorEnum,
   HttpMethodEnum,
@@ -105,20 +186,13 @@ import {
   useControlBehaviorEnum,
   useRateLimitDimensionEnum,
 } from "@/models/enums";
-import { Confirm, copyParams } from "@ingot/admin-core";
-import {
-  CreateRateLimitRuleAPI,
-  DeleteRateLimitRuleAPI,
-  UpdateRateLimitRuleAPI,
-} from "@/api/security/policy";
+import { copyParams } from "@ingot/admin-core";
+import { CreateRateLimitRuleAPI, UpdateRateLimitRuleAPI } from "@/api/security/policy";
 import PatternListEditor from "./PatternListEditor.vue";
+import PatternListPreview from "./PatternListPreview.vue";
 
 const CODE_PATTERN = /^[a-zA-Z0-9-]+$/;
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
-
-const props = defineProps<{
-  groups: Array<GatewayEndpointGroup>;
-}>();
 
 type RateLimitRuleForm = GatewayRateLimitRule & {
   patternList: Array<GatewayEndpointPattern>;
@@ -144,32 +218,36 @@ const emits = defineEmits<{ success: [] }>();
 const rateLimitDimensionEnum = useRateLimitDimensionEnum();
 const controlBehaviorEnum = useControlBehaviorEnum();
 
-const editFormRef = ref();
+const editFormRef = ref<FormInstance>();
 const editForm = reactive<RateLimitRuleForm>(Object.assign({}, defaultEditForm));
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const visible = ref(false);
+const canWrite = computed(() =>
+  hasAction(edit.value ? SecurityAction.POLICY_UPDATE : SecurityAction.POLICY_CREATE),
+);
+const { editing, enterEdit, cancelEdit, open, beforeClose } = useSecurityPolicyDrawer({
+  form: editForm,
+  formRef: editFormRef,
+  visible,
+  existing: edit,
+  canWrite,
+  saving: loading,
+});
+
+const canReadGroups = useActiveSecurityRead(SecurityAction.POLICY_READ, "rate-limit");
+const groupsQuery = useQuery(() => ({
+  ...EndpointGroupListQueryOptions(),
+  enabled: visible.value && editing.value && canReadGroups.value,
+}));
 
 const message = useMessage();
 
-const privateOnRemoveClick = (): void => {
-  if (!editForm.id) {
-    return;
-  }
-  Confirm.warning(`是否删除限流规则(${editForm.code})`).then(() => {
-    DeleteRateLimitRuleAPI(editForm.id!).then(() => {
-      message.success("删除成功");
-      visible.value = false;
-      emits("success");
-    });
-  });
-};
-
 const groupOptions = computed(() =>
-  props.groups
-    .filter((item: any) => item.code)
-    .map((item: any) => ({
+  (groupsQuery.data.value ?? [])
+    .filter((item) => item.code)
+    .map((item) => ({
       label: `${item.name} (${item.code})`,
       value: item.code!,
     })),
@@ -226,8 +304,10 @@ const rules = {
 };
 
 const privateOnConfirmClick = (): void => {
+  if (!editing.value || !canWrite.value || loading.value) return;
+  if (!hasAction(edit.value ? SecurityAction.POLICY_UPDATE : SecurityAction.POLICY_CREATE)) return;
   const form = unref(editFormRef);
-  form.validate((valid: boolean) => {
+  form?.validate((valid: boolean) => {
     if (!valid) {
       return;
     }
@@ -245,6 +325,9 @@ const privateOnConfirmClick = (): void => {
         visible.value = false;
         emits("success");
       })
+      .catch(() => {
+        /* The request layer displays errors; keep the draft. */
+      })
       .finally(() => {
         loading.value = false;
       });
@@ -261,8 +344,9 @@ defineExpose({
     });
 
     if (data) {
-      title.value = "编辑限流规则";
+      title.value = "限流规则详情";
       edit.value = true;
+      open(true);
       copyParams(editForm, data);
       if (data.groupCode) {
         editForm.patternList = [];
@@ -276,6 +360,7 @@ defineExpose({
 
     title.value = "新建限流规则";
     edit.value = false;
+    open(false);
   },
 });
 </script>

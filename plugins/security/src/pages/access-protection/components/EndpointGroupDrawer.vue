@@ -1,50 +1,84 @@
 <template>
-  <in-drawer :title="title" v-model="visible">
-    <in-form ref="editFormRef" :model="editForm" :rules="rules">
-      <el-form-item label="编码" prop="code">
+  <in-drawer
+    :title="title"
+    v-model="visible"
+    class="security-policy-drawer"
+    layout="pinned"
+    size="min(640px, 100vw)"
+    :before-close="beforeClose"
+  >
+    <in-form
+      class="policy-form"
+      :editing="editing"
+      ref="editFormRef"
+      :model="editForm"
+      :rules="rules"
+    >
+      <in-detail-field label="编码" prop="code" :value="editForm.code">
         <el-input
+          v-if="editing"
           v-model="editForm.code"
           :disabled="edit"
           clearable
           placeholder="英文、数字、连字符"
         />
-      </el-form-item>
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="editForm.name" clearable placeholder="请输入展示名称" />
-      </el-form-item>
-      <el-form-item label="路径规则" prop="patternList">
-        <PatternListEditor v-model="editForm.patternList" prop-prefix="patternList" />
-      </el-form-item>
-      <el-form-item label="是否启用">
-        <el-switch v-model="editForm.enabled" inline-prompt active-text="是" inactive-text="否" />
-      </el-form-item>
-      <el-form-item label="备注">
+      </in-detail-field>
+      <in-detail-field label="名称" prop="name" :value="editForm.name">
+        <el-input v-if="editing" v-model="editForm.name" clearable placeholder="请输入展示名称" />
+      </in-detail-field>
+      <in-detail-field label="路径规则" prop="patternList" :value="editForm.patternList">
+        <PatternListEditor
+          v-if="editing"
+          v-model="editForm.patternList"
+          prop-prefix="patternList"
+        />
+
+        <template #view><PatternListPreview :patterns="editForm.patternList" /></template>
+      </in-detail-field>
+      <in-detail-field label="是否启用" :value="editForm.enabled ? '启用' : '停用'">
+        <el-switch
+          v-if="editing"
+          v-model="editForm.enabled"
+          inline-prompt
+          active-text="是"
+          inactive-text="否"
+        />
+      </in-detail-field>
+      <in-detail-field label="备注" :value="editForm.remark">
         <el-input
+          v-if="editing"
           v-model="editForm.remark"
           type="textarea"
           :rows="3"
           clearable
           placeholder="请输入备注"
         />
-      </el-form-item>
+      </in-detail-field>
     </in-form>
     <template #footer>
-      <in-button v-if="edit" type="danger" @click="privateOnRemoveClick"> 删除 </in-button>
-      <in-button :loading="loading" type="primary" @click="privateOnConfirmClick"> 确定 </in-button>
+      <template v-if="editing">
+        <in-button :disabled="loading" @click="cancelEdit">取消</in-button>
+        <in-button v-if="canWrite" :loading="loading" type="primary" @click="privateOnConfirmClick"
+          >保存</in-button
+        >
+      </template>
+      <in-button v-else-if="canWrite" type="primary" @click="enterEdit">编辑</in-button>
     </template>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
+import type { FormInstance } from "element-plus";
+import { useSecurityPolicyDrawer } from "@/hooks/useSecurityPolicyDrawer";
+import { useCapabilities } from "@ingot/admin-core";
+const { hasAction } = useCapabilities();
+import { SecurityAction } from "@/hooks/useSecurityTabs";
 import type { GatewayEndpointGroup, GatewayEndpointPattern } from "@/models";
 import { HttpMethodEnum } from "@/models/enums";
-import { Confirm, copyParams } from "@ingot/admin-core";
-import {
-  CreateEndpointGroupAPI,
-  DeleteEndpointGroupAPI,
-  UpdateEndpointGroupAPI,
-} from "@/api/security/policy";
+import { copyParams } from "@ingot/admin-core";
+import { CreateEndpointGroupAPI, UpdateEndpointGroupAPI } from "@/api/security/policy";
 import PatternListEditor from "./PatternListEditor.vue";
+import PatternListPreview from "./PatternListPreview.vue";
 
 const CODE_PATTERN = /^[a-zA-Z0-9-]+$/;
 const POLICY_EFFECT_MESSAGE = "规则将在数秒内生效";
@@ -64,27 +98,25 @@ const defaultEditForm: EndpointGroupForm = {
 
 const emits = defineEmits<{ success: [] }>();
 
-const editFormRef = ref();
+const editFormRef = ref<FormInstance>();
 const editForm = reactive<EndpointGroupForm>(Object.assign({}, defaultEditForm));
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const visible = ref(false);
+const canWrite = computed(() =>
+  hasAction(edit.value ? SecurityAction.POLICY_UPDATE : SecurityAction.POLICY_CREATE),
+);
+const { editing, enterEdit, cancelEdit, open, beforeClose } = useSecurityPolicyDrawer({
+  form: editForm,
+  formRef: editFormRef,
+  visible,
+  existing: edit,
+  canWrite,
+  saving: loading,
+});
 
 const message = useMessage();
-const privateOnRemoveClick = (): void => {
-  if (!editForm.id) {
-    return;
-  }
-  Confirm.warning(`是否删除分组(${editForm.code})`).then(() => {
-    DeleteEndpointGroupAPI(editForm.id!).then(() => {
-      message.success("删除成功");
-      visible.value = false;
-      emits("success");
-    });
-  });
-};
-
 const rules = {
   code: [
     { required: true, message: "请输入编码", trigger: "blur" },
@@ -99,8 +131,10 @@ const rules = {
 };
 
 const privateOnConfirmClick = (): void => {
+  if (!editing.value || !canWrite.value || loading.value) return;
+  if (!hasAction(edit.value ? SecurityAction.POLICY_UPDATE : SecurityAction.POLICY_CREATE)) return;
   const form = unref(editFormRef);
-  form.validate((valid: boolean) => {
+  form?.validate((valid: boolean) => {
     if (!valid) {
       return;
     }
@@ -115,6 +149,9 @@ const privateOnConfirmClick = (): void => {
         message.success(POLICY_EFFECT_MESSAGE);
         visible.value = false;
         emits("success");
+      })
+      .catch(() => {
+        /* The request layer displays errors; keep the draft. */
       })
       .finally(() => {
         loading.value = false;
@@ -132,8 +169,9 @@ defineExpose({
     });
 
     if (data) {
-      title.value = "编辑路径分组";
+      title.value = "路径分组详情";
       edit.value = true;
+      open(true);
       copyParams(editForm, data);
       editForm.patternList = data.patternList?.length
         ? data.patternList.map((item) => ({ ...item }))
@@ -143,6 +181,7 @@ defineExpose({
 
     title.value = "新建路径分组";
     edit.value = false;
+    open(false);
   },
 });
 </script>

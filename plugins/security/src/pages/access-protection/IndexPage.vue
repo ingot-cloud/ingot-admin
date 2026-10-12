@@ -1,9 +1,13 @@
 <template>
-  <in-page-frame mode="page" surface="workspace">
+  <in-page-frame mode="contained" surface="workspace" class="security-settings">
     <template #header>
-      <in-page-header description="配置网关访问防护策略，未打开的页签不发请求。">
+      <in-page-header description="维护访问规则、限流与登录失败防护策略。">
         <template #action>
-          <in-button :loading="broadcasting" @click="privateOnBroadcastClick">
+          <in-button
+            v-auth="SecurityAction.POLICY_UPDATE"
+            :loading="broadcasting"
+            @click="privateOnBroadcastClick"
+          >
             强制刷新策略
           </in-button>
         </template>
@@ -13,33 +17,53 @@
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
-    <div class="access-protection-page">
+    <div class="access-protection-page security-settings__tables">
       <EndpointGroupPanel
-        v-if="visitedTabs[AccessProtectionTabEnum.ENDPOINT_GROUP]"
+        v-if="
+          allowed(AccessProtectionTabEnum.ENDPOINT_GROUP) &&
+          visitedTabs[AccessProtectionTabEnum.ENDPOINT_GROUP]
+        "
         v-show="activeTab === AccessProtectionTabEnum.ENDPOINT_GROUP"
       />
       <RateLimitRulePanel
-        v-if="visitedTabs[AccessProtectionTabEnum.RATE_LIMIT]"
+        v-if="
+          allowed(AccessProtectionTabEnum.RATE_LIMIT) &&
+          visitedTabs[AccessProtectionTabEnum.RATE_LIMIT]
+        "
         v-show="activeTab === AccessProtectionTabEnum.RATE_LIMIT"
       />
       <IpListPanel
-        v-if="visitedTabs[AccessProtectionTabEnum.IP_LIST]"
+        v-if="
+          allowed(AccessProtectionTabEnum.IP_LIST) && visitedTabs[AccessProtectionTabEnum.IP_LIST]
+        "
         v-show="activeTab === AccessProtectionTabEnum.IP_LIST"
       />
       <ViolationEscalationPanel
-        v-if="visitedTabs[AccessProtectionTabEnum.VIOLATION_ESCALATION]"
+        v-if="
+          allowed(AccessProtectionTabEnum.VIOLATION_ESCALATION) &&
+          visitedTabs[AccessProtectionTabEnum.VIOLATION_ESCALATION]
+        "
         v-show="activeTab === AccessProtectionTabEnum.VIOLATION_ESCALATION"
       />
       <LoginFailurePanel
-        v-if="visitedTabs[AccessProtectionTabEnum.LOGIN_FAILURE]"
+        v-if="
+          allowed(AccessProtectionTabEnum.LOGIN_FAILURE) &&
+          visitedTabs[AccessProtectionTabEnum.LOGIN_FAILURE]
+        "
         v-show="activeTab === AccessProtectionTabEnum.LOGIN_FAILURE"
       />
       <ChallengePolicyPanel
-        v-if="visitedTabs[AccessProtectionTabEnum.CHALLENGE]"
+        v-if="
+          allowed(AccessProtectionTabEnum.CHALLENGE) &&
+          visitedTabs[AccessProtectionTabEnum.CHALLENGE]
+        "
         v-show="activeTab === AccessProtectionTabEnum.CHALLENGE"
       />
       <BlockEventPanel
-        v-if="visitedTabs[AccessProtectionTabEnum.BLOCK_EVENT]"
+        v-if="
+          allowed(AccessProtectionTabEnum.BLOCK_EVENT) &&
+          visitedTabs[AccessProtectionTabEnum.BLOCK_EVENT]
+        "
         v-show="activeTab === AccessProtectionTabEnum.BLOCK_EVENT"
       />
     </div>
@@ -47,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import { useSecurityTabs, SecurityAction } from "@/hooks/useSecurityTabs";
 import { AccessProtectionTabEnum, useAccessProtectionTabEnum } from "@/models/enums";
 import { useGatewayPolicy } from "./use/useGatewayPolicy";
 import EndpointGroupPanel from "./components/EndpointGroupPanel.vue";
@@ -59,21 +84,15 @@ import BlockEventPanel from "./components/BlockEventPanel.vue";
 
 const accessProtectionTabEnum = useAccessProtectionTabEnum();
 const tabOptions = accessProtectionTabEnum.getOptions();
-const activeTab = ref(AccessProtectionTabEnum.ENDPOINT_GROUP);
-const visitedTabs = reactive<Partial<Record<string, boolean>>>({
-  [AccessProtectionTabEnum.ENDPOINT_GROUP]: true,
+const { activeTab, visitedTabs, tabs, allowed } = useSecurityTabs(tabOptions, {
+  [AccessProtectionTabEnum.ENDPOINT_GROUP]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.RATE_LIMIT]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.IP_LIST]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.VIOLATION_ESCALATION]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.LOGIN_FAILURE]: SecurityAction.LOGIN_READ,
+  [AccessProtectionTabEnum.CHALLENGE]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.BLOCK_EVENT]: SecurityAction.POLICY_READ,
 });
-
-watch(activeTab, (tab) => {
-  visitedTabs[tab] = true;
-});
-
-const tabs = computed(() =>
-  tabOptions.map((item) => ({
-    id: item.value,
-    title: item.label,
-  })),
-);
 
 const { broadcasting, broadcastInvalidation } = useGatewayPolicy();
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10px">
+  <div class="security-access-list-panel">
     <in-table
       :loading="eventQuery.isFetching.value"
       :data="tableData"
@@ -36,6 +36,9 @@
 </template>
 
 <script setup lang="ts">
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "block-event");
+
 import { applyColumnSelection } from "@ingot/admin-core";
 import { useIpListKeyTypeEnum, useIpListSourceEnum } from "@/models/enums";
 import { BlockEventListQueryOptions, blockEventQueryKeys } from "@/api/security/policy.query";
@@ -43,7 +46,7 @@ import { BLOCK_EVENT_TABLE_ID, blockEventTableHeaders } from "../table/blockEven
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
 const queryClient = useQueryClient();
-const eventQuery = useQuery(() => BlockEventListQueryOptions());
+const eventQuery = useQuery(() => ({ ...BlockEventListQueryOptions(), enabled: enabled.value }));
 const tableData = computed(() => eventQuery.data.value ?? []);
 const selectedColumnProps = ref<string[]>([]);
 

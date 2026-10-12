@@ -3,6 +3,7 @@ import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { SessionConcurrencyPolicy } from "@/models";
 import { SessionConcurrencyScopeEnum } from "@/models/enums/sessionEnums";
 import { SESSION_POLICY_UPDATE_PERMISSION } from "./constants";
+import { SecurityAction } from "@/models/securityActions";
 
 export const SESSIONS_POLICY_TABLE_ID = "security-sessions-policy";
 
@@ -89,9 +90,9 @@ export function createConcurrencyPolicyRowActions(
   return [
     {
       key: "detail",
-      label: "编辑",
+      label: "详情",
       kind: "detail",
-      permission: SESSION_POLICY_UPDATE_PERMISSION,
+      permission: SecurityAction.CONCURRENCY_READ,
       onSelect: handlers.onDetail,
     },
     {

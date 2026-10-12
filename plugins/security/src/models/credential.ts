@@ -1,7 +1,7 @@
 export interface CredentialPolicyConfig {
   id?: string;
   policyType?: string;
-  policyConfig: Record<string, any>;
+  policyConfig: Record<string, unknown>;
   priority?: number;
   enabled?: boolean;
   createdAt?: string;

@@ -1,3 +1,4 @@
+import { securityQueryContext } from "./context";
 import { queryOptions } from "@tanstack/vue-query";
 import { toValue, type MaybeRefOrGetter } from "vue";
 import {
@@ -26,6 +27,7 @@ export function SessionPageQueryOptions(
   return queryOptions({
     queryKey: sessionQueryKeys.list(
       snapshotQueryParams({
+        ...securityQueryContext(),
         current: value.current,
         size: value.size,
         condition: value.condition,
@@ -44,7 +46,7 @@ export function SessionPageQueryOptions(
 export function SessionDetailQueryOptions(sid: MaybeRefOrGetter<string>) {
   const id = toValue(sid);
   return queryOptions({
-    queryKey: sessionQueryKeys.detail(id),
+    queryKey: [...sessionQueryKeys.detail(id), securityQueryContext()],
     enabled: Boolean(id),
     staleTime: REALTIME_QUERY_STALE_TIME,
     queryFn: ({ signal }): Promise<PlatformSessionVO | null> =>

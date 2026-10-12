@@ -108,15 +108,11 @@ const rowActionsOf = (
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };
-
-onMounted(() => {
-  loadAll();
-});
 </script>
 
 <style lang="postcss" scoped>
 .concurrency-policy-panel {
-  @apply flex flex-col px-12px pt-10px pb-16px;
+  @apply flex flex-col min-w-0 min-h-0;
 
   & .concurrency-policy-panel__tip {
     @apply mb-12px text-13px text-[var(--in-text-color-secondary)];

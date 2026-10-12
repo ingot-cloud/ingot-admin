@@ -1,3 +1,4 @@
+import { SecurityAction } from "@/models/securityActions";
 import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { GatewayIpList } from "@/models";
@@ -8,12 +9,12 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "名单类型",
     prop: "listType",
-    width: "100",
+    width: "112",
   },
   {
     label: "Key 类型",
     prop: "keyType",
-    width: "110",
+    width: "140",
   },
   {
     label: "匹配值",
@@ -28,7 +29,7 @@ export const ipListTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "来源",
     prop: "source",
-    width: "90",
+    width: "100",
   },
   {
     label: "生效时间",
@@ -61,6 +62,7 @@ export function createIpListToolbarActions(
   return [
     {
       key: "create",
+      permission: SecurityAction.POLICY_CREATE,
       label: "新建名单",
       kind: "quick",
       icon: "ep:plus",
@@ -72,17 +74,30 @@ export function createIpListToolbarActions(
 }
 
 export function createIpListRowActions(
-  _row: GatewayIpList,
+  row: GatewayIpList,
   handlers: {
     onDetail: (row: GatewayIpList) => void;
+    onDelete: (row: GatewayIpList) => void;
   },
 ): Array<InTableAction<GatewayIpList>> {
   return [
     {
       key: "detail",
-      label: "编辑",
+      permission: SecurityAction.POLICY_READ,
+      label: "详情",
       kind: "detail",
       onSelect: handlers.onDetail,
+    },
+    {
+      key: "delete",
+      permission: SecurityAction.POLICY_DELETE,
+      label: "删除",
+      kind: "danger",
+      overflow: "always",
+      disabled: !row.id,
+      disabledReason: row.id ? undefined : "缺少记录 ID",
+      confirm: `是否删除名单(${row.keyValue || row.id})`,
+      onSelect: handlers.onDelete,
     },
   ];
 }

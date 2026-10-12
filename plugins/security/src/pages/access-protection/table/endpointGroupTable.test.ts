@@ -25,9 +25,12 @@ describe("security access endpoint group table contract", () => {
     ]);
     const rows = createEndpointGroupRowActions(
       { id: 1, name: "分组" },
-      { onDetail: () => undefined },
+      { onDetail: () => undefined, onDelete: () => undefined },
     );
-    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual(["detail:detail"]);
-    expect(rows[0]?.label).toBe("编辑");
+    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual([
+      "detail:detail",
+      "danger:delete",
+    ]);
+    expect(rows[0]?.label).toBe("详情");
   });
 });

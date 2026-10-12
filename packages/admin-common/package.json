@@ -30,7 +30,8 @@
   "peerDependencies": {
     "element-plus": "^2.14.5",
     "vue": "^3.5.42",
-    "@tanstack/vue-query": "^5.102.2"
+    "@tanstack/vue-query": "^5.102.2",
+    "@element-plus/icons-vue": "catalog:"
   },
   "dependencies": {
     "@ingot/admin-core": "workspace:*",
@@ -47,6 +48,7 @@
     "vue-router": "catalog:",
     "vue-tsc": "catalog:",
     "@vueuse/core": "catalog:",
-    "@tanstack/vue-query": "catalog:"
+    "@tanstack/vue-query": "catalog:",
+    "@element-plus/icons-vue": "catalog:"
   }
 }

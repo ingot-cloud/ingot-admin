@@ -1,5 +1,5 @@
 <template>
-  <in-page-frame mode="page" surface="workspace">
+  <in-page-frame mode="contained" surface="workspace" class="security-settings">
     <template #header>
       <in-page-header description="查询在线会话并配置并发策略。" />
     </template>
@@ -7,13 +7,13 @@
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
     </template>
 
-    <div class="online-token-page">
+    <div class="online-token-page security-settings__tables">
       <SessionListPanel
-        v-if="visitedTabs[OnlineTokenTabEnum.SESSION]"
+        v-if="allowed(OnlineTokenTabEnum.SESSION) && visitedTabs[OnlineTokenTabEnum.SESSION]"
         v-show="activeTab === OnlineTokenTabEnum.SESSION"
       />
       <ConcurrencyPolicyPanel
-        v-if="visitedTabs[OnlineTokenTabEnum.POLICY]"
+        v-if="allowed(OnlineTokenTabEnum.POLICY) && visitedTabs[OnlineTokenTabEnum.POLICY]"
         v-show="activeTab === OnlineTokenTabEnum.POLICY"
       />
     </div>
@@ -21,27 +21,17 @@
 </template>
 
 <script setup lang="ts">
+import { useSecurityTabs, SecurityAction } from "@/hooks/useSecurityTabs";
 import { OnlineTokenTabEnum, useOnlineTokenTabEnum } from "@/models/enums";
 import SessionListPanel from "./components/SessionListPanel.vue";
 import ConcurrencyPolicyPanel from "./components/ConcurrencyPolicyPanel.vue";
 
 const onlineTokenTabEnum = useOnlineTokenTabEnum();
 const tabOptions = onlineTokenTabEnum.getOptions();
-const activeTab = ref(OnlineTokenTabEnum.SESSION);
-const visitedTabs = reactive<Partial<Record<string, boolean>>>({
-  [OnlineTokenTabEnum.SESSION]: true,
+const { activeTab, visitedTabs, tabs, allowed } = useSecurityTabs(tabOptions, {
+  [OnlineTokenTabEnum.SESSION]: SecurityAction.SESSION_READ,
+  [OnlineTokenTabEnum.POLICY]: SecurityAction.CONCURRENCY_READ,
 });
-
-watch(activeTab, (tab) => {
-  visitedTabs[tab] = true;
-});
-
-const tabs = computed(() =>
-  tabOptions.map((item) => ({
-    id: item.value,
-    title: item.label,
-  })),
-);
 </script>
 
 <style lang="postcss" scoped>

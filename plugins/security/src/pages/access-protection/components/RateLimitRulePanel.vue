@@ -1,5 +1,5 @@
 <template>
-  <div class="p-10px">
+  <div class="security-access-list-panel">
     <in-table
       :loading="rulesQuery.isFetching.value"
       :data="tableData"
@@ -36,19 +36,18 @@
         <in-table-actions :actions="rowActionsOf(item)" :row="item" />
       </template>
     </in-table>
-    <RateLimitRuleDrawer ref="drawerRef" :groups="groups" @success="privateRefresh" />
+    <RateLimitRuleDrawer ref="drawerRef" @success="privateRefresh" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
+const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "rate-limit");
+
+import { applyColumnSelection, useCapabilities, type InTableAction } from "@ingot/admin-core";
 import type { GatewayRateLimitRule } from "@/models";
 import { useRateLimitDimensionEnum } from "@/models/enums";
-import {
-  EndpointGroupListQueryOptions,
-  RateLimitRuleListQueryOptions,
-  rateLimitRuleQueryKeys,
-} from "@/api/security/policy.query";
+import { RateLimitRuleListQueryOptions, rateLimitRuleQueryKeys } from "@/api/security/policy.query";
 import {
   createRateLimitRowActions,
   createRateLimitToolbarActions,
@@ -58,11 +57,13 @@ import {
 import RateLimitRuleDrawer from "./RateLimitRuleDrawer.vue";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 
+import { DeleteRateLimitRuleAPI } from "@/api/security/policy";
+
+const { hasAction } = useCapabilities();
+const message = useMessage();
 const queryClient = useQueryClient();
-const rulesQuery = useQuery(() => RateLimitRuleListQueryOptions());
-const groupsQuery = useQuery(() => EndpointGroupListQueryOptions());
+const rulesQuery = useQuery(() => ({ ...RateLimitRuleListQueryOptions(), enabled: enabled.value }));
 const tableData = computed(() => rulesQuery.data.value ?? []);
-const groups = computed(() => groupsQuery.data.value ?? []);
 const drawerRef = ref<InstanceType<typeof RateLimitRuleDrawer>>();
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: GatewayRateLimitRule = {};
@@ -85,11 +86,23 @@ const privateOnEdit = (item: GatewayRateLimitRule): void => {
   drawerRef.value?.show(item);
 };
 
+const privateOnDelete = async (item: GatewayRateLimitRule): Promise<void> => {
+  if (!item.id || !hasAction(SecurityAction.POLICY_DELETE)) return;
+  try {
+    await DeleteRateLimitRuleAPI(item.id);
+    message.success("删除成功");
+    privateRefresh();
+  } catch {
+    // 请求层统一反馈失败，保留当前列表。
+  }
+};
+
 const toolbarActions = computed(() => createRateLimitToolbarActions(privateOnCreate));
 
 const rowActionsOf = (item: GatewayRateLimitRule): Array<InTableAction<GatewayRateLimitRule>> =>
   createRateLimitRowActions(item, {
     onDetail: privateOnEdit,
+    onDelete: privateOnDelete,
   });
 
 const privateOnColumnChange = (value: string[]): void => {

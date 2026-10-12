@@ -28,7 +28,16 @@
         <in-filter-panel :active-count="extraFilterCount">
           <div class="session-list-panel__filter-field">
             <span class="session-list-panel__filter-label">组织</span>
-            <TenantSelect v-model="condition.tenantId" class="w-full" />
+            <in-page-select
+              v-if="hasAction(IamAction.PLATFORM_TENANT_READ)"
+              v-model="condition.tenantId"
+              class="w-full"
+              :load-data="loadTenantOptions"
+              value-field="id"
+              label-field="name"
+              placeholder="请选择组织"
+            />
+            <el-input v-else v-model="condition.tenantId" clearable placeholder="输入组织 ID" />
           </div>
           <div class="session-list-panel__filter-field">
             <span class="session-list-panel__filter-label">客户端</span>
@@ -77,7 +86,10 @@
 
 <script setup lang="ts">
 import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
-import { TenantSelect } from "@ingot/admin-common";
+import { IamAction, usePlatformTenantOptions } from "@ingot/admin-common";
+import { useCapabilities } from "@ingot/admin-core";
+const { hasAction } = useCapabilities();
+const loadTenantOptions = usePlatformTenantOptions();
 import { Search } from "@element-plus/icons-vue";
 import type { PlatformSessionVO } from "@/models";
 import { hasSessionQueryConstraint } from "@/api/security/session.query";

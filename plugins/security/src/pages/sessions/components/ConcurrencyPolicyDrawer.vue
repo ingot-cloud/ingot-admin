@@ -1,56 +1,109 @@
 <template>
-  <in-drawer :title="title" v-model="visible">
-    <in-form ref="editFormRef" :model="editForm" :rules="rules">
-      <el-form-item label="生效范围" prop="scope">
+  <in-drawer
+    :title="title"
+    v-model="visible"
+    class="security-policy-drawer"
+    layout="pinned"
+    size="min(640px, 100vw)"
+    :before-close="beforeClose"
+  >
+    <in-form
+      class="policy-form"
+      :editing="editing"
+      ref="editFormRef"
+      :model="editForm"
+      :rules="rules"
+    >
+      <in-detail-field
+        label="生效范围"
+        prop="scope"
+        :value="
+          scopeEnum.getOptions().find((item) => item.value === editForm.scope)?.label ??
+          editForm.scope
+        "
+      >
         <in-select
+          v-if="editing"
           v-model="editForm.scope"
           :options="scopeEnum.getOptions()"
           placeholder="请选择生效范围"
           @change="privateOnScopeChange"
         />
-      </el-form-item>
-      <el-form-item
+      </in-detail-field>
+      <in-detail-field
         v-if="editForm.scope === SessionConcurrencyScopeEnum.CLIENT"
         label="客户端"
         prop="clientId"
+        :value="editForm.clientId"
       >
-        <ClientIdField v-model="editForm.clientId" />
-      </el-form-item>
-      <el-form-item
+        <ClientIdField v-if="editing" v-model="editForm.clientId" />
+      </in-detail-field>
+      <in-detail-field
         v-if="editForm.scope === SessionConcurrencyScopeEnum.USER_TYPE"
         label="用户类型"
         prop="userType"
+        :value="
+          userTypeEnum.getOptions().find((item) => item.value === editForm.userType)?.label ??
+          editForm.userType
+        "
       >
         <in-select
+          v-if="editing"
           v-model="editForm.userType"
           :options="userTypeEnum.getOptions()"
           placeholder="请选择用户类型"
         />
-      </el-form-item>
-      <el-form-item label="最大会话数" prop="maxSessions">
-        <el-input-number v-model="editForm.maxSessions" :min="0" class="w-full" placeholder="请输入最大会话数" />
+      </in-detail-field>
+      <in-detail-field
+        label="最大会话数"
+        prop="maxSessions"
+        :value="editForm.maxSessions === 0 ? '不限制' : editForm.maxSessions"
+      >
+        <el-input-number
+          v-if="editing"
+          v-model="editForm.maxSessions"
+          :min="0"
+          class="w-full"
+          placeholder="请输入最大会话数"
+        />
         <div class="field-tip">0 表示不限制</div>
-      </el-form-item>
-      <el-form-item label="超出处置" prop="overflow">
+      </in-detail-field>
+      <in-detail-field
+        label="超出处置"
+        prop="overflow"
+        :value="
+          overflowEnum.getOptions().find((item) => item.value === editForm.overflow)?.label ??
+          editForm.overflow
+        "
+      >
         <in-select
+          v-if="editing"
           v-model="editForm.overflow"
           :options="overflowEnum.getOptions()"
           placeholder="请选择超出处置"
         />
-      </el-form-item>
-      <el-form-item label="管理用户单会话">
+      </in-detail-field>
+      <in-detail-field label="管理用户单会话" :value="editForm.adminForbidConcurrent ? '是' : '否'">
         <el-switch
+          v-if="editing"
           v-model="editForm.adminForbidConcurrent"
           inline-prompt
           active-text="是"
           inactive-text="否"
         />
-      </el-form-item>
-      <el-form-item label="是否启用">
-        <el-switch v-model="editForm.enabled" inline-prompt active-text="是" inactive-text="否" />
-      </el-form-item>
-      <el-form-item label="备注">
+      </in-detail-field>
+      <in-detail-field label="是否启用" :value="editForm.enabled ? '启用' : '停用'">
+        <el-switch
+          v-if="editing"
+          v-model="editForm.enabled"
+          inline-prompt
+          active-text="是"
+          inactive-text="否"
+        />
+      </in-detail-field>
+      <in-detail-field label="备注" :value="editForm.remark">
         <el-input
+          v-if="editing"
           v-model="editForm.remark"
           type="textarea"
           :rows="3"
@@ -58,22 +111,34 @@
           show-word-limit
           placeholder="请输入备注"
         />
-      </el-form-item>
+      </in-detail-field>
     </in-form>
     <template #footer>
       <in-button
-        v-if="edit && editForm.scope !== SessionConcurrencyScopeEnum.GLOBAL"
+        v-if="edit && !editing && editForm.scope !== SessionConcurrencyScopeEnum.GLOBAL"
+        v-auth="SecurityAction.CONCURRENCY_UPDATE"
         type="danger"
+        :disabled="loading"
         @click="privateOnRemoveClick"
+        >删除</in-button
       >
-        删除
-      </in-button>
-      <in-button :loading="loading" type="primary" @click="privateOnConfirmClick">确定</in-button>
+      <template v-if="editing">
+        <in-button :disabled="loading" @click="cancelEdit">取消</in-button>
+        <in-button v-if="canWrite" :loading="loading" type="primary" @click="privateOnConfirmClick"
+          >保存</in-button
+        >
+      </template>
+      <in-button v-else-if="canWrite" type="primary" @click="enterEdit">编辑</in-button>
     </template>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
+import type { FormInstance } from "element-plus";
+import { useSecurityPolicyDrawer } from "@/hooks/useSecurityPolicyDrawer";
+import { useCapabilities } from "@ingot/admin-core";
+import { SecurityAction } from "@/hooks/useSecurityTabs";
+const { hasAction } = useCapabilities();
 import type { SessionConcurrencyPolicy } from "@/models";
 import {
   SessionConcurrencyDimensionEnum,
@@ -112,12 +177,22 @@ const scopeEnum = useSessionConcurrencyScopeEnum();
 const overflowEnum = useSessionConcurrencyOverflowEnum();
 const userTypeEnum = useSessionUserTypeEnum();
 
-const editFormRef = ref();
+const editFormRef = ref<FormInstance>();
 const editForm = reactive<SessionConcurrencyPolicy>(Object.assign({}, defaultEditForm));
 const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const visible = ref(false);
+const canWrite = computed(() => hasAction(SecurityAction.CONCURRENCY_UPDATE));
+const { editing, enterEdit, cancelEdit, open, beforeClose } = useSecurityPolicyDrawer({
+  form: editForm,
+  formRef: editFormRef,
+  visible,
+  existing: edit,
+  canWrite,
+  saving: loading,
+});
+
 const message = useMessage();
 const confirm = useMessageConfirm();
 
@@ -187,6 +262,7 @@ const buildPayload = (): SessionConcurrencyPolicy => {
 };
 
 const privateOnRemoveClick = (): void => {
+  if (!hasAction(SecurityAction.CONCURRENCY_UPDATE)) return;
   if (!editForm.id || editForm.scope === SessionConcurrencyScopeEnum.GLOBAL) {
     return;
   }
@@ -200,8 +276,9 @@ const privateOnRemoveClick = (): void => {
 };
 
 const privateOnConfirmClick = (): void => {
+  if (!editing.value || !canWrite.value || loading.value) return;
   const form = unref(editFormRef);
-  form.validate((valid: boolean) => {
+  form?.validate((valid: boolean) => {
     if (!valid) {
       return;
     }
@@ -218,6 +295,9 @@ const privateOnConfirmClick = (): void => {
         visible.value = false;
         emits("success");
       })
+      .catch(() => {
+        /* The request layer displays errors; keep the draft. */
+      })
       .finally(() => {
         loading.value = false;
       });
@@ -233,14 +313,16 @@ defineExpose({
     });
 
     if (data) {
-      title.value = "编辑并发策略";
+      title.value = "并发策略详情";
       edit.value = true;
+      open(true);
       copyParams(editForm, data);
       return;
     }
 
     title.value = "新建并发策略";
     edit.value = false;
+    open(false);
   },
 });
 </script>

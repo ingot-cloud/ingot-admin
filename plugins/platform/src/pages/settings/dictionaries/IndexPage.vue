@@ -1,0 +1,434 @@
+<template>
+  <in-page-frame mode="contained" surface="workspace">
+    <template #header>
+      <in-page-header description="按作用域维护字典类型与字典项。" />
+    </template>
+
+    <in-split-layout left-collapsible :persistence-key="DICT_SPLIT_KEY">
+      <template #left>
+        <div class="dict-left">
+          <in-picker
+            v-model="scopeFilter.scopeType"
+            label="作用域"
+            :options="dictScopeEnums.getOptions()"
+            @change="handleScopeChange"
+          />
+          <in-page-select
+            v-if="isTenantScope && hasAction(IamAction.PLATFORM_TENANT_READ)"
+            v-model="scopeFilter.tenantId"
+            value-field="id"
+            label-field="name"
+            placeholder="请选择租户"
+            :load-data="loadTenantOptions"
+            class="w-full"
+            @change="refreshTree"
+          />
+          <in-page-select
+            v-if="isAppScope && hasAction(IamAction.PLATFORM_APPLICATION_READ)"
+            v-model="scopeFilter.appId"
+            class="w-full"
+            value-field="id"
+            label-field="name"
+            placeholder="请选择应用"
+            :load-data="loadAppOptions"
+            @change="refreshTree"
+          />
+          <LeftContent
+            ref="leftRef"
+            class="dict-left__tree"
+            :query="treeQuery"
+            :enabled="
+              canRead &&
+              (!isTenantScope || !!scopeFilter.tenantId) &&
+              (!isAppScope || !!scopeFilter.appId)
+            "
+            @node-click="handleNodeClick"
+            @node-edit-click="handleEditCurrentType"
+          />
+        </div>
+      </template>
+
+      <in-table
+        :loading="paging.fetching.value"
+        :data="canRead ? paging.pageInfo.value.records : []"
+        :page="paging.pageInfo.value"
+        :headers="visibleHeaders"
+        :table-id="DICT_TABLE_ID"
+        density="compact"
+        row-key="id"
+        @handleSizeChange="paging.fetchData"
+        @handleCurrentChange="paging.fetchData"
+      >
+        <template #title>
+          <span v-if="currentType">
+            当前类型：{{ currentType.name }}
+            <span class="code">({{ currentType.code }})</span>
+          </span>
+          <span v-else class="empty-title">请在左侧选择字典类型</span>
+          <span class="in-table__count">共 {{ paging.pageInfo.value.total ?? 0 }} 项</span>
+        </template>
+        <template #subtitle>
+          <div v-if="currentType?.systemFlag" class="system-tip">
+            内置字典：禁止修改 code/value/type/scopeType，且不允许删除
+          </div>
+        </template>
+        <template #tools-start>
+          <el-input
+            v-model="paging.condition.keyword"
+            class="w-200px!"
+            clearable
+            placeholder="搜索名称"
+            :prefix-icon="Search"
+            @keyup.enter="handleSearch"
+            @clear="handleSearch"
+          />
+          <in-picker v-model="statusFilter" label="状态" :options="statusFilterOptions" />
+          <in-table-column-setting
+            :headers="tableHeaders"
+            :table-id="DICT_TABLE_ID"
+            @change="privateOnColumnChange"
+          />
+        </template>
+        <template #tools-end>
+          <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
+        </template>
+
+        <template #value="{ item }">
+          <in-copy-tag v-if="item.value" :text="item.value" />
+          <span v-else>-</span>
+        </template>
+
+        <template #label="{ item }">
+          <span>{{ item.label || "-" }}</span>
+        </template>
+
+        <template #code="{ item }">
+          <in-copy-tag :text="item.code" />
+        </template>
+
+        <template #name="{ item }">
+          <in-button
+            v-if="hasAction(IamAction.PLATFORM_DICTIONARY_UPDATE)"
+            text
+            link
+            @click="handleEdit(item)"
+          >
+            {{ item.name }}
+          </in-button>
+          <span v-else>{{ item.name }}</span>
+        </template>
+
+        <template #scopeType="{ item }">
+          <in-tag-enum :value="item.scopeType" :enumObj="dictScopeEnums" />
+        </template>
+
+        <template #systemFlag="{ item }">
+          <el-tag v-if="item.systemFlag" type="warning" effect="plain"> 系统 </el-tag>
+          <el-tag v-else type="info" effect="plain"> 自定义 </el-tag>
+        </template>
+
+        <template #status="{ item }">
+          <in-common-status-tag :status="item.status" />
+        </template>
+
+        <template #actions="{ item }">
+          <in-table-actions :actions="rowActionsOf(item)" :row="item" />
+        </template>
+      </in-table>
+    </in-split-layout>
+  </in-page-frame>
+
+  <TypeEditDrawer ref="typeEditDrawerRef" @success="handleEditSuccess" />
+  <ItemEditDrawer ref="itemEditDrawerRef" @success="handleEditSuccess" />
+</template>
+
+<script lang="ts" setup>
+import {
+  useCapabilities,
+  applyColumnSelection,
+  Message,
+  resolveStringPickerFilter,
+  silentQueryRequest,
+  toStringPickerValue,
+  useServerPaging,
+  withAllPickerOption,
+  type InTableAction,
+} from "@ingot/admin-core";
+import type { PlatformDict, DictTreeNodeVO, DictQueryDTO } from "@/models";
+import {
+  CommonStatus,
+  CommonStatusEnumExtArray,
+  DictType,
+  DictScope,
+  useDictScopeEnum,
+} from "@/models/enums";
+import { ChangeDictStatusAPI, RemoveDictAPI } from "@/api/settings/dictionaries.ts";
+import { DictPageQueryOptions, dictQueryKeys } from "@/api/settings/dictionaries.query";
+import { useDictionaryOptions } from "./useOps";
+import { IamAction } from "@ingot/admin-common";
+import { Search } from "@element-plus/icons-vue";
+import LeftContent from "./components/LeftContent.vue";
+import TypeEditDrawer, { type TypeEditDrawerAPI } from "./TypeEditDrawer.vue";
+import ItemEditDrawer, { type ItemEditDrawerAPI } from "./ItemEditDrawer.vue";
+import {
+  createDictItemRowActions,
+  createDictToolbarActions,
+  DICT_SPLIT_KEY,
+  DICT_TABLE_ID,
+  tableHeaders,
+} from "./table";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
+
+const { loadAppOptions, loadTenantOptions } = useDictionaryOptions();
+const { hasAction, contextEpoch } = useCapabilities();
+const canRead = computed(() => hasAction(IamAction.PLATFORM_DICTIONARY_READ));
+const queryClient = useQueryClient();
+const dictScopeEnums = useDictScopeEnum();
+const statusEnumExt = useEnum(CommonStatusEnumExtArray);
+
+const leftRef = ref();
+const typeEditDrawerRef = ref<TypeEditDrawerAPI>();
+const itemEditDrawerRef = ref<ItemEditDrawerAPI>();
+
+const currentType = ref<DictTreeNodeVO | undefined>();
+const selectedColumnProps = ref<string[]>([]);
+const toolbarRow: PlatformDict = {};
+
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
+
+// 顶部作用域过滤
+interface ScopeFilter {
+  scopeType: DictScope;
+  tenantId?: string;
+  appId?: string;
+}
+const scopeFilter = reactive<ScopeFilter>({
+  scopeType: DictScope.Platform,
+  tenantId: undefined,
+  appId: undefined,
+});
+
+const isTenantScope = computed(() => scopeFilter.scopeType === DictScope.Tenant);
+const isAppScope = computed(() => scopeFilter.scopeType === DictScope.App);
+
+// 提供给左树的查询条件
+const treeQuery = computed<DictQueryDTO>(() => ({
+  scopeType: scopeFilter.scopeType,
+  tenantId: scopeFilter.tenantId,
+  appId: scopeFilter.appId,
+}));
+
+// 是否允许新建字典类型（租户/应用作用域必须先选中具体的 ID）
+const canCreateType = computed(() => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_CREATE)) return false;
+  if (isTenantScope.value) return Boolean(scopeFilter.tenantId);
+  if (isAppScope.value) return Boolean(scopeFilter.appId);
+  return true;
+});
+
+const createTypeDisabledReason = computed(() => {
+  if (isTenantScope.value && !scopeFilter.tenantId) {
+    return "请先选择租户";
+  }
+  if (isAppScope.value && !scopeFilter.appId) {
+    return "请先选择应用";
+  }
+  return undefined;
+});
+
+const paging = useServerPaging<PlatformDict, DictQueryDTO>({
+  queryOptions: DictPageQueryOptions,
+  enabled: () => canRead.value,
+  queryWhen: (submitted) => Boolean(submitted.code),
+});
+
+const refreshTable = (): void => {
+  if (!currentType.value) {
+    paging.resetSubmitted({} as DictQueryDTO);
+    return;
+  }
+  paging.condition.code = currentType.value.code;
+  paging.condition.type = DictType.Item;
+  paging.condition.scopeType = scopeFilter.scopeType;
+  paging.condition.tenantId = scopeFilter.tenantId;
+  paging.condition.appId = scopeFilter.appId;
+  paging.search();
+};
+
+const handleNodeClick = (node?: DictTreeNodeVO): void => {
+  currentType.value = node;
+  paging.condition.keyword = undefined;
+  paging.condition.status = undefined;
+  refreshTable();
+};
+
+watch(contextEpoch, () => {
+  currentType.value = undefined;
+  paging.resetSubmitted({} as DictQueryDTO);
+});
+
+const refreshTree = (): void => {
+  currentType.value = undefined;
+  leftRef.value?.refresh();
+};
+
+const handleScopeChange = (): void => {
+  scopeFilter.tenantId = undefined;
+  scopeFilter.appId = undefined;
+  refreshTree();
+};
+
+const handleSearch = (): void => {
+  refreshTable();
+};
+
+const statusFilterOptions = computed(() => withAllPickerOption(statusEnumExt.getOptions()));
+const statusFilter = computed({
+  get: (): string => toStringPickerValue(paging.condition.status),
+  set: (value: string | number | boolean | null) => {
+    const next = resolveStringPickerFilter(value);
+    paging.condition.status =
+      next === CommonStatus.Enable || next === CommonStatus.Lock ? next : undefined;
+    handleSearch();
+  },
+});
+
+// 新建 / 编辑：字典类型 与 字典项
+const handleCreateType = (): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_CREATE)) return;
+  typeEditDrawerRef.value?.show({
+    scopeContext: {
+      scopeType: scopeFilter.scopeType,
+      tenantId: scopeFilter.tenantId,
+      appId: scopeFilter.appId,
+    },
+  });
+};
+
+const handleCreateItem = (): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_CREATE)) return;
+  if (!currentType.value) return;
+  itemEditDrawerRef.value?.show({ currentType: currentType.value });
+};
+
+const handleEdit = (record: PlatformDict): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_UPDATE)) return;
+  if (record.type === DictType.Type) {
+    typeEditDrawerRef.value?.show({ record });
+  } else if (currentType.value) {
+    itemEditDrawerRef.value?.show({ record, currentType: currentType.value });
+  }
+};
+
+const handleEditCurrentType = (): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_UPDATE)) return;
+  if (!currentType.value) return;
+  // DictTreeNodeVO 字段是 PlatformDict 的子集，作为编辑载荷直接复用
+  typeEditDrawerRef.value?.show({ record: currentType.value as PlatformDict });
+};
+
+const handleEditSuccess = (): void => {
+  leftRef.value?.refresh();
+  void queryClient.invalidateQueries({ queryKey: dictQueryKeys.all });
+  refreshTable();
+};
+
+const statusMutation = useMutation({
+  mutationFn: (vars: { id: string; status: CommonStatus }) =>
+    ChangeDictStatusAPI(vars.id, vars.status, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: dictQueryKeys.lists() });
+  },
+});
+
+const removeMutation = useMutation({
+  mutationFn: (id: string) => RemoveDictAPI(id, silentQueryRequest()),
+  onSuccess: () => {
+    void queryClient.invalidateQueries({ queryKey: dictQueryKeys.lists() });
+  },
+});
+
+const handleToggleStatus = (record: PlatformDict): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_UPDATE)) return;
+  if (!record.id || !record.status) return;
+  const next = record.status === CommonStatus.Enable ? CommonStatus.Lock : CommonStatus.Enable;
+  statusMutation.mutateAsync({ id: record.id, status: next }).then(() => {
+    Message.success("操作成功");
+  });
+};
+
+const handleRemove = (record: PlatformDict): void => {
+  if (!hasAction(IamAction.PLATFORM_DICTIONARY_DELETE)) return;
+  if (!record.id) return;
+  if (record.systemFlag) {
+    Message.warning("内置字典不允许该操作");
+    return;
+  }
+  removeMutation.mutateAsync(record.id).then(() => {
+    Message.success("删除成功");
+  });
+};
+
+const toolbarActions = computed(() =>
+  createDictToolbarActions(
+    { onCreateType: handleCreateType, onCreateItem: handleCreateItem },
+    {
+      typeDisabled: !canCreateType.value,
+      typeDisabledReason: createTypeDisabledReason.value,
+      itemDisabled: !currentType.value,
+    },
+  ),
+);
+
+const rowActionsOf = (item: PlatformDict): Array<InTableAction<PlatformDict>> =>
+  createDictItemRowActions(item, {
+    onDetail: handleEdit,
+    onToggleStatus: handleToggleStatus,
+    onDelete: handleRemove,
+  });
+
+const privateOnColumnChange = (value: string[]): void => {
+  selectedColumnProps.value = value;
+};
+</script>
+
+<style scoped lang="postcss">
+.dict-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--in-space-3);
+  min-height: 0;
+  flex: 1;
+}
+
+.dict-left :deep(.in-picker) {
+  display: flex;
+  width: 100%;
+}
+
+.dict-left :deep(.in-picker__trigger) {
+  width: 100%;
+}
+
+.dict-left__tree {
+  flex: 1;
+  min-height: 0;
+}
+
+.code {
+  color: var(--in-text-color-secondary);
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 4px;
+}
+.empty-title {
+  color: var(--in-text-color-placeholder, var(--in-text-color-secondary));
+  font-weight: normal;
+}
+.system-tip {
+  color: var(--el-color-warning);
+  font-size: 13px;
+}
+</style>

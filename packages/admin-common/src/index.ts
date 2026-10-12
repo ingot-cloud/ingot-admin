@@ -58,3 +58,7 @@ export * from "./models/iam/menuConfiguration";
 export { default as BizIamRoleVersionForm } from "./components/BizIamRoleVersionForm.vue";
 export { default as BizIamRoleVersionMetadataDialog } from "./components/BizIamRoleVersionMetadataDialog.vue";
 export { default as BizIamRoleApplicationDrawer } from "./components/BizIamRoleApplicationDrawer.vue";
+
+export { default as BizIamAuthorizationAudit } from "./components/authorization-audit/BizIamAuthorizationAudit.vue";
+
+export { usePlatformTenantOptions } from "./api/iam/tenant-options";

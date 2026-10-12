@@ -1,10 +1,7 @@
+import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
 import type { PageChangeParams, PlatformSessionVO, PlatformSessionQueryDTO } from "@/models";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import {
-  invalidateQueriesByKeys,
-  silentQueryRequest,
-  useServerPaging,
-} from "@ingot/admin-core";
+import { invalidateQueriesByKeys, silentQueryRequest, useServerPaging } from "@ingot/admin-core";
 import {
   hasSessionQueryConstraint,
   SessionPageQueryOptions,
@@ -14,10 +11,12 @@ import { RevokeSessionBySidAPI, RevokeSessionsByUserAPI } from "@/api/security/s
 import { displaySessionUser } from "./sessionDisplay";
 
 export const useOps = () => {
+  const enabled = useActiveSecurityRead(SecurityAction.SESSION_READ, "session");
   const queryClient = useQueryClient();
   const paging = useServerPaging<PlatformSessionVO, PlatformSessionQueryDTO>({
     queryOptions: SessionPageQueryOptions,
     queryWhen: hasSessionQueryConstraint,
+    enabled: () => enabled.value,
   });
   const message = useMessage();
   const confirm = useMessageConfirm();
@@ -59,13 +58,19 @@ export const useOps = () => {
     mutationFn: (sid: string) =>
       RevokeSessionBySidAPI(sid, silentQueryRequest()).then(({ data }) => data),
     onSuccess: (_online, sid) => {
-      void invalidateQueriesByKeys(queryClient, [sessionQueryKeys.lists(), sessionQueryKeys.detail(sid)]);
+      void invalidateQueriesByKeys(queryClient, [
+        sessionQueryKeys.lists(),
+        sessionQueryKeys.detail(sid),
+      ]);
     },
   });
 
   const revokeByUserMutation = useMutation({
-    mutationFn: (vars: { userId: string | number; clientId?: string; tenantId?: string | number }) =>
-      RevokeSessionsByUserAPI(vars, silentQueryRequest()).then(({ data }) => data),
+    mutationFn: (vars: {
+      userId: string | number;
+      clientId?: string;
+      tenantId?: string | number;
+    }) => RevokeSessionsByUserAPI(vars, silentQueryRequest()).then(({ data }) => data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: sessionQueryKeys.lists() });
     },

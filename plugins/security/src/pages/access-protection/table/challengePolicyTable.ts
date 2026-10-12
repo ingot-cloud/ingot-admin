@@ -1,3 +1,4 @@
+import { SecurityAction } from "@/models/securityActions";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { GatewayChallengePolicy } from "@/models";
 
@@ -17,7 +18,7 @@ export const challengePolicyTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "触发",
     prop: "trigger",
-    width: "120",
+    width: "152",
   },
   {
     label: "类型",
@@ -37,7 +38,7 @@ export const challengePolicyTableHeaders: Array<TableHeaderRecord> = [
   {
     label: "剩余次数",
     prop: "passTokenRemaining",
-    width: "100",
+    width: "112",
   },
   {
     label: "优先级",
@@ -63,6 +64,7 @@ export function createChallengePolicyToolbarActions(
   return [
     {
       key: "create",
+      permission: SecurityAction.POLICY_CREATE,
       label: "新建挑战策略",
       kind: "quick",
       icon: "ep:plus",
@@ -74,17 +76,30 @@ export function createChallengePolicyToolbarActions(
 }
 
 export function createChallengePolicyRowActions(
-  _row: GatewayChallengePolicy,
+  row: GatewayChallengePolicy,
   handlers: {
     onDetail: (row: GatewayChallengePolicy) => void;
+    onDelete: (row: GatewayChallengePolicy) => void;
   },
 ): Array<InTableAction<GatewayChallengePolicy>> {
   return [
     {
       key: "detail",
-      label: "编辑",
+      permission: SecurityAction.POLICY_READ,
+      label: "详情",
       kind: "detail",
       onSelect: handlers.onDetail,
+    },
+    {
+      key: "delete",
+      permission: SecurityAction.POLICY_DELETE,
+      label: "删除",
+      kind: "danger",
+      overflow: "always",
+      disabled: !row.id,
+      disabledReason: row.id ? undefined : "缺少记录 ID",
+      confirm: `是否删除挑战策略(${row.code || row.id})`,
+      onSelect: handlers.onDelete,
     },
   ];
 }

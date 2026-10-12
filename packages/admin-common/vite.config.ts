@@ -15,6 +15,7 @@ export default defineInLibraryConfig({
   hookDirs: [],
   iconDir: "src/assets/icons",
   external: [
+    "@element-plus/icons-vue",
     "@ingot/admin-core",
     /^@ingot\/admin-core(?:\/|$)/,
     "@tanstack/vue-query",

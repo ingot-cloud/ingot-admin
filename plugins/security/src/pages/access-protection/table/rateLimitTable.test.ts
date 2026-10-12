@@ -23,8 +23,14 @@ describe("security access rate limit table contract", () => {
         overflow: "never",
       }),
     ]);
-    const rows = createRateLimitRowActions({ id: 1, code: "rl-1" }, { onDetail: () => undefined });
-    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual(["detail:detail"]);
-    expect(rows[0]?.label).toBe("编辑");
+    const rows = createRateLimitRowActions(
+      { id: 1, code: "rl-1" },
+      { onDetail: () => undefined, onDelete: () => undefined },
+    );
+    expect(rows.map((item) => `${item.kind}:${item.key}`)).toEqual([
+      "detail:detail",
+      "danger:delete",
+    ]);
+    expect(rows[0]?.label).toBe("详情");
   });
 });

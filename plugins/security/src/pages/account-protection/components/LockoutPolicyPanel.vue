@@ -3,33 +3,18 @@
     <div class="lockout-panel__tip">
       保存后策略将在数秒内生效。已处于锁定中的账号不会因策略变更自动解锁。
     </div>
-    <el-row :gutter="16">
-      <el-col :xs="24" :lg="12" class="lockout-panel__col">
-        <LockoutPolicyColumn
-          title="B 端（管理员）"
-          :user-type="SessionUserTypeEnum.ADMIN"
-          :config="policyMap[SessionUserTypeEnum.ADMIN]"
-          :saving="saving"
-          :save-policy="savePolicy"
-          @saved="loadAll"
-        />
-      </el-col>
-      <el-col :xs="24" :lg="12" class="lockout-panel__col">
-        <LockoutPolicyColumn
-          title="C 端（会员）"
-          :user-type="SessionUserTypeEnum.APP"
-          :config="policyMap[SessionUserTypeEnum.APP]"
-          :saving="saving"
-          :save-policy="savePolicy"
-          @saved="loadAll"
-        />
-      </el-col>
-    </el-row>
+    <LockoutPolicyColumn
+      :title="title"
+      :user-type="userType"
+      :config="config"
+      :saving="saving"
+      :save-policy="savePolicy"
+    />
   </in-loading>
 </template>
 
 <script setup lang="ts">
-import { SessionUserTypeEnum } from "@/models/enums";
+import { AccountProtectionTabEnum, SessionUserTypeEnum } from "@/models/enums";
 import LockoutPolicyColumn from "./LockoutPolicyColumn.vue";
 import { useLockoutPolicy } from "../use/useLockoutPolicy";
 
@@ -37,11 +22,14 @@ defineOptions({
   name: "LockoutPolicyPanel",
 });
 
-const { loading, saving, policyMap, loadAll, savePolicy } = useLockoutPolicy();
-
-onMounted(() => {
-  loadAll();
-});
+const props = defineProps<{
+  userType: SessionUserTypeEnum;
+  tab: AccountProtectionTabEnum;
+}>();
+const title = computed(() =>
+  props.userType === SessionUserTypeEnum.ADMIN ? "B 端（管理员）" : "C 端（会员）",
+);
+const { loading, saving, config, savePolicy } = useLockoutPolicy(props.userType, props.tab);
 </script>
 
 <style lang="postcss" scoped>
@@ -50,10 +38,6 @@ onMounted(() => {
 
   & .lockout-panel__tip {
     @apply mb-16px text-13px text-[var(--in-text-color-secondary)];
-  }
-
-  & .lockout-panel__col {
-    @apply mb-16px;
   }
 }
 </style>

@@ -103,13 +103,13 @@ export const LoginFailureDimensionMetaList: Array<LoginFailureDimensionMeta> = [
   },
   {
     value: LoginFailureDimensionEnum.CLIENT,
-    label: "Client",
+    label: "客户端",
     hint: "仅统计带用户名的密码错误",
     tag: "warning",
   },
   {
     value: LoginFailureDimensionEnum.ACCOUNT_IP,
-    label: "账号+IP",
+    label: "账号 + IP",
     hint: "定向撞库防护，达阈值封 IP",
     tag: "danger",
   },

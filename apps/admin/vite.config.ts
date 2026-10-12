@@ -12,7 +12,7 @@ export default defineInAppConfig({
     "@": fileURLToPath(new URL("./src", import.meta.url)),
   },
   enforceAppConventions: true,
-  officialPlugins: ["@ingot/org-plugin", "@ingot/security-plugin"],
+  officialPlugins: ["@ingot/org-plugin"],
   iconifyOffline: {
     collections: ["ep"],
   },

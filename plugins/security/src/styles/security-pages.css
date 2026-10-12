@@ -1,0 +1,92 @@
+.security-settings,
+.security-policy-drawer {
+  & .policy-form,
+  & .lockout-column__form {
+    min-width: 0;
+    width: 100%;
+
+    & > .el-row {
+      row-gap: var(--in-space-5);
+      margin-bottom: var(--in-space-5);
+    }
+  }
+
+  & .panel-toolbar,
+  & .panel-header,
+  & .lockout-column__header {
+    flex-wrap: wrap;
+    gap: var(--in-space-3);
+  }
+
+  & .panel-toolbar__actions,
+  & .panel-header__actions,
+  & .lockout-column__actions {
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  & .in-detail-field__value {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+}
+
+.security-settings .in-biz-tabs-header__bar {
+  overflow-x: auto;
+  scrollbar-width: thin;
+
+  & .tab {
+    flex: none;
+    white-space: nowrap;
+  }
+}
+
+.security-settings__tables {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+
+  & > * {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: var(--in-space-4) var(--in-page-gutter);
+    box-sizing: border-box;
+  }
+
+  & > .violation-escalation-panel,
+  & > .login-failure-panel {
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  & > .security-access-list-panel {
+    padding: 0;
+
+    & .in-table__tools {
+      flex-wrap: wrap;
+    }
+
+    & .in-table__tools-start {
+      flex-wrap: wrap;
+      flex: 1 1 auto;
+    }
+
+    & .in-table__tools-end {
+      flex: 0 0 auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.security-policy-drawer {
+  & .in-drawer__footer {
+    flex-wrap: wrap;
+  }
+}

@@ -1,3 +1,4 @@
+import "./styles/security-pages.css";
 import type { Component } from "vue";
 import {
   definePluginPages,

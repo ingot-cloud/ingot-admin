@@ -8,8 +8,8 @@ const source = readFileSync(resolve(dir, "IndexPage.vue"), "utf8");
 const panel = readFileSync(resolve(dir, "components/SessionListPanel.vue"), "utf8");
 
 describe("security sessions IndexPage", () => {
-  it("使用 Settings 的 page 模式和局部 Tab 懒挂载", () => {
-    expect(source).toContain('mode="page"');
+  it("使用 Settings 的 contained 模式和局部 Tab 懒挂载", () => {
+    expect(source).toContain('mode="contained"');
     expect(source).toContain('surface="workspace"');
     expect(source).toContain("in-page-header");
     expect(source).toContain('description="查询在线会话并配置并发策略。"');

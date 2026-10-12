@@ -1,5 +1,5 @@
 <template>
-  <in-container variant="bordered" class="lockout-column">
+  <section class="lockout-column" :aria-label="title">
     <div class="lockout-column__header">
       <div class="lockout-column__title-wrap">
         <div class="lockout-column__title">{{ title }}</div>
@@ -7,8 +7,14 @@
       </div>
       <div v-if="config" class="lockout-column__actions">
         <template v-if="editing">
-          <in-button @click="privateOnCancelClick">取消</in-button>
-          <in-button type="primary" :loading="saving" @click="privateOnSaveClick">保存</in-button>
+          <in-button :disabled="saving" @click="privateOnCancelClick">取消</in-button>
+          <in-button
+            v-auth="LOCKOUT_UPDATE_PERMISSION"
+            type="primary"
+            :loading="saving"
+            @click="privateOnSaveClick"
+            >保存</in-button
+          >
         </template>
         <in-button v-else v-auth-any="updateAuths" type="primary" @click="privateOnEditClick">
           编辑
@@ -19,72 +25,102 @@
     <el-empty v-if="!config" description="暂无该端账号锁定策略" />
 
     <in-form
+      :disabled="saving"
       v-else
       ref="formRef"
       class="lockout-column__form"
       :model="form"
       :rules="rules"
-      :disabled="!editing"
+      :editing="editing"
     >
       <el-row :gutter="16">
-        <el-col :span="allowPermanent ? 12 : 24">
-          <el-form-item label="是否启用">
-            <el-switch v-model="form.enabled" inline-prompt active-text="是" inactive-text="否" />
-          </el-form-item>
+        <el-col :xs="24" :sm="12" :lg="12">
+          <in-detail-field label="是否启用" :value="form.enabled ? '启用' : '停用'">
+            <el-switch
+              v-if="editing"
+              v-model="form.enabled"
+              inline-prompt
+              active-text="是"
+              inactive-text="否"
+            />
+          </in-detail-field>
         </el-col>
-        <el-col v-if="allowPermanent" :span="12">
-          <el-form-item label="永久锁定">
-            <el-switch v-model="permanent" inline-prompt active-text="是" inactive-text="否" />
-          </el-form-item>
+        <el-col v-if="allowPermanent" :xs="24" :sm="12" :lg="12">
+          <in-detail-field label="永久锁定" :value="permanent ? '是' : '否'">
+            <el-switch
+              v-if="editing"
+              v-model="permanent"
+              inline-prompt
+              active-text="是"
+              inactive-text="否"
+            />
+          </in-detail-field>
         </el-col>
       </el-row>
       <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="失败次数阈值" prop="maxAttempts">
+        <el-col :xs="24" :sm="12" :lg="12">
+          <in-detail-field label="失败次数阈值" prop="maxAttempts" :value="form.maxAttempts">
             <el-input-number
+              v-if="editing"
               v-model="form.maxAttempts"
               :min="1"
               class="w-full"
               placeholder="请输入失败次数阈值"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="锁定时长(分钟)" prop="lockDurationMinutes">
+        <el-col :xs="24" :sm="12" :lg="12">
+          <in-detail-field
+            label="锁定时长(分钟)"
+            prop="lockDurationMinutes"
+            :value="permanent ? '永久锁定' : `${form.lockDurationMinutes} 分钟`"
+          >
             <el-input-number
+              v-if="editing"
               v-model="form.lockDurationMinutes"
               :min="durationMin"
               :disabled="!editing || permanent"
               class="w-full"
               placeholder="请输入锁定分钟数"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
       </el-row>
       <el-row :gutter="16">
-        <el-col :span="12">
-          <el-form-item label="失败计数窗口(分钟)" prop="attemptWindowMinutes">
+        <el-col :xs="24" :sm="12" :lg="12">
+          <in-detail-field
+            label="失败计数窗口(分钟)"
+            prop="attemptWindowMinutes"
+            :value="form.attemptWindowMinutes"
+          >
             <el-input-number
+              v-if="editing"
               v-model="form.attemptWindowMinutes"
               :min="1"
               class="w-full"
               placeholder="请输入失败计数窗口分钟数"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="提示起始次数" prop="hintAfterAttempts">
+        <el-col :xs="24" :sm="12" :lg="12">
+          <in-detail-field
+            label="提示起始次数"
+            prop="hintAfterAttempts"
+            :value="form.hintAfterAttempts"
+          >
             <el-input-number
+              v-if="editing"
               v-model="form.hintAfterAttempts"
               :min="1"
               class="w-full"
               placeholder="请输入提示起始次数"
             />
-          </el-form-item>
+          </in-detail-field>
         </el-col>
       </el-row>
-      <el-form-item label="备注">
+      <in-detail-field label="备注" :value="form.remark">
         <el-input
+          v-if="editing"
           v-model="form.remark"
           type="textarea"
           :rows="3"
@@ -93,19 +129,21 @@
           clearable
           placeholder="请输入备注"
         />
-      </el-form-item>
+      </in-detail-field>
       <div v-if="form.updatedAt" class="lockout-column__meta">
         最近更新：{{ formatDateTime(form.updatedAt) }}
       </div>
     </in-form>
-  </in-container>
+  </section>
 </template>
 
 <script setup lang="ts">
+import type { FormInstance } from "element-plus";
+import { useCapabilities } from "@ingot/admin-core";
+const { hasAction } = useCapabilities();
 import { formatDateTime } from "@ingot/shared";
 import type { AccountLockoutPolicy } from "@/models";
 import { SessionUserTypeEnum } from "@/models/enums";
-import { ROLE_SYSTEM_ADMIN_CODE } from "@ingot/admin-core";
 import { copyParams } from "@ingot/admin-core";
 import type { SaveLockoutPolicyFn } from "../use/useLockoutPolicy";
 import { LOCKOUT_UPDATE_PERMISSION } from "../constants";
@@ -128,7 +166,7 @@ const DEFAULT_ADMIN_DURATION = 30;
 const DEFAULT_APP_DURATION = 15;
 
 const editing = ref(false);
-const formRef = ref();
+const formRef = ref<FormInstance>();
 const lastNonZeroDuration = ref(
   props.userType === SessionUserTypeEnum.ADMIN ? DEFAULT_ADMIN_DURATION : DEFAULT_APP_DURATION,
 );
@@ -144,7 +182,13 @@ const form = reactive<AccountLockoutPolicy>({
 });
 
 const confirm = useMessageConfirm();
-const updateAuths = [LOCKOUT_UPDATE_PERMISSION, ROLE_SYSTEM_ADMIN_CODE];
+const updateAuths = [LOCKOUT_UPDATE_PERMISSION];
+watch(
+  () => hasAction(LOCKOUT_UPDATE_PERMISSION),
+  (allowed) => {
+    if (!allowed) privateOnCancelClick();
+  },
+);
 
 const allowPermanent = computed(() => props.userType === SessionUserTypeEnum.ADMIN);
 const durationMin = computed(() => (allowPermanent.value ? 0 : 1));
@@ -263,6 +307,7 @@ const syncForm = (config?: AccountLockoutPolicy): void => {
 };
 
 const privateOnEditClick = (): void => {
+  if (!hasAction(LOCKOUT_UPDATE_PERMISSION)) return;
   editing.value = true;
 };
 
@@ -275,6 +320,7 @@ const privateOnCancelClick = (): void => {
 };
 
 const privateOnSaveClick = (): void => {
+  if (!editing.value || props.saving || !hasAction(LOCKOUT_UPDATE_PERMISSION)) return;
   const formInstance = unref(formRef);
   formInstance?.validate(async (valid: boolean) => {
     if (!valid) {
@@ -283,6 +329,7 @@ const privateOnSaveClick = (): void => {
 
     try {
       await confirm.warning(`确认保存「${props.title}」账号锁定策略？`);
+      if (!hasAction(LOCKOUT_UPDATE_PERMISSION)) return;
       await props.savePolicy({
         userType: form.userType,
         enabled: form.enabled,
@@ -293,6 +340,7 @@ const privateOnSaveClick = (): void => {
         remark: form.remark ?? null,
       });
       editing.value = false;
+      syncForm(props.config);
       emits("saved");
     } catch {
       // 用户取消或保存失败时保持编辑态
@@ -321,7 +369,7 @@ watch(
 
 <style lang="postcss" scoped>
 .lockout-column {
-  @apply h-full flex flex-col;
+  @apply min-w-0 flex flex-col;
 
   & .lockout-column__header {
     @apply flex flex-row items-start justify-between gap-3 mb-16px;
