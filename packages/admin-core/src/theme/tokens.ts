@@ -150,6 +150,7 @@ export const IN_THEME_TOKEN_NAMES = [
   "--in-breadcrumb-height",
   "--in-page-breadcrumb-height",
   "--in-page-header-min-height",
+  "--in-form-content-max-width",
   "--in-avatar-size",
   "--in-avatar-size-lg",
   "--in-tag-height",

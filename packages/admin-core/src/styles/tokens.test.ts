@@ -39,6 +39,7 @@ const REQUIRED_TOKENS = [
   "--in-container-bg",
   "--in-page-breadcrumb-height",
   "--in-page-header-min-height",
+  "--in-form-content-max-width",
   "--in-avatar-size",
   "--in-avatar-size-lg",
   "--in-biz-tabs-font-size",
@@ -98,6 +99,7 @@ const REQUIRED_VALUES: Record<string, string> = {
   "--in-container-bg": "var(--in-bg-color-surface)",
   "--in-page-breadcrumb-height": "46px",
   "--in-page-header-min-height": "80px",
+  "--in-form-content-max-width": "840px",
   "--in-avatar-size": "32px",
   "--in-avatar-size-lg": "48px",
   "--in-biz-tabs-font-size": "var(--in-font-size-section-title)",
@@ -158,7 +160,9 @@ const parseDeclarations = (css: string): Map<string, string[]> => {
 };
 
 const collectRefs = (value: string): string[] => {
-  return [...value.matchAll(VAR_REF)].map((item) => item[1]).filter((item): item is string => !!item);
+  return [...value.matchAll(VAR_REF)]
+    .map((item) => item[1])
+    .filter((item): item is string => !!item);
 };
 
 describe("design tokens", () => {

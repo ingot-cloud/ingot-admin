@@ -16,6 +16,7 @@ import InDescriptionList from "./description/InDescriptionList.vue";
 import InDescriptionItem from "./description/InDescriptionItem.vue";
 import InEditor from "./editor/InEditor.vue";
 import InForm from "./form/InForm.vue";
+import InFormContent from "./form/InFormContent.vue";
 import InDetailField from "./form/InDetailField.vue";
 import InFormSkeleton from "./form/InFormSkeleton.vue";
 import InFormGroupTitle from "./form/InFormGroupTitle.vue";
@@ -87,6 +88,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InDescriptionItem,
   InEditor,
   InForm,
+  InFormContent,
   InDetailField,
   InFormSkeleton,
   InFormGroupTitle,
@@ -160,6 +162,7 @@ declare module "vue" {
     InDescriptionItem: typeof InDescriptionItem;
     InEditor: typeof InEditor;
     InForm: typeof InForm;
+    InFormContent: typeof InFormContent;
     InDetailField: typeof InDetailField;
     InFormSkeleton: typeof InFormSkeleton;
     InFormGroupTitle: typeof InFormGroupTitle;
