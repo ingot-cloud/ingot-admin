@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DOMWrapper, mount } from "@vue/test-utils";
+import { DOMWrapper, flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import InTableActions from "./InTableActions.vue";
 import type { InTableAction } from "../types";
@@ -48,6 +48,22 @@ describe("InTableActions", () => {
     setActivePinia(createPinia());
     noop.mockClear();
     warning.mockClear();
+  });
+
+  it("取消危险动作的确认只终止操作，不向组件异常处理器报错", async () => {
+    const errorHandler = vi.fn();
+    warning.mockRejectedValueOnce("cancel");
+    const wrapper = mount(InTableActions, {
+      props: { actions, row },
+      attachTo: document.body,
+      global: { stubs, config: { errorHandler } },
+    });
+    await wrapper.get("[aria-label='更多']").trigger("click");
+    await findMenuItem("删除").trigger("click");
+    await flushPromises();
+    expect(noop).not.toHaveBeenCalled();
+    expect(errorHandler).not.toHaveBeenCalled();
+    wrapper.unmount();
   });
 
   it("行内只渲染详情和高频动作，其余进入更多菜单", async () => {
@@ -102,7 +118,10 @@ describe("InTableActions", () => {
     expect(menu?.style.top).toBe("auto");
     wrapper.unmount();
     Element.prototype.getBoundingClientRect = originalRect;
-    Object.defineProperty(window, "innerHeight", { configurable: true, value: originalInnerHeight });
+    Object.defineProperty(window, "innerHeight", {
+      configurable: true,
+      value: originalInnerHeight,
+    });
     Object.defineProperty(window, "innerWidth", { configurable: true, value: originalInnerWidth });
   });
 

@@ -55,7 +55,9 @@
             <slot v-else :name="`${String(item.prop)}-header`" :item="item" />
           </template>
           <template
-            v-if="!item.type || item.type === 'default' || item.type === 'expand' || isTreeColumn(item)"
+            v-if="
+              !item.type || item.type === 'default' || item.type === 'expand' || isTreeColumn(item)
+            "
             #default="scope"
           >
             <template v-if="!isTableColumnProbe(scope)">
@@ -69,11 +71,7 @@
                 @toggle-expand="privateOnToggleExpand(scope.row)"
                 @change="(checked) => privateOnToggleSelect(scope.row, checked)"
               >
-                <slot
-                  :name="item.prop"
-                  :item="scope.row"
-                  :index="scope.$index"
-                >
+                <slot :name="item.prop" :item="scope.row" :index="scope.$index">
                   {{
                     item.transform
                       ? item.transform(scope.row[String(item.prop)])
@@ -104,11 +102,7 @@
           </template>
         </el-table-column>
         <template #empty>
-          <in-table-skeleton
-            v-if="showSkeleton"
-            :columns="headersEnable"
-            :rows="skeletonRows"
-          />
+          <in-table-skeleton v-if="showSkeleton" :columns="headersEnable" :rows="skeletonRows" />
           <slot v-else-if="feedback === 'error'" name="error">
             <el-empty :image="emptyIllustration" description="加载失败" />
           </slot>
@@ -148,11 +142,7 @@ import { emptyIllustration } from "./emptyIllustration";
 import InTableSkeleton from "./InTableSkeleton.vue";
 import InTableTreeCell from "./InTableTreeCell.vue";
 import { resolveSkeletonRowCount } from "./resolveSkeletonRowCount";
-import {
-  asCheckboxMode,
-  isTreeCheckboxEnabled,
-  resolveRowCheckboxMode,
-} from "./checkboxMode";
+import { asCheckboxMode, isTreeCheckboxEnabled, resolveRowCheckboxMode } from "./checkboxMode";
 import { collectTreeLevels, flattenTreeRows, treeRowHasChildren } from "./tableTree";
 import { isTableColumnProbe } from "./tableColumnProbe";
 import { useAppStateStore } from "@/stores/modules/app";
@@ -184,9 +174,7 @@ const showSkeleton = computed(() => Boolean(props.loading));
 const skeletonRows = computed(() => resolveSkeletonRowCount(props.page.size));
 
 const hasMeta = computed(() => Boolean(slot.title || slot.subtitle || slot.summary));
-const hasTools = computed(() =>
-  Boolean(slot["tools-start"] || slot["tools-end"] || slot.toolbar),
-);
+const hasTools = computed(() => Boolean(slot["tools-start"] || slot["tools-end"] || slot.toolbar));
 
 const asRecord = (row: TableRow): Record<string, unknown> => row as Record<string, unknown>;
 
@@ -253,10 +241,11 @@ const treeLevels = computed(() =>
   }),
 );
 
-const selectableTreeRows = computed(() =>
-  treeRows.value.filter(
-    (row) => resolveRowCheckboxMode(props.checkbox, row as TableRow) === "on",
-  ) as TableRow[],
+const selectableTreeRows = computed(
+  () =>
+    treeRows.value.filter(
+      (row) => resolveRowCheckboxMode(props.checkbox, row as TableRow) === "on",
+    ) as TableRow[],
 );
 
 const selectedIds = computed(
@@ -291,7 +280,8 @@ const rowCheckboxMode = (row: TableRow) =>
 
 const isRowSelected = (row: TableRow): boolean => selectedIds.value.has(resolveRowKey(row));
 
-const isRowExpanded = (row: TableRow): boolean => innerExpandKeys.value.includes(resolveRowKey(row));
+const isRowExpanded = (row: TableRow): boolean =>
+  innerExpandKeys.value.includes(resolveRowKey(row));
 
 const canExpandRow = (row: TableRow): boolean => {
   if (props.treeExpand === false) {
@@ -589,7 +579,7 @@ defineExpose<TableAPI<TableRow>>({
 
 :deep(th.el-table__cell) {
   height: var(--in-table-header-height);
-  padding: 0 12px;
+  padding: 0;
   font-weight: var(--in-font-weight-body);
   font-size: var(--in-font-size-body);
   color: var(--in-table-header-text);
@@ -604,10 +594,14 @@ defineExpose<TableAPI<TableRow>>({
 
 :deep(td.el-table__cell) {
   height: var(--in-table-row-height);
-  padding: 0 12px;
+  padding: 0;
   border-bottom-color: var(--in-border-color);
   color: var(--in-table-cell-text);
   font-size: var(--in-font-size-body);
+}
+
+:deep(.el-table .cell) {
+  padding-inline: var(--in-space-3);
 }
 
 :deep(.el-table .cell:has(.in-status-tag)),

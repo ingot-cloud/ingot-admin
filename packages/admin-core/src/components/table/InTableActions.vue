@@ -459,7 +459,11 @@ const privateOnSelect = async (action: InTableAction<Row>) => {
   privateCloseMenu(true);
   const prompt = resolveActionConfirm(action.confirm);
   if (prompt) {
-    await confirm.warning(prompt.message, { title: prompt.title });
+    try {
+      await confirm.warning(prompt.message, { title: prompt.title });
+    } catch {
+      return;
+    }
   }
   action.onSelect(props.row);
 };
