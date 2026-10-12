@@ -403,3 +403,17 @@ sources/BACKEND_FRONTEND.md 是最新权威字节副本；本地 INTERACTIONS.md
 | `AUTHORIZATION-AUDIT-REFINEMENT.md` | [sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md](./sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md) | `60b4ccbe35390da77fba33b045ac0863a7b52693f0d139f7e037a331b5df52e3` |
 | `contracts/routes.json` | [sources/contracts/routes.json](./sources/contracts/routes.json) | `afb64591567e5ecf0509533a90758c8e2e760b835d3635e292471029f63d2bd7` |
 | `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `5856eb9de250002f6e149a6d8672beaada2f400d40b816db84d48cab24243f7e` |
+
+## 2026-10-12 角色详情加载优化
+
+本节记录人工验收完成后的后端同源文档/契约与最新 SHA-256；旧来源节保留。用户确认人工测试通过，RL 增量已 completed 并归档；两端 IAM 主 change 保持 implementing。未标 archive 的来源相对后端 active 主 change；角色详情增量来自后端归档。
+
+| 后端来源 | 前端副本 | SHA-256 |
+| --- | --- | --- |
+| `API.md` | [sources/BACKEND_API.md](./sources/BACKEND_API.md) | `ff370a768ef9a57f91255f4599f3c7bf1a71d3b3f4efbc2c740302c12eb01471` |
+| `DESIGN.md` | [sources/BACKEND_DESIGN.md](./sources/BACKEND_DESIGN.md) | `424fe99658b6a2d44e2c2d2b8378a202b3f701b814019e82ef45c4918961cd47` |
+| `TASKS.md` | [sources/BACKEND_TASKS.md](./sources/BACKEND_TASKS.md) | `24bd79fca8f3b26c919b4d40cee7ddf743e1a48517d725d377442a64dd004ba9` |
+| `contracts/README.md` | [sources/contracts/README.md](./sources/contracts/README.md) | `af39928e7a44cddd53abc5ef904700c102ede22caff58949a6bd2ef9fbf2ccb3` |
+| `contracts/schemas.json` | [sources/contracts/schemas.json](./sources/contracts/schemas.json) | `81ba58160696690eb52e6628052f9f82a480ab70140dcdfed42997b675ea2d1f` |
+| `contracts/openapi.json` | [sources/contracts/openapi.json](./sources/contracts/openapi.json) | `604ba1c5f1a703db8e8774720394dcb4d5fe406103b3e92815d06641fd332ce4` |
+| `archive/2026/20261012-iam-role-detail-loading/REFINEMENT.md` | [sources/BACKEND_ROLE_DETAIL_LOADING_REFINEMENT.md](./sources/BACKEND_ROLE_DETAIL_LOADING_REFINEMENT.md) | `2aac54ce51691b48009bf7d21ec7ef597547332928fa860615318dcd537b55ca` |
