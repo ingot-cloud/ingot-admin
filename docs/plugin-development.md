@@ -48,6 +48,8 @@ Vite 使用 `defineInSourcePluginConfig`。`@/` 指向插件自身 `src`，由�
 
 API、models、stores、业务组件跟随所属插件，不要跨插件复制。只有稳定的无页面能力才提升到 `packages/admin-common` 或更底层 package。
 
+整页配置表单使用 admin-core 的 `InFormContent`，遵循 [正文居中与限宽规范](./form-page-layout.md)。页头、Tab、滚动模式仍由 `InPageFrame` 负责；混合页面仅配置面板采用正文限宽。
+
 ## 页面注册
 
 ```ts

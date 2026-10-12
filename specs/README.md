@@ -201,3 +201,16 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 - [角色版本信息与批量应用](./changes/archive/2026/20261010-base-role-version-application/README.md)（completed，2026-10-11 人工验收完成并归档）；[当前能力](./current/base/role-version-application/README.md)
 
 - [角色详情加载优化](./changes/archive/2026/20261012-base-role-detail-loading/README.md)（completed，2026-10-12 人工验收通过）；[当前能力](./current/base/role-version-application/README.md)
+
+
+## 活动增量
+
+- [登录失败保护维度选择交互](./changes/active/20261012-security-login-failure-dimension-selection/README.md)（validating；分段选择器、草稿及保存处理已实现，自动化通过，待真实页面人工验收）
+
+- [整页配置表单正文布局](./changes/active/20261012-common-centered-form-layout/README.md)（validating；840px 居中正文及账号 B/C 两个 Tab 已实现，自动化通过，待真实页面人工验收）
+
+- [平台能力补齐与页面归属](./changes/active/20261012-iam-platform-capability-completion/README.md)（validating；实现及自动化已通过，部署及真实角色人工验收后更新 current）
+
+- [访问防护列表与行操作整理](./changes/active/20261012-security-access-table-refinement/README.md)（validating；重复留白、列宽与更多删除已实现，自动化通过，待真实页面人工验收）
+
+- [安全中心页面交互与布局](./changes/active/20261012-security-page-interactions/README.md)（validating；四页激活请求、默认预览与响应式布局，自动化通过，待真实页面人工验收）

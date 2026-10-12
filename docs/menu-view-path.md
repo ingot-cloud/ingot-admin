@@ -8,10 +8,10 @@
 
 ## path 与 view_path
 
-| 字段 | 含义 | 例 |
-|------|------|------|
-| `path` | 浏览器 URL | `/platform/security/sessions` |
-| `view_path` | 组件键 | `security.sessions` |
+| 字段        | 含义       | 例                            |
+| ----------- | ---------- | ----------------------------- |
+| `path`      | 浏览器 URL | `/platform/security/sessions` |
+| `view_path` | 组件键     | `security.sessions`           |
 
 二者独立。创建菜单时前端会给页面一个默认可改 path（`/` + 键里的 `.` 换成 `/`），目录不自动填 path。
 
@@ -23,16 +23,16 @@
 相对目录去掉 IndexPage.vue → `/` 变 `.`、`-` 变 `.` → 拼 prefix
 ```
 
-| 来源 | prefix | 例 |
-|------|--------|------|
-| `plugins/platform/src/pages/` | `platform` | `dashboard/IndexPage.vue` → `platform.dashboard` |
-| `plugins/security/src/pages/` | `security` | `access-protection/IndexPage.vue` → `security.access.protection` |
-| `plugins/org/src/pages/` | `org` | `contacts/user/IndexPage.vue` → `org.contacts.user` |
-| `plugins/member/src/pages/` | `member` | `user/IndexPage.vue` → `member.user` |
-| `packages/admin-core/src/layouts/{slot}/` | `layout` | `main/IndexPage.vue` → `layout.main` |
-| `packages/admin-core/src/pages/common/` | `common` | `plugin-unavailable` → `common.plugin.unavailable`（不要配到业务菜单） |
-| App 本地 `src/pages/` | `appCode` 的 `-` 改 `.` | `ingot-admin` + `demo/overview` → `ingot.admin.demo.overview` |
-| App 本地 `src/layouts/` | `{appPrefix}.layout` | `ingot-admin` + `workbench` → `ingot.admin.layout.workbench` |
+| 来源                                      | prefix                  | 例                                                                     |
+| ----------------------------------------- | ----------------------- | ---------------------------------------------------------------------- |
+| `plugins/platform/src/pages/`             | `platform`              | `dashboard/IndexPage.vue` → `platform.dashboard`                       |
+| `plugins/security/src/pages/`             | `security`              | `access-protection/IndexPage.vue` → `security.access.protection`       |
+| `plugins/org/src/pages/`                  | `org`                   | `contacts/user/IndexPage.vue` → `org.contacts.user`                    |
+| `plugins/member/src/pages/`               | `member`                | `user/IndexPage.vue` → `member.user`                                   |
+| `packages/admin-core/src/layouts/{slot}/` | `layout`                | `main/IndexPage.vue` → `layout.main`                                   |
+| `packages/admin-core/src/pages/common/`   | `common`                | `plugin-unavailable` → `common.plugin.unavailable`（不要配到业务菜单） |
+| App 本地 `src/pages/`                     | `appCode` 的 `-` 改 `.` | `ingot-admin` + `demo/overview` → `ingot.admin.demo.overview`          |
+| App 本地 `src/layouts/`                   | `{appPrefix}.layout`    | `ingot-admin` + `workbench` → `ingot.admin.layout.workbench`           |
 
 不要给官方页面再加一层 `ingot.`。`layout`、`common` 以及 `platform` / `security` / `org` / `member` 不要拿去当 appCode。
 
@@ -54,7 +54,7 @@ SET
     WHEN '@/pages/platform/config/role/IndexPage.vue' THEN 'platform.config.role'
     WHEN '@/pages/platform/config/menu/IndexPage.vue' THEN 'platform.config.menu'
     WHEN '@/pages/platform/config/permission/IndexPage.vue' THEN 'platform.config.permission'
-    WHEN '@/pages/platform/config/dict/IndexPage.vue' THEN 'platform.config.dict'
+    WHEN '@/pages/platform/config/dict/IndexPage.vue' THEN 'platform.settings.dictionaries'
     WHEN '@/pages/platform/admin/user/IndexPage.vue' THEN 'platform.admin.user'
     WHEN '@/pages/platform/org/tenant/IndexPage.vue' THEN 'platform.org.tenant'
     WHEN '@/pages/platform/develop/qrcode/IndexPage.vue' THEN 'platform.develop.qrcode'
@@ -101,3 +101,5 @@ WHERE menu_type = '0'
 按钮（`menu_type='9'`）的 `view_path` 前端路由不用，可不动。
 
 迁完后不应再有 `menu_type='1'` 且 `view_path LIKE '@/pages/%'` 的行。若有 Dashboard 菜单，改为 `platform.dashboard`。
+
+字典正式注册键为 `platform.settings.dictionaries`；浏览器 URL 显式配置 `/platform/settings/dictionaries`。安全四页归 security 插件、成员访问策略归 org、两域审计各有包装页，共享无路由审计组件。完整映射见[本次规格](../specs/changes/active/20261012-iam-platform-capability-completion/DESIGN.md)。

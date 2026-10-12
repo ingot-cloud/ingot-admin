@@ -7,7 +7,7 @@
 - [x] T00 状态 approved 后改 implementing，阅读本 change、CONSTITUTION 及 in-coding-standards skill。
 - [x] T01 校对后端已验证 OpenAPI、操作码、路由/viewPath 和 DESIGN §6 缺口。
   - 契约：OpenAPI 77 路径 / 132 操作全部 `x-runtime-implemented=true`；routes.json 107 个 ACTION，字面量 `iam-platform:` / `iam-tenant:`。
-  - viewPath：按 `definePluginPages` 注册 `platform.iam.*` / `org.iam.*` / `security.iam.*`；kebab 目录映射为点分键（如 `shared-roles` → `shared.roles`）。
+  - viewPath：按 `definePluginPages` 注册 `platform.iam.*` / `org.iam.*` / `security.*`；kebab 目录映射为点分键（如 `shared-roles` → `shared.roles`）。
   - 未闭合：purpose `/candidates`、审计导出路径、辅助接口更名、菜单种子。选择器不发明路径；审计导出不虚构端点；辅助入口暂留 `/api/pms`。
 - [x] T02 建立目标页面注册/旧入口替代与 /api/pms 引用分类清单。
   - IAM 替换：admin-core bootstrap（原 user info/menus/permissions）、平台租户/应用/角色/权限/人员、组织用户/部门/角色/授权。

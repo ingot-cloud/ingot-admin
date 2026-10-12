@@ -164,3 +164,5 @@ MT01–MT03 开发、来源同步与定向自动化完成，时间增量进入 v
 需求、设计、兼容性及 RL 系列任务见 [角色详情加载增量](../../archive/2026/20261012-base-role-detail-loading/README.md)。本轮沿用已批准 change；2026-10-12 人工验收通过，增量已更新 current 并单独归档。
 
 本增量已 completed，RL 系列任务及人工验收均完成，证据见上述归档。主 change 保持 implementing。
+
+页面归属与权限补齐由[关联变更](../20261012-iam-platform-capability-completion/README.md)单独实施和验收。

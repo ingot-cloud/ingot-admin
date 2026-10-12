@@ -26,8 +26,8 @@
 | org/iam/applications | /org/applications | org.iam.applications | api/iam/applications |
 | org/iam/workbench | /org/workbench | org.iam.workbench | bootstrap applications |
 | org/iam/directory | /org/directory | org.iam.directory | api/iam/directory |
-| security/iam/member-permissions | /org/member-permissions | security.iam.member.permissions | api/iam/member-policies |
-| security/iam/authorization-audit | /platform/authorization-audit 或 /org/authorization-audit | security.iam.authorization.audit | api/iam/authorization-audit |
+| org/iam/member-policies                                       | /org/member-policies                                    | org.iam.member.policies                                       | api/iam/member-policies                 |
+| platform/iam/authorization-audit、org/iam/authorization-audit | /platform/authorization-audit、/org/authorization-audit | platform.iam.authorization.audit、org.iam.authorization.audit | api/iam/authorization-audit             |
 
 现有 security 会话/策略/事件、platform 字典保持页面实现和注册键，归入新导航并校对新授权。无后端功能的运维页不新增。角色详情与升级由角色页进入，授权记录/管理员为 Tab；诊断为抽屉/详情工具，不新增侧栏一级入口。
 
