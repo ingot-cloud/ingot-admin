@@ -146,7 +146,15 @@ test("版本信息独立编辑、历史回退应用及大量分配的暂停接�
     else if (path.endsWith("/metadata")) {
       Object.assign(versions[1], body, { metadataVersion: "1" });
       data = { id: "34", version: "1" };
-    } else if (path.endsWith("/grants")) data = { items: [] };
+    } else if (path.endsWith("/grants"))
+      data = {
+        items: [],
+        revision: {
+          id: versions[0].id,
+          revision: versions[0].revision,
+          versionName: versions[0].versionName,
+        },
+      };
     else if (path.endsWith("/version-applications") && method === "POST") data = task();
     else if (path.endsWith("/preflight")) {
       status = "READY";
@@ -206,10 +214,30 @@ test("版本信息独立编辑、历史回退应用及大量分配的暂停接�
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/iam/authorization");
   await page.getByRole("button", { name: "更多", exact: true }).click();
+  const readsBeforeDetail = reads.length;
   await page.getByRole("menuitem", { name: "详情", exact: true }).click();
   const drawer = () => page.locator(".el-drawer:visible").last();
   await expect(drawer()).toContainText("最新发布版本");
   await expect(drawer()).toContainText("v3 · 客服新版");
+  await expect
+    .poll(
+      () =>
+        reads
+          .slice(readsBeforeDetail)
+          .filter((url) => url.pathname.startsWith("/api/iam/v1/platform/roles/24")).length,
+    )
+    .toBe(3);
+  const initialRoleReads = reads
+    .slice(readsBeforeDetail)
+    .filter((url) => url.pathname.startsWith("/api/iam/v1/platform/roles/24"));
+  expect(initialRoleReads.map((url) => url.pathname)).toEqual(
+    expect.arrayContaining([
+      "/api/iam/v1/platform/roles/24",
+      "/api/iam/v1/platform/roles/24/grants",
+      "/api/iam/v1/platform/roles/24/version-applications/distribution",
+    ]),
+  );
+  expect(initialRoleReads).toHaveLength(3);
   await drawer().getByText("版本历史", { exact: true }).click();
   await drawer().getByRole("button", { name: "编辑版本信息", exact: true }).last().click();
   await page.getByPlaceholder("未填写时显示 vN").fill("日常查询备注版");

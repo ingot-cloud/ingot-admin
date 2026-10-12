@@ -27,9 +27,17 @@
       </div>
     </template>
     <div class="in-detail-drawer role-detail-drawer">
-      <in-form-skeleton v-if="loading" />
+      <in-form-skeleton v-if="loading && !detail" />
+      <div v-else-if="detailError && !detail" class="p-20px">
+        <el-alert title="角色资料加载失败" type="error" :closable="false" />
+        <in-button @in-click="privateLoadDetail()">重试</in-button>
+      </div>
       <div v-else-if="detail && !editingProfile" class="role-detail-drawer__body">
         <div class="role-detail-drawer__identity px-20px py-20px flex flex-col gap-8px">
+          <template v-if="detailError">
+            <el-alert title="角色资料刷新失败" type="error" :closable="false" />
+            <in-button @in-click="privateLoadDetail()">重试</in-button>
+          </template>
           <div class="flex items-center gap-8px min-w-0 flex-wrap">
             <span class="text-18px truncate">{{ detail.record.name || "-" }}</span>
             <in-copy-tag v-if="detail.record.code" :text="detail.record.code" />
@@ -61,16 +69,21 @@
           <div v-if="latestRevision" class="text-12px">
             最新发布版本：{{ roleVersionLabel(latestRevision) }}
           </div>
-          <div
-            v-if="applicationApi && canApply && distribution.length"
-            class="flex flex-wrap gap-8px text-12px"
-          >
-            <span>分配版本分布：</span
-            ><in-tag
-              v-for="entry in distribution"
-              :key="entry.revisionId"
-              :value="{ text: `${roleVersionLabel(entry)} · ${entry.count} 条`, tag: 'info' }"
-            />
+          <div v-else-if="grantLoading" class="text-12px">最新发布版本：加载中…</div>
+          <div v-if="applicationApi && canApply" class="flex flex-wrap gap-8px text-12px">
+            <span>分配版本分布：</span>
+            <span v-if="distributionLoading">加载中…</span>
+            <template v-else-if="distributionError">
+              <span>加载失败</span>
+              <in-button link @in-click="privateLoadDistribution()">重试</in-button>
+            </template>
+            <span v-else-if="!distribution.length">暂无分配</span>
+            <template v-else
+              ><in-tag
+                v-for="entry in distribution"
+                :key="entry.revisionId"
+                :value="{ text: `${roleVersionLabel(entry)} · ${entry.count} 条`, tag: 'info' }"
+            /></template>
           </div>
           <div class="text-12px text-[var(--el-text-color-secondary)]">
             {{ detail.record.description || "暂无说明" }}
@@ -79,10 +92,19 @@
         <in-biz-tabs v-model="tab" align-content>
           <in-biz-tab-panel title="权限" name="grants" :editable="false" fill>
             <in-form-skeleton v-if="grantLoading" />
+            <div v-else-if="grantError" class="p-20px">
+              <el-alert title="权限加载失败" type="error" :closable="false" />
+              <in-button @in-click="privateLoadGrants()">重试</in-button>
+            </div>
             <div v-else class="grant-pane">
               <div class="grant-pane__toolbar">
                 <div>拥有 {{ grants.length }} 个权限</div>
-                <in-button v-if="canPublish" @in-click="privateEditGrants">
+                <in-button
+                  v-if="canPublish"
+                  :loading="editingGrants"
+                  :disabled="!latestRevision"
+                  @in-click="privateEditGrants"
+                >
                   <template #icon>
                     <svg
                       width="1em"
@@ -106,6 +128,10 @@
             </div>
           </in-biz-tab-panel>
           <in-biz-tab-panel title="版本历史" name="revisions" :editable="false" fill>
+            <div v-if="revisionError" class="p-12px">
+              <el-alert title="版本历史加载失败" type="error" :closable="false" />
+              <in-button @in-click="privateLoadRevisionPage()">重试</in-button>
+            </div>
             <div class="embedded-table">
               <in-table
                 :loading="revisionLoading"
@@ -170,6 +196,10 @@
             :editable="false"
             fill
           >
+            <div v-if="taskError" class="p-12px">
+              <el-alert title="应用任务加载失败" type="error" :closable="false" />
+              <in-button @in-click="privateTaskPage()">重试</in-button>
+            </div>
             <div class="embedded-table">
               <in-table
                 :loading="taskLoading"
@@ -181,6 +211,9 @@
                 @handleCurrentChange="privateTaskPage($event.value)"
                 @handleSizeChange="privateTaskSize($event.value)"
               >
+                <template #tools-start>
+                  <in-button :loading="taskLoading" @in-click="privateTaskPage()">刷新</in-button>
+                </template>
                 <template #target="{ item }">{{
                   roleVersionLabel({
                     revision: asTask(item).targetRevisionNumber || "-",
@@ -279,7 +312,7 @@
     ref="applicationDrawer"
     :api="applicationApi"
     :list-revisions-api="resolvedRevisionsApi"
-    @success="privateOnGrantSaved"
+    @success="privateOnApplicationsSaved"
   />
 </template>
 
@@ -289,6 +322,7 @@ import {
   Message,
   useCapabilities,
   createLoadGuard,
+  isApiError,
   type Page,
   type R,
   type TableHeaderRecord,
@@ -298,15 +332,12 @@ import {
   BizIamRoleVersionMetadataDialog,
   BizIamRoleApplicationDrawer,
   roleVersionLabel,
-  RoleKind,
   type RoleRevisionMetadataApi,
   type RoleApplicationApi,
   type RoleApplicationTask,
-  type RoleRevisionDistribution,
   BizIamRevisionDeltaView,
   BizIamStatusTag,
   ConfigurationStatus,
-  IAM_DEFAULT_PAGE_SIZE,
   IamAction,
   objectActionAllowed,
   useConfigurationStatusEnum,
@@ -323,6 +354,7 @@ import {
 import {
   PlatformSharedRoleDetailAPI,
   PlatformSharedRoleRevisionMetadataAPI,
+  PlatformSharedRoleRevisionDetailAPI,
   PlatformSharedRoleRevisionGrantsAPI,
   PlatformSharedRoleGrantsAPI,
   PlatformSharedRoleRevisionPageAPI,
@@ -331,6 +363,7 @@ import {
 import { selectedGrantsOf } from "../actionCatalog";
 import GrantEditWizard from "./GrantEditWizard.vue";
 import GrantPreview from "./GrantPreview.vue";
+import { useRoleDetailData } from "./useRoleDetailData";
 import type { SelectedGrant } from "../wizard";
 
 defineOptions({ name: "SharedRoleDetailDrawer" });
@@ -363,22 +396,11 @@ const props = withDefaults(
 
 const emits = defineEmits<{ success: [] }>();
 const { hasAction } = useCapabilities();
-const applicationRoleKind = ref<RoleKind>();
-const canApply = computed(
-  () =>
-    hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE) &&
-    applicationRoleKind.value === RoleKind.PLATFORM_CUSTOM,
-);
 const metadataDialog = ref<InstanceType<typeof BizIamRoleVersionMetadataDialog>>();
 const applicationDrawer = ref<InstanceType<typeof BizIamRoleApplicationDrawer>>();
 const resolvedMetadataApi = computed(
   () => props.metadataApi ?? PlatformSharedRoleRevisionMetadataAPI,
 );
-const latestRevision = ref<RoleRevision>();
-const distribution = ref<RoleRevisionDistribution[]>([]);
-const taskPage = ref<Page<RoleApplicationTask>>({ current: 1, size: 20, records: [], total: 0 });
-const taskLoading = ref(false);
-const taskGuard = createLoadGuard();
 const taskHeaders: TableHeaderRecord[] = [
   { label: "应用版本", prop: "target", minWidth: 150 },
   { label: "状态", prop: "status", width: 100 },
@@ -395,18 +417,6 @@ const taskStatusLabel = (state: RoleApplicationTask["status"]) =>
     PAUSED: "已暂停",
     SUCCEEDED: "已完成",
   })[state];
-const privateTaskPage = async (page: number): Promise<void> => {
-  if (!props.applicationApi) return;
-  const token = taskGuard.begin();
-  taskPage.value.current = page;
-  taskLoading.value = true;
-  try {
-    const response = await props.applicationApi.list(roleId.value, taskPage.value);
-    if (token.isCurrent()) taskPage.value = response.data;
-  } finally {
-    if (token.isCurrent()) taskLoading.value = false;
-  }
-};
 const privateTaskSize = (size: number): void => {
   taskPage.value.size = size;
   void privateTaskPage(1);
@@ -415,8 +425,7 @@ const privatePrepared = (task: RoleApplicationTask): void => {
   void applicationDrawer.value?.show(roleId.value, task.targetRevisionId, task);
 };
 const privateMetadataSaved = (): void => {
-  privateLoadRevisionPage();
-  load(roleId.value);
+  refreshVersionMetadata();
 };
 
 const resolvedGetApi = computed(() => props.getApi ?? PlatformSharedRoleDetailAPI);
@@ -428,18 +437,58 @@ const resolvedPublishApi = computed(() => props.publishApi);
 const canEditProfile = computed(() => Boolean(props.updateApi ?? !props.statusApi));
 const visible = ref(false);
 const tab = ref("grants");
-const loading = ref(false);
-const grantLoading = ref(false);
 const saving = ref(false);
 const editingProfile = ref(false);
-const revisionLoading = ref(false);
-const revisionsDirty = ref(true);
-const loadGuard = createLoadGuard();
-const grantGuard = createLoadGuard();
-const revisionGuard = createLoadGuard();
-const roleId = ref("");
-const detail = ref<ResourceDetail<RoleSummary>>();
-const grants = ref<SelectedGrant[]>([]);
+const {
+  roleId,
+  detail,
+  canApply,
+  grants,
+  latestRevision,
+  distribution,
+  revisionPage,
+  taskPage,
+  loading,
+  grantLoading,
+  distributionLoading,
+  revisionLoading,
+  taskLoading,
+  detailError,
+  grantError,
+  distributionError,
+  revisionError,
+  taskError,
+  open,
+  loadDetail: privateLoadDetail,
+  loadGrants: privateLoadGrants,
+  loadDistribution: privateLoadDistribution,
+  loadRevisions: privateLoadRevisionPage,
+  loadTasks: privateTaskPage,
+  refreshVersionMetadata,
+  refreshPublication,
+  refreshApplications,
+} = useRoleDetailData(
+  {
+    get: (id) => resolvedGetApi.value(id),
+    grants: (id) => resolvedGrantsApi.value(id),
+    revisions: (id, page) => resolvedRevisionsApi.value(id, page),
+    applications: () => props.applicationApi,
+    canGovern: () => hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE),
+  },
+  tab,
+  visible,
+);
+const editingGrants = ref(false);
+const editGuard = createLoadGuard();
+watch(
+  [roleId, visible],
+  () => {
+    editGuard.begin();
+    editingGrants.value = false;
+  },
+  { flush: "sync" },
+);
+onScopeDispose(() => editGuard.begin());
 const grantWizardRef = ref<{
   show: (input: {
     roleId: string;
@@ -457,12 +506,6 @@ const profileDraft = reactive({
   groupName: "",
   description: "",
   status: ConfigurationStatus.ENABLED,
-});
-const revisionPage = ref<Page<ResourceDetail<RoleRevision>>>({
-  current: 1,
-  size: IAM_DEFAULT_PAGE_SIZE,
-  total: 0,
-  records: [],
 });
 const revisionHeaders: Array<TableHeaderRecord> = [
   { label: "版本", prop: "revision", minWidth: 160 },
@@ -521,100 +564,7 @@ const fillProfile = (): void => {
   profileDraft.status = knownStatus(record?.status) ? record.status : ConfigurationStatus.ENABLED;
 };
 
-const assignRevisionPage = (page: Page<ResourceDetail<RoleRevision>>): void => {
-  revisionPage.value = {
-    current: page.current ?? 1,
-    size: page.size ?? revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
-    total: page.total ?? 0,
-    records: page.records ?? [],
-  };
-};
-
-const load = (id: string): void => {
-  const detailToken = loadGuard.begin();
-  const grantsToken = grantGuard.begin();
-  const size = revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE;
-  loading.value = true;
-  grantLoading.value = true;
-  revisionsDirty.value = true;
-  detail.value = undefined;
-  grants.value = [];
-  latestRevision.value = undefined;
-  distribution.value = [];
-  revisionPage.value = { current: 1, size, total: 0, records: [] };
-  resolvedGetApi
-    .value(id)
-    .then((role) => {
-      if (!detailToken.isCurrent()) {
-        return;
-      }
-      detail.value = role.data;
-      applicationRoleKind.value = role.data.record.kind;
-      fillProfile();
-      return resolvedRevisionsApi.value(id, { current: 1, size: 1 });
-    })
-    .then((page) => {
-      if (page && detailToken.isCurrent()) latestRevision.value = page.data.records?.[0]?.record;
-      if (props.applicationApi && canApply.value) return props.applicationApi.distribution(id);
-    })
-    .then((response) => {
-      if (response && detailToken.isCurrent()) distribution.value = response.data;
-    })
-    .finally(() => {
-      if (detailToken.isCurrent()) {
-        loading.value = false;
-      }
-    });
-  resolvedGrantsApi
-    .value(id)
-    .then((response) => {
-      if (!grantsToken.isCurrent()) {
-        return;
-      }
-      grants.value = selectedGrantsOf(response.data?.items ?? []);
-    })
-    .finally(() => {
-      if (grantsToken.isCurrent()) {
-        grantLoading.value = false;
-      }
-    });
-  if (tab.value === "revisions") {
-    privateLoadRevisionPage();
-  }
-};
-
-watch(tab, (name) => {
-  if (name === "applications") void privateTaskPage(1);
-  if (name === "revisions" && revisionsDirty.value) {
-    privateLoadRevisionPage();
-  }
-});
-
-const privateLoadRevisionPage = (): void => {
-  const id = roleId.value;
-  if (!id) {
-    return;
-  }
-  const guard = revisionGuard.begin();
-  revisionLoading.value = true;
-  resolvedRevisionsApi
-    .value(id, {
-      current: revisionPage.value.current ?? 1,
-      size: revisionPage.value.size ?? IAM_DEFAULT_PAGE_SIZE,
-    })
-    .then((page) => {
-      if (!guard.isCurrent()) {
-        return;
-      }
-      assignRevisionPage(page.data);
-      revisionsDirty.value = false;
-    })
-    .finally(() => {
-      if (guard.isCurrent()) {
-        revisionLoading.value = false;
-      }
-    });
-};
+watch(detail, fillProfile);
 
 const privateOnRevisionSizeChange = (payload: { value: number }): void => {
   revisionPage.value.size = payload.value;
@@ -663,38 +613,42 @@ const privateSaveProfile = (): void => {
       Message.success("基本信息已更新");
       editingProfile.value = false;
       emits("success");
-      load(roleId.value);
+      void privateLoadDetail();
     })
     .finally(() => {
       saving.value = false;
     });
 };
 
-const privateEditRevision = async (revision: RoleRevision): Promise<void> => {
-  if (!detail.value) return;
-  const token = grantGuard.begin();
-  grantLoading.value = true;
+const privateEditRevision = async (revision: Pick<RoleRevision, "id">): Promise<void> => {
+  const role = detail.value;
+  if (!role) return;
+  const id = roleId.value;
+  const token = editGuard.begin();
+  editingGrants.value = true;
   try {
-    const response = await (props.revisionGrantsApi ?? PlatformSharedRoleRevisionGrantsAPI)(
-      roleId.value,
-      revision.id,
-    );
+    const [source, response] = await Promise.all([
+      (props.revisionDetailApi ?? PlatformSharedRoleRevisionDetailAPI)(id, revision.id),
+      (props.revisionGrantsApi ?? PlatformSharedRoleRevisionGrantsAPI)(id, revision.id),
+    ]);
     if (!token.isCurrent()) return;
     grantWizardRef.value?.show({
-      roleId: roleId.value,
-      version: detail.value.version,
+      roleId: id,
+      version: role.version,
       profile: {
-        code: detail.value.record.code,
-        name: detail.value.record.name,
-        description: detail.value.record.description ?? "",
-        groupName: detail.value.record.groupName ?? "",
+        code: role.record.code,
+        name: role.record.name,
+        description: role.record.description ?? "",
+        groupName: role.record.groupName ?? "",
       },
       grants: selectedGrantsOf(response.data.items),
-      sourceRevision: revision,
+      sourceRevision: source.data.record,
       latestRevisionId: latestRevision.value?.id,
     });
+  } catch (error) {
+    if (token.isCurrent() && !isApiError(error)) Message.error("角色版本加载失败，请重试");
   } finally {
-    if (token.isCurrent()) grantLoading.value = false;
+    if (token.isCurrent()) editingGrants.value = false;
   }
 };
 const privateEditGrants = (): void => {
@@ -703,17 +657,22 @@ const privateEditGrants = (): void => {
 
 const privateOnGrantSaved = (): void => {
   emits("success");
-  load(roleId.value);
+  refreshPublication();
+};
+
+const privateOnApplicationsSaved = (): void => {
+  emits("success");
+  refreshApplications();
 };
 
 defineExpose<{ show: (id: string) => void }>({
   show(id: string) {
-    if (roleId.value !== id) applicationRoleKind.value = undefined;
-    roleId.value = id;
+    editGuard.begin();
+    editingGrants.value = false;
     visible.value = true;
     tab.value = "grants";
     editingProfile.value = false;
-    load(id);
+    open(id);
   },
 });
 </script>

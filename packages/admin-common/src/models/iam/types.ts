@@ -767,6 +767,8 @@ export interface RoleDisplayDelta extends RoleDelta {
 
 export interface RoleGrantList {
   items: RoleGrantRecord[];
+  /** 与当前权限属于同一固定发布版本；无版本或固定版本入口时可省略。 */
+  revision?: RoleRevisionSummary;
 }
 
 export interface RoleGrantRecord {
@@ -888,6 +890,9 @@ export interface RoleRevision {
   displayDeltas?: RoleDisplayDelta[];
   previousResourceFieldPermissions?: ResourceFieldPermissions;
 }
+
+/** 当前授权的版本摘要，不包含完整定义或历史差异。 */
+export type RoleRevisionSummary = Pick<RoleRevision, "id" | "revision" | "versionName">;
 
 export interface RoleRevisionRef {
   kind: RoleKind;
