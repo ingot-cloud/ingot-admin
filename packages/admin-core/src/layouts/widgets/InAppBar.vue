@@ -23,6 +23,8 @@
       :show-more="overflow.showNavMore"
       :overflow-nav-slot="overflow.overflowNavSlot"
       :active-key="header.navigation.activeKey"
+      :application-mode="header.navigation.applicationMode"
+      :application-groups="header.navigation.applicationGroups"
       @select="privateOnNavSelect"
       @open-panel="privateOpenPanel"
       @close-panel="privateOnPanelClose"
@@ -211,8 +213,11 @@ const privateMeasure = () => {
     hostWidth - brandWidth - userWidth - (brandWidth > 0 ? gap : 0) - (userWidth > 0 ? gap : 0),
   );
   const moreNode = navRef.value?.measureRef?.querySelector("[data-nav-more]");
-  const moreButtonWidth =
+  const navMoreWidth =
     moreNode instanceof HTMLElement ? moreNode.getBoundingClientRect().width : ICON_FALLBACK;
+  const arrowNode = navRef.value?.measureRef?.querySelector("[data-nav-application-more]");
+  const applicationMoreWidth =
+    arrowNode instanceof HTMLElement ? arrowNode.getBoundingClientRect().width : ICON_FALLBACK;
   const navSlotEl = navRef.value?.slotRef;
   if (navSlotEl && !overflow.value.overflowNavSlot) {
     lastNavSlotWidth.value = navSlotEl.getBoundingClientRect().width;
@@ -239,7 +244,10 @@ const privateMeasure = () => {
       width: ICON_FALLBACK,
     })),
     utilitySlotWidth: lastUtilitySlotWidth.value,
-    moreButtonWidth,
+    moreButtonWidth: ICON_FALLBACK,
+    navMoreWidth,
+    integratedNavMore: header.value.navigation.applicationMode,
+    integratedNavMoreWidth: applicationMoreWidth,
     itemGap: gap,
     navItemGap: readPx(getComputedStyle(host).getPropertyValue("--in-space-6"), 24),
     zoneGap: gap,
@@ -259,21 +267,40 @@ const privateOnNavSelect = (payload: { entryKey: string; itemKey?: string }) => 
 
 const privateOpenPanel = (id: string) => {
   if (openPanelId.value && openPanelId.value !== id) {
+    if (!id.startsWith("nav-")) navRef.value?.close();
     searchRef.value?.close();
     utilitiesRef.value?.close();
   }
   openPanelId.value = id;
 };
 
-const privateOnPanelClose = () => {
-  openPanelId.value = undefined;
+const privateOnPanelClose = (id?: string) => {
+  if (!id || openPanelId.value === id) openPanelId.value = undefined;
 };
 
 watch(
   header,
   (value) => {
-    overflow.value.visibleNavKeys = value.navigation.items.map((item) => item.key);
-    overflow.value.visibleUtilityKeys = value.utilities.map((item) => item.key);
+    if (hostRef.value) {
+      // 路由或授权更新时立即保持收纳规则，避免先直出全部入口而卸载当前箭头。
+      privateMeasure();
+    } else {
+      overflow.value = allocateHeaderOverflow({
+        availableWidth: Infinity,
+        navItems: value.navigation.items.map((item) => ({ key: item.key, width: ICON_FALLBACK })),
+        activeNavKey: value.navigation.activeKey,
+        maxVisibleNavItems: value.navigation.maxVisibleItems,
+        navSlotWidth: 0,
+        searchEnabled: false,
+        searchFullWidth: 0,
+        searchCompactWidth: ICON_FALLBACK,
+        utilityItems: value.utilities.map((item) => ({ key: item.key, width: ICON_FALLBACK })),
+        utilitySlotWidth: 0,
+        moreButtonWidth: ICON_FALLBACK,
+        itemGap: 0,
+        zoneGap: 0,
+      });
+    }
     privateSchedule();
   },
   { immediate: true },

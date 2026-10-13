@@ -10,6 +10,8 @@ import {
 } from "@/plugin/header";
 
 export const DEFAULT_HEADER_SEARCH_PLACEHOLDER = "搜索功能导航";
+/** 应用快捷入口的缺省数量上限。 */
+export const DEFAULT_HEADER_APPLICATION_VISIBLE_ITEMS = 2;
 
 export const DEFAULT_HEADER_UTILITIES: InAdminHeaderUtilityItem[] = [
   defineHeaderBuiltinUtility(UtilityName.Fullscreen, { label: "全屏" }),

@@ -207,6 +207,18 @@ export interface InAdminHeaderNavSelectPayload {
   itemKey?: string;
 }
 
+/** 应用模式的展示分类，只匹配已有授权且可导航的应用。 */
+export interface InAdminHeaderApplicationGroup {
+  /** 分类稳定唯一键 */
+  key: string;
+  /** 分类标题，展示为灰字和底部分隔线 */
+  title: InAdminHeaderReactive<string>;
+  /** 应用稳定 code；同一应用不得配置到多个分类 */
+  applicationCodes: string[];
+  /** 组内列数 1–4；省略时按实际溢出条目每列最多 8 行折列，窄屏单列 */
+  columns?: number;
+}
+
 /**
  * 大类菜单区。`items` 省略则为空（不展示大类）。
  * `activeKey` 指向不存在或已隐藏的入口时按未选中处理。
@@ -214,8 +226,10 @@ export interface InAdminHeaderNavSelectPayload {
 export interface InAdminHeaderNavigationConfig {
   /** 应用模式复用 IAM bootstrap 并联动侧栏，默认沿用宿主配置菜单。 */
   source?: "configured" | "applications";
-  /** 直出入口数量上限，宽度不足时继续收纳；默认不限制。 */
+  /** 直出入口数量上限，宽度不足时继续收纳；应用模式默认 2，配置模式默认不限制。 */
   maxVisibleItems?: number;
+  /** 应用分类，按 code 匹配；省略时展示“应用”，未匹配项归入“其他应用”。 */
+  applicationGroups?: InAdminHeaderReactive<InAdminHeaderApplicationGroup[]>;
   /** 大类入口列表，从左到右排列；宽度不足时按算法收纳 */
   items?: InAdminHeaderReactive<InAdminHeaderNavItem[]>;
   /** 当前选中入口，由 APP 控制；核心只读并高亮 */
@@ -316,9 +330,7 @@ export interface InAdminHeaderComponentUtility
  * `utilities` 省略用默认（全屏、设置）；显式数组视为完整列表，空数组清空。
  */
 export type InAdminHeaderUtilityItem =
-  | InAdminHeaderBuiltinUtility
-  | InAdminHeaderActionUtility
-  | InAdminHeaderComponentUtility;
+  InAdminHeaderBuiltinUtility | InAdminHeaderActionUtility | InAdminHeaderComponentUtility;
 
 /**
  * 自定义小部件组件收到的 props。

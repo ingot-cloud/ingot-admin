@@ -20,6 +20,7 @@ import {
   builtinUserMenuLabel,
   builtinUtilityLabel,
   DEFAULT_HEADER_SEARCH_PLACEHOLDER,
+  DEFAULT_HEADER_APPLICATION_VISIBLE_ITEMS,
   DEFAULT_HEADER_USER_MENU,
   DEFAULT_HEADER_UTILITIES,
 } from "./defaults";
@@ -62,6 +63,18 @@ export interface ResolvedHeaderNavGroup {
   items: ResolvedHeaderNavMenuItem[];
   /** 组内菜单列数，已按配置或条目数量解析 */
   columns: number;
+}
+
+/** 可导航应用的展示分类；列数在过滤溢出应用后计算。 */
+export interface ResolvedHeaderApplicationGroup {
+  /** 分类稳定唯一键 */
+  key: string;
+  /** 已解析的分类标题 */
+  title: string;
+  /** 已授权且可导航的应用，key 为应用 id */
+  items: ResolvedHeaderNavMenuItem[];
+  /** 显式指定的列数；省略则根据实际溢出条目计算 */
+  columns?: number;
 }
 
 /** `resolveHeaderConfig` 解析后的大类入口。 */
@@ -142,6 +155,10 @@ export interface ResolvedHeaderConfig {
   };
   /** 大类菜单解析结果 */
   navigation: {
+    /** 是否使用 IAM 应用导航，省略时沿用配置模式 */
+    applicationMode?: boolean;
+    /** 应用模式的分类内容，省略时为空 */
+    applicationGroups?: ResolvedHeaderApplicationGroup[];
     /** 直出数量上限 */
     maxVisibleItems?: number;
     /** 可见入口 */
@@ -252,9 +269,7 @@ const resolveNavItem = (
   };
 };
 
-const resolveUtility = (
-  item: InAdminHeaderUtilityItem,
-): ResolvedHeaderUtilityItem | undefined => {
+const resolveUtility = (item: InAdminHeaderUtilityItem): ResolvedHeaderUtilityItem | undefined => {
   if (!isVisible(readHeaderValue(item.visible, true))) {
     return undefined;
   }
@@ -357,6 +372,15 @@ const resolveUserMenuItem = (
  * @param config `bootstrapAdminApp({ header })` 或 `useAdminShell().header` 的原始配置
  */
 export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeaderConfig => {
+  const applicationMode = config?.navigation?.source === "applications";
+  const configuredMaximum = config?.navigation?.maxVisibleItems;
+  const maxVisibleItems = applicationMode
+    ? typeof configuredMaximum === "number" &&
+      Number.isInteger(configuredMaximum) &&
+      configuredMaximum > 0
+      ? configuredMaximum
+      : DEFAULT_HEADER_APPLICATION_VISIBLE_ITEMS
+    : configuredMaximum;
   const groupTrigger = readHeaderValue(
     config?.navigation?.groupTrigger,
     InAdminHeaderNavGroupTrigger.Hover,
@@ -394,7 +418,8 @@ export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeade
       component: config?.brand?.component,
     },
     navigation: {
-      maxVisibleItems: config?.navigation?.maxVisibleItems,
+      applicationMode,
+      maxVisibleItems,
       items: navItems
         .map((item) => resolveNavItem(item, groupTrigger))
         .filter((item): item is ResolvedHeaderNavItem => Boolean(item)),
@@ -402,10 +427,7 @@ export const resolveHeaderConfig = (config?: InAdminHeaderConfig): ResolvedHeade
       onSelect: config?.navigation?.onSelect,
     },
     search: {
-      placeholder: readHeaderValue(
-        config?.search?.placeholder,
-        DEFAULT_HEADER_SEARCH_PLACEHOLDER,
-      ),
+      placeholder: readHeaderValue(config?.search?.placeholder, DEFAULT_HEADER_SEARCH_PLACEHOLDER),
       component: config?.search?.component,
       shortcuts: shortcutSource
         .map(resolveSearchShortcut)

@@ -1,7 +1,11 @@
 import { computed, inject, watch, type ComputedRef } from "vue";
 import type { InAppBarUtilityAction } from "@/components/types";
 import { adminAppOptionsKey } from "@/config";
-import { InAdminHeaderNavItemType, type InAdminHeaderConfig } from "@/plugin/header";
+import {
+  InAdminHeaderNavItemType,
+  InAdminHeaderNavGroupTrigger,
+  type InAdminHeaderConfig,
+} from "@/plugin/header";
 import { useRouter } from "vue-router";
 import { usePermissions, useUserInfoStore } from "@/stores/modules/auth";
 import { useRouterStore } from "@/stores/modules/router";
@@ -14,6 +18,8 @@ import {
 import { adaptLegacyUtilities } from "./adaptLegacyUtilities";
 import { resolveHeaderConfig, type ResolvedHeaderConfig } from "./resolveHeaderConfig";
 import { resolvePasswordChangeHeader } from "./passwordChangeHeader";
+import { resolveApplicationGroups } from "./applicationHeader";
+import { readHeaderValue } from "./readHeaderValue";
 
 export const useResolvedHeader = (
   headerProp: () => InAdminHeaderConfig | undefined,
@@ -66,9 +72,13 @@ export const useResolvedHeader = (
         icon: app.icon || "ep:monitor",
         disabled: false,
         type: InAdminHeaderNavItemType.Action,
-        trigger: "click",
+        trigger: InAdminHeaderNavGroupTrigger.Click,
         groups: [],
       }));
+      resolved.navigation.applicationGroups = resolveApplicationGroups(
+        applications.value,
+        readHeaderValue(header?.navigation?.applicationGroups, []),
+      );
       resolved.navigation.activeKey = menus.activeApplicationId;
       resolved.navigation.onSelect = ({ entryKey }) => {
         if (!applications.value.some((app) => app.id === entryKey)) return;

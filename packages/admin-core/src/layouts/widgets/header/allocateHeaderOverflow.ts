@@ -15,6 +15,12 @@ export interface HeaderOverflowInput {
   utilityItems: HeaderOverflowItem[];
   utilitySlotWidth: number;
   moreButtonWidth: number;
+  /** 导航更多的测量宽度；省略时沿用小部件更多按钮宽度。 */
+  navMoreWidth?: number;
+  /** 溢出应用的箭头与最后直出入口相连，不额外计算入口间距。 */
+  integratedNavMore?: boolean;
+  /** 与最后应用相连的箭头宽度。 */
+  integratedNavMoreWidth?: number;
   itemGap: number;
   navItemGap?: number;
   zoneGap: number;
@@ -75,13 +81,18 @@ const measureNav = (
   overflowNavSlot: boolean,
   moreButtonWidth: number,
   gap: number,
+  integratedMore: boolean,
+  integratedMoreWidth?: number,
 ): number => {
   const more = overflowCount > 0 || overflowNavSlot ? moreButtonWidth : 0;
   const slot = overflowNavSlot ? 0 : navSlotWidth;
-  return sectionWidth(
-    [...visible.map((item) => item.width), slot, more],
-    gap,
-  );
+  if (integratedMore && overflowCount > 0 && visible.length > 0) {
+    return (
+      sectionWidth([...visible.map((item) => item.width), slot], gap) +
+      (integratedMoreWidth ?? more)
+    );
+  }
+  return sectionWidth([...visible.map((item) => item.width), slot, more], gap);
 };
 
 const measureUtilities = (
@@ -94,10 +105,7 @@ const measureUtilities = (
 ): number => {
   const more = overflowCount > 0 || overflowUtilitySlot ? moreButtonWidth : 0;
   const slot = overflowUtilitySlot ? 0 : utilitySlotWidth;
-  return sectionWidth(
-    [...visible.map((item) => item.width), slot, more],
-    gap,
-  );
+  return sectionWidth([...visible.map((item) => item.width), slot, more], gap);
 };
 
 const measureSearch = (
@@ -127,8 +135,10 @@ const measureLayout = (
     overflowNavCount,
     input.navSlotWidth,
     overflowNavSlot,
-    input.moreButtonWidth,
+    input.navMoreWidth ?? input.moreButtonWidth,
     input.navItemGap ?? input.itemGap,
+    Boolean(input.integratedNavMore),
+    input.integratedNavMoreWidth,
   );
   const searchWidth = measureSearch(
     input.searchEnabled,
@@ -168,8 +178,10 @@ export const allocateHeaderOverflow = (input: HeaderOverflowInput): HeaderOverfl
   const utilityItems = [...input.utilityItems];
   const minNav = navItems.length > 0 ? 1 : 0;
 
-  const maximum = input.maxVisibleNavItems === undefined ? navItems.length
-    : Math.max(minNav, Math.floor(input.maxVisibleNavItems));
+  const maximum =
+    input.maxVisibleNavItems === undefined
+      ? navItems.length
+      : Math.max(minNav, Math.floor(input.maxVisibleNavItems));
   let overflowNavCount = Math.max(0, navItems.length - maximum);
   let overflowNavSlot = false;
   let searchCompact = false;
@@ -177,11 +189,7 @@ export const allocateHeaderOverflow = (input: HeaderOverflowInput): HeaderOverfl
   let overflowUtilitySlot = false;
 
   const current = () => {
-    const packed = pickVisibleNav(
-      navItems,
-      navItems.length - overflowNavCount,
-      input.activeNavKey,
-    );
+    const packed = pickVisibleNav(navItems, navItems.length - overflowNavCount, input.activeNavKey);
     const visibleUtilities = utilityItems.slice(0, utilityItems.length - overflowUtilityCount);
     const overflowUtilities = utilityItems.slice(utilityItems.length - overflowUtilityCount);
     const width = measureLayout(

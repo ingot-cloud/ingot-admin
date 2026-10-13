@@ -7,11 +7,14 @@ import { shellLayoutKey } from "@/layouts/main/types";
 import { useAppStateStore } from "@/stores/modules/app";
 import { configureAdminRuntime, resetAdminRuntime } from "@/runtime";
 import type { ShellLayoutApi } from "@/layouts/main/types";
-import { useUserInfoStore } from "@/stores/modules/auth";
+import { usePermissions, useUserInfoStore } from "@/stores/modules/auth";
+import { useRouterStore } from "@/stores/modules/router";
 import { InAdminHeaderBuiltinUserMenuName } from "@/plugin/header";
 import InAppBarBrand from "./header/InAppBarBrand.vue";
 import InUserDropdown from "./user-dropdown/InUserDropdown.vue";
 import InAppBarSearchPane from "./header/InAppBarSearchPane.vue";
+import InAppBarNav from "./header/InAppBarNav.vue";
+import InAppBarUtilities from "./header/InAppBarUtilities.vue";
 
 const createShell = (): ShellLayoutApi => {
   const isOverlay = computed(() => false);
@@ -31,6 +34,7 @@ const mountBar = (
   props: InstanceType<typeof InAppBar>["$props"] = {},
   restricted = false,
   provideShell = true,
+  actualNavigation = false,
 ) => {
   const pinia = createPinia();
   setActivePinia(pinia);
@@ -42,7 +46,17 @@ const mountBar = (
   });
   useAppStateStore().showSearch = true;
   useUserInfoStore().userInfo.mustChangePwd = restricted;
+  if (actualNavigation) {
+    usePermissions().applications = ["a", "b", "c"].map((id, sortOrder) => ({
+      id,
+      code: id,
+      name: `应用 ${id}`,
+      sortOrder,
+    }));
+    useRouterStore().menus = ["a", "b", "c"].map((id) => ({ path: `/${id}`, applicationId: id }));
+  }
   return mount(InAppBar, {
+    attachTo: actualNavigation ? document.body : undefined,
     slots,
     props,
     global: {
@@ -54,16 +68,21 @@ const mountBar = (
           template:
             '<div data-testid="app-bar-brand"><div class="logo-stub">管理后台</div><slot name="brand-extra" /></div>',
         },
-        InAppBarNav: {
-          template:
-            '<div data-testid="app-bar-nav"><slot name="header-start" /><slot name="nav" /></div>',
-        },
+        InAppBarNav: actualNavigation
+          ? false
+          : {
+              methods: { close: vi.fn() },
+              template:
+                '<div data-testid="app-bar-nav"><slot name="header-start" /><slot name="nav" /></div>',
+            },
         InAppBarSearchPane: {
+          methods: { close: vi.fn() },
           props: ["enabled", "searchComponent"],
           template:
             '<div data-testid="app-bar-search"><input class="search-stub" placeholder="搜索功能" /></div>',
         },
         InAppBarUtilities: {
+          methods: { close: vi.fn() },
           template:
             '<div data-testid="app-bar-utilities"><button aria-label="全屏" /><button aria-label="设置" /><slot name="header-end" /></div>',
         },
@@ -81,6 +100,73 @@ const mountBar = (
 describe("InAppBar", () => {
   afterEach(() => {
     resetAdminRuntime();
+  });
+
+  it("应用、搜索和小部件互斥，应用延迟关闭通知不覆盖新面板状态", async () => {
+    const wrapper = mountBar();
+    const nav = wrapper.findComponent(InAppBarNav);
+    const search = wrapper.findComponent(InAppBarSearchPane);
+    const utilities = wrapper.findComponent(InAppBarUtilities);
+    const closeNav = vi.spyOn(nav.vm, "close");
+    const closeSearch = vi.spyOn(search.vm, "close");
+    try {
+      search.vm.$emit("open-panel", "search");
+      nav.vm.$emit("open-panel", "nav-applications");
+      expect(closeSearch).toHaveBeenCalledOnce();
+      expect(closeNav).not.toHaveBeenCalled();
+      search.vm.$emit("open-panel", "search");
+      expect(closeNav).toHaveBeenCalledOnce();
+      nav.vm.$emit("close-panel", "nav-applications");
+      utilities.vm.$emit("open-panel", "utilities-more");
+      expect(closeSearch).toHaveBeenCalledTimes(3);
+      await nextTick();
+    } finally {
+      wrapper.unmount();
+    }
+  });
+
+  it("应用上下文更新时保持两项收纳及箭头焦点，不暂时直出全部应用", async () => {
+    const bounds = vi
+      .spyOn(HTMLElement.prototype, "getBoundingClientRect")
+      .mockImplementation(function (this: HTMLElement) {
+        const width = this.classList.contains("in-app-bar")
+          ? 1200
+          : this.classList.contains("in-app-bar-nav__item")
+            ? 80
+            : 32;
+        return {
+          x: 0,
+          y: 0,
+          width,
+          height: 32,
+          top: 0,
+          left: 0,
+          bottom: 32,
+          right: width,
+          toJSON: () => undefined,
+        };
+      });
+    const wrapper = mountBar(
+      undefined,
+      { header: { navigation: { source: "applications" } } },
+      false,
+      true,
+      true,
+    );
+    try {
+      const nav = wrapper.findComponent(InAppBarNav);
+      expect(nav.findAll("button.in-app-bar-nav__item")).toHaveLength(2);
+      const arrow = nav.get("button[aria-label='更多应用']");
+      (arrow.element as HTMLButtonElement).focus();
+      useRouterStore().setActiveApplication("c");
+      await nextTick();
+      expect(nav.findAll("button.in-app-bar-nav__item")).toHaveLength(2);
+      expect(nav.get(".in-app-bar-nav__application").text()).toContain("应用 c");
+      expect(document.activeElement).toBe(nav.get("button[aria-label='更多应用']").element);
+    } finally {
+      wrapper.unmount();
+      bounds.mockRestore();
+    }
   });
 
   it("顶栏按品牌 / 导航 / 搜索 / 小部件 / 用户五区排列", () => {

@@ -14,6 +14,7 @@ import BizHeaderHelp from "./components/BizHeaderHelp.vue";
 const notifyCount = ref(3);
 
 export const createAdminHeader = (): InAdminHeaderConfig => ({
+  // 快捷应用数量在此调整；分类可配置 applicationGroups，按 bootstrap 应用 code 匹配。
   navigation: { source: "applications", maxVisibleItems: 2 },
   search: { placeholder: "搜索功能导航" },
   utilities: [

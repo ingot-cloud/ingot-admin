@@ -43,7 +43,9 @@
               </span>
             </el-tooltip>
           </template>
-          <template v-else-if="item.type === InAdminHeaderUtilityItemType.Component && item.component">
+          <template
+            v-else-if="item.type === InAdminHeaderUtilityItemType.Component && item.component"
+          >
             <component
               :is="item.component"
               :overflowed="overflowedSet.has(item.key)"
@@ -127,10 +129,7 @@
 </template>
 <script setup lang="ts">
 import { useMessage } from "@/hooks/web/useMessage";
-import {
-  InAdminHeaderBuiltinUtilityName,
-  InAdminHeaderUtilityItemType,
-} from "@/plugin/header";
+import { InAdminHeaderBuiltinUtilityName, InAdminHeaderUtilityItemType } from "@/plugin/header";
 import type { ResolvedHeaderUtilityItem } from "./resolveHeaderConfig";
 import { isVisibleUtilityBadge } from "./isVisibleUtilityBadge";
 import { useAppBarOverlay } from "./useAppBarOverlay";
@@ -171,12 +170,16 @@ const hasUtilitySlot = computed(() => Boolean(slots["header-end"]) || Boolean(sl
 const overflowTarget = computed(() => overflowPoolRef.value ?? "body");
 const privateBadgeVisible = isVisibleUtilityBadge;
 
-const { panelStyle: morePanelStyle, privateToggle, privateClose, privatePlacePanel } =
-  useAppBarOverlay({
-    open: moreOpen,
-    triggerRef: moreTriggerRef,
-    panelRef: morePanelRef,
-  });
+const {
+  panelStyle: morePanelStyle,
+  privateToggle,
+  privateClose,
+  privatePlacePanel,
+} = useAppBarOverlay({
+  open: moreOpen,
+  triggerRef: moreTriggerRef,
+  panelRef: morePanelRef,
+});
 
 const privateOnAction = async (item: ResolvedHeaderUtilityItem) => {
   if (item.disabled || !item.onClick || pendingKey.value) {
@@ -294,6 +297,7 @@ defineExpose({
 }
 
 .in-app-bar-overlay {
+  display: none;
   position: fixed;
   z-index: var(--in-z-dropdown);
   box-sizing: border-box;
@@ -311,6 +315,7 @@ defineExpose({
 }
 
 .in-app-bar-overlay.is-open {
+  display: block;
   visibility: visible;
   pointer-events: auto;
 }

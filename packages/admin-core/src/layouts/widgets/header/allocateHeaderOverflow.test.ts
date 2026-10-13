@@ -19,15 +19,25 @@ describe("allocateHeaderOverflow", () => {
   };
 
   it("应用导航宽度充足也最多直出两个，并保留更多中选中的应用", () => {
-    const result = allocateHeaderOverflow({ ...base, availableWidth: 1200,
-      navItems: keys("a", "b", "c"), activeNavKey: "c", maxVisibleNavItems: 2,
-      utilityItems: [] });
+    const result = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 1200,
+      navItems: keys("a", "b", "c"),
+      activeNavKey: "c",
+      maxVisibleNavItems: 2,
+      utilityItems: [],
+    });
     expect(result.visibleNavKeys).toEqual(["a", "c"]);
     expect(result.overflowNavKeys).toEqual(["b"]);
     expect(result.showNavMore).toBe(true);
-    const narrow = allocateHeaderOverflow({ ...base, availableWidth: 180,
-      navItems: keys("a", "b", "c"), activeNavKey: "c", maxVisibleNavItems: 2,
-      utilityItems: [] });
+    const narrow = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 180,
+      navItems: keys("a", "b", "c"),
+      activeNavKey: "c",
+      maxVisibleNavItems: 2,
+      utilityItems: [],
+    });
     expect(narrow.visibleNavKeys).toEqual(["c"]);
     expect(narrow.searchCompact).toBe(true);
   });
@@ -56,13 +66,13 @@ describe("allocateHeaderOverflow", () => {
       utilityItems: keys(fullscreen, settings),
     });
     expect(result.visibleNavKeys).toContain("c");
-    expect(result.visibleNavKeys).toEqual([...result.visibleNavKeys].sort((left, right) => {
-      const order = ["a", "b", "c", "d"];
-      return order.indexOf(left) - order.indexOf(right);
-    }));
-    expect(result.overflowNavKeys.every((key) => !result.visibleNavKeys.includes(key))).toBe(
-      true,
+    expect(result.visibleNavKeys).toEqual(
+      [...result.visibleNavKeys].sort((left, right) => {
+        const order = ["a", "b", "c", "d"];
+        return order.indexOf(left) - order.indexOf(right);
+      }),
     );
+    expect(result.overflowNavKeys.every((key) => !result.visibleNavKeys.includes(key))).toBe(true);
   });
 
   it("可见入口非空时至少保留一个，并预留更多按钮", () => {
@@ -78,12 +88,9 @@ describe("allocateHeaderOverflow", () => {
   });
 
   it("放不下一个菜单加完整右侧时先把搜索变图标，再收纳小部件", () => {
-    const oneNavAndRight =
-      80 + 12 + 32 + 12 + 240 + 12 + 80 + 12 + 80;
-    const compactSearch =
-      80 + 12 + 32 + 12 + 32 + 12 + 80 + 12 + 80;
-    const afterOneUtility =
-      80 + 12 + 32 + 12 + 32 + 12 + 80 + 12 + 32;
+    const oneNavAndRight = 80 + 12 + 32 + 12 + 240 + 12 + 80 + 12 + 80;
+    const compactSearch = 80 + 12 + 32 + 12 + 32 + 12 + 80 + 12 + 80;
+    const afterOneUtility = 80 + 12 + 32 + 12 + 32 + 12 + 80 + 12 + 32;
 
     const compact = allocateHeaderOverflow({
       ...base,
@@ -109,8 +116,7 @@ describe("allocateHeaderOverflow", () => {
   });
 
   it("大类项间距按 navItemGap 计算，不影响小部件间距", () => {
-    const threeNavAndRight =
-      80 + 12 + 80 + 12 + 80 + 12 + 240 + 12 + 80 + 12 + 80;
+    const threeNavAndRight = 80 + 12 + 80 + 12 + 80 + 12 + 240 + 12 + 80 + 12 + 80;
     const tight = allocateHeaderOverflow({
       ...base,
       availableWidth: threeNavAndRight,
@@ -138,6 +144,63 @@ describe("allocateHeaderOverflow", () => {
     expect(result.visibleNavKeys).toEqual([]);
     expect(result.showNavMore).toBe(false);
     expect(result.searchCompact).toBe(false);
+  });
+
+  it("应用箭头相连时不额外计入入口间距，并保持小部件更多的原宽度", () => {
+    const result = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 80 + 24 + 80 + 24,
+      navItems: keys("a", "b", "c"),
+      navItemGap: 24,
+      maxVisibleNavItems: 2,
+      searchEnabled: false,
+      utilityItems: [],
+      integratedNavMore: true,
+      integratedNavMoreWidth: 24,
+    });
+    expect(result.visibleNavKeys).toEqual(["a", "b"]);
+    expect(result.overflowNavKeys).toEqual(["c"]);
+    const narrower = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 80 + 24 + 80 + 23,
+      navItems: keys("a", "b", "c"),
+      navItemGap: 24,
+      maxVisibleNavItems: 2,
+      searchEnabled: false,
+      utilityItems: [],
+      integratedNavMore: true,
+      integratedNavMoreWidth: 24,
+    });
+    expect(narrower.visibleNavKeys).toEqual(["a"]);
+    const utilities = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 80 + 24 + 12 + 32,
+      navItems: keys("a", "b", "c"),
+      searchEnabled: false,
+      utilityItems: keys(fullscreen, settings),
+      integratedNavMore: true,
+      integratedNavMoreWidth: 24,
+    });
+    expect(utilities.visibleNavKeys).toEqual(["a"]);
+    expect(utilities.overflowUtilityKeys).toEqual([fullscreen, settings]);
+    expect(utilities.showUtilityMore).toBe(true);
+  });
+
+  it("只收纳旧导航插槽时仍按独立更多按钮及间距计算", () => {
+    const result = allocateHeaderOverflow({
+      ...base,
+      availableWidth: 80 + 12 + 32,
+      navItems: keys("a"),
+      navSlotWidth: 200,
+      searchEnabled: false,
+      utilityItems: [],
+      integratedNavMore: true,
+      integratedNavMoreWidth: 24,
+    });
+    expect(result.visibleNavKeys).toEqual(["a"]);
+    expect(result.overflowNavKeys).toEqual([]);
+    expect(result.overflowNavSlot).toBe(true);
+    expect(result.showNavMore).toBe(true);
   });
 
   it("旧插槽作为不可拆整体收纳", () => {

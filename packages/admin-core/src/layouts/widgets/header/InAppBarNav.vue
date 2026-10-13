@@ -5,11 +5,19 @@
         v-for="item in items"
         :key="item.key"
         class="in-app-bar-nav__item"
+        :class="{ 'is-active': item.key === effectiveActiveKey }"
         :data-nav-key="item.key"
       >
         <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
         <span class="in-app-bar-nav__label">{{ item.label }}</span>
-        <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
+        <in-icon
+          v-if="item.type === InAdminHeaderNavItemType.Group"
+          name="ep:arrow-down"
+          class="in-app-bar-nav__caret"
+        />
+      </span>
+      <span data-nav-application-more class="in-app-bar-nav__application-more">
+        <in-icon name="ep:arrow-down" class="in-app-bar-nav__caret" />
       </span>
       <span data-nav-more class="in-icon-button in-app-bar-nav__more-measure">
         <icon-more-outlined class="in-app-bar__icon" />
@@ -34,32 +42,71 @@
       </div>
     </Teleport>
 
-    <button
-      v-for="item in visibleItems"
-      :key="item.key"
-      :ref="(el) => privateSetEntryRef(item.key, el)"
-      type="button"
-      class="in-app-bar-nav__item"
-      :class="{
-        'is-active': item.key === effectiveActiveKey,
-        'is-disabled': item.disabled,
-        'is-open': item.type === InAdminHeaderNavItemType.Group && openGroupKey === item.key,
-      }"
-      :disabled="item.disabled"
-      :aria-current="item.key === effectiveActiveKey ? 'page' : undefined"
-      :aria-expanded="item.type === InAdminHeaderNavItemType.Group ? openGroupKey === item.key : undefined"
-      :aria-haspopup="item.type === InAdminHeaderNavItemType.Group ? 'dialog' : undefined"
-      @click="privateOnEntryClick(item)"
-      @mouseenter="privateOnEntryEnter(item)"
-      @mouseleave="privateOnEntryLeave(item)"
-    >
-      <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
-      <span class="in-app-bar-nav__label">{{ item.label }}</span>
-      <in-icon v-if="item.type === InAdminHeaderNavItemType.Group" name="ep:arrow-down" class="in-app-bar-nav__caret" />
-    </button>
+    <template v-for="item in visibleItems" :key="item.key">
+      <div
+        v-if="item.key === applicationMoreKey"
+        :ref="privateSetApplicationTrigger"
+        class="in-app-bar-nav__application"
+        :class="{ 'is-active': item.key === effectiveActiveKey, 'is-open': applicationOpen }"
+        @mouseenter="privateOpenApplications"
+        @mouseleave="privateScheduleApplicationClose"
+      >
+        <button
+          type="button"
+          class="in-app-bar-nav__item"
+          :disabled="item.disabled"
+          :aria-current="item.key === effectiveActiveKey ? 'page' : undefined"
+          @click="privateOnEntryClick(item)"
+        >
+          <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
+          <span class="in-app-bar-nav__label">{{ item.label }}</span>
+        </button>
+        <button
+          :ref="privateSetApplicationArrow"
+          type="button"
+          class="in-app-bar-nav__application-more"
+          aria-label="更多应用"
+          aria-haspopup="menu"
+          :aria-expanded="applicationOpen"
+          :aria-controls="applicationPanelId"
+          @click="privateToggleApplications"
+          @keydown.esc.prevent="privateCloseApplications(true)"
+        >
+          <in-icon name="ep:arrow-down" class="in-app-bar-nav__caret" />
+        </button>
+      </div>
+      <button
+        v-else
+        :ref="(el) => privateSetEntryRef(item.key, el)"
+        type="button"
+        class="in-app-bar-nav__item"
+        :class="{
+          'is-active': item.key === effectiveActiveKey,
+          'is-disabled': item.disabled,
+          'is-open': item.type === InAdminHeaderNavItemType.Group && openGroupKey === item.key,
+        }"
+        :disabled="item.disabled"
+        :aria-current="item.key === effectiveActiveKey ? 'page' : undefined"
+        :aria-expanded="
+          item.type === InAdminHeaderNavItemType.Group ? openGroupKey === item.key : undefined
+        "
+        :aria-haspopup="item.type === InAdminHeaderNavItemType.Group ? 'dialog' : undefined"
+        @click="privateOnEntryClick(item)"
+        @mouseenter="privateOnEntryEnter(item)"
+        @mouseleave="privateOnEntryLeave(item)"
+      >
+        <InApplicationIcon v-if="item.icon" :icon="item.icon" class="in-app-bar-nav__icon" />
+        <span class="in-app-bar-nav__label">{{ item.label }}</span>
+        <in-icon
+          v-if="item.type === InAdminHeaderNavItemType.Group"
+          name="ep:arrow-down"
+          class="in-app-bar-nav__caret"
+        />
+      </button>
+    </template>
 
     <el-tooltip
-      v-if="showMore"
+      v-if="showMore && !applicationMoreKey"
       :disabled="moreOpen"
       content="更多"
       effect="dark"
@@ -92,33 +139,41 @@
         @mouseleave="privateScheduleGroupClose"
         @keydown="privateOnGroupKeydown"
       >
-        <div
+        <InAppBarNavPanel
           v-if="openGroup"
-          class="in-app-bar-nav-panel"
-          :class="{ 'is-single': groupPanelSingle }"
-        >
-          <section
-            v-for="group in openGroup.groups"
-            :key="group.key"
-            class="in-app-bar-nav-panel__group"
-          >
-            <h3 class="in-app-bar-nav-panel__title">{{ group.title }}</h3>
-            <div class="in-app-bar-nav-panel__items" :style="privateGroupItemGridStyle(group)">
-              <button
-                v-for="entry in group.items"
-                :key="entry.key"
-                type="button"
-                class="in-app-bar-nav-panel__item"
-                :class="{ 'is-disabled': entry.disabled }"
-                :disabled="entry.disabled"
-                @click="privateOnGroupItemClick(openGroup.key, entry)"
-              >
-                <InApplicationIcon v-if="entry.icon" :icon="entry.icon" class="in-app-bar-nav__icon" />
-                <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
-              </button>
-            </div>
-          </section>
-        </div>
+          :groups="openGroup.groups"
+          :single="groupPanelSingle"
+          @select="privateOnGroupItemClick(openGroup.key, $event)"
+        />
+      </div>
+    </Teleport>
+
+    <Teleport to="body">
+      <div
+        :id="applicationPanelId"
+        ref="applicationPanelRef"
+        class="in-app-bar-overlay in-app-bar-overlay--nav"
+        :class="{ 'is-open': applicationOpen }"
+        role="menu"
+        aria-label="更多应用"
+        tabindex="-1"
+        :aria-hidden="!applicationOpen"
+        :style="applicationPanelStyle"
+        @mouseenter="privateCancelApplicationClose"
+        @mouseleave="privateScheduleApplicationClose"
+        @focusin="privateCancelApplicationClose"
+        @focusout="privateOnApplicationFocusout"
+        @keydown.esc.prevent="privateCloseApplications(true)"
+      >
+        <div ref="applicationSlotRef"></div>
+        <InAppBarNavPanel
+          v-if="applicationOpen"
+          :groups="overflowApplicationGroups"
+          :single="groupPanelSingle"
+          :active-key="effectiveActiveKey"
+          item-role="menuitem"
+          @select="privateOnApplicationSelect"
+        />
       </div>
     </Teleport>
 
@@ -139,8 +194,10 @@
         </button>
         <span>{{ moreGroup.label }}</span>
       </div>
-      <div ref="navSlotTargetRef" class="in-app-bar-nav__slot-target"></div>
-      <template v-if="!moreGroup">
+      <Teleport :disabled="!applicationMoreKey" :to="applicationSlotRef ?? 'body'">
+        <div ref="navSlotTargetRef" class="in-app-bar-nav__slot-target"></div>
+      </Teleport>
+      <template v-if="!moreGroup && !applicationMoreKey">
         <button
           v-for="item in overflowItems"
           :key="item.key"
@@ -158,41 +215,28 @@
           {{ item.label }}
         </button>
       </template>
-      <template v-else>
-        <section
-          v-for="group in moreGroup.groups"
-          :key="group.key"
-          class="in-app-bar-nav-panel__group"
-        >
-          <h3 class="in-app-bar-nav-panel__title">{{ group.title }}</h3>
-          <div class="in-app-bar-nav-panel__items" :style="privateGroupItemGridStyle(group, true)">
-            <button
-              v-for="entry in group.items"
-              :key="entry.key"
-              type="button"
-              class="in-app-bar-nav-panel__item"
-              :class="{ 'is-disabled': entry.disabled }"
-              :disabled="entry.disabled"
-              role="menuitem"
-              @click="privateOnGroupItemClick(moreGroup.key, entry)"
-            >
-              <InApplicationIcon v-if="entry.icon" :icon="entry.icon" class="in-app-bar-nav__icon" />
-              <span class="in-app-bar-nav-panel__label">{{ entry.label }}</span>
-            </button>
-          </div>
-        </section>
+      <template v-else-if="moreGroup">
+        <InAppBarNavPanel
+          :groups="moreGroup.groups"
+          single
+          item-role="menuitem"
+          @select="privateOnGroupItemClick(moreGroup.key, $event)"
+        />
       </template>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import InApplicationIcon from "./InApplicationIcon.vue";
-import type { ComponentPublicInstance } from "vue";
+import InAppBarNavPanel from "./InAppBarNavPanel.vue";
+import { useId, type ComponentPublicInstance } from "vue";
+import { InAdminHeaderNavItemType, InAdminHeaderNavGroupTrigger } from "@/plugin/header";
 import {
-  InAdminHeaderNavItemType,
-  InAdminHeaderNavGroupTrigger,
-} from "@/plugin/header";
-import type { ResolvedHeaderNavGroup, ResolvedHeaderNavItem, ResolvedHeaderNavMenuItem } from "./resolveHeaderConfig";
+  resolveNavGroupColumns,
+  type ResolvedHeaderApplicationGroup,
+  type ResolvedHeaderNavItem,
+  type ResolvedHeaderNavMenuItem,
+} from "./resolveHeaderConfig";
 import { useAppBarOverlay } from "./useAppBarOverlay";
 import IconMoreOutlined from "@/components/icons/IconMoreOutlined.vue";
 
@@ -207,12 +251,14 @@ const props = defineProps<{
   showMore: boolean;
   overflowNavSlot: boolean;
   activeKey?: string;
+  applicationMode?: boolean;
+  applicationGroups?: ResolvedHeaderApplicationGroup[];
 }>();
 
 const emit = defineEmits<{
   select: [payload: { entryKey: string; itemKey?: string }];
   "open-panel": [id: string];
-  "close-panel": [];
+  "close-panel": [id?: string];
 }>();
 
 const slots = defineSlots<{
@@ -230,6 +276,12 @@ const morePanelRef = ref<HTMLElement>();
 const navSlotTargetRef = ref<HTMLElement>();
 const entryRefs = new Map<string, HTMLElement>();
 const moreOpen = ref(false);
+const applicationOpen = ref(false);
+const applicationTriggerRef = ref<HTMLElement>();
+const applicationArrowRef = ref<HTMLElement>();
+const applicationPanelRef = ref<HTMLElement>();
+const applicationSlotRef = ref<HTMLElement>();
+const applicationPanelId = `app-bar-applications-${useId()}`;
 const openGroupKey = ref<string>();
 const moreGroupKey = ref<string>();
 const groupTriggerRef = ref<HTMLElement>();
@@ -248,6 +300,26 @@ const visibleItems = computed(() =>
 const overflowItems = computed(() =>
   props.items.filter((item) => props.overflowKeys.includes(item.key)),
 );
+const applicationMoreKey = computed(() =>
+  props.applicationMode && props.showMore && overflowItems.value.length
+    ? visibleItems.value[visibleItems.value.length - 1]?.key
+    : undefined,
+);
+const overflowApplicationGroups = computed(() => {
+  const keys = new Set(overflowItems.value.map((item) => item.key));
+  return (props.applicationGroups ?? []).flatMap((group) => {
+    const items = group.items.filter((item) => keys.has(item.key));
+    return items.length
+      ? [
+          {
+            ...group,
+            items,
+            columns: resolveNavGroupColumns(items.length, group.columns),
+          },
+        ]
+      : [];
+  });
+});
 const effectiveActiveKey = computed(() => {
   if (!props.activeKey) {
     return undefined;
@@ -284,21 +356,77 @@ const moreOverlay = useAppBarOverlay({
   offset: 8,
 });
 
+const applicationOverlay = useAppBarOverlay({
+  open: applicationOpen,
+  triggerRef: applicationTriggerRef,
+  panelRef: applicationPanelRef,
+  maxWidth: 1080,
+  align: "start",
+  offset: 8,
+});
+const applicationPanelStyle = applicationOverlay.panelStyle;
 const groupPanelStyle = groupOverlay.panelStyle;
 const morePanelStyle = moreOverlay.panelStyle;
 const HOVER_CLOSE_MS = 160;
 let groupCloseTimer = 0;
 
-const privateGroupItemGridStyle = (
-  group: ResolvedHeaderNavGroup,
-  forceSingle = false,
-): Record<string, string> => {
-  const columns = forceSingle || groupPanelSingle.value ? 1 : group.columns;
-  const rows = Math.max(1, Math.ceil(Math.max(group.items.length, 1) / columns));
-  return {
-    "--in-nav-group-columns": String(columns),
-    "--in-nav-group-rows": String(rows),
-  };
+let applicationCloseTimer = 0;
+
+const privateSetApplicationTrigger = (el: Element | ComponentPublicInstance | null) => {
+  applicationTriggerRef.value = el instanceof HTMLElement ? el : undefined;
+};
+const privateSetApplicationArrow = (el: Element | ComponentPublicInstance | null) => {
+  applicationArrowRef.value = el instanceof HTMLElement ? el : undefined;
+};
+
+const privateCancelApplicationClose = () => {
+  window.clearTimeout(applicationCloseTimer);
+};
+const privateCloseApplications = (restore = false) => {
+  privateCancelApplicationClose();
+  applicationOpen.value = false;
+  if (restore) applicationArrowRef.value?.focus();
+};
+const privateScheduleApplicationClose = () => {
+  privateCancelApplicationClose();
+  applicationCloseTimer = window.setTimeout(() => {
+    const focused = document.activeElement;
+    if (focused && applicationPanelRef.value?.contains(focused)) return;
+    privateCloseApplications();
+  }, HOVER_CLOSE_MS);
+};
+const privateOpenApplications = () => {
+  if (!applicationMoreKey.value) return;
+  privateCancelApplicationClose();
+  privateCancelGroupClose();
+  openGroupKey.value = undefined;
+  moreOpen.value = false;
+  moreGroupKey.value = undefined;
+  applicationOpen.value = true;
+  emit("open-panel", "nav-applications");
+  nextTick(() => applicationOverlay.privatePlacePanel());
+};
+const privateToggleApplications = () => {
+  if (applicationOpen.value) {
+    privateCloseApplications(true);
+    return;
+  }
+  privateOpenApplications();
+  nextTick(() => applicationPanelRef.value?.focus());
+};
+const privateOnApplicationFocusout = (event: FocusEvent) => {
+  const target = event.relatedTarget;
+  if (
+    target instanceof Node &&
+    (applicationTriggerRef.value?.contains(target) || applicationPanelRef.value?.contains(target))
+  )
+    return;
+  privateScheduleApplicationClose();
+};
+const privateOnApplicationSelect = (item: ResolvedHeaderNavMenuItem) => {
+  if (item.disabled) return;
+  privateCloseAll(true);
+  emit("select", { entryKey: item.key });
 };
 
 const privateUsesHover = (item: ResolvedHeaderNavItem): boolean =>
@@ -348,10 +476,14 @@ const privateSetEntryRef = (key: string, el: Element | ComponentPublicInstance |
 };
 
 const privateCloseAll = (restore = false) => {
+  const applicationWasOpen = applicationOpen.value;
+  const groupWasOpen = Boolean(openGroupKey.value);
+  privateCloseApplications(restore && applicationWasOpen);
+  if (restore && groupWasOpen) groupTriggerRef.value?.focus();
   privateCancelGroupClose();
   openGroupKey.value = undefined;
   moreGroupKey.value = undefined;
-  moreOverlay.privateClose(restore);
+  moreOverlay.privateClose(restore && !applicationWasOpen && !groupWasOpen);
   emit("close-panel");
 };
 
@@ -455,6 +587,31 @@ const privateOnMoreKeydown = (event: KeyboardEvent) => {
   }
 };
 
+watch(applicationOpen, (open, previous) => {
+  if (!open && previous) emit("close-panel", "nav-applications");
+});
+watch(
+  () => [applicationMoreKey.value, props.overflowKeys, props.applicationGroups],
+  () => {
+    if (!applicationMoreKey.value) {
+      privateCloseApplications();
+      return;
+    }
+    nextTick(() => {
+      if (applicationOpen.value) applicationOverlay.privatePlacePanel();
+    });
+  },
+  { deep: true },
+);
+
+let applicationArrowHadFocus = false;
+onBeforeUpdate(() => {
+  applicationArrowHadFocus = document.activeElement === applicationArrowRef.value;
+});
+onUpdated(() => {
+  if (applicationArrowHadFocus) applicationArrowRef.value?.focus();
+});
+
 watch(
   () => props.showMore,
   (show) => {
@@ -467,20 +624,23 @@ watch(
 
 onBeforeUnmount(() => {
   privateCancelGroupClose();
+  privateCancelApplicationClose();
 });
 
 defineExpose({
   measureRef,
   slotRef,
   moreTriggerRef,
-  focusMore: () => moreTriggerRef.value?.focus(),
+  focusMore: () =>
+    (applicationMoreKey.value ? applicationArrowRef.value : moreTriggerRef.value)?.focus(),
+  close: privateCloseAll,
 });
 </script>
 <style lang="postcss" scoped>
 .in-app-bar-nav {
   @apply flex items-center min-w-0 relative;
   flex: 1 1 auto;
-  gap: 0;
+  gap: var(--in-space-6);
 }
 
 .in-app-bar-nav__measure {
@@ -489,10 +649,17 @@ defineExpose({
   pointer-events: none;
   display: flex;
   align-items: center;
-  gap: 0;
+  gap: var(--in-space-6);
   white-space: nowrap;
   left: 0;
   top: 0;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.in-app-bar-nav__measure > * {
+  flex-shrink: 0;
 }
 
 .in-app-bar-nav__item {
@@ -501,7 +668,7 @@ defineExpose({
   box-sizing: border-box;
   min-width: 0;
   max-width: 160px;
-  margin: 0 var(--in-space-6) 0 0;
+  margin: 0;
   padding: 7px var(--in-space-3);
   border: 0;
   border-radius: var(--in-radius-card);
@@ -522,21 +689,18 @@ defineExpose({
 }
 
 .in-app-bar-nav__item.is-disabled,
-.in-app-bar-nav-panel__item.is-disabled,
 .in-app-bar-overlay__item.is-disabled {
   color: var(--in-text-color-disabled);
   cursor: not-allowed;
 }
 
 .in-app-bar-nav__item:hover:not(.is-disabled):not(.is-active),
-.in-app-bar-nav-panel__item:hover:not(.is-disabled),
 .in-app-bar-overlay__item:hover:not(.is-disabled) {
   background: var(--in-bg-color-hover);
 }
 
 .in-app-bar-nav__item:focus-visible,
-.in-app-bar-overlay__item:focus-visible,
-.in-app-bar-nav-panel__item:focus-visible {
+.in-app-bar-overlay__item:focus-visible {
   outline: 2px solid var(--in-focus-ring-color);
   outline-offset: 2px;
 }
@@ -561,11 +725,49 @@ defineExpose({
   gap: var(--in-space-3);
 }
 
-.in-app-bar-nav__extra {
-  margin-right: var(--in-space-6);
+.in-app-bar-nav__application {
+  @apply flex items-center min-w-0;
+  max-width: 100%;
+  border-radius: var(--in-radius-card);
+}
+
+.in-app-bar-nav__application.is-active,
+.in-app-bar-nav__application.is-open,
+.in-app-bar-nav__application:hover {
+  background: color-mix(in srgb, var(--in-text-color) 6%, transparent);
+}
+
+.in-app-bar-nav__application.is-active .in-app-bar-nav__item {
+  font-weight: var(--in-font-weight-section-title);
+}
+
+.in-app-bar-nav__application-more {
+  @apply inline-flex items-center justify-center flex-none;
+  box-sizing: border-box;
+  width: 24px;
+  height: var(--in-control-height);
+  padding: 0 6px 0 0;
+  border: 0;
+  border-radius: var(--in-radius-control);
+  background: transparent;
+  cursor: pointer;
+}
+
+.in-app-bar-nav__application .in-app-bar-nav__item:hover {
+  background: transparent;
+}
+
+.in-app-bar-nav__application-more:focus-visible {
+  outline: 2px solid var(--in-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.in-app-bar-nav__application.is-open .in-app-bar-nav__caret {
+  transform: rotate(180deg);
 }
 
 .in-app-bar-overlay {
+  display: none;
   position: fixed;
   z-index: var(--in-z-dropdown);
   box-sizing: border-box;
@@ -584,6 +786,7 @@ defineExpose({
 }
 
 .in-app-bar-overlay.is-open {
+  display: block;
   visibility: visible;
   pointer-events: auto;
 }
@@ -602,124 +805,6 @@ defineExpose({
   right: 0;
   bottom: 100%;
   height: 8px;
-}
-
-.in-app-bar-overlay--nav .in-app-bar-nav-panel {
-  width: max-content;
-  max-width: 100%;
-  max-height: none;
-  overflow: visible;
-}
-
-.in-app-bar-overlay__toolbar {
-  @apply flex items-center;
-  gap: var(--in-space-2);
-  padding: var(--in-space-2) var(--in-space-3);
-  color: var(--in-text-color);
-  font-weight: 500;
-}
-
-.in-app-bar-overlay__back,
-.in-app-bar-overlay__item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: var(--in-control-height);
-  margin: 0;
-  padding: 0 var(--in-space-3);
-  border: 0;
-  border-radius: var(--in-radius-control);
-  background: transparent;
-  color: var(--in-text-color);
-  cursor: pointer;
-  gap: var(--in-space-2);
-}
-
-.in-app-bar-overlay__item.is-active {
-  font-weight: var(--in-font-weight-section-title);
-  color: var(--in-text-color);
-  background: color-mix(in srgb, var(--in-text-color) 6%, transparent);
-}
-
-.in-app-bar-nav-panel {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--in-space-8);
-  padding: 0;
-}
-
-.in-app-bar-nav-panel.is-single {
-  flex-direction: column;
-  flex-wrap: nowrap;
-  gap: var(--in-space-5);
-}
-
-.in-app-bar-nav-panel__group {
-  flex: none;
-  width: max-content;
-  min-width: 0;
-}
-
-.in-app-bar-nav-panel__title {
-  display: flex;
-  align-items: center;
-  gap: var(--in-space-3);
-  margin: 0;
-  padding: 0 0 var(--in-space-3);
-  border-bottom: 1px solid var(--in-border-color);
-  color: var(--in-text-color-placeholder);
-  font-size: var(--in-font-size-body);
-  font-weight: var(--in-font-weight-body);
-  line-height: var(--in-line-height-body);
-  white-space: nowrap;
-}
-
-.in-app-bar-nav-panel__items {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(var(--in-nav-group-rows, 1), auto);
-  grid-template-columns: repeat(var(--in-nav-group-columns, 1), minmax(160px, max-content));
-  align-items: stretch;
-  column-gap: var(--in-space-2);
-  row-gap: var(--in-space-1);
-  margin-top: var(--in-space-3);
-}
-
-.in-app-bar-nav-panel__item {
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  width: 160px;
-  max-width: 100%;
-  height: 42px;
-  min-height: 42px;
-  margin: 0;
-  padding: 0 var(--in-space-3);
-  border: 0;
-  border-radius: var(--in-radius-card);
-  background: transparent;
-  color: var(--in-text-color);
-  font-size: var(--in-font-size-body);
-  font-weight: var(--in-font-weight-body);
-  line-height: var(--in-line-height-body);
-  cursor: pointer;
-  gap: 6px;
-}
-
-.in-app-bar-nav-panel__label {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-}
-
-.in-app-bar-nav-panel__item .in-app-bar-nav__icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
 }
 
 .in-app-bar-nav__caret {

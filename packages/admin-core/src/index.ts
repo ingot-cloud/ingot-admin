@@ -59,6 +59,7 @@ export type {
   InAppBarUtilityAction,
 } from "./components/types";
 export type {
+  InAdminHeaderApplicationGroup,
   InAdminHeaderActionUserMenuItem,
   InAdminHeaderActionUtility,
   InAdminHeaderBrandConfig,
@@ -102,6 +103,7 @@ export type { LoadDataParams } from "./components/select/InPageSelect.vue";
 export { resolveHeaderConfig } from "./layouts/widgets/header/resolveHeaderConfig";
 export type {
   ResolvedHeaderConfig,
+  ResolvedHeaderApplicationGroup,
   ResolvedHeaderNavGroup,
   ResolvedHeaderNavItem,
   ResolvedHeaderNavMenuItem,
