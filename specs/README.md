@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 活动增量
 
+- [顶栏多应用导航交互与分类面板](./changes/archive/2026/20261013-packages-application-navigation/README.md)（completed，2026-10-13 用户验收通过并归档）；[当前能力](./current/packages/app-header/README.md)
+
 - [登录失败保护维度选择交互](./changes/active/20261012-security-login-failure-dimension-selection/README.md)（validating；分段选择器、草稿及保存处理已实现，自动化通过，待真实页面人工验收）
 
 - [整页配置表单正文布局](./changes/active/20261012-common-centered-form-layout/README.md)（validating；840px 居中正文及账号 B/C 两个 Tab 已实现，自动化通过，待真实页面人工验收）

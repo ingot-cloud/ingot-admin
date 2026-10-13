@@ -13,12 +13,12 @@
 
 条目 `type` 按区域使用不同常量，不要共用一套种类，以免把 `Component` 写到导航或用户菜单：
 
-| 区域 | 列表项 `type` | 允许取值 | 整区替换组件 |
-| --- | --- | --- | --- |
-| `navigation.items` | `InAdminHeaderNavItemType` | `Action`、`Group` | 无；品牌用 `brand.component` |
-| `utilities` | `InAdminHeaderUtilityItemType` | `Builtin`、`Action`、`Component` | 无 |
-| `user.menu` | `InAdminHeaderUserMenuItemType` | `Builtin`、`Action`、`Divider` | 头像用 `user.component` |
-| `brand` / `search` | 无 `type` | — | `brand.component` / `search.component` |
+| 区域               | 列表项 `type`                   | 允许取值                         | 整区替换组件                           |
+| ------------------ | ------------------------------- | -------------------------------- | -------------------------------------- |
+| `navigation.items` | `InAdminHeaderNavItemType`      | `Action`、`Group`                | 无；品牌用 `brand.component`           |
+| `utilities`        | `InAdminHeaderUtilityItemType`  | `Builtin`、`Action`、`Component` | 无                                     |
+| `user.menu`        | `InAdminHeaderUserMenuItemType` | `Builtin`、`Action`、`Divider`   | 头像用 `user.component`                |
+| `brand` / `search` | 无 `type`                       | —                                | `brand.component` / `search.component` |
 
 内置能力 `name`、分组触发方式同样不要手写字符串：
 
@@ -161,8 +161,31 @@ groups: [
       { key: "member", label: "成员", icon: "ep:user" },
     ],
   },
-]
+];
 ```
+
+## 应用导航与更多应用
+
+使用 `navigation.source: "applications"` 时，入口来自 IAM bootstrap 中已授权且有可导航菜单的应用，切换会联动路由和侧栏。缺省最多直出 **2** 个应用，`maxVisibleItems` 可配置为其他正整数；无效值回退 2，宽度不足继续收纳。当前应用优先保留，选择溢出应用后会进入快捷入口。
+
+有溢出应用时，最后一个快捷应用右侧显示下拉箭头。hover 整个入口展开分类面板，进入面板保持打开，离开后延迟关闭。名称按钮仍用于切换应用，箭头按钮只展开或收起面板；支持键盘、Escape 关闭和焦点恢复。
+
+`applicationGroups` 通过稳定的应用 **code** 配置分类，不使用不同部署环境下可能变化的应用 id。分类顺序跟随配置，组内按 bootstrap 排序。组标题和多列布局与普通分组面板相同；省略 columns 时按实际溢出条目每列最多 8 行折列，最多 4 列，窄屏单列。
+
+```ts
+navigation: {
+  source: "applications",
+  maxVisibleItems: 2,
+  applicationGroups: [
+    { key: "management", title: "管理应用", applicationCodes: ["your-management-app"] },
+    { key: "tools", title: "业务工具", applicationCodes: ["your-tools-app"], columns: 2 },
+  ],
+}
+```
+
+请把示例 code 替换为实际 bootstrap 应用 code。列表及标题可以使用现有 ref / computed / getter 配置方式。没有分类配置时统一显示“应用”；配置分类后，未匹配应用归入“其他应用”，空分类不显示。未知或不可访问的应用 code 不生成入口，重复分类 key / 应用 code 会显式报错。面板只显示未直出的应用，分类配置不扩大访问权限。
+
+普通 `source: "configured"`（或省略 source）的菜单保持既有更多按钮和分组交互，缺省不限制直出数量。旧导航插槽仍可收纳。
 
 ## 自定义组件约定
 

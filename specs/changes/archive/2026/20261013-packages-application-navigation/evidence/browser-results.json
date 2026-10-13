@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "measurements": [
+    {
+      "viewport": 1920,
+      "caret": "matrix(-1, 0, 0, -1, 0, 0)",
+      "panel": {
+        "x": 388,
+        "y": 64,
+        "width": 938,
+        "height": 261
+      },
+      "visible": ["平台治理", "知识库"],
+      "page": {
+        "width": 1920,
+        "scroll": 1920
+      }
+    },
+    {
+      "viewport": 390,
+      "caret": "matrix(-1, 0, 0, -1, 0, 0)",
+      "panel": {
+        "x": 88,
+        "y": 64,
+        "width": 194,
+        "height": 825
+      },
+      "visible": ["知识库"],
+      "page": {
+        "width": 390,
+        "scroll": 390
+      }
+    }
+  ],
+  "errors": []
+}
