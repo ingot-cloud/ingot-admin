@@ -92,6 +92,15 @@
 - [x] 核心提供 KeepAlive、滚动恢复、菜单权限、设置可见性和窄屏 overlay / Escape
 - [x] 自定义 parts 转交 `shellSlots`；独立 layout 不被隐式替换
 
+### REQ-004：标签主题与兼容覆盖
+
+系统 SHALL 公开统一标签的几何、排版、语义色与效果 Token，CSS、Token 名单和明暗默认值一致。旧 status Token 作为兼容别名，既有局部覆盖继续生效；别名不得循环，通用和状态标签随同一套明暗语义色变化。已存在的 `--in-permission-panel-bg` 纳入公开登记与默认映射，保留原 CSS 值。
+
+### REQ-005：表单正文宽度
+
+系统 SHALL 公开 `--in-form-content-max-width`，默认 840px，可通过主题覆盖。业务页通过 InFormContent 消费，不复制限宽像素；覆盖不改变页面头、Tab 或滚动所有者。
+
+
 ## 非功能需求
 
 - 主题包将 Vue 与 `@ingot/admin-core` 作为 peerDependencies

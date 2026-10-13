@@ -165,4 +165,4 @@ MT01–MT03 开发、来源同步与定向自动化完成，时间增量进入 v
 
 本增量已 completed，RL 系列任务及人工验收均完成，证据见上述归档。主 change 保持 implementing。
 
-页面归属与权限补齐由[关联变更](../20261012-iam-platform-capability-completion/README.md)单独实施和验收。
+页面归属与权限补齐由[关联变更](../../archive/2026/20261012-iam-platform-capability-completion/README.md)单独实施和验收。

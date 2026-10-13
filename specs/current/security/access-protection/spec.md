@@ -1,94 +1,82 @@
 # 访问防护规格
 
-本文写已上线的页面行为；接口细节见归档 change 的 [API.md](../../../changes/archive/2026/20260827-security-challenge-verification/API.md)，不要在此维护完整接口表。
-
 ## 概述
 
-平台管理员在「安全中心 / 访问防护」维护网关策略。页面为 Settings 原型（`InPageFrame mode="page"` + 固定页面头 + 局部 Tab）。挑战策略 Tab 可配置匹配路径后的滑块挑战（ALWAYS / 限流后）。写成功提示热更新。前端鉴权走 session，不传 Bearer Token。全局 412 拦截见 [网关挑战](../../common/gateway-challenge/spec.md)。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
+平台管理员在安全中心 `/security/access-protection` 维护网关防护与登录失败策略，canonical viewPath 为 `security.access.protection`。一级 Tab 固定，当前内容独立滚动：列表填充工作区，配置表单采用居中正文。接口与权限见归档 [平台能力矩阵](../../../changes/archive/2026/20261012-iam-platform-capability-completion/API.md)。全局 412 行为见 [网关挑战](../../common/gateway-challenge/spec.md)。
 
 ## 范围
 
-### In Scope
-
-- 页面 `pages/access-protection`（源码在 security 插件；菜单既有，不新增子菜单）
-- canonical viewPath `security.access.protection`
-- Tab：挑战策略（列表 + 抽屉 CRUD）
-- 权限共用 `platform:security:policy:*`
-- 页头既有「强制刷新策略」（全域广播）
-
-### Out of Scope
-
-- 路径分组 / 限流 / 黑白名单 / 违规升级 / 登录失败保护 / 封禁审计的细节（既有 Tab，非本变更引入）
-- 网关 Nacos 开关（`ingot.security.challenge.enabled` / `policy.mode`）的管理台配置
-- SMS / EMAIL 挑战类型
+- 路径分组、限流规则、黑白名单、挑战策略、封禁审计五种列表
+- 登录失败保护四维度及违规升级配置
+- 精确操作权限、激活查询、策略预览/编辑、行内删除及共享布局
+- 页头「强制刷新策略」按 security-policy update 权限执行全域广播
+- 不包含网关 Nacos 开关或 SMS/EMAIL 挑战类型配置
 
 ## 用户场景
 
-### 场景 1：查看挑战策略列表
+### 场景 1：按权限进入激活面板
 
-- **角色**：平台管理员（`platform:security:policy:query` 或超级管理员）
-- **前置条件**：已登录管理台，具备访问防护菜单
-- **步骤**：打开「安全中心 / 访问防护」→「挑战策略」Tab
-- **预期结果**：拉取全部策略，按 `priority` 升序；停用行仍在列表中；remote 生产能看到种子 `login-always`
+- **角色**：具有 security-policy 或 login-failure-policy read 的平台人员
+- **步骤**：打开访问防护，选择可访问的一级 Tab
+- **预期结果**：入口按两个 read 的 ANY 开放，只显示授权 Tab，默认首个可访问项；仅当前激活面板请求，隐藏或撤权面板不请求
 
-### 场景 2：新增 / 编辑 / 删除
+### 场景 2：查看或维护网关策略
 
-- **角色**：平台管理员（create / update / delete 或超级管理员）
-- **前置条件**：处于挑战策略 Tab
-- **步骤**：新建或行内编辑；分组与内联路径二选一；删除走抽屉删除
-- **预期结果**：POST 新增、PUT 带字符串 `id`；删除路径使用原样字符串 id，不转 number；成功提示「规则将在数秒内生效」
+- **角色**：具有相应 `iam-platform:security-policy:*` 操作的平台人员
+- **步骤**：查看列表，打开详情，再按 update 权限编辑；新增直接进入编辑
+- **预期结果**：已有详情默认预览；取消恢复快照，关闭未保存编辑需确认，失败留草稿，成功刷新自身数据。预览不加载编辑目录选择器
 
-### 场景 3：表单约束
+### 场景 3：从更多菜单删除
 
-- **角色**：平台管理员
-- **前置条件**：打开新建/编辑抽屉
-- **步骤**：填写编码、触发、类型、scope、TTL、剩余次数、路径或分组
-- **预期结果**：`trigger` 为 `always` / `on_rate_limit`；类型仅 SLIDER / IMAGE；scope 非空且 ≤64；TTL 与 remaining ≥ 1；路径不得 `/vc`；任意 HTTP 方法提交 `ANY`。不展示废弃失败阈值。验码失败上限 / 拉黑时长可填，旁注网关不执行
+- **角色**：具有 `iam-platform:security-policy:delete` 的维护人员
+- **步骤**：在路径分组、限流、名单或挑战列表打开行内更多，选择删除并确认
+- **预期结果**：仅一次确认；取消/关闭不发写请求且不产生页面异常，失败保留数据，成功仅刷新当前列表。详情抽屉无删除入口；只读人员与封禁审计无删除操作
+
+### 场景 4：独立维护登录失败维度
+
+- **角色**：具有 `iam-platform:login-failure-policy:read` 的平台人员，维护另需 update
+- **步骤**：打开登录失败保护，在正文「防护维度」分段选择器选择 IP、设备、客户端或账号 + IP
+- **预期结果**：当前策略标题及保存确认明确维度，四策略可同时启用、独立保存。选择不预取其他维度，加载时不展示上一维度策略；已有面板保留挂载，缓存隔离维度与身份
 
 ## 功能需求
 
-### REQ-001：挑战策略 Tab
+### REQ-001：激活查询与精确权限
 
-系统 SHALL 在访问防护页内用 Tab 维护挑战策略，不新增子菜单。未访问的 Tab 不发请求。
+系统 MUST 按 security-policy/login-failure-policy 对应 read 控制面板，按精确 create/update/delete 控制维护。只有激活且有读取权限时查询；提交处理器复核写权限，撤销写权限后退出编辑。
 
-**验收标准：**
+### REQ-002：策略校验与预览
 
-- [x] 源码在 `plugins/security/src/pages/access-protection/`，面板 `ChallengePolicyPanel`
-- [x] canonical viewPath `security.access.protection`
-- [x] 权限共用 `platform:security:policy:*`
+系统 MUST 保留策略字符串 ID、路径/分组互斥与 `/vc`、`/vc/**` 禁止匹配规则。任意 HTTP 方法提交 ANY。挑战触发保留 `always` / `on_rate_limit`，类型仅 SLIDER/IMAGE，scope 非空且 ≤ 64，TTL 与 remaining ≥ 1；验码失败上限/拉黑时长仍说明网关不执行。挑战列表按 priority 升序，包含停用项；写成功提示数秒内生效。
 
-### REQ-002：分组与路径二选一
+已有策略默认预览，显式进入编辑；取消恢复、失败留草稿、成功回预览；新建直接编辑。违规升级使用同一预览与保存规则。
 
-系统 SHALL 在关联分组时忽略内联 `patternList`；配置内联路径时清空分组。路径 method 任意时提交 `ANY`。
+### REQ-003：列表与行操作
 
-**验收标准：**
+系统 SHALL 仅由 InTable 提供列表默认正文留白，工具栏和表体左右边界一致；单元格横向留白只计一层。表头单行，已定义枚举标签完整；窄容器允许表体内部横向滚动，固定操作列保持可用。四维护列表的删除进入 InTableActions danger 更多菜单，使用一次确认与精确权限；封禁审计保持只读。
 
-- [x] 分组与路径互斥
-- [x] 路径不得匹配 `/vc`、`/vc/**`
+### REQ-004：维度切换与草稿
 
-### REQ-003：主键按字符串传递
+系统 SHALL 保留一级 Tab，使用正文内分段选择器。预览、无修改或改回原值的编辑可直接切换并回到目标预览；有实际修改时先确认，取消保持原维度、草稿与选择器焦点，确认放弃后才切换并恢复预览。
 
-系统 SHALL 将挑战策略 `id` 按字符串存储与提交（后台 bigint，JSON 字符串），禁止转 number。
+校验、保存确认及提交期间 MUST 禁止维度切换；保存失败留草稿并恢复切换，成功仅写入和刷新所属维度。接口枚举保持 IP、DEVICE、CLIENT、ACCOUNT_IP。
 
-**验收标准：**
+### REQ-005：混合页面布局
 
-- [x] 删除 URL 与 PUT body 中的 id 保持原样字符串
-
-## 非功能需求
-
-- 前端不在请求头加 `Authorization: Bearer`
-- 不调用 Inner Feign
-- 写成功提示「规则将在数秒内生效」
+系统 SHALL 仅为登录失败保护、违规升级配置使用 InFormContent，默认最大宽度 840px、居中、窄容器收缩；选择器、说明、字段与操作区共用正文边界，窄屏可上下排列。列表与抽屉沿用自身容器，切回列表仍填充工作区，不新增滚动层。
 
 ## 依赖与约束
 
-- 挑战策略接口见归档 [API.md](../../../changes/archive/2026/20260827-security-challenge-verification/API.md)
-- 路径分组复用既有 `GET /groups` 与 `PatternListEditor`
-- 全局 412 行为见 [网关挑战](../../common/gateway-challenge/spec.md)
-- 跨页面布局与操作分层见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
+- 前端通过 session 鉴权，不调用 Inner Feign
+- 配置字段、Query 失效及业务生效规则保持；维护请求副本留在归档 API
+- 挑战初始契约见 [API.md](../../../changes/archive/2026/20260827-security-challenge-verification/API.md)
+- 维度与删除交互见 [维度 API](../../../changes/archive/2026/20261012-security-login-failure-dimension-selection/API.md)、[列表 API](../../../changes/archive/2026/20261012-security-access-table-refinement/API.md)
+- 布局见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)，时间点见 [统一时间契约](../../packages/time-contract/spec.md)
 
 ## 验收标准
 
-- [x] 访问防护可打开挑战策略 Tab 并完成 CRUD
-- [x] 写成功提示热更新；删除 id 不丢精度
-- [x] 任意方法提交 `ANY`；`/vc` 路径被拒绝
+- [x] 权限、激活请求、只读与撤权行为符合矩阵
+- [x] 策略预览/编辑/取消/失败重试及既有业务约束保持
+- [x] 五列表无重复留白，完整标签及更多删除的取消/失败/成功可用
+- [x] 四维度按需读取、草稿切换确认、保存中禁用与独立保存可用
+- [x] 宽窄容器及明暗主题无页面横向溢出或控件裁切
+- [x] 2026-10-13 用户确认相关变更验证完成

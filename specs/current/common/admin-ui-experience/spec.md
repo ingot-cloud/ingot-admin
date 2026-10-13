@@ -4,7 +4,7 @@
 
 ## 概述
 
-platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、列表筛选在表格 `#tools-start`（下拉 `InPicker`、查询无 label；条件多时用 `InFilterPanel`「筛选」浮层）、`InTable` compact + 字段设置 + `InTableActions`。不改变 API、权限码、路由 path、菜单或 Query 语义。
+platform、org、member、security 四个官方插件的业务页映射到 Overview / List / Split List / Settings / Detail / Tool。标准参考通讯录「成员管理」：`InPageFrame` contained + workspace、`InPageHeader` 取菜单名、列表筛选在表格 `#tools-start`（下拉 `InPicker`、查询无 label；条件多时用 `InFilterPanel`「筛选」浮层）、`InTable` compact + 字段设置 + `InTableActions`。业务接口与数据作用域保持；平台与安全页面的当前入口和精确权限以 [平台能力](../../base/platform-capabilities/spec.md) 为准。
 
 ## 范围
 
@@ -75,7 +75,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | platform | `admin/user` | List | `tableId` `platform-admin-user`；行内仅详情 |
 | platform | `config/app/home` | List | `platform-config-app-home`；`#tools-start`：无 label 名称搜索（回车或清空即查）+ `InFilterPanel`（应用类型/状态 `InPicker`，切换即查）+ 字段设置 |
 | platform | `config/app/detail` | Detail | `surface="workspace"`；Tab 在 `InPageFrame` `#tabs`；菜单/权限面板表格 `platform-config-app-detail-menu` / `-permission` |
-| platform | `config/dict` | Split List | `platform-config-dict`；作用域在左栏；`#tools-end`：新建字典类型（描边 `primary`）+ 新建字典项（实心 `quick`）；`node-click` / `node-edit-click` |
+| platform | `settings/dictionaries` | Split List | `platform-config-dict`；作用域在左栏；`#tools-end`：新建字典类型（描边 `primary`）+ 新建字典项（实心 `quick`）；`node-click` / `node-edit-click` |
 | platform | `config/menu` | List | `platform-config-menu` |
 | platform | `config/permission` | List | `platform-config-permission` |
 | platform | `config/role` | List | `platform-config-role` |
@@ -93,8 +93,8 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 | member | `role` | List | `member-role` |
 | member | `permission` | List | `member-permission` |
 | security | `access-protection` | Settings | `surface="workspace"`；多 Tab 策略表；热更新提示不变 |
-| security | `account-protection` | Settings | `surface="workspace"`；B/C 两栏独立保存 |
-| security | `credential` | Settings | `surface="workspace"` |
+| security | `account-protection` | Settings | `surface="workspace"`；B/C 两个页级 Tab 独立保存 |
+| security | `credential-policies` | Settings | `surface="workspace"` |
 | security | `sessions` | Settings | `surface="workspace"`；`security-sessions` / `security-sessions-policy`；会话列表 `#tools-start`：搜索用户 ID + `InFilterPanel`（组织/客户端/登录 IP + 重置）+ 字段设置 |
 
 通讯录各页是独立菜单路由，不使用页内路由 Tab。
@@ -158,7 +158,7 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 
 - [x] 未访问 Tab 不发请求
 - [x] 访问防护：路径/分组互斥、字符串 ID、`/vc` 校验、热更新提示不变
-- [x] 账号保护：B/C 两栏不合并提交；永久锁定仅 B 端；无权限只读
+- [x] 账号保护：B/C 两个页级 Tab 不合并提交；永久锁定仅 B 端；无权限只读
 - [x] 会话：未满足 clientId/userId 时不请求；下线绑定 `sid`；GLOBAL 不可删除；`maxSessions=0` 显示「不限制」
 - [x] 会话下线与 GLOBAL 删除的确认仍在原 `useOps`，避免 `InTableAction.confirm` 双重确认
 
@@ -168,9 +168,24 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 
 **验收标准：**
 
-- [x] 25 个页面入口、路由 path、canonical viewPath 和菜单权限不变
+- [x] 入口、路由与 canonical viewPath 符合当前能力基线；八页正式映射见平台能力规格
 - [x] 分页、枚举、缓存失效和写操作参数不变
 - [x] 应用删除的强制删除二次确认仍在 handler `catch`，不写入 `InTableAction.confirm`
+
+### REQ-007：整页配置表单与安全页交互
+
+系统 SHALL 使用 InFormContent 组织整页配置表单及混合页面中的配置 Tab。默认正文最大宽度 840px、工作区居中、窄容器收缩；页头和页级 Tab 保持工作区宽度，预览/编辑与操作区边界一致。普通字段两列、长文本整行，窄屏一列。列表、抽屉与局部表单沿用自身容器，业务页不复制限宽像素。
+
+安全四页 MUST 仅请求激活且授权的面板，默认预览、显式编辑；取消恢复，失败留草稿，成功刷新所属数据并回到预览。写处理器复核精确权限，撤权后退出编辑。策略抽屉关闭编辑时确认草稿；固定密码只展示设置状态，会话详情保持只读。
+
+账号 B/C 使用独立页级 Tab 和草稿；登录失败保护使用正文内四维度分段选择，有修改切换先确认，保存中禁止切换。访问防护五列表留白只计算一层，表头与枚举标签完整，四维护列表删除进入行内更多且只确认一次，取消不请求。
+
+**验收标准：**
+
+- [x] 凭证四类型、账号 B/C、登录失败与违规升级使用同一正文边界
+- [x] 预览/编辑、草稿恢复、独立保存与激活请求符合各能力规格
+- [x] 宽窄窗口、侧栏收起与明暗主题下按钮、字段和长文本均在容器内
+
 
 ## 非功能需求
 
@@ -189,4 +204,4 @@ platform、org、member、security 四个官方插件的业务页映射到 Overv
 - [x] 范围内页面按原型接入，成员管理为列表标准
 - [x] 操作分层与 `tableId` 字段设置一致
 - [x] 安全域懒请求与独立保存不变
-- [x] 路由、权限和接口零回归
+- [x] 正式路由与精确权限符合平台能力基线，业务接口和数据作用域保持

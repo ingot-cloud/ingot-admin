@@ -102,4 +102,4 @@ WHERE menu_type = '0'
 
 迁完后不应再有 `menu_type='1'` 且 `view_path LIKE '@/pages/%'` 的行。若有 Dashboard 菜单，改为 `platform.dashboard`。
 
-字典正式注册键为 `platform.settings.dictionaries`；浏览器 URL 显式配置 `/platform/settings/dictionaries`。安全四页归 security 插件、成员访问策略归 org、两域审计各有包装页，共享无路由审计组件。完整映射见[本次规格](../specs/changes/active/20261012-iam-platform-capability-completion/DESIGN.md)。
+字典正式注册键为 `platform.settings.dictionaries`；浏览器 URL 显式配置 `/platform/settings/dictionaries`。安全四页归 security 插件、成员访问策略归 org、两域审计各有包装页，共享无路由审计组件。完整映射见[本次规格](../specs/changes/archive/2026/20261012-iam-platform-capability-completion/DESIGN.md)。

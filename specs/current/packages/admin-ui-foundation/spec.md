@@ -14,7 +14,8 @@
 - `layout.main` 顶栏、侧栏、面包屑、内容沟槽与窄窗口 overlay（顶栏五区与搜索行为见 [顶栏 APP 配置](../app-header/spec.md)）
 - `InPageFrame` / `InPageHeader` / `InContainer` / `InSplitLayout`
 - `InTable`、`InTableActions`、`InTableColumnSetting`、`InFilterPanel`、`InPicker`
-- `InAvatar`、`InCommonStatusTag`、`InAccountStatusTag`
+- `InAvatar`、`InTag`、`InTagEnum`、`StatusTag`、`InCommonStatusTag`、`InAccountStatusTag`
+- `InFormContent` 整页配置正文容器
 - 加载、空态、禁用、焦点与减少动效
 
 ### Out of Scope
@@ -129,6 +130,9 @@
 - [x] `InPicker` 用于工具栏单选（带 label、含「全部」、切换即查），不替代表单 `InSelect`；列表查询框无 label
 - [x] `InFilterPanel`：工具栏「筛选」浮层收纳额外条件；文案不是「更多」；`active-count` 为已生效额外条件数；Esc / 点击外部关闭
 
+- [x] 表头/表体横向内边距只由内部 cell 提供，根容器默认留白保持
+- [x] 行操作确认取消或关闭立即终止，不执行回调，不向 Vue 异常处理器报告
+
 ### REQ-007：状态展示组件
 
 系统 SHALL 提供统一头像与账号/通用状态标签，不改变枚举值和写操作语义。
@@ -148,6 +152,28 @@
 - [x] `layout.main|simple|iframe|external` canonical 键不变
 - [x] 现有公开属性、插槽和事件保持兼容或提供迁移说明
 - [x] 页面注册与 App 约定仍见 [App 插件化与共享包](../app-plugins-shared-scaffold/spec.md)
+
+### REQ-009：通用与状态标签统一
+
+系统 SHALL 由 InTag 提供通用标签基础外观，InTagEnum 和 StatusTag 复用。支持 primary/success/info/warning/danger，普通 info 为中性色；正常/启用状态保持蓝色成功图标，暂停和锁定语义不变，普通标签不强制图标。
+
+**验收标准：**
+
+- [x] 默认高 24px、圆角 4px、字号 14px、字重 500；small 高 20px/字号 12px，large 高 32px
+- [x] light 浅底无可见边框，plain 工作面底色与语义描边，dark 实色白字；round/hit 保留
+- [x] value、枚举与状态调用兼容；默认内容/icon 插槽、属性与点击/关闭透传，关闭不触发外层点击
+- [x] 直接 ElTag、选择与复制标签共享基础样式；明暗主题及旧 status Token 覆盖有效
+
+### REQ-010：整页配置正文
+
+系统 SHALL 用 InFormContent 提供默认最大宽度 840px、工作区居中、窄容器收缩与 Token 内边距。组件只负责插槽布局，不承担请求、权限、校验、保存或滚动。
+
+**验收标准：**
+
+- [x] 公开 `--in-form-content-max-width` 可由主题覆盖；全局组件注册可用
+- [x] 不改变 InPageFrame 全宽页头/Tab 或旧容器默认行为，不新增滚动层
+- [x] 预览/编辑共用正文与操作边界；列表、抽屉和局部表单使用自身容器
+
 
 ## 非功能需求
 

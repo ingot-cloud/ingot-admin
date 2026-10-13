@@ -192,27 +192,31 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 实现前请阅读 [AGENTS.md](../AGENTS.md) 与 [CONSTITUTION.md](./CONSTITUTION.md)。先有输入（inbox 或已生成的 change），状态 `approved` 之后再改业务代码。
 
-- [公共包统一时间契约](./changes/active/20261008-packages-time-contract/README.md)（validating）
+- [框架统一时间契约与 UTC 处理](./changes/archive/2026/20261008-packages-time-contract/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/packages/time-contract/README.md)
 
 - [公共字段访问控制](./changes/archive/2026/20261010-common-field-access-control/README.md)（completed，2026-10-10 人工验收完成并归档）；[当前能力](./current/common/field-access-control/README.md)
 
-- [框架标签统一](./changes/active/20261010-packages-unified-tags/README.md)（validating，统一通用与状态标签样式，自动化及浏览器验证通过）
+- [框架标签统一](./changes/archive/2026/20261010-packages-unified-tags/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/packages/admin-ui-foundation/README.md)
 
 - [角色版本信息与批量应用](./changes/archive/2026/20261010-base-role-version-application/README.md)（completed，2026-10-11 人工验收完成并归档）；[当前能力](./current/base/role-version-application/README.md)
 
 - [角色详情加载优化](./changes/archive/2026/20261012-base-role-detail-loading/README.md)（completed，2026-10-12 人工验收通过）；[当前能力](./current/base/role-version-application/README.md)
 
 
-## 活动增量
+## 近期归档
 
 - [顶栏多应用导航交互与分类面板](./changes/archive/2026/20261013-packages-application-navigation/README.md)（completed，2026-10-13 用户验收通过并归档）；[当前能力](./current/packages/app-header/README.md)
 
-- [登录失败保护维度选择交互](./changes/active/20261012-security-login-failure-dimension-selection/README.md)（validating；分段选择器、草稿及保存处理已实现，自动化通过，待真实页面人工验收）
+- [登录失败保护维度选择交互](./changes/archive/2026/20261012-security-login-failure-dimension-selection/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/access-protection/README.md)
 
-- [整页配置表单正文布局](./changes/active/20261012-common-centered-form-layout/README.md)（validating；840px 居中正文及账号 B/C 两个 Tab 已实现，自动化通过，待真实页面人工验收）
+- [整页配置表单正文布局](./changes/archive/2026/20261012-common-centered-form-layout/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/common/admin-ui-experience/README.md)
 
-- [平台能力补齐与页面归属](./changes/active/20261012-iam-platform-capability-completion/README.md)（validating；实现及自动化已通过，部署及真实角色人工验收后更新 current）
+- [平台能力补齐与页面归属整理](./changes/archive/2026/20261012-iam-platform-capability-completion/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/base/platform-capabilities/README.md)
 
-- [访问防护列表与行操作整理](./changes/active/20261012-security-access-table-refinement/README.md)（validating；重复留白、列宽与更多删除已实现，自动化通过，待真实页面人工验收）
+- [访问防护列表与行操作整理](./changes/archive/2026/20261012-security-access-table-refinement/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/access-protection/README.md)
 
-- [安全中心页面交互与布局](./changes/active/20261012-security-page-interactions/README.md)（validating；四页激活请求、默认预览与响应式布局，自动化通过，待真实页面人工验收）
+- [安全中心页面交互与布局](./changes/archive/2026/20261012-security-page-interactions/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/credential-policies/README.md)
+
+## 当前活动变更
+
+- [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。

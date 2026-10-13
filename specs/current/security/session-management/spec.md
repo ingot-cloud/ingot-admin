@@ -4,13 +4,13 @@
 
 ## 概述
 
-平台管理员在「安全中心 / 在线用户」查看与强制下线在线会话，并维护并发会话策略。页面为 Settings 原型：在线会话与并发策略两个局部 Tab，表格使用 `InTable`。会话以 `sid` 为下线入参；前端鉴权走 session，不传 Bearer Token。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
+平台管理员在「安全中心 / 会话管理」查看与强制下线在线会话，并维护并发会话策略。页面为 Settings 原型：在线会话与并发策略两个局部 Tab，表格使用 `InTable`。会话以 `sid` 为下线入参；前端鉴权走 session，不传 Bearer Token。呈现规则见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)。
 
 ## 范围
 
 ### In Scope
 
-- 页面 `/platform/security/onlinetoken`（菜单权限 `platform:security:onlinetoken`；路由与菜单 path 未改）
+- 页面 `/security/sessions`，归属 `PLATFORM / platform:security` 独立安全应用
 - 源码 `plugins/security/src/pages/sessions`
 - canonical viewPath `security.sessions`
 - Tab：在线会话、并发策略
@@ -19,7 +19,7 @@
 
 ### Out of Scope
 
-- 不改路由、菜单 path、菜单权限码
+- 不支持旧在线用户 URL 作为功能入口
 - 登录应用对 `concurrent_session_limit` / `session_policy_unavailable` 的文案
 
 ## 用户场景
@@ -27,7 +27,7 @@
 ### 场景 1：查询在线会话并强制下线
 
 - **角色**：平台管理员
-- **前置条件**：已登录管理台，具备在线用户菜单
+- **前置条件**：已登录管理台，具备 session 或 session-policy 的精确 read 权限
 - **步骤**：打开「在线会话」Tab → 选择客户端或填写用户 ID → 搜索 → 对某行按 sid 下线，或下线该用户会话
 - **预期结果**：一行一个会话；下线后刷新列表；按 sid 已不在线时提示；按用户下线提示撤销数量
 
@@ -40,7 +40,7 @@
 
 ### 场景 3：维护并发策略
 
-- **角色**：平台管理员（写操作需 `platform:security:session:policy:update` 或超级管理员）
+- **角色**：平台管理员（写操作需 `iam-platform:session-policy:update` 或超级管理员）
 - **前置条件**：打开「并发策略」Tab
 - **步骤**：查看列表；新增或编辑（scope 联动 clientId / userType）；GLOBAL 不可删除
 - **预期结果**：保存后提示下次登录生效；`maxSessions=0` 展示为「不限制」
@@ -83,10 +83,17 @@
 
 **验收标准：**
 
-- [x] 同页 Tab，无新路由
+- [x] 同页授权 Tab，正式入口 `/security/sessions`
 - [x] GLOBAL 置顶且禁用删除
 - [x] `maxSessions=0` 展示「不限制」
 - [x] 保存提示下次登录生效、已在线会话不受影响
+
+### REQ-005：激活读取与策略预览
+
+系统 SHALL 默认选择首个授权 Tab，只请求当前激活面板；隐藏或撤权面板不请求。并发策略行内「详情」使用 read 权限，已有详情默认预览，新建直接编辑；取消恢复、失败保留草稿、成功刷新自身数据并回到预览。关闭未保存编辑需确认，编辑目录选择器只在需要时挂载。
+
+只读人员 MUST 无写入口，提交处理器复核精确操作；失去写权限后退出编辑。GLOBAL 不可删除、会话查询前置条件及生效规则保持。会话详情使用框架只读字段，不增加编辑态。
+
 
 ## 非功能需求
 
@@ -98,12 +105,13 @@
 
 - 会话与策略接口见归档 [API.md](../../../changes/archive/2026/20260820-security-session-management/API.md)
 - 客户端列表复用 `GET /auth/client/page`（`ClientPageAPI`）；租户 / Client 选择器来自 `@ingot/admin-common`，不依赖 platform 插件
-- 菜单权限沿用 `platform:security:onlinetoken`
+- 菜单按 `iam-platform:session:read` 与 `iam-platform:session-policy:read` 的 ANY 开放；仅显示授权 Tab
+- 下线检查 `iam-platform:session:revoke`；并发策略新增、更新和删除均检查 `iam-platform:session-policy:update`
 - 跨页面布局与表格操作分层见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 
 ## 验收标准
 
 - [x] 在线会话查询、详情、按 sid / 用户下线可用
 - [x] 并发策略列表与新增/编辑/删除（GLOBAL 除外）可用
-- [x] 路由与菜单 path 未改
+- [x] 正式入口、精确读取/维护权限与活动 Tab 请求门禁可用
 - [x] canonical viewPath `security.sessions`

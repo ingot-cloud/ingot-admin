@@ -57,4 +57,4 @@
 
 验收应测量正文与可见控件的实际矩形：正文在工作区居中、宽度不超过 Token 或可用空间、操作区与字段共用边界。单独比较 document 的 scrollWidth 无法识别祖先裁切。覆盖预览/编辑、侧栏展开/收起、常规/宽/窄窗口及明暗主题，同时验证字段焦点与页面滚动可达。
 
-本规范来自 [整页表单布局变更](../specs/changes/active/20261012-common-centered-form-layout/README.md)。
+本规范来自 [整页表单布局变更](../specs/changes/archive/2026/20261012-common-centered-form-layout/README.md)。

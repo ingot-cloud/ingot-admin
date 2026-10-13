@@ -36,4 +36,4 @@ const submitted = toApiInstant(selection);
 
 ## 浏览器验证
 
-`pnpm test:time-browser` 使用 Playwright Chromium 验证 UTC、上海、纽约时区的显示与选择提交，并覆盖纳秒模型保留和夏令时；需要已安装 Chromium。完整结果见 [验收记录](../specs/changes/active/20261008-packages-time-contract/ACCEPTANCE.md)。
+`pnpm test:time-browser` 使用 Playwright Chromium 验证 UTC、上海、纽约时区的显示与选择提交，并覆盖纳秒模型保留和夏令时；需要已安装 Chromium。完整结果见 [验收记录](../specs/changes/archive/2026/20261008-packages-time-contract/ACCEPTANCE.md)。
