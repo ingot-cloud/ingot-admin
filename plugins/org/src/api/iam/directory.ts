@@ -13,6 +13,7 @@ import {
   type CreatedResource,
   type DepartmentDraft,
   type DepartmentRecord,
+  type DepartmentTreeRow,
   type DepartmentUpdateInput,
   type EntitlementRecord,
   type ExportTask,
@@ -174,18 +175,49 @@ export function TenantAccountLookupAPI(
   );
 }
 
-export function TenantDepartmentPageAPI(
+export function TenantDepartmentTreeAPI(
+  options?: RequestOptions,
+): Promise<R<DepartmentTreeRow[]>> {
+  return request.get<DepartmentTreeRow[]>(
+    DEPT_PATH,
+    { purpose: SelectionPurpose.MANAGED_DEPARTMENT },
+    options,
+  );
+}
+
+const flattenDepartmentTreeRows = (nodes: DepartmentTreeRow[]): Array<ResourceDetail<DepartmentRecord>> => {
+  const items: Array<ResourceDetail<DepartmentRecord>> = [];
+  const walk = (list: DepartmentTreeRow[]): void => {
+    for (const node of list) {
+      items.push({
+        record: node.record,
+        fieldAccess: node.fieldAccess,
+        capabilities: node.capabilities,
+        version: node.version,
+      });
+      walk(node.children ?? []);
+    }
+  };
+  walk(nodes);
+  return items;
+};
+
+export async function TenantDepartmentPageAPI(
   page: Page,
   condition?: IamListQuery,
   options?: RequestOptions,
 ): Promise<R<Page<ResourceDetail<DepartmentRecord>>>> {
-  return request
-    .get<IamPageResponse<ResourceDetail<DepartmentRecord>>>(
-      DEPT_PATH,
-      toPurposeParams(page, condition, SelectionPurpose.MANAGED_DEPARTMENT),
-      options,
-    )
-    .then(asPage);
+  const response = await TenantDepartmentTreeAPI(options);
+  const records = flattenDepartmentTreeRows(response.data ?? []);
+  return {
+    ...response,
+    data: {
+      records,
+      total: records.length,
+      current: page.current ?? 1,
+      size: page.size ?? records.length,
+    },
+  };
 }
 
 export function TenantDepartmentCreateAPI(

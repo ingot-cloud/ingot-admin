@@ -12,6 +12,7 @@
   >
     <in-biz-tab-panel title="基本资料" name="base" :editable="canEditProfile">
       <in-form v-if="detail" :editing="editing">
+        <el-tag v-if="permissions.tenantOwner && detail.record.id === permissions.memberId">组织拥有者</el-tag>
         <in-detail-field
           v-if="isFieldVisible(detail.fieldAccess, 'displayName')"
           label="显示名"
@@ -70,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { Message, createLoadGuard, useDetailEditSession } from "@ingot/admin-core";
+import { Message, createLoadGuard, useDetailEditSession, usePermissions } from "@ingot/admin-core";
 import {
   BizIamChipPageSelect,
   createIamListLoader,
@@ -91,10 +92,11 @@ import {
 } from "@/api/iam/directory";
 import { tenantMemberQueryKeys } from "@/api/iam/directory.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import type { Row } from "../table";
+import type { Row } from "../memberTable";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
+const permissions = usePermissions();
 const emits = defineEmits<{ success: [] }>();
 const queryClient = useQueryClient();
 const session = useDetailEditSession();

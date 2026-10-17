@@ -19,7 +19,8 @@
 | platform/iam/shared-roles | /platform/shared-roles | platform.iam.shared.roles | api/iam/shared-roles |
 | platform/iam/personnel | /platform/personnel | platform.iam.personnel | api/iam/personnel |
 | platform/iam/authorization | /platform/authorization | platform.iam.authorization | api/iam/roles, assignments, delegations |
-| org/iam/members | /org/members | org.iam.members | api/iam/members, departments |
+| org/iam/members | /org/iam/members | org.iam.members | api/iam/members, departments |
+| org/iam/departments | /org/iam/departments | org.iam.departments | api/iam/departments |
 | org/iam/groups | /org/groups | org.iam.groups | api/iam/groups |
 | org/iam/settings | /org/settings | org.iam.settings | api/iam/settings |
 | org/iam/authorization | /org/authorization | org.iam.authorization | api/iam/roles, assignments, delegations |

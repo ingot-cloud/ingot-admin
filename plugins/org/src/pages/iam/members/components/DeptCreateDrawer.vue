@@ -1,5 +1,5 @@
 <template>
-  <in-drawer v-model="visible" :title="edit ? '编辑部门' : '新增部门'" :loading="loading" size="480px">
+  <in-drawer v-model="visible" title="新建部门" :loading="loading" size="480px">
     <in-form label-position="top">
       <el-form-item label="名称" required>
         <el-input v-model="draft.name" clearable placeholder="请输入部门名称" />
@@ -12,7 +12,7 @@
           clearable
           value-field="id"
           label-field="name"
-          placeholder="空表示根部门"
+          placeholder="请选择上级部门"
           :load-data="loadDepartments"
         />
       </el-form-item>
@@ -29,22 +29,15 @@
 
 <script setup lang="ts">
 import { Message } from "@ingot/admin-core";
-import { createIamListLoader, toIamSelectRecords, type DepartmentRecord, type ResourceDetail } from "@ingot/admin-common";
-import {
-  TenantDepartmentCreateAPI,
-  TenantDepartmentDetailAPI,
-  TenantDepartmentPageAPI,
-  TenantDepartmentUpdateAPI,
-} from "@/api/iam/directory";
+import { createIamListLoader, toIamSelectRecords } from "@ingot/admin-common";
+import { TenantDepartmentCreateAPI, TenantDepartmentPageAPI } from "@/api/iam/directory";
 
-defineOptions({ name: "DepartmentEditDrawer" });
+defineOptions({ name: "DeptCreateDrawer" });
 
 const emits = defineEmits<{ success: [] }>();
 const visible = ref(false);
 const loading = ref(false);
-const edit = ref(false);
 const parentId = ref<string>();
-const detail = ref<ResourceDetail<DepartmentRecord>>();
 const draft = reactive({
   name: "",
   parentId: "",
@@ -62,23 +55,13 @@ const privateSubmit = (): void => {
     return;
   }
   loading.value = true;
-  const task = edit.value && detail.value
-    ? TenantDepartmentUpdateAPI(detail.value.record.id, {
-        expectedVersion: detail.value.version,
-        department: {
-          parentId: draft.parentId || undefined,
-          name: draft.name.trim(),
-          sortOrder: draft.sortOrder,
-        },
-      })
-    : TenantDepartmentCreateAPI({
-        parentId: draft.parentId || parentId.value,
-        name: draft.name.trim(),
-        sortOrder: draft.sortOrder,
-      });
-  task
+  TenantDepartmentCreateAPI({
+    parentId: draft.parentId || parentId.value,
+    name: draft.name.trim(),
+    sortOrder: draft.sortOrder,
+  })
     .then(() => {
-      Message.success(edit.value ? "部门已更新" : "部门已创建");
+      Message.success("部门已创建");
       visible.value = false;
       emits("success");
     })
@@ -88,28 +71,12 @@ const privateSubmit = (): void => {
 };
 
 defineExpose({
-  show(options?: { id?: string; parentId?: string }) {
-    edit.value = Boolean(options?.id);
+  show(options?: { parentId?: string }) {
     parentId.value = options?.parentId;
     draft.name = "";
     draft.parentId = options?.parentId ?? "";
     draft.sortOrder = 0;
-    detail.value = undefined;
     visible.value = true;
-    if (!options?.id) {
-      return;
-    }
-    loading.value = true;
-    TenantDepartmentDetailAPI(options.id)
-      .then((response) => {
-        detail.value = response.data;
-        draft.name = response.data.record.name;
-        draft.parentId = response.data.record.parentId ?? "";
-        draft.sortOrder = response.data.record.sortOrder;
-      })
-      .finally(() => {
-        loading.value = false;
-      });
   },
 });
 </script>
