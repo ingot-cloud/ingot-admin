@@ -62,7 +62,7 @@ Admin 同源 BFF 建立浏览器绑定事务；不向 BFF 传 returnTo 或任何
 
 ### UI03 成员与部门
 
-页面布局由 [20261017-org-members-dept-tabs](../20261017-org-members-dept-tabs/README.md) 接管：组织管理下「成员与部门」目录再拆「成员」「部门」两个子页面。成员页左侧部门树、右侧成员表；部门页为树形表。姓名/头像打开只读详情，基本资料、部门关系、授权信息分区。拥有相应操作才出现编辑、调部门、暂停、恢复、移出、导出。导出先 POST `/v1/tenant/members/export` 取得任务 id，再轮询 GET `/v1/tenant/members/export/{id}/status`：`PENDING`/`RUNNING` 继续等待；`SUCCEEDED` 后再 GET 下载。`FAILED`/`EXPIRED` 或 404 按对象不可访问处理，不得把下载 503 当成成功空表。状态接口不返回成员快照，也不能用第一页列表冒充导出。
+页面布局由 [20261017-org-members-dept-tabs](../../archive/2026/20261017-org-members-dept-tabs/README.md) 接管：组织管理下「成员与部门」目录再拆「成员」「部门」两个子页面。成员页左侧部门树、右侧成员表；部门页为树形表。姓名/头像打开只读详情，基本资料、部门关系、授权信息分区。拥有相应操作才出现编辑、调部门、暂停、恢复、移出、导出。导出先 POST `/v1/tenant/members/export` 取得任务 id，再轮询 GET `/v1/tenant/members/export/{id}/status`：`PENDING`/`RUNNING` 继续等待；`SUCCEEDED` 后再 GET 下载。`FAILED`/`EXPIRED` 或 404 按对象不可访问处理，不得把下载 503 当成成功空表。状态接口不返回成员快照，也不能用第一页列表冒充导出。
 
 只读角色看到正常描述内容，不用 disabled 输入框冒充详情。编辑时隐藏或脱敏字段不进入表单。保存仅提交修改且可编辑字段；授权变更不能使旧表单提交受限字段。
 

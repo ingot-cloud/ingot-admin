@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [成员与部门拆为两个子页面](./changes/archive/2026/20261017-org-members-dept-tabs/README.md)（completed，2026-10-17 用户要求归档）；[当前能力](./current/org/members-departments/README.md)
+
 - [顶栏多应用导航交互与分类面板](./changes/archive/2026/20261013-packages-application-navigation/README.md)（completed，2026-10-13 用户验收通过并归档）；[当前能力](./current/packages/app-header/README.md)
 
 - [登录失败保护维度选择交互](./changes/archive/2026/20261012-security-login-failure-dimension-selection/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/access-protection/README.md)

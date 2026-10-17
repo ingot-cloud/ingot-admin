@@ -3,7 +3,7 @@
 ## 来源
 
 - 后端仓库：ingot
-- 后端 change：`specs/changes/active/20261017-iam-department-member-count/API.md`
+- 后端 change：`specs/changes/archive/2026/20261017-iam-department-member-count/API.md`
 
 本变更不新增路径。`GET /v1/tenant/departments` 改为树响应。成员列表补齐左树所需的 `departmentId` / `status` 公开筛选。
 

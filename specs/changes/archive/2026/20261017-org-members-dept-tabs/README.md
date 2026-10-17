@@ -1,8 +1,17 @@
 # 成员与部门拆为两个子页面
 
-> 状态：implementing
-> 2026-10-17 用户确认只改「成员与部门」、部门人数走后端、部门主管延后，并授权实施。
-> 2026-10-17 用户要求按飞书把 Tab 拆成组织管理下「成员」「部门」两个子页面，并补齐菜单种子与已有库迁移。
+> 状态：completed（已验收，已更新 current，已归档）
+
+## 完成与归档（2026-10-17）
+
+- 验收依据：用户明确要求“归档当前修改的这个内容对应的spec，并且提交”。
+- 完成与归档日期：2026-10-17。此前 implementing、待浏览器核对描述为历史阶段记录，以本次确认结项。
+- 关联实现提交：`60d262a`；关联后端 `be1cfad0`。验收、基线及归档由独立 docs 提交记录。
+- 当前能力：[org/members-departments](../../../../current/org/members-departments/README.md)，有效规则见 [spec.md](../../../../current/org/members-departments/spec.md)。
+- 另一仓库对应归档：`ingot/specs/changes/archive/2026/20261017-iam-department-member-count/`。
+- 最终实现与设计差异：同页 Tab 方案改为独立路由；「成员与部门」目录 `view_path=layout.simple`。成员导出、字段可见性、capabilities 与部门 CRUD 仍由主 IAM 前端变更维护。
+
+本归档只关闭成员/部门子页面增量。既有 IAM 总体变更保持 implementing，其余任务与验收状态不受本次确认影响。本次未重新执行真实管理台浏览器验收。
 
 ## 协作模式
 
@@ -36,7 +45,7 @@
 ## 输入来源
 
 - 接口文档：本目录 [API.md](./API.md)（复制后端 change）
-- 后端来源：`ingot/specs/changes/active/20261017-iam-department-member-count`
+- 后端来源：`ingot/specs/changes/archive/2026/20261017-iam-department-member-count`
 - 交互参考：`plugins/org/src/pages/contacts/user`、`contacts/dept`、`plugins/platform/src/pages/iam/personnel`
 
 ## 工件
@@ -53,13 +62,13 @@
 
 ## 相关链接
 
-- 主 IAM 前端变更 UI03：[20260913-base-iam-admin](../20260913-base-iam-admin/README.md)
-- 后端：[20261017-iam-department-member-count](../../../../../ingot/specs/changes/active/20261017-iam-department-member-count/README.md)
+- 主 IAM 前端变更 UI03：[20260913-base-iam-admin](../../../active/20260913-base-iam-admin/README.md)
+- 后端：`ingot/specs/changes/archive/2026/20261017-iam-department-member-count/`
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：未创建
-- 更新的 current capability：验收后再写
-- 与原设计的差异：
+- 完成日期：2026-10-17
+- 关联提交或 PR：实现 `60d262a`；无 PR
+- 更新的 current capability：`specs/current/org/members-departments`
+- 与原设计的差异：同页 Tab 改为独立路由；目录使用 `layout.simple`
 - 取消原因：
