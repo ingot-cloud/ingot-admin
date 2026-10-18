@@ -129,6 +129,7 @@ import {
   resolveStringPickerFilter,
   StatusTag,
   toStringPickerValue,
+  usePermissions,
   withAllPickerOption,
   type InTableAction,
 } from "@ingot/admin-core";
@@ -148,7 +149,7 @@ import MemberDetailDrawer from "./MemberDetailDrawer.vue";
 import MemberExportDrawer from "./MemberExportDrawer.vue";
 import MemberBatchDepartmentDrawer from "./MemberBatchDepartmentDrawer.vue";
 import {
-  collectActiveMembers,
+  collectOperableMembers,
   createRowActions,
   createToolbarActions,
   formatMemberDepartments,
@@ -165,6 +166,10 @@ defineOptions({ name: "MemberTab" });
 
 const props = withDefaults(defineProps<{ active?: boolean }>(), { active: true });
 const memberOps = useMemberOps(toRef(props, "active"));
+const permissions = usePermissions();
+const ownerMemberId = computed(() =>
+  permissions.tenantOwner && permissions.memberId ? permissions.memberId : undefined,
+);
 const memberStatusEnum = useMemberStatusEnum();
 const statusToneOf = (status: string): "info" | "warning" | "danger" =>
   memberStatusTone(status) ?? "info";
@@ -198,7 +203,7 @@ const handleImportExport = (): void => {
   exportRef.value?.show();
 };
 const handleChangeDept = (): void => {
-  const targets = collectActiveMembers(selectedRows.value);
+  const targets = collectOperableMembers(selectedRows.value, ownerMemberId.value);
   if (targets.length === 0) {
     Message.warning("请先选择在职成员");
     return;
@@ -206,7 +211,7 @@ const handleChangeDept = (): void => {
   batchDeptRef.value?.show(targets);
 };
 const handleResign = (): void => {
-  const targets = collectActiveMembers(selectedRows.value);
+  const targets = collectOperableMembers(selectedRows.value, ownerMemberId.value);
   if (targets.length === 0) {
     Message.warning("没有可离职的成员");
     return;
@@ -279,15 +284,20 @@ const toolbarActions = computed(() =>
     onChangeDept: handleChangeDept,
     onResign: handleResign,
     selectedCount: selectedRows.value.length,
+    operableCount: collectOperableMembers(selectedRows.value, ownerMemberId.value).length,
   }),
 );
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
-  createRowActions(item, {
-    onDetail: handleDetail,
-    onSuspend: handleSuspend,
-    onRestore: handleRestore,
-    onRemove: handleRemove,
-  });
+  createRowActions(
+    item,
+    {
+      onDetail: handleDetail,
+      onSuspend: handleSuspend,
+      onRestore: handleRestore,
+      onRemove: handleRemove,
+    },
+    ownerMemberId.value,
+  );
 
 const privateOnSelectionChange = (rows: Row[]): void => {
   selectedRows.value = rows;

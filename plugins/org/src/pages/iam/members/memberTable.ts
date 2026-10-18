@@ -13,6 +13,7 @@ export const MEMBER_SPLIT_KEY = "org-iam-members";
 export const MEMBER_AVATAR_SIZE = 30;
 export const MEMBER_BATCH_GROUP = "batch";
 export const SELECT_MEMBERS_FIRST = "请先选择成员";
+export const OWNER_BATCH_EXCLUDED = "组织拥有者不能被暂停、移出或变更部门";
 export const MEMBER_NAME_COLUMN_LABEL = "姓名";
 export type Row = ResourceDetail<MemberRecord>;
 
@@ -46,14 +47,27 @@ export function collectActiveMembers(rows: Row[]): Row[] {
   return rows.filter((item) => item.record.id && item.record.status !== MemberStatus.REMOVED);
 }
 
+export function isTenantOwnerMember(memberId: string | undefined, ownerMemberId?: string): boolean {
+  return Boolean(ownerMemberId) && memberId === ownerMemberId;
+}
+
+export function collectOperableMembers(rows: Row[], ownerMemberId?: string): Row[] {
+  return collectActiveMembers(rows).filter(
+    (item) => !isTenantOwnerMember(item.record.id, ownerMemberId),
+  );
+}
+
 export function createToolbarActions(handlers: {
   onCreate: () => void;
   onImportExport: () => void;
   onChangeDept: () => void;
   onResign: () => void;
   selectedCount: number;
+  operableCount: number;
 }): Array<InTableAction<Row>> {
   const hasSelection = handlers.selectedCount > 0;
+  const hasOperable = handlers.operableCount > 0;
+  const batchReason = hasSelection ? OWNER_BATCH_EXCLUDED : SELECT_MEMBERS_FIRST;
   return [
     {
       key: "leave",
@@ -63,10 +77,10 @@ export function createToolbarActions(handlers: {
       overflowGroup: MEMBER_BATCH_GROUP,
       priority: 10,
       permission: IamAction.TENANT_MEMBER_REMOVE,
-      disabled: !hasSelection,
-      disabledReason: hasSelection ? undefined : SELECT_MEMBERS_FIRST,
-      confirm: hasSelection
-        ? `移出不删除全局账号。是否将已选的 ${handlers.selectedCount} 名成员操作离职？`
+      disabled: !hasOperable,
+      disabledReason: hasOperable ? undefined : batchReason,
+      confirm: hasOperable
+        ? `移出不删除全局账号。是否将已选的 ${handlers.operableCount} 名成员操作离职？`
         : undefined,
       onSelect: () => handlers.onResign(),
     },
@@ -78,8 +92,8 @@ export function createToolbarActions(handlers: {
       overflowGroup: MEMBER_BATCH_GROUP,
       priority: 20,
       permission: IamAction.TENANT_MEMBER_DEPARTMENTS,
-      disabled: !hasSelection,
-      disabledReason: hasSelection ? undefined : SELECT_MEMBERS_FIRST,
+      disabled: !hasOperable,
+      disabledReason: hasOperable ? undefined : batchReason,
       onSelect: () => handlers.onChangeDept(),
     },
     {
@@ -113,10 +127,12 @@ export function createRowActions(
     onRestore: (row: Row) => void;
     onRemove: (row: Row) => void;
   },
+  ownerMemberId?: string,
 ): Array<InTableAction<Row>> {
   const detail = objectActionAllowed(row.capabilities, IamAction.TENANT_MEMBER_READ);
   const status = objectActionAllowed(row.capabilities, IamAction.TENANT_MEMBER_STATUS);
   const remove = objectActionAllowed(row.capabilities, IamAction.TENANT_MEMBER_REMOVE);
+  const protectedOwner = isTenantOwnerMember(row.record.id, ownerMemberId);
   const actions: Array<InTableAction<Row>> = [
     {
       key: "detail",
@@ -128,7 +144,7 @@ export function createRowActions(
       onSelect: handlers.onDetail,
     },
   ];
-  if (row.record.status === MemberStatus.ACTIVE) {
+  if (!protectedOwner && row.record.status === MemberStatus.ACTIVE) {
     actions.push({
       key: "suspend",
       label: "暂停",
@@ -139,7 +155,7 @@ export function createRowActions(
       onSelect: handlers.onSuspend,
     });
   }
-  if (row.record.status === MemberStatus.SUSPENDED) {
+  if (!protectedOwner && row.record.status === MemberStatus.SUSPENDED) {
     actions.push({
       key: "restore",
       label: "恢复",
@@ -150,7 +166,7 @@ export function createRowActions(
       onSelect: handlers.onRestore,
     });
   }
-  if (row.record.status !== MemberStatus.REMOVED) {
+  if (!protectedOwner && row.record.status !== MemberStatus.REMOVED) {
     actions.push({
       key: "remove",
       label: "移出",

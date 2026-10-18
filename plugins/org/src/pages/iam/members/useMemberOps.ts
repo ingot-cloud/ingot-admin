@@ -90,6 +90,9 @@ export const useMemberOps = (active: Ref<boolean>) => {
   };
 
   const handleTreeNodeClick = (node: DepartmentTreeNode): void => {
+    if (currentDept.value?.id === node.id && paging.condition.departmentId === node.id) {
+      return;
+    }
     currentDept.value = node;
     paging.condition.departmentId = node.id;
     refreshData();

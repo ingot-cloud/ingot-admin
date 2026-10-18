@@ -88,6 +88,20 @@ export function TenantMemberDetailAPI(
   return request.get<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, undefined, options);
 }
 
+export function TenantMemberGroupsAPI(
+  id: string,
+  page: Page,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<GroupRecord>>>> {
+  return request
+    .get<IamPageResponse<ResourceDetail<GroupRecord>>>(
+      `${MEMBER_PATH}/${id}/groups`,
+      toIamListParams(page),
+      options,
+    )
+    .then(asPage);
+}
+
 export function TenantMemberCreateAPI(
   params: MemberCreateInput,
   options?: RequestOptions,

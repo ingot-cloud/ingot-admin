@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import { IamAction, MemberStatus } from "@ingot/admin-common";
 import {
   collectActiveMembers,
+  collectOperableMembers,
   createRowActions,
   createToolbarActions,
+  OWNER_BATCH_EXCLUDED,
   formatMemberDepartments,
   formatSelectionColumnLabel,
   MEMBER_AVATAR_SIZE,
@@ -71,6 +73,7 @@ describe("org iam members memberTable", () => {
       onChangeDept: () => undefined,
       onResign: () => undefined,
       selectedCount: 0,
+      operableCount: 0,
     });
     expect(empty.map((item) => `${item.kind}:${item.key}`)).toEqual([
       "danger:leave",
@@ -93,9 +96,23 @@ describe("org iam members memberTable", () => {
       onChangeDept: () => undefined,
       onResign: () => undefined,
       selectedCount: 2,
+      operableCount: 2,
     });
     expect(selected.find((item) => item.key === "leave")?.disabled).toBe(false);
     expect(selected.find((item) => item.key === "leave")?.confirm).toContain("2 名成员");
+
+    const ownerOnly = createToolbarActions({
+      onCreate: () => undefined,
+      onImportExport: () => undefined,
+      onChangeDept: () => undefined,
+      onResign: () => undefined,
+      selectedCount: 1,
+      operableCount: 0,
+    });
+    expect(ownerOnly.find((item) => item.key === "leave")?.disabled).toBe(true);
+    expect(ownerOnly.find((item) => item.key === "dept")?.disabled).toBe(true);
+    expect(ownerOnly.find((item) => item.key === "leave")?.disabledReason).toBe(OWNER_BATCH_EXCLUDED);
+    expect(ownerOnly.find((item) => item.key === "import")?.disabled).toBeUndefined();
   });
 
   it("批量离职只收集未移出成员", () => {
@@ -108,6 +125,18 @@ describe("org iam members memberTable", () => {
         },
       ]).map((item) => item.record.id),
     ).toEqual(["1"]);
+    expect(
+      collectOperableMembers(
+        [
+          row,
+          {
+            ...row,
+            record: { ...row.record, id: "owner" },
+          },
+        ],
+        "owner",
+      ).map((item) => item.record.id),
+    ).toEqual(["1"]);
   });
 
   it("在职成员可暂停和移出", () => {
@@ -118,5 +147,16 @@ describe("org iam members memberTable", () => {
       onRemove: () => undefined,
     });
     expect(actions.map((item) => item.key)).toEqual(["detail", "suspend", "remove"]);
+    const ownerActions = createRowActions(
+      row,
+      {
+        onDetail: () => undefined,
+        onSuspend: () => undefined,
+        onRestore: () => undefined,
+        onRemove: () => undefined,
+      },
+      "1",
+    );
+    expect(ownerActions.map((item) => item.key)).toEqual(["detail"]);
   });
 });

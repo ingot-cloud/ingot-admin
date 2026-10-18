@@ -1,0 +1,54 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
+
+const dir = dirname(fileURLToPath(import.meta.url));
+const detailSource = readFileSync(resolve(dir, "MemberDetailDrawer.vue"), "utf8");
+const fieldSource = readFileSync(resolve(dir, "MemberDepartmentField.vue"), "utf8");
+const apiSource = readFileSync(resolve(dir, "../../../../api/iam/directory.ts"), "utf8");
+
+describe("tenant member detail", () => {
+  it("抬头展示身份，基本信息包含部门，其他页展示时间和用户组", () => {
+    expect(detailSource).toContain("<in-detail-identity");
+    expect(detailSource).toContain('title="基本信息"');
+    expect(detailSource).toContain('title="其他"');
+    expect(detailSource).toContain('label="部门"');
+    expect(detailSource).toContain('label="用户组"');
+    expect(detailSource).toContain('label="入职时间"');
+    expect(detailSource).toContain('label="账号最后登录时间"');
+    expect(detailSource).toContain('label="成员更新时间"');
+    expect(detailSource).toContain("更多操作");
+    expect(detailSource).toContain("createRowActions");
+    expect(detailSource).toContain("collectIamPageRecords");
+    expect(detailSource).toContain("TenantMemberGroupsAPI");
+    expect(detailSource).toContain("privateReload");
+    expect(detailSource).not.toContain("detail.value = latest");
+    expect(detailSource).not.toContain("tenantMemberQueryKeys");
+    expect(detailSource).not.toContain("基本资料");
+    expect(detailSource).not.toContain("任职部门");
+    expect(detailSource).not.toContain('label="状态"');
+    expect(detailSource).toContain("inline-flex items-center gap-8px");
+    expect(apiSource).toContain("TenantMemberGroupsAPI");
+    expect(apiSource).toContain("${MEMBER_PATH}/${id}/groups");
+  });
+
+  it("编辑部门使用录入框打开双栏树选择，确定后才写回草稿", () => {
+    expect(detailSource).toContain("<member-department-field");
+    expect(fieldSource).toContain("请选择部门");
+    expect(fieldSource).toContain("dept-field__tag");
+    expect(fieldSource).toContain('variant="glyph"');
+    expect(fieldSource).toContain("请输入部门名");
+    expect(fieldSource).toContain("<department-mark");
+    expect(fieldSource).toContain("in-split-picker");
+    expect(fieldSource).toContain("show-checkbox");
+    expect(fieldSource).toContain("check-strictly");
+    expect(fieldSource).toContain(':indent="26"');
+    expect(fieldSource).toContain("dept-pick-name");
+    expect(fieldSource).toContain("已选：");
+    expect(fieldSource).toContain("privateConfirm");
+    expect(fieldSource).toContain("privateCancel");
+    expect(fieldSource).toContain("TenantDepartmentTreeAPI");
+    expect(fieldSource).not.toContain("pageSize");
+  });
+});
