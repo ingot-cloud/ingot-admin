@@ -2,22 +2,23 @@ import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import {
   AssignmentSource,
+  AssignmentEffectiveStatus,
   ConfigurationStatus,
   GrantStatus,
   IamAction,
   objectActionAllowed,
   RoleKind,
   SubjectType,
-  type AssignmentRecord,
-  type DelegationRecord,
+  type TenantAssignmentRecord,
+  type TenantDelegationRecord,
   type ResourceDetail,
   type RoleSummary,
 } from "@ingot/admin-common";
 
 export const ROLE_TABLE_ID = "org-iam-roles";
 export type RoleRow = ResourceDetail<RoleSummary>;
-export type AssignmentRow = ResourceDetail<AssignmentRecord>;
-export type DelegationRow = ResourceDetail<DelegationRecord>;
+export type AssignmentRow = ResourceDetail<TenantAssignmentRecord>;
+export type DelegationRow = ResourceDetail<TenantDelegationRecord>;
 
 export const emptyRoleRow: RoleRow = {
   record: {
@@ -37,11 +38,14 @@ export const emptyAssignmentRow: AssignmentRow = {
     id: "",
     assignment: {
       subject: { type: SubjectType.MEMBER, id: "" },
-      roleRevisionRef: { kind: RoleKind.TENANT_CUSTOM, id: "" },
+      roleId: "",
       scopeBindings: {},
     },
     status: GrantStatus.ACTIVE,
     source: AssignmentSource.MANUAL,
+    roleKind: RoleKind.TENANT_CUSTOM,
+    effectiveStatus: AssignmentEffectiveStatus.ACTIVE,
+    scopeIssues: [],
   },
   fieldAccess: {},
   capabilities: {},
@@ -53,12 +57,13 @@ export const emptyDelegationRow: DelegationRow = {
     id: "",
     delegation: {
       administratorMemberId: "",
-      allowedRoleRevisionRefs: [],
+      allowedRoleIds: [],
       recipientSelection: { members: [], departments: [] },
-      actionScopeCeilings: [],
+      resourceScopeCeilings: [],
       maxAssignmentDuration: "P30D",
     },
     status: GrantStatus.ACTIVE,
+    scopeIssues: [],
   },
   fieldAccess: {},
   capabilities: {},
@@ -74,7 +79,7 @@ export const roleHeaders: Array<TableHeaderRecord> = [
 
 export const assignmentHeaders: Array<TableHeaderRecord> = [
   { label: "主体", prop: "subject", required: true },
-  { label: "角色版本", prop: "roleRevision" },
+  { label: "角色", prop: "role" },
   { label: "来源", prop: "source" },
   { label: "状态", prop: "status" },
   { label: "失效时间", prop: "validUntil", transform: formatDateTime },
@@ -90,7 +95,6 @@ export const delegationHeaders: Array<TableHeaderRecord> = [
 
 export function createRoleToolbarActions(
   onCreate: () => void,
-  onCustomize: () => void,
   onDiagnose: () => void,
 ): Array<InTableAction<RoleRow>> {
   return [
@@ -102,15 +106,6 @@ export function createRoleToolbarActions(
       priority: 50,
       permission: IamAction.TENANT_ROLE_CREATE,
       onSelect: () => onCreate(),
-    },
-    {
-      key: "customize",
-      label: "基于共享定制",
-      kind: "quick",
-      overflow: "never",
-      priority: 40,
-      permission: IamAction.TENANT_ROLE_CREATE,
-      onSelect: () => onCustomize(),
     },
     {
       key: "diagnose",

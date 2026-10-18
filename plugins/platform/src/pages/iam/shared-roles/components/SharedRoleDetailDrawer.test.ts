@@ -111,6 +111,55 @@ describe("角色详情固定版本编辑", () => {
     );
   });
 
+  it("当前权限详情直接用已加载授权进入编辑，不读取版本", async () => {
+    const show = vi.fn();
+    const listRevisionsApi = vi.fn();
+    const wrapper = mount(SharedRoleDetailDrawer, {
+      props: {
+        versioned: false,
+        getApi: async (id: string) =>
+          response({
+            ...role(id),
+            record: { ...role(id).record, kind: RoleKind.SHARED },
+            capabilities: { [IamAction.PLATFORM_SHARED_ROLE_UPDATE]: { allowed: true } },
+          }),
+        listGrantsApi: async () => response({ items: [] }),
+        listRevisionsApi,
+        publishAction: IamAction.PLATFORM_SHARED_ROLE_UPDATE,
+      },
+      global: {
+        stubs: {
+          InDrawer: { template: "<div><slot/><slot name='footer'/></div>" },
+          InBizTabs: { template: "<div><slot/></div>" },
+          InBizTabPanel: { template: "<div><slot/></div>" },
+          InTable: true,
+          InFormSkeleton: true,
+          InCopyTag: true,
+          BizIamStatusTag: true,
+          InButton: {
+            props: ["disabled"],
+            emits: ["in-click"],
+            template: "<button :disabled='disabled' @click=\"$emit('in-click')\"><slot/></button>",
+          },
+          GrantPreview: true,
+          GrantEditWizard: { template: "<div/>", methods: { show } },
+          BizIamRoleVersionMetadataDialog: true,
+        },
+      },
+    });
+    await open(wrapper);
+    expect(wrapper.text()).not.toContain("最新发布版本");
+    expect(listRevisionsApi).not.toHaveBeenCalled();
+    await wrapper
+      .findAll("button")
+      .find((button) => button.text() === "编辑")!
+      .trigger("click");
+    expect(show).toHaveBeenCalledWith(
+      expect.objectContaining({ roleId: "40", version: "7", grants: [] }),
+    );
+    expect(show.mock.calls[0]?.[0].sourceRevision).toBeUndefined();
+  });
+
   it("切换角色后旧版本详情返回不打开旧角色编辑向导", async () => {
     const f = setup();
     await open(f.wrapper);

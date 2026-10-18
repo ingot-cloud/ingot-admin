@@ -1,14 +1,22 @@
 <template>
   <div class="flex flex-col gap-24px">
     <div class="text-12px text-[var(--el-text-color-secondary)]">
-      {{ domain === AuthorizationDomain.PLATFORM
-        ? "此处定义角色允许使用的范围；指定对象在分配角色时选择。"
-        : "此处确定共享角色的范围类型；管理部门和指定对象由租户在分配角色时选择。" }}
+      {{
+        domain === AuthorizationDomain.PLATFORM
+          ? "此处定义角色允许使用的范围；指定对象在分配角色时选择。"
+          : "此处确定共享角色的范围类型；管理部门和指定对象由租户在分配角色时选择。"
+      }}
     </div>
     <div v-for="app in groups" :key="app.applicationId" class="flex flex-col gap-16px">
       <div class="text-[var(--in-text-color)]">{{ app.applicationName }}</div>
-      <div v-for="resource in app.resources" :key="resource.resourceId" class="pl-8px flex flex-col gap-12px">
-        <div class="text-12px text-[var(--el-text-color-secondary)]">{{ resource.resourceName }}</div>
+      <div
+        v-for="resource in app.resources"
+        :key="resource.resourceId"
+        class="pl-8px flex flex-col gap-12px"
+      >
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          {{ resource.resourceName }}
+        </div>
         <div
           v-for="grant in resource.grants"
           :key="grant.actionId"
@@ -28,8 +36,15 @@
               :value="option.value"
             />
           </el-select>
-          <span v-if="needsParameter(grant.scopes[0]?.kind ?? ScopeKind.ALL)" class="text-12px text-[var(--el-text-color-secondary)]">
-            {{ grant.scopes[0]?.kind === ScopeKind.MANAGED_DEPARTMENTS ? "分配时选择管理部门" : "分配时选择指定对象" }}
+          <span
+            v-if="needsParameter(grant.scopes[0]?.kind ?? ScopeKind.ALL)"
+            class="text-12px text-[var(--el-text-color-secondary)]"
+          >
+            {{
+              grant.scopes[0]?.kind === ScopeKind.MANAGED_DEPARTMENTS
+                ? "分配时选择管理部门"
+                : "分配时选择指定对象"
+            }}
           </span>
           <el-checkbox
             v-if="allowsDescendants(grant.scopes[0]?.kind ?? ScopeKind.ALL)"
@@ -46,22 +61,37 @@
 
 <script setup lang="ts">
 import { AuthorizationDomain, ScopeKind, useScopeKindEnum } from "@ingot/admin-common";
-import { allowsDescendants, groupGrants, needsParameter, parameterKeyFor, type SelectedGrant } from "../wizard";
+import {
+  allowsDescendants,
+  currentParameterKey,
+  groupGrants,
+  needsParameter,
+  parameterKeyFor,
+  type SelectedGrant,
+} from "../wizard";
 
 defineOptions({ name: "ScopeStep" });
 
 type CheckboxValue = boolean | string | number;
-const props = defineProps<{ domain: AuthorizationDomain }>();
+const props = withDefaults(defineProps<{ domain: AuthorizationDomain; current?: boolean }>(), {
+  current: false,
+});
+const parameterKeyOf = computed(() => (props.current ? currentParameterKey : parameterKeyFor));
 
 const grants = defineModel<SelectedGrant[]>({ default: () => [] });
 const kindEnum = useScopeKindEnum();
 const groups = computed(() => groupGrants(grants.value));
 
 const kindOptions = (grant: SelectedGrant) =>
-  kindEnum.getOptions().filter((item) =>
-    grant.scopeCapabilities.includes(item.value) &&
-    (props.domain !== AuthorizationDomain.PLATFORM ||
-      (item.value !== ScopeKind.MEMBER_DEPARTMENTS && item.value !== ScopeKind.MANAGED_DEPARTMENTS)));
+  kindEnum
+    .getOptions()
+    .filter(
+      (item) =>
+        grant.scopeCapabilities.includes(item.value) &&
+        (props.domain !== AuthorizationDomain.PLATFORM ||
+          (item.value !== ScopeKind.MEMBER_DEPARTMENTS &&
+            item.value !== ScopeKind.MANAGED_DEPARTMENTS)),
+    );
 
 const replaceScope = (grant: SelectedGrant, scope: SelectedGrant["scopes"][number]): void => {
   grants.value = grants.value.map((item) =>
@@ -74,7 +104,7 @@ const privateOnKind = (grant: SelectedGrant, kind: ScopeKind): void => {
   const parameterKey = needsParameter(kind)
     ? previous?.kind === kind && previous.parameterKey?.trim()
       ? previous.parameterKey
-      : parameterKeyFor(grant.resourceId, kind)
+      : parameterKeyOf.value(grant.resourceId, kind)
     : undefined;
   replaceScope(grant, parameterKey ? { kind, parameterKey } : { kind });
 };

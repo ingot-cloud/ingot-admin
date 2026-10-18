@@ -132,11 +132,24 @@ describe("iam helpers", () => {
     const records: DepartmentRecord[] = [
       { id: "2", parentId: "1", name: "研发", sortOrder: 2, navigationOnly: false },
       { id: "1", name: "总部", sortOrder: 1, navigationOnly: false },
-      { id: "9", parentId: "missing", name: "孤立", sortOrder: 3, navigationOnly: true },
+      { id: "9", parentId: "missing", name: "孤立", sortOrder: 3, navigationOnly: true, memberCount: 4 },
     ];
     expect(buildDepartmentTree(records)).toEqual([
-      { id: "1", name: "总部", children: [{ id: "2", name: "研发" }] },
-      { id: "9", name: "孤立" },
+      {
+        id: "1",
+        name: "总部",
+        sortOrder: 1,
+        navigationOnly: false,
+        children: [{ id: "2", parentId: "1", name: "研发", sortOrder: 2, navigationOnly: false }],
+      },
+      {
+        id: "9",
+        parentId: "missing",
+        name: "孤立",
+        sortOrder: 3,
+        navigationOnly: true,
+        memberCount: 4,
+      },
     ]);
   });
 

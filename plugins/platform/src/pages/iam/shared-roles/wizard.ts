@@ -4,15 +4,23 @@ import {
   ScopeBindingKind,
   ScopeKind,
   formatScopeKinds,
+  type CurrentRoleCreateInput,
+  type CurrentRoleDefinition,
+  type CurrentRoleGrantList,
   type RoleCreateInput,
   type FieldAccess,
   type FieldCapability,
   type ResourceFieldDefinition,
   type RoleDefinitionDraft,
+  type RoleGrantRecord,
   type RoleParameterDefinition,
   type RolePublishInput,
   type ScopeExpression,
 } from "@ingot/admin-common";
+
+const CURRENT_PARAMETER_PREFIX = "resource-";
+const CURRENT_DEPARTMENT_PARAMETER = "departments";
+const CURRENT_OBJECT_PARAMETER = "objects";
 
 export const WIZARD_STEPS = [
   { title: "角色信息", description: "设置角色名称等信息" },
@@ -72,12 +80,25 @@ export function parameterKeyFor(resourceId: string, kind: ScopeKind): string {
   return `${kind === ScopeKind.MANAGED_DEPARTMENTS ? "departments" : "objects"}_${resourceId}`;
 }
 
-export function defaultScope(capabilities: ScopeKind[], resourceId = ""): ScopeExpression {
+/** 当前权限的稳定资源参数键，与服务端 resource-{resourceId}-{kind} 一致。 */
+export function currentParameterKey(resourceId: string, kind: ScopeKind): string {
+  const suffix =
+    kind === ScopeKind.MANAGED_DEPARTMENTS
+      ? CURRENT_DEPARTMENT_PARAMETER
+      : CURRENT_OBJECT_PARAMETER;
+  return `${CURRENT_PARAMETER_PREFIX}${resourceId}-${suffix}`;
+}
+
+export function defaultScope(
+  capabilities: ScopeKind[],
+  resourceId = "",
+  keyFor: (resourceId: string, kind: ScopeKind) => string = parameterKeyFor,
+): ScopeExpression {
   const kind = capabilities.includes(ScopeKind.ALL)
     ? ScopeKind.ALL
     : (capabilities[0] ?? ScopeKind.ALL);
   return needsParameter(kind) && resourceId
-    ? { kind, parameterKey: parameterKeyFor(resourceId, kind) }
+    ? { kind, parameterKey: keyFor(resourceId, kind) }
     : { kind };
 }
 
@@ -221,6 +242,60 @@ export function toCreateInput(
     kind,
     definition: toDefinition(grants),
   };
+}
+
+/** 把向导勾选转换成当前权限定义，保留已有参数键并带上资源标识。 */
+export function toCurrentDefinition(grants: SelectedGrant[]): CurrentRoleDefinition {
+  const parameters = new Map<string, CurrentRoleDefinition["parameterDefinitions"][number]>();
+  for (const grant of grants) {
+    for (const scope of grant.scopes) {
+      const kind = bindingKindOf(scope.kind);
+      const key = scope.parameterKey?.trim();
+      if (!kind || !key || !grant.resourceId) continue;
+      parameters.set(key, { key, kind, resourceId: grant.resourceId });
+    }
+  }
+  return {
+    grants: grants.map((item) => ({
+      actionId: item.actionId,
+      scopes: item.scopes.map((scope) => ({ ...scope })),
+    })),
+    parameterDefinitions: [...parameters.values()],
+  };
+}
+
+export function toCurrentCreateInput(
+  profile: WizardProfile,
+  grants: SelectedGrant[],
+): CurrentRoleCreateInput {
+  return {
+    code: profile.code.trim(),
+    name: profile.name.trim(),
+    description: profile.description.trim() || undefined,
+    groupName: profile.groupName.trim() || undefined,
+    definition: toCurrentDefinition(grants),
+  };
+}
+
+/** 把当前权限目录回显还原成详情预览使用的授权记录，范围取已保存定义。 */
+export function roleGrantRecordsOf(list: CurrentRoleGrantList): RoleGrantRecord[] {
+  const scopesOf = new Map(list.definition.grants.map((grant) => [grant.actionId, grant.scopes]));
+  return list.items.map((item) => {
+    const saved = scopesOf.get(item.actionId) ?? [];
+    return {
+      actionId: item.actionId,
+      actionCode: item.actionCode,
+      actionName: item.actionName,
+      applicationId: item.applicationId,
+      applicationName: item.applicationName,
+      resourceId: item.resourceId,
+      resourceName: item.resourceName,
+      scopes: saved.length
+        ? saved.map((scope) => ({ ...scope }))
+        : [defaultScope(item.scopeCapabilities, item.resourceId, currentParameterKey)],
+      scopeCapabilities: item.scopeCapabilities,
+    };
+  });
 }
 
 export function toPublishInput(expectedVersion: string, grants: SelectedGrant[]): RolePublishInput {

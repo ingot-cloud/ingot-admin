@@ -66,11 +66,14 @@
               </svg>
             </button>
           </div>
-          <div v-if="latestRevision" class="text-12px">
+          <div v-if="versioned && latestRevision" class="text-12px">
             最新发布版本：{{ roleVersionLabel(latestRevision) }}
           </div>
-          <div v-else-if="grantLoading" class="text-12px">最新发布版本：加载中…</div>
-          <div v-if="applicationApi && canApply" class="flex flex-wrap gap-8px text-12px">
+          <div v-else-if="versioned && grantLoading" class="text-12px">最新发布版本：加载中…</div>
+          <div
+            v-if="versioned && applicationApi && canApply"
+            class="flex flex-wrap gap-8px text-12px"
+          >
             <span>分配版本分布：</span>
             <span v-if="distributionLoading">加载中…</span>
             <template v-else-if="distributionError">
@@ -102,7 +105,7 @@
                 <in-button
                   v-if="canPublish"
                   :loading="editingGrants"
-                  :disabled="!latestRevision"
+                  :disabled="versioned && !latestRevision"
                   @in-click="privateEditGrants"
                 >
                   <template #icon>
@@ -127,7 +130,13 @@
               </div>
             </div>
           </in-biz-tab-panel>
-          <in-biz-tab-panel title="版本历史" name="revisions" :editable="false" fill>
+          <in-biz-tab-panel
+            v-if="versioned"
+            title="版本历史"
+            name="revisions"
+            :editable="false"
+            fill
+          >
             <div v-if="revisionError" class="p-12px">
               <el-alert title="版本历史加载失败" type="error" :closable="false" />
               <in-button @in-click="privateLoadRevisionPage()">重试</in-button>
@@ -190,7 +199,7 @@
             </div>
           </in-biz-tab-panel>
           <in-biz-tab-panel
-            v-if="applicationApi && canApply"
+            v-if="versioned && applicationApi && canApply"
             title="应用任务"
             name="applications"
             :editable="false"
@@ -296,9 +305,10 @@
   </in-drawer>
   <grant-edit-wizard
     ref="grantWizardRef"
-    :publish-api="resolvedPublishApi"
+    :immediate="!versioned"
+    :publish-api="versioned ? resolvedPublishApi : undefined"
     :domain="grantDomain"
-    :application-api="applicationApi"
+    :application-api="versioned ? applicationApi : undefined"
     @prepared="privatePrepared"
     @success="privateOnGrantSaved"
   />
@@ -386,11 +396,13 @@ const props = withDefaults(
     applicationApi?: RoleApplicationApi;
     statusAction?: string;
     publishAction?: string;
+    versioned?: boolean;
   }>(),
   {
     grantDomain: AuthorizationDomain.TENANT,
     statusAction: IamAction.PLATFORM_SHARED_ROLE_STATUS,
-    publishAction: IamAction.PLATFORM_SHARED_ROLE_PUBLISH,
+    publishAction: IamAction.PLATFORM_SHARED_ROLE_UPDATE,
+    versioned: true,
   },
 );
 
@@ -652,6 +664,22 @@ const privateEditRevision = async (revision: Pick<RoleRevision, "id">): Promise<
   }
 };
 const privateEditGrants = (): void => {
+  if (!props.versioned) {
+    const role = detail.value;
+    if (!role) return;
+    grantWizardRef.value?.show({
+      roleId: roleId.value,
+      version: role.version,
+      profile: {
+        code: role.record.code,
+        name: role.record.name,
+        description: role.record.description ?? "",
+        groupName: role.record.groupName ?? "",
+      },
+      grants: JSON.parse(JSON.stringify(grants.value)),
+    });
+    return;
+  }
   if (latestRevision.value) void privateEditRevision(latestRevision.value);
 };
 

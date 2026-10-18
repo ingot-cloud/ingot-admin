@@ -168,6 +168,7 @@ export const usePermissions = defineStore("security.permissions", () => {
   const memberId = ref<string>();
   const accountId = ref<string>();
   const applications = ref<IamApplicationSummary[]>([]);
+  const tenantOwner = ref(false);
 
   const updateRoles = (params: Array<string>) => {
     roles.value = params;
@@ -198,6 +199,7 @@ export const usePermissions = defineStore("security.permissions", () => {
   };
 
   const applyContext = (bootstrap: IamBootstrap): void => {
+    tenantOwner.value = bootstrap.context.domain === "TENANT" && bootstrap.tenantOwner === true;
     domain.value = bootstrap.context.domain;
     tenantId.value = bootstrap.context.tenantId ?? null;
     memberId.value = bootstrap.context.memberId;
@@ -211,6 +213,7 @@ export const usePermissions = defineStore("security.permissions", () => {
     version.value = undefined;
     generatedAt.value = undefined;
     expiresAt.value = undefined;
+    tenantOwner.value = false;
     unavailable.value = false;
     domain.value = undefined;
     tenantId.value = undefined;
@@ -232,6 +235,7 @@ export const usePermissions = defineStore("security.permissions", () => {
     memberId,
     accountId,
     applications,
+    tenantOwner,
     updateRoles,
     applyEffectivePermissions,
     applyCapabilities,
@@ -289,7 +293,7 @@ const bindVisibilityRefresh = (): void => {
     if (Number.isNaN(deadline) || Date.now() < deadline) {
       return;
     }
-    void refreshSessionPermissions({ refreshMenusIfVersionChanged: true });
+    void refreshSessionPermissions({ refreshMenusIfVersionChanged: true }).catch(() => undefined);
   };
   document.addEventListener("visibilitychange", onVisible);
   window.addEventListener("focus", onVisible);
@@ -416,6 +420,12 @@ export const refreshSessionPermissions = (options?: {
         if (!useUserInfoStore().getIsInitPwd && usePermissions().contextEpoch === epoch)
           applyBootstrap(bootstrap.data);
       }
+    })
+    .catch((error: unknown) => {
+      if (usePermissions().contextEpoch === epoch) {
+        usePermissions().markUnavailable();
+      }
+      throw error;
     })
     .finally(() => {
       refreshPromise = undefined;

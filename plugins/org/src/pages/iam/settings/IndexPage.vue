@@ -4,45 +4,60 @@
       <in-page-header description="组织设置。所有者转交使用独立命令，不与资料保存混为一步。" />
     </template>
     <in-split-layout>
-      <el-form v-if="detail" label-position="top" class="max-w-480px p-16px">
-        <el-form-item label="组织名称">
-          <el-input v-model="draft.name" placeholder="请输入组织名称" />
-        </el-form-item>
-        <el-form-item label="当前所有者">
-          <span>{{ detail.record.ownerDisplayName || detail.record.ownerMemberId }}</span>
-        </el-form-item>
-        <el-form-item>
-          <in-button type="primary" :loading="saving" @click="privateSave">保存设置</in-button>
-        </el-form-item>
-        <el-form-item label="新所有者">
-          <in-page-select
-            v-model="newOwnerMemberId"
-            filterable
-            remote
-            clearable
-            value-field="id"
-            label-field="name"
-            placeholder="选择当前组织内有效成员"
-            :load-data="loadMembers"
-          />
-        </el-form-item>
-        <el-form-item>
-          <in-button type="danger" :loading="transferring" :disabled="transferring" @click="privateTransfer">
-            转交所有者
-          </in-button>
-        </el-form-item>
-      </el-form>
+      <in-form-content
+        ><el-form
+          v-if="detail"
+          label-position="top"
+          class="grid grid-cols-1 md:grid-cols-2 gap-x-24px"
+        >
+          <el-form-item label="组织名称">
+            <el-input v-model="draft.name" placeholder="请输入组织名称" />
+          </el-form-item>
+          <el-form-item label="当前所有者">
+            <span>{{ detail.record.ownerDisplayName || detail.record.ownerMemberId }}</span
+            ><el-tag v-if="permissions.tenantOwner" class="ml-8px">当前组织拥有者</el-tag>
+          </el-form-item>
+          <el-form-item>
+            <in-button type="primary" :loading="saving" @click="privateSave">保存设置</in-button>
+          </el-form-item>
+          <el-form-item v-if="canTransfer" label="新所有者">
+            <in-page-select
+              v-model="newOwnerMemberId"
+              filterable
+              remote
+              clearable
+              value-field="id"
+              label-field="name"
+              placeholder="选择当前组织内有效成员"
+              :load-data="loadMembers"
+            />
+          </el-form-item>
+          <el-form-item v-if="canTransfer">
+            <in-button
+              type="danger"
+              :loading="transferring"
+              :disabled="transferring || !canTransfer"
+              @click="privateTransfer"
+            >
+              转交所有者
+            </in-button>
+          </el-form-item>
+        </el-form></in-form-content
+      >
     </in-split-layout>
   </in-page-frame>
 </template>
 
 <script lang="ts" setup>
+import { Confirm, Message, refreshSessionPermissions, usePermissions } from "@ingot/admin-core";
 import {
-  Confirm,
-  Message,
-  refreshSessionPermissions,
-} from "@ingot/admin-core";
-import { createIamListLoader, toIamSelectRecords, type TenantRecord } from "@ingot/admin-common";
+  createIamListLoader,
+  toIamSelectRecords,
+  IamAction,
+  objectActionAllowed,
+  type ResourceDetail,
+  type TenantRecord,
+} from "@ingot/admin-common";
 import {
   TenantMemberPageAPI,
   TenantOwnerTransferAPI,
@@ -50,7 +65,14 @@ import {
   TenantSettingsUpdateAPI,
 } from "@/api/iam/directory";
 
-const detail = ref<{ version: string; record: TenantRecord }>();
+const detail = ref<ResourceDetail<TenantRecord>>();
+const permissions = usePermissions();
+const canTransfer = computed(
+  () =>
+    permissions.tenantOwner &&
+    objectActionAllowed(detail.value?.capabilities || {}, IamAction.TENANT_SETTINGS_OWNER_TRANSFER)
+      .allowed,
+);
 const draft = reactive({ name: "" });
 const newOwnerMemberId = ref("");
 const saving = ref(false);
@@ -63,10 +85,7 @@ const loadMembers = createIamListLoader(async (page, condition) => {
 
 const load = (): void => {
   TenantSettingsAPI().then((response) => {
-    detail.value = {
-      version: response.data.version,
-      record: response.data.record,
-    };
+    detail.value = response.data;
     draft.name = response.data.record.name;
   });
 };
@@ -81,7 +100,7 @@ const privateSave = (): void => {
     name: draft.name,
   })
     .then((response) => {
-      detail.value = { version: response.data.version, record: response.data.record };
+      detail.value = response.data;
       Message.success("保存成功");
     })
     .finally(() => {
@@ -97,7 +116,9 @@ const privateTransfer = (): void => {
   if (transferring.value) {
     return;
   }
-  Confirm.warning("转交后当前所有者将失去组织所有权。是否继续？", { confirmButtonText: "转交" }).then(() => {
+  Confirm.warning("转交后当前所有者将失去组织所有权。是否继续？", {
+    confirmButtonText: "转交",
+  }).then(() => {
     transferring.value = true;
     TenantOwnerTransferAPI({
       expectedVersion: detail.value?.version ?? "",

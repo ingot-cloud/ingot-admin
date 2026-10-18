@@ -1,7 +1,7 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="共享角色可改启停并发布新版本。发布不会自动升级已有授权。" />
+      <in-page-header description="平台维护组织默认共享角色，保存权限后所有使用组织自动生效。" />
     </template>
     <in-split-layout>
       <in-table
@@ -60,8 +60,13 @@
     </in-split-layout>
   </in-page-frame>
 
-  <create-wizard ref="createRef" @success="refreshData" />
-  <shared-role-detail-drawer ref="detailRef" @success="refreshData" />
+  <create-wizard ref="createRef" title="创建共享角色" @success="refreshData" />
+  <shared-role-detail-drawer
+    ref="detailRef"
+    :versioned="false"
+    :list-grants-api="listCurrentGrants"
+    @success="refreshData"
+  />
 </template>
 
 <script lang="ts" setup>
@@ -76,25 +81,29 @@ import {
   withAllPickerOption,
   type InTableAction,
   type InTableFeedback,
+  type R,
 } from "@ingot/admin-core";
 import {
   BizIamRecordLink,
+  createCurrentRoleApis,
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
+  type RoleGrantList,
   useConfigurationStatusEnum,
 } from "@ingot/admin-common";
 import { PlatformSharedRoleDeleteAPI } from "@/api/iam/authorization";
 import CreateWizard from "./components/CreateWizard.vue";
 import SharedRoleDetailDrawer from "./components/SharedRoleDetailDrawer.vue";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
+import { roleGrantRecordsOf } from "./wizard";
+
+const currentRoleApis = createCurrentRoleApis("shared");
+const listCurrentGrants = async (id: string): Promise<R<RoleGrantList>> => {
+  const response = await currentRoleApis.grantsAPI(id);
+  return { ...response, data: { items: roleGrantRecordsOf(response.data) } };
+};
 
 const { paging, refreshData } = useOps();
 const { unavailable } = useCapabilities();
@@ -117,7 +126,9 @@ const toolbarRow = {
   version: "",
 } as Row;
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 const handleDetail = (item: Row): void => {
   detailRef.value?.show(item.record.id);

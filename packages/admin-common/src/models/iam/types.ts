@@ -580,13 +580,15 @@ export interface MemberRecord {
   phone?: string;
   email?: string;
   username?: string;
+  /** 账号登录手机；租户列表尚未投影，缺省时界面显示 `-`。 */
+  loginPhone?: string;
   status: MemberStatus;
   departments: MemberDepartmentView[];
   /** 平台成员首次加入时间，UTC ISO；仅平台详情填写。 */
   joinedAt?: string;
   /** 账号最近成功登录时间，包含平台及组织身份；无记录时省略。 */
   lastLoginAt?: string;
-  /** 平台成员记录更新时间，UTC ISO；不代表最后活跃时间。 */
+  /** 成员记录更新时间，UTC ISO；不代表最后活跃时间。 */
   updatedAt?: string;
 }
 
@@ -675,6 +677,12 @@ export interface DepartmentRecord {
   name: string;
   sortOrder: number;
   navigationOnly: boolean;
+  /** 本部门直属 ACTIVE 成员数；仅租户管理部门列表填充。 */
+  memberCount?: number;
+}
+
+export interface DepartmentTreeRow extends ResourceDetail<DepartmentRecord> {
+  children: DepartmentTreeRow[];
 }
 
 export interface DepartmentDraft {
@@ -940,6 +948,7 @@ export interface DiagnoseInput {
 }
 
 export interface DecisionSource {
+  roleId?: string;
   resourceFieldPermissions?: ResourceFieldPermissions;
   assignmentId?: string;
   delegationId?: string;
@@ -1208,7 +1217,8 @@ export interface AssignmentContext {
   effectiveDelegationCount: number;
 }
 export type AuthorizationCandidateKind =
-  "DELEGATION" | "ROLE_REVISION" | "MEMBER" | "GROUP" | "OBJECT" | "APPLICATION" | "ACTION";
+  | "ROLE"
+  | "DELEGATION" | "ROLE_REVISION" | "MEMBER" | "GROUP" | "OBJECT" | "APPLICATION" | "ACTION";
 export interface AuthorizationActionOption {
   id: string;
   name: string;

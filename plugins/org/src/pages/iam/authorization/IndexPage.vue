@@ -5,7 +5,12 @@
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
-        <in-biz-tab-panel title="角色" name="roles">
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.TENANT_ROLE_READ)"
+          title="角色"
+          name="roles"
+          fill
+        >
           <in-table
             :loading="roles.fetching.value"
             :data="roles.pageInfo.value.records"
@@ -33,7 +38,9 @@
                 {{ item.record.name || item.record.id }}
               </biz-iam-record-link>
             </template>
-            <template #kind="{ item }">{{ item.record.kind }}</template>
+            <template #kind="{ item }">{{
+              item.record.kind === RoleKind.SHARED ? "平台共享" : "组织私有"
+            }}</template>
             <template #status="{ item }">
               <biz-iam-status-tag :status="item.record.status" />
             </template>
@@ -42,7 +49,12 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权记录" name="assignments">
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.TENANT_ASSIGNMENT_READ)"
+          title="授权记录"
+          name="assignments"
+          fill
+        >
           <in-table
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
@@ -62,14 +74,20 @@
               />
             </template>
             <template #subject="{ item }">
-              {{ item.record.assignment.subject.type }} / {{ item.record.assignment.subject.id }}
+              {{ item.record.subjectName || item.record.assignment.subject.id }}
             </template>
-            <template #roleRevision="{ item }">
-              {{ item.record.assignment.roleRevisionRef.kind }} /
-              {{ item.record.assignment.roleRevisionRef.id }}
+            <template #role="{ item }">
+              {{ item.record.roleName || item.record.assignment.roleId }}
             </template>
-            <template #source="{ item }">{{ item.record.source }}</template>
-            <template #status="{ item }">{{ item.record.status }}</template>
+            <template #source="{ item }">{{
+              assignmentSource.getTagText(item.record.source).text
+            }}</template>
+            <template #status="{ item }"
+              >{{ effectiveStatus.getTagText(item.record.effectiveStatus).text
+              }}<el-tag v-if="item.record.scopeIssues.length" type="warning"
+                >待补范围 {{ item.record.scopeIssues.length }}</el-tag
+              ></template
+            >
             <template #validUntil="{ item }">
               {{ formatDateTime(item.record.assignment.validUntil, { fallback: "长期" }) }}
             </template>
@@ -78,7 +96,12 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="授权管理员" name="delegations">
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.TENANT_DELEGATION_READ)"
+          title="授权管理员"
+          name="delegations"
+          fill
+        >
           <in-table
             :loading="delegations.fetching.value"
             :data="delegations.pageInfo.value.records"
@@ -98,7 +121,7 @@
               />
             </template>
             <template #administratorMemberId="{ item }">
-              {{ item.record.delegation.administratorMemberId }}
+              {{ item.record.administratorName || item.record.delegation.administratorMemberId }}
             </template>
             <template #status="{ item }">{{ item.record.status }}</template>
             <template #maxAssignmentDuration="{ item }">
@@ -113,63 +136,30 @@
     </in-split-layout>
   </in-page-frame>
 
-  <biz-iam-role-create-drawer
+  <biz-iam-current-role-drawer
     ref="createRef"
-    title="创建组织角色"
-    :kind="RoleKind.TENANT_CUSTOM"
-    :create-api="TenantRoleCreateAPI"
+    :apis="currentRoleApis"
+    :catalog-a-p-i="TenantRoleGrantCatalogAPI"
+    :application-candidates="applicationCandidates"
     @success="refreshRoles"
   />
-  <biz-iam-role-create-drawer
-    ref="customizeRef"
-    title="基于共享版本定制"
-    :kind="RoleKind.TENANT_CUSTOM"
-    allow-deltas
-    :create-api="TenantRoleCreateAPI"
-    @success="refreshRoles"
-  />
-  <biz-iam-role-detail-drawer
+  <biz-iam-current-role-drawer
     ref="detailRef"
-    allow-deltas
-    :get-api="TenantRoleDetailAPI"
-    :list-revisions-api="TenantRoleRevisionPageAPI"
-    :preview-api="TenantRolePreviewAPI"
-    :source-preview-api="TenantRoleSourcePreviewAPI"
-    :metadata-api="TenantRoleRevisionMetadataAPI"
-    :publish-api="TenantRolePublishAPI"
-    :status-api="TenantRoleStatusAPI"
-    :delete-api="TenantRoleDeleteAPI"
-    :upgrade-preview-api="TenantRoleUpgradePreviewAPI"
-    :upgrade-api="TenantRoleUpgradeAPI"
-    :publish-action="IamAction.TENANT_ROLE_PUBLISH"
-    :status-action="IamAction.TENANT_ROLE_STATUS"
-    :delete-action="IamAction.TENANT_ROLE_DELETE"
-    :upgrade-action="IamAction.TENANT_ROLE_UPGRADE"
+    :apis="currentRoleApis"
+    :catalog-a-p-i="TenantRoleGrantCatalogAPI"
+    :application-candidates="applicationCandidates"
     @success="refreshRoles"
   />
-  <biz-iam-assignment-drawer
+  <biz-iam-tenant-assignment-drawer
     ref="assignmentRef"
-    :load-members="loadMembers"
-    :load-groups="loadGroups"
-    :load-roles="loadRoles"
-    :list-revisions-api="TenantRoleRevisionPageAPI"
-    :load-departments="loadDepartments"
-    :scope-candidates-api="TenantAssignmentScopeCandidatesAPI"
-    :create-api="TenantAssignmentCreateAPI"
-    :preview-api="TenantAssignmentPreviewAPI"
-    :update-api="TenantAssignmentUpdateAPI"
+    :apis="assignmentApis"
     @success="refreshAssignments"
   />
-  <biz-iam-delegation-drawer
+  <biz-iam-tenant-delegation-drawer
     ref="delegationRef"
-    :load-members="loadMembers"
-    :load-roles="loadRoles"
-    :list-revisions-api="TenantRoleRevisionPageAPI"
-    :load-departments="loadDepartments"
-    :create-api="TenantDelegationCreateAPI"
-    :get-api="TenantDelegationDetailAPI"
-    :update-api="TenantDelegationUpdateAPI"
-    :preview-api="TenantDelegationPreviewAPI"
+    :apis="delegationApis"
+    :assignment-apis="assignmentApis"
+    :department-candidates="departmentCandidates"
     @success="refreshDelegations"
   />
   <biz-iam-diagnose-drawer
@@ -183,12 +173,17 @@
 <script lang="ts" setup>
 import { formatDateTime } from "@ingot/shared";
 import {
-  BizIamAssignmentDrawer,
-  BizIamDelegationDrawer,
+  useAssignmentSourceEnum,
+  useAssignmentEffectiveStatusEnum,
+  BizIamTenantAssignmentDrawer,
+  BizIamTenantDelegationDrawer,
+  BizIamCurrentRoleDrawer,
+  createCurrentRoleApis,
+  type AuthorizationCandidatesApi,
+  type TenantAssignmentApis,
+  type TenantDelegationApis,
   BizIamDiagnoseDrawer,
   BizIamRecordLink,
-  BizIamRoleCreateDrawer,
-  BizIamRoleDetailDrawer,
   BizIamStatusTag,
   IAM_DEFAULT_PAGE_SIZE,
   IamAction,
@@ -197,10 +192,21 @@ import {
   toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { Confirm, Message, type InTableAction, type LoadDataParams } from "@ingot/admin-core";
+import {
+  Confirm,
+  Message,
+  type InTableAction,
+  useCapabilities,
+  type LoadDataParams,
+} from "@ingot/admin-core";
 import {
   TenantAssignmentCreateAPI,
   TenantAssignmentScopeCandidatesAPI,
+  TenantAssignmentOptionsAPI,
+  TenantAssignmentRoleDefinitionAPI,
+  TenantDelegationMineAPI,
+  TenantRoleGrantCatalogAPI,
+  TenantDelegationScopeCandidatesAPI,
   TenantAssignmentDeleteAPI,
   TenantAssignmentPreviewAPI,
   TenantAssignmentUpdateAPI,
@@ -210,25 +216,8 @@ import {
   TenantDelegationPreviewAPI,
   TenantDelegationUpdateAPI,
   TenantDiagnoseAPI,
-  TenantRoleCreateAPI,
-  TenantRoleDeleteAPI,
-  TenantRoleDetailAPI,
-  TenantRolePageAPI,
-  TenantRolePreviewAPI,
-  TenantRoleSourcePreviewAPI,
-  TenantRoleRevisionMetadataAPI,
-  TenantRolePublishAPI,
-  TenantRoleRevisionPageAPI,
-  TenantRoleStatusAPI,
-  TenantRoleUpgradeAPI,
-  TenantRoleUpgradePreviewAPI,
 } from "@/api/iam/authorization";
-import {
-  TenantApplicationPageAPI,
-  TenantDepartmentPageAPI,
-  TenantGroupPageAPI,
-  TenantMemberPageAPI,
-} from "@/api/iam/directory";
+import { TenantApplicationPageAPI, TenantMemberPageAPI } from "@/api/iam/directory";
 import {
   assignmentHeaders,
   createAssignmentRowActions,
@@ -249,11 +238,16 @@ import {
 } from "./table";
 import { useOps } from "./useOps";
 
-const tab = ref("roles");
+const assignmentSource = useAssignmentSourceEnum();
+const effectiveStatus = useAssignmentEffectiveStatusEnum();
+const { hasAction, actionCodes } = useCapabilities();
+const tab = ref(hasAction(IamAction.TENANT_ROLE_READ) ? "roles" : "assignments");
+watch(actionCodes, () => {
+  if (tab.value === "roles" && !hasAction(IamAction.TENANT_ROLE_READ)) tab.value = "assignments";
+});
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
   useOps(tab);
 const createRef = ref<{ show: () => void }>();
-const customizeRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
 const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
@@ -266,28 +260,48 @@ const loadMembers = async (params: LoadDataParams) => {
   );
   return toIamSelectRecords(response.data);
 };
-const loadGroups = createIamListLoader(async (page, condition) => {
-  const response = await TenantGroupPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
-const loadRoles = createIamListLoader(async (page, condition) => {
-  const response = await TenantRolePageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
-const loadDepartments = createIamListLoader(async (page, condition) => {
-  const response = await TenantDepartmentPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
 const loadApplications = createIamListLoader(async (page, condition) => {
   const response = await TenantApplicationPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };
 });
 
+const currentRoleApis = createCurrentRoleApis("tenant");
+const assignmentApis: TenantAssignmentApis = {
+  optionsAPI: TenantAssignmentOptionsAPI,
+  roleAPI: TenantAssignmentRoleDefinitionAPI,
+  mineAPI: TenantDelegationMineAPI,
+  scopeAPI: TenantAssignmentScopeCandidatesAPI,
+  createAPI: TenantAssignmentCreateAPI,
+  previewAPI: TenantAssignmentPreviewAPI,
+  updateAPI: TenantAssignmentUpdateAPI,
+};
+const delegationApis: TenantDelegationApis = {
+  createAPI: TenantDelegationCreateAPI,
+  detailAPI: TenantDelegationDetailAPI,
+  updateAPI: TenantDelegationUpdateAPI,
+  previewAPI: TenantDelegationPreviewAPI,
+  scopeAPI: TenantDelegationScopeCandidatesAPI,
+};
+const candidateOf =
+  (kind: "APPLICATION" | "DEPARTMENT"): AuthorizationCandidatesApi =>
+  async (query) => {
+    const response = await TenantAssignmentOptionsAPI({
+      kind,
+      keyword: query.keyword,
+      ids: query.ids,
+      page: query.page,
+      pageSize: query.pageSize,
+    });
+    return {
+      ...response,
+      data: { ...response.data, total: Number(response.data.total || 0), supported: true },
+    };
+  };
+const applicationCandidates = candidateOf("APPLICATION");
+const departmentCandidates = candidateOf("DEPARTMENT");
+
 const handleCreate = (): void => {
   createRef.value?.show();
-};
-const handleCustomize = (): void => {
-  customizeRef.value?.show();
 };
 const handleDetail = (item: RoleRow): void => {
   detailRef.value?.show(item.record.id);
@@ -332,7 +346,7 @@ const handleDelegationDelete = (item: DelegationRow): void => {
 };
 
 const roleToolbarActions = computed(() =>
-  createRoleToolbarActions(handleCreate, handleCustomize, () => handleDiagnose()),
+  createRoleToolbarActions(handleCreate, () => handleDiagnose()),
 );
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
   createRoleRowActions(item, { onDetail: handleDetail });

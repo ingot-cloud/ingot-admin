@@ -2,11 +2,14 @@ import { describe, expect, it, vi } from "vitest";
 import { ScopeBindingKind, ScopeKind } from "@ingot/admin-common";
 import {
   toDefinition,
+  toCurrentDefinition,
   grantsFingerprint,
   collectParameters,
+  currentParameterKey,
   defaultScope,
   formatScopeLine,
   parameterKeyFor,
+  roleGrantRecordsOf,
   type SelectedGrant,
 } from "./wizard";
 
@@ -55,6 +58,40 @@ describe("角色范围内部参数", () => {
       { key: "departments_203", kind: ScopeBindingKind.DEPARTMENTS },
     ]);
     expect(formatScopeLine(item.scopes[0])).toContain("分配时选择管理部门");
+  });
+});
+
+describe("共享角色当前权限", () => {
+  it("沿用已保存参数键，并带上资源标识", () => {
+    const item = grant("201", ScopeKind.OBJECT_SET);
+    expect(toCurrentDefinition([item])).toEqual({
+      grants: [{ actionId: "action-201", scopes: item.scopes }],
+      parameterDefinitions: [
+        { key: "objects_201", kind: ScopeBindingKind.OBJECTS, resourceId: "201" },
+      ],
+    });
+    expect(currentParameterKey("201", ScopeKind.MANAGED_DEPARTMENTS)).toBe(
+      "resource-201-departments",
+    );
+    expect(
+      roleGrantRecordsOf({
+        items: [
+          {
+            actionId: "action-201",
+            actionCode: "read",
+            actionName: "读取",
+            applicationId: "100",
+            applicationName: "租户应用",
+            resourceId: "201",
+            resourceName: "成员",
+            enabled: true,
+            scopeCapabilities: [ScopeKind.OBJECT_SET],
+            parameterDefinitions: [],
+          },
+        ],
+        definition: { grants: [], parameterDefinitions: [] },
+      })[0]?.scopes[0]?.parameterKey,
+    ).toBe("resource-201-objects");
   });
 });
 

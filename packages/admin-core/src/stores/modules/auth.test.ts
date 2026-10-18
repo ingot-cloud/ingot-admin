@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { ApiError } from "@ingot/http-client";
 import { StatusCode } from "@/net/status-code";
@@ -94,6 +94,82 @@ describe("session bootstrap", () => {
     IamBootstrapAPI.mockReset();
     IamCapabilitiesAPI.mockReset();
     PasswordChangeStateAPI.mockReset();
+  });
+
+  afterEach(() => {
+    resetSessionBootstrap();
+    vi.useRealTimers();
+  });
+
+  it("拥有者标记只接受租户服务器事实，两端都不按 expiresAt 轮询", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-14T08:00:00Z"));
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    runtimeState.expectedDomain = "TENANT";
+    const tenant = {
+      ...bootstrapData,
+      context: { ...bootstrapData.context, domain: "TENANT", tenantId: "10" },
+      tenantOwner: true,
+      expiresAt: "2026-10-14T08:00:30Z",
+    };
+    IamBootstrapAPI.mockResolvedValue({ data: tenant });
+    IamCapabilitiesAPI.mockResolvedValue({
+      data: {
+        actionCodes: tenant.actionCodes,
+        version: tenant.version,
+        expiresAt: "2026-10-14T08:02:00Z",
+      },
+    });
+    await ensureSessionBootstrap();
+    expect(usePermissions().tenantOwner).toBe(true);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(IamCapabilitiesAPI).not.toHaveBeenCalled();
+    usePermissions().clear();
+    expect(usePermissions().tenantOwner).toBe(false);
+    resetSessionBootstrap();
+    runtimeState.expectedDomain = "PLATFORM";
+    IamBootstrapAPI.mockResolvedValue({ data: { ...bootstrapData, tenantOwner: true } });
+    await ensureSessionBootstrap();
+    expect(usePermissions().tenantOwner).toBe(false);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(IamCapabilitiesAPI).not.toHaveBeenCalled();
+  });
+
+  it("仅在恢复可见且已过期时核对能力，503 禁用操作但不自动重试", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-14T08:00:00Z"));
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    runtimeState.expectedDomain = "TENANT";
+    IamBootstrapAPI.mockResolvedValue({
+      data: {
+        ...bootstrapData,
+        context: { ...bootstrapData.context, domain: "TENANT", tenantId: "10" },
+        expiresAt: "2026-10-14T08:00:30Z",
+        tenantOwner: false,
+      },
+    });
+    IamCapabilitiesAPI.mockResolvedValue({
+      data: {
+        actionCodes: bootstrapData.actionCodes,
+        version: bootstrapData.version,
+        expiresAt: "2026-10-14T08:01:30Z",
+      },
+    });
+    await ensureSessionBootstrap();
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "hidden" });
+    document.dispatchEvent(new Event("visibilitychange"));
+    Object.defineProperty(document, "visibilityState", { configurable: true, value: "visible" });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(IamCapabilitiesAPI).not.toHaveBeenCalled();
+    vi.setSystemTime(new Date("2026-10-14T08:00:31Z"));
+    window.dispatchEvent(new Event("focus"));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(IamCapabilitiesAPI).toHaveBeenCalledTimes(1);
+    IamCapabilitiesAPI.mockRejectedValue(new Error("503"));
+    await expect(refreshSessionPermissions()).rejects.toThrow("503");
+    expect(usePermissions().unavailable).toBe(true);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(IamCapabilitiesAPI).toHaveBeenCalledTimes(2);
   });
 
   it("身份失效后迟到的 bootstrap 不恢复旧页面和权限", async () => {

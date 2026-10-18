@@ -13,3 +13,5 @@ export * from "./useFieldContext";
 export * from "./masking";
 
 export * from "./roleVersions";
+
+export * from "./tenantCurrentRoles";

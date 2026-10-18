@@ -62,3 +62,9 @@ export { default as BizIamRoleApplicationDrawer } from "./components/BizIamRoleA
 export { default as BizIamAuthorizationAudit } from "./components/authorization-audit/BizIamAuthorizationAudit.vue";
 
 export { usePlatformTenantOptions } from "./api/iam/tenant-options";
+
+export { createCurrentRoleApis } from "./api/iam/current-role";
+export { default as BizIamCurrentRoleDrawer } from "./components/iam-current-role/BizIamCurrentRoleDrawer.vue";
+
+export { default as BizIamTenantAssignmentDrawer } from "./components/iam-tenant-authorization/BizIamTenantAssignmentDrawer.vue";
+export { default as BizIamTenantDelegationDrawer } from "./components/iam-tenant-authorization/BizIamTenantDelegationDrawer.vue";

@@ -130,16 +130,25 @@ import {
 } from "@ingot/admin-common";
 import { InCloseButton } from "@ingot/admin-core";
 import { PlatformApplicationPageAPI, PlatformGrantCatalogAPI } from "@/api/iam/catalog";
-import { defaultScope, defaultFieldDefinition, groupGrants, type SelectedGrant } from "../wizard";
+import {
+  currentParameterKey,
+  defaultScope,
+  defaultFieldDefinition,
+  groupGrants,
+  parameterKeyFor,
+  type SelectedGrant,
+} from "../wizard";
 
 defineOptions({ name: "GrantPicker" });
 
 const props = withDefaults(
   defineProps<{
     domain?: AuthorizationDomain;
+    current?: boolean;
   }>(),
   {
     domain: AuthorizationDomain.TENANT,
+    current: false,
   },
 );
 
@@ -408,7 +417,13 @@ const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): Se
     resourceName: resource.name,
     applicationId: applicationId.value,
     applicationName: currentApp.value?.name ?? "",
-    scopes: [defaultScope(resource.scopeCapabilities, resource.id)],
+    scopes: [
+      defaultScope(
+        resource.scopeCapabilities,
+        resource.id,
+        props.current ? currentParameterKey : parameterKeyFor,
+      ),
+    ],
     scopeCapabilities: [...resource.scopeCapabilities],
     fieldCapabilities: resource.fieldCapabilities,
     fieldDefaults: resource.fieldDefaults,

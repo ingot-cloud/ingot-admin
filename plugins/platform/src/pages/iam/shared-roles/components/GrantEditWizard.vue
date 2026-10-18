@@ -14,17 +14,29 @@
       <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
         <div class="mb-24px text-18px shrink-0">{{ steps[step].title }}</div>
         <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
-          <grant-picker v-if="step === 0" :key="session" v-model="grants" :domain="domain" />
-          <scope-step v-else-if="step === 1" v-model="grants" :domain="domain" />
+          <grant-picker
+            v-if="step === 0"
+            :key="session"
+            v-model="grants"
+            :domain="domain"
+            :current="immediate"
+          />
+          <scope-step
+            v-else-if="step === 1"
+            v-model="grants"
+            :domain="domain"
+            :current="immediate"
+          />
           <field-step v-else-if="platform && step === 2" ref="fieldStep" v-model="grants" />
           <div v-else>
             <preview-panel
               :profile="profile"
               :grants="grants"
               :show-profile="false"
-              hint="发布新版本后可独立确认版本应用。"
+              :hint="immediate ? '保存后关联人员自动生效。' : '发布新版本后可独立确认版本应用。'"
             />
             <biz-iam-role-version-form
+              v-if="!immediate"
               v-model:name="versionName"
               v-model:remark="versionRemark"
               v-model:mode="publishMode"
@@ -32,11 +44,23 @@
               :source-revision-id="sourceRevision?.id"
               class="mt-24px max-w-640px"
             />
+            <div v-else class="mt-24px flex flex-col gap-12px">
+              <biz-iam-preview-alert :preview="currentPreview" />
+              <el-alert
+                v-if="currentPreview?.effectiveResult"
+                type="info"
+                :closable="false"
+                :title="currentImpactTitle"
+              />
+            </div>
           </div>
         </div>
       </section>
     </div>
     <template #footer>
+      <in-button v-if="immediate && conflicted" @in-click="privateReloadLock"
+        >重读当前配置，保留草稿</in-button
+      >
       <in-button v-if="step > 0" @in-click="privateBack">上一步</in-button>
       <in-button v-if="step < steps.length - 1" type="primary" @in-click="privateNext"
         >下一步</in-button
@@ -45,28 +69,40 @@
         v-else
         type="primary"
         :loading="saving"
-        :disabled="!changed || (platform && previewed !== fingerprint)"
+        :disabled="!changed || ((platform || immediate) && previewed !== fingerprint)"
         @in-click="privateSubmit"
       >
-        发布新版本
+        {{ immediate ? "保存权限，关联人员自动生效" : "发布新版本" }}
       </in-button>
     </template>
   </in-drawer>
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message, useCapabilities, type R } from "@ingot/admin-core";
+import {
+  confirmUnsavedChanges,
+  isApiError,
+  Message,
+  refreshSessionPermissions,
+  useCapabilities,
+  type R,
+} from "@ingot/admin-core";
 import {
   AuthorizationDomain,
+  BizIamPreviewAlert,
   BizIamRoleVersionForm,
+  createCurrentRoleApis,
+  iamEditorFailure,
   IamAction,
+  type CurrentRolePreviewResult,
+  type Preview,
   type RoleApplicationApi,
   type RoleApplicationTask,
   type RoleRevision,
   type CreatedResource,
   type RolePublishInput,
 } from "@ingot/admin-common";
-import { PlatformRolePreviewAPI, PlatformSharedRolePublishAPI } from "@/api/iam/authorization";
+import { PlatformRolePreviewAPI } from "@/api/iam/authorization";
 import FieldStep from "./FieldStep.vue";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
@@ -76,6 +112,7 @@ import {
   GRANT_WIZARD_STEPS,
   PLATFORM_WIZARD_STEPS,
   grantsFingerprint,
+  toCurrentDefinition,
   toPublishInput,
   type SelectedGrant,
   type WizardProfile,
@@ -88,13 +125,16 @@ const props = withDefaults(
     publishApi?: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
     domain?: AuthorizationDomain;
     applicationApi?: RoleApplicationApi;
+    immediate?: boolean;
   }>(),
   {
     domain: AuthorizationDomain.TENANT,
+    immediate: false,
   },
 );
 
 const emits = defineEmits<{ success: []; prepared: [task: RoleApplicationTask] }>();
+const currentApis = createCurrentRoleApis("shared");
 const { hasAction } = useCapabilities();
 const canApply = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE));
 const sourceRevision = ref<RoleRevision>();
@@ -103,11 +143,17 @@ const versionName = ref(""),
   versionRemark = ref("");
 const publishMode = ref<"PUBLISH" | "SOURCE_REVISIONS" | "ALL">("PUBLISH");
 const publishKey = ref("");
-const submitApi = computed(() => props.publishApi ?? PlatformSharedRolePublishAPI);
-const platform = computed(() => props.domain === AuthorizationDomain.PLATFORM);
+const currentPreview = ref<Preview<CurrentRolePreviewResult>>();
+const conflicted = ref(false);
+const platform = computed(() => !props.immediate && props.domain === AuthorizationDomain.PLATFORM);
 const steps = computed(() =>
   platform.value ? PLATFORM_WIZARD_STEPS.slice(1) : GRANT_WIZARD_STEPS,
 );
+const currentImpactTitle = computed(() => {
+  const result = currentPreview.value?.effectiveResult;
+  if (!result) return "";
+  return `新增 ${result.addedActionIds.length} 项、移除 ${result.removedActionIds.length} 项、调整范围 ${result.changedScopeActionIds.length} 项；保存后关联人员自动生效`;
+});
 const fieldStep = ref<InstanceType<typeof FieldStep>>();
 const previewed = ref("");
 const previewSession = ref(0);
@@ -140,6 +186,8 @@ const reset = (): void => {
   baseline.value = "";
   saving.value = false;
   previewed.value = "";
+  currentPreview.value = undefined;
+  conflicted.value = false;
 };
 
 const privateOnBeforeClose = (done: () => void): void => {
@@ -164,26 +212,39 @@ const privateNext = async (): Promise<void> => {
     return;
   }
   if (platform.value && step.value === 2 && !fieldStep.value?.validate()) return;
-  if (platform.value && step.value === steps.value.length - 2) {
+  if ((platform.value || props.immediate) && step.value === steps.value.length - 2) {
     saving.value = true;
     const requestFingerprint = fingerprint.value;
     const requestSession = previewSession.value;
+    const stale = (): boolean =>
+      !visible.value ||
+      requestSession !== previewSession.value ||
+      requestFingerprint !== fingerprint.value;
     try {
-      const result = await PlatformRolePreviewAPI(
-        roleId.value,
-        toPublishInput(expectedVersion.value, grants.value).definition,
-      );
-      if (
-        !visible.value ||
-        requestSession !== previewSession.value ||
-        requestFingerprint !== fingerprint.value
-      )
-        return;
-      if (!result.data.valid) {
-        Message.warning(result.data.errors?.[0]?.message ?? "预览未通过");
-        return;
+      if (props.immediate) {
+        const result = await currentApis.previewAPI(roleId.value, {
+          expectedVersion: expectedVersion.value,
+          definition: toCurrentDefinition(grants.value),
+        });
+        if (stale()) return;
+        currentPreview.value = result.data;
+        previewed.value = result.data.valid ? requestFingerprint : "";
+        conflicted.value = false;
+      } else {
+        const result = await PlatformRolePreviewAPI(
+          roleId.value,
+          toPublishInput(expectedVersion.value, grants.value).definition,
+        );
+        if (stale()) return;
+        if (!result.data.valid) {
+          Message.warning(result.data.errors?.[0]?.message ?? "预览未通过");
+          return;
+        }
+        previewed.value = requestFingerprint;
       }
-      previewed.value = requestFingerprint;
+    } catch (error) {
+      void iamEditorFailure(error);
+      return;
     } finally {
       if (requestSession === previewSession.value) saving.value = false;
     }
@@ -210,20 +271,58 @@ watch(
   },
   { deep: true },
 );
+const privateReloadLock = async (): Promise<void> => {
+  try {
+    const response = await currentApis.detailAPI(roleId.value);
+    expectedVersion.value = response.data.version;
+    currentPreview.value = undefined;
+    previewed.value = "";
+    conflicted.value = false;
+    Message.warning("已重读当前配置，草稿已保留，请核对后重新预览");
+  } catch (error) {
+    void iamEditorFailure(error);
+  }
+};
 const privateSubmit = (): void => {
-  if (platform.value && previewed.value !== fingerprint.value) {
+  if ((platform.value || props.immediate) && previewed.value !== fingerprint.value) {
     Message.warning("草稿已变化，请重新预览");
     return;
   }
   if (!changed.value) {
-    Message.warning("操作授权没有变化，无需发布");
+    Message.warning(props.immediate ? "权限没有变化，无需保存" : "操作授权没有变化，无需发布");
     return;
   }
+  if (props.immediate) {
+    saving.value = true;
+    currentApis
+      .saveAPI(roleId.value, {
+        expectedVersion: expectedVersion.value,
+        definition: toCurrentDefinition(grants.value),
+      })
+      .then(async () => {
+        await refreshSessionPermissions({ refreshMenusIfVersionChanged: true }).catch(() =>
+          Message.warning("已保存，权限刷新暂不可用，请稍后重试"),
+        );
+        Message.success("已保存，关联人员自动生效");
+        visible.value = false;
+        emits("success");
+      })
+      .catch((error: unknown) => {
+        previewed.value = "";
+        conflicted.value = isApiError(error) && error.status === 409;
+        void iamEditorFailure(error);
+      })
+      .finally(() => {
+        saving.value = false;
+      });
+    return;
+  }
+  if (!props.publishApi) return;
   saving.value = true;
   const input = buildPublishInput();
   const submit: Promise<R<CreatedResource | RoleApplicationTask>> =
     publishMode.value === "PUBLISH" || !props.applicationApi
-      ? submitApi.value(roleId.value, input)
+      ? props.publishApi(roleId.value, input)
       : props.applicationApi.publish(roleId.value, {
           publish: input,
           selection: publishMode.value,

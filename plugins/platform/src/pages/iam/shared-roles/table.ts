@@ -20,7 +20,7 @@ export function createToolbarActions(onCreate: () => void): Array<InTableAction<
   return [
     {
       key: "create",
-      label: "发布共享角色",
+      label: "创建共享角色",
       kind: "quick",
       overflow: "never",
       priority: 50,

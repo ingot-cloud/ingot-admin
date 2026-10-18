@@ -46,6 +46,7 @@ export interface IamMenuNode {
 }
 
 export interface IamBootstrap {
+  tenantOwner: boolean;
   context: AuthorizationContext;
   profile: CurrentProfile;
   applications: IamApplicationSummary[];

@@ -4,32 +4,29 @@ import {
   IAM_API_PREFIX,
   mapIamPage,
   toIamListParams,
-  type AssignmentRecord,
   type AuditEntry,
-  type ConfigurationStatusInput,
+  type CurrentRoleProfileInput,
   type CreatedResource,
   type Decision,
-  type DelegationRecord,
   type DiagnoseInput,
   type IamListQuery,
   type IamPageResponse,
   type Preview,
   type ReferenceImpactPreview,
   type ResourceDetail,
-  type RoleCreateInput,
-  type RolePreviewInput,
-  type RolePublishInput,
-  type RoleRevision,
+  type CurrentRoleCreateInput,
+  type CurrentRolePermissionInput,
+  type TenantAssignmentRecord,
+  type TenantAssignmentInput,
+  type TenantDelegationRecord,
+  type TenantDelegationInput,
+  type CurrentRoleGrantList,
+  type TenantDelegationMine,
+  type TenantAssignmentOption,
+  type TenantAssignmentOptionKind,
+  type CurrentRoleCatalogAction,
   type RoleSummary,
-  type UpgradeInput,
-  type UpgradePreview,
-  type UpgradePreviewInput,
-  type AssignmentBatchInput,
   type AssignmentPreviewResult,
-  type AssignmentUpdateInput,
-  type AuthorizationCandidatesApi,
-  type DelegationInput,
-  type DelegationUpdateInput,
 } from "@ingot/admin-common";
 
 const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
@@ -55,7 +52,7 @@ export function TenantRolePageAPI(
 }
 
 export function TenantRoleCreateAPI(
-  params: RoleCreateInput,
+  params: CurrentRoleCreateInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/roles`, params, options);
@@ -74,11 +71,15 @@ export function TenantRoleDetailAPI(
 
 export function TenantRoleStatusAPI(
   id: string,
-  params: ConfigurationStatusInput,
+  params: CurrentRoleProfileInput,
   options?: RequestOptions,
-): Promise<R<CreatedResource>> {
+): Promise<R<ResourceDetail<RoleSummary>>> {
   filterParams(params);
-  return request.patch<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/roles/${id}`, params, options);
+  return request.patch<ResourceDetail<RoleSummary>>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/${id}`,
+    params,
+    options,
+  );
 }
 
 export function TenantRoleDeleteAPI(
@@ -88,76 +89,24 @@ export function TenantRoleDeleteAPI(
   return request.delete<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/roles/${id}`, null, options);
 }
 
-export function TenantRoleRevisionPageAPI(
-  id: string,
-  page: Page,
-  options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<RoleRevision>>>> {
-  return request
-    .get<IamPageResponse<ResourceDetail<RoleRevision>>>(
-      `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions`,
-      toIamListParams(page),
-      options,
-    )
-    .then(asPage);
-}
-
-export function TenantRolePublishAPI(
-  id: string,
-  params: RolePublishInput,
-  options?: RequestOptions,
-): Promise<R<CreatedResource>> {
-  filterParams(params);
-  return request.post<CreatedResource>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions`,
-    params,
-    options,
-  );
-}
-
 export function TenantRolePreviewAPI(
   id: string,
-  params: RolePreviewInput,
+  params: CurrentRolePermissionInput,
   options?: RequestOptions,
 ): Promise<R<Preview>> {
   return request.post<Preview>(`${IAM_API_PREFIX}/v1/tenant/roles/${id}/preview`, params, options);
-}
-
-export function TenantRoleUpgradePreviewAPI(
-  id: string,
-  params: UpgradePreviewInput,
-  options?: RequestOptions,
-): Promise<R<Preview<UpgradePreview>>> {
-  return request.post<Preview<UpgradePreview>>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/upgrade-preview`,
-    params,
-    options,
-  );
-}
-
-export function TenantRoleUpgradeAPI(
-  id: string,
-  params: UpgradeInput,
-  options?: RequestOptions,
-): Promise<R<CreatedResource>> {
-  filterParams(params);
-  return request.post<CreatedResource>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/upgrade`,
-    params,
-    options,
-  );
 }
 
 export function TenantAssignmentPageAPI(
   page: Page,
   condition?: IamListQuery,
   options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<AssignmentRecord>>>> {
+): Promise<R<Page<ResourceDetail<TenantAssignmentRecord>>>> {
   if (condition) {
     filterParams(condition);
   }
   return request
-    .get<IamPageResponse<ResourceDetail<AssignmentRecord>>>(
+    .get<IamPageResponse<ResourceDetail<TenantAssignmentRecord>>>(
       `${IAM_API_PREFIX}/v1/tenant/assignments`,
       toIamListParams(page, condition),
       options,
@@ -166,24 +115,28 @@ export function TenantAssignmentPageAPI(
 }
 
 export function TenantAssignmentCreateAPI(
-  params: AssignmentBatchInput,
+  params: { items: TenantAssignmentInput[] },
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/assignments`, params, options);
 }
 
-export const TenantAssignmentScopeCandidatesAPI: AuthorizationCandidatesApi = (query) =>
-  request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/scope-candidates`, {
-    revisionId: query.revisionId,
-    parameterKey: query.parameterKey,
-    keyword: query.keyword,
-    ids: query.ids,
-    page: query.page,
-    pageSize: query.pageSize,
-  });
+export function TenantAssignmentScopeCandidatesAPI(query: {
+  roleId: string;
+  parameterKey: string;
+  delegationGrantId?: string;
+  keyword?: string;
+  ids?: string[];
+  page?: number;
+  pageSize?: number;
+  tree?: boolean;
+  parentId?: string;
+}): Promise<R<import("@ingot/admin-common").AuthorizationCandidatePage>> {
+  return request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/scope-candidates`, query);
+}
 
 export function TenantAssignmentPreviewAPI(
-  params: AssignmentBatchInput,
+  params: { items: TenantAssignmentInput[] },
   options?: RequestOptions,
 ): Promise<R<Preview<AssignmentPreviewResult>>> {
   return request.post<Preview<AssignmentPreviewResult>>(
@@ -195,11 +148,11 @@ export function TenantAssignmentPreviewAPI(
 
 export function TenantAssignmentUpdateAPI(
   id: string,
-  params: AssignmentUpdateInput,
+  params: { expectedVersion: string; assignment: TenantAssignmentInput },
   options?: RequestOptions,
-): Promise<R<ResourceDetail<AssignmentRecord>>> {
+): Promise<R<ResourceDetail<TenantAssignmentRecord>>> {
   filterParams(params);
-  return request.put<ResourceDetail<AssignmentRecord>>(
+  return request.put<ResourceDetail<TenantAssignmentRecord>>(
     `${IAM_API_PREFIX}/v1/tenant/assignments/${id}`,
     params,
     options,
@@ -221,12 +174,12 @@ export function TenantDelegationPageAPI(
   page: Page,
   condition?: IamListQuery,
   options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<DelegationRecord>>>> {
+): Promise<R<Page<ResourceDetail<TenantDelegationRecord>>>> {
   if (condition) {
     filterParams(condition);
   }
   return request
-    .get<IamPageResponse<ResourceDetail<DelegationRecord>>>(
+    .get<IamPageResponse<ResourceDetail<TenantDelegationRecord>>>(
       `${IAM_API_PREFIX}/v1/tenant/delegations`,
       toIamListParams(page, condition),
       options,
@@ -235,7 +188,7 @@ export function TenantDelegationPageAPI(
 }
 
 export function TenantDelegationCreateAPI(
-  params: DelegationInput,
+  params: TenantDelegationInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   return request.post<CreatedResource>(`${IAM_API_PREFIX}/v1/tenant/delegations`, params, options);
@@ -244,8 +197,8 @@ export function TenantDelegationCreateAPI(
 export function TenantDelegationDetailAPI(
   id: string,
   options?: RequestOptions,
-): Promise<R<ResourceDetail<DelegationRecord>>> {
-  return request.get<ResourceDetail<DelegationRecord>>(
+): Promise<R<ResourceDetail<TenantDelegationRecord>>> {
+  return request.get<ResourceDetail<TenantDelegationRecord>>(
     `${IAM_API_PREFIX}/v1/tenant/delegations/${id}`,
     undefined,
     options,
@@ -254,11 +207,11 @@ export function TenantDelegationDetailAPI(
 
 export function TenantDelegationUpdateAPI(
   id: string,
-  params: DelegationUpdateInput,
+  params: { expectedVersion: string; delegation: TenantDelegationInput },
   options?: RequestOptions,
-): Promise<R<ResourceDetail<DelegationRecord>>> {
+): Promise<R<ResourceDetail<TenantDelegationRecord>>> {
   filterParams(params);
-  return request.put<ResourceDetail<DelegationRecord>>(
+  return request.put<ResourceDetail<TenantDelegationRecord>>(
     `${IAM_API_PREFIX}/v1/tenant/delegations/${id}`,
     params,
     options,
@@ -278,7 +231,7 @@ export function TenantDelegationDeleteAPI(
 
 export function TenantDelegationPreviewAPI(
   id: string,
-  params: DelegationUpdateInput,
+  params: { expectedVersion: string; delegation: TenantDelegationInput },
   options?: RequestOptions,
 ): Promise<R<Preview<ReferenceImpactPreview>>> {
   filterParams(params);
@@ -333,40 +286,44 @@ export function TenantPolicyPreviewAPI(
   return request.post<Preview>(`${IAM_API_PREFIX}/v1/tenant/policies/preview`, params, options);
 }
 
-export function TenantRoleRevisionDetailAPI(
-  id: string,
-  revisionId: string,
-): Promise<R<ResourceDetail<RoleRevision>>> {
-  return request.get<ResourceDetail<RoleRevision>>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}`,
-  );
+export function TenantAssignmentOptionsAPI(query: {
+  kind: TenantAssignmentOptionKind;
+  delegationGrantId?: string;
+  keyword?: string;
+  ids?: string[];
+  page?: number;
+  pageSize?: number;
+}): Promise<R<IamPageResponse<TenantAssignmentOption>>> {
+  return request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/options`, query);
 }
-export function TenantRoleRevisionMetadataAPI(
+export function TenantAssignmentRoleDefinitionAPI(
   id: string,
-  revisionId: string,
-  input: import("@ingot/admin-common").RoleRevisionMetadataInput,
-): Promise<R<CreatedResource>> {
-  return request.patch<CreatedResource>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}/metadata`,
-    input,
-  );
+  delegationGrantId?: string,
+): Promise<R<CurrentRoleGrantList>> {
+  return request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/roles/${id}`, { delegationGrantId });
 }
-export function TenantRoleRevisionGrantsAPI(
-  id: string,
-  revisionId: string,
-): Promise<R<import("@ingot/admin-common").RoleGrantList>> {
-  return request.get<import("@ingot/admin-common").RoleGrantList>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/revisions/${revisionId}/grants`,
-  );
+export function TenantDelegationMineAPI(): Promise<R<TenantDelegationMine[]>> {
+  return request.get(`${IAM_API_PREFIX}/v1/tenant/delegations/mine`);
 }
-
-export function TenantRoleSourcePreviewAPI(
-  id: string,
-  draft: RolePreviewInput,
-  sourceId?: string,
-): Promise<R<Preview>> {
-  return request.post<Preview>(
-    `${IAM_API_PREFIX}/v1/tenant/roles/${id}/preview${sourceId ? `?sourceRevisionId=${encodeURIComponent(sourceId)}` : ""}`,
-    draft,
-  );
+export function TenantRoleGrantCatalogAPI(
+  applicationId: string,
+  page: Page,
+  keyword?: string,
+): Promise<R<Page<CurrentRoleCatalogAction>>> {
+  return request
+    .get<IamPageResponse<CurrentRoleCatalogAction>>(
+      `${IAM_API_PREFIX}/v1/tenant/roles/grant-catalog`,
+      { applicationId, keyword, page: page.current || 1, pageSize: page.size || 20 },
+    )
+    .then(asPage);
+}
+export function TenantDelegationScopeCandidatesAPI(query: {
+  resourceId: string;
+  parameterKey: string;
+  keyword?: string;
+  ids?: string[];
+  page?: number;
+  pageSize?: number;
+}): Promise<R<import("@ingot/admin-common").AuthorizationCandidatePage>> {
+  return request.get(`${IAM_API_PREFIX}/v1/tenant/delegations/scope-candidates`, query);
 }

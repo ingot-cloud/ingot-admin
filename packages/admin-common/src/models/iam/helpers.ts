@@ -27,9 +27,7 @@ import type {
   UpgradeResolution,
 } from "./types";
 
-export interface DepartmentTreeNode {
-  id: string;
-  name: string;
+export interface DepartmentTreeNode extends DepartmentRecord {
   children?: DepartmentTreeNode[];
 }
 
@@ -140,7 +138,7 @@ export function entitlementCollectionVersion(
 export function buildDepartmentTree(records: DepartmentRecord[]): DepartmentTreeNode[] {
   const nodes = new Map<string, DepartmentTreeNode>();
   for (const record of records) {
-    nodes.set(record.id, { id: record.id, name: record.name });
+    nodes.set(record.id, { ...record });
   }
   const roots: DepartmentTreeNode[] = [];
   const ordered = [...records].sort((left, right) => left.sortOrder - right.sortOrder);
