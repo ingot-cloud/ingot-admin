@@ -221,4 +221,5 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 当前活动变更
 
+- [组织角色即时授权与拥有者交互](./changes/active/20261014-org-tenant-live-authorization/README.md)（validating；2026-10-14 开发与隔离验证完成，待用户产品验收，未提交）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。

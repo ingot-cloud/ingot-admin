@@ -1,0 +1,5 @@
+Scope: 2 of 17 workspace projects
+plugins/org type-check$ vue-tsc -p tsconfig.app.json --noEmit
+plugins/platform type-check$ vue-tsc -p tsconfig.app.json --noEmit
+plugins/org type-check: Done
+plugins/platform type-check: Done

@@ -1,0 +1,5 @@
+admin-core: 466 passed, 1 failed (467); 112 passed test files, 1 failed.
+Known baseline: visual-contract.test.ts:379 expects missing margin in InAppBar.vue.
+Source: packages/admin-core/src/layouts/widgets/InAppBar.vue
+HEAD SHA-256: 1ca94ef7bb75a593184da4f8319b5255cff1f9abd78843b4d4a1ad5b38af1846
+Working SHA-256: 1ca94ef7bb75a593184da4f8319b5255cff1f9abd78843b4d4a1ad5b38af1846

@@ -1,0 +1,75 @@
+Scope: 2 of 17 workspace projects
+packages/admin-core build$ vite build && vue-tsc --build
+packages/admin-core build: vite v8.2.2 building client environment for production...
+packages/admin-core build: transforming...
+packages/admin-core build: ✓ 566 modules transformed.
+packages/admin-core build: [unocss] failed to load icon "material-symbols:vertical-align-top-rounded-const"
+packages/admin-core build: [unocss] failed to load icon "material-symbols:vertical-align-top-rounded-_component_el_backtop"
+packages/admin-core build: rendering chunks...
+packages/admin-core build: computing gzip size...
+packages/admin-core build: dist/style.css                              221.33 kB │ gzip:  71.39 kB
+packages/admin-core build: dist/_plugin-vue_export-helper-BOaGB7Aw.js    0.26 kB │ gzip:   0.18 kB
+packages/admin-core build: dist/IndexPage-BcEZJ1zo.js                    0.45 kB │ gzip:   0.28 kB
+packages/admin-core build: dist/IndexPage-BxwSmRNX.js                    0.45 kB │ gzip:   0.28 kB
+packages/admin-core build: dist/IndexPage-9O2ee316.js                    0.83 kB │ gzip:   0.47 kB
+packages/admin-core build: dist/IndexPage-Dpozp4nq.js                    1.22 kB │ gzip:   0.70 kB
+packages/admin-core build: dist/IndexPage-r10PdRDF.js                    1.56 kB │ gzip:   0.80 kB
+packages/admin-core build: dist/500Page-Dxk9AcYp.js                      1.66 kB │ gzip:   0.77 kB
+packages/admin-core build: dist/IndexPage-DfC72VP0.js                    1.67 kB │ gzip:   0.78 kB
+packages/admin-core build: dist/404Page-CfvmcHix.js                      1.67 kB │ gzip:   0.79 kB
+packages/admin-core build: dist/IndexPage-Ba9Imhax.js                    1.89 kB │ gzip:   0.92 kB
+packages/admin-core build: dist/rolldown-runtime-B-lAHAz2.js             1.96 kB │ gzip:   0.91 kB
+packages/admin-core build: dist/403Page-CmTOVZvv.js                      2.15 kB │ gzip:   1.00 kB
+packages/admin-core build: dist/IndexPage-DC-gqOSj.js                    2.41 kB │ gzip:   1.02 kB
+packages/admin-core build: dist/useGlobalLoading-DIcFzwKr.js             2.41 kB │ gzip:   1.00 kB
+packages/admin-core build: dist/IndexPage-Bz4rmW7V.js                    3.03 kB │ gzip:   1.19 kB
+packages/admin-core build: dist/InRouteRenderer-D0ZAS9o2.js              3.22 kB │ gzip:   1.38 kB
+packages/admin-core build: dist/InIcon-Cbw7IfXN.js                       3.28 kB │ gzip:   1.29 kB
+packages/admin-core build: dist/InContainer-CQ-Gni7M.js                  3.88 kB │ gzip:   1.54 kB
+packages/admin-core build: dist/routes-odoUC3Ra.js                       4.57 kB │ gzip:   1.54 kB
+packages/admin-core build: dist/message-DiZNxAC2.js                      6.21 kB │ gzip:   1.69 kB
+packages/admin-core build: dist/IndexPage-Cuq8RPjC.js                    6.52 kB │ gzip:   2.09 kB
+packages/admin-core build: dist/VerifyPoints-JFN-H1Jq.js                 7.62 kB │ gzip:   2.61 kB
+packages/admin-core build: dist/VerifySlide-CyWsVbAt.js                 12.40 kB │ gzip:   3.49 kB
+packages/admin-core build: dist/app-CRGrfdkT.js                         18.38 kB │ gzip:   6.28 kB
+packages/admin-core build: dist/InAdminThemeLayout-CfL0FEY-.js          32.76 kB │ gzip:   7.90 kB
+packages/admin-core build: dist/api-B-5FxOK0.js                        162.26 kB │ gzip:  35.78 kB
+packages/admin-core build: dist/InCopyright-Dxkx_44O.js                180.94 kB │ gzip:  38.56 kB
+packages/admin-core build: dist/router-BfTJPMyt.js                     184.47 kB │ gzip:  49.88 kB
+packages/admin-core build: dist/index.js                               538.85 kB │ gzip: 125.63 kB
+packages/admin-core build: ✓ built in 1.74s
+packages/admin-core build: [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0msrc/stores/modules/auth.ts is dynamically imported by src/net/failure.ts but also statically imported by src/components/container/InSplitLayout.vue?vue&type=script&setup=true&lang.ts, src/components/table/InTableActions.vue?vue&type=script&setup=true&lang.ts, src/components/table/useTableColumnSetting.ts, src/directive/authDirective.ts, src/hooks/biz/useCapabilities.ts, ..., dynamic import will not move module into another chunk.
+packages/admin-core build: Done
+packages/admin-common build$ vite build && vue-tsc --build
+packages/admin-common build: vite v8.2.2 building client environment for production...
+packages/admin-common build: transforming...
+packages/admin-common build: [plugin rolldown:vite-resolve] Module "crypto" has been externalized for browser compatibility, imported by "/Users/jy/Repositories/Github/ingot-cloud/ingot-admin/node_modules/.pnpm/asmcrypto.js@2.3.2/node_modules/asmcrypto.js/asmcrypto.all.es8.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+packages/admin-common build: ✓ 721 modules transformed.
+packages/admin-common build: rendering chunks...
+packages/admin-common build: computing gzip size...
+packages/admin-common build: dist/style.css                               86.65 kB │ gzip:  13.19 kB
+packages/admin-common build: dist/_plugin-vue_export-helper-BOaGB7Aw.js    0.26 kB │ gzip:   0.18 kB
+packages/admin-common build: dist/IndexPage-CLBTs6wI.js                    0.45 kB │ gzip:   0.28 kB
+packages/admin-common build: dist/IndexPage-DlQmJwCq.js                    0.83 kB │ gzip:   0.47 kB
+packages/admin-common build: dist/useRouter-DT0aeV3S.js                    1.21 kB │ gzip:   0.58 kB
+packages/admin-common build: dist/useContentScroll-I-HlWt6F.js             1.42 kB │ gzip:   0.60 kB
+packages/admin-common build: dist/IndexPage-Ddzvh_sx.js                    1.58 kB │ gzip:   0.82 kB
+packages/admin-common build: dist/useApi-CUgTH_jn-BvoQpMiY.js              1.60 kB │ gzip:   0.56 kB
+packages/admin-common build: dist/IndexPage-ZCYtzkKn.js                    1.67 kB │ gzip:   0.79 kB
+packages/admin-common build: dist/500Page-Cx0OqrAx.js                      1.68 kB │ gzip:   0.78 kB
+packages/admin-common build: dist/404Page-BGbJ3Gel.js                      1.69 kB │ gzip:   0.80 kB
+packages/admin-common build: dist/IndexPage-AAZ8vss-.js                    1.92 kB │ gzip:   0.93 kB
+packages/admin-common build: dist/403Page-D1YWKOlY.js                      2.17 kB │ gzip:   1.02 kB
+packages/admin-common build: dist/__vite-browser-external-9CpfhRRN.js      2.51 kB │ gzip:   1.09 kB
+packages/admin-common build: dist/IndexPage-eXZRL8pY.js                    8.59 kB │ gzip:   2.67 kB
+packages/admin-common build: dist/routes-C__vQ2ZE.js                       9.68 kB │ gzip:   2.71 kB
+packages/admin-common build: dist/IndexPage-CH7adJjs.js                   34.90 kB │ gzip:   8.38 kB
+packages/admin-common build: dist/types-wUb9EHRt.js                       74.71 kB │ gzip:  17.50 kB
+packages/admin-common build: dist/InAppBar-BvUZTxHq.js                   136.00 kB │ gzip:  29.39 kB
+packages/admin-common build: dist/crypto-js-D4KFk3cr.js                  160.23 kB │ gzip:  34.84 kB
+packages/admin-common build: dist/auth-DXlV55q3.js                       334.45 kB │ gzip:  87.38 kB
+packages/admin-common build: dist/index.js                               665.27 kB │ gzip: 135.04 kB
+packages/admin-common build: dist/index.es-CDauuqiH.js                   887.98 kB │ gzip: 155.18 kB
+packages/admin-common build: ✓ built in 1.50s
+packages/admin-common build: [33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../admin-core/src/stores/modules/auth.ts is dynamically imported by ../admin-core/src/net/failure.ts but also statically imported by ../admin-core/src/components/container/InSplitLayout.vue?vue&type=script&setup=true&lang.ts, ../admin-core/src/components/table/useTableColumnSetting.ts, ../admin-core/src/layouts/widgets/InAppBar.vue?vue&type=script&setup=true&lang.ts, ../admin-core/src/layouts/widgets/InGlobalSetting.vue?vue&type=script&setup=true&lang.ts, ../admin-core/src/layouts/widgets/header/useResolvedHeader.ts, ..., dynamic import will not move module into another chunk.
+packages/admin-common build: Done

@@ -1,0 +1,22 @@
+Scope: 3 of 17 workspace projects
+packages/admin-common test$ vitest run
+packages/admin-common test:  RUN  v4.1.11 /Users/jy/Repositories/Github/ingot-cloud/ingot-admin/packages/admin-common
+packages/admin-common test:  Test Files  33 passed (33)
+packages/admin-common test:       Tests  139 passed (139)
+packages/admin-common test:    Start at  14:56:02
+packages/admin-common test:    Duration  12.18s (transform 91.71s, setup 0ms, import 139.42s, tests 3.10s, environment 17.20s)
+packages/admin-common test: Done
+plugins/org test$ vitest run --passWithNoTests
+plugins/platform test$ vitest run --passWithNoTests
+plugins/org test:  RUN  v4.1.11 /Users/jy/Repositories/Github/ingot-cloud/ingot-admin/plugins/org
+plugins/platform test:  RUN  v4.1.11 /Users/jy/Repositories/Github/ingot-cloud/ingot-admin/plugins/platform
+plugins/org test:  Test Files  17 passed (17)
+plugins/org test:       Tests  35 passed (35)
+plugins/org test:    Start at  14:56:16
+plugins/org test:    Duration  12.75s (transform 10.77s, setup 0ms, import 13.52s, tests 204ms, environment 33.17s)
+plugins/org test: Done
+plugins/platform test:  Test Files  68 passed (68)
+plugins/platform test:       Tests  179 passed (179)
+plugins/platform test:    Start at  14:56:16
+plugins/platform test:    Duration  16.76s (transform 123.20s, setup 0ms, import 162.45s, tests 3.03s, environment 67.36s)
+plugins/platform test: Done

@@ -1,0 +1,13 @@
+
+> @ingot/admin-core@0.1.0 test /Users/jy/Repositories/Github/ingot-cloud/ingot-admin/packages/admin-core
+> vitest run src/stores/modules/auth.test.ts
+
+
+ RUN  v4.1.11 /Users/jy/Repositories/Github/ingot-cloud/ingot-admin/packages/admin-core
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  13:06:33
+   Duration  1.02s (transform 246ms, setup 0ms, import 352ms, tests 14ms, environment 563ms)
+
