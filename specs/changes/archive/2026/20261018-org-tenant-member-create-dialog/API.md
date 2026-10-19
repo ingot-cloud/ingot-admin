@@ -3,7 +3,7 @@
 ## 来源
 
 - 后端仓库：ingot
-- 后端 change：`specs/changes/active/20261018-iam-tenant-member-onboarding/`
+- 后端 change：`specs/changes/archive/2026/20261018-iam-tenant-member-onboarding/`
 
 ## 服务与约定
 

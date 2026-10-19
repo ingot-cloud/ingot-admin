@@ -15,10 +15,12 @@
 ## 对接接口
 
 - [20261017-org-members-dept-tabs API](../../../changes/archive/2026/20261017-org-members-dept-tabs/API.md)
-- 后端基线：`ingot/specs/current/iam/tenant-departments/`
+- [20261018-org-tenant-member-create-dialog API](../../../changes/archive/2026/20261018-org-tenant-member-create-dialog/API.md)
+- 后端基线：`ingot/specs/current/iam/tenant-departments/`、`ingot/specs/current/iam/tenant-members/`
 
 ## 变更记录
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
+| 2026-10-19 | [20261018-org-tenant-member-create-dialog](../../../changes/archive/2026/20261018-org-tenant-member-create-dialog/) | 用户要求归档；添加成员改为按手机号的对话框 |
 | 2026-10-17 | [20261017-org-members-dept-tabs](../../../changes/archive/2026/20261017-org-members-dept-tabs/) | 用户要求归档；成员与部门拆为两个子页面，并固化目录菜单 |
