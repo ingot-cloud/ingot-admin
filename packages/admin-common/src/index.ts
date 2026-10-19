@@ -69,3 +69,20 @@ export { default as BizIamCurrentRoleDrawer } from "./components/iam-current-rol
 export { default as BizIamTenantAssignmentDrawer } from "./components/iam-tenant-authorization/BizIamTenantAssignmentDrawer.vue";
 export { default as BizIamTenantDelegationDrawer } from "./components/iam-tenant-authorization/BizIamTenantDelegationDrawer.vue";
 export { default as BizIamAccountSecretDialog } from "./components/BizIamAccountSecretDialog.vue";
+
+export { default as BizTenantMemberSelect } from "./components/BizTenantMemberSelect.vue";
+export {
+  organizationMemberPickerKey,
+  useOrganizationMemberScopeKey,
+  OrganizationMemberScene,
+} from "./components/organizationMemberPicker";
+export type {
+  OrganizationMemberParams,
+  OrganizationMemberRelation,
+  OrganizationMemberBrowseParams,
+  OrganizationMemberBrowseQuery,
+  OrganizationMemberBrowseResult,
+  OrganizationMemberBrowseLoader,
+  DepartmentNavigationPage,
+  MemberPickerChanges,
+} from "./components/organizationMemberPicker";

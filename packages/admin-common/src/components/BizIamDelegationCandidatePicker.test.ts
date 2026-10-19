@@ -3,7 +3,8 @@ import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import { defineComponent, h } from "vue";
 import { describe, expect, it, vi } from "vitest";
-import type { R } from "@ingot/admin-core";
+import { usePermissions, type R } from "@ingot/admin-core";
+import { organizationMemberPickerKey } from "./organizationMemberPicker";
 import type { AuthorizationCandidatePage, AuthorizationCandidateQuery } from "../models/iam";
 import BizIamDelegationCandidatePicker from "./BizIamDelegationCandidatePicker.vue";
 
@@ -220,4 +221,92 @@ describe("委派实体候选", () => {
     await flushPromises();
     expect(show).toHaveBeenCalledWith([], undefined);
   });
+});
+
+describe("租户组织成员候选边界", () => {
+  const create = (api: ReturnType<typeof vi.fn>, ids: string[]) => {
+    const show = vi.fn(),
+      hide = vi.fn();
+    const pinia = createPinia();
+    const wrapper = mount(BizIamDelegationCandidatePicker, {
+      props: {
+        api,
+        query: { kind: "MEMBER" },
+        multiple: true,
+        modelValue: ids,
+        title: "选择成员",
+        placeholder: "请选择成员",
+        searchPlaceholder: "搜索姓名",
+      },
+      global: {
+        plugins: [pinia],
+        provide: { [organizationMemberPickerKey as symbol]: { loadDepartments: vi.fn() } },
+        stubs: {
+          ...stubs,
+          BizIamMemberPickerDialog: defineComponent({
+            setup(_, { expose }) {
+              expose({ show, hide });
+              return () => h("div");
+            },
+          }),
+          BizIamTreeCandidateDialog: defineComponent({
+            setup(_, { expose }) {
+              expose({ hide });
+              return () => h("div");
+            },
+          }),
+        },
+      },
+    });
+    return { wrapper, show, pinia };
+  };
+  it("大量旧选择只补首屏姓名，确认前不丢弃未加载ID", async () => {
+    const api = vi.fn().mockResolvedValue({
+      data: {
+        supported: true,
+        items: [{ id: "1", name: "甲" }],
+        total: 1,
+        page: 1,
+        pageSize: 20,
+      },
+    });
+    const ids = Array.from({ length: 45 }, (_, i) => String(i + 1));
+    const { wrapper, show } = create(api, ids);
+    await flushPromises();
+    expect(api).toHaveBeenCalledTimes(1);
+    expect(api.mock.calls[0]![0].ids).toHaveLength(20);
+    await wrapper.get('button[aria-label="请选择成员"]').trigger("click");
+    await flushPromises();
+    const selected = show.mock.calls[0]![0] as Array<{ id: string }>;
+    expect(selected.map((item) => item.id)).toEqual(ids);
+    expect(api.mock.calls.every((call) => call[0].ids.length <= 20)).toBe(true);
+    wrapper.unmount();
+  });
+  it.each(["epoch", "version"])(
+    "权限变化（%s）使未完成的名称回显失效，不再打开旧弹窗",
+    async (mode) => {
+      let finish: ((value: unknown) => void) | undefined;
+      const pending = new Promise((resolve) => {
+        finish = resolve;
+      });
+      const api = vi.fn().mockReturnValue(pending);
+      const { wrapper, show, pinia } = create(api, ["1"]);
+      await wrapper.get('button[aria-label="请选择成员"]').trigger("click");
+      if (mode === "epoch") usePermissions(pinia).bumpContextEpoch();
+      else usePermissions(pinia).version = "v2";
+      await flushPromises();
+      finish!({
+        data: {
+          supported: true,
+          items: [{ id: "1", name: "旧范围" }],
+          total: 1,
+          page: 1,
+          pageSize: 20,
+        },
+      });
+      await flushPromises();
+      expect(show).not.toHaveBeenCalled();
+      wrapper.unmount();
+    },
+  );
 });

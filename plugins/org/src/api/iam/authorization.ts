@@ -287,6 +287,7 @@ export function TenantPolicyPreviewAPI(
 }
 
 export function TenantAssignmentOptionsAPI(query: {
+  departmentId?: string;
   kind: TenantAssignmentOptionKind;
   delegationGrantId?: string;
   keyword?: string;

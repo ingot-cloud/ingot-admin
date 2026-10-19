@@ -155,6 +155,7 @@ export interface TenantDelegationMine {
 export type TenantAssignmentOptionKind =
   "ROLE" | "MEMBER" | "GROUP" | "RESOURCE" | "APPLICATION" | "DEPARTMENT";
 export interface TenantAssignmentOption {
+  departments?: import("./types").MemberDepartmentView[];
   id: string;
   name: string;
   kind: TenantAssignmentOptionKind;
@@ -168,6 +169,7 @@ export type CurrentGrantCatalogAPI = (
 
 export interface TenantAssignmentApis {
   optionsAPI: (query: {
+    departmentId?: string;
     kind: TenantAssignmentOptionKind;
     delegationGrantId?: string;
     keyword?: string;

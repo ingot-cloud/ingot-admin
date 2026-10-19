@@ -8,7 +8,19 @@
         <el-input v-model="draft.description" type="textarea" :rows="2" placeholder="请输入说明" />
       </el-form-item>
       <el-form-item label="成员">
-        <div class="flex flex-col gap-8px">
+        <biz-tenant-member-select
+          v-if="organization"
+          v-model="draft.memberIds"
+          multiple
+          :load-members="loadMembers"
+          :load-bound="
+            editing && loadBound ? (params) => loadBound!(editing!.record.id, params) : undefined
+          "
+          :relation="memberRelation"
+          @confirm="(_items, _primary, changes) => (memberChanges = changes)"
+          placeholder="请选择成员"
+        />
+        <div v-else class="flex flex-col gap-8px">
           <div class="flex flex-wrap gap-8px">
             <el-tag
               v-for="id in draft.memberIds"
@@ -18,7 +30,9 @@
             >
               {{ id }}
             </el-tag>
-            <span v-if="!draft.memberIds.length" class="text-[var(--el-text-color-secondary)]">未选择成员</span>
+            <span v-if="!draft.memberIds.length" class="text-[var(--el-text-color-secondary)]"
+              >未选择成员</span
+            >
           </div>
           <in-page-select
             v-model="memberPick"
@@ -44,7 +58,9 @@
             >
               {{ id }}
             </el-tag>
-            <span v-if="!draft.departmentIds.length" class="text-[var(--el-text-color-secondary)]">未选择部门</span>
+            <span v-if="!draft.departmentIds.length" class="text-[var(--el-text-color-secondary)]"
+              >未选择部门</span
+            >
           </div>
           <in-page-select
             v-model="departmentPick"
@@ -64,10 +80,15 @@
         <span v-if="editing.record.visibleMemberCount != null">
           有权范围内 {{ editing.record.visibleMemberCount }} 人（去重后）
         </span>
-        <span v-else class="text-[var(--el-text-color-secondary)]">当前身份无法披露人数，不以 0 代替</span>
+        <span v-else class="text-[var(--el-text-color-secondary)]"
+          >当前身份无法披露人数，不以 0 代替</span
+        >
       </el-form-item>
       <biz-iam-preview-alert v-if="preview" :preview="preview" />
-      <div v-if="impact" class="text-12px text-[var(--el-text-color-secondary)] flex flex-col gap-4px">
+      <div
+        v-if="impact"
+        class="text-12px text-[var(--el-text-color-secondary)] flex flex-col gap-4px"
+      >
         <div v-if="impact.impactSummary.affectedMembers != null">
           可披露受影响成员 {{ impact.impactSummary.affectedMembers }}
         </div>
@@ -86,7 +107,12 @@
     <template #footer>
       <in-button @click="visible = false">取消</in-button>
       <in-button v-if="editing" @click="privatePreview">预览影响</in-button>
-      <in-button type="primary" :loading="loading" :disabled="editing ? !preview?.valid : false" @in-click="privateSubmit">
+      <in-button
+        type="primary"
+        :loading="loading"
+        :disabled="editing ? !preview?.valid : false"
+        @in-click="privateSubmit"
+      >
         保存
       </in-button>
     </template>
@@ -95,6 +121,10 @@
 
 <script setup lang="ts">
 import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
+import { inject } from "vue";
+import BizTenantMemberSelect from "./BizTenantMemberSelect.vue";
+import type { MemberPickerChanges, OrganizationMemberParams } from "./organizationMemberPicker";
+import { organizationMemberPickerKey } from "./organizationMemberPicker";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
 import {
   emptySelectionDepartments,
@@ -109,16 +139,21 @@ import {
 } from "../models/iam";
 
 defineOptions({ name: "BizIamGroupEditDrawer" });
+const organization = inject(organizationMemberPickerKey, undefined);
 
 const props = withDefaults(
   defineProps<{
     allowDepartments?: boolean;
+    loadBound?: (id: string, params: OrganizationMemberParams) => Promise<Page<IamSelectOption>>;
     loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
     loadDepartments?: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
     createApi: (draft: GroupDraft) => Promise<R<CreatedResource>>;
     getApi: (id: string) => Promise<R<ResourceDetail<GroupRecord>>>;
     updateApi: (id: string, input: GroupUpdateInput) => Promise<R<ResourceDetail<GroupRecord>>>;
-    previewApi: (id: string, input: GroupUpdateInput) => Promise<R<Preview<ReferenceImpactPreview>>>;
+    previewApi: (
+      id: string,
+      input: GroupUpdateInput,
+    ) => Promise<R<Preview<ReferenceImpactPreview>>>;
   }>(),
   {
     allowDepartments: false,
@@ -141,11 +176,29 @@ const draft = reactive({
 const memberPick = ref("");
 const departmentPick = ref("");
 
+const memberChanges = ref<MemberPickerChanges>();
+const memberRelation = computed(() =>
+  editing.value && props.loadBound
+    ? {
+        boundIds: editing.value.record.selection.members,
+        added: memberChanges.value?.added,
+        removedIds: memberChanges.value?.removedIds,
+        partial: true,
+      }
+    : undefined,
+);
+watch(editing, () => {
+  memberChanges.value = undefined;
+});
 const title = computed(() => (editing.value ? "编辑组" : "创建组"));
 
-watch(draft, () => {
-  preview.value = null;
-}, { deep: true });
+watch(
+  draft,
+  () => {
+    preview.value = null;
+  },
+  { deep: true },
+);
 
 const asDraft = (): GroupDraft => ({
   name: draft.name.trim(),

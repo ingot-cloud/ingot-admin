@@ -185,20 +185,13 @@ import {
   BizIamDiagnoseDrawer,
   BizIamRecordLink,
   BizIamStatusTag,
-  IAM_DEFAULT_PAGE_SIZE,
   IamAction,
   RoleKind,
   createIamListLoader,
   toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import {
-  Confirm,
-  Message,
-  type InTableAction,
-  useCapabilities,
-  type LoadDataParams,
-} from "@ingot/admin-core";
+import { Confirm, Message, type InTableAction, useCapabilities } from "@ingot/admin-core";
 import {
   TenantAssignmentCreateAPI,
   TenantAssignmentScopeCandidatesAPI,
@@ -217,7 +210,7 @@ import {
   TenantDelegationUpdateAPI,
   TenantDiagnoseAPI,
 } from "@/api/iam/authorization";
-import { TenantApplicationPageAPI, TenantMemberPageAPI } from "@/api/iam/directory";
+import { TenantApplicationPageAPI, TenantMemberPickerLoad } from "@/api/iam/directory";
 import {
   assignmentHeaders,
   createAssignmentRowActions,
@@ -253,13 +246,7 @@ const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
 const diagnoseRef = ref<{ show: (preset?: { memberId?: string }) => void }>();
 
-const loadMembers = async (params: LoadDataParams) => {
-  const response = await TenantMemberPageAPI(
-    { current: params.current, size: params.size ?? IAM_DEFAULT_PAGE_SIZE },
-    { name: params.query, keyword: params.query },
-  );
-  return toIamSelectRecords(response.data);
-};
+const loadMembers = TenantMemberPickerLoad;
 const loadApplications = createIamListLoader(async (page, condition) => {
   const response = await TenantApplicationPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };

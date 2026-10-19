@@ -1,62 +1,68 @@
 <template>
   <div class="dept-tab" :style="tableTone">
-  <in-table
-    :loading="fetching"
-    :data="visibleTree"
-    :headers="visibleHeaders"
-    :table-id="TABLE_ID"
-    tree-column="name"
-    row-key="id"
-    :tree-expand="canExpandDept"
-    :checkbox="checkboxModeOf"
-    :feedback="searchName.trim() ? 'no-result' : 'none'"
-    v-model:expand-row-keys="expandRowKeys"
-    @selection-change="privateOnSelectionChange"
-  >
-    <template #tools-start>
-      <el-input
-        v-model="searchName"
-        class="w-200px"
-        clearable
-        placeholder="搜索部门名"
-        :prefix-icon="Search"
-      />
-      <in-table-column-setting
-        :headers="tableHeaders"
-        :table-id="TABLE_ID"
-        @change="privateOnColumnChange"
-      />
-    </template>
-    <template #tools-end>
-      <in-table-actions
-        variant="toolbar"
-        :actions="toolbarActions"
-        :row="toolbarRow"
-        :selected-count="selectedRows.length"
-      />
-    </template>
-    <template #name-header>
-      <span class="whitespace-nowrap">{{ nameHeader }}</span>
-    </template>
-    <template #name="{ item }">
-      <span
-        class="dept-name"
-        :class="{
-          'is-root': isRootDepartment(item),
-          'is-link': !isRootDepartment(item) && !item.navigationOnly,
-        }"
-        @click="privateOnNameClick(item)"
-      >
-        {{ item.name }}
-      </span>
-    </template>
-    <template #actions="{ item }">
-      <in-table-actions :actions="rowActionsOf(item)" :row="item" />
-    </template>
-  </in-table>
+    <in-table
+      :loading="fetching"
+      :data="visibleTree"
+      :headers="visibleHeaders"
+      :table-id="TABLE_ID"
+      tree-column="name"
+      row-key="id"
+      :tree-expand="canExpandDept"
+      :checkbox="checkboxModeOf"
+      :feedback="searchName.trim() ? 'no-result' : 'none'"
+      v-model:expand-row-keys="expandRowKeys"
+      @selection-change="privateOnSelectionChange"
+    >
+      <template #tools-start>
+        <el-input
+          v-model="searchName"
+          class="w-200px"
+          clearable
+          placeholder="搜索部门名"
+          :prefix-icon="Search"
+        />
+        <in-table-column-setting
+          :headers="tableHeaders"
+          :table-id="TABLE_ID"
+          @change="privateOnColumnChange"
+        />
+      </template>
+      <template #tools-end>
+        <in-table-actions
+          variant="toolbar"
+          :actions="toolbarActions"
+          :row="toolbarRow"
+          :selected-count="selectedRows.length"
+        />
+      </template>
+      <template #name-header>
+        <span class="whitespace-nowrap">{{ nameHeader }}</span>
+      </template>
+      <template #name="{ item }">
+        <span
+          class="dept-name"
+          :class="{
+            'is-root': isRootDepartment(item),
+            'is-link': !isRootDepartment(item) && !item.navigationOnly,
+          }"
+          @click="privateOnNameClick(item)"
+        >
+          {{ item.name }}
+        </span>
+      </template>
+      <template #leaderSummary="{ item }">
+        <span v-if="item.leaderSummary">
+          {{ formatDepartmentLeaderSummary(item.leaderSummary) }}
+        </span>
+        <span v-else>-</span>
+      </template>
+      <template #actions="{ item }">
+        <in-table-actions :actions="rowActionsOf(item)" :row="item" />
+      </template>
+    </in-table>
 
-  <DeptCreateDrawer ref="createRef" @success="privateRefresh" />
-  <DeptDetailDrawer ref="detailRef" @success="privateRefresh" />
+    <DeptCreateDrawer ref="createRef" @success="privateRefresh" />
+    <DeptDetailDrawer ref="detailRef" @success="privateRefresh" />
   </div>
 </template>
 
@@ -77,20 +83,14 @@ import {
 } from "../deptTable";
 import { DEPT_TABLE_ROW_HEIGHT, isRootDepartment } from "../deptTree";
 import { useDeptOps } from "../useDeptOps";
+import { formatDepartmentLeaderSummary } from "../leaderState";
 
 defineOptions({ name: "DeptTab" });
 
 const emits = defineEmits<{ success: [] }>();
 const deptOps = useDeptOps();
-const {
-  fetching,
-  searchName,
-  expandRowKeys,
-  visibleTree,
-  visibleHeaders,
-  TABLE_ID,
-  loadDepts,
-} = deptOps;
+const { fetching, searchName, expandRowKeys, visibleTree, visibleHeaders, TABLE_ID, loadDepts } =
+  deptOps;
 const createRef = ref<{ show: (options?: { parentId?: string }) => void }>();
 const detailRef = ref<{ show: (row: { id: string }) => void }>();
 const selectedRows = ref<DeptRow[]>([]);

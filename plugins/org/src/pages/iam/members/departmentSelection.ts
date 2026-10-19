@@ -7,6 +7,21 @@ export interface DepartmentChoice {
   path: string;
 }
 
+/** 上级部门单选禁选自身和子树，节点仍可展开。 */
+export function departmentSubtreeIds(nodes: DepartmentTreeNode[], targetId?: string): Set<string> {
+  const result = new Set<string>();
+  if (!targetId) return result;
+  const walk = (list: DepartmentTreeNode[], excluded = false): void => {
+    for (const node of list) {
+      const blocked = excluded || node.id === targetId;
+      if (blocked) result.add(node.id);
+      walk(node.children || [], blocked);
+    }
+  };
+  walk(nodes);
+  return result;
+}
+
 export interface DepartmentDisplay extends MemberDepartmentView {
   path: string;
 }

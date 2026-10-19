@@ -29,16 +29,19 @@
     }}</span>
   </div>
   <biz-iam-member-picker-dialog
-    v-if="multiple"
+    v-if="multiple || organizationMember"
     ref="multiDialog"
+    :organization="organizationMember"
+    :multiple="multiple"
     :title="title"
     :search-placeholder="searchPlaceholder"
     :show-avatar="query.kind === 'MEMBER'"
     :selected-unit="query.kind === 'MEMBER' ? '名成员' : '个对象'"
     :empty-text="unavailableMessage || '暂无可选内容'"
     :load-members="privateLoadMulti"
+    :load-browse="organizationMember ? loadMemberBrowse : undefined"
     :load-bound="loadSelected ? privateLoadBound : undefined"
-    @confirm="privateConfirmMulti"
+    @confirm="organizationMember ? privateConfirmTree($event) : privateConfirmMulti($event)"
     @load-error="iamEditorFailure"
   />
   <biz-iam-tree-candidate-dialog
@@ -52,7 +55,7 @@
     @confirm="privateConfirmTree"
   />
   <in-dialog
-    v-if="!multiple"
+    v-if="!multiple && !organizationMember"
     v-model="visible"
     :title="title"
     width="600px"
@@ -119,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { type LoadDataParams, type Page } from "@ingot/admin-core";
+import { useCapabilities, type LoadDataParams, type Page } from "@ingot/admin-core";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import {
   IAM_DEFAULT_PAGE_SIZE,
@@ -131,6 +134,13 @@ import {
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
 import BizIamTreeCandidateDialog from "./BizIamTreeCandidateDialog.vue";
 
+import { inject, computed } from "vue";
+import {
+  organizationMemberPickerKey,
+  useOrganizationMemberScopeKey,
+  type OrganizationMemberParams,
+} from "./organizationMemberPicker";
+
 defineOptions({ name: "BizIamDelegationCandidatePicker", inheritAttrs: false });
 const props = defineProps<{
   api: AuthorizationCandidatesApi;
@@ -141,6 +151,7 @@ const props = defineProps<{
   multiple?: boolean;
   disabled?: boolean;
   selectedOptions?: AuthorizationOption[];
+  loadMemberBrowse?: import("./organizationMemberPicker").OrganizationMemberBrowseLoader;
   loadSelected?: AuthorizationCandidatesApi;
   resetKey?: string | number;
 }>();
@@ -149,6 +160,10 @@ const emits = defineEmits<{
   /** 用户确认的完整选择快照，不由名称回显触发。 */
   confirm: [items: IamSelectOption[]];
 }>();
+const organizationContext = inject(organizationMemberPickerKey, undefined);
+const organizationPermissions = organizationContext ? useCapabilities() : undefined;
+const organizationScopeKey = useOrganizationMemberScopeKey(organizationPermissions);
+const organizationMember = computed(() => !!organizationContext && props.query.kind === "MEMBER");
 const model = defineModel<string | string[]>({ default: "" });
 const multiDialog = ref<InstanceType<typeof BizIamMemberPickerDialog>>();
 const treeDialog = ref<InstanceType<typeof BizIamTreeCandidateDialog>>();
@@ -206,6 +221,29 @@ const privateResolveSelected = async (refresh = false): Promise<IamSelectOption[
     emits("selection", selected);
     return selected;
   }
+  if (organizationMember.value) {
+    const missing = ids.filter((id) => !known.value[id]).slice(0, IAM_DEFAULT_PAGE_SIZE);
+    if (missing.length) {
+      const response = await props.api({
+        ...props.query,
+        ids: missing,
+        page: 1,
+        pageSize: IAM_DEFAULT_PAGE_SIZE,
+      });
+      if (current !== epoch || currentRequest !== hydrationRequest) return [];
+      if (response.data.supported) {
+        const requested = new Set(missing);
+        for (const item of response.data.items)
+          if (requested.has(item.id)) known.value[item.id] = { ...item };
+      }
+    }
+    // 表单持有的旧ID保持完整；只回显首屏标签，不循环回查整份组织成员列表。
+    const selected = ids.map(
+      (id) => known.value[id] || { id, name: "信息受限", labelPending: true },
+    );
+    emits("selection", selected);
+    return selected;
+  }
   const resolved: IamSelectOption[] = [];
   for (let offset = 0; offset < ids.length; offset += IAM_DEFAULT_PAGE_SIZE) {
     const batch = ids.slice(offset, offset + IAM_DEFAULT_PAGE_SIZE);
@@ -234,11 +272,14 @@ const privateResolveSelected = async (refresh = false): Promise<IamSelectOption[
   emits("selection", resolved);
   return resolved;
 };
-const privateLoadMulti = async (params: LoadDataParams): Promise<Page<IamSelectOption>> => {
+const privateLoadMulti = async (
+  params: OrganizationMemberParams,
+): Promise<Page<IamSelectOption>> => {
   const current = epoch;
   const response = await props.api({
     ...props.query,
     keyword: params.query,
+    departmentId: params.departmentId,
     page: params.current,
     pageSize: params.size,
   });
@@ -341,7 +382,7 @@ const privateOpen = async (): Promise<void> => {
         return;
       }
     }
-    if (props.multiple) {
+    if (props.multiple || organizationMember.value) {
       const initial = firstPage
         ? {
             records: firstPage.items,
@@ -418,7 +459,7 @@ watch(visible, (value) => {
   loading.value = false;
 });
 watch(
-  () => `${JSON.stringify(props.query)}:${props.resetKey || ""}`,
+  () => `${JSON.stringify(props.query)}:${props.resetKey || ""}:${organizationScopeKey.value}`,
   () => {
     epoch += 1;
     acceptProvidedOptions = false;

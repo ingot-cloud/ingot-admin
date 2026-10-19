@@ -685,6 +685,37 @@ export interface MemberDepartmentInput extends VersionInput {
   departments: MemberDepartmentBinding[];
 }
 
+export interface DepartmentLeaderRecord {
+  departments?: MemberDepartmentView[];
+  memberId: string;
+  displayName?: string;
+  status: MemberStatus;
+  primary: boolean;
+  available: boolean;
+}
+
+export interface DepartmentLeaderSummary {
+  primaryLeader?: DepartmentLeaderRecord;
+  visibleCount: number;
+  restricted: boolean;
+}
+
+export interface DepartmentLeaderPage {
+  items: DepartmentLeaderRecord[];
+  total: number;
+  page: number;
+  pageSize: number;
+  departmentVersion: string;
+  restricted: boolean;
+  primaryLeader?: DepartmentLeaderRecord;
+}
+
+export interface DepartmentLeaderUpdateInput extends VersionInput {
+  addMemberIds: string[];
+  removeMemberIds: string[];
+  primaryMemberId?: string;
+}
+
 export interface DepartmentRecord {
   id: string;
   parentId?: string;
@@ -693,6 +724,12 @@ export interface DepartmentRecord {
   navigationOnly: boolean;
   /** 本部门直属 ACTIVE 成员数；仅租户管理部门列表填充。 */
   memberCount?: number;
+  /** 仅管理列表/详情返回；受限关系不披露完整人数。 */
+  leaderSummary?: DepartmentLeaderSummary;
+  /** 仅详情返回当前读取范围内的上级部门名称。 */
+  parentDepartment?: { id: string; name: string };
+  /** 仅详情返回已授权的负责人首屏，后续沿关联接口分页。 */
+  leaderPage?: DepartmentLeaderPage;
 }
 
 export interface DepartmentTreeRow extends ResourceDetail<DepartmentRecord> {
@@ -1232,7 +1269,13 @@ export interface AssignmentContext {
 }
 export type AuthorizationCandidateKind =
   | "ROLE"
-  | "DELEGATION" | "ROLE_REVISION" | "MEMBER" | "GROUP" | "OBJECT" | "APPLICATION" | "ACTION";
+  | "DELEGATION"
+  | "ROLE_REVISION"
+  | "MEMBER"
+  | "GROUP"
+  | "OBJECT"
+  | "APPLICATION"
+  | "ACTION";
 export interface AuthorizationActionOption {
   id: string;
   name: string;
@@ -1263,6 +1306,7 @@ export interface AuthorizationOption {
   selectable?: boolean;
 }
 export interface AuthorizationCandidateQuery {
+  departmentId?: string;
   kind: AuthorizationCandidateKind;
   delegationGrantId?: string;
   revisionId?: string;

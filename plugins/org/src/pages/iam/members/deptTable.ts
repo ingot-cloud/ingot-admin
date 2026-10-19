@@ -27,6 +27,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     transform: (value: unknown) =>
       value === null || value === undefined || value === "" ? EMPTY_CELL : String(value),
   },
+  { label: "负责人", prop: "leaderSummary", width: "220" },
   { label: "排序", prop: "sortOrder", hide: true },
   { label: "操作", width: "240", prop: "actions", fixed: "right" },
 ];

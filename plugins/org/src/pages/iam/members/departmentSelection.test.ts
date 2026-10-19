@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   flattenDepartmentChoices,
+  departmentSubtreeIds,
   mergeDepartmentSelection,
   moveDepartmentChoice,
   sameDepartmentOrder,
@@ -10,6 +11,28 @@ import {
 } from "./departmentSelection";
 
 describe("departmentSelection", () => {
+  it("上级选择排除自身及子树，兄弟与根仍可选", () => {
+    const tree = [
+      {
+        id: "root",
+        name: "公司",
+        sortOrder: 0,
+        navigationOnly: false,
+        children: [
+          {
+            id: "self",
+            name: "研发",
+            sortOrder: 0,
+            navigationOnly: false,
+            children: [{ id: "child", name: "研发组", sortOrder: 0, navigationOnly: false }],
+          },
+          { id: "sibling", name: "产品", sortOrder: 0, navigationOnly: false },
+        ],
+      },
+    ];
+    expect([...departmentSubtreeIds(tree, "self")]).toEqual(["self", "child"]);
+    expect(departmentSubtreeIds(tree)).toEqual(new Set());
+  });
   const tree = flattenDepartmentChoices([
     {
       id: "root",

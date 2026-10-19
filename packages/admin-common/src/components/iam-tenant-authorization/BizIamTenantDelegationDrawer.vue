@@ -11,6 +11,7 @@
         ><biz-iam-delegation-candidate-picker
           v-model="draft.administratorMemberId"
           :api="optionsAPI"
+          :load-member-browse="loadMemberBrowse"
           :query="{ kind: 'MEMBER' }"
           title="选择授权管理员"
           placeholder="请选择管理员"
@@ -20,6 +21,7 @@
         ><biz-iam-delegation-candidate-picker
           v-model="draft.allowedRoleIds"
           :api="optionsAPI"
+          :load-member-browse="loadMemberBrowse"
           :query="{ kind: 'ROLE' }"
           multiple
           title="选择角色"
@@ -30,6 +32,7 @@
         ><biz-iam-delegation-candidate-picker
           v-model="draft.recipientSelection.members"
           :api="optionsAPI"
+          :load-member-browse="loadMemberBrowse"
           :query="{ kind: 'MEMBER' }"
           multiple
           title="选择接收成员"
@@ -117,6 +120,12 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { inject } from "vue";
+import {
+  organizationMemberPickerKey,
+  OrganizationMemberScene,
+  type OrganizationMemberBrowseLoader,
+} from "../organizationMemberPicker";
 import { ref, computed, watch, toRaw } from "vue";
 import {
   refreshSessionPermissions,
@@ -201,17 +210,37 @@ const departmentIds = computed({
     );
   },
 });
+const memberPickerContext = inject(organizationMemberPickerKey, undefined);
+const loadMemberBrowse = computed<OrganizationMemberBrowseLoader | undefined>(() =>
+  memberPickerContext?.browse
+    ? (params) =>
+        memberPickerContext.browse!({
+          ...params,
+          scene: OrganizationMemberScene.ASSIGNMENT,
+          delegationGrantId: undefined,
+        })
+    : undefined,
+);
 const optionsAPI: AuthorizationCandidatesApi = async (q) => {
   const response = await props.assignmentApis.optionsAPI({
     kind: q.kind as "ROLE" | "MEMBER" | "GROUP" | "RESOURCE",
     keyword: q.keyword,
+    departmentId: q.departmentId,
     ids: q.ids,
     page: q.page,
     pageSize: q.pageSize,
   });
   return {
     ...response,
-    data: { ...response.data, total: Number(response.data.total || 0), supported: true },
+    data: {
+      ...response.data,
+      items: response.data.items.map((item) => ({
+        ...item,
+        summary: item.departments?.map((department) => department.name).join("、"),
+      })),
+      total: Number(response.data.total || 0),
+      supported: true,
+    },
   };
 };
 const scopeAPIOf =

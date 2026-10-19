@@ -14,6 +14,7 @@
           <slot name="identity" />
         </div>
         <in-biz-tabs
+          v-if="tabs"
           v-model="tab"
           :align-content="alignContent"
           :content-padding="contentPadding"
@@ -21,6 +22,7 @@
         >
           <slot />
         </in-biz-tabs>
+        <div v-else class="in-detail-drawer__content"><slot /></div>
       </div>
     </div>
     <template v-if="showFooter" #footer>
@@ -46,12 +48,14 @@ defineOptions({
 });
 
 const open = defineModel<boolean>({ required: true });
-const tab = defineModel<string>("tab", { required: true });
+const tab = defineModel<string>("tab", { default: "basic" });
 const editing = defineModel<boolean>("editing", { default: false });
 
 const props = withDefaults(
   defineProps<{
     title: string;
+    tabs?: boolean;
+    editable?: boolean;
     editLabel?: string;
     saving?: boolean;
     loading?: unknown;
@@ -62,6 +66,8 @@ const props = withDefaults(
   }>(),
   {
     editLabel: "编辑",
+    tabs: true,
+    editable: true,
     padding: "0",
     size: "var(--in-drawer-width-detail)",
     alignContent: true,
@@ -106,7 +112,8 @@ provide(detailDrawerTabsKey, {
 
 const currentTabEditable = computed(() => paneEditable.get(tab.value) !== false);
 const showFooter = computed(
-  () => !isLoading.value && (editing.value || currentTabEditable.value),
+  () =>
+    !isLoading.value && (editing.value || (props.tabs ? currentTabEditable.value : props.editable)),
 );
 
 onUnmounted(() => {
@@ -174,6 +181,13 @@ const privateOnSave = (): void => {
   flex-direction: column;
   flex: 1;
   min-height: 0;
+}
+
+.in-detail-drawer__content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--in-space-5);
 }
 
 .in-detail-drawer__identity {

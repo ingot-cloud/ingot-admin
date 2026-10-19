@@ -14,7 +14,14 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item v-if="identityKind === 'member'" label="成员" required>
+        <biz-tenant-member-select
+          v-if="organization"
+          v-model="memberId"
+          :load-members="loadMembers"
+          placeholder="请选择成员"
+        />
         <in-page-select
+          v-else
           v-model="memberId"
           filterable
           remote
@@ -57,10 +64,14 @@
 
 <script setup lang="ts">
 import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
+import { inject } from "vue";
+import BizTenantMemberSelect from "./BizTenantMemberSelect.vue";
+import { organizationMemberPickerKey } from "./organizationMemberPicker";
 import BizIamDiagnosePanel from "./BizIamDiagnosePanel.vue";
 import type { Decision, DiagnoseInput, IamSelectOption } from "../models/iam";
 
 defineOptions({ name: "BizIamDiagnoseDrawer" });
+const organization = inject(organizationMemberPickerKey, undefined);
 
 const props = defineProps<{
   loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;

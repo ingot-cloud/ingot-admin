@@ -13,6 +13,26 @@ vi.mock("@/hooks/components/useDetailEditSession", () => ({
 }));
 
 describe("InDetailDrawer", () => {
+  it("无Tab模式直接展示正文，并按整体编辑资格控制入口", async () => {
+    const wrapper = mount(InDetailDrawer, {
+      props: { modelValue: true, title: "部门详情", tabs: false, editable: true },
+      slots: { default: () => "基本信息与部门负责人" },
+      global: {
+        stubs: {
+          InDrawer: { template: '<div><slot/><slot name="footer"/></div>' },
+          InBizTabs: { template: "<div data-tabs><slot/></div>" },
+          InButton: { template: "<button><slot/></button>" },
+        },
+      },
+    });
+    expect(wrapper.find("[data-tabs]").exists()).toBe(false);
+    expect(wrapper.text()).toContain("基本信息与部门负责人");
+    expect(wrapper.text()).toContain("编辑");
+    await wrapper.setProps({ editable: false });
+    expect(wrapper.text()).not.toContain("编辑");
+    wrapper.unmount();
+  });
+
   it("查看态只显示编辑按钮，编辑态显示取消和保存", async () => {
     const wrapper = mount(InDetailDrawer, {
       props: {
@@ -27,9 +47,9 @@ describe("InDetailDrawer", () => {
           InDrawer: {
             props: ["title", "layout"],
             template:
-              "<div class=\"drawer\" :data-layout=\"layout\"><div class=\"title\">{{ title }}</div><slot /><slot name=\"footer\" /></div>",
+              '<div class="drawer" :data-layout="layout"><div class="title">{{ title }}</div><slot /><slot name="footer" /></div>',
           },
-          InBizTabs: { template: "<div class=\"tabs\"><slot /></div>" },
+          InBizTabs: { template: '<div class="tabs"><slot /></div>' },
           InButton: { template: "<button><slot /></button>" },
         },
       },
@@ -59,7 +79,8 @@ describe("InDetailDrawer", () => {
         stubs: {
           InDrawer: {
             props: ["beforeClose"],
-            template: "<div><slot /><slot name=\"footer\" /><button class=\"close\" @click=\"run\" /></div>",
+            template:
+              '<div><slot /><slot name="footer" /><button class="close" @click="run" /></div>',
             setup(props: { beforeClose?: (done: () => void) => void }) {
               const run = () => {
                 props.beforeClose?.(() => {
@@ -98,8 +119,7 @@ describe("InDetailDrawer", () => {
       global: {
         stubs: {
           InDrawer: {
-            template:
-              '<div class="drawer"><slot /><slot name="footer" /></div>',
+            template: '<div class="drawer"><slot /><slot name="footer" /></div>',
           },
           InBizTabsHeader: { template: "<div />" },
           InButton: { template: "<button><slot /></button>" },
@@ -132,7 +152,7 @@ describe("InDetailDrawer", () => {
           InDrawer: {
             template: '<div class="drawer"><slot /><slot name="footer" /></div>',
           },
-          InBizTabs: { template: "<div class=\"tabs\"><slot /></div>" },
+          InBizTabs: { template: '<div class="tabs"><slot /></div>' },
           InFormSkeleton: { template: '<div class="in-form-skeleton">加载中</div>' },
           InButton: { template: "<button><slot /></button>" },
         },
@@ -156,9 +176,9 @@ describe("InDetailDrawer", () => {
           InDrawer: {
             template: '<div class="drawer"><slot /><slot name="footer" /></div>',
           },
-          InBizTabs: { template: "<div class=\"tabs\"><slot /></div>" },
+          InBizTabs: { template: '<div class="tabs"><slot /></div>' },
           InButton: {
-            template: "<button class=\"edit-btn\" @click=\"$emit('in-click')\"><slot /></button>",
+            template: '<button class="edit-btn" @click="$emit(\'in-click\')"><slot /></button>',
           },
         },
       },

@@ -2,7 +2,15 @@
   <div class="flex flex-col gap-12px">
     <div>
       <div class="mb-8px">成员</div>
+      <biz-tenant-member-select
+        v-if="organization"
+        v-model="model.members"
+        multiple
+        :load-members="loadMembers"
+        placeholder="请选择成员"
+      />
       <biz-iam-chip-page-select
+        v-else
         v-model="model.members"
         :load-data="loadMembers"
         placeholder="远程分页添加成员"
@@ -11,7 +19,11 @@
     </div>
     <div v-if="allowDepartments">
       <div class="mb-8px">部门</div>
-      <div v-for="(item, index) in model.departments" :key="`${item.id}-${index}`" class="flex items-center gap-8px">
+      <div
+        v-for="(item, index) in model.departments"
+        :key="`${item.id}-${index}`"
+        class="flex items-center gap-8px"
+      >
         <el-tag closable @close="privateRemoveDepartment(index)">
           {{ departmentLabels[item.id] ?? item.id }}
         </el-tag>
@@ -41,6 +53,9 @@ import {
   type IamSelectOption,
   type Selection,
 } from "../models/iam";
+import { inject } from "vue";
+import BizTenantMemberSelect from "./BizTenantMemberSelect.vue";
+import { organizationMemberPickerKey } from "./organizationMemberPicker";
 import BizIamChipPageSelect from "./BizIamChipPageSelect.vue";
 
 defineOptions({ name: "BizIamSelectionEditor" });
@@ -56,6 +71,7 @@ const props = withDefaults(
   },
 );
 
+const organization = inject(organizationMemberPickerKey, undefined);
 const model = defineModel<Selection>({ default: emptySelection });
 const departmentPick = ref("");
 const departmentLabels = reactive<Record<string, string>>({});

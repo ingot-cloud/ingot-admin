@@ -2,6 +2,7 @@ import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
   IAM_API_PREFIX,
+  IAM_DEFAULT_PAGE_SIZE,
   mapIamPage,
   toIamListParams,
   SelectionPurpose,
@@ -12,6 +13,8 @@ import {
   type AudienceUpdateInput,
   type CreatedResource,
   type DepartmentDraft,
+  type DepartmentLeaderPage,
+  type DepartmentLeaderUpdateInput,
   type DepartmentRecord,
   type DepartmentTreeRow,
   type DepartmentUpdateInput,
@@ -196,9 +199,7 @@ export function TenantAccountLookupAPI(
   );
 }
 
-export function TenantDepartmentTreeAPI(
-  options?: RequestOptions,
-): Promise<R<DepartmentTreeRow[]>> {
+export function TenantDepartmentTreeAPI(options?: RequestOptions): Promise<R<DepartmentTreeRow[]>> {
   return request.get<DepartmentTreeRow[]>(
     DEPT_PATH,
     { purpose: SelectionPurpose.MANAGED_DEPARTMENT },
@@ -206,7 +207,9 @@ export function TenantDepartmentTreeAPI(
   );
 }
 
-const flattenDepartmentTreeRows = (nodes: DepartmentTreeRow[]): Array<ResourceDetail<DepartmentRecord>> => {
+const flattenDepartmentTreeRows = (
+  nodes: DepartmentTreeRow[],
+): Array<ResourceDetail<DepartmentRecord>> => {
   const items: Array<ResourceDetail<DepartmentRecord>> = [];
   const walk = (list: DepartmentTreeRow[]): void => {
     for (const node of list) {
@@ -452,4 +455,163 @@ export function DirectoryContextAPI(options?: RequestOptions): Promise<R<Resourc
     undefined,
     options,
   );
+}
+
+/** 查询部门实际关联的负责人，不能用人员列表 ids 拼接回查。 */
+export function TenantDepartmentLeadersAPI(
+  id: string,
+  page: number,
+  keyword?: string,
+  options?: RequestOptions,
+): Promise<R<DepartmentLeaderPage>> {
+  return request.get<DepartmentLeaderPage>(
+    `${DEPT_PATH}/${id}/leaders`,
+    { page, pageSize: IAM_DEFAULT_PAGE_SIZE, keyword },
+    options,
+  );
+}
+
+/** 候选同时受负责人维护和已有成员读取范围约束。 */
+export function TenantDepartmentLeaderCandidatesAPI(
+  id: string,
+  page: number,
+  keyword?: string,
+  options?: RequestOptions,
+  browseDepartmentId?: string,
+): Promise<R<DepartmentLeaderPage>> {
+  return request.get<DepartmentLeaderPage>(
+    `${DEPT_PATH}/${id}/leader-candidates`,
+    { page, pageSize: IAM_DEFAULT_PAGE_SIZE, keyword, browseDepartmentId },
+    options,
+  );
+}
+
+/** 只提交显式增删和设主差量，不覆盖未加载关系。 */
+export function TenantDepartmentLeadersUpdateAPI(
+  id: string,
+  params: DepartmentLeaderUpdateInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  return request.patch<CreatedResource>(`${DEPT_PATH}/${id}/leaders`, params, options);
+}
+
+/** 按权限读取人员选择器的当前部门分支。 */
+export function TenantDepartmentNavigationAPI(
+  parentId?: string,
+  page = 1,
+): Promise<R<import("@ingot/admin-common").DepartmentNavigationPage>> {
+  return request.get(`${DEPT_PATH}/member-picker-navigation`, {
+    parentId,
+    page,
+    pageSize: IAM_DEFAULT_PAGE_SIZE,
+  });
+}
+/** 最小组织成员候选及少量已知ID回显。 */
+export async function TenantMemberPickerLoad(
+  params: import("@ingot/admin-common").OrganizationMemberParams,
+): Promise<Page<import("@ingot/admin-common").IamSelectOption>> {
+  const response = await request.get<IamPageResponse<MemberRecord>>(`${MEMBER_PATH}/picker`, {
+    departmentId: params.departmentId,
+    keyword: params.query,
+    ids: params.ids,
+    page: params.current || 1,
+    pageSize: params.size || IAM_DEFAULT_PAGE_SIZE,
+  });
+  return {
+    current: response.data.page,
+    size: response.data.pageSize,
+    total: Number(response.data.total),
+    records: response.data.items.map((item) => ({
+      id: item.id,
+      name: item.displayName || "姓名受限",
+      available: item.status === "ACTIVE",
+      summary: item.departments.map((department) => department.name).join("、"),
+    })),
+  };
+}
+export function TenantDepartmentEditAPI(
+  id: string,
+  input: {
+    expectedVersion: string;
+    department?: DepartmentDraft;
+    leaders?: Omit<DepartmentLeaderUpdateInput, "expectedVersion">;
+  },
+): Promise<R<ResourceDetail<DepartmentRecord>>> {
+  return request.patch(`${DEPT_PATH}/${id}`, input);
+}
+
+/** 组直接成员独立关联分页，供组织人员选择器已选栏使用。 */
+export async function TenantGroupBoundMembersLoad(
+  id: string,
+  params: import("@ingot/admin-common").OrganizationMemberParams,
+): Promise<Page<import("@ingot/admin-common").IamSelectOption>> {
+  const response = await request.get<IamPageResponse<MemberRecord>>(`${GROUP_PATH}/${id}/members`, {
+    page: params.current || 1,
+    pageSize: params.size || IAM_DEFAULT_PAGE_SIZE,
+  });
+  return {
+    current: response.data.page,
+    size: response.data.pageSize,
+    total: Number(response.data.total),
+    records: response.data.items.map((item) => ({
+      id: item.id,
+      name: item.displayName || "姓名受限",
+      available: item.status === "ACTIVE",
+      summary: item.departments.map((department) => department.name).join("、"),
+    })),
+  };
+}
+
+const MEMBER_PICKER_PATH = `${IAM_API_PREFIX}/v1/tenant/member-picker`;
+/** 一次请求返回组织导航和场景候选，真实任职与虚拟根标签分别消费。 */
+export async function TenantOrganizationMemberBrowseAPI(
+  params: import("@ingot/admin-common").OrganizationMemberBrowseQuery,
+  options?: RequestOptions,
+): Promise<R<import("@ingot/admin-common").OrganizationMemberBrowseResult>> {
+  type Result = {
+    navigationAvailable: boolean;
+    navigation: import("@ingot/admin-common").DepartmentNavigationPage;
+    members: IamPageResponse<{
+      id: string;
+      name?: string;
+      available: boolean;
+      departments: { id: string; name: string }[];
+      implicitRoot?: { id: string; name: string };
+    }>;
+  };
+  const response = await request.get<Result>(
+    `${MEMBER_PICKER_PATH}/browse`,
+    {
+      scene: params.scene,
+      departmentId: params.departmentId,
+      keyword: params.query,
+      targetDepartmentId: params.targetDepartmentId,
+      delegationGrantId: params.delegationGrantId,
+      page: params.current || 1,
+      pageSize: params.size || IAM_DEFAULT_PAGE_SIZE,
+      departmentPage: params.departmentPage || 1,
+      departmentPageSize: IAM_DEFAULT_PAGE_SIZE,
+    },
+    options,
+  );
+  return {
+    ...response,
+    data: {
+      navigationAvailable: response.data.navigationAvailable,
+      navigation: response.data.navigation,
+      members: {
+        current: response.data.members.page,
+        size: response.data.members.pageSize,
+        total: Number(response.data.members.total),
+        records: response.data.members.items.map((item) => ({
+          id: item.id,
+          name: item.name || "姓名受限",
+          available: item.available,
+          summary:
+            item.departments.map((department) => department.name).join("、") ||
+            item.implicitRoot?.name,
+        })),
+      },
+    },
+  };
 }

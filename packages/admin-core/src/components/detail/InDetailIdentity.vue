@@ -1,8 +1,11 @@
 <template>
   <div class="in-detail-identity">
     <div class="in-detail-identity__main">
+      <span v-if="showAvatar && slots.avatar" class="in-detail-identity__custom-avatar">
+        <slot name="avatar" />
+      </span>
       <el-upload
-        v-if="showAvatar && editable"
+        v-else-if="showAvatar && editable"
         class="in-detail-identity__uploader"
         :show-file-list="false"
         :accept="accept"
@@ -66,6 +69,7 @@ const props = withDefaults(
 );
 
 const slots = defineSlots<{
+  avatar?: () => unknown;
   status?: () => unknown;
   more?: () => unknown;
 }>();
@@ -113,6 +117,11 @@ const privateOnUploadError = (error: Error): void => {
 .in-detail-identity__uploader {
   display: inline-flex;
   line-height: 0;
+}
+
+.in-detail-identity__custom-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .in-detail-identity__uploader :deep(.el-upload) {

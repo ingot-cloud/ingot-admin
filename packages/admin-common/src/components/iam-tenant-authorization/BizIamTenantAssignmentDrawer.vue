@@ -25,6 +25,7 @@
         ><biz-iam-delegation-candidate-picker
           v-model="draft.roleId"
           :api="optionsAPI"
+          :load-member-browse="loadMemberBrowse"
           :query="{ kind: 'ROLE' }"
           title="选择角色"
           placeholder="请选择当前角色"
@@ -48,6 +49,7 @@
           v-model="draft.subject.id"
           :key="`${sourceId}:${draft.subject.type}`"
           :api="optionsAPI"
+          :load-member-browse="loadMemberBrowse"
           :query="{ kind: draft.subject.type }"
           title="选择接收对象"
           placeholder="请选择成员或用户组"
@@ -84,6 +86,12 @@
   </in-drawer>
 </template>
 <script setup lang="ts">
+import { inject } from "vue";
+import {
+  organizationMemberPickerKey,
+  OrganizationMemberScene,
+  type OrganizationMemberBrowseLoader,
+} from "../organizationMemberPicker";
 import { ref, computed, watch, toRaw } from "vue";
 import {
   refreshSessionPermissions,
@@ -152,18 +160,38 @@ const canAssignDirectly = computed(
     ),
 );
 const selectedSource = computed(() => sources.value.find((s) => s.id === sourceId.value));
+const memberPickerContext = inject(organizationMemberPickerKey, undefined);
+const loadMemberBrowse = computed<OrganizationMemberBrowseLoader | undefined>(() =>
+  memberPickerContext?.browse
+    ? (params) =>
+        memberPickerContext.browse!({
+          ...params,
+          scene: OrganizationMemberScene.ASSIGNMENT,
+          delegationGrantId: sourceId.value || undefined,
+        })
+    : undefined,
+);
 const optionsAPI: AuthorizationCandidatesApi = async (q) => {
   const response = await props.apis.optionsAPI({
     kind: q.kind as "ROLE" | "MEMBER" | "GROUP" | "RESOURCE",
     delegationGrantId: sourceId.value || undefined,
     keyword: q.keyword,
+    departmentId: q.departmentId,
     ids: q.ids,
     page: q.page,
     pageSize: q.pageSize,
   });
   return {
     ...response,
-    data: { ...response.data, total: Number(response.data.total || 0), supported: true },
+    data: {
+      ...response.data,
+      items: response.data.items.map((item) => ({
+        ...item,
+        summary: item.departments?.map((department) => department.name).join("、"),
+      })),
+      total: Number(response.data.total || 0),
+      supported: true,
+    },
   };
 };
 const scopeAPI: AuthorizationCandidatesApi = (q) =>

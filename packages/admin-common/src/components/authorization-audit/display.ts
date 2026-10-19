@@ -13,6 +13,7 @@ export const AUDIT_FIELD_LABELS: Record<string, string> = {
   ENTITLEMENT: "应用开通",
   POLICY_VERSION: "策略版本",
   OWNER_MEMBER: "所有者",
+  DEPARTMENT_LEADERS: "部门负责人",
 };
 export const AUDIT_RESOURCE_LABELS: Record<string, string> = {
   account: "账号",

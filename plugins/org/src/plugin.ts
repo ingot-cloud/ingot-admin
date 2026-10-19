@@ -6,6 +6,12 @@ import {
 } from "@ingot/admin-core";
 import { domainGlobalComponents } from "./components/global";
 
+import { organizationMemberPickerKey } from "@ingot/admin-common";
+import {
+  TenantDepartmentNavigationAPI,
+  TenantOrganizationMemberBrowseAPI,
+} from "./api/iam/directory";
+
 interface InPageModule {
   default: Component;
 }
@@ -22,4 +28,11 @@ export const orgPlugin: InAdminPlugin = {
     canonicalPrefix: "org",
   }),
   components: domainGlobalComponents,
+  install({ app }) {
+    app.provide(organizationMemberPickerKey, {
+      browse: async (params) => (await TenantOrganizationMemberBrowseAPI(params)).data,
+      loadDepartments: async (parentId, page) =>
+        (await TenantDepartmentNavigationAPI(parentId, page)).data,
+    });
+  },
 };

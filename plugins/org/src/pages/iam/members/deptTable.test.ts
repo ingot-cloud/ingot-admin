@@ -19,7 +19,14 @@ const handlers = {
 };
 
 const row = {
-  record: { id: "1", parentId: "root", name: "研发", sortOrder: 1, navigationOnly: false, memberCount: 3 },
+  record: {
+    id: "1",
+    parentId: "root",
+    name: "研发",
+    sortOrder: 1,
+    navigationOnly: false,
+    memberCount: 3,
+  },
   fieldAccess: {},
   capabilities: {
     [IamAction.TENANT_DEPARTMENT_READ]: { allowed: true },
@@ -46,9 +53,12 @@ describe("org iam members deptTable", () => {
     expect(tableHeaders.filter((item) => !item.hide).map((item) => item.prop)).toEqual([
       "name",
       "memberCount",
+      "leaderSummary",
       "actions",
     ]);
-    expect(tableHeaders.find((item) => item.prop === "memberCount")?.transform?.(null)).toBe(EMPTY_CELL);
+    expect(tableHeaders.find((item) => item.prop === "memberCount")?.transform?.(null)).toBe(
+      EMPTY_CELL,
+    );
     expect(tableHeaders.find((item) => item.prop === "memberCount")?.transform?.(12)).toBe("12");
   });
 
@@ -66,7 +76,9 @@ describe("org iam members deptTable", () => {
     ]);
     expect(empty.every((item) => item.overflow === "never")).toBe(true);
     expect(empty.find((item) => item.key === "batch-delete")?.disabled).toBe(true);
-    expect(empty.find((item) => item.key === "batch-delete")?.disabledReason).toBe(SELECT_DEPTS_FIRST);
+    expect(empty.find((item) => item.key === "batch-delete")?.disabledReason).toBe(
+      SELECT_DEPTS_FIRST,
+    );
 
     const selected = createToolbarActions({
       onCreate: () => undefined,
@@ -95,7 +107,10 @@ describe("org iam members deptTable", () => {
   });
 
   it("导航骨架禁用详情和删除", () => {
-    const actions = createRowActions({ ...row, navigationOnly: true, record: { ...row.record, navigationOnly: true } }, handlers);
+    const actions = createRowActions(
+      { ...row, navigationOnly: true, record: { ...row.record, navigationOnly: true } },
+      handlers,
+    );
     expect(actions.find((item) => item.key === "detail")?.disabled).toBe(true);
     expect(actions.find((item) => item.key === "delete")?.disabled).toBe(true);
   });

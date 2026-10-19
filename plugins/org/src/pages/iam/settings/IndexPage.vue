@@ -21,15 +21,10 @@
             <in-button type="primary" :loading="saving" @click="privateSave">保存设置</in-button>
           </el-form-item>
           <el-form-item v-if="canTransfer" label="新所有者">
-            <in-page-select
+            <biz-tenant-member-select
               v-model="newOwnerMemberId"
-              filterable
-              remote
-              clearable
-              value-field="id"
-              label-field="name"
+              :load-members="loadMembers"
               placeholder="选择当前组织内有效成员"
-              :load-data="loadMembers"
             />
           </el-form-item>
           <el-form-item v-if="canTransfer">
@@ -51,15 +46,14 @@
 <script lang="ts" setup>
 import { Confirm, Message, refreshSessionPermissions, usePermissions } from "@ingot/admin-core";
 import {
-  createIamListLoader,
-  toIamSelectRecords,
   IamAction,
   objectActionAllowed,
   type ResourceDetail,
   type TenantRecord,
+  BizTenantMemberSelect,
 } from "@ingot/admin-common";
 import {
-  TenantMemberPageAPI,
+  TenantMemberPickerLoad,
   TenantOwnerTransferAPI,
   TenantSettingsAPI,
   TenantSettingsUpdateAPI,
@@ -78,10 +72,7 @@ const newOwnerMemberId = ref("");
 const saving = ref(false);
 const transferring = ref(false);
 
-const loadMembers = createIamListLoader(async (page, condition) => {
-  const response = await TenantMemberPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
+const loadMembers = TenantMemberPickerLoad;
 
 const load = (): void => {
   TenantSettingsAPI().then((response) => {

@@ -1,10 +1,11 @@
 <template>
   <in-detail-drawer
     v-model="visible"
-    v-model:tab="tab"
     v-model:editing="editing"
     title="部门详情"
-    edit-label="编辑基本信息"
+    edit-label="编辑"
+    :tabs="false"
+    :editable="canEdit || canManageLeaders"
     :loading="loading"
     :saving="saving"
     @edit="privateEnterEdit"
@@ -12,7 +13,8 @@
     @save="privateSave"
   >
     <template #identity>
-      <in-detail-identity :name="detail?.record.name || ''" :show-avatar="false" :editable="false">
+      <in-detail-identity :name="detail?.record.name || ''" :editable="false">
+        <template #avatar><department-mark :size="56" /></template>
         <template #more>
           <el-dropdown
             trigger="click"
@@ -31,47 +33,68 @@
       </in-detail-identity>
     </template>
 
-    <in-biz-tab-panel title="基本信息" name="basic" :editable="canEdit">
-      <in-form v-if="detail" :editing="editing">
-        <in-detail-field label="部门名称" :value="detail.record.name">
-          <el-input v-model="draft.name" clearable placeholder="请输入部门名称" />
-        </in-detail-field>
-        <in-detail-field label="上级部门" :value="detail.record.parentId || '-'">
-          <in-page-select
-            v-model="draft.parentId"
-            filterable
-            remote
-            clearable
-            value-field="id"
-            label-field="name"
+    <el-alert
+      v-if="conflict"
+      class="mb-12px"
+      type="warning"
+      :closable="false"
+      title="部门配置已变化，草稿已保留。请取消编辑并重新加载后核对。"
+    />
+    <in-form v-if="detail" :editing="editing">
+      <in-detail-field label="部门名称" :value="detail.record.name">
+        <template v-if="canEdit" #default
+          ><el-input v-model="draft.name" clearable placeholder="请输入部门名称"
+        /></template>
+      </in-detail-field>
+      <in-detail-field label="上级部门" :value="parentLabel">
+        <template v-if="canEdit" #default
+          ><member-department-field
+            v-model="parentSelection"
+            :multiple="false"
+            :disabled="saving"
+            :exclude-department-id="detail.record.id"
             placeholder="请选择上级部门"
-            :load-data="loadDepartments"
-          />
-        </in-detail-field>
-        <in-detail-field label="排序" :value="detail.record.sortOrder">
-          <el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序" />
-        </in-detail-field>
-      </in-form>
-    </in-biz-tab-panel>
+            @update:model-value="draft.parentId = $event[0]?.id || ''"
+        /></template>
+      </in-detail-field>
+      <in-detail-field label="排序" :value="detail.record.sortOrder">
+        <template v-if="canEdit" #default
+          ><el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序"
+        /></template>
+      </in-detail-field>
+      <el-form-item label="部门负责人">
+        <DepartmentLeaderField
+          :key="`${detail.record.id}:${detail.version}`"
+          :department-id="detail.record.id"
+          :initial-page="detail.record.leaderPage"
+          :editing="editing && canManageLeaders"
+          :can-read="canReadMembers && !!detail.record.leaderPage"
+          :disabled="saving"
+          @change="leaderChanges = $event"
+        />
+      </el-form-item>
+    </in-form>
   </in-detail-drawer>
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, useDetailEditSession } from "@ingot/admin-core";
+import { Confirm, Message, useDetailEditSession, useCapabilities } from "@ingot/admin-core";
 import {
-  createIamListLoader,
   IamAction,
   objectActionAllowed,
-  toIamSelectRecords,
+  type MemberDepartmentView,
   type DepartmentRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
   TenantDepartmentDeleteAPI,
   TenantDepartmentDetailAPI,
-  TenantDepartmentPageAPI,
-  TenantDepartmentUpdateAPI,
+  TenantDepartmentEditAPI,
 } from "@/api/iam/directory";
+
+import DepartmentLeaderField from "./DepartmentLeaderField.vue";
+import DepartmentMark from "./DepartmentMark.vue";
+import MemberDepartmentField from "./MemberDepartmentField.vue";
 
 defineOptions({ name: "DeptDetailDrawer" });
 
@@ -79,10 +102,21 @@ const emits = defineEmits<{ success: [] }>();
 const session = useDetailEditSession();
 const { editing } = session;
 const visible = ref(false);
-const tab = ref("basic");
+const { hasAction, contextEpoch, version, unavailable, actionCodes } = useCapabilities();
+const canReadMembers = computed(() => hasAction(IamAction.TENANT_MEMBER_READ));
+const leaderChanges =
+  ref<Omit<import("@ingot/admin-common").DepartmentLeaderUpdateInput, "expectedVersion">>();
+const conflict = ref(false);
+let request = 0;
 const loading = ref(false);
 const saving = computed(() => session.saving.value);
 const detail = ref<ResourceDetail<DepartmentRecord>>();
+const parentSelection = ref<MemberDepartmentView[]>([]);
+const parentLabel = computed(() =>
+  detail.value?.record.parentId
+    ? detail.value.record.parentDepartment?.name || "上级部门信息受限"
+    : "-",
+);
 const draft = reactive({
   name: "",
   parentId: "",
@@ -94,76 +128,113 @@ const canEdit = computed(
     !detail.value?.record.navigationOnly &&
     objectActionAllowed(detail.value?.capabilities, IamAction.TENANT_DEPARTMENT_UPDATE).allowed,
 );
+const canManageLeaders = computed(
+  () =>
+    canReadMembers.value &&
+    !detail.value?.record.navigationOnly &&
+    objectActionAllowed(detail.value?.capabilities, IamAction.TENANT_DEPARTMENT_LEADERS).allowed,
+);
+
 const canDelete = computed(
   () =>
     !detail.value?.record.navigationOnly &&
     objectActionAllowed(detail.value?.capabilities, IamAction.TENANT_DEPARTMENT_DELETE).allowed,
 );
 
-const loadDepartments = createIamListLoader(async (page, condition) => {
-  const response = await TenantDepartmentPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
-
 const applyDraft = (record: DepartmentRecord): void => {
   draft.name = record.name;
   draft.parentId = record.parentId ?? "";
   draft.sortOrder = record.sortOrder;
+  parentSelection.value = record.parentId
+    ? [
+        {
+          id: record.parentId,
+          name: record.parentDepartment?.name || "上级部门信息受限",
+          primary: true,
+        },
+      ]
+    : [];
 };
 
 const load = (id: string): void => {
+  const current = ++request;
   loading.value = true;
   detail.value = undefined;
+  leaderChanges.value = undefined;
+  conflict.value = false;
   TenantDepartmentDetailAPI(id)
     .then((response) => {
+      if (current !== request) return;
       detail.value = response.data;
       applyDraft(response.data.record);
     })
     .finally(() => {
-      loading.value = false;
+      if (current === request) loading.value = false;
     });
 };
 
 const privateEnterEdit = (): void => {
-  if (canEdit.value) {
+  if (canEdit.value || canManageLeaders.value) {
     session.enterEdit();
   }
 };
 
 const privateCancel = (): void => {
   session.exitEdit();
-  if (detail.value) {
-    applyDraft(detail.value.record);
-  }
+  if (detail.value) load(detail.value.record.id);
 };
 
-const privateSave = (): void => {
-  if (!detail.value || !canEdit.value) {
-    return;
-  }
-  if (!draft.name.trim()) {
+const privateSave = async (): Promise<void> => {
+  if (!detail.value || saving.value || conflict.value) return;
+  const record = detail.value.record;
+  const basicChanged =
+    canEdit.value &&
+    (draft.name !== record.name ||
+      (draft.parentId || undefined) !== record.parentId ||
+      draft.sortOrder !== record.sortOrder);
+  if (basicChanged && !draft.name.trim()) {
     Message.warning("请填写部门名称");
     return;
   }
+  if (!basicChanged && !leaderChanges.value) {
+    session.exitEdit();
+    return;
+  }
+  const current = request;
   session.saving.value = true;
-  TenantDepartmentUpdateAPI(detail.value.record.id, {
-    expectedVersion: detail.value.version,
-    department: {
-      parentId: draft.parentId || undefined,
-      name: draft.name.trim(),
-      sortOrder: draft.sortOrder,
-    },
-  })
-    .then((response) => {
-      detail.value = response.data;
-      applyDraft(response.data.record);
-      Message.success("部门已更新");
-      session.exitEdit();
-      emits("success");
-    })
-    .finally(() => {
-      session.saving.value = false;
+  try {
+    const response = await TenantDepartmentEditAPI(record.id, {
+      expectedVersion: detail.value.version,
+      ...(basicChanged
+        ? {
+            department: {
+              parentId: draft.parentId || undefined,
+              name: draft.name.trim(),
+              sortOrder: draft.sortOrder,
+            },
+          }
+        : {}),
+      ...(canManageLeaders.value && leaderChanges.value ? { leaders: leaderChanges.value } : {}),
     });
+    if (current !== request) return;
+    detail.value = response.data;
+    applyDraft(response.data.record);
+    leaderChanges.value = undefined;
+    session.exitEdit();
+    Message.success("部门已保存");
+    emits("success");
+  } catch (error) {
+    if (
+      current === request &&
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "RevisionConflict"
+    )
+      conflict.value = true;
+  } finally {
+    if (current === request) session.saving.value = false;
+  }
 };
 
 const privateDelete = (): void => {
@@ -187,10 +258,24 @@ const privateOnMoreCommand = (command: string): void => {
   }
 };
 
+watch(
+  () => JSON.stringify([contextEpoch.value, version.value, unavailable.value, actionCodes.value]),
+  () => {
+    request++;
+    visible.value = false;
+    detail.value = undefined;
+    leaderChanges.value = undefined;
+    session.exitEdit();
+    session.saving.value = false;
+  },
+);
+onBeforeUnmount(() => {
+  request++;
+});
+
 defineExpose({
   show(row: { id: string }) {
     visible.value = true;
-    tab.value = "basic";
     session.exitEdit();
     load(row.id);
   },

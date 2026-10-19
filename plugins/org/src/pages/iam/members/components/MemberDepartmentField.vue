@@ -1,32 +1,59 @@
 <template>
   <div
-    class="dept-field relative box-border flex min-h-32px w-full cursor-pointer flex-wrap items-center gap-4px rounded-6px border border-solid border-[#d0d3d6] bg-white py-3px pl-4px pr-36px hover:border-[var(--el-color-primary)]"
+    class="dept-field relative box-border flex min-h-32px w-full flex-wrap items-center gap-4px rounded-6px border border-solid border-[var(--in-border-color)] bg-[var(--in-bg-color-surface)] py-3px pl-4px pr-36px"
+    :class="
+      disabled
+        ? 'cursor-not-allowed opacity-60'
+        : 'cursor-pointer hover:border-[var(--in-color-primary)]'
+    "
+    role="button"
+    :tabindex="disabled ? -1 : 0"
+    :aria-label="placeholder"
+    :aria-disabled="disabled"
+    @keydown.enter.self.prevent="privateOpen"
+    @keydown.space.self.prevent="privateOpen"
     @click="privateOpen"
   >
-    <span v-if="!model.length" class="px-8px text-[var(--in-text-color-placeholder)]"
-      >请选择部门</span
-    >
+    <span v-if="!model.length" class="px-8px text-[var(--in-text-color-placeholder)]">{{
+      placeholder
+    }}</span>
     <span
       v-for="item in model"
       :key="item.id"
-      class="dept-field__tag inline-flex h-24px max-w-full items-center gap-4px rounded-2px bg-[#eff0f1] pl-8px pr-2px text-14px text-[#1f2329]"
+      class="dept-field__tag inline-flex h-24px max-w-full items-center gap-4px rounded-2px bg-[var(--in-bg-color-hover)] pl-8px pr-2px text-14px text-[var(--in-text-color)]"
     >
       <department-mark variant="glyph" />
       <span class="truncate">{{ item.name }}</span>
-      <in-close-button size="sm" :label="`移除 ${item.name}`" @click="privateRemoveDraft(item.id)" />
+      <in-close-button
+        v-if="!disabled"
+        size="sm"
+        :label="`移除 ${item.name}`"
+        @click="privateRemoveDraft(item.id)"
+      />
     </span>
     <button
       type="button"
       class="absolute top-1/2 right-8px inline-flex -translate-y-1/2 border-0 bg-transparent p-0 text-[var(--el-text-color-secondary)] cursor-pointer"
-      aria-label="请选择部门"
+      :aria-label="placeholder"
+      :disabled="disabled"
       @click.stop="privateOpen"
     >
       <in-icon name="ep:edit" />
     </button>
   </div>
-  <in-dialog v-model="visible" title="请选择部门" width="900px" append-to-body>
+  <in-dialog
+    v-model="visible"
+    :title="placeholder"
+    :width="multiple ? '900px' : '600px'"
+    layout="pinned"
+    append-to-body
+  >
     <div class="dept-picker in-split-picker h-522px flex">
-      <in-loading :loading="loading" class="w-1/2! min-w-0 flex flex-col overflow-hidden">
+      <in-loading
+        :loading="loading"
+        class="min-w-0 flex flex-col overflow-hidden"
+        :class="multiple ? 'w-1/2!' : 'w-full!'"
+      >
         <div class="px-16px pt-16px pb-8px">
           <el-input v-model="keyword" clearable placeholder="请输入部门名">
             <template #prefix>
@@ -40,18 +67,29 @@
             ref="treeRef"
             :data="tree"
             node-key="id"
-            show-checkbox
+            :show-checkbox="multiple"
             check-strictly
-            check-on-click-node
+            :check-on-click-node="multiple"
+            :highlight-current="!multiple"
             :expand-on-click-node="false"
             :indent="26"
             :default-expanded-keys="expandedKeys"
             :props="treeProps"
             :filter-node-method="privateFilterNode"
             @check="privateOnCheck"
+            @node-click="privateChooseSingle"
           >
             <template #default="{ data }">
-              <span class="dept-pick-node">
+              <span class="dept-pick-node" :class="{ 'is-disabled': privateDisabled(data) }">
+                <el-radio
+                  v-if="!multiple"
+                  :model-value="selected[0]?.id"
+                  :value="data.id"
+                  :disabled="privateDisabled(data)"
+                  :aria-label="data.name"
+                  @change="privateChooseSingle(data)"
+                  @click.stop
+                />
                 <department-mark />
                 <span class="dept-pick-name truncate">{{ data.name }}</span>
               </span>
@@ -69,9 +107,9 @@
           </div>
         </div>
       </in-loading>
-      <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
+      <div v-if="multiple" class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between px-12px pt-16px pb-8px">
-          <span class="text-14px text-[#18263c]">拖曳部门可调整优先级</span>
+          <span class="text-14px text-[var(--in-text-color)]">拖曳部门可调整优先级</span>
           <in-button type="primary" link :disabled="!selected.length" @in-click="privateClear"
             >清空</in-button
           >
@@ -81,7 +119,7 @@
             v-for="(item, index) in selected"
             :key="item.id"
             class="flex items-center gap-8px min-h-48px px-8px"
-            :class="{ 'bg-[#f5f6f7]': dragOverId === item.id }"
+            :class="{ 'bg-[var(--in-bg-color-hover)]': dragOverId === item.id }"
             @dragover.prevent="privateOnDragOver(item.id, $event)"
             @drop.prevent="privateOnDrop(item.id, $event)"
             @dragleave="privateOnDragLeave(item.id)"
@@ -89,20 +127,24 @@
             <department-mark />
             <span class="min-w-0 flex-1">
               <span class="flex items-center gap-4px">
-                <span class="truncate text-14px leading-22px text-[#18263c]">{{ item.name }}</span>
+                <span class="truncate text-14px leading-22px text-[var(--in-text-color)]">{{
+                  item.name
+                }}</span>
                 <span
                   v-if="index === 0"
-                  class="shrink-0 inline-flex h-17px items-center rounded-4px bg-[rgba(51,112,255,0.2)] px-4px text-10px font-500 leading-17px text-[#245bdb]"
+                  class="shrink-0 inline-flex h-17px items-center rounded-4px bg-[var(--in-permission-panel-bg)] px-4px text-10px font-500 leading-17px text-[var(--in-color-primary)]"
                 >
                   主部门
                 </span>
               </span>
-              <span v-if="item.path" class="block truncate text-12px leading-18px text-[#8f959e]">{{
-                item.path
-              }}</span>
+              <span
+                v-if="item.path"
+                class="block truncate text-12px leading-18px text-[var(--in-text-color-secondary)]"
+                >{{ item.path }}</span
+              >
             </span>
             <span
-              class="inline-flex h-20px w-14px cursor-grab items-center justify-center text-[#1f2329]"
+              class="inline-flex h-20px w-14px cursor-grab items-center justify-center text-[var(--in-text-color)]"
               draggable="true"
               role="button"
               aria-label="调整顺序"
@@ -110,7 +152,13 @@
               @dragstart="privateOnDragStart(item.id, $event)"
               @dragend="privateOnDragEnd"
             >
-              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                aria-hidden="true"
+              >
                 <circle cx="5" cy="3" r="1.15" />
                 <circle cx="11" cy="3" r="1.15" />
                 <circle cx="5" cy="8" r="1.15" />
@@ -126,14 +174,21 @@
     </div>
     <template #footer>
       <in-button @in-click="privateCancel">取消</in-button>
-      <in-button type="primary" :disabled="loading" @in-click="privateConfirm">确定</in-button>
+      <in-button v-if="!multiple && selected.length" @in-click="privateClear">清除选择</in-button>
+      <in-button type="primary" :disabled="loading || loadFailed" @in-click="privateConfirm"
+        >确定</in-button
+      >
     </template>
   </in-dialog>
 </template>
 
 <script setup lang="ts">
-import { InCloseButton } from "@ingot/admin-core";
-import type { DepartmentTreeNode, MemberDepartmentView } from "@ingot/admin-common";
+import { InCloseButton, useCapabilities } from "@ingot/admin-core";
+import {
+  useOrganizationMemberScopeKey,
+  type DepartmentTreeNode,
+  type MemberDepartmentView,
+} from "@ingot/admin-common";
 import { TenantDepartmentTreeAPI } from "@/api/iam/directory";
 import { isRootDepartment, nestRootDepartmentChildren, toMemberDeptNode } from "../deptTree";
 import {
@@ -142,11 +197,25 @@ import {
   moveDepartmentChoice,
   toDepartmentViews,
   withCatalogPaths,
+  departmentSubtreeIds,
   type DepartmentChoice,
 } from "../departmentSelection";
 import DepartmentMark from "./DepartmentMark.vue";
 
 defineOptions({ name: "MemberDepartmentField" });
+
+const props = withDefaults(
+  defineProps<{
+    multiple?: boolean;
+    disabled?: boolean;
+    placeholder?: string;
+    excludeDepartmentId?: string;
+  }>(),
+  { multiple: true, placeholder: "请选择部门" },
+);
+const scopeKey = useOrganizationMemberScopeKey(useCapabilities());
+let request = 0;
+let pendingTree: ReturnType<typeof TenantDepartmentTreeAPI> | undefined;
 
 const model = defineModel<MemberDepartmentView[]>({ required: true });
 
@@ -158,11 +227,15 @@ const tree = ref<DepartmentTreeNode[]>([]);
 const selected = ref<DepartmentChoice[]>([]);
 const draggingId = ref("");
 const dragOverId = ref("");
-const treeProps = { label: "name", children: "children" };
+const excluded = computed(() => departmentSubtreeIds(tree.value, props.excludeDepartmentId));
+const privateDisabled = (node: { navigationOnly?: unknown; id?: unknown }): boolean =>
+  node.navigationOnly === true || (typeof node.id === "string" && excluded.value.has(node.id));
+const treeProps = { label: "name", children: "children", disabled: privateDisabled };
 const treeRef = ref<{
   filter: (value: string) => void;
   getCheckedKeys: (leafOnly?: boolean) => Array<string | number>;
   setCheckedKeys: (keys: string[]) => void;
+  setCurrentKey: (key?: string) => void;
 }>();
 
 const expandedKeys = computed(() =>
@@ -173,38 +246,52 @@ watch(keyword, (value) => {
   treeRef.value?.filter(value.trim());
 });
 
-const privateFilterNode = (value: string, data: DepartmentTreeNode): boolean => {
+const privateFilterNode = (value: string, data: { name?: unknown }): boolean => {
   if (!value) {
     return true;
   }
-  return data.name.toLocaleLowerCase().includes(value.toLocaleLowerCase());
+  return (
+    typeof data.name === "string" &&
+    data.name.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+  );
 };
 
 const privateSyncChecks = async (): Promise<void> => {
   await nextTick();
-  treeRef.value?.setCheckedKeys(selected.value.map((item) => item.id));
+  if (props.multiple) treeRef.value?.setCheckedKeys(selected.value.map((item) => item.id));
+  else treeRef.value?.setCurrentKey(selected.value[0]?.id);
   treeRef.value?.filter(keyword.value.trim());
 };
 
 const privateLoad = (): void => {
+  const current = ++request;
   loading.value = true;
   loadFailed.value = false;
-  TenantDepartmentTreeAPI()
+  const pending: ReturnType<typeof TenantDepartmentTreeAPI> =
+    pendingTree ||
+    TenantDepartmentTreeAPI().finally(() => {
+      if (pendingTree === pending) pendingTree = undefined;
+    });
+  pendingTree = pending;
+  pending
     .then((response) => {
+      if (current !== request) return;
       tree.value = nestRootDepartmentChildren((response.data ?? []).map(toMemberDeptNode));
       selected.value = withCatalogPaths(selected.value, privateCatalog());
       return privateSyncChecks();
     })
     .catch(() => {
+      if (current !== request) return;
       loadFailed.value = true;
       tree.value = [];
     })
     .finally(() => {
-      loading.value = false;
+      if (current === request) loading.value = false;
     });
 };
 
 const privateOpen = (): void => {
+  if (props.disabled || visible.value) return;
   selected.value = withCatalogPaths(
     model.value.map((item) => ({ id: item.id, name: item.name, path: "" })),
     privateCatalog(),
@@ -221,6 +308,7 @@ const privateOpen = (): void => {
 const privateCatalog = (): DepartmentChoice[] => flattenDepartmentChoices(tree.value);
 
 const privateOnCheck = (): void => {
+  if (!props.multiple) return;
   const checked = new Set((treeRef.value?.getCheckedKeys(false) ?? []).map((id) => String(id)));
   const catalog = privateCatalog();
   selected.value = withCatalogPaths(
@@ -229,7 +317,19 @@ const privateOnCheck = (): void => {
   );
 };
 
+const privateChooseSingle = (node: DepartmentTreeNode): void => {
+  if (props.multiple) return;
+  if (privateDisabled(node)) {
+    void privateSyncChecks();
+    return;
+  }
+  const choice = privateCatalog().find((item) => item.id === node.id);
+  if (choice) selected.value = [choice];
+  void privateSyncChecks();
+};
+
 const privateRemoveDraft = (id: string): void => {
+  if (props.disabled) return;
   model.value = model.value.filter((item) => item.id !== id);
 };
 
@@ -286,13 +386,33 @@ const privateCancel = (): void => {
 };
 
 const privateConfirm = (): void => {
+  if (props.disabled || loading.value || loadFailed.value) return;
   model.value = toDepartmentViews(selected.value);
   visible.value = false;
 };
+watch([scopeKey, () => props.excludeDepartmentId], () => {
+  request++;
+  visible.value = false;
+  tree.value = [];
+  pendingTree = undefined;
+  selected.value = [];
+  loading.value = false;
+  loadFailed.value = false;
+});
+watch(visible, (value) => {
+  if (!value && loading.value) {
+    request++;
+    loading.value = false;
+  }
+});
+onBeforeUnmount(() => {
+  request++;
+});
 </script>
 
 <style lang="postcss" scoped>
 .dept-picker {
+  border-color: var(--in-border-color);
   --el-tree-node-content-height: 48px;
   --el-checkbox-input-width: 16px;
   --el-checkbox-input-height: 16px;
@@ -301,8 +421,12 @@ const privateConfirm = (): void => {
   --dept-caret-expanded: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M11.22 18.46a1 1 0 0 0 1.56 0l8.305-10.334a1 1 0 0 0-.78-1.626H3.696a1 1 0 0 0-.78 1.626L11.22 18.46Z' fill='%23646a73'/%3E%3C/svg%3E");
 }
 
+.dept-picker > * + * {
+  border-color: var(--in-border-color);
+}
+
 .dept-picker :deep(.el-tree) {
-  color: #1f2329;
+  color: var(--in-text-color);
   font-family: var(--in-font-family);
   font-size: 14px;
   font-weight: 400;
@@ -314,7 +438,7 @@ const privateConfirm = (): void => {
   height: 48px;
   padding-right: 8px;
   border-radius: 4px;
-  color: #1f2329;
+  color: var(--in-text-color);
   font-size: 14px;
   font-weight: 400;
   line-height: 22px;
@@ -330,7 +454,7 @@ const privateConfirm = (): void => {
   height: 18px;
   margin-right: 6px;
   padding: 0;
-  color: #646a73;
+  color: var(--in-text-color-secondary);
   font-size: 0;
   line-height: 0;
   transform: none !important;
@@ -373,6 +497,17 @@ const privateConfirm = (): void => {
   border-radius: 4px;
 }
 
+.dept-picker :deep(.el-radio) {
+  height: 16px;
+  margin: 0;
+}
+.dept-picker :deep(.el-radio__label) {
+  display: none;
+}
+.dept-pick-node.is-disabled {
+  opacity: 0.5;
+}
+
 .dept-pick-node {
   display: inline-flex;
   align-items: center;
@@ -382,7 +517,7 @@ const privateConfirm = (): void => {
 }
 
 .dept-pick-name {
-  color: #1f2329;
+  color: var(--in-text-color);
   font-size: 14px;
   font-weight: 400;
   line-height: 22px;

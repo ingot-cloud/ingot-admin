@@ -311,6 +311,8 @@ export function toAssignmentBatchItems(
 }
 
 export interface IamSelectOption {
+  available?: boolean;
+  summary?: string;
   /** 已持久化 ID 的显示资料尚未通过当前候选上下文加载。 */
   labelPending?: boolean;
   id: string;

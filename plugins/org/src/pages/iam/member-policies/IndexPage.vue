@@ -78,15 +78,10 @@
           </el-form>
           <el-form v-if="directory" label-position="top" class="p-16px">
             <el-form-item v-if="hasAction(IamAction.TENANT_POLICY_PREVIEW)" label="预览查看者">
-              <in-page-select
+              <biz-tenant-member-select
                 v-model="viewerMemberId"
-                filterable
-                remote
-                clearable
-                value-field="id"
-                label-field="name"
+                :load-members="loadMembers"
                 placeholder="选择预览查看者"
-                :load-data="loadMembers"
               />
             </el-form-item>
             <div class="flex flex-wrap gap-8px">
@@ -234,15 +229,10 @@
           </el-form>
           <el-form v-if="fields" label-position="top" class="p-16px">
             <el-form-item v-if="hasAction(IamAction.TENANT_POLICY_PREVIEW)" label="预览查看者">
-              <in-page-select
+              <biz-tenant-member-select
                 v-model="viewerMemberId"
-                filterable
-                remote
-                clearable
-                value-field="id"
-                label-field="name"
+                :load-members="loadMembers"
                 placeholder="选择预览查看者"
-                :load-data="loadMembers"
               />
             </el-form-item>
             <div class="flex flex-wrap gap-8px">
@@ -295,8 +285,9 @@ import {
   type Preview,
   type ResourceDetail,
   type Selection,
+  BizTenantMemberSelect,
 } from "@ingot/admin-common";
-import { TenantDepartmentPageAPI, TenantMemberPageAPI } from "@/api/iam/directory";
+import { TenantDepartmentPageAPI, TenantMemberPickerLoad } from "@/api/iam/directory";
 import {
   TenantDirectoryPolicyAPI,
   TenantDirectoryPolicyUpdateAPI,
@@ -342,10 +333,7 @@ const effectOptions = usePolicyEffectEnum().getOptions();
 const scenarioOptions = usePolicyScenarioEnum().getOptions();
 const visibilityOptions = useFieldVisibilityEnum().getOptions();
 
-const loadMembers = createIamListLoader(async (page, condition) => {
-  const response = await TenantMemberPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-});
+const loadMembers = TenantMemberPickerLoad;
 const loadDepartments = createIamListLoader(async (page, condition) => {
   const response = await TenantDepartmentPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };

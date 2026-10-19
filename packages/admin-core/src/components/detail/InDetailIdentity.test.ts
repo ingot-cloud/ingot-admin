@@ -3,6 +3,17 @@ import { mount } from "@vue/test-utils";
 import InDetailIdentity from "./InDetailIdentity.vue";
 
 describe("InDetailIdentity", () => {
+  it("自定义身份图标替代默认头像及上传入口", () => {
+    const wrapper = mount(InDetailIdentity, {
+      props: { name: "研发部", editable: true },
+      slots: { avatar: "<span data-department-mark />" },
+    });
+    expect(wrapper.find("[data-department-mark]").exists()).toBe(true);
+    expect(wrapper.find(".in-avatar").exists()).toBe(false);
+    expect(wrapper.find(".in-detail-identity__uploader").exists()).toBe(false);
+    expect(wrapper.get(".in-detail-identity__name").text()).toBe("研发部");
+    wrapper.unmount();
+  });
   it("隐藏头像时不渲染图片、占位头像或上传入口", () => {
     const wrapper = mount(InDetailIdentity, {
       props: { name: "alice", src: "secret.png", showAvatar: false, editable: true },

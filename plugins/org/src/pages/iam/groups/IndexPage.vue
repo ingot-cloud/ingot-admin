@@ -58,6 +58,7 @@
     ref="groupRef"
     allow-departments
     :load-members="loadMembers"
+    :load-bound="TenantGroupBoundMembersLoad"
     :load-departments="loadDepartments"
     :create-api="TenantGroupCreateAPI"
     :get-api="TenantGroupDetailAPI"
@@ -92,15 +93,10 @@ import {
   TenantGroupDetailAPI,
   TenantGroupPreviewAPI,
   TenantGroupUpdateAPI,
-  TenantMemberPageAPI,
+  TenantMemberPickerLoad,
+  TenantGroupBoundMembersLoad,
 } from "@/api/iam/directory";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
@@ -114,17 +110,16 @@ const toolbarRow = {
   version: "",
 } as Row;
 
-const loadMembers = createIamOptionLoader(async (page, condition) => {
-  const response = await TenantMemberPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
-}, SelectionPurpose.DIRECTORY);
+const loadMembers = TenantMemberPickerLoad;
 
 const loadDepartments = createIamOptionLoader(async (page, condition) => {
   const response = await TenantDepartmentPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };
 }, SelectionPurpose.DIRECTORY);
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 const handleDetail = (item: Row): void => {
   groupRef.value?.show(item);
