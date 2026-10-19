@@ -22,7 +22,8 @@ import {
   type GroupUpdateInput,
   type IamListQuery,
   type IamPageResponse,
-  type MemberCreateInput,
+  type TenantMemberCreateInput,
+  type TenantMemberCreated,
   type MemberDepartmentInput,
   type MemberProfileInput,
   type MemberRecord,
@@ -102,12 +103,18 @@ export function TenantMemberGroupsAPI(
     .then(asPage);
 }
 
+const secretCrypto = {
+  crypto: {
+    response: { mode: "data_only" as const },
+  },
+};
+
 export function TenantMemberCreateAPI(
-  params: MemberCreateInput,
+  params: TenantMemberCreateInput,
   options?: RequestOptions,
-): Promise<R<CreatedResource>> {
+): Promise<R<TenantMemberCreated>> {
   filterParams(params);
-  return request.post<CreatedResource>(MEMBER_PATH, params, options);
+  return request.post<TenantMemberCreated>(MEMBER_PATH, params, { ...options, ...secretCrypto });
 }
 
 export function TenantMemberUpdateAPI(

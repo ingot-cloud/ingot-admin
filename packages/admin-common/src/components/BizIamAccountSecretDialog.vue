@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-defineOptions({ name: "AccountSecretDialog" });
+defineOptions({ name: "BizIamAccountSecretDialog" });
 
 const visible = ref(false);
 const password = ref("");

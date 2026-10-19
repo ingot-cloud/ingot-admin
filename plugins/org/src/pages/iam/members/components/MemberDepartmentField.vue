@@ -71,25 +71,53 @@
       </in-loading>
       <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between px-12px pt-16px pb-8px">
-          <span class="text-14px text-[#18263c]">已选：{{ selected.length }} 个部门</span>
+          <span class="text-14px text-[#18263c]">拖曳部门可调整优先级</span>
           <in-button type="primary" link :disabled="!selected.length" @in-click="privateClear"
             >清空</in-button
           >
         </div>
         <div class="flex-1 min-h-0 overflow-auto px-4px pb-12px">
           <div
-            v-for="item in selected"
+            v-for="(item, index) in selected"
             :key="item.id"
             class="flex items-center gap-8px min-h-48px px-8px"
+            :class="{ 'bg-[#f5f6f7]': dragOverId === item.id }"
+            @dragover.prevent="privateOnDragOver(item.id, $event)"
+            @drop.prevent="privateOnDrop(item.id, $event)"
+            @dragleave="privateOnDragLeave(item.id)"
           >
             <department-mark />
             <span class="min-w-0 flex-1">
-              <span class="block truncate text-14px leading-22px text-[#18263c]">{{
-                item.name
-              }}</span>
+              <span class="flex items-center gap-4px">
+                <span class="truncate text-14px leading-22px text-[#18263c]">{{ item.name }}</span>
+                <span
+                  v-if="index === 0"
+                  class="shrink-0 inline-flex h-17px items-center rounded-4px bg-[rgba(51,112,255,0.2)] px-4px text-10px font-500 leading-17px text-[#245bdb]"
+                >
+                  主部门
+                </span>
+              </span>
               <span v-if="item.path" class="block truncate text-12px leading-18px text-[#8f959e]">{{
                 item.path
               }}</span>
+            </span>
+            <span
+              class="inline-flex h-20px w-14px cursor-grab items-center justify-center text-[#1f2329]"
+              draggable="true"
+              role="button"
+              aria-label="调整顺序"
+              @click.stop
+              @dragstart="privateOnDragStart(item.id, $event)"
+              @dragend="privateOnDragEnd"
+            >
+              <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <circle cx="5" cy="3" r="1.15" />
+                <circle cx="11" cy="3" r="1.15" />
+                <circle cx="5" cy="8" r="1.15" />
+                <circle cx="11" cy="8" r="1.15" />
+                <circle cx="5" cy="13" r="1.15" />
+                <circle cx="11" cy="13" r="1.15" />
+              </svg>
             </span>
             <in-close-button :label="`移除 ${item.name}`" @click="privateRemove(item.id)" />
           </div>
@@ -111,6 +139,7 @@ import { isRootDepartment, nestRootDepartmentChildren, toMemberDeptNode } from "
 import {
   flattenDepartmentChoices,
   mergeDepartmentSelection,
+  moveDepartmentChoice,
   toDepartmentViews,
   withCatalogPaths,
   type DepartmentChoice,
@@ -127,6 +156,8 @@ const loadFailed = ref(false);
 const keyword = ref("");
 const tree = ref<DepartmentTreeNode[]>([]);
 const selected = ref<DepartmentChoice[]>([]);
+const draggingId = ref("");
+const dragOverId = ref("");
 const treeProps = { label: "name", children: "children" };
 const treeRef = ref<{
   filter: (value: string) => void;
@@ -160,7 +191,7 @@ const privateLoad = (): void => {
   loadFailed.value = false;
   TenantDepartmentTreeAPI()
     .then((response) => {
-      tree.value = nestRootDepartmentChildren(response.data ?? []).map(toMemberDeptNode);
+      tree.value = nestRootDepartmentChildren((response.data ?? []).map(toMemberDeptNode));
       selected.value = withCatalogPaths(selected.value, privateCatalog());
       return privateSyncChecks();
     })
@@ -175,7 +206,7 @@ const privateLoad = (): void => {
 
 const privateOpen = (): void => {
   selected.value = withCatalogPaths(
-    model.value.map((item) => ({ id: item.id, name: item.name, path: item.name })),
+    model.value.map((item) => ({ id: item.id, name: item.name, path: "" })),
     privateCatalog(),
   );
   keyword.value = "";
@@ -210,6 +241,44 @@ const privateRemove = (id: string): void => {
 const privateClear = (): void => {
   selected.value = [];
   void privateSyncChecks();
+};
+
+const privateOnDragStart = (id: string, event: DragEvent): void => {
+  draggingId.value = id;
+  event.dataTransfer?.setData("text/plain", id);
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "move";
+  }
+};
+
+const privateOnDragOver = (id: string, event: DragEvent): void => {
+  if (!draggingId.value) {
+    return;
+  }
+  event.preventDefault();
+  dragOverId.value = id;
+};
+
+const privateOnDragLeave = (id: string): void => {
+  if (dragOverId.value === id) {
+    dragOverId.value = "";
+  }
+};
+
+const privateOnDrop = (id: string, event: DragEvent): void => {
+  event.preventDefault();
+  const fromId = draggingId.value;
+  draggingId.value = "";
+  dragOverId.value = "";
+  if (!fromId) {
+    return;
+  }
+  selected.value = moveDepartmentChoice(selected.value, fromId, id);
+};
+
+const privateOnDragEnd = (): void => {
+  draggingId.value = "";
+  dragOverId.value = "";
 };
 
 const privateCancel = (): void => {

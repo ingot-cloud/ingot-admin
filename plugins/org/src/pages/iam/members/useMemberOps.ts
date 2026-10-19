@@ -13,7 +13,7 @@ import { applyColumnSelection, useCapabilities, useServerPaging } from "@ingot/a
 import { TenantDepartmentTreeAPI, TenantMemberContextAPI, TenantSettingsAPI } from "@/api/iam/directory";
 import { TenantMemberPageQueryOptions } from "@/api/iam/directory.query";
 import type { Ref } from "vue";
-import { toMemberDeptNode } from "./deptTree";
+import { flattenRootDepartmentChildren, isRootDepartment, toMemberDeptNode } from "./deptTree";
 import { tableHeaders } from "./memberTable";
 
 const FIELD_HEADER_PROPS = new Set(["displayName", "phone", "email"]);
@@ -79,7 +79,7 @@ export const useMemberOps = (active: Ref<boolean>) => {
     deptLoading.value = true;
     try {
       const [response] = await Promise.all([TenantDepartmentTreeAPI(), loadTenantAvatar()]);
-      deptTree.value = (response.data ?? []).map(toMemberDeptNode);
+      deptTree.value = flattenRootDepartmentChildren((response.data ?? []).map(toMemberDeptNode));
     } finally {
       deptLoading.value = false;
     }
@@ -90,11 +90,12 @@ export const useMemberOps = (active: Ref<boolean>) => {
   };
 
   const handleTreeNodeClick = (node: DepartmentTreeNode): void => {
-    if (currentDept.value?.id === node.id && paging.condition.departmentId === node.id) {
+    const departmentId = isRootDepartment(node) ? undefined : node.id;
+    if (currentDept.value?.id === node.id && paging.condition.departmentId === departmentId) {
       return;
     }
     currentDept.value = node;
-    paging.condition.departmentId = node.id;
+    paging.condition.departmentId = departmentId;
     refreshData();
   };
 

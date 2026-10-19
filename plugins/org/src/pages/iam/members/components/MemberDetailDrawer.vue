@@ -102,12 +102,16 @@
         <in-detail-field v-if="editing && canEditDepartments" label="部门" :value="departmentText">
           <member-department-field v-model="departmentDraft" />
         </in-detail-field>
-        <in-detail-field v-else label="部门" :value="departmentText" />
+        <in-detail-field v-else label="部门" :value="departmentText">
+          <template #view>
+            <member-department-readout :departments="departmentDisplays" />
+          </template>
+        </in-detail-field>
       </in-form>
     </in-biz-tab-panel>
 
     <in-biz-tab-panel title="其他" name="other" :editable="false">
-      <in-form>
+      <in-form :editing="false">
         <in-detail-field label="用户组" :value="groupPreview" />
         <template v-if="detail">
           <in-detail-field label="入职时间" :value="formatDateTime(detail.record.joinedAt)" />
@@ -115,7 +119,6 @@
             label="账号最后登录时间"
             :value="formatDateTime(detail.record.lastLoginAt, { fallback: '暂无登录记录' })"
           />
-          <div class="text-12px text-[var(--el-text-color-secondary)]">包含平台及组织身份登录。</div>
           <in-detail-field label="成员更新时间" :value="formatDateTime(detail.record.updatedAt)" />
         </template>
       </in-form>
@@ -143,6 +146,7 @@ import {
   MemberStatus,
   memberStatusTone,
   useMemberStatusEnum,
+  type DepartmentTreeNode,
   type MemberDepartmentView,
   type MemberRecord,
   type ResourceDetail,
@@ -156,11 +160,22 @@ import {
   TenantMemberUpdateAPI,
 } from "@/api/iam/directory";
 import { formatMemberDepartments, createRowActions, type Row } from "../memberTable";
-import { sameDepartmentOrder } from "../departmentSelection";
+import {
+  flattenDepartmentChoices,
+  sameDepartmentOrder,
+  withDepartmentDisplays,
+} from "../departmentSelection";
 import MemberDepartmentField from "./MemberDepartmentField.vue";
+import MemberDepartmentReadout from "./MemberDepartmentReadout.vue";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
+const props = withDefaults(
+  defineProps<{
+    departments?: DepartmentTreeNode[];
+  }>(),
+  { departments: () => [] },
+);
 const permissions = usePermissions();
 const emits = defineEmits<{ success: [] }>();
 const session = useDetailEditSession();
@@ -212,6 +227,12 @@ const isOwner = computed(
   () => detail.value?.record.id !== undefined && detail.value.record.id === ownerMemberId.value,
 );
 const departmentText = computed(() => formatMemberDepartments(detail.value?.record.departments));
+const departmentDisplays = computed(() =>
+  withDepartmentDisplays(
+    detail.value?.record.departments,
+    flattenDepartmentChoices(props.departments),
+  ),
+);
 const groupPreview = computed(() =>
   groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW,
 );

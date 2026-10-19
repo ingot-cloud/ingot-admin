@@ -580,7 +580,7 @@ export interface MemberRecord {
   phone?: string;
   email?: string;
   username?: string;
-  /** 账号登录手机；租户列表尚未投影，缺省时界面显示 `-`。 */
+  /** 账号登录手机号，不是组织联系手机；无账号或未设置时省略。 */
   loginPhone?: string;
   status: MemberStatus;
   departments: MemberDepartmentView[];
@@ -600,6 +600,20 @@ export interface MemberCreateInput {
   roleIds?: string[];
   groupIds?: string[];
   roleAssignments?: MemberRoleAssignmentDraft[];
+}
+
+export interface TenantMemberCreateInput {
+  displayName: string;
+  phone: string;
+  email?: string;
+  departments: MemberDepartmentBinding[];
+}
+
+export interface TenantMemberCreated {
+  id: string;
+  version: string;
+  accountCreated: boolean;
+  initialPassword?: string;
 }
 
 export interface MemberRoleAssignmentDraft {

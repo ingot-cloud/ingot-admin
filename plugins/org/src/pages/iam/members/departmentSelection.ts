@@ -3,29 +3,57 @@ import type { DepartmentTreeNode, MemberDepartmentView } from "@ingot/admin-comm
 export interface DepartmentChoice {
   id: string;
   name: string;
-  /** 上级路径；根部门用自身名称。 */
+  /** 含自身的上级链；根部门为空。 */
+  path: string;
+}
+
+export interface DepartmentDisplay extends MemberDepartmentView {
   path: string;
 }
 
 export function flattenDepartmentChoices(nodes: DepartmentTreeNode[]): DepartmentChoice[] {
+  const byId = new Map<string, DepartmentTreeNode>();
+  const collect = (list: DepartmentTreeNode[]): void => {
+    for (const node of list) {
+      byId.set(node.id, node);
+      if (node.children?.length) {
+        collect(node.children);
+      }
+    }
+  };
+  collect(nodes);
+
+  const pathOf = (node: DepartmentTreeNode): string => {
+    if (!node.parentId) {
+      return "";
+    }
+    const names: string[] = [node.name];
+    let current = byId.get(node.parentId);
+    while (current) {
+      names.unshift(current.name);
+      current = current.parentId ? byId.get(current.parentId) : undefined;
+    }
+    return names.join("/");
+  };
+
   const items: DepartmentChoice[] = [];
-  const walk = (list: DepartmentTreeNode[], ancestors: string[]): void => {
+  const walk = (list: DepartmentTreeNode[]): void => {
     for (const node of list) {
       items.push({
         id: node.id,
         name: node.name,
-        path: ancestors.length > 0 ? ancestors.join("/") : node.name,
+        path: pathOf(node),
       });
       if (node.children?.length) {
-        walk(node.children, [...ancestors, node.name]);
+        walk(node.children);
       }
     }
   };
-  walk(nodes, []);
+  walk(nodes);
   return items;
 }
 
-/** 用当前树补齐名称和路径；树外部门保留原名称。 */
+/** 用当前树补齐名称和路径；树外部门只保留名称。 */
 export function withCatalogPaths(
   items: DepartmentChoice[],
   catalog: DepartmentChoice[],
@@ -34,10 +62,25 @@ export function withCatalogPaths(
   return items.map((item) => {
     const known = byId.get(item.id);
     if (!known) {
-      return { ...item, path: item.path || item.name };
+      return { id: item.id, name: item.name, path: "" };
     }
     return { id: known.id, name: known.name, path: known.path };
   });
+}
+
+export function withDepartmentDisplays(
+  departments: MemberDepartmentView[] | undefined,
+  catalog: DepartmentChoice[],
+): DepartmentDisplay[] {
+  const byId = new Map(catalog.map((item) => [item.id, item]));
+  return [...(departments ?? [])]
+    .sort((left, right) => Number(right.primary) - Number(left.primary))
+    .map((item) => ({
+      id: item.id,
+      name: byId.get(item.id)?.name ?? item.name,
+      primary: item.primary,
+      path: byId.get(item.id)?.path ?? "",
+    }));
 }
 
 /** 保留原顺序里仍勾选、或不在当前树中的部门；新勾选按树的前序追加。 */
@@ -51,6 +94,28 @@ export function mergeDepartmentSelection(
   const known = new Set(kept.map((item) => item.id));
   const appended = treeOrder.filter((item) => checkedIds.has(item.id) && !known.has(item.id));
   return [...kept, ...appended];
+}
+
+export function moveDepartmentChoice(
+  items: DepartmentChoice[],
+  fromId: string,
+  toId: string,
+): DepartmentChoice[] {
+  if (fromId === toId) {
+    return items;
+  }
+  const next = [...items];
+  const fromIndex = next.findIndex((item) => item.id === fromId);
+  const toIndex = next.findIndex((item) => item.id === toId);
+  if (fromIndex < 0 || toIndex < 0) {
+    return items;
+  }
+  const [moved] = next.splice(fromIndex, 1);
+  if (!moved) {
+    return items;
+  }
+  next.splice(toIndex, 0, moved);
+  return next;
 }
 
 export function sameDepartmentOrder(

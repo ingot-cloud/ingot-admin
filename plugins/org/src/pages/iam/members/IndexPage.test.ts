@@ -27,6 +27,7 @@ describe("org iam members page", () => {
     expect(memberOpsSource).not.toContain("collectIamPageRecords");
     expect(deptOpsSource).not.toContain("collectIamPageRecords");
     expect(memberOpsSource).toContain("TenantDepartmentTreeAPI");
+    expect(memberOpsSource).toContain("flattenRootDepartmentChildren");
     expect(deptOpsSource).toContain("TenantDepartmentTreeAPI");
     expect(deptOpsSource).toContain("nestRootDepartmentChildren");
   });

@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 const dir = dirname(fileURLToPath(import.meta.url));
 const detailSource = readFileSync(resolve(dir, "MemberDetailDrawer.vue"), "utf8");
 const fieldSource = readFileSync(resolve(dir, "MemberDepartmentField.vue"), "utf8");
+const readoutSource = readFileSync(resolve(dir, "MemberDepartmentReadout.vue"), "utf8");
 const apiSource = readFileSync(resolve(dir, "../../../../api/iam/directory.ts"), "utf8");
 
 describe("tenant member detail", () => {
@@ -13,7 +14,15 @@ describe("tenant member detail", () => {
     expect(detailSource).toContain("<in-detail-identity");
     expect(detailSource).toContain('title="基本信息"');
     expect(detailSource).toContain('title="其他"');
+    expect(detailSource).toContain('<in-form :editing="false">');
+    expect(detailSource).not.toContain("包含平台及组织身份登录");
     expect(detailSource).toContain('label="部门"');
+    expect(detailSource).toContain("<member-department-readout");
+    expect(detailSource).toContain("#view");
+    expect(detailSource).toContain("departmentDisplays");
+    expect(readoutSource).toContain("departments.length === 1");
+    expect(readoutSource).toContain("主部门");
+    expect(readoutSource).toContain("item.path");
     expect(detailSource).toContain('label="用户组"');
     expect(detailSource).toContain('label="入职时间"');
     expect(detailSource).toContain('label="账号最后登录时间"');
@@ -45,10 +54,15 @@ describe("tenant member detail", () => {
     expect(fieldSource).toContain("check-strictly");
     expect(fieldSource).toContain(':indent="26"');
     expect(fieldSource).toContain("dept-pick-name");
-    expect(fieldSource).toContain("已选：");
+    expect(fieldSource).toContain("拖曳部门可调整优先级");
+    expect(fieldSource).toContain("主部门");
+    expect(fieldSource).toContain('draggable="true"');
+    expect(fieldSource).toContain("moveDepartmentChoice");
     expect(fieldSource).toContain("privateConfirm");
     expect(fieldSource).toContain("privateCancel");
     expect(fieldSource).toContain("TenantDepartmentTreeAPI");
+    expect(fieldSource).toContain("nestRootDepartmentChildren");
+    expect(fieldSource).toContain("default-expanded-keys");
     expect(fieldSource).not.toContain("pageSize");
   });
 });

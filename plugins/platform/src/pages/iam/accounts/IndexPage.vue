@@ -64,7 +64,7 @@
   <CreateDrawer ref="createRef" @success="handleCreateSuccess" />
   <DetailDrawer ref="detailRef" @success="refreshData" />
   <LockDrawer ref="lockRef" @success="refreshData" />
-  <SecretDialog ref="secretRef" />
+  <biz-iam-account-secret-dialog ref="secretRef" />
 </template>
 
 <script lang="ts" setup>
@@ -78,7 +78,7 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamRecordLink, IamAction, type AccountSecret } from "@ingot/admin-common";
+import { BizIamAccountSecretDialog, BizIamRecordLink, IamAction, type AccountSecret } from "@ingot/admin-common";
 import {
   PlatformAccountDeleteAPI,
   PlatformAccountDisableAPI,
@@ -91,7 +91,6 @@ import { useQueryClient } from "@tanstack/vue-query";
 import CreateDrawer from "./components/CreateDrawer.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
 import LockDrawer from "./components/LockDrawer.vue";
-import SecretDialog from "./components/SecretDialog.vue";
 import {
   createRowActions,
   createToolbarActions,

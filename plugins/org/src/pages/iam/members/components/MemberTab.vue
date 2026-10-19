@@ -115,8 +115,12 @@
     </in-table>
   </in-split-layout>
 
-  <MemberCreateDrawer ref="createRef" @success="refreshAll" />
-  <MemberDetailDrawer ref="detailRef" @success="memberOps.refreshData()" />
+  <MemberCreateDialog ref="createRef" @success="refreshAll" />
+  <MemberDetailDrawer
+    ref="detailRef"
+    :departments="memberOps.deptTree.value"
+    @success="memberOps.refreshData()"
+  />
   <MemberExportDrawer ref="exportRef" />
   <MemberBatchDepartmentDrawer ref="batchDeptRef" @success="memberOps.refreshData()" />
 </template>
@@ -140,11 +144,12 @@ import {
   isFieldVisible,
   memberStatusTone,
   useMemberStatusEnum,
+  type MemberDepartmentView,
 } from "@ingot/admin-common";
 import { formatDateTime } from "@ingot/shared";
 import { TenantMemberRemoveAPI, TenantMemberStatusAPI } from "@/api/iam/directory";
 import DeptTreePanel from "./DeptTreePanel.vue";
-import MemberCreateDrawer from "./MemberCreateDrawer.vue";
+import MemberCreateDialog from "./MemberCreateDialog.vue";
 import MemberDetailDrawer from "./MemberDetailDrawer.vue";
 import MemberExportDrawer from "./MemberExportDrawer.vue";
 import MemberBatchDepartmentDrawer from "./MemberBatchDepartmentDrawer.vue";
@@ -181,7 +186,7 @@ const statusFilter = computed({
     memberOps.refreshData();
   },
 });
-const createRef = ref<{ show: () => void }>();
+const createRef = ref<{ show: (department?: MemberDepartmentView) => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
 const exportRef = ref<{ show: () => void }>();
 const batchDeptRef = ref<{ show: (rows: Row[]) => void }>();
@@ -197,7 +202,10 @@ const toolbarRow = {
 } satisfies Row;
 
 const handleCreate = (): void => {
-  createRef.value?.show();
+  const current = memberOps.currentDept.value;
+  createRef.value?.show(
+    current?.id ? { id: current.id, name: current.name, primary: true } : undefined,
+  );
 };
 const handleImportExport = (): void => {
   exportRef.value?.show();

@@ -25,8 +25,9 @@ describe("org iam members MemberTab", () => {
     expect(source).toContain("member-name");
     expect(source).toContain("in-table__count");
     expect(source).toContain("共 {{ memberOps.paging.pageInfo.value.total ?? 0 }} 人");
-    expect(source).toContain("MemberCreateDrawer");
+    expect(source).toContain("MemberCreateDialog");
     expect(source).toContain("MemberDetailDrawer");
+    expect(source).toContain(':departments="memberOps.deptTree.value"');
     expect(source).not.toContain("新增部门");
     expect(source).not.toContain("DepartmentEditDrawer");
     expect(source).toContain('defineProps<{ active?: boolean }>()');

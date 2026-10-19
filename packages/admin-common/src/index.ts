@@ -68,3 +68,4 @@ export { default as BizIamCurrentRoleDrawer } from "./components/iam-current-rol
 
 export { default as BizIamTenantAssignmentDrawer } from "./components/iam-tenant-authorization/BizIamTenantAssignmentDrawer.vue";
 export { default as BizIamTenantDelegationDrawer } from "./components/iam-tenant-authorization/BizIamTenantDelegationDrawer.vue";
+export { default as BizIamAccountSecretDialog } from "./components/BizIamAccountSecretDialog.vue";
