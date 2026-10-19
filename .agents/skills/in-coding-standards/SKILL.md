@@ -28,6 +28,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 详情 Tab 内嵌表格时给 `InBizTabPanel` 加 `fill`：内容区定高，只滚表体
 - [ ] 多 Tab 只请求当前激活 Tab：打开页面不预拉兄弟 Tab 的接口
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
+- [ ] 租户端选择人员必须阅读 [tenant-member-picker.md](tenant-member-picker.md)，使用组织成员对话框；部门只导航不可选。
 - [ ] 人员、角色、资源对象等实体候选使用点击录入框打开对话框；单选单栏、多选双栏、搜索分页与回显按 [entity-picker-interactions.md](entity-picker-interactions.md)
 - [ ] API 时间点保存 ISO 字符串；共享工具按本地时区展示，DatePicker 提交 UTC ISO；日期/Duration 不转换
 ```
@@ -212,3 +213,5 @@ pages/platform/base/app/
 - Git 提交信息 → [in-conventional-commits](../in-conventional-commits/SKILL.md)
 
 实体选择与权限展示的请求次数、已选集合独立回显、InLoading、权限背景 Token 和范围批量覆盖检查，见 [entity-picker-interactions.md](entity-picker-interactions.md)。
+
+租户端组织成员录入、候选对话框或相关业务入口变更 → [tenant-member-picker.md](tenant-member-picker.md)。
