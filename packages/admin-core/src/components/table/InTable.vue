@@ -38,9 +38,24 @@
         :ref="tableRef"
         @selection-change="privateOnElSelectionChange"
       >
-        <el-table-column v-for="item in headersEnable" :key="item.prop" v-bind="item">
+        <el-table-column v-for="item in renderedHeaders" :key="item.prop" v-bind="item">
           <template v-if="showColumnHeader(item)" #header>
-            <span v-if="isTreeColumn(item)" class="in-table-tree-cell">
+            <span v-if="isSelectionLead(item)" class="in-table-select-cell">
+              <el-checkbox
+                v-if="nativeHeaderCheckboxMode !== 'off'"
+                :model-value="flatHeaderChecked"
+                :indeterminate="flatHeaderIndeterminate"
+                :disabled="nativeHeaderCheckboxMode === 'disabled'"
+                @change="privateOnFlatHeaderCheck"
+                @click.stop
+              />
+              <span class="in-table-select-cell__body">
+                <slot :name="`${String(item.prop)}-header`" :item="item">
+                  {{ item.label }}
+                </slot>
+              </span>
+            </span>
+            <span v-else-if="isTreeColumn(item)" class="in-table-tree-cell">
               <el-checkbox
                 v-if="treeHeaderCheckboxMode !== 'off'"
                 :model-value="headerChecked"
@@ -86,6 +101,23 @@
                 :index="scope.$index"
               >
               </slot>
+              <div v-else-if="isSelectionLead(item)" class="in-table-select-cell">
+                <el-checkbox
+                  :model-value="isRowSelected(scope.row)"
+                  :disabled="!isFlatRowSelectable(scope.row, scope.$index)"
+                  @change="(checked) => privateOnFlatToggle(scope.row, checked === true)"
+                  @click.stop
+                />
+                <div class="in-table-select-cell__body">
+                  <slot :name="item.prop" :item="scope.row" :index="scope.$index">
+                    {{
+                      item.transform
+                        ? item.transform(scope.row[String(item.prop)])
+                        : scope.row[String(item.prop)]
+                    }}
+                  </slot>
+                </div>
+              </div>
               <slot
                 v-else-if="!item.type || item.type === 'default'"
                 :name="item.prop"
@@ -102,7 +134,7 @@
           </template>
         </el-table-column>
         <template #empty>
-          <in-table-skeleton v-if="showSkeleton" :columns="headersEnable" :rows="skeletonRows" />
+          <in-table-skeleton v-if="showSkeleton" :columns="renderedHeaders" :rows="skeletonRows" />
           <slot v-else-if="feedback === 'error'" name="error">
             <el-empty :image="emptyIllustration" description="加载失败" />
           </slot>
@@ -138,6 +170,7 @@
 import type { InTableSlots, TableAPI, TableHeaderRecord } from "./types";
 import { type InTableProps, DefaultProps } from "./props";
 import { visibleHeaderProps } from "./columnVisibility";
+import { columnsWithSelectionMerged, selectionLeadColumn } from "./selectionColumn";
 import { emptyIllustration } from "./emptyIllustration";
 import InTableSkeleton from "./InTableSkeleton.vue";
 import InTableTreeCell from "./InTableTreeCell.vue";
@@ -248,8 +281,17 @@ const selectableTreeRows = computed(
     ) as TableRow[],
 );
 
+const rowIdentity = (row: TableRow): string => {
+  const key = resolveRowKey(row);
+  if (key) {
+    return key;
+  }
+  const index = (props.data ?? []).indexOf(row);
+  return index >= 0 ? `#${index}` : "";
+};
+
 const selectedIds = computed(
-  () => new Set(selectedRows.value.map((row) => resolveRowKey(row)).filter(Boolean)),
+  () => new Set(selectedRows.value.map((row) => rowIdentity(row)).filter((id) => id !== "")),
 );
 
 const headerChecked = computed(
@@ -269,7 +311,7 @@ const isTreeColumn = (item: TableHeaderRecord): boolean =>
   Boolean(props.treeColumn) && String(item.prop) === props.treeColumn;
 
 const showColumnHeader = (item: TableHeaderRecord): boolean => {
-  if (isTreeColumn(item)) {
+  if (isTreeColumn(item) || isSelectionLead(item)) {
     return true;
   }
   return Boolean((!item.type || item.type === "default") && slot[`${String(item.prop)}-header`]);
@@ -299,10 +341,36 @@ const treeIndentOf = (row: TableRow): string => {
   return `calc(${level} * var(--in-space-4))`;
 };
 
-const emitTreeSelection = (rows: TableRow[]): void => {
+const emitSelection = (rows: TableRow[]): void => {
   selectedRows.value = rows;
   emits("selection-change", rows);
 };
+
+const flatSelectableOf = (row: TableRow, index: number): boolean => {
+  const selectable = selectionLead.value
+    ? headersEnable.value.find((item) => item.type === "selection")?.selectable
+    : undefined;
+  return typeof selectable === "function" ? selectable(row, index) !== false : true;
+};
+
+const isFlatRowSelectable = (row: TableRow, index: number): boolean => flatSelectableOf(row, index);
+
+const flatSelectableRows = computed(() =>
+  (props.data ?? []).filter((row, index) => flatSelectableOf(row, index)),
+);
+
+const flatHeaderChecked = computed(
+  () =>
+    flatSelectableRows.value.length > 0 &&
+    flatSelectableRows.value.every((row) => selectedIds.value.has(rowIdentity(row))),
+);
+
+const flatHeaderIndeterminate = computed(() => {
+  const selected = flatSelectableRows.value.filter((row) =>
+    selectedIds.value.has(rowIdentity(row)),
+  ).length;
+  return selected > 0 && selected < flatSelectableRows.value.length;
+});
 
 watch(selectableTreeRows, (rows) => {
   if (!usesTreeCheckbox.value) {
@@ -311,9 +379,29 @@ watch(selectableTreeRows, (rows) => {
   const ids = new Set(rows.map((row) => resolveRowKey(row)).filter(Boolean));
   const next = selectedRows.value.filter((row) => ids.has(resolveRowKey(row)));
   if (next.length !== selectedRows.value.length) {
-    emitTreeSelection(next);
+    emitSelection(next);
   }
 });
+
+watch(
+  () => props.data,
+  (rows) => {
+    if (!usesMergedSelection.value) {
+      return;
+    }
+    const current = new Map((rows ?? []).map((row) => [rowIdentity(row), row]));
+    const next = selectedRows.value.flatMap((row) => {
+      const fresh = current.get(rowIdentity(row));
+      return fresh == null ? [] : [fresh];
+    });
+    const unchanged =
+      next.length === selectedRows.value.length &&
+      next.every((row, index) => row === selectedRows.value[index]);
+    if (!unchanged) {
+      emitSelection(next);
+    }
+  },
+);
 
 const tableBind = computed(() => {
   const {
@@ -351,6 +439,21 @@ const visibleFromHeaders = (headers: TableHeaderRecord[]) =>
   );
 
 const headersEnable = ref<Array<TableHeaderRecord>>(visibleFromHeaders(props.headers));
+
+const selectionLead = computed(() =>
+  usesTreeCheckbox.value ? undefined : selectionLeadColumn(headersEnable.value),
+);
+const usesMergedSelection = computed(() => selectionLead.value != null);
+const renderedHeaders = computed(() =>
+  usesMergedSelection.value ? columnsWithSelectionMerged(headersEnable.value) : headersEnable.value,
+);
+const isSelectionLead = (item: TableHeaderRecord): boolean => {
+  const lead = selectionLead.value;
+  if (!lead || item.type === "selection") {
+    return false;
+  }
+  return item.prop === lead.prop && item.type === lead.type && item.label === lead.label;
+};
 
 const current = ref(props.page.current);
 const size = ref(props.page.size);
@@ -390,7 +493,7 @@ const privateHandleCurrentChange = (val: number) => {
 };
 
 const privateOnElSelectionChange = (rows: TableRow[]): void => {
-  if (usesTreeCheckbox.value) {
+  if (usesTreeCheckbox.value || usesMergedSelection.value) {
     return;
   }
   emits("selection-change", rows);
@@ -422,18 +525,43 @@ const privateOnToggleSelect = (row: TableRow, checked: boolean): void => {
   }
   if (checked) {
     if (!selectedIds.value.has(id)) {
-      emitTreeSelection([...selectedRows.value, row]);
+      emitSelection([...selectedRows.value, row]);
     }
     return;
   }
-  emitTreeSelection(selectedRows.value.filter((item) => resolveRowKey(item) !== id));
+  emitSelection(selectedRows.value.filter((item) => resolveRowKey(item) !== id));
+};
+
+const privateOnFlatToggle = (row: TableRow, checked: boolean): void => {
+  const index = (props.data ?? []).indexOf(row);
+  if (!flatSelectableOf(row, index)) {
+    return;
+  }
+  const id = rowIdentity(row);
+  if (!id) {
+    return;
+  }
+  if (checked) {
+    if (!selectedIds.value.has(id)) {
+      emitSelection([...selectedRows.value, row]);
+    }
+    return;
+  }
+  emitSelection(selectedRows.value.filter((item) => rowIdentity(item) !== id));
+};
+
+const privateOnFlatHeaderCheck = (checked: boolean | string | number): void => {
+  if (nativeHeaderCheckboxMode.value === "disabled") {
+    return;
+  }
+  emitSelection(checked === true ? [...flatSelectableRows.value] : []);
 };
 
 const privateOnHeaderCheck = (checked: boolean | string | number): void => {
   if (treeHeaderCheckboxMode.value === "disabled") {
     return;
   }
-  emitTreeSelection(checked === true ? [...selectableTreeRows.value] : []);
+  emitSelection(checked === true ? [...selectableTreeRows.value] : []);
 };
 
 const tableInstance = shallowRef<TableInstance>();
@@ -446,8 +574,8 @@ const tableRef = (instance: Element | ComponentPublicInstance | null) => {
 
 defineExpose<TableAPI<TableRow>>({
   clearSelection: () => {
-    if (usesTreeCheckbox.value) {
-      emitTreeSelection([]);
+    if (usesTreeCheckbox.value || usesMergedSelection.value) {
+      emitSelection([]);
       return;
     }
     tableInstance.value?.clearSelection();
@@ -455,6 +583,10 @@ defineExpose<TableAPI<TableRow>>({
   toggleRowSelection: (row, selected) => {
     if (usesTreeCheckbox.value) {
       privateOnToggleSelect(row, selected ?? !isRowSelected(row));
+      return;
+    }
+    if (usesMergedSelection.value) {
+      privateOnFlatToggle(row, selected ?? !isRowSelected(row));
       return;
     }
     tableInstance.value?.toggleRowSelection(row, selected);
@@ -559,11 +691,13 @@ defineExpose<TableAPI<TableRow>>({
   z-index: 2;
 }
 
-:deep(.el-table .el-table-fixed-column--right.is-first-column) {
+:deep(.el-table.is-scrolling-left .el-table-fixed-column--right.is-first-column),
+:deep(.el-table.is-scrolling-middle .el-table-fixed-column--right.is-first-column) {
   box-shadow: -8px 0 8px -8px rgba(31, 35, 41, 0.12);
 }
 
-:deep(.el-table .el-table-fixed-column--left.is-last-column) {
+:deep(.el-table.is-scrolling-right .el-table-fixed-column--left.is-last-column),
+:deep(.el-table.is-scrolling-middle .el-table-fixed-column--left.is-last-column) {
   box-shadow: 8px 0 8px -8px rgba(31, 35, 41, 0.12);
 }
 
@@ -705,17 +839,38 @@ defineExpose<TableAPI<TableRow>>({
   transform: translate(-50%, -50%);
 }
 
-.in-table.is-hide-header-selection :deep(th.el-table-column--selection .el-checkbox) {
+.in-table.is-hide-header-selection :deep(th.el-table-column--selection .el-checkbox),
+.in-table.is-hide-header-selection :deep(th .in-table-select-cell > .el-checkbox) {
   display: none;
 }
 
-.in-table.is-header-selection-disabled :deep(th.el-table-column--selection .el-checkbox) {
+.in-table.is-header-selection-disabled :deep(th.el-table-column--selection .el-checkbox),
+.in-table.is-header-selection-disabled :deep(th .in-table-select-cell > .el-checkbox) {
   pointer-events: none;
   cursor: not-allowed;
 }
 
-.in-table.is-header-selection-disabled :deep(th.el-table-column--selection .el-checkbox__inner) {
+.in-table.is-header-selection-disabled :deep(th.el-table-column--selection .el-checkbox__inner),
+.in-table.is-header-selection-disabled :deep(th .in-table-select-cell .el-checkbox__inner) {
   opacity: 0.5;
+}
+
+:deep(.in-table-select-cell) {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: var(--in-space-2);
+}
+
+:deep(.in-table-select-cell > .el-checkbox) {
+  flex: none;
+  height: auto;
+  margin-right: 0;
+}
+
+:deep(.in-table-select-cell__body) {
+  min-width: 0;
+  flex: 1;
 }
 
 .in-table.is-custom-tree :deep(.el-table__indent),

@@ -213,6 +213,25 @@ describe("InTable", () => {
     expect(source).toContain("justify-content: center");
   });
 
+  it("固定列阴影只在内容滚出该侧时出现", () => {
+    const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InTable.vue"), "utf8");
+    expect(source).toContain(
+      ".el-table.is-scrolling-left .el-table-fixed-column--right.is-first-column",
+    );
+    expect(source).toContain(
+      ".el-table.is-scrolling-middle .el-table-fixed-column--right.is-first-column",
+    );
+    expect(source).toContain(
+      ".el-table.is-scrolling-right .el-table-fixed-column--left.is-last-column",
+    );
+    expect(source).toContain(
+      ".el-table.is-scrolling-middle .el-table-fixed-column--left.is-last-column",
+    );
+    expect(source).not.toMatch(
+      /:deep\(\.el-table \.el-table-fixed-column--(?:left|right)\.is-(?:last|first)-column\)/,
+    );
+  });
+
   it("空表滚动视图改为块级，空块高度不超过表体", () => {
     const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "InTable.vue"), "utf8");
     expect(source).toContain(".el-table__body-wrapper .el-scrollbar__view");

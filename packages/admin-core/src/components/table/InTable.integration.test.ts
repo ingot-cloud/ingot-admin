@@ -14,7 +14,7 @@ const settle = async () => {
 };
 
 describe("InTable 真实 Element Plus 列渲染", () => {
-  it("原生 selection 和 index 可见，保留逐条禁用、全选与选择事件", async () => {
+  it("多选并入第一列业务列，保留逐条禁用、全选与选择事件", async () => {
     const rows = [
       { id: "1", name: "可绑定成员", canBind: true },
       { id: "2", name: "不可绑定成员", canBind: false },
@@ -41,9 +41,12 @@ describe("InTable 真实 Element Plus 列渲染", () => {
     const checks = wrapper.findAll(".el-table__body input[type=checkbox]");
     expect(checks).toHaveLength(2);
     expect(checks[1].attributes("disabled")).toBeDefined();
+    expect(wrapper.find("th.el-table-column--selection").exists()).toBe(false);
     const firstCells = wrapper.findAll(".el-table__body tbody tr")[0].findAll("td");
+    expect(firstCells[0].text()).toContain("可绑定成员");
+    expect(firstCells[0].find("input[type=checkbox]").exists()).toBe(true);
     expect(firstCells[1].text()).toBe("1");
-    expect(firstCells[2].text()).toBe("可绑定成员");
+    expect(wrapper.get("th.el-table-fixed-column--left").text()).toContain("名称");
     await checks[0].setValue(true);
     expect(wrapper.emitted("selection-change")?.at(-1)).toEqual([[rows[0]]]);
     (wrapper.vm as unknown as TableAPI).clearSelection();
@@ -71,7 +74,9 @@ describe("InTable 真实 Element Plus 列渲染", () => {
     });
     await settle();
     expect(wrapper.classes()).toContain("is-hide-header-selection");
+    expect(wrapper.find(".el-table__header input[type=checkbox]").exists()).toBe(false);
     expect(wrapper.get(".business-name").text()).toBe("组织A");
+    expect(wrapper.get(".el-table__body .in-table-select-cell .business-name").text()).toBe("组织A");
     expect(wrapper.findAll(".el-table__body input[type=checkbox]")).toHaveLength(1);
   });
 
