@@ -15,21 +15,6 @@
     <template #identity>
       <in-detail-identity :name="detail?.record.name || ''" :editable="false">
         <template #avatar><department-mark :size="56" /></template>
-        <template #more>
-          <el-dropdown
-            trigger="click"
-            placement="bottom-end"
-            popper-class="in-dropdown"
-            @command="privateOnMoreCommand"
-          >
-            <in-button link type="primary">更多操作</in-button>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item command="delete" :disabled="!canDelete">删除</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </template>
       </in-detail-identity>
     </template>
 
@@ -78,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, useDetailEditSession, useCapabilities } from "@ingot/admin-core";
+import { Message, useDetailEditSession, useCapabilities } from "@ingot/admin-core";
 import {
   IamAction,
   objectActionAllowed,
@@ -86,11 +71,7 @@ import {
   type DepartmentRecord,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import {
-  TenantDepartmentDeleteAPI,
-  TenantDepartmentDetailAPI,
-  TenantDepartmentEditAPI,
-} from "@/api/iam/directory";
+import { TenantDepartmentDetailAPI, TenantDepartmentEditAPI } from "@/api/iam/directory";
 
 import DepartmentLeaderField from "./DepartmentLeaderField.vue";
 import DepartmentMark from "./DepartmentMark.vue";
@@ -133,12 +114,6 @@ const canManageLeaders = computed(
     canReadMembers.value &&
     !detail.value?.record.navigationOnly &&
     objectActionAllowed(detail.value?.capabilities, IamAction.TENANT_DEPARTMENT_LEADERS).allowed,
-);
-
-const canDelete = computed(
-  () =>
-    !detail.value?.record.navigationOnly &&
-    objectActionAllowed(detail.value?.capabilities, IamAction.TENANT_DEPARTMENT_DELETE).allowed,
 );
 
 const applyDraft = (record: DepartmentRecord): void => {
@@ -234,27 +209,6 @@ const privateSave = async (): Promise<void> => {
       conflict.value = true;
   } finally {
     if (current === request) session.saving.value = false;
-  }
-};
-
-const privateDelete = (): void => {
-  if (!detail.value || !canDelete.value) {
-    return;
-  }
-  Confirm.error(`只能删除空部门。是否删除（${detail.value.record.name}）？`, {
-    confirmButtonText: "删除",
-  }).then(() => {
-    TenantDepartmentDeleteAPI(detail.value!.record.id).then(() => {
-      Message.success("已删除");
-      visible.value = false;
-      emits("success");
-    });
-  });
-};
-
-const privateOnMoreCommand = (command: string): void => {
-  if (command === "delete") {
-    privateDelete();
   }
 };
 
