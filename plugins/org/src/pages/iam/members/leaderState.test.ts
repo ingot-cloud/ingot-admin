@@ -27,9 +27,16 @@ describe("部门负责人独立关系", () => {
     });
   });
   it("受限摘要不误报没有负责人或拼出隐藏人数", () => {
-    const label = formatDepartmentLeaderSummary({ visibleCount: 0, restricted: true });
-    expect(label).toContain("受限");
-    expect(label).not.toContain("未设置");
+    for (const summary of [
+      { visibleCount: 0, restricted: true },
+      { visibleCount: 3, restricted: true },
+      { primaryLeader: { ...member, primary: true }, visibleCount: 3, restricted: true },
+    ]) {
+      const label = formatDepartmentLeaderSummary(summary);
+      expect(label).toContain("受限");
+      expect(label).not.toContain("未设置");
+      expect(label).not.toContain("3 人");
+    }
   });
   it("不可用主负责人保留并提示交接", () => {
     expect(
@@ -38,6 +45,13 @@ describe("部门负责人独立关系", () => {
         visibleCount: 1,
         restricted: false,
       }),
-    ).toContain("不可用，待交接");
+    ).toBe("研发主管（不可用，待交接）");
+    expect(
+      formatDepartmentLeaderSummary({
+        primaryLeader: { ...member, primary: true, available: false },
+        visibleCount: 3,
+        restricted: false,
+      }),
+    ).toBe("研发主管（不可用，待交接） 等 3 人");
   });
 });

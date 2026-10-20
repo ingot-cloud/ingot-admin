@@ -13,7 +13,10 @@ export function formatDepartmentLeaderSummary(summary: DepartmentLeaderSummary):
       ? "主负责人受限"
       : "未设置";
   const state = primary && !primary.available ? "（不可用，待交接）" : "";
-  const count = summary.visibleCount > 1 ? ` · 可见 ${summary.visibleCount} 人` : "";
+  const count =
+    primary && !summary.restricted && summary.visibleCount > 1
+      ? ` 等 ${summary.visibleCount} 人`
+      : "";
   return `${name}${state}${count}${summary.restricted ? " · 部分信息受限" : ""}`;
 }
 
