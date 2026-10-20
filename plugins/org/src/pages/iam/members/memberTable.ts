@@ -18,7 +18,16 @@ export const MEMBER_NAME_COLUMN_LABEL = "姓名";
 export const MEMBER_PHONE_LENGTH = 11;
 export const MEMBER_PHONE_PATTERN = new RegExp(`^\\d{${MEMBER_PHONE_LENGTH}}$`);
 export const MEMBER_JOINED_EXISTING = "该手机号已有账号，已加入组织";
+export const MEMBER_REJOINED = "该成员已重新加入组织，原有角色和用户组已清除";
 export const MEMBER_PHONE_INVALID = "请输入11位手机号";
+
+export function plainMemberPhone(value?: string): string {
+  return value && MEMBER_PHONE_PATTERN.test(value) ? value : "";
+}
+
+export function plainMemberEmail(value?: string): string {
+  return value && !value.includes("*") ? value : "";
+}
 export type Row = ResourceDetail<MemberRecord>;
 
 export { formatSelectionColumnLabel } from "./selectionHeader";
@@ -130,6 +139,7 @@ export function createRowActions(
     onSuspend: (row: Row) => void;
     onRestore: (row: Row) => void;
     onRemove: (row: Row) => void;
+    onRejoin: (row: Row) => void;
   },
   ownerMemberId?: string,
 ): Array<InTableAction<Row>> {
@@ -179,6 +189,15 @@ export function createRowActions(
       disabled: !remove.allowed,
       disabledReason: remove.message,
       onSelect: handlers.onRemove,
+    });
+  }
+  if (row.record.status === MemberStatus.REMOVED) {
+    actions.push({
+      key: "rejoin",
+      label: "重新加入",
+      kind: "default",
+      permission: IamAction.TENANT_MEMBER_CREATE,
+      onSelect: handlers.onRejoin,
     });
   }
   return actions;

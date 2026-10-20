@@ -609,11 +609,20 @@ export interface TenantMemberCreateInput {
   departments: MemberDepartmentBinding[];
 }
 
+export interface TenantMemberRejoinInput {
+  expectedVersion: string;
+  displayName: string;
+  phone: string;
+  email?: string;
+  departments: MemberDepartmentBinding[];
+}
+
 export interface TenantMemberCreated {
   id: string;
   version: string;
   accountCreated: boolean;
   initialPassword?: string;
+  rejoined?: boolean;
 }
 
 export interface MemberRoleAssignmentDraft {

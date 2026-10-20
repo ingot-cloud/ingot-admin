@@ -140,23 +140,35 @@ describe("org iam members memberTable", () => {
   });
 
   it("在职成员可暂停和移出", () => {
-    const actions = createRowActions(row, {
+    const handlers = {
       onDetail: () => undefined,
       onSuspend: () => undefined,
       onRestore: () => undefined,
       onRemove: () => undefined,
-    });
+      onRejoin: () => undefined,
+    };
+    const actions = createRowActions(row, handlers);
     expect(actions.map((item) => item.key)).toEqual(["detail", "suspend", "remove"]);
-    const ownerActions = createRowActions(
-      row,
-      {
-        onDetail: () => undefined,
-        onSuspend: () => undefined,
-        onRestore: () => undefined,
-        onRemove: () => undefined,
-      },
-      "1",
-    );
+    const ownerActions = createRowActions(row, handlers, "1");
     expect(ownerActions.map((item) => item.key)).toEqual(["detail"]);
+  });
+
+  it("已移出行提供重新加入且在职行不出现", () => {
+    const handlers = {
+      onDetail: () => undefined,
+      onSuspend: () => undefined,
+      onRestore: () => undefined,
+      onRemove: () => undefined,
+      onRejoin: () => undefined,
+    };
+    const removed = createRowActions(
+      {
+        ...row,
+        record: { ...row.record, status: MemberStatus.REMOVED },
+      },
+      handlers,
+    );
+    expect(removed.map((item) => item.key)).toEqual(["detail", "rejoin"]);
+    expect(createRowActions(row, handlers).some((item) => item.key === "rejoin")).toBe(false);
   });
 });

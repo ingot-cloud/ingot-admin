@@ -124,6 +124,7 @@
       </in-form>
     </in-biz-tab-panel>
   </in-detail-drawer>
+  <MemberRejoinDialog ref="rejoinRef" @success="privateOnRejoined" />
 </template>
 
 <script setup lang="ts">
@@ -160,6 +161,7 @@ import {
   TenantMemberUpdateAPI,
 } from "@/api/iam/directory";
 import { formatMemberDepartments, createRowActions, type Row } from "../memberTable";
+import MemberRejoinDialog from "./MemberRejoinDialog.vue";
 import {
   flattenDepartmentChoices,
   sameDepartmentOrder,
@@ -236,8 +238,9 @@ const departmentDisplays = computed(() =>
 const groupPreview = computed(() =>
   groupNames.value.length ? groupNames.value.join("、") : EMPTY_PREVIEW,
 );
+const rejoinRef = ref<{ show: (row: Row) => void }>();
 const overflowActions = computed(() => {
-  if (!detail.value || detail.value.record.status === MemberStatus.REMOVED) {
+  if (!detail.value) {
     return [];
   }
   return createRowActions(
@@ -247,12 +250,18 @@ const overflowActions = computed(() => {
       onSuspend: () => privateChangeStatus(MemberStatus.SUSPENDED, "暂停"),
       onRestore: () => privateChangeStatus(MemberStatus.ACTIVE, "恢复"),
       onRemove: () => privateRemove(),
+      onRejoin: () => {
+        if (detail.value) {
+          rejoinRef.value?.show(detail.value);
+        }
+      },
     },
     ownerMemberId.value,
   ).filter((action) => action.kind !== "detail");
 });
 const canEditProfile = computed(
   () =>
+    detail.value?.record.status !== MemberStatus.REMOVED &&
     detail.value?.capabilities[IamAction.TENANT_MEMBER_UPDATE]?.allowed === true &&
     (Object.keys(bindings) as ProfileKey[]).some((key) =>
       isFieldEditable(detail.value?.fieldAccess, key),
@@ -458,6 +467,12 @@ const privateChangeStatus = (
   });
 };
 
+const privateOnRejoined = (): void => {
+  listStale.value = true;
+  visible.value = false;
+  emits("success");
+};
+
 const privateRemove = (): void => {
   if (!detail.value) {
     return;
@@ -490,6 +505,14 @@ defineExpose({
     visible.value = true;
     tab.value = "basic";
     session.exitEdit();
+    if (row.record.status === MemberStatus.REMOVED) {
+      loading.value = false;
+      detail.value = row;
+      applyDraft(row);
+      groupNames.value = [];
+      groupsLoaded.value = false;
+      return;
+    }
     load(row.record.id);
   },
 });

@@ -27,6 +27,7 @@ import {
   type IamPageResponse,
   type TenantMemberCreateInput,
   type TenantMemberCreated,
+  type TenantMemberRejoinInput,
   type MemberDepartmentInput,
   type MemberProfileInput,
   type MemberRecord,
@@ -118,6 +119,15 @@ export function TenantMemberCreateAPI(
 ): Promise<R<TenantMemberCreated>> {
   filterParams(params);
   return request.post<TenantMemberCreated>(MEMBER_PATH, params, { ...options, ...secretCrypto });
+}
+
+export function TenantMemberRejoinAPI(
+  id: string,
+  params: TenantMemberRejoinInput,
+  options?: RequestOptions,
+): Promise<R<TenantMemberCreated>> {
+  filterParams(params);
+  return request.post<TenantMemberCreated>(`${MEMBER_PATH}/${id}/rejoin`, params, options);
 }
 
 export function TenantMemberUpdateAPI(

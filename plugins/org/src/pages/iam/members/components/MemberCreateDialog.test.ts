@@ -22,6 +22,8 @@ describe("tenant member create dialog", () => {
     expect(source).toContain("member-department-field");
     expect(source).toContain("BizIamAccountSecretDialog");
     expect(source).toContain("MEMBER_JOINED_EXISTING");
+    expect(source).toContain("MEMBER_REJOINED");
+    expect(source).toContain("response.data.rejoined");
     expect(source).not.toContain("添加组织成员");
     expect(source).not.toContain("账号 ID");
     expect(source).not.toContain("登录名");

@@ -60,6 +60,7 @@ import {
   MEMBER_PHONE_INVALID,
   MEMBER_PHONE_LENGTH,
   MEMBER_PHONE_PATTERN,
+  MEMBER_REJOINED,
 } from "../memberTable";
 
 defineOptions({ name: "MemberCreateDialog" });
@@ -111,7 +112,7 @@ const privateSubmit = (): void => {
         secretRef.value?.show(response.data.initialPassword);
         return;
       }
-      Message.success(MEMBER_JOINED_EXISTING);
+      Message.success(response.data.rejoined ? MEMBER_REJOINED : MEMBER_JOINED_EXISTING);
     })
     .finally(() => {
       loading.value = false;

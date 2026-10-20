@@ -29,6 +29,9 @@ describe("tenant member detail", () => {
     expect(detailSource).toContain('label="成员更新时间"');
     expect(detailSource).toContain("更多操作");
     expect(detailSource).toContain("createRowActions");
+    expect(detailSource).toContain("MemberRejoinDialog");
+    expect(detailSource).toContain("onRejoin");
+    expect(detailSource).toContain("MemberStatus.REMOVED");
     expect(detailSource).toContain("collectIamPageRecords");
     expect(detailSource).toContain("TenantMemberGroupsAPI");
     expect(detailSource).toContain("privateReload");

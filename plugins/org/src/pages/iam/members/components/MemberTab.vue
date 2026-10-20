@@ -116,6 +116,7 @@
   </in-split-layout>
 
   <MemberCreateDialog ref="createRef" @success="refreshAll" />
+  <MemberRejoinDialog ref="rejoinRef" @success="refreshAll" />
   <MemberDetailDrawer
     ref="detailRef"
     :departments="memberOps.deptTree.value"
@@ -150,6 +151,7 @@ import { formatDateTime } from "@ingot/shared";
 import { TenantMemberRemoveAPI, TenantMemberStatusAPI } from "@/api/iam/directory";
 import DeptTreePanel from "./DeptTreePanel.vue";
 import MemberCreateDialog from "./MemberCreateDialog.vue";
+import MemberRejoinDialog from "./MemberRejoinDialog.vue";
 import MemberDetailDrawer from "./MemberDetailDrawer.vue";
 import MemberExportDrawer from "./MemberExportDrawer.vue";
 import MemberBatchDepartmentDrawer from "./MemberBatchDepartmentDrawer.vue";
@@ -187,6 +189,7 @@ const statusFilter = computed({
   },
 });
 const createRef = ref<{ show: (department?: MemberDepartmentView) => void }>();
+const rejoinRef = ref<{ show: (row: Row) => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
 const exportRef = ref<{ show: () => void }>();
 const batchDeptRef = ref<{ show: (rows: Row[]) => void }>();
@@ -253,6 +256,9 @@ const handleRestore = (item: Row): void => {
     });
   });
 };
+const handleRejoin = (item: Row): void => {
+  rejoinRef.value?.show(item);
+};
 const handleRemove = (item: Row): void => {
   Confirm.error(`移出不删除全局账号。是否移出（${item.record.displayName || item.record.id}）？`, {
     confirmButtonText: "移出",
@@ -303,6 +309,7 @@ const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>
       onSuspend: handleSuspend,
       onRestore: handleRestore,
       onRemove: handleRemove,
+      onRejoin: handleRejoin,
     },
     ownerMemberId.value,
   );
