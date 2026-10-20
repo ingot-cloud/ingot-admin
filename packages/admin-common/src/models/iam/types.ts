@@ -686,6 +686,7 @@ export interface MemberDepartmentInput extends VersionInput {
 }
 
 export interface DepartmentLeaderRecord {
+  avatar?: string;
   departments?: MemberDepartmentView[];
   memberId: string;
   displayName?: string;

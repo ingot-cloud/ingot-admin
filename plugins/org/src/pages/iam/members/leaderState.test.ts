@@ -35,10 +35,18 @@ describe("部门负责人独立关系", () => {
       const label = formatDepartmentLeaderSummary(summary);
       expect(label).toContain("受限");
       expect(label).not.toContain("未设置");
+      expect(label).not.toBe("-");
       expect(label).not.toContain("3 人");
     }
   });
-  it("不可用主负责人保留并提示交接", () => {
+  it("摘要区分未设置、单人和其他负责人，不可用时提示交接", () => {
+    expect(formatDepartmentLeaderSummary({ visibleCount: 0, restricted: false })).toBe("-");
+    expect(
+      formatDepartmentLeaderSummary({ primaryLeader: member, visibleCount: 1, restricted: false }),
+    ).toBe("研发主管");
+    expect(
+      formatDepartmentLeaderSummary({ primaryLeader: member, visibleCount: 2, restricted: false }),
+    ).toBe("研发主管 和其他 1 人");
     expect(
       formatDepartmentLeaderSummary({
         primaryLeader: { ...member, primary: true, available: false },
@@ -52,6 +60,6 @@ describe("部门负责人独立关系", () => {
         visibleCount: 3,
         restricted: false,
       }),
-    ).toBe("研发主管（不可用，待交接） 等 3 人");
+    ).toBe("研发主管（不可用，待交接） 和其他 2 人");
   });
 });

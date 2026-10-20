@@ -51,8 +51,21 @@
         </span>
       </template>
       <template #leaderSummary="{ item }">
-        <span v-if="item.leaderSummary">
-          {{ formatDepartmentLeaderSummary(item.leaderSummary) }}
+        <span
+          v-if="item.leaderSummary"
+          class="inline-flex max-w-full items-center gap-8px align-middle"
+        >
+          <in-avatar
+            v-if="item.leaderSummary.primaryLeader"
+            class="dept-leader-avatar shrink-0"
+            :src="item.leaderSummary.primaryLeader.avatar"
+            :name="item.leaderSummary.primaryLeader.displayName || '姓名受限'"
+            :show-name="false"
+            :size="MEMBER_AVATAR_SIZE"
+          />
+          <span class="min-w-0 truncate" :title="formatDepartmentLeaderSummary(item.leaderSummary)">
+            {{ formatDepartmentLeaderSummary(item.leaderSummary) }}
+          </span>
         </span>
         <span v-else>-</span>
       </template>
@@ -68,7 +81,7 @@
 
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
-import { Message, type InTableAction, type InTableCheckboxMode } from "@ingot/admin-core";
+import { InAvatar, Message, type InTableAction, type InTableCheckboxMode } from "@ingot/admin-core";
 import { TenantDepartmentDeleteAPI } from "@/api/iam/directory";
 import DeptCreateDrawer from "./DeptCreateDrawer.vue";
 import DeptDetailDrawer from "./DeptDetailDrawer.vue";
@@ -84,6 +97,7 @@ import {
 import { DEPT_TABLE_ROW_HEIGHT, isRootDepartment } from "../deptTree";
 import { useDeptOps } from "../useDeptOps";
 import { formatDepartmentLeaderSummary } from "../leaderState";
+import { MEMBER_AVATAR_SIZE } from "../memberTable";
 
 defineOptions({ name: "DeptTab" });
 
@@ -227,6 +241,10 @@ onMounted(() => {
   font-size: var(--in-font-size-body);
   font-weight: var(--in-font-weight-body);
   line-height: var(--in-line-height-body);
+}
+
+.dept-leader-avatar {
+  --in-text-color-inverse: var(--in-tag-solid-text-color);
 }
 
 .dept-name.is-link {

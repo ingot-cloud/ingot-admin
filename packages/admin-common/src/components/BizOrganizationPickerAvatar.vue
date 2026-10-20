@@ -21,26 +21,10 @@
     :name="name"
     :show-name="false"
     :size="32"
-    :color="color"
   />
 </template>
 <script setup lang="ts">
-import { computed } from "vue";
-const props = defineProps<{ name?: string; src?: string; department?: boolean }>();
-// 无照片时用稳定姓名色，候选与已选共用同一占位图。
-const color = computed(() => {
-  const seed = Array.from(props.name || "").reduce(
-    (value, char) => value + (char.codePointAt(0) || 0),
-    0,
-  );
-  const tones = [
-    "var(--in-color-primary)",
-    "hsl(from var(--in-color-primary) calc(h + 70) s 65%)",
-    "hsl(from var(--in-color-primary) calc(h + 35) s 65%)",
-    "hsl(from var(--in-color-primary) calc(h - 30) s 55%)",
-  ];
-  return `linear-gradient(145deg, ${tones[seed % tones.length]}, color-mix(in srgb, ${tones[seed % tones.length]} 65%, var(--in-color-primary)))`;
-});
+defineProps<{ name?: string; src?: string; department?: boolean }>();
 </script>
 <style scoped>
 .organization-picker-avatar {
@@ -52,9 +36,9 @@ const color = computed(() => {
   height: 32px;
   border-radius: 50%;
   background: var(--in-color-primary);
-  color: white;
+  color: var(--in-tag-solid-text-color);
 }
 .organization-picker-member-avatar {
-  --in-text-color-inverse: white;
+  --in-text-color-inverse: var(--in-tag-solid-text-color);
 }
 </style>

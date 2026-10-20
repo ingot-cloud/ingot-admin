@@ -524,6 +524,7 @@ export async function TenantMemberPickerLoad(
     records: response.data.items.map((item) => ({
       id: item.id,
       name: item.displayName || "姓名受限",
+      avatar: item.avatar,
       available: item.status === "ACTIVE",
       summary: item.departments.map((department) => department.name).join("、"),
     })),
@@ -556,6 +557,7 @@ export async function TenantGroupBoundMembersLoad(
     records: response.data.items.map((item) => ({
       id: item.id,
       name: item.displayName || "姓名受限",
+      avatar: item.avatar,
       available: item.status === "ACTIVE",
       summary: item.departments.map((department) => department.name).join("、"),
     })),
@@ -574,6 +576,7 @@ export async function TenantOrganizationMemberBrowseAPI(
     members: IamPageResponse<{
       id: string;
       name?: string;
+      avatar?: string;
       available: boolean;
       departments: { id: string; name: string }[];
       implicitRoot?: { id: string; name: string };
@@ -606,6 +609,7 @@ export async function TenantOrganizationMemberBrowseAPI(
         records: response.data.members.items.map((item) => ({
           id: item.id,
           name: item.name || "姓名受限",
+          avatar: item.avatar,
           available: item.available,
           summary:
             item.departments.map((department) => department.name).join("、") ||

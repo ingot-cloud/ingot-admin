@@ -4,6 +4,7 @@ export interface MemberChip {
   id: string;
   name: string;
   avatar?: string;
+  available?: boolean;
 }
 
 export function visibleMembers<T>(items: T[], limit = MEMBER_CHIP_LIMIT): T[] {

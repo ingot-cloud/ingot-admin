@@ -12,15 +12,17 @@
       "
       @click="privateOpen"
     >
-      <span
-        class="flex-1 min-w-0 truncate"
-        :class="
-          selectedIds.length
-            ? 'text-[var(--el-text-color-regular)]'
-            : 'text-[var(--in-text-color-placeholder)]'
-        "
-        >{{ label }}</span
-      >
+      <slot name="selection">
+        <span
+          class="flex-1 min-w-0 truncate"
+          :class="
+            selectedIds.length
+              ? 'text-[var(--el-text-color-regular)]'
+              : 'text-[var(--in-text-color-placeholder)]'
+          "
+          >{{ label }}</span
+        >
+      </slot>
       <in-icon name="ep:edit" class="text-[var(--el-text-color-secondary)]" />
     </button>
     <biz-iam-member-picker-dialog
@@ -55,6 +57,7 @@ import {
 import type { IamSelectOption } from "../models/iam";
 import type { MemberPickerChanges, OrganizationMemberParams } from "./organizationMemberPicker";
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
+defineSlots<{ selection?: () => unknown }>();
 const props = withDefaults(
   defineProps<{
     loadMembers: (params: OrganizationMemberParams) => Promise<Page<IamSelectOption>>;

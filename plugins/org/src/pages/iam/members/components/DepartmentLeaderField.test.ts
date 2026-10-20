@@ -36,7 +36,7 @@ vi.mock("@ingot/admin-common", async (importOriginal) => {
       name: "MemberSelectStub",
       props: ["relation", "modelValue", "options", "primaryMemberId", "loadBound", "selectedTotal"],
       emits: ["confirm", "update:modelValue"],
-      template: "<div data-member-select />",
+      template: '<div data-member-select><slot name="selection"/></div>',
     }),
   };
 });
@@ -44,6 +44,7 @@ const people = (count: number, start = 0) =>
   Array.from({ length: count }, (_, offset) => ({
     memberId: String(start + offset + 1),
     displayName: `成员${start + offset + 1}`,
+    avatar: `https://images.example/member-${start + offset + 1}.png`,
     available: true,
     departments: [{ id: "10", name: "研发部" }],
   }));
@@ -79,6 +80,7 @@ describe("部门负责人已选快照", () => {
         {
           memberId: "1",
           displayName: "负责人",
+          avatar: "https://images.example/leader.png",
           status: MemberStatus.ACTIVE,
           available: true,
           primary: true,
@@ -101,7 +103,9 @@ describe("部门负责人已选快照", () => {
         .total,
     ).toBe(1);
     await aggregated.setProps({ editing: false });
-    expect(aggregated.text()).toBe("负责人");
+    expect(aggregated.text()).toContain("负责人");
+    expect(aggregated.find(".iam-member-chip__primary").text()).toBe("部门主负责人");
+    expect(aggregated.find("img").attributes("src")).toBe("https://images.example/leader.png");
     expect(state.leaders).not.toHaveBeenCalled();
     await aggregated.setProps({ initialPage: { ...first, items: [], total: 0 } });
     expect(aggregated.text()).toBe("-");
@@ -120,6 +124,7 @@ describe("部门负责人已选快照", () => {
     expect(first).toMatchObject({ total: 25, current: 1, size: 20 });
     expect(first.records).toHaveLength(20);
     expect(first.records[0].summary).toBe("研发部");
+    expect(first.records[0].avatar).toBe("https://images.example/member-1.png");
 
     state.leaders.mockResolvedValueOnce(response(1, 21, 2));
     const next = await select.props("loadBound")({ current: 2, size: 20 });

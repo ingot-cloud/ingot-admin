@@ -27,6 +27,7 @@ beforeEach(() => {
           {
             id: "101",
             name: "未分配",
+            avatar: "https://images.example/member.png",
             available: true,
             departments: [],
             implicitRoot: { id: "1", name: "组织" },
@@ -81,6 +82,8 @@ describe("组织成员专用浏览适配", () => {
       ["姓名受限", undefined],
     ]);
     expect(get).toHaveBeenCalledTimes(1);
+    expect(response.data.members.records?.[0]?.avatar).toBe("https://images.example/member.png");
+    expect(response.data.members.records?.[2]?.avatar).toBeUndefined();
   });
   it("委派候选传递原来源，不能改成普通成员场景", async () => {
     await TenantOrganizationMemberBrowseAPI({

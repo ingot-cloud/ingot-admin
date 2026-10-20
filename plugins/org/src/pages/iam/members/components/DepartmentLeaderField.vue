@@ -21,12 +21,32 @@
           title="请选择"
           placeholder="请选择部门负责人"
           @confirm="privateConfirm"
+        >
+          <template #selection>
+            <BizIamMemberChips
+              v-if="selectedMembers.length"
+              class="flex-1"
+              tagged
+              wrap
+              :members="selectedMembers"
+              :total="selectedTotal"
+              :primary-member-id="primaryId"
+            />
+            <span v-else class="flex-1 text-[var(--in-text-color-placeholder)]"
+              >请选择部门负责人</span
+            >
+          </template>
+        </biz-tenant-member-select>
+        <BizIamMemberChips
+          v-else
+          tagged
+          wrap
+          :members="selectedMembers"
+          :total="selectedTotal"
+          :primary-member-id="primaryId"
+          :empty-text="restricted ? '负责人信息受限' : '-'"
         />
-        <span v-else>{{ summaryLabel }}</span>
       </in-loading>
-      <span v-if="primaryId && editing" class="text-12px text-[var(--el-text-color-secondary)]"
-        >主负责人：{{ known.find((item) => item.id === primaryId)?.name || "姓名受限" }}</span
-      >
       <span v-if="restricted" class="text-12px text-[var(--el-text-color-secondary)]"
         >部分关系不可见，保存将保留未展示的负责人。</span
       >
@@ -38,6 +58,7 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import {
   BizTenantMemberSelect,
+  BizIamMemberChips,
   OrganizationMemberScene,
   useOrganizationMemberScopeKey,
   type OrganizationMemberBrowseLoader,
@@ -84,6 +105,7 @@ let sequence = 0;
 const option = (item: DepartmentLeaderRecord): IamSelectOption => ({
   id: item.memberId,
   name: item.displayName || "姓名受限",
+  avatar: item.avatar,
   available: item.available,
   summary: item.departments?.map((department) => department.name).join("、"),
 });
@@ -95,16 +117,13 @@ const relation = computed(() => ({
   partial: true,
   initialBoundPage: boundSnapshot.value,
 }));
-const summaryLabel = computed(() => {
-  const names = selectedIds.value.slice(0, 3).map((id) => {
-    const item = known.value.find((value) => value.id === id);
-    return `${item?.name || "姓名受限"}${id === primaryId.value ? "（主）" : ""}${item?.available === false ? "（不可用，待交接）" : ""}`;
-  });
-  return (
-    names.join("、") + (selectedTotal.value > 3 ? ` 等 ${selectedTotal.value} 人` : "") ||
-    (restricted.value ? "负责人信息受限" : "-")
-  );
-});
+const selectedMembers = computed(() =>
+  selectedIds.value
+    .map((id) => known.value.find((item) => item.id === id) || { id, name: "姓名受限" })
+    .sort(
+      (left, right) => Number(right.id === primaryId.value) - Number(left.id === primaryId.value),
+    ),
+);
 const applyPage = (data: DepartmentLeaderPage) => {
   total.value = Number(data.total);
   known.value = data.items.map(option);
@@ -116,7 +135,8 @@ const applyPage = (data: DepartmentLeaderPage) => {
   };
   baseIds.value = known.value.map((item) => item.id);
   selectedIds.value = [...baseIds.value];
-  primaryId.value = data.primaryLeader?.memberId;
+  primaryId.value =
+    data.primaryLeader?.memberId || data.items.find((item) => item.primary)?.memberId;
   originalPrimaryId.value = primaryId.value;
   restricted.value = data.restricted;
   added.value = [];

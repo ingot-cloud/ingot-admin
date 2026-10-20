@@ -11,11 +11,11 @@ export function formatDepartmentLeaderSummary(summary: DepartmentLeaderSummary):
     ? primary.displayName || "姓名受限"
     : summary.restricted
       ? "主负责人受限"
-      : "未设置";
+      : "-";
   const state = primary && !primary.available ? "（不可用，待交接）" : "";
   const count =
     primary && !summary.restricted && summary.visibleCount > 1
-      ? ` 等 ${summary.visibleCount} 人`
+      ? ` 和其他 ${summary.visibleCount - 1} 人`
       : "";
   return `${name}${state}${count}${summary.restricted ? " · 部分信息受限" : ""}`;
 }
