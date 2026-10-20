@@ -78,3 +78,7 @@
 InDetailIdentity增加可选avatar槽，默认头像/上传行为不变；部门提供56px主题圆底DepartmentMark，不提供上传。MemberDepartmentField扩展multiple=false单栏radio模式，与多选共用部门树、搜索、加载/重试和主题样式；保留多选默认及拖曳主部门。excludeDepartmentId仅禁选自身及子树，仍可展开导航，navigationOnly禁选。录入框键盘可聚焦，名称快照由详情传入，不为回显加载完整树。树在打开时按既有接口加载，同一上下文复用，身份/权限变化清空缓存并丢弃迟到结果。确认才修改外层草稿，提交仍用parentId及原expectedVersion。
 
 旧PUT仅有update或其read范围不覆盖当前部门时保持原可调用性，省略新增聚合信息，不为显示上级或负责人补充读取资格。
+
+## 列表负责人摘要（L01-L02）
+
+复用leaderState.ts的formatDepartmentLeaderSummary，仅使用服务端primaryLeader。仅当主负责人存在、restricted=false且visibleCount>1时追加“等 N 人”，此时visibleCount表示完整可见的负责人数量，包含主负责人。restricted=true时不显示人数，沿用姓名、主负责人受限和部分信息受限的边界；不可用提示仍紧随主负责人姓名。单人及未设置行为保持兼容，不另发请求、不枚举其他负责人、不修改共享类型或后端计数。

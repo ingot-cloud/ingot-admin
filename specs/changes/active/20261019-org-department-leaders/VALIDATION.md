@@ -223,3 +223,9 @@ H01-H04实现完成，状态validating。详情保留无Tab及基本信息/负�
 日志：/tmp/ingot-dept-detail-backend-final.log、/tmp/ingot-dept-detail-org.log、/tmp/ingot-dept-detail-common.log、/tmp/ingot-dept-detail-core-target.log、/tmp/ingot-dept-detail-core.log、/tmp/ingot-dept-detail-app-build.log、/tmp/ingot-dept-detail-app-final-build.log、/tmp/ingot-dept-detail-contract-tools.log。
 
 A01仍待业务环境人工验收；未提前更新current/归档，未提交、迁移或发布。本轮前后端需配套部署以消费新增详情字段。
+
+## 列表负责人摘要文案（2026-10-20）
+
+仅调整org插件leaderState.ts中的列表摘要。单人显示主负责人，多人完整可见时显示“张三 等 3 人”，人数包含主负责人；不枚举其他负责人。部分关系受限时省略人数并保留受限提示，避免把visibleCount误作完整总数。姓名受限、主负责人不可用及未设置仍沿用原语义；接口、数据、权限和Token不变。
+
+使用项目指定的Node 22.17.0/pnpm 10.12.4验证：leaderState.test.ts与deptTable.test.ts共2文件9项通过，覆盖受限主负责人、部分关系受限不输出人数、单人/多人不可用状态、差量保存和部门表配置。两文件ESLint、Prettier及git diff --check通过。L01-L02完成，状态validating，current和A01人工验收保持原状态。
