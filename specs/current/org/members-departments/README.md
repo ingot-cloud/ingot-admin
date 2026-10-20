@@ -16,6 +16,7 @@
 
 - [20261017-org-members-dept-tabs API](../../../changes/archive/2026/20261017-org-members-dept-tabs/API.md)
 - [20261018-org-tenant-member-create-dialog API](../../../changes/archive/2026/20261018-org-tenant-member-create-dialog/API.md)
+- [20261020-org-tenant-member-rejoin API](../../../changes/archive/2026/20261020-org-tenant-member-rejoin/API.md)
 - [20261019-org-department-leaders API](../../../changes/archive/2026/20261019-org-department-leaders/API.md)
 - 后端基线：`ingot/specs/current/iam/tenant-departments/`、`ingot/specs/current/iam/tenant-members/`
 - 共享交互：[租户组织成员选择](../../packages/tenant-member-picker/README.md)、[详情查看/编辑](../../packages/detail-edit-pattern/README.md)。
@@ -24,6 +25,7 @@
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
+| 2026-10-20 | [20261020-org-tenant-member-rejoin](../../../changes/archive/2026/20261020-org-tenant-member-rejoin/) | 已移出成员可通过添加成员或行操作重新加入 |
 | 2026-10-20 | [20261019-org-department-leaders](../../../changes/archive/2026/20261019-org-department-leaders/) | 用户确认验收完成；负责人独立维护、详情统一编辑及组织选人流程 |
 | 2026-10-19 | [20261018-org-tenant-member-create-dialog](../../../changes/archive/2026/20261018-org-tenant-member-create-dialog/) | 用户要求归档；添加成员改为按手机号的对话框 |
 | 2026-10-17 | [20261017-org-members-dept-tabs](../../../changes/archive/2026/20261017-org-members-dept-tabs/) | 用户要求归档；成员与部门拆为两个子页面，并固化目录菜单 |

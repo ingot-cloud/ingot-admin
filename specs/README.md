@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [已移出成员重新加入](./changes/archive/2026/20261020-org-tenant-member-rejoin/README.md)（completed，2026-10-20）；[当前能力](./current/org/members-departments/README.md)
+
 - [部门负责人独立维护](./changes/archive/2026/20261019-org-department-leaders/README.md)（completed，2026-10-20 用户确认验收完成）；[成员与部门](./current/org/members-departments/README.md)、[组织成员选择](./current/packages/tenant-member-picker/README.md)
 
 - [租户添加成员对话框](./changes/archive/2026/20261018-org-tenant-member-create-dialog/README.md)（completed，2026-10-19 用户要求归档）；[当前能力](./current/org/members-departments/README.md)
