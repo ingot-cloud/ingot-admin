@@ -81,4 +81,14 @@ InDetailIdentity增加可选avatar槽，默认头像/上传行为不变；部门
 
 ## 列表负责人摘要（L01-L02）
 
-复用leaderState.ts的formatDepartmentLeaderSummary，仅使用服务端primaryLeader。仅当主负责人存在、restricted=false且visibleCount>1时追加“等 N 人”，此时visibleCount表示完整可见的负责人数量，包含主负责人。restricted=true时不显示人数，沿用姓名、主负责人受限和部分信息受限的边界；不可用提示仍紧随主负责人姓名。单人及未设置行为保持兼容，不另发请求、不枚举其他负责人、不修改共享类型或后端计数。
+复用leaderState.ts的formatDepartmentLeaderSummary，仅使用服务端primaryLeader。按截图修订，仅当主负责人存在、restricted=false且visibleCount>1时追加“和其他 X 人”，X=visibleCount-1。restricted=true时不显示人数，沿用姓名、主负责人受限和部分信息受限的边界；不可用提示仍紧随主负责人姓名。无主负责人且无受限时显示ASCII横杠。
+
+DeptTab的负责人列在primaryLeader存在时复用InAvatar和成员表既有30px尺寸，姓名取已获授权的displayName，缺失显示“姓名受限”；不请求额外成员详情或图片。头像与文案水平居中、间距8px，主负责人不可见或未设置时不显示头像。使用框架主题，不修改共享类型、后端计数或数据关系。
+
+## 详情标签与头像链路（V01-V03）
+
+本节替代上轮只读纯文字摘要和姓名占位限定。后端新增可选头像后，API loader、DepartmentLeaderField.option及列表InAvatar均保留avatar，候选/已选继续复用同一IamSelectOption快照。
+
+BizIamMemberChips增加可选标签外观、换行及primaryMemberId，默认行为兼容其他业务；负责人标签20px头像，浅色圆角底，姓名旁主负责人标识。BizTenantMemberSelect增加selection插槽，不改变默认姓名摘要；DepartmentLeaderField在只读和该插槽复用相同标签，主负责人排在已知标签首位，不再单独显示框下“主负责人：姓名”。可见未加载关系保留原总数/追加和差量，不为补标签遍历全量；多项溢出仍有剩余数量提示。BizOrganizationPickerAvatar继续32px并使用框架主题色，真实图片直接传InAvatar，失败/空值沿原后两字规则；不在前端拼OSS地址。
+
+详情保留现有无Tab身份区、基本信息与负责人统一保存及底部操作，不照抄参考产品的部门群或额外权限。验证头像优先/失败回退、主标签、只读/编辑/取消、快照复用、分页及权限版本失效，配套后端字段/OSS/SQL测试与契约生成。

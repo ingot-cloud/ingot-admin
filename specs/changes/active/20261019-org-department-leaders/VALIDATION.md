@@ -229,3 +229,30 @@ A01仍待业务环境人工验收；未提前更新current/归档，未提交、
 仅调整org插件leaderState.ts中的列表摘要。单人显示主负责人，多人完整可见时显示“张三 等 3 人”，人数包含主负责人；不枚举其他负责人。部分关系受限时省略人数并保留受限提示，避免把visibleCount误作完整总数。姓名受限、主负责人不可用及未设置仍沿用原语义；接口、数据、权限和Token不变。
 
 使用项目指定的Node 22.17.0/pnpm 10.12.4验证：leaderState.test.ts与deptTable.test.ts共2文件9项通过，覆盖受限主负责人、部分关系受限不输出人数、单人/多人不可用状态、差量保存和部门表配置。两文件ESLint、Prettier及git diff --check通过。L01-L02完成，状态validating，current和A01人工验收保持原状态。
+
+## 截图对照的负责人列修订（2026-10-20）
+
+按用户新截图替代上轮“等N人”文案：显示主负责人姓名，完整可见且有其他负责人时追加“和其他 X 人”，X=visibleCount-1。单人没有人数后缀，未设置为ASCII `-`；受限主负责人及部分受限关系不显示其他人数，不伪装为空。不可用主负责人继续保留交接提示。
+
+DeptTab在主负责人存在时复用InAvatar，采用成员表同一30px尺寸与8px间距、框架主题、已授权姓名占位头像，文本超宽省略并保留完整title。无主负责人不显示头像；接口没有照片字段，不新增查询、不修改后端或权限。
+
+Node 22.17.0/pnpm 10.12.4下，leaderState.test.ts、deptTable.test.ts、DeptTab.test.ts共3文件10项通过；组织插件vue-tsc、三个改动源文件ESLint/Prettier及git diff --check通过。现有摘要测试补充空值、单人、其他人数扣除主负责人、受限关系保留和不可用状态。
+
+真实页面核验尝试进入本地部门页，但当前核验浏览器无租户登录态，被重定向到统一登录页面，未完成真实列表视觉检查。临时页已关闭，未登录、未写入业务数据；头像对齐、间距、长姓名省略及浅深主题仍需在A01使用已登录的租户页面验收。L03-L04自动验证完成，状态validating，本轮不更新current、不归档、不提交。
+
+## 详情负责人标签与真实头像（2026-10-20）
+
+DepartmentLeaderField在只读和编辑选择框的selection插槽复用BizIamMemberChips标签，主负责人置于已知标签首位并内嵌“部门主负责人”，取消框下重复姓名。标签20px头像、紧凑灰底圆角、主题浅底主标识；单次仍只使用已加载关系与原总数，不追加逐人请求、不覆盖隐藏/未加载关系。空只读为横杠，编辑空态保留选择提示。其他业务未启用标签外观/插槽时行为兼容。
+
+原avatar快照贯通负责人页、组织浏览及少量成员/组绑定loader到列表和详情。真实图片优先，缺失/失败沿InAvatar姓名后两字回退；组织对话框不再按姓名生成渐变色，统一框架主题色。小标签两字采用10px不换行，避免20px圆内纵向折行；姓名与实色头像前景采用框架Token，深色可读。未通过字段权限的头像不从其他接口补回。
+
+自动验证：admin-common34文件170项、org31文件84项通过；公共包及组织插件类型检查、公共包构建、admin应用构建、定向ESLint/Prettier、分层边界与两仓库diff空白检查通过。更新既有测试覆盖编辑选择框槽位、只读主标识、真实图片src、外部首屏不重查、头像快照及浏览适配。保留已有auth静态/动态导入、包体积提示。配套后端commons17项、provider49项、契约8项通过，无数据库迁移。
+
+真实浏览器隔离验证（真实Vue/ElementPlus/框架组件，模拟数据）：
+
+- 只读与编辑均渲染同一头像姓名标签、20px头像及主标识；正常图片naturalWidth为64，未设置显示“小华”，10px双字不折行。姓名在编辑按钮内也保持正文色。
+- 组织对话框候选及已选使用32px头像；正常图片两栏均加载，空头像与失败图片分别回退“小华”和“小芳”。取消后只读标签保持原值；浅深主题均核对。
+- 核验没有调用真实成员接口或写入业务数据；模拟页未注册组织权限上下文，因此对话框显示无部门浏览资格说明，本轮不以此验证真实租户准入。真实部门导航/上传头像及权限切换仍归A01。
+- 截图：[浅色只读与编辑](/tmp/ingot-leader-avatar-details-light.jpg)、[深色只读与编辑](/tmp/ingot-leader-avatar-details-dark.jpg)、[浅色对话框](/tmp/ingot-leader-avatar-dialog-light.jpg)、[深色对话框](/tmp/ingot-leader-avatar-dialog-dark.jpg)。临时预览源文件及浏览器页均已删除/关闭，未改动真实业务数据。
+
+日志：/tmp/ingot-leader-avatar-common.log、/tmp/ingot-leader-avatar-org-final.log、/tmp/ingot-leader-avatar-common-types.log、/tmp/ingot-leader-avatar-org-types.log、/tmp/ingot-leader-avatar-common-build-final.log、/tmp/ingot-leader-avatar-app-build.log、/tmp/ingot-leader-avatar-lint.log。V01-V03完成，状态validating；需配套重新构建并重启IAM加载可选avatar投影，本轮不提交、不归档、不提前修改current。
