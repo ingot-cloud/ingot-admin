@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [部门负责人独立维护](./changes/archive/2026/20261019-org-department-leaders/README.md)（completed，2026-10-20 用户确认验收完成）；[成员与部门](./current/org/members-departments/README.md)、[组织成员选择](./current/packages/tenant-member-picker/README.md)
+
 - [租户添加成员对话框](./changes/archive/2026/20261018-org-tenant-member-create-dialog/README.md)（completed，2026-10-19 用户要求归档）；[当前能力](./current/org/members-departments/README.md)
 
 - [成员与部门拆为两个子页面](./changes/archive/2026/20261017-org-members-dept-tabs/README.md)（completed，2026-10-17 用户要求归档）；[当前能力](./current/org/members-departments/README.md)
@@ -222,8 +224,6 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 - [安全中心页面交互与布局](./changes/archive/2026/20261012-security-page-interactions/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/credential-policies/README.md)
 
 ## 当前活动变更
-
-- [部门负责人独立维护](./changes/active/20261019-org-department-leaders/README.md)（validating；2026-10-19 专用浏览及姓名搜索修复验证完成，待部署验收）
 
 - [组织角色即时授权与拥有者交互](./changes/active/20261014-org-tenant-live-authorization/README.md)（validating；2026-10-14 开发与隔离验证完成，待用户产品验收，2026-10-19已登记本地提交）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。

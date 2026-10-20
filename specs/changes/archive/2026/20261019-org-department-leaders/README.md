@@ -1,6 +1,17 @@
 # 部门负责人独立维护
 
-> 状态：validating
+> 状态：completed（已验收，已更新 current，已归档）
+
+## 完成与归档（2026-10-20）
+
+- 验收依据：用户明确要求“归档相关spec 20261019-iam-department-leaders，已经验收完成”。本变更为同一功能的前端配套，随之关闭A01并归档。
+- 完成与归档日期：2026-10-20（Asia/Shanghai）。此前待验收及未提交描述保留各轮历史时点；本轮未代用户重跑真实租户验收或部署。
+- 关联实现提交：组织选人/统一维护 `c01be53`，负责人摘要 `e58ca31`，标签与头像 `826196e`，移除更多操作 `b58e5bb`；Spec记录 `2f76410`、`75d92eb`、`6cb23b4`、`e2802d0`。配套后端 `37061df9`、`3776e113`，无PR。
+- 更新当前能力：[成员与部门](../../../../current/org/members-departments/README.md)、[租户组织成员选择](../../../../current/packages/tenant-member-picker/README.md)、[详情查看/编辑](../../../../current/packages/detail-edit-pattern/README.md)。
+- 后端配套归档：`ingot/specs/changes/archive/2026/20261019-iam-department-leaders/`。其他active变更不随本次验收结项。
+- 最终设计差异：经批准统一为无Tab抽屉、基本信息与负责人一次保存；上级部门单选复用成员部门对话框；场景化组织选人、外部快照与逐页追加；主负责人头像/标签及“和其他X人”摘要、真实头像优先与主题色回退；部门详情移除更多操作。平台、非人员对象与授权边界保持原规则。
+
+## 历史实施记录
 
 创建日期：2026-10-19（Asia/Shanghai）。负责人：jy。
 
@@ -10,7 +21,7 @@
 
 实现及自动验证于 2026-10-19 完成，待用户人工验收；[验证证据与验收步骤](./VALIDATION.md)。
 
-后端契约来源：ingot 仓库 `specs/changes/active/20261019-iam-department-leaders/API.md`；本目录保留同步副本。
+后端契约来源：ingot 仓库 `specs/changes/archive/2026/20261019-iam-department-leaders/API.md`；本目录保留同步副本。
 
 2026-10-19 用户批准统一表单和组织成员选择方案，修订决策完整；approved，随实施转 implementing。上一轮验证记录保留，追加验证覆盖本轮修订。
 

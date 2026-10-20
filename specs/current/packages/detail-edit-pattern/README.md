@@ -4,6 +4,8 @@
 
 `@ingot/admin-core` 提供实体详情的查看/编辑壳层：默认只读、底部进入编辑、编辑中离开需确认。通讯录成员与部门详情已接入；添加成员、添加部门仍走独立创建表单。
 
+租户 IAM 部门详情使用无 Tab 模式，基本信息与负责人统一保存；身份区支持自定义部门图标槽，不提供更多操作。业务规则见[成员与部门](../../org/members-departments/spec.md)。
+
 ## 相关源码
 
 - [packages/admin-core/src/components/drawer/InDetailDrawer.vue](../../../../packages/admin-core/src/components/drawer/InDetailDrawer.vue)
@@ -27,4 +29,5 @@
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
+| 2026-10-20 | [20261019-org-department-leaders](../../../changes/archive/2026/20261019-org-department-leaders/) | 无 Tab、统一编辑与自定义身份头像槽；租户部门详情精简操作 |
 | 2026-09-07 | [20260907-packages-detail-edit-pattern](../../../changes/archive/2026/20260907-packages-detail-edit-pattern/) | 详情查看/编辑壳层、公共确认框与操作下拉；通讯录成员试点 |
