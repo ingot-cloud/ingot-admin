@@ -92,3 +92,7 @@ DeptTab的负责人列在primaryLeader存在时复用InAvatar和成员表既有3
 BizIamMemberChips增加可选标签外观、换行及primaryMemberId，默认行为兼容其他业务；负责人标签20px头像，浅色圆角底，姓名旁主负责人标识。BizTenantMemberSelect增加selection插槽，不改变默认姓名摘要；DepartmentLeaderField在只读和该插槽复用相同标签，主负责人排在已知标签首位，不再单独显示框下“主负责人：姓名”。可见未加载关系保留原总数/追加和差量，不为补标签遍历全量；多项溢出仍有剩余数量提示。BizOrganizationPickerAvatar继续32px并使用框架主题色，真实图片直接传InAvatar，失败/空值沿原后两字规则；不在前端拼OSS地址。
 
 详情保留现有无Tab身份区、基本信息与负责人统一保存及底部操作，不照抄参考产品的部门群或额外权限。验证头像优先/失败回退、主标签、只读/编辑/取消、快照复用、分页及权限版本失效，配套后端字段/OSS/SQL测试与契约生成。
+
+## 部门详情移除更多操作（UI01-UI02）
+
+DeptDetailDrawer移除InDetailIdentity的more插槽、删除能力计算、确认框和删除命令处理及专属导入。公共身份组件未提供该插槽时自动不渲染操作容器，无需新增样式。列表原删除操作、统一编辑接口、权限与数据边界不变；本次仅前端展示调整，无迁移。

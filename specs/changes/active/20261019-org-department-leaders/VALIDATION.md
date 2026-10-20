@@ -256,3 +256,9 @@ DepartmentLeaderField在只读和编辑选择框的selection插槽复用BizIamMe
 - 截图：[浅色只读与编辑](/tmp/ingot-leader-avatar-details-light.jpg)、[深色只读与编辑](/tmp/ingot-leader-avatar-details-dark.jpg)、[浅色对话框](/tmp/ingot-leader-avatar-dialog-light.jpg)、[深色对话框](/tmp/ingot-leader-avatar-dialog-dark.jpg)。临时预览源文件及浏览器页均已删除/关闭，未改动真实业务数据。
 
 日志：/tmp/ingot-leader-avatar-common.log、/tmp/ingot-leader-avatar-org-final.log、/tmp/ingot-leader-avatar-common-types.log、/tmp/ingot-leader-avatar-org-types.log、/tmp/ingot-leader-avatar-common-build-final.log、/tmp/ingot-leader-avatar-app-build.log、/tmp/ingot-leader-avatar-lint.log。V01-V03完成，状态validating；需配套重新构建并重启IAM加载可选avatar投影，本轮不提交、不归档、不提前修改current。
+
+## 部门详情移除更多操作（2026-10-20）
+
+DeptDetailDrawer不再提供身份区more插槽，并清理专属删除能力、确认框、命令处理及导入。公共身份组件未提供该槽时不渲染操作容器，因此只读及编辑均无更多操作入口或额外占位。部门列表的行删除和批量删除入口保留，统一编辑逻辑未变。
+
+既有DeptDetailDrawer.test.ts的3项回归通过，覆盖聚合首屏、上级单选、负责人差量及409草稿保留；组织插件vue-tsc、定向ESLint/Prettier和git diff --check通过。仅移除局部入口，不新增测试或后端改动。UI01-UI02完成，状态validating；真实租户A01继续保留，本轮未提交。
