@@ -823,6 +823,22 @@ export interface GroupRecord {
   visibleMemberCount?: number;
 }
 
+export interface GroupMembershipDepartment {
+  id: string;
+  name?: string;
+  includeDescendants: boolean;
+}
+
+export interface GroupMembership {
+  direct: boolean;
+  departments: GroupMembershipDepartment[];
+}
+
+export interface GroupEffectiveMemberRecord {
+  member: MemberRecord;
+  membership: GroupMembership;
+}
+
 export interface GroupDraft {
   name: string;
   description?: string;

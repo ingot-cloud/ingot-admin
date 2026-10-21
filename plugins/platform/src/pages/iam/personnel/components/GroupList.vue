@@ -128,18 +128,19 @@ const privateOnPage = (current: number): void => {
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: #1f2329;
+    color: var(--in-text-color);
     text-align: left;
     cursor: pointer;
   }
 
   & .group-item:hover {
-    background: rgba(126, 134, 142, 0.08);
+    background: var(--in-bg-color-control-hover);
   }
 
-  & .group-item.is-selected {
-    color: rgb(51, 112, 255);
-    background: rgba(51, 112, 255, 0.08);
+  & .group-item.is-selected,
+  & .group-item.is-selected:hover {
+    color: var(--in-color-primary);
+    background: color-mix(in srgb, var(--in-color-primary) 8%, transparent);
   }
 
   & .group-item__icon {
@@ -196,8 +197,11 @@ const privateOnPage = (current: number): void => {
     font-size: 16px;
   }
 
-  & .group-item__more:hover {
-    background: #dee1e3;
+  & .group-item__more:hover,
+  & .group-item__more:focus,
+  & .group-item__more:focus-visible {
+    background: var(--in-gray-300);
+    outline: none;
   }
 
   & .group-item__danger {

@@ -28,6 +28,7 @@ import {
   type MemberWorkbookMode,
   type MemberWorkbookTask,
   type GroupDraft,
+  type GroupEffectiveMemberRecord,
   type GroupRecord,
   type GroupUpdateInput,
   type IamListQuery,
@@ -438,6 +439,28 @@ export function TenantGroupDeleteAPI(
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   return request.delete<CreatedResource>(`${GROUP_PATH}/${id}`, null, options);
+}
+
+export function TenantGroupEffectiveMembersAPI(
+  page: Page,
+  condition?: IamListQuery,
+  options?: RequestOptions,
+): Promise<R<Page<GroupEffectiveMemberRecord>>> {
+  const groupId = condition?.groupId;
+  if (!groupId) {
+    throw new Error("缺少用户组");
+  }
+  if (condition) {
+    filterParams(condition);
+  }
+  const { groupId: _boundGroupId, ...filters } = condition;
+  return request
+    .get<IamPageResponse<GroupEffectiveMemberRecord>>(
+      `${GROUP_PATH}/${groupId}/effective-members`,
+      toIamListParams(page, filters),
+      options,
+    )
+    .then(asPage);
 }
 
 export function TenantGroupPreviewAPI(
