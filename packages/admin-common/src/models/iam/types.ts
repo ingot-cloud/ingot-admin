@@ -264,6 +264,7 @@ export interface TenantSettingsInput extends VersionInput {
 
 export interface OwnerTransferInput extends VersionInput {
   newOwnerMemberId: string;
+  confirmation: SensitiveConfirmation;
 }
 
 export interface ApplicationRecord {

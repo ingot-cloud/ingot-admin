@@ -490,12 +490,19 @@ export function TenantSettingsUpdateAPI(
   return request.put(`${SETTINGS_PATH}`, params, options);
 }
 
+const transferCrypto = {
+  crypto: { request: { mode: "field" as const, fields: ["secret"] } },
+};
+
 export function TenantOwnerTransferAPI(
   params: OwnerTransferInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
-  return request.post<CreatedResource>(`${SETTINGS_PATH}/owner-transfer`, params, options);
+  return request.post<CreatedResource>(`${SETTINGS_PATH}/owner-transfer`, params, {
+    ...options,
+    ...transferCrypto,
+  });
 }
 
 export function TenantApplicationPageAPI(
