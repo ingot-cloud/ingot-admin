@@ -85,6 +85,7 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   },
   utilities: [
     defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Fullscreen),
+    defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Downloads),
     {
       type: InAdminHeaderUtilityItemType.Action,
       key: "notify",

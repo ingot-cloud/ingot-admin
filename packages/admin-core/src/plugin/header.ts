@@ -87,6 +87,8 @@ export const InAdminHeaderBuiltinUtilityName = {
   Fullscreen: "fullscreen",
   /** 打开布局/偏好设置 */
   Settings: "settings",
+  /** 进入「我的下载」查看导出文件 */
+  Downloads: "downloads",
 } as const;
 
 /** 内置小部件名称取值，使用同名常量而不是手写字符串。 */

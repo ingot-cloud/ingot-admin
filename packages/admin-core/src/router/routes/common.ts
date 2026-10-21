@@ -1,4 +1,5 @@
 import type { RouteRecordRaw } from "vue-router";
+import { DOWNLOAD_CENTER_PATH, DOWNLOAD_CENTER_TITLE } from "@/models/download";
 import { LAYOUT_MAIN, PageName, RedirectPageField } from "@/router/constants";
 
 /**
@@ -24,6 +25,19 @@ export const commonRoutes: Array<RouteRecordRaw> = [
           hideMenu: true,
           hideBreadcrumb: true,
         },
+      },
+    ],
+  },
+  {
+    path: DOWNLOAD_CENTER_PATH,
+    component: LAYOUT_MAIN,
+    meta: { title: DOWNLOAD_CENTER_TITLE, hideMenu: true },
+    children: [
+      {
+        path: "",
+        name: PageName.DOWNLOADS,
+        component: () => import("@/pages/common/downloads/IndexPage.vue"),
+        meta: { title: DOWNLOAD_CENTER_TITLE, hideMenu: true },
       },
     ],
   },

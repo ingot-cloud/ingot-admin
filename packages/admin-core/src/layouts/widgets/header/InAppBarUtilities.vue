@@ -43,6 +43,31 @@
               </span>
             </el-tooltip>
           </template>
+          <el-tooltip
+            v-else-if="
+              item.type === InAdminHeaderUtilityItemType.Builtin &&
+              item.name === InAdminHeaderBuiltinUtilityName.Downloads
+            "
+            :disabled="overflowedSet.has(item.key)"
+            :content="item.label"
+            effect="dark"
+            placement="bottom"
+          >
+            <button
+              type="button"
+              class="in-icon-button in-app-bar-utilities__action"
+              :class="{ 'is-overflow': overflowedSet.has(item.key) }"
+              :aria-label="item.label"
+              :disabled="item.disabled"
+              data-testid="app-bar-downloads"
+              @click="privateOpenDownloads"
+            >
+              <span class="in-app-bar-utilities__icon-wrap">
+                <in-icon :name="item.icon || DOWNLOADS_UTILITY_ICON" class="in-app-bar__icon" />
+              </span>
+              <span v-if="overflowedSet.has(item.key)">{{ item.label }}</span>
+            </button>
+          </el-tooltip>
           <template
             v-else-if="item.type === InAdminHeaderUtilityItemType.Component && item.component"
           >
@@ -129,7 +154,9 @@
 </template>
 <script setup lang="ts">
 import { useMessage } from "@/hooks/web/useMessage";
+import { DOWNLOAD_CENTER_PATH } from "@/models/download";
 import { InAdminHeaderBuiltinUtilityName, InAdminHeaderUtilityItemType } from "@/plugin/header";
+import { DOWNLOADS_UTILITY_ICON } from "./defaults";
 import type { ResolvedHeaderUtilityItem } from "./resolveHeaderConfig";
 import { isVisibleUtilityBadge } from "./isVisibleUtilityBadge";
 import { useAppBarOverlay } from "./useAppBarOverlay";
@@ -158,6 +185,7 @@ const slots = defineSlots<{
 }>();
 
 const message = useMessage();
+const router = useRouter();
 const pendingKey = ref<string>();
 const moreOpen = ref(false);
 const moreTriggerRef = ref<HTMLElement>();
@@ -194,6 +222,14 @@ const privateOnAction = async (item: ResolvedHeaderUtilityItem) => {
   } finally {
     pendingKey.value = undefined;
   }
+};
+
+const privateOpenDownloads = () => {
+  if (moreOpen.value) {
+    emit("close-panel");
+    privateClose(true);
+  }
+  void router.push(DOWNLOAD_CENTER_PATH);
 };
 
 const privateToggleMore = () => {

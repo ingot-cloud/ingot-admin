@@ -1,7 +1,10 @@
 import type { Component } from "vue";
 import {
   definePluginPages,
+  defineStaticMenus,
   INGOT_ADMIN_PLUGIN_API_VERSION,
+  MenuType,
+  PageLayoutViewPath,
   type InAdminPlugin,
 } from "@ingot/admin-core";
 import { domainGlobalComponents } from "./components/global";
@@ -27,6 +30,26 @@ export const orgPlugin: InAdminPlugin = {
     sourceRoot: "./pages",
     canonicalPrefix: "org",
   }),
+  staticMenus: defineStaticMenus([
+    {
+      name: "批量导入或导出成员",
+      path: "/org/iam/members/workbook-root",
+      routeName: "org.iam.members.workbook.root",
+      menuType: MenuType.Directory,
+      viewPath: PageLayoutViewPath.MAIN,
+      hidden: true,
+      children: [
+        {
+          name: "批量导入或导出成员",
+          path: "/org/iam/members/workbook",
+          routeName: "org.iam.members.workbook",
+          menuType: MenuType.Menu,
+          viewPath: "org.iam.members.workbook",
+          hidden: true,
+        },
+      ],
+    },
+  ]),
   components: domainGlobalComponents,
   install({ app }) {
     app.provide(organizationMemberPickerKey, {

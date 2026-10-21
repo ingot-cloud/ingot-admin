@@ -36,7 +36,11 @@ export const DEFAULT_HEADER_USER_MENU: InAdminHeaderUserMenuItem[] = [
 const UTILITY_LABEL: Record<InAdminHeaderBuiltinUtilityName, string> = {
   [UtilityName.Fullscreen]: "全屏",
   [UtilityName.Settings]: "设置",
+  [UtilityName.Downloads]: "我的下载",
 };
+
+/** 「我的下载」内置入口未配置图标时使用的 Iconify 图标。 */
+export const DOWNLOADS_UTILITY_ICON = "ep:download";
 
 const USER_MENU_LABEL: Record<InAdminHeaderBuiltinUserMenuName, string> = {
   [UserMenuName.SwitchOrg]: "切换组织",

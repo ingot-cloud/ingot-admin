@@ -65,6 +65,17 @@ describe("resolveHeaderConfig", () => {
     ]);
   });
 
+  it("「我的下载」内置小部件省略文案时使用核心默认文案", () => {
+    const resolved = resolveHeaderConfig({
+      utilities: [defineHeaderBuiltinUtility(InAdminHeaderBuiltinUtilityName.Downloads)],
+    });
+    expect(resolved.utilities[0]).toMatchObject({
+      key: InAdminHeaderBuiltinUtilityName.Downloads,
+      name: InAdminHeaderBuiltinUtilityName.Downloads,
+      label: "我的下载",
+    });
+  });
+
   it("响应式显隐与禁用态会解析到当前值", () => {
     const visible = ref(true);
     const disabled = computed(() => true);

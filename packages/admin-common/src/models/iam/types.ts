@@ -11,6 +11,8 @@ import {
   EntitlementSource,
   ExportTaskStatus,
   FieldVisibility,
+  MemberWorkbookKind,
+  MemberWorkbookMode,
   GrantStatus,
   MenuAccessMode,
   MenuKind,
@@ -762,6 +764,41 @@ export interface ExportTask {
   version: string;
   expiresAt: string;
   failureCode?: string;
+}
+
+export interface MemberWorkbookExportInput extends VersionInput {
+  memberIds?: string[];
+}
+
+export interface MemberWorkbookFile {
+  filename: string;
+  contentType: string;
+  contentBase64: string;
+}
+
+export interface MemberWorkbookTask {
+  id: string;
+  kind: MemberWorkbookKind;
+  mode: MemberWorkbookMode;
+  status: ExportTaskStatus;
+  version: string;
+  createdAt: string;
+  expiresAt: string;
+  failureCode?: string;
+  successCount?: number;
+  failCount?: number;
+  passwordAvailable?: boolean;
+}
+
+export interface MemberWorkbookHistoryItem {
+  id: string;
+  kind: MemberWorkbookKind;
+  mode: MemberWorkbookMode;
+  status: ExportTaskStatus;
+  createdAt: string;
+  expiresAt: string;
+  successCount?: number;
+  failCount?: number;
 }
 
 export interface DepartmentSelection {

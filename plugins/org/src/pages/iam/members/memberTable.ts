@@ -20,6 +20,9 @@ export const MEMBER_PHONE_PATTERN = new RegExp(`^\\d{${MEMBER_PHONE_LENGTH}}$`);
 export const MEMBER_JOINED_EXISTING = "该手机号已有账号，已加入组织";
 export const MEMBER_REJOINED = "该成员已重新加入组织，原有角色和用户组已清除";
 export const MEMBER_PHONE_INVALID = "请输入11位手机号";
+export const MEMBER_WORKBOOK_PATH = "/org/iam/members/workbook";
+export const MEMBER_LIST_PATH = "/org/iam/members";
+export const MEMBER_WORKBOOK_TITLE = "批量导入或导出成员";
 
 export function plainMemberPhone(value?: string): string {
   return value && MEMBER_PHONE_PATTERN.test(value) ? value : "";
@@ -77,11 +80,12 @@ export function createToolbarActions(handlers: {
   onResign: () => void;
   selectedCount: number;
   operableCount: number;
+  canImportExport?: boolean;
 }): Array<InTableAction<Row>> {
   const hasSelection = handlers.selectedCount > 0;
   const hasOperable = handlers.operableCount > 0;
   const batchReason = hasSelection ? OWNER_BATCH_EXCLUDED : SELECT_MEMBERS_FIRST;
-  return [
+  const actions: Array<InTableAction<Row>> = [
     {
       key: "leave",
       label: "批量操作离职",
@@ -109,16 +113,19 @@ export function createToolbarActions(handlers: {
       disabledReason: hasOperable ? undefined : batchReason,
       onSelect: () => handlers.onChangeDept(),
     },
-    {
+  ];
+  if (handlers.canImportExport !== false) {
+    actions.push({
       key: "import",
       label: "批量导入/导出",
       kind: "primary",
       overflow: "auto",
       overflowGroup: MEMBER_BATCH_GROUP,
       priority: 30,
-      permission: IamAction.TENANT_MEMBER_EXPORT,
       onSelect: () => handlers.onImportExport(),
-    },
+    });
+  }
+  actions.push(
     {
       key: "create",
       label: "添加成员",
@@ -129,7 +136,8 @@ export function createToolbarActions(handlers: {
       permission: IamAction.TENANT_MEMBER_CREATE,
       onSelect: () => handlers.onCreate(),
     },
-  ];
+  );
+  return actions;
 }
 
 export function createRowActions(

@@ -130,6 +130,22 @@ export enum ExportTaskStatus {
   EXPIRED = "EXPIRED",
 }
 
+export enum MemberWorkbookKind {
+  EXPORT = "EXPORT",
+  IMPORT = "IMPORT",
+}
+
+export enum MemberWorkbookMode {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+}
+
+export enum MemberWorkbookArtifact {
+  WORKBOOK = "WORKBOOK",
+  ERRORS = "ERRORS",
+  PASSWORDS = "PASSWORDS",
+}
+
 export enum AccountLookupPurpose {
   MEMBER_CREATE = "MEMBER_CREATE",
   ACCOUNT_MANAGE = "ACCOUNT_MANAGE",

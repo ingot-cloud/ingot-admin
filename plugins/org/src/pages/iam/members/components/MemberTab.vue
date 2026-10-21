@@ -122,8 +122,7 @@
     :departments="memberOps.deptTree.value"
     @success="memberOps.refreshData()"
   />
-  <MemberExportDrawer ref="exportRef" />
-  <MemberBatchDepartmentDrawer ref="batchDeptRef" @success="memberOps.refreshData()" />
+  <MemberBatchDepartmentDialog ref="batchDeptRef" @success="memberOps.refreshData()" />
 </template>
 
 <script lang="ts" setup>
@@ -153,8 +152,7 @@ import DeptTreePanel from "./DeptTreePanel.vue";
 import MemberCreateDialog from "./MemberCreateDialog.vue";
 import MemberRejoinDialog from "./MemberRejoinDialog.vue";
 import MemberDetailDrawer from "./MemberDetailDrawer.vue";
-import MemberExportDrawer from "./MemberExportDrawer.vue";
-import MemberBatchDepartmentDrawer from "./MemberBatchDepartmentDrawer.vue";
+import MemberBatchDepartmentDialog from "./MemberBatchDepartmentDialog.vue";
 import {
   collectOperableMembers,
   createRowActions,
@@ -163,6 +161,7 @@ import {
   formatSelectionColumnLabel,
   MEMBER_AVATAR_SIZE,
   MEMBER_NAME_COLUMN_LABEL,
+  MEMBER_WORKBOOK_PATH,
   MEMBER_SPLIT_KEY,
   TABLE_ID,
   type Row,
@@ -191,8 +190,13 @@ const statusFilter = computed({
 const createRef = ref<{ show: (department?: MemberDepartmentView) => void }>();
 const rejoinRef = ref<{ show: (row: Row) => void }>();
 const detailRef = ref<{ show: (row: Row) => void }>();
-const exportRef = ref<{ show: () => void }>();
 const batchDeptRef = ref<{ show: (rows: Row[]) => void }>();
+const router = useRouter();
+const canImportExport = computed(
+  () =>
+    permissions.permissions.includes(IamAction.TENANT_MEMBER_CREATE) ||
+    permissions.permissions.includes(IamAction.TENANT_MEMBER_EXPORT),
+);
 const selectedRows = ref<Row[]>([]);
 const displayNameHeader = computed(() =>
   formatSelectionColumnLabel(MEMBER_NAME_COLUMN_LABEL, selectedRows.value.length),
@@ -211,7 +215,7 @@ const handleCreate = (): void => {
   );
 };
 const handleImportExport = (): void => {
-  exportRef.value?.show();
+  void router.push(MEMBER_WORKBOOK_PATH);
 };
 const handleChangeDept = (): void => {
   const targets = collectOperableMembers(selectedRows.value, ownerMemberId.value);
@@ -299,6 +303,7 @@ const toolbarActions = computed(() =>
     onResign: handleResign,
     selectedCount: selectedRows.value.length,
     operableCount: collectOperableMembers(selectedRows.value, ownerMemberId.value).length,
+    canImportExport: canImportExport.value,
   }),
 );
 const rowActionsOf = (item: Row): Array<InTableAction<Row>> =>

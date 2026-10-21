@@ -18,6 +18,7 @@ export enum PageLayoutViewPath {
 export enum PageName {
   DYNAMIC_ROUTE_BOOTSTRAP = "DynamicRouteBootstrap",
   REDIRECT = "Redirect",
+  DOWNLOADS = "Downloads",
 }
 export enum PagePath {
   ROOT = "/",

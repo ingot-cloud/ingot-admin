@@ -20,6 +20,12 @@ import {
   type DepartmentUpdateInput,
   type EntitlementRecord,
   type ExportTask,
+  type MemberWorkbookArtifact,
+  type MemberWorkbookExportInput,
+  type MemberWorkbookFile,
+  type MemberWorkbookHistoryItem,
+  type MemberWorkbookMode,
+  type MemberWorkbookTask,
   type GroupDraft,
   type GroupRecord,
   type GroupUpdateInput,
@@ -195,6 +201,56 @@ export function TenantMemberExportDownloadAPI(
       options,
     )
     .then(asPage);
+}
+
+export function TenantMemberWorkbookTemplateAPI(
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookFile>> {
+  return request.get<MemberWorkbookFile>(`${MEMBER_PATH}/workbook/template`, undefined, options);
+}
+
+export function TenantMemberWorkbookExportAPI(
+  params: MemberWorkbookExportInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  filterParams(params);
+  return request.post<CreatedResource>(`${MEMBER_PATH}/workbook/export`, params, options);
+}
+
+export function TenantMemberWorkbookImportAPI(
+  file: File,
+  mode: MemberWorkbookMode,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("mode", mode);
+  return request.post<CreatedResource>(`${MEMBER_PATH}/workbook/import`, form, options);
+}
+
+export function TenantMemberWorkbookHistoryAPI(
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookHistoryItem[]>> {
+  return request.get<MemberWorkbookHistoryItem[]>(`${MEMBER_PATH}/workbook/history`, undefined, options);
+}
+
+export function TenantMemberWorkbookStatusAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookTask>> {
+  return request.get<MemberWorkbookTask>(`${MEMBER_PATH}/workbook/${id}/status`, undefined, options);
+}
+
+export function TenantMemberWorkbookFileAPI(
+  id: string,
+  artifact: MemberWorkbookArtifact,
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookFile>> {
+  return request.get<MemberWorkbookFile>(
+    `${MEMBER_PATH}/workbook/${id}/file`,
+    { artifact },
+    options,
+  );
 }
 
 export function TenantAccountLookupAPI(

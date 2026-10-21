@@ -127,6 +127,7 @@ export { default as InAvatar } from "./components/avatar/InAvatar.vue";
 export { default as InCloseButton } from "./components/InCloseButton.vue";
 export { default as IconMoreOutlined } from "./components/icons/IconMoreOutlined.vue";
 export { deptDrawerHeaderAvatar } from "./assets/deptDrawerHeaderAvatar";
+export { noContentIllustration } from "./assets/noContentIllustration";
 export { default as InCommonStatusTag } from "./components/status/InCommonStatusTag.vue";
 export { default as InAccountStatusTag } from "./components/status/InAccountStatusTag.vue";
 export { default as StatusTag } from "./components/status/StatusTag.vue";

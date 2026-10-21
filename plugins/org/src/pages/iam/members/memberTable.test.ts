@@ -113,6 +113,17 @@ describe("org iam members memberTable", () => {
     expect(ownerOnly.find((item) => item.key === "dept")?.disabled).toBe(true);
     expect(ownerOnly.find((item) => item.key === "leave")?.disabledReason).toBe(OWNER_BATCH_EXCLUDED);
     expect(ownerOnly.find((item) => item.key === "import")?.disabled).toBeUndefined();
+
+    const hidden = createToolbarActions({
+      onCreate: () => undefined,
+      onImportExport: () => undefined,
+      onChangeDept: () => undefined,
+      onResign: () => undefined,
+      selectedCount: 0,
+      operableCount: 0,
+      canImportExport: false,
+    });
+    expect(hidden.find((item) => item.key === "import")).toBeUndefined();
   });
 
   it("批量离职只收集未移出成员", () => {

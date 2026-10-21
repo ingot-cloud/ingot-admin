@@ -38,9 +38,11 @@ describe("org iam members page", () => {
     expect(apiSource).toContain("{ purpose: SelectionPurpose.MANAGED_DEPARTMENT }");
   });
 
-  it("导出走创建、状态轮询与下载三个接口", () => {
+  it("JSON 导出接口保留，成员页改走表格导入导出页", () => {
     expect(apiSource).toContain("TenantMemberExportStatusAPI");
     expect(apiSource).toContain("export/${id}/status");
-    expect(memberTabSource).toContain("MemberExportDrawer");
+    expect(apiSource).toContain("TenantMemberWorkbookExportAPI");
+    expect(memberTabSource).toContain("MEMBER_WORKBOOK_PATH");
+    expect(memberTabSource).not.toContain("MemberExportDrawer");
   });
 });

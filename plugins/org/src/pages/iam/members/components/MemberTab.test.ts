@@ -38,7 +38,10 @@ describe("org iam members MemberTab", () => {
     expect(source).toContain("formatDateTime");
     expect(source).toContain("@selection-change");
     expect(source).toContain("selected-count");
-    expect(source).toContain("MemberBatchDepartmentDrawer");
+    expect(source).toContain("MemberBatchDepartmentDialog");
+    expect(source).toContain("MEMBER_WORKBOOK_PATH");
+    expect(source).not.toContain("MemberExportDrawer");
+    expect(source).not.toContain("MemberBatchDepartmentDrawer");
     expect(source).toContain("#displayName-header");
     expect(source).toContain("formatSelectionColumnLabel");
   });
