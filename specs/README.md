@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [部门批量导入导出页](./changes/archive/2026/20261021-org-department-workbook/README.md)（completed，2026-10-21 用户确认测试通过）；[当前能力](./current/org/members-departments/README.md)
+
 - [成员批量变更部门与导入导出页](./changes/archive/2026/20261020-org-member-batch/README.md)（completed，2026-10-21 用户确认验证成功）；[当前能力](./current/org/members-departments/README.md)
 
 - [公共下载中心「我的下载」](./changes/archive/2026/20261021-common-download-center/README.md)（completed，2026-10-21 用户确认验收）；[当前能力](./current/packages/download-center/README.md)
