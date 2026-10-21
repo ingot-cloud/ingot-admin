@@ -1,6 +1,6 @@
 ---
 name: in-coding-standards
-description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, sensitive API encryption, or list/selector queries for a target's bound or related records.
+description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, sensitive API encryption, list/selector queries for a target's bound or related records, or batch import/export and batch relation changes.
 ---
 
 # 编码规范
@@ -30,6 +30,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 表单录入控件都有 `placeholder`：输入用「请输入…」，选择用「请选择…」；列表搜索仍用「搜索…」
 - [ ] 租户端选择人员必须阅读 [tenant-member-picker.md](tenant-member-picker.md)，使用组织成员对话框；部门只导航不可选。
 - [ ] 人员、角色、资源对象等实体候选使用点击录入框打开对话框；单选单栏、多选双栏、搜索分页与回显按 [entity-picker-interactions.md](entity-picker-interactions.md)
+- [ ] 批量导入导出与批量改关系按 [batch-import-export.md](batch-import-export.md)：隐藏路由页、导出只提交并引导「我的下载」、导入页内轮询、批量改关系两层确认
 - [ ] API 时间点保存 ISO 字符串；共享工具按本地时区展示，DatePicker 提交 UTC ISO；日期/Duration 不转换
 ```
 
@@ -210,6 +211,7 @@ pages/platform/base/app/
 - Vue 组件/页面/Store/样式示例 → [vue-conventions.md](vue-conventions.md)
 - API/TypeScript/Net 层示例 → [api-conventions.md](api-conventions.md)
 - 人员、角色、资源对象等实体候选的对话框交互 → [entity-picker-interactions.md](entity-picker-interactions.md)
+- 批量导入、导出、模板下载、批量改关系的交互与 UI → [batch-import-export.md](batch-import-export.md)
 - Git 提交信息 → [in-conventional-commits](../in-conventional-commits/SKILL.md)
 
 实体选择与权限展示的请求次数、已选集合独立回显、InLoading、权限背景 Token 和范围批量覆盖检查，见 [entity-picker-interactions.md](entity-picker-interactions.md)。
