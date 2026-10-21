@@ -19,6 +19,7 @@
 - [20261020-org-tenant-member-rejoin API](../../../changes/archive/2026/20261020-org-tenant-member-rejoin/API.md)
 - [20261019-org-department-leaders API](../../../changes/archive/2026/20261019-org-department-leaders/API.md)
 - [20261021-common-download-center API](../../../changes/archive/2026/20261021-common-download-center/API.md)
+- [20261020-org-member-batch API](../../../changes/archive/2026/20261020-org-member-batch/API.md)
 - 后端基线：`ingot/specs/current/iam/tenant-departments/`、`ingot/specs/current/iam/tenant-members/`
 - 共享交互：[租户组织成员选择](../../packages/tenant-member-picker/README.md)、[详情查看/编辑](../../packages/detail-edit-pattern/README.md)。
 
@@ -26,6 +27,7 @@
 
 | 日期 | 变更 ID | 说明 |
 |------|---------|------|
+| 2026-10-21 | [20261020-org-member-batch](../../../changes/archive/2026/20261020-org-member-batch/) | 用户确认验证成功；批量变更部门改为两层确认，导入导出进入独立页面 |
 | 2026-10-21 | [20261021-common-download-center](../../../changes/archive/2026/20261021-common-download-center/) | 成员表格导出改为提交后到「我的下载」获取 |
 | 2026-10-20 | [20261020-org-tenant-member-rejoin](../../../changes/archive/2026/20261020-org-tenant-member-rejoin/) | 已移出成员可通过添加成员或行操作重新加入 |
 | 2026-10-20 | [20261019-org-department-leaders](../../../changes/archive/2026/20261019-org-department-leaders/) | 用户确认验收完成；负责人独立维护、详情统一编辑及组织选人流程 |

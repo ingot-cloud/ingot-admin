@@ -2,7 +2,7 @@
 
 ## 来源
 
-- 后端仓库：`ingot/specs/changes/active/20261020-iam-member-batch/`
+- 后端仓库：`ingot/specs/changes/archive/2026/20261020-iam-member-batch/`
 - 现有任职：`PUT /v1/tenant/members/{id}/departments`
 
 ## 服务与约定

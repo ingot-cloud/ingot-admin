@@ -24,5 +24,5 @@
 
 ## 收尾
 
-- [ ] 更新 `current/org/members-departments`（验收后）
-- [ ] README 状态改为 `completed` 并归档（验收后）
+- [x] 更新 `current/org/members-departments`（验收后）
+- [x] README 状态改为 `completed` 并归档（验收后）

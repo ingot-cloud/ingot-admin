@@ -1,10 +1,17 @@
 # 成员批量变更部门与导入导出页
 
-> 状态：implementing
+> 状态：completed（已更新 current，已归档）
+
+## 完成与归档（2026-10-21）
+
+- 完成日期：2026-10-21。用户确认成员批量处理验证成功后更新 current 并归档。
+- 当前能力：[org/members-departments](../../../../current/org/members-departments/README.md)
+- 另一仓库对应归档：`ingot/specs/changes/archive/2026/20261020-iam-member-batch/`
+- 与原设计的差异：导入历史的状态列直接显示任务状态值；勾选部门后展开成员 ID 与设计一致
 
 ## 协作模式
 
-一人全栈，对接 `ingot/specs/changes/active/20261020-iam-member-batch/`。
+一人全栈，对接 `ingot/specs/changes/archive/2026/20261020-iam-member-batch/`。
 
 ## 背景与动机
 
@@ -33,7 +40,7 @@
 
 - 接口文档：./API.md
 - 需求文档：./REQUIREMENTS.md
-- 后端来源：`ingot/specs/changes/active/20261020-iam-member-batch/`
+- 后端来源：`ingot/specs/changes/archive/2026/20261020-iam-member-batch/`
 
 ## 工件
 
@@ -52,8 +59,8 @@
 
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
+- 完成日期：2026-10-21
+- 关联提交或 PR：随本次提交
+- 更新的 current capability：`specs/current/org/members-departments`
+- 与原设计的差异：导入历史状态列显示任务状态值，设计未规定用标签展示
 - 取消原因：
