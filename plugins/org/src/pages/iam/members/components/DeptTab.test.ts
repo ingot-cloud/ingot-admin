@@ -25,5 +25,8 @@ describe("org iam members DeptTab", () => {
     expect(source).toContain("handleBatchDelete");
     expect(source).toContain("#name-header");
     expect(source).toContain("formatSelectionColumnLabel");
+    expect(source).toContain("DEPT_WORKBOOK_PATH");
+    expect(source).toContain("TENANT_DEPARTMENT_EXPORT");
+    expect(source).not.toContain("即将开放");
   });
 });

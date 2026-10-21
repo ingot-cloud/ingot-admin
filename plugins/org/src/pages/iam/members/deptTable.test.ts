@@ -4,7 +4,10 @@ import {
   collectDeletableDepts,
   createRowActions,
   createToolbarActions,
+  DEPT_LIST_PATH,
   DEPT_NAME_COLUMN_LABEL,
+  DEPT_WORKBOOK_PATH,
+  DEPT_WORKBOOK_TITLE,
   EMPTY_CELL,
   formatSelectionColumnLabel,
   SELECT_DEPTS_FIRST,
@@ -45,6 +48,9 @@ const row = {
 describe("org iam members deptTable", () => {
   it("提供稳定 tableId，人数缺失显示短横", () => {
     expect(TABLE_ID).toBe("org-iam-departments-v2");
+    expect(DEPT_LIST_PATH).toBe("/org/iam/departments");
+    expect(DEPT_WORKBOOK_PATH).toBe("/org/iam/departments/workbook");
+    expect(DEPT_WORKBOOK_TITLE).toBe("批量导入或导出部门");
     expect(tableHeaders.find((item) => item.prop === "name")?.label).toBe(DEPT_NAME_COLUMN_LABEL);
     expect(formatSelectionColumnLabel(DEPT_NAME_COLUMN_LABEL, 0)).toBe(DEPT_NAME_COLUMN_LABEL);
     expect(formatSelectionColumnLabel(DEPT_NAME_COLUMN_LABEL, 3)).toBe("部门名称 · 已选 3 条");
@@ -88,6 +94,15 @@ describe("org iam members deptTable", () => {
     });
     expect(selected.find((item) => item.key === "batch-delete")?.disabled).toBe(false);
     expect(selected.find((item) => item.key === "batch-delete")?.confirm).toContain("3 个部门");
+
+    const hidden = createToolbarActions({
+      onCreate: () => undefined,
+      onImportExport: () => undefined,
+      onBatchDelete: () => undefined,
+      selectedCount: 0,
+      canImportExport: false,
+    });
+    expect(hidden.map((item) => item.key)).toEqual(["batch-delete", "create"]);
   });
 
   it("批量删除排除主部门和导航骨架", () => {

@@ -11,6 +11,9 @@ export const TABLE_ID = "org-iam-departments-v2";
 export const EMPTY_CELL = "-";
 export const SELECT_DEPTS_FIRST = "请先选择部门";
 export const DEPT_NAME_COLUMN_LABEL = "部门名称";
+export const DEPT_LIST_PATH = "/org/iam/departments";
+export const DEPT_WORKBOOK_PATH = "/org/iam/departments/workbook";
+export const DEPT_WORKBOOK_TITLE = "批量导入或导出部门";
 
 export { formatSelectionColumnLabel } from "./selectionHeader";
 
@@ -41,9 +44,10 @@ export function createToolbarActions(handlers: {
   onImportExport: () => void;
   onBatchDelete: () => void;
   selectedCount: number;
+  canImportExport?: boolean;
 }): Array<InTableAction<DeptRow>> {
   const hasSelection = handlers.selectedCount > 0;
-  return [
+  const actions: Array<InTableAction<DeptRow>> = [
     {
       key: "batch-delete",
       label: "批量删除",
@@ -58,25 +62,28 @@ export function createToolbarActions(handlers: {
         : undefined,
       onSelect: () => handlers.onBatchDelete(),
     },
-    {
+  ];
+  if (handlers.canImportExport !== false) {
+    actions.push({
       key: "import",
       label: "批量导入/导出",
       kind: "primary",
       overflow: "never",
       priority: 40,
       onSelect: () => handlers.onImportExport(),
-    },
-    {
-      key: "create",
-      label: "新建部门",
-      kind: "quick",
-      icon: "ep:plus",
-      overflow: "never",
-      priority: 50,
-      permission: IamAction.TENANT_DEPARTMENT_CREATE,
-      onSelect: () => handlers.onCreate(),
-    },
-  ];
+    });
+  }
+  actions.push({
+    key: "create",
+    label: "新建部门",
+    kind: "quick",
+    icon: "ep:plus",
+    overflow: "never",
+    priority: 50,
+    permission: IamAction.TENANT_DEPARTMENT_CREATE,
+    onSelect: () => handlers.onCreate(),
+  });
+  return actions;
 }
 
 export function createRowActions(

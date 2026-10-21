@@ -770,6 +770,10 @@ export interface MemberWorkbookExportInput extends VersionInput {
   memberIds?: string[];
 }
 
+export interface DepartmentWorkbookExportInput extends VersionInput {
+  departmentIds?: string[];
+}
+
 export interface MemberWorkbookFile {
   filename: string;
   contentType: string;

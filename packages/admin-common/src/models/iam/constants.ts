@@ -298,6 +298,7 @@ export const IamAction = {
   TENANT_DEPARTMENT_UPDATE: "iam-tenant:department:update",
   TENANT_DEPARTMENT_DELETE: "iam-tenant:department:delete",
   TENANT_DEPARTMENT_LEADERS: "iam-tenant:department:leaders",
+  TENANT_DEPARTMENT_EXPORT: "iam-tenant:department:export",
   TENANT_SETTINGS_READ: "iam-tenant:settings:read",
   TENANT_SETTINGS_UPDATE: "iam-tenant:settings:update",
   TENANT_SETTINGS_OWNER_TRANSFER: "iam-tenant:settings:owner-transfer",

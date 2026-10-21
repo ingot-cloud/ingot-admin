@@ -81,7 +81,14 @@
 
 <script lang="ts" setup>
 import { Search } from "@element-plus/icons-vue";
-import { InAvatar, Message, type InTableAction, type InTableCheckboxMode } from "@ingot/admin-core";
+import {
+  InAvatar,
+  Message,
+  usePermissions,
+  type InTableAction,
+  type InTableCheckboxMode,
+} from "@ingot/admin-core";
+import { IamAction } from "@ingot/admin-common";
 import { TenantDepartmentDeleteAPI } from "@/api/iam/directory";
 import DeptCreateDrawer from "./DeptCreateDrawer.vue";
 import DeptDetailDrawer from "./DeptDetailDrawer.vue";
@@ -90,6 +97,7 @@ import {
   createRowActions,
   createToolbarActions,
   DEPT_NAME_COLUMN_LABEL,
+  DEPT_WORKBOOK_PATH,
   formatSelectionColumnLabel,
   tableHeaders,
   type DeptRow,
@@ -102,6 +110,13 @@ import { MEMBER_AVATAR_SIZE } from "../memberTable";
 defineOptions({ name: "DeptTab" });
 
 const emits = defineEmits<{ success: [] }>();
+const router = useRouter();
+const permissions = usePermissions();
+const canImportExport = computed(
+  () =>
+    permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_CREATE) ||
+    permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_EXPORT),
+);
 const deptOps = useDeptOps();
 const { fetching, searchName, expandRowKeys, visibleTree, visibleHeaders, TABLE_ID, loadDepts } =
   deptOps;
@@ -151,7 +166,7 @@ const handleRemove = (item: DeptRow): void => {
 };
 
 const handleImportExport = (): void => {
-  Message.warning("部门批量导入导出即将开放");
+  void router.push(DEPT_WORKBOOK_PATH);
 };
 
 const handleBatchDelete = async (): Promise<void> => {
@@ -194,6 +209,7 @@ const toolbarActions = computed(() =>
       void handleBatchDelete();
     },
     selectedCount: selectedRows.value.length,
+    canImportExport: canImportExport.value,
   }),
 );
 const rowActionsOf = (item: DeptRow): Array<InTableAction<DeptRow>> =>

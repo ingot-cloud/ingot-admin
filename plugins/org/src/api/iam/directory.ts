@@ -21,6 +21,7 @@ import {
   type EntitlementRecord,
   type ExportTask,
   type MemberWorkbookArtifact,
+  type DepartmentWorkbookExportInput,
   type MemberWorkbookExportInput,
   type MemberWorkbookFile,
   type MemberWorkbookHistoryItem,
@@ -339,6 +340,56 @@ export function TenantDepartmentDeleteAPI(
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   return request.delete<CreatedResource>(`${DEPT_PATH}/${id}`, null, options);
+}
+
+export function TenantDepartmentWorkbookTemplateAPI(
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookFile>> {
+  return request.get<MemberWorkbookFile>(`${DEPT_PATH}/workbook/template`, undefined, options);
+}
+
+export function TenantDepartmentWorkbookExportAPI(
+  params: DepartmentWorkbookExportInput,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  filterParams(params);
+  return request.post<CreatedResource>(`${DEPT_PATH}/workbook/export`, params, options);
+}
+
+export function TenantDepartmentWorkbookImportAPI(
+  file: File,
+  mode: MemberWorkbookMode,
+  options?: RequestOptions,
+): Promise<R<CreatedResource>> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("mode", mode);
+  return request.post<CreatedResource>(`${DEPT_PATH}/workbook/import`, form, options);
+}
+
+export function TenantDepartmentWorkbookHistoryAPI(
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookHistoryItem[]>> {
+  return request.get<MemberWorkbookHistoryItem[]>(`${DEPT_PATH}/workbook/history`, undefined, options);
+}
+
+export function TenantDepartmentWorkbookStatusAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookTask>> {
+  return request.get<MemberWorkbookTask>(`${DEPT_PATH}/workbook/${id}/status`, undefined, options);
+}
+
+export function TenantDepartmentWorkbookFileAPI(
+  id: string,
+  artifact: MemberWorkbookArtifact,
+  options?: RequestOptions,
+): Promise<R<MemberWorkbookFile>> {
+  return request.get<MemberWorkbookFile>(
+    `${DEPT_PATH}/workbook/${id}/file`,
+    { artifact },
+    options,
+  );
 }
 
 export function TenantGroupPageAPI(

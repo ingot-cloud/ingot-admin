@@ -49,6 +49,24 @@ export const orgPlugin: InAdminPlugin = {
         },
       ],
     },
+    {
+      name: "批量导入或导出部门",
+      path: "/org/iam/departments/workbook-root",
+      routeName: "org.iam.departments.workbook.root",
+      menuType: MenuType.Directory,
+      viewPath: PageLayoutViewPath.MAIN,
+      hidden: true,
+      children: [
+        {
+          name: "批量导入或导出部门",
+          path: "/org/iam/departments/workbook",
+          routeName: "org.iam.departments.workbook",
+          menuType: MenuType.Menu,
+          viewPath: "org.iam.departments.workbook",
+          hidden: true,
+        },
+      ],
+    },
   ]),
   components: domainGlobalComponents,
   install({ app }) {
