@@ -94,9 +94,10 @@
             class="organization-picker-row flex items-center gap-8px py-8px cursor-pointer"
           >
             <el-checkbox
-              v-if="multiple"
+              v-if="multiple || organization"
               :model-value="selectedIds.has(item.id)"
               :disabled="boundLoading || item.available === false"
+              :aria-label="item.name"
               @change="privateToggle(item)"
             />
             <el-radio

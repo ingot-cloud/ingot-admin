@@ -174,6 +174,16 @@ describe("组织成员对话框", () => {
     wrapper.unmount();
   });
 
+  it("组织单选仍用方框勾选，不使用圆形单选", async () => {
+    const { wrapper } = create();
+    await wrapper.setProps({ multiple: false });
+    wrapper.vm.show([]);
+    await flushPromises();
+    expect(wrapper.find('input[type="radio"]').exists()).toBe(false);
+    expect(wrapper.findAll('input[type="checkbox"]').length).toBeGreaterThan(0);
+    wrapper.unmount();
+  });
+
   it("单选允许在对话框内清除草稿，确认后回填空值", async () => {
     const { wrapper } = create();
     await wrapper.setProps({ multiple: false });
