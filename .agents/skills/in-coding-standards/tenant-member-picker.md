@@ -37,7 +37,7 @@
 
 - 租户人员选择使用 `/v1/tenant/member-picker/browse`：普通成员、部门负责人、直接/委派分配分别声明 MEMBER / DEPARTMENT_LEADER / ASSIGNMENT；目标部门和委派来源不可省略或被通用成员池替换。一次返回导航与成员，独立20条分页；绑定关系仍走原关联分页，少量ID回显沿原接口。
 - 搜索跨本场景候选池，清空恢复当前分支。根不可读但有局部部门范围时初始展示可浏览部门片段，选中分支后再显示直属成员。虚拟根展示不写入任职、不改变其他列表、计数、权限或token。
-- Checkbox尺寸和圆角用框架变量，勾号沿当前 Element Plus 的原生居中规则；半选使用50%定位与一次translateY，适配框架16px尺寸；禁止固定 left/top 后继续叠加居中 translate，浅深主题均检查全选、半选和禁用态。
+- 勾选框尺寸、圆角、勾号和半选定位走全局样式，见 [choice-controls.md](choice-controls.md)。不要在成员选择里再覆盖 `--el-checkbox-*` 或半选横条。
 
 ## 外部快照与追加加载
 

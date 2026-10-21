@@ -1,6 +1,6 @@
 ---
 name: in-coding-standards
-description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, sensitive API encryption, list/selector queries for a target's bound or related records, batch import/export and batch relation changes, or selection chips and pickers (已选标签、标签录入框、选择成员/部门/角色/选项的回显).
+description: Enforces this monorepo's coding standards for Vue 3, TypeScript, Pinia, UnoCSS, Element Plus, and HYBRID envelope crypto. Use when writing or modifying .vue/.ts files, creating pages, components, API modules, stores, hooks, sensitive API encryption, list/selector queries for a target's bound or related records, batch import/export and batch relation changes, selection chips and pickers (已选标签、标签录入框、选择成员/部门/角色/选项的回显), or choice controls (多选、单选、el-checkbox、el-radio、树展开、el-tree).
 ---
 
 # 编码规范
@@ -31,6 +31,7 @@ Vue 3 + `<script setup>` + TypeScript (strict) + Pinia + UnoCSS + Element Plus +
 - [ ] 租户端选择人员必须阅读 [tenant-member-picker.md](tenant-member-picker.md)，使用组织成员对话框；部门只导航不可选。
 - [ ] 人员、角色、资源对象等实体候选使用点击录入框打开对话框；单选单栏、多选双栏、搜索分页与回显按 [entity-picker-interactions.md](entity-picker-interactions.md)
 - [ ] 已选标签和标签录入框只用 `InSelectionTag` / `InSelectionField`，按 [selection-field.md](selection-field.md)；不要手写边框、`el-tag` 或「等 N 人」摘要
+- [ ] 多选、单选只用 `el-checkbox` / `el-radio`，树展开只用全局三角，按 [choice-controls.md](choice-controls.md)；不要改尺寸、圆角、勾号或另写箭头
 - [ ] 批量导入导出与批量改关系按 [batch-import-export.md](batch-import-export.md)：隐藏路由页、导出只提交并引导「我的下载」、导入页内轮询、批量改关系两层确认
 - [ ] API 时间点保存 ISO 字符串；共享工具按本地时区展示，DatePicker 提交 UTC ISO；日期/Duration 不转换
 ```
@@ -157,6 +158,7 @@ pages/platform/base/app/
 - 布局/间距优先 UnoCSS 原子类（`flex`、`gap-10px`、`w-full`）
 - 组件样式用 `<style lang="postcss">` + nesting，需要隔离时加 `scoped`
 - 主题色/边框用 CSS 变量 `var(--in-*)`
+- 多选、单选和树展开交给全局样式，规则见 [choice-controls.md](choice-controls.md)
 - **禁止** scss/less；**避免** inline `style="width: 160px"`，改用 UnoCSS
 
 ### Hooks
@@ -214,6 +216,7 @@ pages/platform/base/app/
 - API/TypeScript/Net 层示例 → [api-conventions.md](api-conventions.md)
 - 人员、角色、资源对象等实体候选的对话框交互 → [entity-picker-interactions.md](entity-picker-interactions.md)
 - 已选标签与标签录入框 → [selection-field.md](selection-field.md)
+- 多选、单选与树展开 → [choice-controls.md](choice-controls.md)
 - 批量导入、导出、模板下载、批量改关系的交互与 UI → [batch-import-export.md](batch-import-export.md)
 - Git 提交信息 → [in-conventional-commits](../in-conventional-commits/SKILL.md)
 
