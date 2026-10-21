@@ -161,6 +161,8 @@
   --in-table-cell-text: #18263c;
   --in-checkbox-radius: 4px;
   --in-checkbox-size: 16px;
+  --in-radio-size: 16px;
+  --in-tree-caret-size: 12px;
   --in-message-min-width: 204px;
   --in-message-height: 54px;
   --in-message-icon-size: 20px;

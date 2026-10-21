@@ -143,6 +143,8 @@ export const IN_THEME_TOKEN_NAMES = [
   "--in-table-cell-text",
   "--in-checkbox-radius",
   "--in-checkbox-size",
+  "--in-radio-size",
+  "--in-tree-caret-size",
   "--in-message-min-width",
   "--in-message-height",
   "--in-message-icon-size",

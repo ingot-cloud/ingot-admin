@@ -15,3 +15,5 @@ import "./tooltip.css";
 import "./message.css";
 import "./button.css";
 import "./tag.css";
+import "./choice.css";
+import "./tree.css";

@@ -109,11 +109,6 @@ onMounted(() => {
 .dept-scope-picker {
   margin-top: 8px;
   --el-tree-node-content-height: 48px;
-  --el-checkbox-input-width: 16px;
-  --el-checkbox-input-height: 16px;
-  --el-checkbox-border-radius: 4px;
-  --dept-caret-collapsed: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M11.22 18.46a1 1 0 0 0 1.56 0l8.305-10.334a1 1 0 0 0-.78-1.626H3.696a1 1 0 0 0-.78 1.626L11.22 18.46Z' fill='%23646a73' transform='rotate(-90 12 12)'/%3E%3C/svg%3E");
-  --dept-caret-expanded: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M11.22 18.46a1 1 0 0 0 1.56 0l8.305-10.334a1 1 0 0 0-.78-1.626H3.696a1 1 0 0 0-.78 1.626L11.22 18.46Z' fill='%23646a73'/%3E%3C/svg%3E");
 }
 
 .dept-scope-picker__search {
@@ -145,57 +140,9 @@ onMounted(() => {
   line-height: 22px;
 }
 
-.dept-scope-picker :deep(.el-tree-node__expand-icon) {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  box-sizing: content-box;
-  width: 12px;
-  height: 18px;
-  margin-right: 6px;
-  padding: 0;
-  color: var(--in-text-color-secondary);
-  font-size: 0;
-  line-height: 0;
-  transform: none !important;
-}
-
-.dept-scope-picker :deep(.el-tree-node__expand-icon .el-icon),
-.dept-scope-picker :deep(.el-tree-node__expand-icon svg) {
-  display: none;
-}
-
-.dept-scope-picker :deep(.el-tree-node__expand-icon::before) {
-  content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  background: var(--dept-caret-collapsed) center / 12px 12px no-repeat;
-}
-
-.dept-scope-picker :deep(.el-tree-node__expand-icon.expanded::before) {
-  background-image: var(--dept-caret-expanded);
-}
-
-.dept-scope-picker :deep(.el-tree-node__expand-icon.is-leaf) {
-  pointer-events: none;
-}
-
-.dept-scope-picker :deep(.el-tree-node__expand-icon.is-leaf::before) {
-  visibility: hidden;
-}
-
 .dept-scope-picker :deep(.el-checkbox) {
-  height: 16px;
   margin-right: 7px;
   margin-left: 8px;
-}
-
-.dept-scope-picker :deep(.el-checkbox__inner) {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
 }
 
 .dept-pick-node {

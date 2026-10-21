@@ -136,15 +136,6 @@
   color: var(--in-color-primary);
 }
 
-.iam-org-member-dialog .el-checkbox {
-  --el-checkbox-input-width: var(--in-checkbox-size);
-  --el-checkbox-input-height: var(--in-checkbox-size);
-  --el-checkbox-border-radius: var(--in-checkbox-radius);
-}
-.iam-org-member-dialog .el-checkbox__input.is-indeterminate .el-checkbox__inner::before {
-  top: 50%;
-  transform: translateY(-50%) scale(0.5);
-}
 .iam-org-member-dialog .el-checkbox__label {
   color: var(--in-text-color);
 }

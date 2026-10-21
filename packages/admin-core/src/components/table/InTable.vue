@@ -794,10 +794,6 @@ defineExpose<TableAPI<TableRow>>({
 }
 
 :deep(.el-checkbox) {
-  --el-checkbox-input-width: var(--in-checkbox-size);
-  --el-checkbox-input-height: var(--in-checkbox-size);
-  --el-checkbox-height: var(--in-checkbox-size);
-  --el-checkbox-border-radius: var(--in-checkbox-radius);
   height: var(--in-checkbox-size);
   margin-inline-end: 0;
 }
@@ -805,38 +801,6 @@ defineExpose<TableAPI<TableRow>>({
 :deep(.el-checkbox__input) {
   height: var(--in-checkbox-size);
   align-items: center;
-}
-
-:deep(.el-checkbox__inner) {
-  box-sizing: border-box;
-  width: var(--in-checkbox-size);
-  height: var(--in-checkbox-size);
-  border-radius: var(--in-checkbox-radius);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px 12px;
-  transition:
-    background-color var(--in-motion-duration) var(--in-motion-ease-tabs-ink),
-    border-color var(--in-motion-duration) var(--in-motion-ease-tabs-ink);
-}
-
-:deep(.el-checkbox__inner::after) {
-  display: none;
-  transition: none;
-}
-
-:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-image: url("../../assets/table-checkbox-checked.svg");
-}
-
-:deep(.el-checkbox__input.is-indeterminate .el-checkbox__inner::before) {
-  top: 50%;
-  left: 50%;
-  right: auto;
-  width: 8px;
-  height: 2px;
-  border-radius: 1px;
-  transform: translate(-50%, -50%);
 }
 
 .in-table.is-hide-header-selection :deep(th.el-table-column--selection .el-checkbox),

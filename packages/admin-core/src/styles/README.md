@@ -52,6 +52,7 @@
 | `--in-table-header-text` | `#646a73`（`--in-text-color-secondary`） |
 | `--in-table-cell-text` | `#18263c` |
 | `--in-checkbox-radius` / `--in-checkbox-size` | `4px` / `16px` |
+| `--in-radio-size` / `--in-tree-caret-size` | `16px` / `12px` |
 | `--in-message-min-width` / `--in-message-height` / `--in-message-icon-size` | `204px` / `54px` / `20px` |
 | `--in-page-gutter` | `12px`（`--in-space-3`） |
 | `--in-page-breadcrumb-height` / `--in-page-header-min-height` | `46px` / `80px`（仅有说明时作为页面头最小高度） |

@@ -1,0 +1,92 @@
+/**
+ * 多选与单选的全局外观。
+ * 变量写在控件上，避免被 Element Plus 组件自身的声明盖掉。
+ * 业务页不要再改尺寸、圆角、勾号或圆心。
+ */
+:root:root .el-checkbox {
+  --el-checkbox-input-width: var(--in-checkbox-size);
+  --el-checkbox-input-height: var(--in-checkbox-size);
+  --el-checkbox-border-radius: var(--in-checkbox-radius);
+  --el-checkbox-bg-color: transparent;
+  --el-checkbox-input-border: 1px solid var(--in-border-color);
+  --el-checkbox-checked-bg-color: var(--in-color-primary);
+  --el-checkbox-checked-input-border-color: var(--in-color-primary);
+  --el-checkbox-checked-icon-color: var(--el-color-white);
+}
+
+:root:root .el-radio {
+  --el-radio-input-width: var(--in-radio-size);
+  --el-radio-input-height: var(--in-radio-size);
+  --el-radio-input-bg-color: transparent;
+  --el-radio-input-border: 1px solid var(--in-border-color);
+  --el-radio-input-border-color: var(--in-border-color);
+}
+
+:root:root .el-checkbox .el-checkbox__inner,
+:root:root .el-checkbox.el-checkbox--large .el-checkbox__inner,
+:root:root .el-checkbox.el-checkbox--small .el-checkbox__inner,
+:root:root .el-checkbox.is-bordered.el-checkbox--large .el-checkbox__inner,
+:root:root .el-checkbox.is-bordered.el-checkbox--small .el-checkbox__inner {
+  width: var(--in-checkbox-size);
+  height: var(--in-checkbox-size);
+  border-radius: var(--in-checkbox-radius);
+  background-color: transparent;
+  border: 1px solid var(--in-border-color);
+}
+
+:root:root .el-checkbox .el-checkbox__input.is-checked .el-checkbox__inner,
+:root:root .el-checkbox .el-checkbox__input.is-indeterminate .el-checkbox__inner,
+:root:root .el-checkbox .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner,
+:root:root .el-checkbox .el-checkbox__input.is-disabled.is-indeterminate .el-checkbox__inner {
+  background-color: var(--in-color-primary);
+  border-color: var(--in-color-primary);
+}
+
+:root:root .el-checkbox .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
+  border-color: var(--el-color-white);
+}
+
+:root:root .el-checkbox .el-checkbox__input.is-disabled.is-indeterminate .el-checkbox__inner::before {
+  background-color: var(--el-color-white);
+}
+
+:root:root .el-checkbox .el-checkbox__input.is-indeterminate .el-checkbox__inner::before {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  width: calc(var(--in-checkbox-size) / 2);
+  height: 2px;
+  margin: 0;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+:root:root .el-checkbox.is-disabled,
+:root:root .el-radio.is-disabled {
+  opacity: 0.5;
+}
+
+:root:root .el-radio .el-radio__inner,
+:root:root .el-radio.el-radio--large .el-radio__inner,
+:root:root .el-radio.el-radio--small .el-radio__inner,
+:root:root .el-radio.is-bordered.el-radio--large .el-radio__inner,
+:root:root .el-radio.is-bordered.el-radio--small .el-radio__inner {
+  width: var(--in-radio-size);
+  height: var(--in-radio-size);
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid var(--in-border-color);
+}
+
+:root:root .el-radio .el-radio__input.is-checked .el-radio__inner,
+:root:root .el-radio .el-radio__input.is-disabled.is-checked .el-radio__inner {
+  background-color: transparent;
+  border-color: var(--in-color-primary);
+}
+
+:root:root .el-radio .el-radio__input.is-checked .el-radio__inner::after,
+:root:root .el-radio .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
+  width: calc(var(--in-radio-size) / 2);
+  height: calc(var(--in-radio-size) / 2);
+  background-color: var(--in-color-primary);
+}
