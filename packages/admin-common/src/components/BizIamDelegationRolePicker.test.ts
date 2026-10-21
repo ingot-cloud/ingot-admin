@@ -65,7 +65,7 @@ describe("委派角色版本多选", () => {
       props: { treeApi, detailApi, resetKey: 1, modelValue: [selected] },
       global: { plugins: [createPinia()], stubs },
     });
-    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许分配的角色版本"]').trigger("click");
     await flushPromises();
     expect(treeApi).toHaveBeenCalledOnce();
     expect(wrapper.text()).toContain("另一角色 · v3");
@@ -113,7 +113,7 @@ describe("委派角色版本多选", () => {
       props: { treeApi, detailApi, resetKey: 1 },
       global: { plugins: [createPinia()], stubs },
     });
-    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许分配的角色版本"]').trigger("click");
     await flushPromises();
     await wrapper.find('[role="treeitem"] > button').trigger("click");
     await vi.waitFor(() => expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true));
@@ -124,7 +124,7 @@ describe("委派角色版本多选", () => {
       .find((item) => item.text() === "取消")
       ?.trigger("click");
     expect(wrapper.emitted("update:modelValue")).toBeUndefined();
-    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许分配的角色版本"]').trigger("click");
     await flushPromises();
     await wrapper.find('[role="treeitem"] > button').trigger("click");
     await vi.waitFor(() => expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true));
@@ -182,7 +182,7 @@ describe("委派角色版本多选", () => {
       props: { treeApi, detailApi, resetKey: 1, modelValue: [previous], oneVersionPerRole: true },
       global: { plugins: [createPinia()], stubs },
     });
-    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许分配的角色版本"]').trigger("click");
     await flushPromises();
     await wrapper.find('[role="treeitem"] > button').trigger("click");
     await flushPromises();
@@ -217,7 +217,7 @@ describe("委派角色版本多选", () => {
       props: { treeApi, detailApi, resetKey: 1 },
       global: { plugins: [createPinia()], stubs },
     });
-    await wrapper.find('button[aria-label="请选择允许分配的角色版本"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许分配的角色版本"]').trigger("click");
     await flushPromises();
     await wrapper.find('[role="treeitem"] > button').trigger("click");
     await vi.waitFor(() => expect(wrapper.find('input[type="checkbox"]').exists()).toBe(true));

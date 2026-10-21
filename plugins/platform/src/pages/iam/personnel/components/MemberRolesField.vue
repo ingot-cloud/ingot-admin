@@ -1,15 +1,12 @@
 <template>
   <div class="w-full flex flex-col gap-8px">
-    <el-input
+    <in-selection-field
       v-if="editing && editable"
-      :model-value="draftLabel"
-      readonly
+      :items="draftItems"
+      :show-avatar="false"
       placeholder="请选择角色并设置范围"
-      class="cursor-pointer"
       @click="privatePick"
-    >
-      <template #suffix><in-icon name="ep:edit" /></template>
-    </el-input>
+    />
     <in-loading v-else :loading="loading">
       <div v-for="role in bound" :key="role.roleRevisionRef.id" class="py-4px">
         {{ role.name }} · {{ assignmentVersionLabel(role) }}
@@ -51,6 +48,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { InSelectionField, type InSelectionItem } from "@ingot/admin-core";
 import { assignmentVersionLabel } from "@ingot/admin-common";
 import { IAM_DEFAULT_PAGE_SIZE, SubjectType, type MemberBoundRole } from "@ingot/admin-common";
 import { PlatformMemberBoundRolesAPI } from "@/api/iam/personnel";
@@ -82,18 +80,27 @@ let epoch = 0;
 const hasChanges = computed(
   () => draft.value && hasMemberRoleChanges(memberRoleChanges(draft.value)),
 );
-const draftLabel = computed(() => {
+const draftItems = computed<InSelectionItem[]>(() => {
   if (!draft.value)
-    return bound.value.map((role) => `${role.name} · ${assignmentVersionLabel(role)}`).join("、");
-  const labels = draft.value.stored
+    return bound.value.map((role, index) => ({
+      id: `bound:${index}:${role.roleRevisionRef.id}`,
+      name: `${role.name} · ${assignmentVersionLabel(role)}`,
+    }));
+  const items: InSelectionItem[] = draft.value.stored
     .filter((row) => !draft.value!.removed.includes(row.record.id))
-    .map((row) => `${row.record.roleName} · ${assignmentVersionLabel(row.record)}`);
-  labels.push(
+    .map((row) => ({
+      id: `stored:${row.record.id}`,
+      name: `${row.record.roleName} · ${assignmentVersionLabel(row.record)}`,
+    }));
+  items.push(
     ...draft.value.roles
       .filter((role) => !role.configurationKey)
-      .map((role) => memberRoleLabel(role.option)),
+      .map((role, index) => ({
+        id: `new:${index}:${role.option.id}`,
+        name: memberRoleLabel(role.option),
+      })),
   );
-  return labels.join("、");
+  return items;
 });
 const privateConfirm = (state: MemberRoleEditorState): void => {
   draft.value = state;

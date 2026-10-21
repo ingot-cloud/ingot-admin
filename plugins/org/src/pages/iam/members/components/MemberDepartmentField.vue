@@ -1,46 +1,20 @@
 <template>
-  <div
-    class="dept-field relative box-border flex min-h-32px w-full flex-wrap items-center gap-4px rounded-6px border border-solid border-[var(--in-border-color)] bg-[var(--in-bg-color-surface)] py-3px pl-4px pr-36px"
-    :class="
-      disabled
-        ? 'cursor-not-allowed opacity-60'
-        : 'cursor-pointer hover:border-[var(--in-color-primary)]'
-    "
-    role="button"
-    :tabindex="disabled ? -1 : 0"
-    :aria-label="placeholder"
-    :aria-disabled="disabled"
-    @keydown.enter.self.prevent="privateOpen"
-    @keydown.space.self.prevent="privateOpen"
+  <in-selection-field
+    class="dept-field"
+    :items="model"
+    :disabled="disabled"
+    :placeholder="placeholder"
+    closable
     @click="privateOpen"
+    @remove="privateRemoveDraft($event.id)"
   >
-    <span v-if="!model.length" class="px-8px text-[var(--in-text-color-placeholder)]">{{
-      placeholder
-    }}</span>
-    <span
-      v-for="item in model"
-      :key="item.id"
-      class="dept-field__tag inline-flex h-24px max-w-full items-center gap-4px rounded-2px bg-[var(--in-bg-color-hover)] pl-8px pr-2px text-14px text-[var(--in-text-color)]"
-    >
-      <department-mark variant="glyph" />
-      <span class="truncate">{{ item.name }}</span>
-      <in-close-button
-        v-if="!disabled"
-        size="sm"
-        :label="`移除 ${item.name}`"
-        @click="privateRemoveDraft(item.id)"
-      />
-    </span>
-    <button
-      type="button"
-      class="absolute top-1/2 right-8px inline-flex -translate-y-1/2 border-0 bg-transparent p-0 text-[var(--el-text-color-secondary)] cursor-pointer"
-      :aria-label="placeholder"
-      :disabled="disabled"
-      @click.stop="privateOpen"
-    >
-      <in-icon name="ep:edit" />
-    </button>
-  </div>
+    <template #tag-avatar>
+      <department-mark :size="20" />
+    </template>
+    <template v-if="$slots['tag-suffix']" #tag-suffix="{ item }">
+      <slot name="tag-suffix" :item="item" />
+    </template>
+  </in-selection-field>
   <in-dialog
     v-model="visible"
     :title="placeholder"
@@ -183,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-import { InCloseButton, useCapabilities } from "@ingot/admin-core";
+import { InCloseButton, InSelectionField, useCapabilities } from "@ingot/admin-core";
 import {
   useOrganizationMemberScopeKey,
   type DepartmentTreeNode,

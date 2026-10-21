@@ -31,6 +31,8 @@ import InQrcode from "./qrcode/InQrcode.vue";
 import InSelect from "./select/InSelect.vue";
 import InPicker from "./select/InPicker.vue";
 import InPageSelect from "./select/InPageSelect.vue";
+import InSelectionField from "./selection/InSelectionField.vue";
+import InSelectionTag from "./selection/InSelectionTag.vue";
 import InSpacer from "./InSpacer.vue";
 import InTable from "./table/InTable.vue";
 import InTableActions from "./table/InTableActions.vue";
@@ -103,6 +105,8 @@ export const coreGlobalComponents: Record<string, Component> = {
   InSelect,
   InPicker,
   InPageSelect,
+  InSelectionField,
+  InSelectionTag,
   InSpacer,
   InTable,
   InTableActions,
@@ -177,6 +181,8 @@ declare module "vue" {
     InSelect: typeof InSelect;
     InPicker: typeof InPicker;
     InPageSelect: typeof InPageSelect;
+    InSelectionField: typeof InSelectionField;
+    InSelectionTag: typeof InSelectionTag;
     InSpacer: typeof InSpacer;
     InTable: typeof InTable;
     InTableActions: typeof InTableActions;

@@ -3,11 +3,11 @@ import { mount } from "@vue/test-utils";
 import InAvatar from "./InAvatar.vue";
 
 describe("InAvatar", () => {
-  it("无头像时圆圈显示姓名最后两个字", () => {
+  it("无头像时圆圈显示姓名最后一个字", () => {
     const wrapper = mount(InAvatar, {
       props: { name: "欧阳修" },
     });
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("修");
     expect(wrapper.get(".in-avatar-field__name").text()).toBe("欧阳修");
     expect(wrapper.find(".in-avatar__image").exists()).toBe(false);
     wrapper.unmount();
@@ -54,7 +54,7 @@ describe("InAvatar", () => {
     const wrapper = mount(InAvatar, {
       props: { name: "王超", showName: false },
     });
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("王超");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("超");
     expect(wrapper.find(".in-avatar-field__name").exists()).toBe(false);
     wrapper.unmount();
   });
@@ -67,13 +67,13 @@ describe("InAvatar", () => {
     wrapper.unmount();
   });
 
-  it("图片加载失败时回退到姓名最后两个字", async () => {
+  it("图片加载失败时回退到姓名最后一个字", async () => {
     const wrapper = mount(InAvatar, {
       props: { name: "欧阳修", src: "https://example.com/broken.png" },
     });
     await wrapper.get(".in-avatar__image").trigger("error");
     expect(wrapper.find(".in-avatar__image").exists()).toBe(false);
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("修");
     wrapper.unmount();
   });
 });

@@ -1,27 +1,12 @@
 <template>
   <div class="flex flex-col gap-6px w-full">
-    <button
-      type="button"
+    <in-selection-field
+      :items="selectedItems"
+      :show-avatar="false"
       :disabled="disabled"
-      aria-label="请选择角色"
-      class="flex items-center gap-8px box-border w-full h-[var(--in-control-height)] px-11px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] text-left outline-none"
-      :class="
-        disabled
-          ? 'cursor-not-allowed opacity-60'
-          : 'cursor-pointer hover:border-[var(--el-color-primary)] focus-visible:border-[var(--el-color-primary)]'
-      "
+      placeholder="请选择角色"
       @click="picker.show"
-    >
-      <span
-        class="flex-1 min-w-0 truncate"
-        :class="
-          model ? 'text-[var(--el-text-color-regular)]' : 'text-[var(--in-text-color-placeholder)]'
-        "
-      >
-        {{ model ? `${model.roleName} · ${model.name}` : "请选择角色" }}
-      </span>
-      <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
-    </button>
+    />
   </div>
   <in-dialog
     v-model="picker.visible.value"
@@ -152,6 +137,7 @@
   </in-dialog>
 </template>
 <script setup lang="ts">
+import { InSelectionField } from "@ingot/admin-core";
 import { useIamRolePicker } from "../hooks/useIamRolePicker";
 import {
   IAM_DEFAULT_PAGE_SIZE,
@@ -170,6 +156,9 @@ const props = defineProps<{
   resetKey: string | number;
 }>();
 const model = defineModel<AuthorizationRoleNode>();
+const selectedItems = computed(() =>
+  model.value ? [{ id: model.value.id, name: `${model.value.roleName} · ${model.value.name}` }] : [],
+);
 const emits = defineEmits<{
   change: [node: AuthorizationRoleNode, option: AuthorizationOption];
   invalidated: [];

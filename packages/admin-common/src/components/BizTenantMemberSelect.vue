@@ -1,30 +1,22 @@
 <template>
   <div class="w-full">
-    <button
-      type="button"
-      :disabled="disabled || opening"
-      :aria-label="placeholder"
-      class="flex items-center gap-8px w-full min-h-[var(--in-control-height)] px-11px py-6px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] text-left"
-      :class="
-        disabled
-          ? 'cursor-not-allowed opacity-60'
-          : 'cursor-pointer hover:border-[var(--el-color-primary)]'
-      "
+    <in-selection-field
+      :items="selectedItems"
+      :total="selectedTotal ?? selectedIds.length"
+      :max-visible="MEMBER_CHIP_LIMIT"
+      :disabled="disabled"
+      :placeholder="placeholder"
       @click="privateOpen"
     >
-      <slot name="selection">
-        <span
-          class="flex-1 min-w-0 truncate"
-          :class="
-            selectedIds.length
-              ? 'text-[var(--el-text-color-regular)]'
-              : 'text-[var(--in-text-color-placeholder)]'
-          "
-          >{{ label }}</span
+      <template #tag-suffix="{ item }">
+        <span v-if="showPrimary && item.id === primaryMemberId" class="biz-member-select__primary"
+          >部门主负责人</span
         >
-      </slot>
-      <in-icon name="ep:edit" class="text-[var(--el-text-color-secondary)]" />
-    </button>
+        <span v-if="item.available === false" class="text-12px text-[var(--el-color-warning)]"
+          >不可用，待交接</span
+        >
+      </template>
+    </in-selection-field>
     <biz-iam-member-picker-dialog
       ref="dialog"
       organization
@@ -44,7 +36,8 @@
 </template>
 <script setup lang="ts">
 import { computed, ref, watch, inject, onBeforeUnmount } from "vue";
-import { useCapabilities, type Page } from "@ingot/admin-core";
+import { InSelectionField, useCapabilities, type Page } from "@ingot/admin-core";
+import { MEMBER_CHIP_LIMIT } from "./memberChipOverflow";
 import { IAM_DEFAULT_PAGE_SIZE } from "../models/iam";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import {
@@ -57,7 +50,6 @@ import {
 import type { IamSelectOption } from "../models/iam";
 import type { MemberPickerChanges, OrganizationMemberParams } from "./organizationMemberPicker";
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
-defineSlots<{ selection?: () => unknown }>();
 const props = withDefaults(
   defineProps<{
     loadMembers: (params: OrganizationMemberParams) => Promise<Page<IamSelectOption>>;
@@ -103,17 +95,16 @@ watch(
 const selectedIds = computed(() =>
   Array.isArray(model.value) ? model.value : model.value ? [model.value] : [],
 );
-const label = computed(() =>
-  (props.selectedTotal ?? selectedIds.value.length)
-    ? selectedIds.value
-        .map((id) => known.value[id]?.name || "姓名待加载")
-        .slice(0, 3)
-        .join("、") +
-      ((props.selectedTotal ?? selectedIds.value.length) > 3
-        ? ` 等 ${props.selectedTotal ?? selectedIds.value.length} 人`
-        : "")
-    : props.placeholder,
-);
+const selectedItems = computed<IamSelectOption[]>(() => {
+  const items = selectedIds.value.map(
+    (id) => known.value[id] || { id, name: "姓名待加载", labelPending: true },
+  );
+  if (!props.showPrimary || !props.primaryMemberId) return items;
+  return items.sort(
+    (left, right) =>
+      Number(right.id === props.primaryMemberId) - Number(left.id === props.primaryMemberId),
+  );
+});
 const privateLoad = async (params: OrganizationMemberParams) => {
   const current = generation;
   const result = await props.loadMembers(params);
@@ -185,3 +176,14 @@ onBeforeUnmount(() => {
   generation++;
 });
 </script>
+<style scoped>
+.biz-member-select__primary {
+  flex-shrink: 0;
+  padding: 0 4px;
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 16px;
+  color: var(--in-color-primary);
+  background: color-mix(in srgb, var(--in-color-primary) 14%, var(--in-bg-color-surface));
+}
+</style>

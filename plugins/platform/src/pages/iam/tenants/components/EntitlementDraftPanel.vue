@@ -16,21 +16,14 @@
           />
         </el-form-item>
         <el-form-item label="自选应用">
-          <div
-            class="entitlement-app-field"
-            role="button"
-            tabindex="0"
+          <in-selection-field
+            :items="extras"
+            :show-avatar="false"
+            closable
+            placeholder="请选择应用"
             @click="privateOpenPicker"
-            @keydown.enter.prevent="privateOpenPicker"
-          >
-            <span
-              class="flex-1 min-w-0 truncate"
-              :class="{ 'text-[var(--el-text-color-placeholder)]': !extras.length }"
-            >
-              {{ extras.length ? `已选 ${extras.length} 个应用` : "请选择应用" }}
-            </span>
-            <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
-          </div>
+            @remove="privateRemove($event.id)"
+          />
         </el-form-item>
       </in-form>
       <div class="text-12px text-[var(--el-text-color-secondary)]">
@@ -108,7 +101,7 @@ import {
   type EntitlementDraft,
   type IamSelectOption,
 } from "@ingot/admin-common";
-import type { LoadDataParams, Page } from "@ingot/admin-core";
+import { InSelectionField, type LoadDataParams, type Page } from "@ingot/admin-core";
 import { PlatformApplicationSummaryPageAPI, PlatformPlanSummaryPageAPI } from "@/api/iam/catalog";
 import ApplicationPickerDialog from "./ApplicationPickerDialog.vue";
 import {
@@ -257,30 +250,6 @@ defineExpose({
 </script>
 
 <style lang="postcss" scoped>
-.entitlement-app-field {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-sizing: border-box;
-  width: 100%;
-  height: var(--in-control-height);
-  padding: 0 11px;
-  border: 1px solid var(--el-border-color);
-  border-radius: var(--el-border-radius-base);
-  background: var(--el-fill-color-blank);
-  cursor: pointer;
-}
-
-.entitlement-app-field:hover,
-.entitlement-app-field:focus-visible {
-  border-color: var(--el-color-primary);
-}
-
-.entitlement-app-field:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 1px var(--el-color-primary) inset;
-}
-
 .entitlement-check {
   color: var(--in-color-primary);
 }

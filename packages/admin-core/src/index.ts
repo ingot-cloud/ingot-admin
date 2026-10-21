@@ -125,6 +125,13 @@ export {
 export { coreGlobalComponents } from "./components/coreComponents";
 export { default as InAvatar } from "./components/avatar/InAvatar.vue";
 export { default as InCloseButton } from "./components/InCloseButton.vue";
+export { default as InSelectionField } from "./components/selection/InSelectionField.vue";
+export { default as InSelectionTag } from "./components/selection/InSelectionTag.vue";
+export {
+  selectionOverflowCount,
+  visibleSelection,
+} from "./components/selection/selectionOverflow";
+export type { InSelectionFieldSize, InSelectionItem } from "./components/selection/types";
 export { default as IconMoreOutlined } from "./components/icons/IconMoreOutlined.vue";
 export { deptDrawerHeaderAvatar } from "./assets/deptDrawerHeaderAvatar";
 export { noContentIllustration } from "./assets/noContentIllustration";

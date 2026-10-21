@@ -1,29 +1,14 @@
 <template>
   <div v-bind="$attrs" class="flex flex-col gap-6px w-full">
-    <button
-      type="button"
-      :disabled="disabled || opening"
-      :aria-label="placeholder"
-      class="flex items-center gap-8px box-border w-full min-h-[var(--in-control-height)] px-11px py-6px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] text-left"
-      :class="
-        disabled
-          ? 'cursor-not-allowed opacity-60'
-          : 'cursor-pointer hover:border-[var(--el-color-primary)]'
-      "
+    <in-selection-field
+      :items="selectedItems"
+      :total="selectedIds.length"
+      :max-visible="MEMBER_CHIP_LIMIT"
+      :show-avatar="query.kind === 'MEMBER'"
+      :disabled="disabled"
+      :placeholder="placeholder"
       @click="privateOpen"
-    >
-      <span
-        class="flex-1 min-w-0 truncate"
-        :class="
-          selectedIds.length
-            ? 'text-[var(--el-text-color-regular)]'
-            : 'text-[var(--in-text-color-placeholder)]'
-        "
-      >
-        {{ selectedLabel }}
-      </span>
-      <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
-    </button>
+    />
     <span v-if="unavailableMessage" class="text-12px text-[var(--el-color-warning)]">{{
       unavailableMessage
     }}</span>
@@ -122,7 +107,13 @@
 </template>
 
 <script setup lang="ts">
-import { useCapabilities, type LoadDataParams, type Page } from "@ingot/admin-core";
+import {
+  InSelectionField,
+  useCapabilities,
+  type LoadDataParams,
+  type Page,
+} from "@ingot/admin-core";
+import { MEMBER_CHIP_LIMIT } from "./memberChipOverflow";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import {
   IAM_DEFAULT_PAGE_SIZE,
@@ -186,13 +177,9 @@ let timer: ReturnType<typeof setTimeout> | undefined;
 const selectedIds = computed(() =>
   Array.isArray(model.value) ? model.value : model.value ? [model.value] : [],
 );
-const selectedLabel = computed(() => {
-  if (!selectedIds.value.length) return props.placeholder;
-  const names = selectedIds.value.map((id) => known.value[id]?.name).filter(Boolean);
-  if (!names.length) return `已选 ${selectedIds.value.length} 项`;
-  const missing = selectedIds.value.length - names.length;
-  return names.join("、") + (missing ? ` 等 ${selectedIds.value.length} 项` : "");
-});
+const selectedItems = computed(() =>
+  selectedIds.value.flatMap((id) => (known.value[id]?.name ? [known.value[id]] : [])),
+);
 let hydration: Promise<IamSelectOption[]> | undefined;
 let hydrationKey = "";
 const privateHydrate = (refresh = false): Promise<IamSelectOption[]> => {

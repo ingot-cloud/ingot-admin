@@ -127,6 +127,8 @@ declare module 'vue' {
     InRadioTable: typeof import('./src/components/table/InRadioTable.vue')['default']
     InRefreshIcon: typeof import('./src/components/icons/InRefreshIcon.vue')['default']
     InSelect: typeof import('./src/components/select/InSelect.vue')['default']
+    InSelectionField: typeof import('./src/components/selection/InSelectionField.vue')['default']
+    InSelectionTag: typeof import('./src/components/selection/InSelectionTag.vue')['default']
     InSpacer: typeof import('./src/components/InSpacer.vue')['default']
     InSplitLayout: typeof import('./src/components/container/InSplitLayout.vue')['default']
     InStatusButton: typeof import('./src/components/status/InStatusButton.vue')['default']

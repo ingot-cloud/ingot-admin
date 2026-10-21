@@ -2,31 +2,16 @@
   <div class="flex flex-col gap-12px w-full">
     <div v-for="field in fields" :key="field.kind" class="flex flex-col gap-6px">
       <span class="text-[var(--el-text-color-regular)]">{{ field.label }}</span>
-      <div
-        role="button"
-        :aria-label="`请选择${field.label}`"
-        :aria-disabled="disabled"
-        :tabindex="disabled ? -1 : 0"
-        class="flex items-center gap-8px box-border w-full h-[var(--in-control-height)] px-11px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] outline-none"
-        :class="
-          disabled
-            ? 'cursor-not-allowed opacity-60'
-            : 'cursor-pointer hover:border-[var(--el-color-primary)] focus-visible:border-[var(--el-color-primary)]'
-        "
+      <in-selection-field
+        :items="field.kind === 'MEMBER' ? members : groups"
+        :max-visible="MEMBER_CHIP_LIMIT"
+        :closable="!disabled"
+        :disabled="disabled"
+        :show-avatar="field.kind === 'MEMBER'"
+        :placeholder="`请选择${field.label}`"
         @click="privateOpen(field.kind)"
-        @keydown.enter.prevent="privateOpen(field.kind)"
-        @keydown.space.prevent="privateOpen(field.kind)"
-      >
-        <biz-iam-member-chips
-          class="flex-1 min-w-0"
-          :members="field.kind === 'MEMBER' ? members : groups"
-          :closable="!disabled"
-          :show-avatar="field.kind === 'MEMBER'"
-          :empty-text="`请选择${field.label}`"
-          @remove="privateRemove(field.kind, $event)"
-        />
-        <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
-      </div>
+        @remove="privateRemove(field.kind, $event.id)"
+      />
     </div>
     <span class="text-12px text-[var(--el-text-color-secondary)]">
       成员和用户组可同时选择，将为每个接收对象分配同一个角色版本。
@@ -53,10 +38,10 @@
   />
 </template>
 <script setup lang="ts">
-import type { LoadDataParams, Page } from "@ingot/admin-core";
+import { InSelectionField, type LoadDataParams, type Page } from "@ingot/admin-core";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import type { AuthorizationCandidatesApi, IamSelectOption } from "../models/iam";
-import BizIamMemberChips from "./BizIamMemberChips.vue";
+import { MEMBER_CHIP_LIMIT } from "./memberChipOverflow";
 import BizIamMemberPickerDialog from "./BizIamMemberPickerDialog.vue";
 
 defineOptions({ name: "BizIamAuthorizationRecipients" });

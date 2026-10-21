@@ -117,7 +117,7 @@ describe("委派实体候选", () => {
     expect(api).not.toHaveBeenCalled();
     expect(loadSelected).not.toHaveBeenCalled();
     for (let count = 1; count <= 2; count++) {
-      await wrapper.find('button[aria-label="请选择对象"]').trigger("click");
+      await wrapper.find('[role="button"][aria-label="请选择对象"]').trigger("click");
       await flushPromises();
       expect(api).toHaveBeenCalledTimes(count);
       expect(show).toHaveBeenLastCalledWith(
@@ -153,10 +153,10 @@ describe("委派实体候选", () => {
       global: { plugins: [createPinia()], stubs },
     });
     await flushPromises();
-    expect(wrapper.find('button[aria-label="请选择授权管理员"]').text()).toContain("张三");
+    expect(wrapper.find('[role="button"][aria-label="请选择授权管理员"]').text()).toContain("张三");
     expect(wrapper.emitted("selection")?.at(-1)).toEqual([[{ id: "1", name: "张三" }]]);
     expect(wrapper.emitted("confirm")).toBeUndefined();
-    await wrapper.find('button[aria-label="请选择授权管理员"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择授权管理员"]').trigger("click");
     await flushPromises();
     await wrapper.find('button[aria-pressed="false"]').trigger("click");
     await wrapper
@@ -217,7 +217,7 @@ describe("委派实体候选", () => {
     eligible = false;
     await wrapper.setProps({ query: { kind: "MEMBER", excludeMemberId: "3" } });
     await flushPromises();
-    await wrapper.find('button[aria-label="请选择允许接收的成员"]').trigger("click");
+    await wrapper.find('[role="button"][aria-label="请选择允许接收的成员"]').trigger("click");
     await flushPromises();
     expect(show).toHaveBeenCalledWith([], undefined);
   });
@@ -275,7 +275,7 @@ describe("租户组织成员候选边界", () => {
     await flushPromises();
     expect(api).toHaveBeenCalledTimes(1);
     expect(api.mock.calls[0]![0].ids).toHaveLength(20);
-    await wrapper.get('button[aria-label="请选择成员"]').trigger("click");
+    await wrapper.get('[role="button"][aria-label="请选择成员"]').trigger("click");
     await flushPromises();
     const selected = show.mock.calls[0]![0] as Array<{ id: string }>;
     expect(selected.map((item) => item.id)).toEqual(ids);
@@ -291,7 +291,7 @@ describe("租户组织成员候选边界", () => {
       });
       const api = vi.fn().mockReturnValue(pending);
       const { wrapper, show, pinia } = create(api, ["1"]);
-      await wrapper.get('button[aria-label="请选择成员"]').trigger("click");
+      await wrapper.get('[role="button"][aria-label="请选择成员"]').trigger("click");
       if (mode === "epoch") usePermissions(pinia).bumpContextEpoch();
       else usePermissions(pinia).version = "v2";
       await flushPromises();

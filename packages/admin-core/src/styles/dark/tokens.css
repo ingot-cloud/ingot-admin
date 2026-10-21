@@ -24,6 +24,7 @@ html.dark {
 
   --in-tag-primary-color: var(--in-color-primary);
   --in-tag-warning-color: var(--in-color-warning);
+  --in-selection-tag-bg: color-mix(in srgb, var(--in-color-primary) 24%, transparent);
 
   --in-text-color: #e5eaf3;
   --in-text-color-secondary: #cfd3dc;

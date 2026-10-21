@@ -114,7 +114,10 @@ const privateOnImageError = (): void => {
 
 .in-avatar__fallback {
   @apply inline-flex items-center justify-center w-full h-full;
-  font-size: var(--in-font-size-caption);
+  overflow: hidden;
+  font-size: calc(var(--in-avatar-size) * 0.5);
+  line-height: 1;
+  white-space: nowrap;
   user-select: none;
 }
 

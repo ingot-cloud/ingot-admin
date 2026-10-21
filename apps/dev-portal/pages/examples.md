@@ -14,6 +14,12 @@
 
 <DemoFrame demo-id="in-tag" />
 
+## 标签录入框
+
+业务选择器组合 `InSelectionField` 回显已选内容，标签为「头像 + 名字 + 删除」，背景默认 `--in-selection-tag-bg`（浅色 `#e1eaff`）。
+
+<DemoFrame demo-id="in-selection-field" />
+
 ## 表格筛选约定
 
 <DemoFrame demo-id="in-table" />

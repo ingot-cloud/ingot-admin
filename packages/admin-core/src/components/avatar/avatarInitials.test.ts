@@ -7,13 +7,10 @@ describe("avatarInitials", () => {
     expect(avatarInitials("  ")).toBe("");
   });
 
-  it("不超过两个字时使用全文", () => {
+  it("只取姓名最后一个字", () => {
     expect(avatarInitials("王")).toBe("王");
-    expect(avatarInitials("王超")).toBe("王超");
-  });
-
-  it("超过两个字时取最后两个字", () => {
-    expect(avatarInitials("欧阳修")).toBe("阳修");
-    expect(avatarInitials("池鑫鑫")).toBe("鑫鑫");
+    expect(avatarInitials("王超")).toBe("超");
+    expect(avatarInitials("欧阳修")).toBe("修");
+    expect(avatarInitials("池鑫鑫")).toBe("鑫");
   });
 });

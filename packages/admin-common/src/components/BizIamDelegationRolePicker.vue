@@ -1,28 +1,11 @@
 <template>
-  <button
-    type="button"
+  <in-selection-field
+    :items="model"
+    :show-avatar="false"
     :disabled="disabled"
-    :aria-label="placeholder"
-    class="flex items-center gap-8px box-border w-full min-h-[var(--in-control-height)] px-11px py-6px border border-solid border-[var(--el-border-color)] rounded-[var(--el-border-radius-base)] bg-[var(--el-fill-color-blank)] text-left"
-    :class="
-      disabled
-        ? 'cursor-not-allowed opacity-60'
-        : 'cursor-pointer hover:border-[var(--el-color-primary)]'
-    "
+    :placeholder="placeholder"
     @click="privateOpen"
-  >
-    <span
-      class="flex-1 min-w-0 truncate"
-      :class="
-        model.length
-          ? 'text-[var(--el-text-color-regular)]'
-          : 'text-[var(--in-text-color-placeholder)]'
-      "
-    >
-      {{ model.length ? model.map((item) => item.name).join("、") : placeholder }}
-    </span>
-    <in-icon name="ep:edit" class="shrink-0 text-[var(--el-text-color-secondary)]" />
-  </button>
+  />
   <in-dialog v-model="visible" :title="title" width="880px" layout="pinned" append-to-body>
     <div class="in-split-picker h-460px flex min-w-0">
       <div class="w-1/2 min-w-0 flex flex-col overflow-hidden">
@@ -130,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { Message } from "@ingot/admin-core";
+import { InSelectionField, Message } from "@ingot/admin-core";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import {
   IAM_DEFAULT_PAGE_SIZE,

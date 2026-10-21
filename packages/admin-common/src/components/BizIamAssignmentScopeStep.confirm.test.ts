@@ -129,7 +129,7 @@ describe("指定对象确认与受控分配草稿", () => {
       await flushPromises();
       updates.mockClear();
       const picker = wrapper.findComponent({ name: "BizIamDelegationCandidatePicker" });
-      await picker.get('button[aria-label="请选择应用目录的范围对象"]').trigger("click");
+      await picker.get('[role="button"][aria-label="请选择应用目录的范围对象"]').trigger("click");
       await flushPromises();
       // 打开/名称回显不修改完整绑定；确认通过真实选择器的同步事件链。
       expect(roles.value[0].bindings.objects.ids).toEqual(editing ? ["100", "101"] : []);
@@ -141,9 +141,12 @@ describe("指定对象确认与受控分配草稿", () => {
       expect(roles.value[0].bindings.objects.ids).toEqual(["101", "102"]);
       expect(roles.value[0].selectedObjects.objects).toEqual(selected);
       expect(updates).toHaveBeenCalledTimes(1);
-      expect(picker.get('button[aria-label="请选择应用目录的范围对象"]').text()).toContain(
-        "应用一、应用二",
-      );
+      expect(
+        picker
+          .get('[role="button"][aria-label="请选择应用目录的范围对象"]')
+          .findAll(".in-selection-tag")
+          .map((tag) => tag.text()),
+      ).toEqual(["应用一", "应用二"]);
       expect(wrapper.get('[data-testid="scope-progress"]').text()).toContain(
         "已配置 2 项，待配置 0 项",
       );

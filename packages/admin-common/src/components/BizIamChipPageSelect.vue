@@ -1,9 +1,14 @@
 <template>
   <div class="flex flex-col gap-8px">
     <div class="flex flex-wrap gap-8px">
-      <el-tag v-for="id in model" :key="id" closable @close="privateRemove(id)">
-        {{ labels[id] ?? id }}
-      </el-tag>
+      <in-selection-tag
+        v-for="id in model"
+        :key="id"
+        :name="labels[id] ?? id"
+        :show-avatar="false"
+        closable
+        @close="privateRemove(id)"
+      />
       <span v-if="!model.length" class="text-[var(--el-text-color-secondary)]">{{ emptyText }}</span>
     </div>
     <in-page-select
@@ -22,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import type { LoadDataParams, Page } from "@ingot/admin-core";
+import { InSelectionTag, type LoadDataParams, type Page } from "@ingot/admin-core";
 import { IAM_DEFAULT_PAGE_SIZE, type IamSelectOption } from "../models/iam";
 
 defineOptions({ name: "BizIamChipPageSelect" });

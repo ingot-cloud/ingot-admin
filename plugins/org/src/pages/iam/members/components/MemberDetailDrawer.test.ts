@@ -48,8 +48,8 @@ describe("tenant member detail", () => {
   it("编辑部门使用录入框打开双栏树选择，确定后才写回草稿", () => {
     expect(detailSource).toContain("<member-department-field");
     expect(fieldSource).toContain("请选择部门");
-    expect(fieldSource).toContain("dept-field__tag");
-    expect(fieldSource).toContain('variant="glyph"');
+    expect(fieldSource).toContain("<in-selection-field");
+    expect(fieldSource).toContain("#tag-avatar");
     expect(fieldSource).toContain("请输入部门名");
     expect(fieldSource).toContain("<department-mark");
     expect(fieldSource).toContain("in-split-picker");

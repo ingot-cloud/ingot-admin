@@ -182,6 +182,8 @@ declare module 'vue' {
     InRadioTable: typeof import('./../admin-core/src/components/table/InRadioTable.vue')['default']
     InRefreshIcon: typeof import('./../admin-core/src/components/icons/InRefreshIcon.vue')['default']
     InSelect: typeof import('./../admin-core/src/components/select/InSelect.vue')['default']
+    InSelectionField: typeof import('./../admin-core/src/components/selection/InSelectionField.vue')['default']
+    InSelectionTag: typeof import('./../admin-core/src/components/selection/InSelectionTag.vue')['default']
     InSpacer: typeof import('./../admin-core/src/components/InSpacer.vue')['default']
     InSplitLayout: typeof import('./../admin-core/src/components/container/InSplitLayout.vue')['default']
     InStatusButton: typeof import('./../admin-core/src/components/status/InStatusButton.vue')['default']

@@ -4,6 +4,7 @@
     <InTitleDemo v-else-if="demoId === 'in-title'" />
     <InTagDemo v-else-if="demoId === 'in-tag'" />
     <InTableDemo v-else-if="demoId === 'in-table'" />
+    <InSelectionFieldDemo v-else-if="demoId === 'in-selection-field'" />
     <p v-else>未知演示：{{ demoId }}</p>
   </div>
 </template>
@@ -11,6 +12,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import InButtonDemo from "./cases/InButtonDemo.vue";
+import InSelectionFieldDemo from "./cases/InSelectionFieldDemo.vue";
 import InTableDemo from "./cases/InTableDemo.vue";
 import InTagDemo from "./cases/InTagDemo.vue";
 import InTitleDemo from "./cases/InTitleDemo.vue";

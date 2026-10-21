@@ -35,10 +35,10 @@ describe("InUserDropdown", () => {
     vi.clearAllMocks();
   });
 
-  it("无头像时显示用户名最后两个字", () => {
+  it("无头像时显示用户名最后一个字", () => {
     useUserInfoStore().userInfo.user = { nickname: "欧阳修" };
     const wrapper = mountDropdown();
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("修");
     expect(wrapper.find(".in-avatar__image").exists()).toBe(false);
     wrapper.unmount();
   });
@@ -62,18 +62,18 @@ describe("InUserDropdown", () => {
     });
     expect(wrapper.find(".dropdown").exists()).toBe(false);
     expect(wrapper.find(".avatar-arrow").exists()).toBe(false);
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("修");
     wrapper.unmount();
   });
 
-  it("头像加载失败时回退到姓名最后两个字", async () => {
+  it("头像加载失败时回退到姓名最后一个字", async () => {
     useUserInfoStore().userInfo.user = {
       nickname: "欧阳修",
       avatar: "https://example.com/broken.png",
     };
     const wrapper = mountDropdown();
     await wrapper.get(".in-avatar__image").trigger("error");
-    expect(wrapper.get(".in-avatar__fallback").text()).toBe("阳修");
+    expect(wrapper.get(".in-avatar__fallback").text()).toBe("修");
     wrapper.unmount();
   });
 

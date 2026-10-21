@@ -21,22 +21,7 @@
           title="请选择"
           placeholder="请选择部门负责人"
           @confirm="privateConfirm"
-        >
-          <template #selection>
-            <BizIamMemberChips
-              v-if="selectedMembers.length"
-              class="flex-1"
-              tagged
-              wrap
-              :members="selectedMembers"
-              :total="selectedTotal"
-              :primary-member-id="primaryId"
-            />
-            <span v-else class="flex-1 text-[var(--in-text-color-placeholder)]"
-              >请选择部门负责人</span
-            >
-          </template>
-        </biz-tenant-member-select>
+        />
         <BizIamMemberChips
           v-else
           tagged
