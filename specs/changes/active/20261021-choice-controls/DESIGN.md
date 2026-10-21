@@ -11,7 +11,7 @@
 
 两处都写入 `tokens.css`、`theme/tokens.ts` 与 `defaultTokens.ts` 的浅色和深色表。深色不单独改数值，箭头颜色读 `--in-text-color-secondary`。
 
-`choice.css` 把 `--el-checkbox-*`、`--el-radio-*` 写在 `:root:root .el-checkbox` / `:root:root .el-radio` 上。Element Plus 把这些变量声明在控件自身，只写在 `:root` 上会被盖掉。勾号不另画 SVG。半选横条覆盖 Element Plus 的 `top` + `scale(0.5)`。单选选中态改成透明底、主题色边框和圆心。`large` / `small` 尺寸也固定到同一 token，避免组件变体把盒子缩回 14px 或 12px。
+`choice.css` 把 `--el-checkbox-*`、`--el-radio-*` 写在 `:root:root .el-checkbox` / `:root:root .el-radio` 上。Element Plus 把这些变量声明在控件自身，只写在 `:root` 上会被盖掉。未选勾选框是白底、`--in-gray-500` 边框；圆形单选未选边框仍用 `--in-choice-border`。选中勾是 `checkbox-checked.svg`，半选是 `checkbox-indeterminate.svg`，都用 mask 画在 16px 盒子里的 12px 图形上。禁用态用 `--in-choice-disabled-bg` 和 `--in-choice-disabled-border`，不降低不透明度。单选选中态改成透明底、主题色边框和圆心。`large` / `small` 尺寸也固定到同一 token，避免组件变体把盒子缩回 14px 或 12px。
 
 `tree.css` 只作用在 `.el-tree .el-tree-node__expand-icon`，因此 `el-tree`、`InTree`、`el-tree-select` 一起生效。箭头资源是 `assets/tree-caret.svg`（朝下），用 mask 吃 `--in-text-color-secondary`，不再把 `#646a73` 写进 data-uri。关掉 Element Plus 对图标的旋转：`::before` 收起时旋转 -90deg（朝右），展开时不旋转（朝下）。叶子节点 `visibility: hidden` 占位。
 
