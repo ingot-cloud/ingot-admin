@@ -25,6 +25,11 @@ describe("org group workspace", () => {
     expect(wizardSource).toContain("TenantGroupPreviewAPI");
   });
 
+  it("进入页面且已有用户组时默认选中第一条", () => {
+    expect(opsSource).toContain("selectGroup(records[0])");
+    expect(opsSource).toContain("{ immediate: true }");
+  });
+
   it("仅直接添加可移出，部门来源保留在 PUT", () => {
     expect(workspaceSource).toContain("canRemoveDirectMembership");
     expect(opsSource).toContain("TenantGroupDetailAPI");

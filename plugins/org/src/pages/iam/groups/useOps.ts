@@ -173,6 +173,7 @@ export const useOps = () => {
       }
       selectGroup(records[0]);
     },
+    { immediate: true },
   );
 
   return {
