@@ -66,11 +66,6 @@ const privateOnConfirm = (): void => {
     .catch((error: unknown) => {
       if (isApiError(error) && error.code === IamReasonCode.STEP_UP_FAILED) {
         secret.value = "";
-        Message.warning("登录密码不正确");
-        return;
-      }
-      if (isApiError(error)) {
-        Message.warning(error.message);
       }
     })
     .finally(() => {

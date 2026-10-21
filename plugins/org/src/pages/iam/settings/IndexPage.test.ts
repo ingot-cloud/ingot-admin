@@ -41,6 +41,7 @@ describe("组织设置页", () => {
     expect(password).toContain("if (!password || saving.value)");
     expect(password).toContain("请输入登录密码");
     expect(password).toContain("IamReasonCode.STEP_UP_FAILED");
+    expect(password).not.toContain("登录密码不正确");
     expect(directory).toContain('fields: ["secret"]');
   });
 });
