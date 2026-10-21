@@ -162,6 +162,9 @@
   --in-checkbox-radius: 4px;
   --in-checkbox-size: 16px;
   --in-radio-size: 16px;
+  --in-choice-border: #e5e7eb;
+  --in-choice-disabled-bg: #eff0f1;
+  --in-choice-disabled-border: #bbbfc4;
   --in-tree-caret-size: 12px;
   --in-message-min-width: 204px;
   --in-message-height: 54px;
