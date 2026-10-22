@@ -66,6 +66,11 @@
   border-color: var(--in-choice-disabled-border);
 }
 
+:root:root .el-checkbox .el-checkbox__inner::after,
+:root:root .el-checkbox .el-checkbox__inner::before {
+  transition: none;
+}
+
 :root:root .el-checkbox .el-checkbox__input.is-checked .el-checkbox__inner::after {
   box-sizing: border-box;
   top: 0;
@@ -77,6 +82,7 @@
   margin: auto;
   border: 0;
   transform: none;
+  transition: none;
   background-color: var(--el-color-white);
   -webkit-mask: url("../assets/checkbox-checked.svg") center / 12px 12px no-repeat;
   mask: url("../assets/checkbox-checked.svg") center / 12px 12px no-repeat;
@@ -129,10 +135,21 @@
   border-color: var(--in-color-primary);
 }
 
+:root:root .el-radio .el-radio__inner::after {
+  transition: none;
+}
+
 :root:root .el-radio .el-radio__input.is-checked .el-radio__inner::after {
   width: calc(var(--in-radio-size) / 2);
   height: calc(var(--in-radio-size) / 2);
   background-color: var(--in-color-primary);
+  transform: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  transition: none;
 }
 
 :root:root .el-radio .el-radio__input.is-disabled.is-checked .el-radio__inner::after {
