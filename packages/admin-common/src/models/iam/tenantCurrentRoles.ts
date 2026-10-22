@@ -5,7 +5,7 @@ import type {
   AssignmentEffectiveStatus,
   ScopeKind,
 } from "./constants";
-import type { Page, R } from "@ingot/admin-core";
+import type { R } from "@ingot/admin-core";
 import type {
   ActionGrant,
   ScopeExpression,
@@ -16,6 +16,9 @@ import type {
   CreatedResource,
   Selection,
   SubjectRef,
+  FieldAccess,
+  FieldCapability,
+  ResourceFieldPermissions,
 } from "./types";
 export interface CurrentRoleParameter {
   key: string;
@@ -25,6 +28,7 @@ export interface CurrentRoleParameter {
 export interface CurrentRoleDefinition {
   grants: ActionGrant[];
   parameterDefinitions: CurrentRoleParameter[];
+  resourceFieldPermissions?: ResourceFieldPermissions;
 }
 export type CurrentRoleSummary = RoleSummary;
 export interface CurrentRoleCatalogAction {
@@ -38,6 +42,8 @@ export interface CurrentRoleCatalogAction {
   enabled: boolean;
   scopeCapabilities: ScopeKind[];
   parameterDefinitions: CurrentRoleParameter[];
+  fieldCapabilities?: FieldCapability[];
+  fieldDefaults?: Record<string, FieldAccess>;
 }
 export interface CurrentRoleGrantList {
   items: CurrentRoleCatalogAction[];
@@ -163,9 +169,8 @@ export interface TenantAssignmentOption {
 }
 export type CurrentGrantCatalogAPI = (
   applicationId: string,
-  page: Page,
   keyword?: string,
-) => Promise<R<Page<CurrentRoleCatalogAction>>>;
+) => Promise<R<CurrentRoleCatalogAction[]>>;
 
 export interface TenantAssignmentApis {
   optionsAPI: (query: {

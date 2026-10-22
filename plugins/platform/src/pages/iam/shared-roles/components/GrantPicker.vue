@@ -64,16 +64,6 @@
               </span>
             </template>
           </in-tree>
-          <div v-if="resourceHasMore" class="flex justify-center py-8px">
-            <in-button
-              text
-              type="primary"
-              :loading="resourceLoading"
-              @in-click="privateLoadMoreResources"
-            >
-              加载更多
-            </in-button>
-          </div>
         </div>
       </in-loading>
     </section>
@@ -191,12 +181,9 @@ const appKindLabel = computed(() =>
   props.domain === AuthorizationDomain.PLATFORM ? "平台应用" : "组织应用",
 );
 const resources = ref<GrantCatalogResource[]>([]);
-const resourcePage = ref(1);
-const resourceTotal = ref(0);
 const resourceLoading = ref(false);
 const resourceReady = ref(false);
 const resourceCache = new Map<string, GrantCatalogResource[]>();
-const resourceTotals = new Map<string, number>();
 const resourceTreeKey = computed(
   () => `${applicationId.value}:${resources.value.map((item) => item.id).join("|")}`,
 );
@@ -230,9 +217,6 @@ const resourceNodesOf = (): GrantTreeNode[] =>
   }));
 
 const appHasMore = computed(() => applications.value.length < appTotal.value);
-const resourceHasMore = computed(
-  () => Boolean(applicationId.value) && resources.value.length < resourceTotal.value,
-);
 
 const applyingChecks = ref(false);
 let treeSyncGeneration = 0;
@@ -361,8 +345,6 @@ const privateSelectApp = (app: CatalogApp): void => {
   if (cached) {
     resourceLoading.value = true;
     resources.value = cloneResources(cached);
-    resourcePage.value = Math.max(1, Math.ceil(cached.length / IAM_DEFAULT_PAGE_SIZE));
-    resourceTotal.value = resourceTotals.get(app.id) ?? cached.length;
     resourceReady.value = true;
     nextTick(applyTreeChecks);
     resourceLoading.value = false;
@@ -370,8 +352,6 @@ const privateSelectApp = (app: CatalogApp): void => {
   }
   resourceReady.value = false;
   resources.value = [];
-  resourcePage.value = 1;
-  resourceTotal.value = 0;
   void privateLoadResources();
 };
 
@@ -382,18 +362,12 @@ const privateLoadResources = async (): Promise<void> => {
   }
   resourceLoading.value = true;
   try {
-    const response = await PlatformGrantCatalogAPI(appId, {
-      current: resourcePage.value,
-      size: IAM_DEFAULT_PAGE_SIZE,
-    });
+    const response = await PlatformGrantCatalogAPI(appId);
     if (applicationId.value !== appId) {
       return;
     }
-    resourceTotal.value = response.data.total ?? 0;
-    const next = cloneResources(response.data.records ?? []);
-    resources.value = resourcePage.value === 1 ? next : [...resources.value, ...next];
+    resources.value = cloneResources(response.data ?? []);
     resourceCache.set(appId, cloneResources(resources.value));
-    resourceTotals.set(appId, resourceTotal.value);
     resourceReady.value = true;
     nextTick(applyTreeChecks);
   } finally {
@@ -401,11 +375,6 @@ const privateLoadResources = async (): Promise<void> => {
       resourceLoading.value = false;
     }
   }
-};
-
-const privateLoadMoreResources = (): void => {
-  resourcePage.value += 1;
-  void privateLoadResources();
 };
 
 const toGrant = (resource: GrantCatalogResource, action: GrantCatalogAction): SelectedGrant =>

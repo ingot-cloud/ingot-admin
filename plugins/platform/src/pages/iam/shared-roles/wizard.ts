@@ -1,8 +1,9 @@
 import {
   RoleKind,
-  FieldVisibility,
   ScopeBindingKind,
   ScopeKind,
+  collectResourceFieldPermissions,
+  defaultFieldDefinition,
   formatScopeKinds,
   type CurrentRoleCreateInput,
   type CurrentRoleDefinition,
@@ -26,15 +27,12 @@ export const WIZARD_STEPS = [
   { title: "角色信息", description: "设置角色名称等信息" },
   { title: "选择权限", description: "设置角色可以管理的权限范围" },
   { title: "设置范围", description: "设置角色可管理的数据范围" },
+  { title: "字段权限", description: "配置字段可见性、编辑和筛选能力" },
   { title: "预览", description: "预览角色并确认" },
 ] as const;
 
 export const GRANT_WIZARD_STEPS = WIZARD_STEPS.slice(1);
-export const PLATFORM_WIZARD_STEPS = [
-  ...WIZARD_STEPS.slice(0, 3),
-  { title: "字段权限", description: "配置字段可见性、编辑和筛选能力" },
-  WIZARD_STEPS[3],
-];
+export const PLATFORM_WIZARD_STEPS = WIZARD_STEPS;
 
 export interface WizardProfile {
   code: string;
@@ -184,6 +182,7 @@ export function formatScopeLine(scope: ScopeExpression): string {
 }
 
 export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
+  const resourceFieldPermissions = collectResourceFieldPermissions(grants);
   return {
     grants: grants.map((item) => ({
       actionId: item.actionId,
@@ -191,40 +190,7 @@ export function toDefinition(grants: SelectedGrant[]): RoleDefinitionDraft {
     })),
     deltas: [],
     parameterDefinitions: collectParameters(grants),
-    ...(grants.some((grant) => (grant.fieldCapabilities?.length ?? 0) > 0)
-      ? {
-          resourceFieldPermissions: Object.fromEntries(
-            [
-              ...new Map(
-                grants
-                  .filter((grant) => (grant.fieldCapabilities?.length ?? 0) > 0)
-                  .map((grant) => [grant.resourceId, grant]),
-              ).values(),
-            ].map((grant) => [
-              grant.resourceId,
-              {
-                visibility: Object.fromEntries(
-                  (grant.fieldCapabilities ?? []).map((field) => [
-                    field.key,
-                    grant.fieldPermissions?.visibility[field.key] ??
-                      grant.fieldDefaults?.[field.key]?.visibility ??
-                      FieldVisibility.HIDDEN,
-                  ]),
-                ),
-                operations: Object.fromEntries(
-                  (grant.fieldCapabilities ?? []).map((field) => [
-                    field.key,
-                    grant.fieldPermissions?.operations[field.key] ?? {
-                      editable: grant.fieldDefaults?.[field.key]?.editable ?? false,
-                      filterable: false,
-                    },
-                  ]),
-                ),
-              },
-            ]),
-          ),
-        }
-      : {}),
+    ...(resourceFieldPermissions ? { resourceFieldPermissions } : {}),
   };
 }
 
@@ -255,12 +221,14 @@ export function toCurrentDefinition(grants: SelectedGrant[]): CurrentRoleDefinit
       parameters.set(key, { key, kind, resourceId: grant.resourceId });
     }
   }
+  const resourceFieldPermissions = collectResourceFieldPermissions(grants);
   return {
     grants: grants.map((item) => ({
       actionId: item.actionId,
       scopes: item.scopes.map((scope) => ({ ...scope })),
     })),
     parameterDefinitions: [...parameters.values()],
+    ...(resourceFieldPermissions ? { resourceFieldPermissions } : {}),
   };
 }
 
@@ -294,6 +262,9 @@ export function roleGrantRecordsOf(list: CurrentRoleGrantList): RoleGrantRecord[
         ? saved.map((scope) => ({ ...scope }))
         : [defaultScope(item.scopeCapabilities, item.resourceId, currentParameterKey)],
       scopeCapabilities: item.scopeCapabilities,
+      fieldCapabilities: item.fieldCapabilities,
+      fieldDefaults: item.fieldDefaults,
+      fieldPermissions: list.definition.resourceFieldPermissions?.[item.resourceId],
     };
   });
 }
@@ -324,19 +295,4 @@ export function profileDirty(profile: WizardProfile): boolean {
   );
 }
 
-/** 将目录默认值转换为可见性与操作分开的角色定义。 */
-export function defaultFieldDefinition(
-  defaults: Record<string, FieldAccess> = {},
-): ResourceFieldDefinition {
-  return {
-    visibility: Object.fromEntries(
-      Object.entries(defaults).map(([key, value]) => [key, value.visibility]),
-    ),
-    operations: Object.fromEntries(
-      Object.entries(defaults).map(([key, value]) => [
-        key,
-        { editable: value.editable === true, filterable: false },
-      ]),
-    ),
-  };
-}
+export { defaultFieldDefinition };

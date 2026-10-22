@@ -48,7 +48,7 @@
             :domain="grantDomain"
             :current="!platform"
           />
-          <field-step v-else-if="platform && step === 3" ref="fieldStep" v-model="grants" />
+          <biz-iam-role-field-step v-else-if="step === 3" ref="fieldStep" v-model="grants" />
           <div v-else>
             <preview-panel
               :profile="profile"
@@ -102,6 +102,7 @@ import {
 import {
   AuthorizationDomain,
   BizIamPreviewAlert,
+  BizIamRoleFieldStep,
   BizIamRoleVersionForm,
   createCurrentRoleApis,
   RoleKind,
@@ -113,7 +114,6 @@ import {
   type RoleCreateKind,
 } from "@ingot/admin-common";
 import { PlatformRoleCreatePreviewAPI } from "@/api/iam/authorization";
-import FieldStep from "./FieldStep.vue";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
 import ScopeStep from "./ScopeStep.vue";
@@ -152,7 +152,7 @@ const grantDomain = computed(() =>
 );
 const platform = computed(() => props.kind === RoleKind.PLATFORM_CUSTOM);
 const steps = computed(() => (platform.value ? PLATFORM_WIZARD_STEPS : WIZARD_STEPS));
-const fieldStep = ref<InstanceType<typeof FieldStep>>();
+const fieldStep = ref<InstanceType<typeof BizIamRoleFieldStep>>();
 const previewed = ref("");
 const previewSession = ref(0);
 const currentPreview = ref<Preview<CurrentRolePreviewResult>>();
@@ -208,7 +208,7 @@ const privateNext = async (): Promise<void> => {
     Message.warning("请至少选择一条操作");
     return;
   }
-  if (platform.value && step.value === 3 && !fieldStep.value?.validate()) return;
+  if (step.value === 3 && !fieldStep.value?.validate()) return;
   if (step.value === steps.value.length - 2) {
     saving.value = true;
     const requestFingerprint = fingerprint.value;

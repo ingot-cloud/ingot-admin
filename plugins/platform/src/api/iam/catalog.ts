@@ -335,16 +335,13 @@ export function PlatformActionCatalogAPI(
 
 export function PlatformGrantCatalogAPI(
   applicationId: string,
-  page: Page = defaultCatalogPage(),
   options?: RequestOptions,
-): Promise<R<Page<GrantCatalogResource>>> {
-  return request
-    .get<IamPageResponse<GrantCatalogResource>>(
-      `${APP_PATH}/${applicationId}/grant-catalog`,
-      toIamListParams(page),
-      options,
-    )
-    .then(asPage);
+): Promise<R<GrantCatalogResource[]>> {
+  return request.get<GrantCatalogResource[]>(
+    `${APP_PATH}/${applicationId}/grant-catalog`,
+    undefined,
+    options,
+  );
 }
 
 export function PlatformResourceActionsAPI(

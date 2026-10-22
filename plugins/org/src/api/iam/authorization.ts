@@ -25,6 +25,9 @@ import {
   type TenantAssignmentOption,
   type TenantAssignmentOptionKind,
   type CurrentRoleCatalogAction,
+  type RoleSubjectPage,
+  type RoleSubjectSummary,
+  type RoleWorkspaceQuery,
   type RoleSummary,
   type AssignmentPreviewResult,
 } from "@ingot/admin-common";
@@ -306,17 +309,52 @@ export function TenantAssignmentRoleDefinitionAPI(
 export function TenantDelegationMineAPI(): Promise<R<TenantDelegationMine[]>> {
   return request.get(`${IAM_API_PREFIX}/v1/tenant/delegations/mine`);
 }
-export function TenantRoleGrantCatalogAPI(
-  applicationId: string,
+/** 角色当前有效成员或用户组，服务端去重并展开可见组继承。 */
+export function TenantRoleSubjectPageAPI(
   page: Page,
-  keyword?: string,
-): Promise<R<Page<CurrentRoleCatalogAction>>> {
+  condition?: RoleWorkspaceQuery,
+  options?: RequestOptions,
+): Promise<R<Page<RoleSubjectSummary> & { inheritedSourcesRestricted?: boolean }>> {
+  const { roleId, subjectKind, ...query } = condition || {};
   return request
-    .get<IamPageResponse<CurrentRoleCatalogAction>>(
-      `${IAM_API_PREFIX}/v1/tenant/roles/grant-catalog`,
-      { applicationId, keyword, page: page.current || 1, pageSize: page.size || 20 },
+    .get<RoleSubjectPage>(
+      `${IAM_API_PREFIX}/v1/tenant/roles/${roleId}/${subjectKind}`,
+      toIamListParams(page, query),
+      options,
+    )
+    .then((response) => ({
+      ...response,
+      data: {
+        ...mapIamPage(response.data),
+        inheritedSourcesRestricted: response.data.inheritedSourcesRestricted,
+      },
+    }));
+}
+
+/** 一名成员持有该角色的直接分配和组继承来源。 */
+export function TenantRoleSourcePageAPI(
+  page: Page,
+  condition?: RoleWorkspaceQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<TenantAssignmentRecord>>>> {
+  const { roleId, memberId, ...query } = condition || {};
+  return request
+    .get<IamPageResponse<ResourceDetail<TenantAssignmentRecord>>>(
+      `${IAM_API_PREFIX}/v1/tenant/roles/${roleId}/members/${memberId}/assignments`,
+      toIamListParams(page, query),
+      options,
     )
     .then(asPage);
+}
+
+export function TenantRoleGrantCatalogAPI(
+  applicationId: string,
+  keyword?: string,
+): Promise<R<CurrentRoleCatalogAction[]>> {
+  return request.get<CurrentRoleCatalogAction[]>(
+    `${IAM_API_PREFIX}/v1/tenant/roles/grant-catalog`,
+    { applicationId, keyword },
+  );
 }
 export function TenantDelegationScopeCandidatesAPI(query: {
   resourceId: string;

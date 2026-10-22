@@ -1,8 +1,7 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { defineComponent } from "vue";
-import FieldStep from "./FieldStep.vue";
-import { FieldVisibility, ScopeKind } from "@ingot/admin-common";
+import { BizIamRoleFieldStep, FieldVisibility, ScopeKind } from "@ingot/admin-common";
 import type { SelectedGrant } from "../wizard";
 vi.mock("@ingot/admin-core", async (original) => ({
   ...(await original<object>()),
@@ -61,7 +60,7 @@ const options = {
 describe("角色字段步骤", () => {
   it("跨页保留草稿，每个资源仅配置一次并使用后端默认", async () => {
     let draft = data();
-    const wrapper = mount(FieldStep, {
+    const wrapper = mount(BizIamRoleFieldStep, {
       ...options,
       props: {
         modelValue: draft,
@@ -96,7 +95,7 @@ describe("角色字段步骤", () => {
       },
       operations: {},
     };
-    const wrapper = mount(FieldStep, { ...options, props: { modelValue: draft } });
+    const wrapper = mount(BizIamRoleFieldStep, { ...options, props: { modelValue: draft } });
     expect((wrapper.vm as unknown as { validate(): boolean }).validate()).toBe(false);
     await flushPromises();
     expect(wrapper.findAll("select")).toHaveLength(5);

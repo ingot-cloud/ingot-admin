@@ -15,7 +15,10 @@ import {
   type RoleSummary,
 } from "@ingot/admin-common";
 
-export const ROLE_TABLE_ID = "org-iam-roles";
+export const SYSTEM_ROLE_TAG = { text: "系统角色", tag: "primary" as const };
+
+export const ASSIGNMENT_TABLE_ID = "org-iam-assignments";
+export const DELEGATION_TABLE_ID = "org-iam-delegations";
 export type RoleRow = ResourceDetail<RoleSummary>;
 export type AssignmentRow = ResourceDetail<TenantAssignmentRecord>;
 export type DelegationRow = ResourceDetail<TenantDelegationRecord>;
@@ -70,26 +73,38 @@ export const emptyDelegationRow: DelegationRow = {
   version: "",
 };
 
-export const roleHeaders: Array<TableHeaderRecord> = [
-  { label: "名称", prop: "name", required: true },
-  { label: "来源", prop: "kind" },
-  { label: "状态", prop: "status" },
-  { label: "操作", width: "160", prop: "actions", fixed: "right" },
-];
-
 export const assignmentHeaders: Array<TableHeaderRecord> = [
-  { label: "主体", prop: "subject", required: true },
-  { label: "角色", prop: "role" },
-  { label: "来源", prop: "source" },
-  { label: "状态", prop: "status" },
-  { label: "失效时间", prop: "validUntil", transform: formatDateTime },
+  { label: "主体", prop: "subject", required: true, minWidth: 220, showOverflowTooltip: true },
+  { label: "角色", prop: "role", minWidth: 180, showOverflowTooltip: true },
+  { label: "来源", prop: "source", minWidth: 140, showOverflowTooltip: true },
+  { label: "状态", prop: "status", minWidth: 140 },
+  {
+    label: "生效时间",
+    prop: "validFrom",
+    transform: formatDateTime,
+    minWidth: 180,
+    showOverflowTooltip: true,
+  },
+  {
+    label: "失效时间",
+    prop: "validUntil",
+    transform: formatDateTime,
+    minWidth: 180,
+    showOverflowTooltip: true,
+  },
   { label: "操作", width: "200", prop: "actions", fixed: "right" },
 ];
 
 export const delegationHeaders: Array<TableHeaderRecord> = [
-  { label: "管理员", prop: "administratorMemberId", required: true },
-  { label: "状态", prop: "status" },
-  { label: "最长期限", prop: "maxAssignmentDuration" },
+  {
+    label: "管理员",
+    prop: "administratorMemberId",
+    required: true,
+    minWidth: 190,
+    showOverflowTooltip: true,
+  },
+  { label: "状态", prop: "status", minWidth: 100 },
+  { label: "最长期限", prop: "maxAssignmentDuration", minWidth: 160, showOverflowTooltip: true },
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 
@@ -121,20 +136,32 @@ export function createRoleToolbarActions(
 
 export function createRoleRowActions(
   row: RoleRow,
-  handlers: { onDetail: (row: RoleRow) => void },
+  handlers: { onDetail: (row: RoleRow) => void; onDelete: (row: RoleRow) => void },
 ): Array<InTableAction<RoleRow>> {
   const detail = objectActionAllowed(row.capabilities, IamAction.TENANT_ROLE_READ);
-  return [
+  const remove = objectActionAllowed(row.capabilities, IamAction.TENANT_ROLE_DELETE);
+  const actions: Array<InTableAction<RoleRow>> = [
     {
       key: "detail",
       label: "详情",
-      kind: "detail",
+      kind: "default",
       permission: IamAction.TENANT_ROLE_READ,
       disabled: !detail.allowed,
       disabledReason: detail.message,
       onSelect: handlers.onDetail,
     },
   ];
+  if (row.record.kind === RoleKind.SHARED) return actions;
+  actions.push({
+    key: "delete",
+    label: "删除",
+    kind: "danger",
+    permission: IamAction.TENANT_ROLE_DELETE,
+    disabled: !remove.allowed,
+    disabledReason: remove.message,
+    onSelect: handlers.onDelete,
+  });
+  return actions;
 }
 
 export function createAssignmentToolbarActions(

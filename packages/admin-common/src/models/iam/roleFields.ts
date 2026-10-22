@@ -1,6 +1,7 @@
 import { FieldVisibility } from "./constants";
 import type {
   FieldAccess,
+  FieldCapability,
   FieldOperations,
   ResourceFieldDefinition,
   ResourceFieldPermissions,
@@ -72,5 +73,65 @@ export function fieldPermissionChanges(
             },
           ];
     }),
+  );
+}
+
+/** 将目录默认值转换为可见性与操作分开的角色定义。 */
+export function defaultFieldDefinition(
+  defaults: Record<string, FieldAccess> = {},
+): ResourceFieldDefinition {
+  return {
+    visibility: Object.fromEntries(
+      Object.entries(defaults).map(([key, value]) => [key, value.visibility]),
+    ),
+    operations: Object.fromEntries(
+      Object.entries(defaults).map(([key, value]) => [
+        key,
+        { editable: value.editable === true, filterable: false },
+      ]),
+    ),
+  };
+}
+
+/** 同一资源只保留一份字段快照，未改动的字段沿用资源默认值。 */
+export function collectResourceFieldPermissions(
+  grants: Array<{
+    resourceId: string;
+    fieldCapabilities?: FieldCapability[];
+    fieldDefaults?: Record<string, FieldAccess>;
+    fieldPermissions?: ResourceFieldDefinition;
+  }>,
+): ResourceFieldPermissions | undefined {
+  const resources = [
+    ...new Map(
+      grants
+        .filter((grant) => (grant.fieldCapabilities?.length ?? 0) > 0)
+        .map((grant) => [grant.resourceId, grant]),
+    ).values(),
+  ];
+  if (!resources.length) return undefined;
+  return Object.fromEntries(
+    resources.map((grant) => [
+      grant.resourceId,
+      {
+        visibility: Object.fromEntries(
+          (grant.fieldCapabilities ?? []).map((field) => [
+            field.key,
+            grant.fieldPermissions?.visibility[field.key] ??
+              grant.fieldDefaults?.[field.key]?.visibility ??
+              FieldVisibility.HIDDEN,
+          ]),
+        ),
+        operations: Object.fromEntries(
+          (grant.fieldCapabilities ?? []).map((field) => [
+            field.key,
+            grant.fieldPermissions?.operations[field.key] ?? {
+              editable: grant.fieldDefaults?.[field.key]?.editable ?? false,
+              filterable: false,
+            },
+          ]),
+        ),
+      },
+    ]),
   );
 }

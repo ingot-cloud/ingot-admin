@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 const source = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "GrantPicker.vue"), "utf8");
 
 describe("platform iam GrantPicker", () => {
-  it("用 grant-catalog 分页内嵌操作，回显不算全选半选以外的 /actions", () => {
+  it("用 grant-catalog 一次取回应用全部操作，回显不算全选半选以外的 /actions", () => {
     expect(source).toContain("PlatformGrantCatalogAPI");
     expect(source).toContain("cloneResources");
     expect(source).toContain("resourceReady");
@@ -23,6 +23,7 @@ describe("platform iam GrantPicker", () => {
     expect(source).not.toContain("lazy");
     expect(source).not.toContain("for (const id of byResource.keys())");
     expect(source).not.toContain("collectIamPageRecords");
+    expect(source).not.toContain("resourceHasMore");
   });
 
   it("已选以 grants 为准，右侧已选列可移除，资源显示全部或已选数", () => {

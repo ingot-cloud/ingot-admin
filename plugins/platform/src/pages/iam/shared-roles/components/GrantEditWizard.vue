@@ -27,7 +27,7 @@
             :domain="domain"
             :current="immediate"
           />
-          <field-step v-else-if="platform && step === 2" ref="fieldStep" v-model="grants" />
+          <biz-iam-role-field-step v-else-if="step === 2" ref="fieldStep" v-model="grants" />
           <div v-else>
             <preview-panel
               :profile="profile"
@@ -90,6 +90,7 @@ import {
 import {
   AuthorizationDomain,
   BizIamPreviewAlert,
+  BizIamRoleFieldStep,
   BizIamRoleVersionForm,
   createCurrentRoleApis,
   iamEditorFailure,
@@ -103,7 +104,6 @@ import {
   type RolePublishInput,
 } from "@ingot/admin-common";
 import { PlatformRolePreviewAPI } from "@/api/iam/authorization";
-import FieldStep from "./FieldStep.vue";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
 import ScopeStep from "./ScopeStep.vue";
@@ -154,7 +154,7 @@ const currentImpactTitle = computed(() => {
   if (!result) return "";
   return `新增 ${result.addedActionIds.length} 项、移除 ${result.removedActionIds.length} 项、调整范围 ${result.changedScopeActionIds.length} 项；保存后关联人员自动生效`;
 });
-const fieldStep = ref<InstanceType<typeof FieldStep>>();
+const fieldStep = ref<InstanceType<typeof BizIamRoleFieldStep>>();
 const previewed = ref("");
 const previewSession = ref(0);
 const visible = ref(false);
@@ -211,7 +211,7 @@ const privateNext = async (): Promise<void> => {
     Message.warning("请至少选择一条操作");
     return;
   }
-  if (platform.value && step.value === 2 && !fieldStep.value?.validate()) return;
+  if (step.value === 2 && !fieldStep.value?.validate()) return;
   if ((platform.value || props.immediate) && step.value === steps.value.length - 2) {
     saving.value = true;
     const requestFingerprint = fingerprint.value;

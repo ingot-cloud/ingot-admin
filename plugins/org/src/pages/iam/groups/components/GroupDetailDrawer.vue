@@ -14,7 +14,7 @@
         <in-description-item label="来源" :value="sourceLabel" />
       </in-description-list>
     </div>
-    <template #footer>
+    <template v-if="!viewOnly" #footer>
       <div class="w-full flex items-center justify-between">
         <in-button type="danger" text link :disabled="!canDelete" @in-click="privateOnDelete">
           <template #icon>
@@ -37,6 +37,13 @@ import { formatGroupSelectionSources } from "../membership";
 import type { GroupRow } from "../table";
 
 defineOptions({ name: "GroupDetailDrawer" });
+
+withDefaults(
+  defineProps<{
+    viewOnly?: boolean;
+  }>(),
+  { viewOnly: false },
+);
 
 const emits = defineEmits<{
   edit: [row: GroupRow];

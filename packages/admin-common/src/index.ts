@@ -42,6 +42,7 @@ export { default as BizIamAuthorizationSelect } from "./components/BizIamAuthori
 export { default as BizIamPlatformAssignmentDrawer } from "./components/BizIamPlatformAssignmentDrawer.vue";
 
 export { default as BizIamPlatformDelegationDrawer } from "./components/BizIamPlatformDelegationDrawer.vue";
+export { default as BizIamRoleFieldStep } from "./components/BizIamRoleFieldStep.vue";
 export { default as BizIamWizardNav } from "./components/BizIamWizardNav.vue";
 
 export { default as BizIamPlatformDiagnoseDrawer } from "./components/BizIamPlatformDiagnoseDrawer.vue";

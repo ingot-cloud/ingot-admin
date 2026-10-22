@@ -1,71 +1,65 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="角色、授权记录与授权管理员。诊断为工具入口，不提供模拟执行。" />
+      <in-page-header
+        description="管理组织角色、授权记录和授权管理员。角色按名称识别，修改权限后关联人员自动生效。"
+      />
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
-        <in-biz-tab-panel
-          v-if="hasAction(IamAction.TENANT_ROLE_READ)"
-          title="角色"
-          name="roles"
-          fill
-        >
-          <in-table
+        <in-biz-tab-panel v-if="hasAction(IamAction.TENANT_ROLE_READ)" title="角色" name="roles">
+          <role-workspace
+            ref="roleWorkspaceRef"
+            :active="tab === 'roles'"
+            :rows="roles.pageInfo.value.records || []"
             :loading="roles.fetching.value"
-            :data="roles.pageInfo.value.records"
             :page="roles.pageInfo.value"
-            :headers="roleHeaders"
-            :table-id="ROLE_TABLE_ID"
-            density="compact"
-            :row-key="rowKeyOf"
-            @handleSizeChange="roles.fetchData"
-            @handleCurrentChange="roles.fetchData"
-          >
-            <template #tools-end>
-              <in-table-actions
-                variant="toolbar"
-                :actions="roleToolbarActions"
-                :row="emptyRoleRow"
-              />
-            </template>
-            <template #name="{ item }">
-              <biz-iam-record-link
-                :action="IamAction.TENANT_ROLE_READ"
-                :capabilities="item.capabilities"
-                @click="handleDetail(item)"
-              >
-                {{ item.record.name || item.record.id }}
-              </biz-iam-record-link>
-            </template>
-            <template #kind="{ item }">{{
-              item.record.kind === RoleKind.SHARED ? "平台共享" : "组织私有"
-            }}</template>
-            <template #status="{ item }">
-              <biz-iam-status-tag :status="item.record.status" />
-            </template>
-            <template #actions="{ item }">
-              <in-table-actions :actions="roleRowActionsOf(item)" :row="item" />
-            </template>
-          </in-table>
+            v-model:name="roles.condition.name"
+            :toolbar-actions="roleToolbarActions"
+            :row-actions="roleRowActionsOf"
+            @search="refreshRoles"
+            @page="roles.fetchData({ type: 'current', value: $event })"
+            @assignment="handleAssignmentEdit"
+            @revoke="handleAssignmentDelete"
+          />
         </in-biz-tab-panel>
         <in-biz-tab-panel
           v-if="hasAction(IamAction.TENANT_ASSIGNMENT_READ)"
           title="授权记录"
           name="assignments"
-          fill
         >
           <in-table
             :loading="assignments.fetching.value"
             :data="assignments.pageInfo.value.records"
             :page="assignments.pageInfo.value"
-            :headers="assignmentHeaders"
-            table-id="org-iam-assignments"
+            :headers="visibleAssignmentHeaders"
+            :table-id="ASSIGNMENT_TABLE_ID"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="assignments.fetchData"
             @handleCurrentChange="assignments.fetchData"
           >
+            <template #tools-start>
+              <el-input
+                v-model="assignments.condition.keyword"
+                class="w-220px!"
+                clearable
+                placeholder="搜索授权成员或用户组"
+                :prefix-icon="Search"
+                @keyup.enter="refreshAssignments"
+                @clear="refreshAssignments"
+              />
+              <in-picker
+                v-model="assignmentSubjectTypeFilter"
+                label="接收对象"
+                :options="assignmentSubjectTypeOptions"
+              />
+              <in-table-column-setting
+                :headers="assignmentHeaders"
+                :table-id="ASSIGNMENT_TABLE_ID"
+                @change="selectedAssignmentColumns = $event"
+              />
+            </template>
             <template #tools-end>
               <in-table-actions
                 variant="toolbar"
@@ -74,20 +68,27 @@
               />
             </template>
             <template #subject="{ item }">
-              {{ item.record.subjectName || item.record.assignment.subject.id }}
+              {{ subjectLabel(item.record.assignment.subject.type) }} /
+              {{ item.record.subjectName || "未命名" }}
             </template>
-            <template #role="{ item }">
-              {{ item.record.roleName || item.record.assignment.roleId }}
-            </template>
+            <template #role="{ item }">{{ item.record.roleName || "未命名角色" }}</template>
             <template #source="{ item }">{{
-              assignmentSource.getTagText(item.record.source).text
+              item.record.assignment.delegationGrantId
+                ? "授权管理员分配"
+                : assignmentSource.getTagText(item.record.source).text
             }}</template>
-            <template #status="{ item }"
-              >{{ effectiveStatus.getTagText(item.record.effectiveStatus).text
-              }}<el-tag v-if="item.record.scopeIssues.length" type="warning"
-                >待补范围 {{ item.record.scopeIssues.length }}</el-tag
-              ></template
-            >
+            <template #status="{ item }">
+              <status-tag
+                :tone="item.record.effectiveStatus === AssignmentEffectiveStatus.ACTIVE ? 'info' : 'warning'"
+                :label="effectiveStatus.getTagText(item.record.effectiveStatus).text"
+              />
+              <el-tag v-if="item.record.scopeIssues.length" class="ml-8px" type="warning">
+                待补范围 {{ item.record.scopeIssues.length }}
+              </el-tag>
+            </template>
+            <template #validFrom="{ item }">
+              {{ formatDateTime(item.record.assignment.validFrom, { fallback: "-" }) }}
+            </template>
             <template #validUntil="{ item }">
               {{ formatDateTime(item.record.assignment.validUntil, { fallback: "长期" }) }}
             </template>
@@ -100,19 +101,34 @@
           v-if="hasAction(IamAction.TENANT_DELEGATION_READ)"
           title="授权管理员"
           name="delegations"
-          fill
         >
           <in-table
             :loading="delegations.fetching.value"
             :data="delegations.pageInfo.value.records"
             :page="delegations.pageInfo.value"
-            :headers="delegationHeaders"
-            table-id="org-iam-delegations"
+            :headers="visibleDelegationHeaders"
+            :table-id="DELEGATION_TABLE_ID"
             density="compact"
             :row-key="rowKeyOf"
             @handleSizeChange="delegations.fetchData"
             @handleCurrentChange="delegations.fetchData"
           >
+            <template #tools-start>
+              <el-input
+                v-model="delegations.condition.administratorName"
+                class="w-220px!"
+                clearable
+                placeholder="搜索管理员名称"
+                :prefix-icon="Search"
+                @keyup.enter="refreshDelegations"
+                @clear="refreshDelegations"
+              />
+              <in-table-column-setting
+                :headers="delegationHeaders"
+                :table-id="DELEGATION_TABLE_ID"
+                @change="selectedDelegationColumns = $event"
+              />
+            </template>
             <template #tools-end>
               <in-table-actions
                 variant="toolbar"
@@ -121,11 +137,16 @@
               />
             </template>
             <template #administratorMemberId="{ item }">
-              {{ item.record.administratorName || item.record.delegation.administratorMemberId }}
+              {{ item.record.administratorName || "未命名管理员" }}
             </template>
-            <template #status="{ item }">{{ item.record.status }}</template>
+            <template #status="{ item }">
+              <status-tag
+                :tone="item.record.status === GrantStatus.ACTIVE ? 'info' : 'warning'"
+                :label="grantStatus.getTagText(item.record.status).text"
+              />
+            </template>
             <template #maxAssignmentDuration="{ item }">
-              {{ item.record.delegation.maxAssignmentDuration }}
+              {{ formatDuration(item.record.delegation.maxAssignmentDuration) }}
             </template>
             <template #actions="{ item }">
               <in-table-actions :actions="delegationRowActionsOf(item)" :row="item" />
@@ -136,16 +157,14 @@
     </in-split-layout>
   </in-page-frame>
 
-  <biz-iam-current-role-drawer
+  <create-wizard
     ref="createRef"
-    :apis="currentRoleApis"
     :catalog-a-p-i="TenantRoleGrantCatalogAPI"
     :application-candidates="applicationCandidates"
     @success="refreshRoles"
   />
-  <biz-iam-current-role-drawer
+  <role-detail-drawer
     ref="detailRef"
-    :apis="currentRoleApis"
     :catalog-a-p-i="TenantRoleGrantCatalogAPI"
     :application-candidates="applicationCandidates"
     @success="refreshRoles"
@@ -153,7 +172,7 @@
   <biz-iam-tenant-assignment-drawer
     ref="assignmentRef"
     :apis="assignmentApis"
-    @success="refreshAssignments"
+    @success="refreshAssignmentViews"
   />
   <biz-iam-tenant-delegation-drawer
     ref="delegationRef"
@@ -172,32 +191,47 @@
 
 <script lang="ts" setup>
 import { formatDateTime } from "@ingot/shared";
+import { Search } from "@element-plus/icons-vue";
 import {
+  AssignmentEffectiveStatus,
+  GrantStatus,
+  IamAction,
+  SubjectType,
+  SubjectTypeExtArray,
+  formatDuration,
+  iamEnumLabel,
   useAssignmentSourceEnum,
   useAssignmentEffectiveStatusEnum,
-  BizIamTenantAssignmentDrawer,
-  BizIamTenantDelegationDrawer,
-  BizIamCurrentRoleDrawer,
-  createCurrentRoleApis,
+  useGrantStatusEnum,
+  useSubjectTypeEnum,
   type AuthorizationCandidatesApi,
   type TenantAssignmentApis,
   type TenantDelegationApis,
+  BizIamTenantAssignmentDrawer,
+  BizIamTenantDelegationDrawer,
   BizIamDiagnoseDrawer,
-  BizIamRecordLink,
-  BizIamStatusTag,
-  IamAction,
-  RoleKind,
   createIamListLoader,
   toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
-import { Confirm, Message, type InTableAction, useCapabilities } from "@ingot/admin-core";
+import {
+  applyColumnSelection,
+  Confirm,
+  Message,
+  resolveStringPickerFilter,
+  StatusTag,
+  toStringPickerValue,
+  type InTableAction,
+  useCapabilities,
+  withAllPickerOption,
+} from "@ingot/admin-core";
 import {
   TenantAssignmentCreateAPI,
   TenantAssignmentScopeCandidatesAPI,
   TenantAssignmentOptionsAPI,
   TenantAssignmentRoleDefinitionAPI,
   TenantDelegationMineAPI,
+  TenantRoleDeleteAPI,
   TenantRoleGrantCatalogAPI,
   TenantDelegationScopeCandidatesAPI,
   TenantAssignmentDeleteAPI,
@@ -211,7 +245,11 @@ import {
   TenantDiagnoseAPI,
 } from "@/api/iam/authorization";
 import { TenantApplicationPageAPI, TenantMemberPickerLoad } from "@/api/iam/directory";
+import CreateWizard from "./components/CreateWizard.vue";
+import RoleDetailDrawer from "./components/RoleDetailDrawer.vue";
+import RoleWorkspace from "./components/RoleWorkspace.vue";
 import {
+  ASSIGNMENT_TABLE_ID,
   assignmentHeaders,
   createAssignmentRowActions,
   createAssignmentToolbarActions,
@@ -219,12 +257,10 @@ import {
   createDelegationToolbarActions,
   createRoleRowActions,
   createRoleToolbarActions,
+  DELEGATION_TABLE_ID,
   delegationHeaders,
   emptyAssignmentRow,
   emptyDelegationRow,
-  emptyRoleRow,
-  ROLE_TABLE_ID,
-  roleHeaders,
   type AssignmentRow,
   type DelegationRow,
   type RoleRow,
@@ -233,6 +269,7 @@ import { useOps } from "./useOps";
 
 const assignmentSource = useAssignmentSourceEnum();
 const effectiveStatus = useAssignmentEffectiveStatusEnum();
+const grantStatus = useGrantStatusEnum();
 const { hasAction, actionCodes } = useCapabilities();
 const tab = ref(hasAction(IamAction.TENANT_ROLE_READ) ? "roles" : "assignments");
 watch(actionCodes, () => {
@@ -242,9 +279,28 @@ const { roles, assignments, delegations, refreshRoles, refreshAssignments, refre
   useOps(tab);
 const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
+const roleWorkspaceRef = ref<InstanceType<typeof RoleWorkspace>>();
 const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
 const diagnoseRef = ref<{ show: (preset?: { memberId?: string }) => void }>();
+const selectedAssignmentColumns = ref<string[]>([]);
+const selectedDelegationColumns = ref<string[]>([]);
+const visibleAssignmentHeaders = computed(() =>
+  applyColumnSelection(assignmentHeaders, selectedAssignmentColumns.value),
+);
+const visibleDelegationHeaders = computed(() =>
+  applyColumnSelection(delegationHeaders, selectedDelegationColumns.value),
+);
+const assignmentSubjectTypeOptions = withAllPickerOption(useSubjectTypeEnum().getOptions());
+const assignmentSubjectTypeFilter = computed({
+  get: () => toStringPickerValue(assignments.condition.subjectType),
+  set: (value: string | number | boolean | null) => {
+    const selected = resolveStringPickerFilter(value);
+    assignments.condition.subjectType =
+      selected === SubjectType.MEMBER || selected === SubjectType.GROUP ? selected : undefined;
+    refreshAssignments();
+  },
+});
 
 const loadMembers = TenantMemberPickerLoad;
 const loadApplications = createIamListLoader(async (page, condition) => {
@@ -252,7 +308,6 @@ const loadApplications = createIamListLoader(async (page, condition) => {
   return { data: toIamSelectRecords(response.data) };
 });
 
-const currentRoleApis = createCurrentRoleApis("tenant");
 const assignmentApis: TenantAssignmentApis = {
   optionsAPI: TenantAssignmentOptionsAPI,
   roleAPI: TenantAssignmentRoleDefinitionAPI,
@@ -286,12 +341,27 @@ const candidateOf =
   };
 const applicationCandidates = candidateOf("APPLICATION");
 const departmentCandidates = candidateOf("DEPARTMENT");
+const subjectLabel = (value: string): string => iamEnumLabel(SubjectTypeExtArray, value);
+const refreshAssignmentViews = (): void => {
+  refreshAssignments();
+  roleWorkspaceRef.value?.refresh();
+};
 
 const handleCreate = (): void => {
   createRef.value?.show();
 };
 const handleDetail = (item: RoleRow): void => {
   detailRef.value?.show(item.record.id);
+};
+const handleRoleDelete = (item: RoleRow): void => {
+  Confirm.error(`未引用角色才会删除。是否删除（${item.record.name || "未命名角色"}）？`, {
+    confirmButtonText: "删除",
+  }).then(() => {
+    TenantRoleDeleteAPI(item.record.id).then(() => {
+      Message.success("已删除");
+      refreshRoles();
+    });
+  });
 };
 const handleDiagnose = (preset?: { memberId?: string }): void => {
   diagnoseRef.value?.show(preset);
@@ -308,7 +378,7 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   }).then(() => {
     TenantAssignmentDeleteAPI(item.record.id).then(() => {
       Message.success("已撤销授权");
-      refreshAssignments();
+      refreshAssignmentViews();
     });
   });
 };
@@ -336,7 +406,7 @@ const roleToolbarActions = computed(() =>
   createRoleToolbarActions(handleCreate, () => handleDiagnose()),
 );
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
-  createRoleRowActions(item, { onDetail: handleDetail });
+  createRoleRowActions(item, { onDetail: handleDetail, onDelete: handleRoleDelete });
 const assignmentToolbarActions = computed(() =>
   createAssignmentToolbarActions(handleAssignmentCreate, () => handleDiagnose()),
 );

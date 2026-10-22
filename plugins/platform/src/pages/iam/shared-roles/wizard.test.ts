@@ -13,19 +13,23 @@ import {
   type SelectedGrant,
 } from "./wizard";
 
-vi.mock("@ingot/admin-common", () => ({
-  ScopeBindingKind: { DEPARTMENTS: "DEPARTMENTS", OBJECTS: "OBJECTS" },
-  ScopeKind: {
-    ALL: "ALL",
-    SELF: "SELF",
-    MEMBER_DEPARTMENTS: "MEMBER_DEPARTMENTS",
-    MANAGED_DEPARTMENTS: "MANAGED_DEPARTMENTS",
-    OBJECT_SET: "OBJECT_SET",
-  },
-  FieldVisibility: { HIDDEN: "HIDDEN", MASKED: "MASKED", FULL: "FULL" },
-  RoleKind: { SHARED: "SHARED", PLATFORM_CUSTOM: "PLATFORM_CUSTOM", SYSTEM: "SYSTEM" },
-  formatScopeKinds: (kinds: string[]) => kinds.join("、"),
-}));
+vi.mock("@ingot/admin-common", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@ingot/admin-common")>();
+  return {
+    ...actual,
+    ScopeBindingKind: { DEPARTMENTS: "DEPARTMENTS", OBJECTS: "OBJECTS" },
+    ScopeKind: {
+      ALL: "ALL",
+      SELF: "SELF",
+      MEMBER_DEPARTMENTS: "MEMBER_DEPARTMENTS",
+      MANAGED_DEPARTMENTS: "MANAGED_DEPARTMENTS",
+      OBJECT_SET: "OBJECT_SET",
+    },
+    FieldVisibility: { HIDDEN: "HIDDEN", MASKED: "MASKED", FULL: "FULL" },
+    RoleKind: { SHARED: "SHARED", PLATFORM_CUSTOM: "PLATFORM_CUSTOM", SYSTEM: "SYSTEM" },
+    formatScopeKinds: (kinds: string[]) => kinds.join("、"),
+  };
+});
 
 const grant = (resourceId: string, kind: ScopeKind): SelectedGrant => ({
   applicationId: "100",

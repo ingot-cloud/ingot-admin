@@ -5,6 +5,8 @@ import {
   TenantAuditPageAPI,
   TenantDelegationPageAPI,
   TenantRolePageAPI,
+  TenantRoleSourcePageAPI,
+  TenantRoleSubjectPageAPI,
 } from "./authorization";
 
 export const tenantRoleQueryKeys = createResourceQueryKeys("iam-tenant", "role");
@@ -27,4 +29,12 @@ export const TenantDelegationPageQueryOptions = createIamPageQueryOptions(
 export const TenantAuditPageQueryOptions = createIamPageQueryOptions(
   tenantAuditQueryKeys,
   TenantAuditPageAPI,
+);
+export const TenantRoleSubjectPageQueryOptions = createIamPageQueryOptions(
+  createResourceQueryKeys("iam-tenant", "role-subject"),
+  TenantRoleSubjectPageAPI,
+);
+export const TenantRoleSourcePageQueryOptions = createIamPageQueryOptions(
+  createResourceQueryKeys("iam-tenant", "role-source"),
+  TenantRoleSourcePageAPI,
 );

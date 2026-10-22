@@ -26,14 +26,6 @@
           >{{ action.resourceName }} / {{ action.actionName }}</el-checkbox
         >
       </in-loading>
-      <el-pagination
-        v-if="total > 20"
-        :current-page="page"
-        :page-size="20"
-        :total="total"
-        layout="prev, pager, next"
-        @current-change="privatePage"
-      />
     </template>
     <div
       v-for="grant in definition.grants"
@@ -114,8 +106,6 @@ const applicationId = ref("");
 const keyword = ref("");
 const actions = ref<CurrentRoleCatalogAction[]>([]);
 const loaded = ref<CurrentRoleCatalogAction[]>([]);
-const page = ref(1);
-const total = ref(0);
 const loading = ref(false);
 let epoch = 0;
 const itemOf = (id: string) =>
@@ -124,14 +114,9 @@ const privateLoad = async () => {
   const current = ++epoch;
   loading.value = true;
   try {
-    const result = await props.catalogAPI(
-      applicationId.value,
-      { current: page.value, size: 20 },
-      keyword.value,
-    );
+    const result = await props.catalogAPI(applicationId.value, keyword.value);
     if (current !== epoch) return;
-    actions.value = result.data.records || [];
-    total.value = Number(result.data.total || 0);
+    actions.value = result.data || [];
     loaded.value = [...loaded.value, ...actions.value];
   } catch (error) {
     iamEditorFailure(error);
@@ -140,17 +125,12 @@ const privateLoad = async () => {
   }
 };
 const privateSearch = () => {
-  page.value = 1;
-  void privateLoad();
-};
-const privatePage = (value: number) => {
-  page.value = value;
   void privateLoad();
 };
 watch(applicationId, () => {
   actions.value = [];
   if (applicationId.value) privateSearch();
-  else { epoch += 1; total.value = 0; loading.value = false; }
+  else { epoch += 1; loading.value = false; }
 });
 const privateSync = () => {
   const used = new Set(

@@ -32,6 +32,7 @@
             <el-select
               :model-value="row.access.visibility"
               class="w-160px"
+              placeholder="请选择可见性"
               @change="privateVisibility(row, $event)"
             >
               <el-option
@@ -67,17 +68,29 @@
   </in-loading>
 </template>
 <script setup lang="ts">
+import { Message } from "@ingot/admin-core";
 import {
   FieldVisibility,
+  defaultFieldDefinition,
+  resourceFieldAccess,
   type FieldAccess,
   type FieldCapability,
   type FieldOperations,
-  resourceFieldAccess,
-} from "@ingot/admin-common";
-import { Message } from "@ingot/admin-core";
-import { defaultFieldDefinition, type SelectedGrant } from "../wizard";
-defineOptions({ name: "RoleFieldStep" });
-const grants = defineModel<SelectedGrant[]>({ required: true });
+  type ResourceFieldDefinition,
+} from "../models/iam";
+
+defineOptions({ name: "BizIamRoleFieldStep" });
+
+export interface RoleFieldGrant {
+  resourceId: string;
+  applicationName: string;
+  resourceName: string;
+  fieldCapabilities?: FieldCapability[];
+  fieldDefaults?: Record<string, FieldAccess>;
+  fieldPermissions?: ResourceFieldDefinition;
+}
+
+const grants = defineModel<RoleFieldGrant[]>({ required: true });
 const keyword = ref("");
 const page = ref(1);
 const labels = { HIDDEN: "隐藏", MASKED: "脱敏", FULL: "完整可见" };
