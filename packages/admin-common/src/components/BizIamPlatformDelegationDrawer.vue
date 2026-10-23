@@ -1,7 +1,7 @@
 <template>
   <in-drawer
     v-model="visible"
-    :title="editing ? '编辑委派' : '创建委派'"
+    :title="!editing ? '创建委派' : readonly ? '委派详情' : '编辑委派'"
     :loading="loading"
     size="100%"
     layout="pinned"

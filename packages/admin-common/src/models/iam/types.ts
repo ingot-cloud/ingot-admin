@@ -1326,6 +1326,7 @@ export interface DelegationRecord {
   delegation: DelegationInput;
   status: GrantStatus;
   administratorName?: string;
+  createdAt?: string;
 }
 
 export interface AssignmentContext {

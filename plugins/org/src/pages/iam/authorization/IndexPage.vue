@@ -145,6 +145,12 @@
                 :label="grantStatus.getTagText(item.record.status).text"
               />
             </template>
+            <template #createdAt="{ item }">
+              {{ formatDateTime(item.record.createdAt, { fallback: "-" }) }}
+            </template>
+            <template #validity="{ item }">
+              {{ delegationValidity(item) }}
+            </template>
             <template #maxAssignmentDuration="{ item }">
               {{ formatDuration(item.record.delegation.maxAssignmentDuration) }}
             </template>
@@ -195,6 +201,7 @@ import {
   AssignmentEffectiveStatus,
   GrantStatus,
   IamAction,
+  objectActionAllowed,
   SubjectType,
   SubjectTypeExtArray,
   formatDuration,
@@ -255,6 +262,7 @@ import {
   createRoleRowActions,
   DELEGATION_TABLE_ID,
   delegationHeaders,
+  delegationValidity,
   emptyAssignmentRow,
   emptyDelegationRow,
   type AssignmentRow,
@@ -277,7 +285,9 @@ const createRef = ref<{ show: () => void }>();
 const detailRef = ref<{ show: (id: string) => void }>();
 const roleWorkspaceRef = ref<InstanceType<typeof RoleWorkspace>>();
 const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
-const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
+const delegationRef = ref<{
+  show: (row?: DelegationRow, mode?: "detail" | "edit") => void;
+}>();
 const diagnoseRef =
   ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
 const selectedAssignmentColumns = ref<string[]>([]);
@@ -382,8 +392,12 @@ const handleAssignmentDiagnose = (item: AssignmentRow): void => {
 const handleDelegationCreate = (): void => {
   delegationRef.value?.show();
 };
-const handleDelegationEdit = (item: DelegationRow): void => {
-  delegationRef.value?.show(item);
+const handleDelegationDetail = (item: DelegationRow): void => {
+  const editable = objectActionAllowed(
+    item.capabilities,
+    IamAction.TENANT_DELEGATION_UPDATE,
+  ).allowed;
+  delegationRef.value?.show(item, editable ? "edit" : "detail");
 };
 const handleDelegationDelete = (item: DelegationRow): void => {
   Confirm.error("撤销后派生授权将失效。是否撤销该委派？", {
@@ -412,7 +426,7 @@ const delegationToolbarActions = computed(() =>
 );
 const delegationRowActionsOf = (item: DelegationRow): Array<InTableAction<DelegationRow>> =>
   createDelegationRowActions(item, {
-    onEdit: handleDelegationEdit,
+    onDetail: handleDelegationDetail,
     onDelete: handleDelegationDelete,
   });
 const rowKeyOf = (row: ResourceDetail<{ id: string }>): string => row.record.id;

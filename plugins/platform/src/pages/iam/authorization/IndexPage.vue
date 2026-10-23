@@ -166,6 +166,12 @@
                 :label="effectiveLabel(item.record.status)"
               />
             </template>
+            <template #createdAt="{ item }">
+              {{ formatDateTime(item.record.createdAt, { fallback: "-" }) }}
+            </template>
+            <template #validity="{ item }">
+              {{ delegationValidity(item) }}
+            </template>
             <template #maxAssignmentDuration="{ item }">
               {{
                 item.record.delegation.assignmentDurationMode === "UNLIMITED"
@@ -333,6 +339,7 @@ import {
   createRoleToolbarActions,
   DELEGATION_TABLE_ID,
   delegationHeaders,
+  delegationValidity,
   emptyAssignmentRow,
   emptyDelegationRow,
   type AssignmentRow,
@@ -516,7 +523,7 @@ const handleAssignmentDiagnose = (item: AssignmentRow): void => {
 const handleDelegationCreate = (): void => {
   delegationRef.value?.show();
 };
-const handleDelegationEdit = (item: DelegationRow): void => {
+const handleDelegationDetail = (item: DelegationRow): void => {
   delegationRef.value?.show(item);
 };
 const handleDelegationDelete = (item: DelegationRow): void => {
@@ -553,7 +560,7 @@ const delegationToolbarActions = computed(() =>
 );
 const delegationRowActionsOf = (item: DelegationRow): Array<InTableAction<DelegationRow>> =>
   createDelegationRowActions(item, {
-    onEdit: handleDelegationEdit,
+    onDetail: handleDelegationDetail,
     onDelete: handleDelegationDelete,
   });
 const rowKeyOf = (row: ResourceDetail<{ id: string }>): string => row.record.id;

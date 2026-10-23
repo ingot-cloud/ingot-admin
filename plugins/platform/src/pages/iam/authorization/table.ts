@@ -113,9 +113,17 @@ export const delegationHeaders: Array<TableHeaderRecord> = [
     showOverflowTooltip: true,
   },
   { label: "状态", prop: "status", minWidth: 100 },
+  { label: "创建时间", prop: "createdAt", minWidth: 180, showOverflowTooltip: true },
+  { label: "有效期", prop: "validity", minWidth: 320, showOverflowTooltip: true },
   { label: "最长期限", prop: "maxAssignmentDuration", minWidth: 160, showOverflowTooltip: true },
-  { label: "操作", width: "160", prop: "actions", fixed: "right" },
+  { label: "操作", width: "140", prop: "actions", fixed: "right" },
 ];
+
+export const delegationValidity = (row: DelegationRow): string => {
+  const from = formatDateTime(row.record.delegation.validFrom, { fallback: "立即生效" });
+  const until = formatDateTime(row.record.delegation.validUntil, { fallback: "长期有效" });
+  return `${from} 至 ${until}`;
+};
 
 export function createRoleToolbarActions(
   onCreate: () => void,
@@ -284,26 +292,16 @@ export function createDelegationToolbarActions(
 
 export function createDelegationRowActions(
   row: DelegationRow,
-  handlers: { onEdit: (row: DelegationRow) => void; onDelete: (row: DelegationRow) => void },
+  handlers: { onDetail: (row: DelegationRow) => void; onDelete: (row: DelegationRow) => void },
 ): Array<InTableAction<DelegationRow>> {
-  const update = objectActionAllowed(row.capabilities, IamAction.PLATFORM_DELEGATION_UPDATE);
   const remove = objectActionAllowed(row.capabilities, IamAction.PLATFORM_DELEGATION_DELETE);
   return [
     {
-      key: "edit",
+      key: "detail",
       label: "详情",
       kind: "detail",
       permission: IamAction.PLATFORM_DELEGATION_READ,
-      onSelect: handlers.onEdit,
-    },
-    {
-      key: "update",
-      label: "调整",
-      kind: "default",
-      permission: IamAction.PLATFORM_DELEGATION_UPDATE,
-      disabled: !update.allowed,
-      disabledReason: update.message,
-      onSelect: handlers.onEdit,
+      onSelect: handlers.onDetail,
     },
     {
       key: "delete",

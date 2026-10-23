@@ -146,6 +146,7 @@ export interface TenantDelegationRecord {
   delegation: TenantDelegationInput;
   status: GrantStatus;
   administratorName?: string;
+  createdAt?: string;
   scopeIssues: ScopeIssue[];
 }
 export interface TenantDelegationMine {
