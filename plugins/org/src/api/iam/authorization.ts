@@ -30,6 +30,7 @@ import {
   type RoleWorkspaceQuery,
   type RoleSummary,
   type AssignmentPreviewResult,
+  type AuthorizationCandidatesApi,
 } from "@ingot/admin-common";
 
 const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
@@ -300,6 +301,8 @@ export function TenantAssignmentOptionsAPI(query: {
 }): Promise<R<IamPageResponse<TenantAssignmentOption>>> {
   return request.get(`${IAM_API_PREFIX}/v1/tenant/assignments/options`, query);
 }
+export const TenantDiagnoseCandidatesAPI: AuthorizationCandidatesApi = (query) =>
+  request.get(`${IAM_API_PREFIX}/v1/tenant/authorization/diagnose/candidates`, query);
 export function TenantAssignmentRoleDefinitionAPI(
   id: string,
   delegationGrantId?: string,

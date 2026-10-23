@@ -7,24 +7,16 @@
   >
     <template #left>
       <div class="flex h-full min-h-0 flex-col gap-12px">
-        <div class="flex flex-col gap-12px">
-          <el-input
-            :model-value="name"
-            clearable
-            placeholder="搜索角色名称"
-            @update:model-value="emits('update:name', $event)"
-            @keyup.enter="emits('search')"
-            @clear="emits('search')"
-          >
-            <template #prefix><in-icon name="ep:search" /></template>
-          </el-input>
-          <in-table-actions
-            class="role-workspace__toolbar-actions"
-            variant="toolbar"
-            :actions="toolbarActions"
-            :row="emptyRoleRow"
-          />
-        </div>
+        <el-input
+          :model-value="name"
+          clearable
+          placeholder="搜索角色名称"
+          @update:model-value="emits('update:name', $event)"
+          @keyup.enter="emits('search')"
+          @clear="emits('search')"
+        >
+          <template #prefix><in-icon name="ep:search" /></template>
+        </el-input>
         <in-loading :loading="loading" class="flex-1 min-h-0 overflow-auto">
           <div class="flex min-h-0 flex-col">
             <div
@@ -64,6 +56,9 @@
           class="justify-center"
           @current-change="emits('page', $event)"
         />
+        <in-button type="primary" :disabled="!canCreate" @in-click="emits('create')">
+          创建角色
+        </in-button>
       </div>
     </template>
     <div class="flex h-full min-h-0 flex-col">
@@ -71,7 +66,7 @@
         v-if="!hasAction(IamAction.TENANT_ASSIGNMENT_READ)"
         class="p-24px text-[var(--el-text-color-secondary)]"
       >
-        可以查看角色详情；当前没有授权记录读取权限。
+        可以查看角色详情；当前没有角色分配读取权限。
       </div>
       <in-biz-tabs-header
         v-else
@@ -119,22 +114,22 @@
             @change="selectedColumns[subjectKind] = $event"
           />
         </template>
-        <template #name="{ item }">{{ item.name }}</template>
-        <template #sourceTypes="{ item }">
-          {{
-            item.sourceTypes
-              .map((type: string) => (type === "MEMBER" ? "直接分配" : "用户组"))
-              .join("、")
-          }}（{{ item.sourceCount }}）
+        <template #name="{ item }">
+          <biz-iam-record-link :action="subjectReadAction" @click="showSubject(item)">
+            {{ item.name || "未命名" }}
+          </biz-iam-record-link>
         </template>
-        <template #actions="{ item }">
+        <template #departments="{ item }">{{ formatMemberDepartments(item.departments) }}</template>
+        <template #sourceCount="{ item }">
           <in-button
+            v-if="subjectKind === 'members'"
             link
             type="primary"
-            @in-click="subjectKind === 'members' ? showSources(item.id) : showGroup(item.id)"
+            @in-click="showSources(item.id)"
           >
-            {{ subjectKind === "members" ? "查看来源" : "查看用户组" }}
+            {{ item.sourceCount }}
           </in-button>
+          <span v-else>{{ item.sourceCount }}</span>
         </template>
       </in-table>
     </div>
@@ -177,7 +172,7 @@
             "
             link
             type="primary"
-            @in-click="showGroup(item.record.assignment.subject.id)"
+            @in-click="showGroup(item.record.assignment.subject.id, item.record.subjectName)"
             >查看用户组</in-button
           >
         </template>
@@ -185,6 +180,7 @@
     </div>
   </in-dialog>
   <group-detail-drawer ref="groupDetail" view-only />
+  <member-detail-drawer ref="memberDetail" view-only />
 </template>
 
 <script setup lang="ts">
@@ -196,12 +192,19 @@ import {
   type Page,
   type TableHeaderRecord,
 } from "@ingot/admin-core";
-import { IamAction, RoleKind, type RoleSubjectSummary } from "@ingot/admin-common";
+import {
+  BizIamRecordLink,
+  IamAction,
+  MemberStatus,
+  RoleKind,
+  type RoleSubjectSummary,
+} from "@ingot/admin-common";
 import GroupDetailDrawer from "../../groups/components/GroupDetailDrawer.vue";
+import MemberDetailDrawer from "../../members/components/MemberDetailDrawer.vue";
+import { formatMemberDepartments } from "../../members/memberTable";
 import { useRoleWorkspace } from "../useRoleWorkspace";
 import {
   createAssignmentRowActions,
-  emptyRoleRow,
   SYSTEM_ROLE_TAG,
   type AssignmentRow,
   type RoleRow,
@@ -215,7 +218,6 @@ const props = defineProps<{
   loading: boolean;
   page: Page<RoleRow>;
   name?: string;
-  toolbarActions: InTableAction<RoleRow>[];
   rowActions: (row: RoleRow) => InTableAction<RoleRow>[];
 }>();
 
@@ -223,11 +225,13 @@ const emits = defineEmits<{
   "update:name": [name: string];
   search: [];
   page: [page: number];
+  create: [];
   assignment: [row: AssignmentRow];
   revoke: [row: AssignmentRow];
 }>();
 
 const { hasAction } = useCapabilities();
+const canCreate = computed(() => hasAction(IamAction.TENANT_ROLE_CREATE));
 const {
   roleId,
   subjectKind,
@@ -241,11 +245,26 @@ const {
 const selectedRole = ref<RoleRow>();
 const selectedColumns = ref<Record<string, string[]>>({ members: [], groups: [] });
 const tableId = computed(() => `org-iam-role-${subjectKind.value}`);
-const headers: TableHeaderRecord[] = [
-  { label: "名称", prop: "name", required: true, minWidth: 180, showOverflowTooltip: true },
-  { label: "分配来源", prop: "sourceTypes", minWidth: 180, showOverflowTooltip: true },
-  { label: "操作", prop: "actions", width: 140, fixed: "right" },
-];
+const nameHeader: TableHeaderRecord = {
+  label: "名称",
+  prop: "name",
+  required: true,
+  minWidth: 180,
+  showOverflowTooltip: true,
+};
+const departmentHeader: TableHeaderRecord = {
+  label: "部门",
+  prop: "departments",
+  minWidth: 180,
+  showOverflowTooltip: true,
+};
+const sourceCountHeader: TableHeaderRecord = { label: "来源数", prop: "sourceCount", width: 100 };
+const headers = computed<TableHeaderRecord[]>(() =>
+  subjectKind.value === "members" ? [nameHeader, departmentHeader, sourceCountHeader] : [nameHeader],
+);
+const subjectReadAction = computed(() =>
+  subjectKind.value === "members" ? IamAction.TENANT_MEMBER_READ : IamAction.TENANT_GROUP_READ,
+);
 const sourceHeaders: TableHeaderRecord[] = [
   { label: "接收对象", prop: "subject", minWidth: 200, showOverflowTooltip: true },
   { label: "授权依据", prop: "basis", minWidth: 180, showOverflowTooltip: true },
@@ -259,7 +278,7 @@ const sourceHeaders: TableHeaderRecord[] = [
   { label: "操作", prop: "actions", width: 280, fixed: "right" },
 ];
 const visibleHeaders = computed(() =>
-  applyColumnSelection(headers, selectedColumns.value[subjectKind.value]),
+  applyColumnSelection(headers.value, selectedColumns.value[subjectKind.value]),
 );
 const sourceActions = (row: AssignmentRow): InTableAction<AssignmentRow>[] =>
   createAssignmentRowActions(row, {
@@ -268,6 +287,7 @@ const sourceActions = (row: AssignmentRow): InTableAction<AssignmentRow>[] =>
     onDiagnose: () => {},
   }).filter((action) => action.key !== "diagnose");
 const groupDetail = ref<InstanceType<typeof GroupDetailDrawer>>();
+const memberDetail = ref<InstanceType<typeof MemberDetailDrawer>>();
 const subjectKey = (row: RoleSubjectSummary): string => row.id;
 const assignmentKey = (row: AssignmentRow): string => row.record.id;
 
@@ -275,10 +295,28 @@ const selectRole = (row?: RoleRow): void => {
   selectedRole.value = row;
   roleId.value = row?.record.id || "";
 };
-const showGroup = (id: string): void => {
+const showGroup = (id: string, name?: string): void => {
   if (!hasAction(IamAction.TENANT_GROUP_READ)) return;
   groupDetail.value?.show({
-    record: { id, name: "", selection: { members: [], departments: [] } },
+    record: { id, name: name || "", selection: { members: [], departments: [] } },
+    capabilities: {},
+    fieldAccess: {},
+    version: "",
+  });
+};
+const showSubject = (item: RoleSubjectSummary): void => {
+  if (subjectKind.value === "groups") {
+    showGroup(item.id, item.name);
+    return;
+  }
+  if (!hasAction(IamAction.TENANT_MEMBER_READ)) return;
+  memberDetail.value?.show({
+    record: {
+      id: item.id,
+      displayName: item.name,
+      status: MemberStatus.ACTIVE,
+      departments: [],
+    },
     capabilities: {},
     fieldAccess: {},
     version: "",
@@ -293,14 +331,3 @@ watch(
 
 defineExpose({ refresh });
 </script>
-
-<style scoped lang="postcss">
-.role-workspace__toolbar-actions :deep(.in-table-actions__hit) {
-  flex: 1 1 0;
-}
-
-.role-workspace__toolbar-actions :deep(.in-table-actions__hit .in-table-actions__inline) {
-  width: 100%;
-  justify-content: center;
-}
-</style>

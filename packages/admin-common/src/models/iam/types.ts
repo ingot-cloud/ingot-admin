@@ -1430,6 +1430,8 @@ export interface RoleSubjectSummary {
   versionNames?: Record<string, string>;
   sourceTypes: SubjectType[];
   sourceCount: number;
+  /** 成员可见部门。用户组和不披露任职时省略。 */
+  departments?: MemberDepartmentView[];
 }
 export interface RoleSubjectPage extends IamPageResponse<RoleSubjectSummary> {
   inheritedSourcesRestricted: boolean;

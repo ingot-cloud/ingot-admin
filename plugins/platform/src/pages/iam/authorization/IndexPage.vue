@@ -239,10 +239,11 @@
     :create-preview-api="PlatformDelegationCreatePreviewAPI"
     @success="refreshDelegations"
   />
-  <biz-iam-platform-diagnose-drawer
+  <biz-iam-diagnose-drawer
     ref="diagnoseRef"
     :candidates-api="PlatformDiagnoseCandidatesAPI"
     :diagnose-api="PlatformDiagnoseAPI"
+    :assignment-read-action="IamAction.PLATFORM_ASSIGNMENT_READ"
     @open-assignment="openAssignment"
   />
 </template>
@@ -259,7 +260,7 @@ import {
   BizIamPlatformAssignmentDrawer,
   BizIamAssignmentUpgradeDrawer,
   BizIamPlatformDelegationDrawer,
-  BizIamPlatformDiagnoseDrawer,
+  BizIamDiagnoseDrawer,
   formatDuration,
   IamAction,
   RoleKind,

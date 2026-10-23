@@ -27,6 +27,8 @@ describe("tenant member detail", () => {
     expect(detailSource).toContain('label="入职时间"');
     expect(detailSource).toContain('label="账号最后登录时间"');
     expect(detailSource).toContain('label="成员更新时间"');
+    expect(detailSource).toContain("viewOnly");
+    expect(detailSource).toContain("props.viewOnly");
     expect(detailSource).toContain("更多操作");
     expect(detailSource).toContain("createRowActions");
     expect(detailSource).toContain("MemberRejoinDialog");

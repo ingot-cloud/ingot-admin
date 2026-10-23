@@ -1,135 +1,149 @@
 <template>
-  <in-drawer v-model="visible" title="权限诊断" :loading="loading" size="560px">
+  <in-drawer v-model="visible" title="权限诊断" :loading="loading" size="600px">
     <el-alert
-      class="mb-12px"
       type="info"
       :closable="false"
-      title="诊断只给出当前结论与可披露来源，不提供模拟执行或登录。"
+      title="只读诊断当前有效权限与可披露来源，不提供代登录或模拟执行。"
+      class="mb-12px"
     />
     <in-form label-position="top">
-      <el-form-item label="身份">
-        <el-radio-group v-model="identityKind">
-          <el-radio-button value="member">成员</el-radio-button>
-          <el-radio-button value="account">账号</el-radio-button>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item v-if="identityKind === 'member'" label="成员" required>
-        <biz-tenant-member-select
-          v-if="organization"
-          v-model="memberId"
-          :load-members="loadMembers"
-          placeholder="请选择成员"
+      <el-form-item label="成员" required>
+        <el-input
+          v-if="memberLocked"
+          :model-value="memberName || memberId"
+          disabled
+          placeholder="该分配记录的成员不可修改"
         />
-        <in-page-select
+        <biz-iam-diagnose-candidate-picker
           v-else
           v-model="memberId"
-          filterable
-          remote
-          clearable
-          value-field="id"
-          label-field="name"
-          placeholder="远程分页选择成员"
-          :load-data="loadMembers"
+          :api="candidatesApi"
+          :query="{ kind: 'MEMBER' }"
+          title="选择成员"
+          placeholder="请选择成员"
         />
       </el-form-item>
-      <el-form-item v-else label="账号 ID" required>
-        <el-input v-model="accountId" placeholder="仅在当前可信域解析" />
-      </el-form-item>
-      <el-form-item label="应用" required>
-        <in-page-select
+      <el-form-item label="应用" required
+        ><biz-iam-diagnose-candidate-picker
           v-model="applicationId"
-          filterable
-          remote
-          clearable
-          value-field="id"
-          label-field="name"
-          placeholder="远程分页选择应用"
-          :load-data="loadApplications"
-        />
-      </el-form-item>
-      <el-form-item label="操作 ID" required>
-        <el-input v-model="actionId" placeholder="application 内的操作" />
-      </el-form-item>
-      <el-form-item label="目标对象 ID">
-        <el-input v-model="targetId" placeholder="可选" />
-      </el-form-item>
+          :api="candidatesApi"
+          :query="{ kind: 'APPLICATION' }"
+          title="选择应用"
+          placeholder="请选择应用"
+      /></el-form-item>
+      <el-form-item label="操作" required
+        ><biz-iam-diagnose-candidate-picker
+          v-model="actionId"
+          :api="candidatesApi"
+          :query="{ kind: 'ACTION', applicationId }"
+          :disabled="!applicationId"
+          title="选择操作"
+          placeholder="请选择操作"
+      /></el-form-item>
+      <el-form-item label="目标对象（可选）"
+        ><biz-iam-diagnose-candidate-picker
+          v-model="targetId"
+          :api="candidatesApi"
+          :query="{ kind: 'OBJECT', actionId }"
+          :disabled="!actionId"
+          title="选择目标对象"
+          placeholder="请选择目标对象"
+      /></el-form-item>
+      <div class="text-12px text-[var(--el-text-color-secondary)] mb-12px">
+        目标对象是所选操作作用的具体资源记录；留空时只诊断操作权限。
+      </div>
       <biz-iam-diagnose-panel :decision="decision" />
+      <div v-if="canOpenSource" class="flex flex-wrap gap-8px m-t-8px">
+        <in-button
+          v-for="source in decision?.sources.filter((item) => item.assignmentId) || []"
+          :key="source.assignmentId"
+          @click="openSource(source.assignmentId!)"
+        >
+          查看分配 {{ source.assignmentId }}
+        </in-button>
+      </div>
     </in-form>
     <template #footer>
       <in-button @click="visible = false">关闭</in-button>
-      <in-button type="primary" :loading="loading" @in-click="privateRun">诊断</in-button>
+      <in-button type="primary" :loading="loading" @in-click="run">诊断</in-button>
     </template>
   </in-drawer>
 </template>
-
 <script setup lang="ts">
-import { Message, type LoadDataParams, type Page, type R } from "@ingot/admin-core";
-import { inject } from "vue";
-import BizTenantMemberSelect from "./BizTenantMemberSelect.vue";
-import { organizationMemberPickerKey } from "./organizationMemberPicker";
+import { Message, useCapabilities, type R } from "@ingot/admin-core";
+import type { AuthorizationCandidatesApi, Decision, DiagnoseInput } from "../models/iam";
+import { iamEditorFailure } from "../hooks/iamEditorFailure";
+import BizIamDiagnoseCandidatePicker from "./BizIamDiagnoseCandidatePicker.vue";
 import BizIamDiagnosePanel from "./BizIamDiagnosePanel.vue";
-import type { Decision, DiagnoseInput, IamSelectOption } from "../models/iam";
-
 defineOptions({ name: "BizIamDiagnoseDrawer" });
-const organization = inject(organizationMemberPickerKey, undefined);
-
 const props = defineProps<{
-  loadMembers: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
-  loadApplications: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
+  candidatesApi: AuthorizationCandidatesApi;
   diagnoseApi: (input: DiagnoseInput) => Promise<R<Decision>>;
+  /** 有该操作时才显示「查看分配」；不传表示该域不支持从诊断跳转分配。 */
+  assignmentReadAction?: string;
 }>();
-
+const emits = defineEmits<{ openAssignment: [id: string] }>();
+const { hasAction, contextEpoch } = useCapabilities();
 const visible = ref(false);
 const loading = ref(false);
-const identityKind = ref<"member" | "account">("member");
 const memberId = ref("");
-const accountId = ref("");
+const memberName = ref("");
+const memberLocked = ref(false);
 const applicationId = ref("");
 const actionId = ref("");
 const targetId = ref("");
 const decision = ref<Decision | null>(null);
-
-const privateRun = (): void => {
-  if (identityKind.value === "member" && !memberId.value.trim()) {
-    Message.warning("请选择成员");
-    return;
-  }
-  if (identityKind.value === "account" && !accountId.value.trim()) {
-    Message.warning("请填写账号 ID");
-    return;
-  }
-  if (!applicationId.value.trim() || !actionId.value.trim()) {
-    Message.warning("请填写应用和操作");
-    return;
-  }
-  loading.value = true;
-  const input: DiagnoseInput = {
-    applicationId: applicationId.value.trim(),
-    actionId: actionId.value.trim(),
-    targetId: targetId.value.trim() || undefined,
-    memberId: identityKind.value === "member" ? memberId.value.trim() : undefined,
-    accountId: identityKind.value === "account" ? accountId.value.trim() : undefined,
-  };
-  props
-    .diagnoseApi(input)
-    .then((response) => {
-      decision.value = response.data;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
+const canOpenSource = computed(
+  () => !!props.assignmentReadAction && hasAction(props.assignmentReadAction),
+);
+let request = 0;
+watch(applicationId, () => {
+  actionId.value = "";
+  targetId.value = "";
+});
+watch(actionId, () => {
+  targetId.value = "";
+});
+watch([memberId, applicationId, actionId, targetId, contextEpoch, visible], () => {
+  request += 1;
+  decision.value = null;
+  loading.value = false;
+});
+const openSource = (id: string): void => {
+  if (canOpenSource.value) emits("openAssignment", id);
 };
-
+const run = async (): Promise<void> => {
+  if (!memberId.value || !applicationId.value || !actionId.value) {
+    Message.warning("请选择成员、应用和操作");
+    return;
+  }
+  if (loading.value) return;
+  const id = ++request;
+  loading.value = true;
+  try {
+    const response = await props.diagnoseApi({
+      memberId: memberId.value,
+      applicationId: applicationId.value,
+      actionId: actionId.value,
+      targetId: targetId.value || undefined,
+    });
+    if (id === request) decision.value = response.data;
+  } catch (error) {
+    await iamEditorFailure(error);
+  } finally {
+    if (id === request) loading.value = false;
+  }
+};
 defineExpose({
-  show(preset?: Partial<DiagnoseInput>) {
-    visible.value = true;
+  show(preset?: { memberId?: string; memberName?: string }) {
+    memberId.value = preset?.memberId || "";
+    memberName.value = preset?.memberName || "";
+    memberLocked.value = Boolean(preset?.memberId);
+    applicationId.value = "";
+    actionId.value = "";
+    targetId.value = "";
     decision.value = null;
-    identityKind.value = preset?.accountId ? "account" : "member";
-    memberId.value = preset?.memberId ?? "";
-    accountId.value = preset?.accountId ?? "";
-    applicationId.value = preset?.applicationId ?? "";
-    actionId.value = preset?.actionId ?? "";
-    targetId.value = preset?.targetId ?? "";
+    visible.value = true;
   },
 });
 </script>

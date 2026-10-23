@@ -108,32 +108,6 @@ export const delegationHeaders: Array<TableHeaderRecord> = [
   { label: "操作", width: "160", prop: "actions", fixed: "right" },
 ];
 
-export function createRoleToolbarActions(
-  onCreate: () => void,
-  onDiagnose: () => void,
-): Array<InTableAction<RoleRow>> {
-  return [
-    {
-      key: "create",
-      label: "创建角色",
-      kind: "quick",
-      overflow: "never",
-      priority: 50,
-      permission: IamAction.TENANT_ROLE_CREATE,
-      onSelect: () => onCreate(),
-    },
-    {
-      key: "diagnose",
-      label: "权限诊断",
-      kind: "primary",
-      overflow: "never",
-      priority: 30,
-      permission: IamAction.TENANT_AUTHORIZATION_DIAGNOSE,
-      onSelect: () => onDiagnose(),
-    },
-  ];
-}
-
 export function createRoleRowActions(
   row: RoleRow,
   handlers: { onDetail: (row: RoleRow) => void; onDelete: (row: RoleRow) => void },
@@ -171,7 +145,7 @@ export function createAssignmentToolbarActions(
   return [
     {
       key: "create",
-      label: "分配授权",
+      label: "分配角色",
       kind: "quick",
       overflow: "never",
       priority: 50,
@@ -181,8 +155,8 @@ export function createAssignmentToolbarActions(
     {
       key: "diagnose",
       label: "权限诊断",
-      kind: "primary",
-      overflow: "never",
+      kind: "default",
+      overflow: "auto",
       priority: 30,
       permission: IamAction.TENANT_AUTHORIZATION_DIAGNOSE,
       onSelect: () => onDiagnose(),

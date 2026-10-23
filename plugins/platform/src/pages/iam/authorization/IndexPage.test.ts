@@ -102,7 +102,7 @@ const wrapperOf = () =>
         SharedRoleDetailDrawer: true,
         BizIamPlatformAssignmentDrawer: true,
         BizIamPlatformDelegationDrawer: true,
-        BizIamPlatformDiagnoseDrawer: true,
+        BizIamDiagnoseDrawer: true,
         BizIamAssignmentUpgradeDrawer: {
           name: "BizIamAssignmentUpgradeDrawer",
           template: "<div/>",

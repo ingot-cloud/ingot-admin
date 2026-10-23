@@ -7,7 +7,7 @@ import type {
   ScopeBinding,
   SubjectRef,
 } from "./types";
-import { durationHours } from "./duration";
+import { assignmentWindowIssue } from "./delegationPeriod";
 
 /** 每个固定版本保存独立参数；已选名称快照不依赖候选当前页。 */
 export interface PlatformAssignmentRoleDraft {
@@ -162,19 +162,17 @@ export function assignmentValidityIssue(
   basis?: DelegationInput,
   now = Date.now(),
 ): string | undefined {
-  const from = validFrom ? Date.parse(validFrom) : now;
-  const until = validUntil ? Date.parse(validUntil) : undefined;
-  if (!Number.isFinite(from) || (until !== undefined && (!Number.isFinite(until) || until <= from)))
-    return "失效时间必须晚于生效时间";
-  if (!basis) return;
-  if (basis.validFrom && from < Date.parse(basis.validFrom)) return "生效时间不能早于来源委派";
-  if (basis.validUntil && (until === undefined || until > Date.parse(basis.validUntil)))
-    return "失效时间不能超出来源委派";
-  if (basis.assignmentDurationMode !== "UNLIMITED" && basis.maxAssignmentDuration) {
-    if (until === undefined) return "来源委派限制单次分配时长，请设置失效时间";
-    if (until - from > durationHours(basis.maxAssignmentDuration) * 3600000)
-      return "分配有效期超过委派允许的单次最长时间";
-  }
+  return assignmentWindowIssue(
+    validFrom,
+    validUntil,
+    basis && {
+      validFrom: basis.validFrom,
+      validUntil: basis.validUntil,
+      maxDuration:
+        basis.assignmentDurationMode !== "UNLIMITED" ? basis.maxAssignmentDuration : undefined,
+    },
+    now,
+  );
 }
 
 /** 按接收对象×固定版本展开并复制参数，供原子提交及预览快照使用。 */

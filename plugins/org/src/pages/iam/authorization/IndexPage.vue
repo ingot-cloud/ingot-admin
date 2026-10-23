@@ -2,7 +2,7 @@
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
       <in-page-header
-        description="管理组织角色、授权记录和授权管理员。角色按名称识别，修改权限后关联人员自动生效。"
+        description="管理组织角色、角色分配和授权管理员。角色按名称识别，修改权限后关联人员自动生效。"
       />
     </template>
     <in-split-layout>
@@ -15,8 +15,8 @@
             :loading="roles.fetching.value"
             :page="roles.pageInfo.value"
             v-model:name="roles.condition.name"
-            :toolbar-actions="roleToolbarActions"
             :row-actions="roleRowActionsOf"
+            @create="handleCreate"
             @search="refreshRoles"
             @page="roles.fetchData({ type: 'current', value: $event })"
             @assignment="handleAssignmentEdit"
@@ -25,7 +25,7 @@
         </in-biz-tab-panel>
         <in-biz-tab-panel
           v-if="hasAction(IamAction.TENANT_ASSIGNMENT_READ)"
-          title="授权记录"
+          title="角色分配"
           name="assignments"
         >
           <in-table
@@ -183,8 +183,7 @@
   />
   <biz-iam-diagnose-drawer
     ref="diagnoseRef"
-    :load-members="loadMembers"
-    :load-applications="loadApplications"
+    :candidates-api="TenantDiagnoseCandidatesAPI"
     :diagnose-api="TenantDiagnoseAPI"
   />
 </template>
@@ -210,8 +209,6 @@ import {
   BizIamTenantAssignmentDrawer,
   BizIamTenantDelegationDrawer,
   BizIamDiagnoseDrawer,
-  createIamListLoader,
-  toIamSelectRecords,
   type ResourceDetail,
 } from "@ingot/admin-common";
 import {
@@ -243,8 +240,8 @@ import {
   TenantDelegationPreviewAPI,
   TenantDelegationUpdateAPI,
   TenantDiagnoseAPI,
+  TenantDiagnoseCandidatesAPI,
 } from "@/api/iam/authorization";
-import { TenantApplicationPageAPI, TenantMemberPickerLoad } from "@/api/iam/directory";
 import CreateWizard from "./components/CreateWizard.vue";
 import RoleDetailDrawer from "./components/RoleDetailDrawer.vue";
 import RoleWorkspace from "./components/RoleWorkspace.vue";
@@ -256,7 +253,6 @@ import {
   createDelegationRowActions,
   createDelegationToolbarActions,
   createRoleRowActions,
-  createRoleToolbarActions,
   DELEGATION_TABLE_ID,
   delegationHeaders,
   emptyAssignmentRow,
@@ -282,7 +278,8 @@ const detailRef = ref<{ show: (id: string) => void }>();
 const roleWorkspaceRef = ref<InstanceType<typeof RoleWorkspace>>();
 const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
 const delegationRef = ref<{ show: (row?: DelegationRow) => void }>();
-const diagnoseRef = ref<{ show: (preset?: { memberId?: string }) => void }>();
+const diagnoseRef =
+  ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
 const selectedAssignmentColumns = ref<string[]>([]);
 const selectedDelegationColumns = ref<string[]>([]);
 const visibleAssignmentHeaders = computed(() =>
@@ -300,12 +297,6 @@ const assignmentSubjectTypeFilter = computed({
       selected === SubjectType.MEMBER || selected === SubjectType.GROUP ? selected : undefined;
     refreshAssignments();
   },
-});
-
-const loadMembers = TenantMemberPickerLoad;
-const loadApplications = createIamListLoader(async (page, condition) => {
-  const response = await TenantApplicationPageAPI(page, condition);
-  return { data: toIamSelectRecords(response.data) };
 });
 
 const assignmentApis: TenantAssignmentApis = {
@@ -363,7 +354,7 @@ const handleRoleDelete = (item: RoleRow): void => {
     });
   });
 };
-const handleDiagnose = (preset?: { memberId?: string }): void => {
+const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
   diagnoseRef.value?.show(preset);
 };
 const handleAssignmentCreate = (): void => {
@@ -383,7 +374,10 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   });
 };
 const handleAssignmentDiagnose = (item: AssignmentRow): void => {
-  handleDiagnose({ memberId: item.record.assignment.subject.id });
+  handleDiagnose({
+    memberId: item.record.assignment.subject.id,
+    memberName: item.record.subjectName,
+  });
 };
 const handleDelegationCreate = (): void => {
   delegationRef.value?.show();
@@ -402,9 +396,6 @@ const handleDelegationDelete = (item: DelegationRow): void => {
   });
 };
 
-const roleToolbarActions = computed(() =>
-  createRoleToolbarActions(handleCreate, () => handleDiagnose()),
-);
 const roleRowActionsOf = (item: RoleRow): Array<InTableAction<RoleRow>> =>
   createRoleRowActions(item, { onDetail: handleDetail, onDelete: handleRoleDelete });
 const assignmentToolbarActions = computed(() =>

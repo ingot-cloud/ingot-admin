@@ -175,8 +175,10 @@ defineOptions({ name: "MemberDetailDrawer" });
 const props = withDefaults(
   defineProps<{
     departments?: DepartmentTreeNode[];
+    /** 只读查看：不进入编辑，也不提供暂停、移出等操作。 */
+    viewOnly?: boolean;
   }>(),
-  { departments: () => [] },
+  { departments: () => [], viewOnly: false },
 );
 const permissions = usePermissions();
 const emits = defineEmits<{ success: [] }>();
@@ -240,7 +242,7 @@ const groupPreview = computed(() =>
 );
 const rejoinRef = ref<{ show: (row: Row) => void }>();
 const overflowActions = computed(() => {
-  if (!detail.value) {
+  if (!detail.value || props.viewOnly) {
     return [];
   }
   return createRowActions(
@@ -272,7 +274,9 @@ const canEditDepartments = computed(
     detail.value?.capabilities[IamAction.TENANT_MEMBER_DEPARTMENTS]?.allowed === true &&
     detail.value.record.status !== MemberStatus.REMOVED,
 );
-const canEditMember = computed(() => canEditProfile.value || canEditDepartments.value);
+const canEditMember = computed(
+  () => !props.viewOnly && (canEditProfile.value || canEditDepartments.value),
+);
 const canEditField = (key: ProfileKey): boolean =>
   canEditProfile.value && isFieldEditable(detail.value?.fieldAccess, key);
 
