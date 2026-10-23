@@ -24,7 +24,7 @@
 - `components/RoleWorkspace.vue`、`RoleDetailDrawer.vue`、`CreateWizard.vue`
 - `components/GrantEditWizard.vue`、`GrantPicker.vue`、`ScopeStep.vue`、`GrantPreview.vue`
 - `groups/components/GroupDetailDrawer.vue` 增加 `viewOnly`，来源里查看用户组不出现编辑和删除
-- 右侧名称用 `BizIamRecordLink`。成员打开 `MemberDetailDrawer` 的 `viewOnly`（隐藏编辑和更多操作）；用户组打开已有只读 `GroupDetailDrawer`。成员列是名称、可见部门、来源数；用户组列只有名称。成员点来源数打开有效分配来源，来源行不放诊断。「创建角色」固定在左栏底部，搜索和列表在它上方滚动；没有创建权限时按钮禁用。权限诊断留在角色分配 Tab。
+- 右侧名称用 `BizIamRecordLink`。成员打开 `MemberDetailDrawer` 的 `viewOnly`（隐藏编辑和更多操作）；用户组打开已有只读 `GroupDetailDrawer`。成员列是名称、可见部门、操作；用户组列只有名称。成员操作是「查看来源」，点击打开有效分配来源。来源行的「查看分配」与更多操作放在同一行并垂直居中，不放诊断。「创建角色」固定在左栏底部，搜索和列表在它上方滚动；没有创建权限时按钮禁用。权限诊断留在角色分配 Tab。
 
 ## 与 CONSTITUTION 符合性
 
