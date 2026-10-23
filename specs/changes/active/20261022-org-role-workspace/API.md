@@ -32,6 +32,7 @@
 - 创建、预览和保存权限都会固化字段快照并立即生效，不产生业务版本
 - `GET /v1/tenant/roles/grant-catalog` 在选定应用后一次返回该应用全部可编辑操作，不再分页。左侧应用列表仍分页
 - 角色分配和授权管理员沿用既有分配、委派接口。角色分配列表不支持按有效状态筛选
+- `TenantDelegationRecord` 增加 `createdAt`（UTC `Z`）。列表用它显示创建时间；有效期读取 `delegation.validFrom` 与 `delegation.validUntil`
 - 分配向导沿用 `POST /v1/tenant/assignments`、`POST /v1/tenant/assignments/preview`（`items` 为接收对象 × 角色）、`PUT /v1/tenant/assignments/{id}`、`GET /options`、`GET /roles/{id}`、`GET /scope-candidates`、`GET /v1/tenant/delegations/mine`
 
 ## 诊断候选

@@ -256,7 +256,7 @@ R data 为 `AuthorizationRoleCandidatePage { items, total, page, pageSize }`。i
 
 ## 2026-09-30 平台角色及授权管理员列表筛选
 
-`GET /api/iam/v1/platform/roles` 已支持可选 `name`（角色名称包含匹配），前端角色 Tab 使用该参数。`GET /api/iam/v1/platform/delegations` 新增可选 `administratorName`（平台成员显示名称包含匹配）；空白与省略均不筛选，去空白后最多 128 字符，LIKE 通配符按普通文字匹配。筛选在服务端治理边界内先执行，再分页及统计。平台 `DelegationRecord` 新增可选 `administratorName`，缺失时客户端显示 `delegation.administratorMemberId`。两接口的默认分页及权限规则不变；租户委派列表无新增筛选参数，也不增加名称查询。OpenAPI 中同步标注参数与响应字段。
+`GET /api/iam/v1/platform/roles` 已支持可选 `name`（角色名称包含匹配），前端角色 Tab 使用该参数。`GET /api/iam/v1/platform/delegations` 新增可选 `administratorName`（平台成员显示名称包含匹配）；空白与省略均不筛选，去空白后最多 128 字符，LIKE 通配符按普通文字匹配。筛选在服务端治理边界内先执行，再分页及统计。平台 `DelegationRecord` 新增可选 `administratorName`，缺失时客户端显示 `delegation.administratorMemberId`。两接口的默认分页及权限规则不变；租户委派列表无新增筛选参数，也不增加名称查询。OpenAPI 中同步标注参数与响应字段。`DelegationRecord` 另有可选 `createdAt`（UTC `Z`），表示委派写入时间；生效窗口仍读 `delegation.validFrom` 与 `delegation.validUntil`。
 ## 2026-09-30 平台委派角色树候选
 
 新增 `GET /v1/platform/delegations/role-candidates`，可传 `roleId?`、`keyword?`、`ids?`、`page=1`、`pageSize=20`，返回与角色分配相同的 `AuthorizationRoleCandidatePage` 两级角色/固定版本节点。仅按委派治理资格鉴权，不要求角色分配资格。委派原有 `candidates` 分页接口继续提供管理员、接收成员、版本完整详情及操作范围对象。委派预览和保存 DTO 保持不变，所选版本全部操作仍需配置上限。

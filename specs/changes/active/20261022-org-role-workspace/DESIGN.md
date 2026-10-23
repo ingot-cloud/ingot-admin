@@ -57,6 +57,16 @@
 - 修改：锁定接收对象与角色，按记录的 `delegationGrantId` 加载角色定义；预览、保存仍走 `previewAPI({items:[x]})` 与 `updateAPI`。
 - 请求回写以打开序号防串，`contextEpoch` 变化关闭抽屉。
 
+## 授权管理员向导
+
+`BizIamTenantDelegationDrawer` 改为与 `BizIamPlatformDelegationDrawer` 同构的全屏向导。不复用平台 `BizIamDelegationRolePicker`（它展开角色版本）和按操作配置的 `BizIamDelegationCeilingStep`。角色用 `BizIamDelegationCandidatePicker`（`kind: ROLE`），定义来自 `assignmentApis.roleAPI(roleId)`。上限仍是 `resourceScopeCeilings`，同一资源一张卡片。
+
+- 打开已有记录先 `detailAPI`。列表只保留「详情」：记录仍有效且具备调整权限时向导可编辑，预览走 `previewAPI`，保存走 `updateAPI`；已撤销或没有调整权限时同一入口只读。
+- 列表展示创建时间，以及一列有效期。生效时间为空显示「立即生效」，失效时间为空显示「长期有效」。状态和单次最长时间仍单独成列。
+- 新建走 `createAPI`。租户没有创建预览接口，最后一步核对摘要后保存。
+- 支持 ALL 的新资源默认「全部」。编辑保留已保存上限。请求以打开序号丢弃迟到响应。
+- 「指定对象」「管理部门」必须出现范围选择框，并选中具体对象后才能进入下一步。参数键优先用角色目录里该资源、该种类的参数；目录没有时使用稳定键 `resource-{资源 ID}-objects` 或 `resource-{资源 ID}-departments`。角色定义未声明该参数时，选择框仍然出现。
+
 ## 权限诊断
 
 `BizIamDiagnoseDrawer` 改为候选驱动的通用抽屉：props 为 `candidatesApi`、`diagnoseApi`，可选 `assignmentReadAction` 控制「查看分配」。平台原 `BizIamPlatformDiagnoseDrawer` 并入它，平台传 `PLATFORM_ASSIGNMENT_READ`。租户没有按 ID 读取分配的接口，不传该项。
