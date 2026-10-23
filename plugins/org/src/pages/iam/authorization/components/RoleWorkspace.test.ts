@@ -72,17 +72,19 @@ const source = readFileSync(
 );
 
 describe("角色工作区主体列表", () => {
-  it("名称打开只读详情，成员点来源数打开来源", () => {
+  it("名称打开只读详情，成员点查看来源打开来源", () => {
     expect(source).toContain("<biz-iam-record-link");
     expect(source).toContain('@click="showSubject(item)"');
     expect(source).toContain('label: "部门"');
-    expect(source).toContain('label: "来源数"');
+    expect(source).toContain('label: "操作"');
+    expect(source).not.toContain('label: "来源数"');
     expect(source).not.toContain('label: "分配来源"');
+    expect(source).toContain("查看来源");
     expect(source).toContain("showSources(item.id)");
+    expect(source).toContain("inline-flex items-center align-middle gap-[var(--in-space-2)]");
     expect(source).toContain('<member-detail-drawer ref="memberDetail" view-only />');
     expect(source).toContain('<group-detail-drawer ref="groupDetail" view-only />');
     expect(source).toContain("MemberStatus.ACTIVE");
-    expect(source).not.toContain("查看来源");
     expect(source.indexOf("el-pagination")).toBeLessThan(source.indexOf("创建角色"));
     expect(source).toContain('action.key !== "diagnose"');
     expect(source).toContain("查看用户组");
@@ -126,7 +128,7 @@ describe("角色工作区主体列表", () => {
           InTable: {
             props: ["data", "headers"],
             template:
-              '<div><span class="headers">{{ (headers || []).map((header) => header.label).join(",") }}</span><div v-for="item in data || []" :key="item.id || item.record?.id"><slot name="name" :item="item"/><slot name="sourceCount" :item="item"/></div></div>',
+              '<div><span class="headers">{{ (headers || []).map((header) => header.label).join(",") }}</span><div v-for="item in data || []" :key="item.id || item.record?.id"><slot name="name" :item="item"/><slot name="actions" :item="item"/></div></div>',
           },
           InDialog: true,
           InBizTabsHeader: true,
@@ -154,13 +156,13 @@ describe("角色工作区主体列表", () => {
     const tables = wrapper.findAll(".headers");
     const subjectHeaders = tables[tables.length - 1]?.text() || "";
     expect(subjectHeaders).toContain("部门");
-    expect(subjectHeaders).toContain("来源数");
+    expect(subjectHeaders).toContain("操作");
+    expect(subjectHeaders).not.toContain("来源数");
     expect(subjectHeaders).not.toContain("分配来源");
-    expect(subjectHeaders).not.toContain("操作");
     expect(wrapper.text()).toContain("创建角色");
-    const sourceCount = wrapper.findAll("button").find((item) => item.text() === "2");
-    expect(sourceCount).toBeTruthy();
-    await sourceCount!.trigger("click");
+    const viewSources = wrapper.findAll("button").find((item) => item.text() === "查看来源");
+    expect(viewSources).toBeTruthy();
+    await viewSources!.trigger("click");
     expect(state.showSources).toHaveBeenCalledWith("4");
     await wrapper.get(".name-link").trigger("click");
     expect(state.memberShow).toHaveBeenCalledWith(
@@ -172,7 +174,7 @@ describe("角色工作区主体列表", () => {
     state.subjectKind!.value = "groups";
     await flushPromises();
     expect(wrapper.findAll(".headers").at(-1)?.text()).toBe("名称");
-    expect(wrapper.findAll("button").some((item) => item.text() === "2")).toBe(false);
+    expect(wrapper.findAll("button").some((item) => item.text() === "查看来源")).toBe(false);
     await wrapper.get(".name-link").trigger("click");
     expect(state.groupShow).toHaveBeenCalledWith(
       expect.objectContaining({ record: expect.objectContaining({ id: "4", name: "张三" }) }),

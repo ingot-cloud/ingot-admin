@@ -120,16 +120,14 @@
           </biz-iam-record-link>
         </template>
         <template #departments="{ item }">{{ formatMemberDepartments(item.departments) }}</template>
-        <template #sourceCount="{ item }">
+        <template #actions="{ item }">
           <in-button
             v-if="subjectKind === 'members'"
             link
             type="primary"
             @in-click="showSources(item.id)"
+            >查看来源</in-button
           >
-            {{ item.sourceCount }}
-          </in-button>
-          <span v-else>{{ item.sourceCount }}</span>
         </template>
       </in-table>
     </div>
@@ -163,18 +161,20 @@
           {{ formatDateTime(item.record.assignment.validUntil, { fallback: "长期" }) }}
         </template>
         <template #actions="{ item }">
-          <in-button link type="primary" @in-click="emits('assignment', item)">查看分配</in-button>
-          <in-table-actions :row="item" :actions="sourceActions(item)" />
-          <in-button
-            v-if="
-              item.record.assignment.subject.type === 'GROUP' &&
-              hasAction(IamAction.TENANT_GROUP_READ)
-            "
-            link
-            type="primary"
-            @in-click="showGroup(item.record.assignment.subject.id, item.record.subjectName)"
-            >查看用户组</in-button
-          >
+          <div class="inline-flex items-center align-middle gap-[var(--in-space-2)]">
+            <in-button link type="primary" @in-click="emits('assignment', item)">查看分配</in-button>
+            <in-table-actions :row="item" :actions="sourceActions(item)" />
+            <in-button
+              v-if="
+                item.record.assignment.subject.type === 'GROUP' &&
+                hasAction(IamAction.TENANT_GROUP_READ)
+              "
+              link
+              type="primary"
+              @in-click="showGroup(item.record.assignment.subject.id, item.record.subjectName)"
+              >查看用户组</in-button
+            >
+          </div>
         </template>
       </in-table>
     </div>
@@ -258,9 +258,14 @@ const departmentHeader: TableHeaderRecord = {
   minWidth: 180,
   showOverflowTooltip: true,
 };
-const sourceCountHeader: TableHeaderRecord = { label: "来源数", prop: "sourceCount", width: 100 };
+const actionsHeader: TableHeaderRecord = {
+  label: "操作",
+  prop: "actions",
+  width: 140,
+  fixed: "right",
+};
 const headers = computed<TableHeaderRecord[]>(() =>
-  subjectKind.value === "members" ? [nameHeader, departmentHeader, sourceCountHeader] : [nameHeader],
+  subjectKind.value === "members" ? [nameHeader, departmentHeader, actionsHeader] : [nameHeader],
 );
 const subjectReadAction = computed(() =>
   subjectKind.value === "members" ? IamAction.TENANT_MEMBER_READ : IamAction.TENANT_GROUP_READ,

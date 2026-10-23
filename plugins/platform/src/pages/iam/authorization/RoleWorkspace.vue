@@ -211,18 +211,20 @@
           })
         }}</template>
         <template #actions="{ item }">
-          <in-button link type="primary" @in-click="emits('assignment', item)">查看分配</in-button>
-          <in-table-actions :row="item" :actions="sourceActions(item)" />
-          <in-button
-            v-if="
-              item.record.assignment.subject.type === 'GROUP' &&
-              hasAction(IamAction.PLATFORM_GROUP_READ)
-            "
-            link
-            type="primary"
-            @in-click="showGroup(item.record.assignment.subject.id)"
-            >查看用户组</in-button
-          >
+          <div class="inline-flex items-center align-middle gap-[var(--in-space-2)]">
+            <in-button link type="primary" @in-click="emits('assignment', item)">查看分配</in-button>
+            <in-table-actions :row="item" :actions="sourceActions(item)" />
+            <in-button
+              v-if="
+                item.record.assignment.subject.type === 'GROUP' &&
+                hasAction(IamAction.PLATFORM_GROUP_READ)
+              "
+              link
+              type="primary"
+              @in-click="showGroup(item.record.assignment.subject.id)"
+              >查看用户组</in-button
+            >
+          </div>
         </template>
       </in-table>
     </div>
