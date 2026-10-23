@@ -63,7 +63,10 @@ const depthStyle = computed(() => ({
 
 const isSingle = computed(() => {
   const children = props.route.children;
-  return !children || children.length === 0 || children.length === 1;
+  if (!children?.length) return true;
+  if (children.length > 1) return false;
+  // 唯一子节点仍有下级时保持分组。收成叶子会指向空目录，下级页面也无法进入。
+  return !children[0]?.children?.length;
 });
 
 const singleRoute = computed(() => {

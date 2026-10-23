@@ -69,6 +69,68 @@ describe("transformMenu", () => {
     });
   });
 
+  it("目录重定向到第一个页面，已有重定向保持不变", () => {
+    const page = defineComponent({ name: "MemberPage", template: "<div />" });
+    const loader = async () => page;
+    configurePageResolver("ingot-admin", (pageKey) => {
+      if (pageKey === PLUGIN_UNAVAILABLE_PAGE_KEY || pageKey === PageLayoutViewPath.SIMPLE) {
+        return loader;
+      }
+      return pageKey.startsWith("org.iam.") ? loader : undefined;
+    });
+
+    const routes = transformMenu([
+      {
+        name: "组织管理",
+        path: "/org/iam/organization",
+        menuType: MenuType.Directory,
+        viewPath: PageLayoutViewPath.SIMPLE,
+        children: [
+          {
+            name: "成员与部门",
+            path: "/org/iam/members/root",
+            menuType: MenuType.Directory,
+            viewPath: PageLayoutViewPath.SIMPLE,
+            children: [
+              {
+                name: "成员",
+                path: "/org/iam/members",
+                menuType: MenuType.Menu,
+                viewPath: "org.iam.members",
+              },
+              {
+                name: "部门",
+                path: "/org/iam/departments",
+                menuType: MenuType.Menu,
+                viewPath: "org.iam.departments",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "已指定",
+        path: "/custom",
+        menuType: MenuType.Directory,
+        redirect: "/custom/keep",
+        children: [
+          {
+            name: "保留",
+            path: "/custom/keep",
+            menuType: MenuType.Menu,
+            viewPath: "org.iam.members",
+          },
+        ],
+      },
+    ]);
+
+    const organization = routes.find((route) => route.path === "/org/iam/organization");
+    const membersRoot = organization?.children?.find((route) => route.path === "/org/iam/members/root");
+    expect(organization?.redirect).toBe("/org/iam/members");
+    expect(membersRoot?.redirect).toBe("/org/iam/members");
+    expect(routes.find((route) => route.path === "/custom")?.redirect).toBe("/custom/keep");
+  });
+
   it("目录节点无 viewPath 时使用简单布局", () => {
     const simpleLayout = defineComponent({ name: "SimpleLayout", template: "<router-view />" });
     const simpleLoader = async () => simpleLayout;

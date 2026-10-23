@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
+import type { MenuRouteRecord } from "@/layouts";
 import InSubmenu from "./InSubmenu.vue";
 import { shellLayoutKey } from "@/layouts/main/types";
 import { useAppStateStore } from "@/stores/modules/app";
@@ -23,7 +24,7 @@ const leaf = {
 };
 
 describe("InSubmenu", () => {
-  const mountSubmenu = (options?: { collapsed?: boolean; route?: typeof group | typeof leaf }) => {
+  const mountSubmenu = (options?: { collapsed?: boolean; route?: MenuRouteRecord }) => {
     const pinia = createPinia();
     setActivePinia(pinia);
     configureAdminRuntime({
@@ -68,6 +69,51 @@ describe("InSubmenu", () => {
     expect(wrapper.get(".el-menu-item").classes()).toContain("is-root");
     expect(wrapper.get(".in-menu-node__icon").exists()).toBe(true);
     expect(wrapper.text()).not.toContain("通讯录");
+    wrapper.unmount();
+    resetAdminRuntime();
+  });
+
+  it("唯一子节点仍有下级时保持分组，不把空目录收成叶子", () => {
+    const wrapper = mountSubmenu({
+      route: {
+        path: "/org/iam/organization",
+        title: "组织管理",
+        icon: "ep:office-building",
+        children: [
+          {
+            path: "/org/iam/members/root",
+            title: "成员与部门",
+            children: [
+              { path: "/org/iam/members", title: "成员" },
+              { path: "/org/iam/departments", title: "部门" },
+            ],
+          },
+        ],
+      },
+    });
+    expect(wrapper.element.classList.contains("el-sub-menu")).toBe(true);
+    expect(wrapper.findAll(".el-sub-menu")).toHaveLength(2);
+    expect(wrapper.findAll(".el-menu-item")).toHaveLength(2);
+    expect(wrapper.text()).toContain("组织管理");
+    expect(wrapper.text()).toContain("成员与部门");
+    expect(wrapper.text()).toContain("成员");
+    expect(wrapper.text()).toContain("部门");
+    wrapper.unmount();
+    resetAdminRuntime();
+  });
+
+  it("唯一子页面仍收成父级标题的叶子", () => {
+    const wrapper = mountSubmenu({
+      route: {
+        path: "/org/iam/organization",
+        title: "组织管理",
+        icon: "ep:office-building",
+        children: [{ path: "/org/iam/settings", title: "组织设置" }],
+      },
+    });
+    expect(wrapper.find(".el-sub-menu").exists()).toBe(false);
+    expect(wrapper.get(".el-menu-item").text()).toContain("组织管理");
+    expect(wrapper.text()).not.toContain("组织设置");
     wrapper.unmount();
     resetAdminRuntime();
   });

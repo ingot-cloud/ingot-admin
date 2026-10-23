@@ -50,6 +50,7 @@ export const transformMenu = (menus: Array<MenuTreeNode>): Array<RouteRecordRaw>
       if (menu.children?.length) {
         transformMenuItem(route, menu);
       }
+      ensureDirectoryRedirect(route, menu);
       result.push(route);
     });
 
@@ -88,8 +89,18 @@ const transformMenuItem = (route: RouteRecordRaw, menu: MenuTreeNode) => {
       if (item.children?.length) {
         transformMenuItem(child, item);
       }
+      ensureDirectoryRedirect(child, item);
       route.children?.push(child);
     });
+};
+
+/** 目录没有自身页面，打开时进入第一个可访问子页面。 */
+const ensureDirectoryRedirect = (route: RouteRecordRaw, menu: MenuTreeNode) => {
+  if (route.redirect || menu.menuType !== MenuType.Directory) return;
+  const entry = findEntryPath(menu.children ?? []);
+  if (entry !== "/403") {
+    route.redirect = entry;
+  }
 };
 
 const menuToRoute = (menu: MenuTreeNode) => {
