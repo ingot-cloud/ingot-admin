@@ -94,6 +94,7 @@ declare module 'vue' {
     InContainer: typeof import('./src/components/container/InContainer.vue')['default']
     InCopyright: typeof import('./src/layouts/widgets/InCopyright.vue')['default']
     InCopyTag: typeof import('./src/components/InCopyTag.vue')['default']
+    InCursorPager: typeof import('./src/components/table/InCursorPager.vue')['default']
     InDescriptionItem: typeof import('./src/components/description/InDescriptionItem.vue')['default']
     InDescriptionList: typeof import('./src/components/description/InDescriptionList.vue')['default']
     InDetailDrawer: typeof import('./src/components/drawer/InDetailDrawer.vue')['default']

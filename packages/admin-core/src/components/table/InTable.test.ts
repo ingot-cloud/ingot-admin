@@ -112,6 +112,24 @@ describe("InTable", () => {
     wrapper.unmount();
   });
 
+  it("自定义分页放在表格底部，没有总数时也保留", () => {
+    setActivePinia(createPinia());
+    const wrapper = mount(InTable, {
+      props: {
+        headers: [{ prop: "name", label: "名称" }],
+        data: [{ name: "审计" }],
+      },
+      slots: {
+        pagination: "<nav class='cursor-pager'>下一页</nav>",
+      },
+      global: { stubs },
+    });
+    const pager = wrapper.get(".in-table__pagination");
+    expect(pager.get(".cursor-pager").text()).toBe("下一页");
+    expect(wrapper.find(".el-pagination").exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it("旧 toolbar 映射到 tools-start，且不把行操作列 #actions 渲染到工具栏", () => {
     setActivePinia(createPinia());
     const wrapper = mount(InTable, {

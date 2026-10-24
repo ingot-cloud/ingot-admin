@@ -1,20 +1,10 @@
-import { AuditChangeType, AuthorizationDomain, IamAction, type AuditEntry } from "../../models/iam";
+import { AuditChangeType, AuthorizationDomain, IamAction } from "../../models/iam/constants";
+import type { AuditEntry, AuditReferences } from "../../models/iam/types";
+import { auditChangeLines, formatChangeLine } from "./formatters";
+import { referenceText, referenceTypeOfTarget, resolveReference } from "./references";
 
-export const AUDIT_FIELD_LABELS: Record<string, string> = {
-  NAME: "名称",
-  REMARK: "备注",
-  FIELD_CAPABILITIES: "字段能力",
-  STATUS: "状态",
-  ROLE_REVISION: "角色版本",
-  SCOPE: "范围",
-  RECIPIENT_SELECTION: "接收对象",
-  VALID_FROM: "生效时间",
-  VALID_UNTIL: "失效时间",
-  ENTITLEMENT: "应用开通",
-  POLICY_VERSION: "策略版本",
-  OWNER_MEMBER: "所有者",
-  DEPARTMENT_LEADERS: "部门负责人",
-};
+export { AUDIT_FIELD_LABELS } from "./formatters";
+
 export const AUDIT_RESOURCE_LABELS: Record<string, string> = {
   account: "账号",
   member: "成员",
@@ -32,7 +22,46 @@ export const AUDIT_RESOURCE_LABELS: Record<string, string> = {
   audience: "应用人群",
   plan: "套餐",
   ROLE_VERSION_APPLICATION: "版本应用任务",
+  "directory-policy": "目录策略",
+  "field-policy": "字段策略",
+  "member-export": "成员导出",
+  "member-workbook": "成员导入",
+  "department-workbook": "部门导入",
 };
+
+export const TENANT_AUDIT_TARGETS = [
+  "member",
+  "department",
+  "group",
+  "role",
+  "assignment",
+  "delegation",
+  "application",
+  "entitlement",
+  "audience",
+  "directory-policy",
+  "field-policy",
+  "member-export",
+  "member-workbook",
+  "department-workbook",
+  "ROLE_VERSION_APPLICATION",
+];
+
+export const PLATFORM_AUDIT_TARGETS = [
+  "account",
+  "member",
+  "group",
+  "role",
+  "assignment",
+  "delegation",
+  "application",
+  "tenant",
+  "resource",
+  "action",
+  "menu",
+  "plan",
+];
+
 export const AUDIT_CHANGE_LABELS: Record<AuditChangeType, string> = {
   [AuditChangeType.CREATE]: "创建",
   [AuditChangeType.UPDATE]: "修改",
@@ -44,23 +73,39 @@ export const AUDIT_CHANGE_LABELS: Record<AuditChangeType, string> = {
   [AuditChangeType.UPGRADE]: "升级版本",
   [AuditChangeType.OWNER_TRANSFER]: "转交所有者",
 };
+
 export const auditReadAction = (domain?: string): string | undefined =>
   domain === AuthorizationDomain.PLATFORM
     ? IamAction.PLATFORM_AUDIT_READ
     : domain === AuthorizationDomain.TENANT
       ? IamAction.TENANT_AUDIT_READ
       : undefined;
-export const auditActor = (entry: AuditEntry): string =>
-  entry.actor.displayName || `成员 ${entry.actor.memberId}`;
-export const auditTarget = (entry: AuditEntry): string =>
-  `${AUDIT_RESOURCE_LABELS[entry.target.resource] || entry.target.resource} · ${entry.target.id}`;
+
+export const auditActor = (entry: AuditEntry, references?: AuditReferences): string =>
+  referenceText("member", resolveReference(references, "member", entry.actor.memberId));
+
+export const auditTarget = (entry: AuditEntry, references?: AuditReferences): string => {
+  const label = AUDIT_RESOURCE_LABELS[entry.target.resource] || entry.target.resource;
+  const type = referenceTypeOfTarget(entry.target.resource);
+  if (!type) return label;
+  return `${label} · ${referenceText(type, resolveReference(references, type, entry.target.id))}`;
+};
+
 export const auditChange = (entry: AuditEntry): string =>
   AUDIT_CHANGE_LABELS[entry.changeType] || entry.changeType;
-export const auditSummary = (entry: AuditEntry): string => {
-  const fields = [...new Set([...Object.keys(entry.before), ...Object.keys(entry.after)])];
-  return fields.length
-    ? `涉及 ${fields.map((key) => AUDIT_FIELD_LABELS[key] || key).join("、")}`
-    : "无配置差异";
+
+export const auditSummary = (entry: AuditEntry, references?: AuditReferences): string => {
+  const lines = auditChangeLines(entry.before, entry.after, references, entry.target.resource);
+  return lines.length ? lines.map(formatChangeLine).join("；") : "无配置差异";
 };
-export const auditValue = (value: string | null | undefined): string =>
-  value === undefined ? "未记录" : value === null ? "空值" : value === "" ? "空文本" : value;
+
+export const auditSummaryLines = (entry: AuditEntry, references?: AuditReferences): string => {
+  const lines = auditChangeLines(
+    entry.before,
+    entry.after,
+    references,
+    entry.target.resource,
+    true,
+  );
+  return lines.length ? lines.map(formatChangeLine).join("\n") : "无配置差异";
+};

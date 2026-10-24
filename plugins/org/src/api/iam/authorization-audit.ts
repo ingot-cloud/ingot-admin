@@ -1,28 +1,22 @@
-import {
-  filterParams,
-  request,
-  type Page,
-  type R,
-  type RequestOptions,
-  createResourceQueryKeys,
-} from "@ingot/admin-core";
+import { filterParams, request, type R, type RequestOptions, createResourceQueryKeys } from "@ingot/admin-core";
 import {
   IAM_API_PREFIX,
-  mapIamPage,
-  toIamListParams,
-  createIamPageQueryOptions,
+  createIamCursorQueryOptions,
+  type AuditCursorPage,
   type AuthorizationAuditQuery,
-  type AuditEntry,
-  type ResourceDetail,
-  type IamPageResponse,
+  type IamCursorParams,
 } from "@ingot/admin-common";
+
 const PATH = `${IAM_API_PREFIX}/v1/tenant/authorization/audits`;
-export function AuthorizationAuditPageAPI(
-  page: Page,
+
+export function AuthorizationAuditCursorAPI(
+  params: IamCursorParams,
   condition?: AuthorizationAuditQuery,
   options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<AuditEntry>>>> {
-  const query = {
+): Promise<R<AuditCursorPage>> {
+  const query: Record<string, string | number> = { limit: params.limit };
+  const fields: Record<string, string | undefined> = {
+    cursor: params.cursor,
     actorMemberId: condition?.actorMemberId,
     targetType: condition?.targetType,
     targetId: condition?.targetId,
@@ -30,12 +24,14 @@ export function AuthorizationAuditPageAPI(
     from: condition?.from,
     until: condition?.until,
   };
+  for (const [key, value] of Object.entries(fields)) {
+    if (value) query[key] = value;
+  }
   filterParams(query);
-  return request
-    .get<IamPageResponse<ResourceDetail<AuditEntry>>>(PATH, toIamListParams(page, query), options)
-    .then((res) => ({ ...res, data: mapIamPage(res.data) }));
+  return request.get<AuditCursorPage>(PATH, query, options);
 }
-export const AuthorizationAuditPageQueryOptions = createIamPageQueryOptions(
+
+export const AuthorizationAuditPageQueryOptions = createIamCursorQueryOptions(
   createResourceQueryKeys("iam-tenant", "audit"),
-  AuthorizationAuditPageAPI,
+  AuthorizationAuditCursorAPI,
 );

@@ -1,5 +1,7 @@
 import {
   AuditChangeType,
+  AuditReferenceState,
+  AuditReferenceType,
   AccountLookupPurpose,
   AssignmentSource,
   AssignmentEffectiveStatus,
@@ -1109,6 +1111,26 @@ export interface AuditEntry {
   assignmentId?: string;
   timestamp: string;
   traceId?: string;
+}
+
+/** 审计中出现的对象，按查看人权限解析后的名称。 */
+export interface AuditReference {
+  type: AuditReferenceType;
+  id: string;
+  state: AuditReferenceState;
+  /** 仅可见或已删除且有快照时返回。 */
+  name?: string;
+}
+
+/** 以 `{type}:{id}` 为键的引用字典。 */
+export type AuditReferences = Record<string, AuditReference>;
+
+/** 授权审计游标页：不含总数。 */
+export interface AuditCursorPage {
+  items: Array<ResourceDetail<AuditEntry>>;
+  nextCursor?: string;
+  hasMore: boolean;
+  references: AuditReferences;
 }
 
 export interface EntitlementRecord {

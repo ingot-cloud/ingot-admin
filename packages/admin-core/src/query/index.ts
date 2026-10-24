@@ -20,6 +20,13 @@ export type {
   ServerPagingQueryOptions,
   UseServerPagingOptions,
 } from "./paging";
+export { useCursorPaging } from "./cursorPaging";
+export type {
+  CursorPage,
+  CursorPagingQueryInput,
+  CursorPagingQueryOptions,
+  UseCursorPagingOptions,
+} from "./cursorPaging";
 export {
   DEFAULT_QUERY_GC_TIME,
   DEFAULT_QUERY_STALE_TIME,

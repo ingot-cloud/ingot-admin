@@ -112,10 +112,10 @@ const fixture = async (page: Page, domain: "PLATFORM" | "TENANT", canRead = true
                     id: "1000604",
                     actor: { accountId: "1", memberId: "101" },
                     context,
-                    target: { resource: "resource", id: "88" },
+                    target: { resource: "role", id: "88" },
                     changeType: "UPDATE",
                     before: { NAME: "旧名称" },
-                    after: { NAME: "新名称", FIELD_CAPABILITIES: '[{"name":"phone"}]' },
+                    after: { NAME: "新名称", STATUS: "DISABLED" },
                     revisions: { resource: "2" },
                     assignmentId: "201",
                     delegationId: "301",
@@ -127,9 +127,27 @@ const fixture = async (page: Page, domain: "PLATFORM" | "TENANT", canRead = true
                   version: "1000604",
                 },
               ],
-        total: state === "empty" ? 0 : 1,
-        page: 1,
-        pageSize: 20,
+        nextCursor: state === "records" ? "cursor-2" : undefined,
+        hasMore: state === "records",
+        references:
+          state === "empty"
+            ? {}
+            : {
+                "member:101": { type: "member", id: "101", state: "VISIBLE", name: "审计员" },
+                "role:88": { type: "role", id: "88", state: "VISIBLE", name: "审计角色" },
+                "assignment:201": {
+                  type: "assignment",
+                  id: "201",
+                  state: "VISIBLE",
+                  name: "审计角色 · 审计员",
+                },
+                "delegation:301": {
+                  type: "delegation",
+                  id: "301",
+                  state: "VISIBLE",
+                  name: "审计员 · 授权管理",
+                },
+              },
       };
     else data = { items: [], total: 0, page: 1, pageSize: 20 };
     await route.fulfill({
@@ -158,25 +176,21 @@ test("当前域查询、筛选与安全详情在宽窄屏正常展示", async ({
   await expect(
     page.getByText(domain === "PLATFORM" ? "平台授权审计" : "当前组织授权审计", { exact: true }),
   ).toBeVisible();
-  await expect(page.getByText("涉及 名称、字段能力", { exact: true })).toBeVisible();
-  await page.getByPlaceholder("精确查询操作者成员 ID").fill("101");
-  await page.getByPlaceholder("精确查询操作者成员 ID").press("Enter");
+  await expect(page.getByText("名称：旧名称 → 新名称；状态：（无） → 停用", { exact: true })).toBeVisible();
+  await expect(page.getByText("审计员", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("角色 · 审计角色", { exact: true })).toBeVisible();
+  await expect(page.getByText("请选择操作者", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "下一页", exact: true }).click();
   await expect
-    .poll(() => reads.some((url) => url.searchParams.get("actorMemberId") === "101"))
+    .poll(() => reads.some((url) => url.searchParams.get("cursor") === "cursor-2"))
     .toBe(true);
-  await page.getByRole("button", { name: "筛选条件", exact: true }).click();
-  await page.getByPlaceholder("精确查询对象 ID").fill("88");
-  await page.getByPlaceholder("精确查询对象 ID").press("Enter");
-  await expect
-    .poll(() => reads.some((url) => url.searchParams.get("targetId") === "88"))
-    .toBe(true);
-  await page.keyboard.press("Escape");
   await page.screenshot({ path: testInfo.outputPath("audit-wide.png"), animations: "disabled" });
   await page.getByRole("button", { name: "修改", exact: true }).click();
   const drawer = page.locator(".el-drawer:visible");
   await expect(drawer).toContainText("audit-browser-trace");
-  await expect(drawer).toContainText('[{"name":"phone"}]');
-  await expect(drawer).toContainText("未记录");
+  await expect(drawer).toContainText("审计员 · 授权管理");
+  await expect(drawer).toContainText("停用");
+  await expect(drawer).not.toContainText("成员 ID");
   await expect(drawer.getByRole("button", { name: "保存", exact: true })).toHaveCount(0);
   await page.screenshot({
     path: testInfo.outputPath("audit-detail-wide.png"),
@@ -194,7 +208,12 @@ test("当前域查询、筛选与安全详情在宽窄屏正常展示", async ({
   expect(
     reads
       .filter((url) => url.pathname.endsWith("/authorization/audits"))
-      .every((url) => url.pathname.includes(`/v1/${domain.toLowerCase()}/`)),
+      .every(
+        (url) =>
+          url.pathname.includes(`/v1/${domain.toLowerCase()}/`) &&
+          url.searchParams.get("limit") === "20" &&
+          !url.searchParams.has("page"),
+      ),
   ).toBe(true);
 });
 
@@ -214,7 +233,7 @@ test("请求错误、服务端拒绝与合法空结果分别展示", async ({ pa
   await page.getByRole("button", { name: "重试", exact: true }).click();
   await expect(page.getByText("暂无数据", { exact: true })).toBeVisible();
   changeState("denied");
-  await page.getByPlaceholder("精确查询操作者成员 ID").fill("101");
-  await page.getByPlaceholder("精确查询操作者成员 ID").press("Enter");
+  await page.getByLabel("每页条数").click();
+  await page.getByText("50 条/页", { exact: true }).click();
   await expect(page.getByText("没有查看当前域授权审计的权限", { exact: true })).toBeVisible();
 });

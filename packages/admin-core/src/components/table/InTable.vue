@@ -151,18 +151,21 @@
       </el-table>
     </div>
 
-    <div v-if="page && page.total" class="in-table__pagination">
-      <el-pagination
-        :size="componentSize === 'small' ? 'small' : undefined"
-        :current-page="current"
-        :page-size="size"
-        :total="total"
-        :page-sizes="pageSize"
-        background
-        :layout="pageLayout"
-        @size-change="privateHandleSizeChange"
-        @current-change="privateHandleCurrentChange"
-      />
+    <div v-if="slot.pagination || (page && page.total)" class="in-table__pagination">
+      <slot name="pagination">
+        <el-pagination
+          v-if="page && page.total"
+          :size="componentSize === 'small' ? 'small' : undefined"
+          :current-page="current"
+          :page-size="size"
+          :total="total"
+          :page-sizes="pageSize"
+          background
+          :layout="pageLayout"
+          @size-change="privateHandleSizeChange"
+          @current-change="privateHandleCurrentChange"
+        />
+      </slot>
     </div>
   </div>
 </template>

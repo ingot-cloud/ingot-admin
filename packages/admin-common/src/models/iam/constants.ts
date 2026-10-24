@@ -346,6 +346,28 @@ export enum MaskKind {
   RANGE = "RANGE",
 }
 
+/** 审计对象引用的披露状态，与后端 AuditReferenceState 保持一致。 */
+export enum AuditReferenceState {
+  VISIBLE = "VISIBLE",
+  HIDDEN = "HIDDEN",
+  DELETED = "DELETED",
+}
+
+/** 审计对象引用类型，与后端 AuditReferenceType 保持一致；键为 `{type}:{id}`。 */
+export enum AuditReferenceType {
+  MEMBER = "member",
+  DEPARTMENT = "department",
+  GROUP = "group",
+  ROLE = "role",
+  ROLE_REVISION = "role-revision",
+  ASSIGNMENT = "assignment",
+  DELEGATION = "delegation",
+  TENANT = "tenant",
+  ACCOUNT = "account",
+  APPLICATION = "application",
+  ROLE_APPLICATION_TASK = "role-application-task",
+}
+
 /** 授权审计变更类型，与后端 AuditChangeType 保持一致。 */
 export enum AuditChangeType {
   CREATE = "CREATE",

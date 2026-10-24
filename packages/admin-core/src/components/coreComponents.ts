@@ -38,6 +38,7 @@ import InTable from "./table/InTable.vue";
 import InTableActions from "./table/InTableActions.vue";
 import InTableColumnSetting from "./table/InTableColumnSetting.vue";
 import InFilterPanel from "./table/InFilterPanel.vue";
+import InCursorPager from "./table/InCursorPager.vue";
 import InRadioTable from "./table/InRadioTable.vue";
 import InBizTabs from "./tabs/InBizTabs.vue";
 import InBizTabPanel from "./tabs/InBizTabPanel.vue";
@@ -112,6 +113,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InTableActions,
   InTableColumnSetting,
   InFilterPanel,
+  InCursorPager,
   InRadioTable,
   InBizTabs,
   InBizTabPanel,
@@ -188,6 +190,7 @@ declare module "vue" {
     InTableActions: typeof InTableActions;
     InTableColumnSetting: typeof InTableColumnSetting;
     InFilterPanel: typeof InFilterPanel;
+    InCursorPager: typeof InCursorPager;
     InRadioTable: typeof InRadioTable;
     InBizTabs: typeof InBizTabs;
     InBizTabPanel: typeof InBizTabPanel;

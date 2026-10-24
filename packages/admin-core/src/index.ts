@@ -113,6 +113,7 @@ export type {
 } from "./layouts/widgets/header/resolveHeaderConfig";
 export { default as InPicker } from "./components/select/InPicker.vue";
 export { default as InFilterPanel } from "./components/table/InFilterPanel.vue";
+export { default as InCursorPager } from "./components/table/InCursorPager.vue";
 export type { InPickerOption } from "./components/select/types";
 export {
   ALL_PICKER_VALUE,

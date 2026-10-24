@@ -29,6 +29,8 @@ export type InTableSlots<Row = unknown> = {
   empty?: () => unknown;
   error?: () => unknown;
   unauthorized?: () => unknown;
+  /** 自定义分页。提供后替换内置页码条，并固定在表格底部。 */
+  pagination?: () => unknown;
 };
 
 export type TransformItem<In, Out> = {

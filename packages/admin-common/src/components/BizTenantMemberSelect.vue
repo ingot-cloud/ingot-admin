@@ -5,8 +5,10 @@
       :total="selectedTotal ?? selectedIds.length"
       :max-visible="MEMBER_CHIP_LIMIT"
       :disabled="disabled"
+      :closable="closable"
       :placeholder="placeholder"
       @click="privateOpen"
+      @remove="privateRemove"
     >
       <template #tag-suffix="{ item }">
         <span v-if="showPrimary && item.id === primaryMemberId" class="biz-member-select__primary"
@@ -58,6 +60,7 @@ const props = withDefaults(
     options?: IamSelectOption[];
     selectedTotal?: number;
     multiple?: boolean;
+    closable?: boolean;
     disabled?: boolean;
     placeholder?: string;
     title?: string;
@@ -67,7 +70,7 @@ const props = withDefaults(
     resetKey?: string | number;
     relation?: OrganizationMemberRelation;
   }>(),
-  { multiple: false, placeholder: "请选择成员", title: "请选择" },
+  { multiple: false, closable: false, placeholder: "请选择成员", title: "请选择" },
 );
 const context = inject(organizationMemberPickerKey, undefined);
 const permissions = context ? useCapabilities() : undefined;
@@ -165,6 +168,9 @@ const privateConfirm = (
   for (const item of items) known.value[item.id] = item;
   model.value = props.multiple ? items.map((item) => item.id) : items[0]?.id || "";
   emits("confirm", items, primary, changes, boundPage);
+};
+const privateRemove = (item: IamSelectOption): void => {
+  model.value = props.multiple ? selectedIds.value.filter((id) => id !== item.id) : "";
 };
 watch([() => props.resetKey, ...(permissions ? [scopeKey] : [])], () => {
   generation++;
