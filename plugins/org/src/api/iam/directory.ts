@@ -9,7 +9,8 @@ import {
   type AccountLookupInput,
   type AccountRecord,
   type ActionRecord,
-  type AudienceDraft,
+  type AppActionCatalogView,
+  type AudienceView,
   type AudienceUpdateInput,
   type CreatedResource,
   type DepartmentDraft,
@@ -525,8 +526,8 @@ export function TenantApplicationPageAPI(
 export function TenantApplicationAudienceAPI(
   id: string,
   options?: RequestOptions,
-): Promise<R<ResourceDetail<AudienceDraft>>> {
-  return request.get<ResourceDetail<AudienceDraft>>(
+): Promise<R<ResourceDetail<AudienceView>>> {
+  return request.get<ResourceDetail<AudienceView>>(
     `${APP_PATH}/${id}/audience`,
     undefined,
     options,
@@ -537,9 +538,16 @@ export function TenantApplicationAudienceUpdateAPI(
   id: string,
   params: AudienceUpdateInput,
   options?: RequestOptions,
-): Promise<R<ResourceDetail<AudienceDraft>>> {
+): Promise<R<ResourceDetail<AudienceView>>> {
   filterParams(params);
-  return request.put<ResourceDetail<AudienceDraft>>(`${APP_PATH}/${id}/audience`, params, options);
+  return request.put<ResourceDetail<AudienceView>>(`${APP_PATH}/${id}/audience`, params, options);
+}
+
+export function TenantApplicationActionCatalogAPI(
+  id: string,
+  options?: RequestOptions,
+): Promise<R<AppActionCatalogView>> {
+  return request.get<AppActionCatalogView>(`${APP_PATH}/${id}/action-catalog`, undefined, options);
 }
 
 export function TenantApplicationActionPageAPI(

@@ -1115,6 +1115,8 @@ export interface EntitlementRecord {
   id: string;
   applicationId: string;
   applicationName?: string;
+  /** 应用目录图标：Iconify 名或已签发的 Logo 链接。 */
+  icon?: string;
   status: ConfigurationStatus;
   source: EntitlementSource | string;
   sourceId?: string;
@@ -1152,6 +1154,30 @@ export interface AudienceDraft {
 
 export interface AudienceUpdateInput extends VersionInput {
   audience: AudienceDraft;
+}
+
+export interface AudienceMemberView {
+  id: string;
+  name: string;
+  avatar?: string;
+}
+
+export interface AudienceDepartmentView {
+  id: string;
+  name: string;
+  includeDescendants: boolean;
+}
+
+export interface AudienceGroupView {
+  id: string;
+  name: string;
+}
+
+export interface AudienceView {
+  kind: AudienceKind;
+  members: AudienceMemberView[];
+  departments: AudienceDepartmentView[];
+  groups: AudienceGroupView[];
 }
 
 export interface ActionRecord {

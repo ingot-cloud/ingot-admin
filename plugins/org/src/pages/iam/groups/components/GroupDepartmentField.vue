@@ -32,6 +32,14 @@ export interface GroupDepartmentDraft {
   includeDescendants: boolean;
 }
 
+const props = withDefaults(
+  defineProps<{
+    /** 新勾选部门是否默认包含下级。已有部门保持原值。 */
+    defaultIncludeDescendants?: boolean;
+  }>(),
+  { defaultIncludeDescendants: true },
+);
+
 const model = defineModel<GroupDepartmentDraft[]>({ required: true });
 
 const views = computed<MemberDepartmentView[]>(() =>
@@ -50,7 +58,7 @@ const privateOnViews = (value: MemberDepartmentView[]): void => {
   model.value = value.map((item) => ({
     id: item.id,
     name: item.name,
-    includeDescendants: previous.get(item.id)?.includeDescendants ?? true,
+    includeDescendants: previous.get(item.id)?.includeDescendants ?? props.defaultIncludeDescendants,
   }));
 };
 
