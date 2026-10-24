@@ -47,7 +47,7 @@
           <el-tag v-if="lockedLabel" closable @close="emit('clear-target')">{{
             lockedLabel
           }}</el-tag>
-          <in-filter-panel :active-count="extraFilterCount">
+          <in-filter-panel :active-count="extraFilterCount" :width="FILTER_PANEL_WIDTH">
             <in-picker v-model="changeFilter" label="变更类型" :options="changeOptions" />
             <in-picker
               v-if="!locked"
@@ -152,6 +152,8 @@ import BizTenantMemberSelect from "../BizTenantMemberSelect.vue";
 import BizIamMemberPickerDialog from "../BizIamMemberPickerDialog.vue";
 
 const AUDIT_PAGE_SIZES = [20, 50, 100];
+/** 时间范围需要比默认 320px 更宽，避免筛选浮层出现横向滚动。 */
+const FILTER_PANEL_WIDTH = 480;
 const props = defineProps<AuditOptions>();
 const emit = defineEmits<{ "clear-target": [] }>();
 const TABLE_ID = `iam-${props.domain.toLowerCase()}-authorization-audit`;

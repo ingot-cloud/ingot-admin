@@ -35,6 +35,16 @@ describe("InFilterPanel", () => {
     wrapper.unmount();
   });
 
+  it("打开后按指定宽度渲染浮层", async () => {
+    const wrapper = mountPanel({ width: 480 });
+    await wrapper.get("[aria-label='筛选条件']").trigger("click");
+    await nextTick();
+    const panel = document.body.querySelector(".in-filter-panel__panel") as HTMLElement;
+    expect(panel.style.width).toBe("480px");
+    expect(panel.style.minWidth).toBe("480px");
+    wrapper.unmount();
+  });
+
   it("打开后 Teleport 到 body，Esc 关闭并恢复焦点", async () => {
     const wrapper = mountPanel();
     const trigger = wrapper.get("[aria-label='筛选条件']");

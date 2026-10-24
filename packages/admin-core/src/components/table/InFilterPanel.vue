@@ -59,20 +59,28 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
+    /** 已生效的筛选数量，大于 0 时显示在触发器上。 */
     activeCount?: number;
+    /** 浮层宽度，单位 px。时间范围等较宽控件的页面可单独加大。 */
+    width?: number;
   }>(),
   {
     activeCount: 0,
+    width: 320,
   },
 );
 
-const PANEL_WIDTH = 320;
 const OVERLAY_SELECTOR = ".el-popper, .el-select-dropdown, .in-picker__menu";
 
 const triggerRef = ref<HTMLButtonElement>();
 const panelRef = ref<HTMLElement>();
 const open = ref(false);
-const panelStyle = ref<Record<string, string>>({});
+const panelPosition = ref<Record<string, string>>({});
+const panelStyle = computed(() => ({
+  width: `${props.width}px`,
+  minWidth: `${props.width}px`,
+  ...panelPosition.value,
+}));
 
 const displayCount = computed(() => (props.activeCount > 99 ? "99+" : String(props.activeCount)));
 
@@ -82,8 +90,8 @@ const privatePlacePanel = () => {
     return;
   }
   const rect = trigger.getBoundingClientRect();
-  const left = Math.min(rect.left, Math.max(8, window.innerWidth - PANEL_WIDTH - 8));
-  panelStyle.value = {
+  const left = Math.min(rect.left, Math.max(8, window.innerWidth - props.width - 8));
+  panelPosition.value = {
     top: `${Math.round(rect.bottom + 4)}px`,
     left: `${Math.round(left)}px`,
   };
@@ -227,8 +235,6 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 320px;
-  min-width: 320px;
   max-height: min(426px, calc(100vh - 16px));
   padding: var(--in-space-3) 0 0;
   border: 1px solid var(--in-border-color);
@@ -243,8 +249,34 @@ onBeforeUnmount(() => {
   flex-direction: column;
   gap: var(--in-space-3);
   min-height: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0 var(--in-space-3) var(--in-space-3);
+}
+
+.in-filter-panel__body > * {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.in-filter-panel__body .el-date-editor.el-input__wrapper {
+  --el-date-editor-width: 100%;
+  --el-date-editor-datetimerange-width: 100%;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.in-filter-panel__body .el-date-editor .el-range-separator {
+  flex: none;
+}
+
+.in-filter-panel__body .el-date-editor .el-range-input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
 }
 
 .in-filter-panel__body .in-picker {
