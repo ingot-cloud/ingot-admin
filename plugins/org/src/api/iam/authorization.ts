@@ -275,19 +275,8 @@ export function TenantAuditPageAPI(
     .then(asPage);
 }
 
-export function TenantDirectoryPolicyAPI(options?: RequestOptions): Promise<R<unknown>> {
-  return request.get(`${IAM_API_PREFIX}/v1/tenant/policies/directory`, undefined, options);
-}
-
 export function TenantFieldPolicyAPI(options?: RequestOptions): Promise<R<unknown>> {
   return request.get(`${IAM_API_PREFIX}/v1/tenant/policies/fields`, undefined, options);
-}
-
-export function TenantPolicyPreviewAPI(
-  params: unknown,
-  options?: RequestOptions,
-): Promise<R<Preview>> {
-  return request.post<Preview>(`${IAM_API_PREFIX}/v1/tenant/policies/preview`, params, options);
 }
 
 export function TenantAssignmentOptionsAPI(query: {

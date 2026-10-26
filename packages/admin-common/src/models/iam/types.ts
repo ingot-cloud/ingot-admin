@@ -8,8 +8,6 @@ import {
   AudienceKind,
   AuthorizationDomain,
   ConfigurationStatus,
-  DefaultPolicyKind,
-  DirectoryDefaultScope,
   EntitlementSource,
   ExportTaskStatus,
   FieldVisibility,
@@ -20,7 +18,6 @@ import {
   MenuKind,
   MenuMatchMode,
   MemberStatus,
-  PolicyEffect,
   PolicyScenario,
   RoleDeltaOperation,
   RoleKind,
@@ -1211,27 +1208,6 @@ export interface ActionRecord {
   status: ConfigurationStatus;
 }
 
-export interface DirectoryDefault {
-  scope: DirectoryDefaultScope;
-  selection?: Selection;
-}
-
-export interface DirectoryRule {
-  effect: PolicyEffect;
-  viewerSelection: Selection;
-  targetSelection: Selection;
-}
-
-export interface DirectoryPolicyDraft {
-  defaultRevisionId: string;
-  defaultOverride?: DirectoryDefault;
-  rules: DirectoryRule[];
-}
-
-export interface DirectoryPolicyInput extends VersionInput {
-  policy: DirectoryPolicyDraft;
-}
-
 export interface FieldRule {
   scenario: PolicyScenario;
   fieldKey: string;
@@ -1258,25 +1234,6 @@ export interface FieldPolicyDraft {
 
 export interface FieldPolicyInput extends VersionInput {
   policy: FieldPolicyDraft;
-}
-
-export interface PolicyDraft {
-  kind: DefaultPolicyKind;
-  directory?: DirectoryPolicyDraft;
-  field?: FieldPolicyDraft;
-}
-
-export interface PolicyPreviewInput {
-  policyDraft: PolicyDraft;
-  viewerMemberId: string;
-  target?: string;
-}
-
-export interface PolicyPreviewResult {
-  kind: DefaultPolicyKind;
-  members: Array<ResourceDetail<MemberRecord>>;
-  departments: DepartmentRecord[];
-  restricted: boolean;
 }
 
 export interface AccountSelfProfile {

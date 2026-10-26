@@ -4,15 +4,12 @@ import {
   AccountLookupPurpose,
   AudienceKind,
   ConfigurationStatus,
-  DefaultPolicyKind,
-  DirectoryDefaultScope,
   ExportTaskStatus,
   FieldVisibility,
   MemberStatus,
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
-  PolicyEffect,
   PolicyScenario,
   RoleKind,
   AuthorizationDomain,
@@ -102,7 +99,6 @@ export const useAccountLookupPurposeEnum = () => useEnum(AccountLookupPurposeExt
 export const SelectionPurposeExtArray = [
   newEnumExt(SelectionPurpose.ASSIGN_RECIPIENT, "授权对象"),
   newEnumExt(SelectionPurpose.MANAGED_DEPARTMENT, "管理部门"),
-  newEnumExt(SelectionPurpose.DIRECTORY, "通讯录"),
 ];
 
 export const useSelectionPurposeEnum = () => useEnum(SelectionPurposeExtArray);
@@ -210,34 +206,11 @@ export const AudienceKindExtArray = [
 
 export const useAudienceKindEnum = () => useEnum(AudienceKindExtArray);
 
-export const PolicyEffectExtArray = [
-  newEnumExt(PolicyEffect.ALLOW, "允许", "success"),
-  newEnumExt(PolicyEffect.DENY, "禁止", "danger"),
-];
-
-export const usePolicyEffectEnum = () => useEnum(PolicyEffectExtArray);
-
-export const DirectoryDefaultScopeExtArray = [
-  newEnumExt(DirectoryDefaultScope.ALL, "全部"),
-  newEnumExt(DirectoryDefaultScope.SELF, "本人"),
-  newEnumExt(DirectoryDefaultScope.SELECTED, "指定范围"),
-];
-
-export const useDirectoryDefaultScopeEnum = () => useEnum(DirectoryDefaultScopeExtArray);
-
 export const PolicyScenarioExtArray = [
   newEnumExt(PolicyScenario.MANAGEMENT, "后台管理"),
-  newEnumExt(PolicyScenario.DIRECTORY, "普通通讯录"),
 ];
 
 export const usePolicyScenarioEnum = () => useEnum(PolicyScenarioExtArray);
-
-export const DefaultPolicyKindExtArray = [
-  newEnumExt(DefaultPolicyKind.DIRECTORY, "通讯录"),
-  newEnumExt(DefaultPolicyKind.FIELD, "字段"),
-];
-
-export const useDefaultPolicyKindEnum = () => useEnum(DefaultPolicyKindExtArray);
 
 export const ExportTaskStatusExtArray = [
   newEnumExt(ExportTaskStatus.PENDING, "排队中", "info"),

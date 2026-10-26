@@ -56,27 +56,10 @@ const DEPT_PATH = `${IAM_API_PREFIX}/v1/tenant/departments`;
 const GROUP_PATH = `${IAM_API_PREFIX}/v1/tenant/groups`;
 const SETTINGS_PATH = `${IAM_API_PREFIX}/v1/tenant/settings`;
 const APP_PATH = `${IAM_API_PREFIX}/v1/tenant/applications`;
-const DIR_MEMBER_PATH = `${IAM_API_PREFIX}/v1/directory/members`;
-const DIR_DEPT_PATH = `${IAM_API_PREFIX}/v1/directory/departments`;
-
 const asPage = <T>(res: R<IamPageResponse<T>>): R<Page<T>> => ({
   ...res,
   data: mapIamPage(res.data),
 });
-
-const toPurposeParams = (
-  page: Page,
-  condition: IamListQuery | undefined,
-  purpose: SelectionPurpose,
-): Record<string, unknown> => {
-  if (condition) {
-    filterParams(condition);
-  }
-  return {
-    ...toIamListParams(page, condition),
-    purpose,
-  };
-};
 
 export function TenantMemberPageAPI(
   page: Page,
@@ -564,54 +547,10 @@ export function TenantApplicationActionPageAPI(
     .then(asPage);
 }
 
-export function DirectoryMemberPageAPI(
-  page: Page,
-  condition?: IamListQuery,
-  options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<MemberRecord>>>> {
-  return request
-    .get<IamPageResponse<ResourceDetail<MemberRecord>>>(
-      DIR_MEMBER_PATH,
-      toPurposeParams(page, condition, SelectionPurpose.DIRECTORY),
-      options,
-    )
-    .then(asPage);
-}
-
-export function DirectoryMemberDetailAPI(
-  id: string,
-  options?: RequestOptions,
-): Promise<R<ResourceDetail<MemberRecord>>> {
-  return request.get<ResourceDetail<MemberRecord>>(`${DIR_MEMBER_PATH}/${id}`, undefined, options);
-}
-
-export function DirectoryDepartmentPageAPI(
-  page: Page,
-  condition?: IamListQuery,
-  options?: RequestOptions,
-): Promise<R<Page<ResourceDetail<DepartmentRecord>>>> {
-  return request
-    .get<IamPageResponse<ResourceDetail<DepartmentRecord>>>(
-      DIR_DEPT_PATH,
-      toPurposeParams(page, condition, SelectionPurpose.DIRECTORY),
-      options,
-    )
-    .then(asPage);
-}
-
 /** 当前身份的成员全局字段能力。 */
 export function TenantMemberContextAPI(options?: RequestOptions): Promise<R<ResourceFieldContext>> {
   return request.get<ResourceFieldContext>(`${MEMBER_PATH}/context`, undefined, options);
 }
-/** 当前通讯录完整查询范围的字段能力。 */
-export function DirectoryContextAPI(options?: RequestOptions): Promise<R<ResourceFieldContext>> {
-  return request.get<ResourceFieldContext>(
-    `${IAM_API_PREFIX}/v1/directory/context`,
-    undefined,
-    options,
-  );
-}
-
 /** 查询部门实际关联的负责人，不能用人员列表 ids 拼接回查。 */
 export function TenantDepartmentLeadersAPI(
   id: string,

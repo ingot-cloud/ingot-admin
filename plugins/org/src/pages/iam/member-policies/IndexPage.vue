@@ -1,110 +1,10 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header
-        description="通讯录可见范围与字段权限。预览来自后端，浏览器不重做策略引擎。"
-      />
+      <in-page-header description="配置后台管理中的成员字段可见、编辑和筛选。" />
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
-        <in-biz-tab-panel v-if="canReadDirectory" title="通讯录可见范围" name="directory">
-          <el-form
-            v-if="directory"
-            :disabled="!hasAction(IamAction.TENANT_DIRECTORY_POLICY_UPDATE)"
-            label-position="top"
-            class="p-16px"
-          >
-            <el-form-item label="默认策略版本">
-              <span>{{ directoryDraft.defaultRevisionId || "-" }}</span>
-            </el-form-item>
-            <el-form-item label="本地默认范围">
-              <el-select
-                v-model="defaultScope"
-                clearable
-                placeholder="继承固定版本"
-                class="w-220px"
-              >
-                <el-option
-                  v-for="option in defaultScopeOptions"
-                  :key="option.value"
-                  :label="option.label"
-                  :value="option.value"
-                />
-              </el-select>
-            </el-form-item>
-            <biz-iam-selection-editor
-              v-if="defaultScope === DirectoryDefaultScope.SELECTED"
-              v-model="defaultSelection"
-              :load-members="loadMembers"
-              :load-departments="loadDepartments"
-            />
-            <div
-              v-for="(rule, index) in directoryDraft.rules"
-              :key="index"
-              class="mb-16px border p-12px"
-            >
-              <el-form-item :label="`规则 ${index + 1}`">
-                <el-select v-model="rule.effect" class="w-160px" placeholder="请选择效果">
-                  <el-option
-                    v-for="option in effectOptions"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                  />
-                </el-select>
-                <in-button
-                  class="ml-8px"
-                  text
-                  type="danger"
-                  v-auth="IamAction.TENANT_DIRECTORY_POLICY_UPDATE"
-                  @click="privateRemoveDirectoryRule(index)"
-                >
-                  删除
-                </in-button>
-              </el-form-item>
-              <div class="mb-8px">查看者</div>
-              <biz-iam-selection-editor
-                v-model="rule.viewerSelection"
-                :load-members="loadMembers"
-                :load-departments="loadDepartments"
-              />
-              <div class="mb-8px mt-12px">目标</div>
-              <biz-iam-selection-editor
-                v-model="rule.targetSelection"
-                :load-members="loadMembers"
-                :load-departments="loadDepartments"
-              />
-            </div>
-          </el-form>
-          <el-form v-if="directory" label-position="top" class="p-16px">
-            <el-form-item v-if="hasAction(IamAction.TENANT_POLICY_PREVIEW)" label="预览查看者">
-              <biz-tenant-member-select
-                v-model="viewerMemberId"
-                :load-members="loadMembers"
-                placeholder="选择预览查看者"
-              />
-            </el-form-item>
-            <div class="flex flex-wrap gap-8px">
-              <in-button
-                v-auth="IamAction.TENANT_DIRECTORY_POLICY_UPDATE"
-                @click="privateAddDirectoryRule"
-                >添加规则</in-button
-              >
-              <in-button v-auth="IamAction.TENANT_POLICY_PREVIEW" @click="privatePreviewDirectory"
-                >预览</in-button
-              >
-              <in-button
-                type="primary"
-                :loading="savingDirectory"
-                v-auth="IamAction.TENANT_DIRECTORY_POLICY_UPDATE"
-                @in-click="privateSaveDirectory"
-              >
-                保存
-              </in-button>
-            </div>
-            <biz-iam-preview-alert :preview="directoryPreview" />
-          </el-form>
-        </in-biz-tab-panel>
         <in-biz-tab-panel v-if="canReadFields" title="字段权限" name="fields">
           <el-form
             v-if="fields"
@@ -121,15 +21,7 @@
               class="mb-16px border p-12px"
             >
               <el-form-item :label="`字段规则 ${index + 1}`">
-                <el-select v-model="rule.scenario" class="w-160px" placeholder="请选择场景">
-                  <el-option
-                    v-for="option in scenarioOptions"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                  />
-                </el-select>
-                <el-input v-model="rule.fieldKey" class="ml-8px w-180px" placeholder="字段键" />
+                <el-input v-model="rule.fieldKey" class="w-180px" placeholder="请输入字段键" />
                 <in-button
                   class="ml-8px"
                   text
@@ -166,24 +58,10 @@
               :key="index"
               class="mb-16px border p-12px"
             >
-              <el-form-item label="场景">
-                <el-select
-                  v-model="rule.scenario"
-                  placeholder="请选择场景"
-                  @change="privateOperationScenario(rule)"
-                >
-                  <el-option
-                    v-for="option in scenarioOptions"
-                    :key="option.value"
-                    :label="option.label"
-                    :value="option.value"
-                  />
-                </el-select>
-              </el-form-item>
               <el-form-item label="操作">
                 <el-select v-model="rule.actionCode" placeholder="请选择操作">
                   <el-option
-                    v-for="option in operationActions(rule.scenario)"
+                    v-for="option in operationActions"
                     :key="option.value"
                     :label="option.label"
                     :value="option.value"
@@ -192,7 +70,7 @@
                 <el-input
                   v-model="rule.fieldKey"
                   class="ml-8px w-180px"
-                  placeholder="已接入的逻辑字段键"
+                  placeholder="请输入已接入的逻辑字段键"
                 />
               </el-form-item>
               <el-form-item label="能力">
@@ -228,19 +106,9 @@
             >
           </el-form>
           <el-form v-if="fields" label-position="top" class="p-16px">
-            <el-form-item v-if="hasAction(IamAction.TENANT_POLICY_PREVIEW)" label="预览查看者">
-              <biz-tenant-member-select
-                v-model="viewerMemberId"
-                :load-members="loadMembers"
-                placeholder="选择预览查看者"
-              />
-            </el-form-item>
             <div class="flex flex-wrap gap-8px">
               <in-button v-auth="IamAction.TENANT_FIELD_POLICY_UPDATE" @click="privateAddFieldRule"
                 >添加规则</in-button
-              >
-              <in-button v-auth="IamAction.TENANT_POLICY_PREVIEW" @click="privatePreviewFields"
-                >预览</in-button
               >
               <in-button
                 type="primary"
@@ -250,7 +118,6 @@
                 >保存</in-button
               >
             </div>
-            <biz-iam-preview-alert :preview="fieldPreview" />
           </el-form>
         </in-biz-tab-panel>
       </in-biz-tabs>
@@ -261,48 +128,24 @@
 <script lang="ts" setup>
 import { useCapabilities, usePermissions, Message } from "@ingot/admin-core";
 import {
-  BizIamPreviewAlert,
   BizIamScopeEditor,
   BizIamSelectionEditor,
-  DefaultPolicyKind,
-  DirectoryDefaultScope,
   FieldVisibility,
-  PolicyEffect,
   PolicyScenario,
   AuthorizationDomain,
   IamAction,
-  type FieldOperationRule,
   createIamListLoader,
   emptySelection,
   toIamSelectRecords,
-  useDirectoryDefaultScopeEnum,
   useFieldVisibilityEnum,
-  usePolicyEffectEnum,
-  usePolicyScenarioEnum,
-  type DirectoryPolicyDraft,
   type FieldPolicyDraft,
-  type PolicyPreviewResult,
-  type Preview,
   type ResourceDetail,
-  type Selection,
-  BizTenantMemberSelect,
 } from "@ingot/admin-common";
 import { TenantDepartmentPageAPI, TenantMemberPickerLoad } from "@/api/iam/directory";
-import {
-  TenantDirectoryPolicyAPI,
-  TenantDirectoryPolicyUpdateAPI,
-  TenantFieldPolicyAPI,
-  TenantFieldPolicyUpdateAPI,
-  TenantPolicyPreviewAPI,
-} from "@/api/iam/policies";
+import { TenantFieldPolicyAPI, TenantFieldPolicyUpdateAPI } from "@/api/iam/policies";
 
 const { hasAction, contextEpoch } = useCapabilities();
 const permissions = usePermissions();
-const canReadDirectory = computed(
-  () =>
-    permissions.domain === AuthorizationDomain.TENANT &&
-    hasAction(IamAction.TENANT_DIRECTORY_POLICY_READ),
-);
 const canReadFields = computed(
   () =>
     permissions.domain === AuthorizationDomain.TENANT &&
@@ -310,28 +153,19 @@ const canReadFields = computed(
 );
 const tab = ref("");
 
-const directory = ref<ResourceDetail<DirectoryPolicyDraft>>();
 const fields = ref<ResourceDetail<FieldPolicyDraft>>();
-const directoryDraft = reactive<DirectoryPolicyDraft>({
-  defaultRevisionId: "",
-  rules: [],
-});
 const fieldDraft = reactive<FieldPolicyDraft>({
   defaultRevisionId: "",
   rules: [],
   operationRules: [],
 });
-const defaultScope = ref<DirectoryDefaultScope | "">("");
-const defaultSelection = ref<Selection>(emptySelection());
-const viewerMemberId = ref("");
-const savingDirectory = ref(false);
 const savingFields = ref(false);
-const directoryPreview = ref<Preview<PolicyPreviewResult> | null>(null);
-const fieldPreview = ref<Preview<PolicyPreviewResult> | null>(null);
-const defaultScopeOptions = useDirectoryDefaultScopeEnum().getOptions();
-const effectOptions = usePolicyEffectEnum().getOptions();
-const scenarioOptions = usePolicyScenarioEnum().getOptions();
 const visibilityOptions = useFieldVisibilityEnum().getOptions();
+const operationActions = [
+  { value: IamAction.TENANT_MEMBER_READ, label: "成员查询" },
+  { value: IamAction.TENANT_MEMBER_CREATE, label: "成员创建" },
+  { value: IamAction.TENANT_MEMBER_UPDATE, label: "成员编辑" },
+];
 
 const loadMembers = TenantMemberPickerLoad;
 const loadDepartments = createIamListLoader(async (page, condition) => {
@@ -339,31 +173,17 @@ const loadDepartments = createIamListLoader(async (page, condition) => {
   return { data: toIamSelectRecords(response.data) };
 });
 
-const applyDirectory = (detail: ResourceDetail<DirectoryPolicyDraft>): void => {
-  directory.value = detail;
-  directoryDraft.defaultRevisionId = detail.record.defaultRevisionId;
-  directoryDraft.defaultOverride = detail.record.defaultOverride;
-  directoryDraft.rules = detail.record.rules.map((item) => ({
-    effect: item.effect,
-    viewerSelection: {
-      members: [...item.viewerSelection.members],
-      departments: item.viewerSelection.departments.map((entry) => ({ ...entry })),
-    },
-    targetSelection: {
-      members: [...item.targetSelection.members],
-      departments: item.targetSelection.departments.map((entry) => ({ ...entry })),
-    },
-  }));
-  defaultScope.value = detail.record.defaultOverride?.scope ?? "";
-  defaultSelection.value = detail.record.defaultOverride?.selection ?? emptySelection();
-};
-
 const applyFields = (detail: ResourceDetail<FieldPolicyDraft>): void => {
   fields.value = detail;
   fieldDraft.defaultRevisionId = detail.record.defaultRevisionId;
-  fieldDraft.operationRules = structuredClone(detail.record.operationRules ?? []);
+  fieldDraft.operationRules = structuredClone(detail.record.operationRules ?? []).map((item) => ({
+    ...item,
+    scenario: PolicyScenario.MANAGEMENT,
+    resource: { ...item.resource, resourceCode: "member" },
+  }));
   fieldDraft.rules = detail.record.rules.map((item) => ({
     ...item,
+    scenario: PolicyScenario.MANAGEMENT,
     viewerSelection: {
       members: [...item.viewerSelection.members],
       departments: item.viewerSelection.departments.map((entry) => ({ ...entry })),
@@ -373,35 +193,9 @@ const applyFields = (detail: ResourceDetail<FieldPolicyDraft>): void => {
   }));
 };
 
-const currentDirectoryPolicy = (): DirectoryPolicyDraft => ({
-  defaultRevisionId: directoryDraft.defaultRevisionId,
-  defaultOverride: defaultScope.value
-    ? {
-        scope: defaultScope.value,
-        selection:
-          defaultScope.value === DirectoryDefaultScope.SELECTED
-            ? defaultSelection.value
-            : undefined,
-      }
-    : undefined,
-  rules: directoryDraft.rules,
-});
-
-const privateAddDirectoryRule = (): void => {
-  directoryDraft.rules.push({
-    effect: PolicyEffect.ALLOW,
-    viewerSelection: emptySelection(),
-    targetSelection: emptySelection(),
-  });
-};
-
-const privateRemoveDirectoryRule = (index: number): void => {
-  directoryDraft.rules.splice(index, 1);
-};
-
 const privateAddFieldRule = (): void => {
   fieldDraft.rules.push({
-    scenario: PolicyScenario.DIRECTORY,
+    scenario: PolicyScenario.MANAGEMENT,
     fieldKey: "",
     viewerSelection: emptySelection(),
     targetScope: [],
@@ -410,23 +204,6 @@ const privateAddFieldRule = (): void => {
   });
 };
 
-const operationActions = (scenario: PolicyScenario) =>
-  scenario === PolicyScenario.DIRECTORY
-    ? [{ value: IamAction.TENANT_DIRECTORY_READ, label: "通讯录查询" }]
-    : [
-        { value: IamAction.TENANT_MEMBER_READ, label: "成员查询" },
-        { value: IamAction.TENANT_MEMBER_CREATE, label: "成员创建" },
-        { value: IamAction.TENANT_MEMBER_UPDATE, label: "成员编辑" },
-      ];
-const privateOperationScenario = (rule: FieldOperationRule): void => {
-  rule.resource = {
-    domain: AuthorizationDomain.TENANT,
-    applicationCode: "iam-tenant",
-    resourceCode: rule.scenario === PolicyScenario.DIRECTORY ? "directory" : "member",
-  };
-  rule.actionCode = operationActions(rule.scenario)[0]!.value;
-  rule.operations = { editable: false, filterable: false };
-};
 const privateAddOperationRule = (): void => {
   fieldDraft.operationRules.push({
     resource: {
@@ -445,68 +222,6 @@ const privateRemoveFieldRule = (index: number): void => {
   fieldDraft.rules.splice(index, 1);
 };
 
-const privatePreviewDirectory = (): void => {
-  if (!canReadDirectory.value || !hasAction(IamAction.TENANT_POLICY_PREVIEW)) return;
-  const epoch = contextEpoch.value;
-  if (!viewerMemberId.value) {
-    Message.warning("请选择预览查看者");
-    return;
-  }
-  TenantPolicyPreviewAPI({
-    policyDraft: { kind: DefaultPolicyKind.DIRECTORY, directory: currentDirectoryPolicy() },
-    viewerMemberId: viewerMemberId.value,
-  }).then((response) => {
-    if (
-      epoch === contextEpoch.value &&
-      canReadDirectory.value &&
-      hasAction(IamAction.TENANT_POLICY_PREVIEW)
-    )
-      directoryPreview.value = response.data;
-  });
-};
-
-const privatePreviewFields = (): void => {
-  if (!canReadFields.value || !hasAction(IamAction.TENANT_POLICY_PREVIEW)) return;
-  const epoch = contextEpoch.value;
-  if (!viewerMemberId.value) {
-    Message.warning("请选择预览查看者");
-    return;
-  }
-  TenantPolicyPreviewAPI({
-    policyDraft: { kind: DefaultPolicyKind.FIELD, field: { ...fieldDraft } },
-    viewerMemberId: viewerMemberId.value,
-  }).then((response) => {
-    if (
-      epoch === contextEpoch.value &&
-      canReadFields.value &&
-      hasAction(IamAction.TENANT_POLICY_PREVIEW)
-    )
-      fieldPreview.value = response.data;
-  });
-};
-
-const privateSaveDirectory = (): void => {
-  if (!hasAction(IamAction.TENANT_DIRECTORY_POLICY_UPDATE)) return;
-  if (!directory.value) {
-    return;
-  }
-  const epoch = contextEpoch.value;
-  savingDirectory.value = true;
-  directoryPreview.value = null;
-  TenantDirectoryPolicyUpdateAPI({
-    expectedVersion: directory.value.version,
-    policy: currentDirectoryPolicy(),
-  })
-    .then((response) => {
-      if (epoch !== contextEpoch.value || !canReadDirectory.value) return;
-      applyDirectory(response.data);
-      Message.success("通讯录策略已保存");
-    })
-    .finally(() => {
-      savingDirectory.value = false;
-    });
-};
-
 const privateSaveFields = (): void => {
   if (!hasAction(IamAction.TENANT_FIELD_POLICY_UPDATE)) return;
   if (!fields.value) {
@@ -514,7 +229,6 @@ const privateSaveFields = (): void => {
   }
   const epoch = contextEpoch.value;
   savingFields.value = true;
-  fieldPreview.value = null;
   TenantFieldPolicyUpdateAPI({
     expectedVersion: fields.value.version,
     policy: { ...fieldDraft },
@@ -529,14 +243,6 @@ const privateSaveFields = (): void => {
     });
 };
 
-const loadDirectory = (): void => {
-  if (!canReadDirectory.value || tab.value !== "directory" || directory.value) return;
-  const epoch = contextEpoch.value;
-  TenantDirectoryPolicyAPI().then((response) => {
-    if (epoch === contextEpoch.value && canReadDirectory.value) applyDirectory(response.data);
-  });
-};
-
 const loadFields = (): void => {
   if (!canReadFields.value || tab.value !== "fields" || fields.value) {
     return;
@@ -548,34 +254,24 @@ const loadFields = (): void => {
 };
 
 watch(
-  [canReadDirectory, canReadFields],
+  canReadFields,
   () => {
-    if (!canReadDirectory.value) directory.value = undefined;
     if (!canReadFields.value) fields.value = undefined;
-    if (
-      (tab.value === "directory" && !canReadDirectory.value) ||
-      (tab.value === "fields" && !canReadFields.value) ||
-      !tab.value
-    )
-      tab.value = canReadDirectory.value ? "directory" : canReadFields.value ? "fields" : "";
+    if (tab.value !== "fields" || !canReadFields.value) {
+      tab.value = canReadFields.value ? "fields" : "";
+    }
   },
   { immediate: true },
 );
 watch(
-  [tab, canReadDirectory, canReadFields],
+  [tab, canReadFields],
   () => {
-    if (tab.value === "directory") loadDirectory();
-    else if (tab.value === "fields") loadFields();
+    if (tab.value === "fields") loadFields();
   },
   { immediate: true },
 );
 watch(contextEpoch, () => {
-  directory.value = undefined;
   fields.value = undefined;
-  directoryPreview.value = null;
-  fieldPreview.value = null;
-  viewerMemberId.value = "";
-  if (tab.value === "directory") loadDirectory();
-  else if (tab.value === "fields") loadFields();
+  if (tab.value === "fields") loadFields();
 });
 </script>

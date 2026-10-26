@@ -62,7 +62,7 @@ const pages = [
     name: "成员访问策略",
     path: "/org/member-policies",
     key: "org.iam.member.policies",
-    description: "通讯录可见范围与字段权限。预览来自后端，浏览器不重做策略引擎。",
+    description: "配置后台管理中的成员字段可见、编辑和筛选。",
   },
 ];
 const allReads = [
@@ -75,7 +75,7 @@ const allReads = [
   "session-policy",
   "audit",
 ].map((resource) => `iam-platform:${resource}:read`);
-const tenantReads = ["audit", "directory-policy", "field-policy"].map(
+const tenantReads = ["audit", "field-policy"].map(
   (resource) => `iam-tenant:${resource}:read`,
 );
 async function fixture(
@@ -137,8 +137,6 @@ async function fixture(
       };
     else if (path.endsWith("/capabilities"))
       data = { context, actionCodes: codes, version: "1", expiresAt: "2099-01-01T00:00:00Z" };
-    else if (path.endsWith("/policies/directory"))
-      data = detail({ defaultRevisionId: "1", rules: [] });
     else if (path.endsWith("/policies/fields"))
       data = detail({ defaultRevisionId: "1", rules: [], operationRules: [] });
     else if (path.includes("/dictionaries"))

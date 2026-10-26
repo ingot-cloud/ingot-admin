@@ -1,7 +1,6 @@
 import { createIamPageQueryOptions } from "@ingot/admin-common";
 import { createResourceQueryKeys } from "@ingot/admin-core";
 import {
-  DirectoryMemberPageAPI,
   TenantApplicationPageAPI,
   TenantDepartmentPageAPI,
   TenantGroupEffectiveMembersAPI,
@@ -17,7 +16,6 @@ export const tenantGroupEffectiveMemberQueryKeys = createResourceQueryKeys(
   "group-effective-member",
 );
 export const tenantApplicationQueryKeys = createResourceQueryKeys("iam-tenant", "application");
-export const directoryMemberQueryKeys = createResourceQueryKeys("iam-tenant", "directory-member");
 
 export const TenantMemberPageQueryOptions = createIamPageQueryOptions(
   tenantMemberQueryKeys,
@@ -38,8 +36,4 @@ export const TenantGroupEffectiveMemberPageQueryOptions = createIamPageQueryOpti
 export const TenantApplicationPageQueryOptions = createIamPageQueryOptions(
   tenantApplicationQueryKeys,
   TenantApplicationPageAPI,
-);
-export const DirectoryMemberPageQueryOptions = createIamPageQueryOptions(
-  directoryMemberQueryKeys,
-  DirectoryMemberPageAPI,
 );

@@ -91,35 +91,13 @@ export enum MenuKind {
   PAGE = "PAGE",
 }
 
-export enum FieldScenario {
-  MANAGEMENT = "MANAGEMENT",
-  DIRECTORY = "DIRECTORY",
-}
-
 export enum PolicyScenario {
   MANAGEMENT = "MANAGEMENT",
-  DIRECTORY = "DIRECTORY",
 }
 
 export enum AudienceKind {
   ALL = "ALL",
   SELECTED = "SELECTED",
-}
-
-export enum PolicyEffect {
-  ALLOW = "ALLOW",
-  DENY = "DENY",
-}
-
-export enum DirectoryDefaultScope {
-  ALL = "ALL",
-  SELF = "SELF",
-  SELECTED = "SELECTED",
-}
-
-export enum DefaultPolicyKind {
-  DIRECTORY = "DIRECTORY",
-  FIELD = "FIELD",
 }
 
 export enum ExportTaskStatus {
@@ -154,7 +132,6 @@ export enum AccountLookupPurpose {
 export enum SelectionPurpose {
   ASSIGN_RECIPIENT = "ASSIGN_RECIPIENT",
   MANAGED_DEPARTMENT = "MANAGED_DEPARTMENT",
-  DIRECTORY = "DIRECTORY",
 }
 
 /** IAM 管理面列表默认页大小，与后端 `IamPages.DEFAULT_SIZE` 对齐。 */
@@ -200,7 +177,6 @@ export enum AssignmentSource {
 }
 
 export const IamAction = {
-  TENANT_DIRECTORY_READ: "iam-tenant:directory:read",
   PLATFORM_MEMBER_READ: "iam-platform:member:read",
   PLATFORM_MEMBER_CREATE: "iam-platform:member:create",
   PLATFORM_MEMBER_UPDATE: "iam-platform:member:update",
@@ -321,11 +297,8 @@ export const IamAction = {
   TENANT_ASSIGNMENT_CREATE: "iam-tenant:assignment:create",
   TENANT_ASSIGNMENT_UPDATE: "iam-tenant:assignment:update",
   TENANT_ASSIGNMENT_DELETE: "iam-tenant:assignment:delete",
-  TENANT_DIRECTORY_POLICY_READ: "iam-tenant:directory-policy:read",
-  TENANT_DIRECTORY_POLICY_UPDATE: "iam-tenant:directory-policy:update",
   TENANT_FIELD_POLICY_READ: "iam-tenant:field-policy:read",
   TENANT_FIELD_POLICY_UPDATE: "iam-tenant:field-policy:update",
-  TENANT_POLICY_PREVIEW: "iam-tenant:policy:preview",
   TENANT_AUTHORIZATION_DIAGNOSE: "iam-tenant:authorization:diagnose",
   TENANT_AUDIT_READ: "iam-tenant:audit:read",
   TENANT_DELEGATION_READ: "iam-tenant:delegation:read",
