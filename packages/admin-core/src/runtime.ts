@@ -75,7 +75,7 @@ const DEFAULT_CONFIG: InResolvedAppConfig = {
     componentSize: "default",
     showMenu: true,
     showBreadcrumb: true,
-    showCopyright: true,
+    showCopyright: false,
     showSearch: true,
     showWatermark: true,
   },
