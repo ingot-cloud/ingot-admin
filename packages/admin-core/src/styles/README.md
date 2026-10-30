@@ -2,6 +2,8 @@
 
 `@ingot/admin-core` 使用「基础 Token → 语义 Token → 组件 Token → Element Plus 映射」的单向链路。业务插件只消费 `--in-*`，不要在页面里覆盖 `--el-*` 或硬编码品牌色。
 
+基础 CSS、明暗 Logo 与加载 SVG 的共享源位于 [`@ingot/appearance`](../../../appearance/README.md)，供管理台和登录站共同消费。本目录的 `tokens.css`、`el-mapping.css` 及对应深色文件保留转发；公开主题协议和默认值仍由 admin-core 维护。
+
 ## 文件
 
 | 文件 | 职责 |
