@@ -1,0 +1,14 @@
+{
+  "name": "@ingot/appearance",
+  "version": "0.1.0",
+  "description": "Ingot 共享品牌资源、语义 Token 与 Element Plus 样式映射",
+  "type": "module",
+  "exports": {
+    "./styles/*": "./src/styles/*",
+    "./assets/*": "./src/assets/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src"
+  ]
+}

@@ -5,7 +5,9 @@ import { describe, expect, it } from "vitest";
 import { defaultDarkTokens, defaultLightTokens } from "./defaultTokens";
 import { IN_THEME_TOKEN_NAMES } from "./tokens";
 
-const stylesDir = resolve(dirname(fileURLToPath(import.meta.url)), "../styles");
+const stylesDir = dirname(
+  fileURLToPath(import.meta.resolve("@ingot/appearance/styles/tokens.css")),
+);
 const DECLARATION = /(--[a-z0-9-]+)\s*:\s*([^;]+);/gi;
 
 const extractBlock = (css: string, selector: string): string => {

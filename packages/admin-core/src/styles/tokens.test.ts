@@ -3,7 +3,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const stylesDir = dirname(fileURLToPath(import.meta.url));
+const stylesDir = dirname(
+  fileURLToPath(import.meta.resolve("@ingot/appearance/styles/tokens.css")),
+);
 
 const REQUIRED_TOKENS = [
   "--in-color-primary",

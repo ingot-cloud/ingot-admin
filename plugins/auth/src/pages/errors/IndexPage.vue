@@ -1,27 +1,48 @@
 <template>
-  <div class="page-wrapper">
-    <div class="page-main-area">
-      <img class="page-main-image" :src="session.appearance.errorImage" alt="" />
-      <div class="page-main-title">出错了</div>
-      <div class="page-main-desc">
-        {{ route.query.errorMsg }}
-      </div>
-      <div class="page-main-btn base-comp-button base-comp-button-type-default" @click="privateHandleBack">
-        返回
-      </div>
+  <AuthPageShell>
+    <div class="auth-error">
+      <header class="auth-page-header">
+        <AuthBrandLogo />
+        <div class="auth-error__status" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+            <path
+              d="M12 7v6m0 3v.01"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <h1 id="auth-page-title">暂时无法完成登录</h1>
+        <p class="auth-error__message" role="alert">{{ errorMessage }}</p>
+      </header>
+      <el-button
+        type="primary"
+        class="auth-error__back"
+        :disabled="!session.startUrl"
+        @click="privateHandleBack"
+      >
+        返回管理台
+      </el-button>
     </div>
-    <div class="page-bottom-area">
-      {{ session.appearance.copyright }}
-    </div>
-  </div>
+  </AuthPageShell>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { computed } from "vue";
+import { ElButton } from "element-plus";
 import { useRoute } from "vue-router";
+import AuthBrandLogo from "../../components/AuthBrandLogo.vue";
+import AuthPageShell from "../../components/AuthPageShell.vue";
 import { useAuthSession } from "../../session";
 
 const session = useAuthSession();
 const route = useRoute();
+const errorMessage = computed(() => {
+  const message = route.query.errorMsg;
+  return typeof message === "string" && message ? message : "请从管理台重新发起登录。";
+});
 
 const privateHandleBack = (): void => {
   if (session.startUrl) {
@@ -31,77 +52,24 @@ const privateHandleBack = (): void => {
 </script>
 
 <style scoped lang="postcss">
-.page-wrapper {
-  overflow: hidden;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: #121212;
+.auth-error__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-top: var(--in-space-8);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--in-color-warning) 12%, transparent);
+  color: var(--in-color-warning);
+}
 
-  & .page-main-area {
-    position: absolute;
-    left: 32px;
-    right: 32px;
-    top: 50%;
-    transform: translateY(-60%);
-    -webkit-transform: translateY(-60%);
+.auth-error__message {
+  white-space: pre-wrap;
+}
 
-    & .page-main-image {
-      display: block;
-      position: relative;
-      width: 146px;
-      height: 232px;
-      margin: 0 auto;
-    }
-
-    & .page-main-title {
-      margin: 24px auto 8px;
-      line-height: 40px;
-      font-size: 24px;
-      color: rgba(255, 255, 255, 0.96);
-      text-align: center;
-      font-weight: bold;
-    }
-
-    & .page-main-desc {
-      overflow: hidden;
-      margin: 0 auto;
-      max-width: 600px;
-      max-height: 200px;
-      line-height: 20px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.48);
-      text-align: center;
-    }
-
-    & .page-main-btn {
-      width: 120px;
-      margin: 24px auto 0;
-      color: rgba(255, 255, 255, 0.96);
-      background: rgba(255, 255, 255, 0);
-      border: 1px solid rgba(126, 134, 142, 0.16);
-      box-sizing: border-box;
-      position: relative;
-      height: 48px;
-      line-height: 48px;
-      font-size: 16px;
-      text-align: center;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  }
-
-  & .page-bottom-area {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
-    line-height: 20px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.48);
-    text-align: center;
-  }
+.auth-error__back {
+  width: 100%;
+  height: var(--in-auth-control-height);
 }
 </style>

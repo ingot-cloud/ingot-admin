@@ -1,0 +1,83 @@
+/* 验证器会异步注入自身样式，登录站以限定作用域的高优先级规则保持主题。 */
+html[data-in-auth] .mask {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 100svh;
+  padding: var(--in-space-4);
+  overflow: auto;
+  background: var(--in-overlay-mask);
+}
+
+html[data-in-auth] .verifybox {
+  box-sizing: content-box;
+  position: relative;
+  flex: none;
+  left: auto;
+  top: auto;
+  width: 100%;
+  margin: auto;
+  transform: none;
+  border: 1px solid var(--in-border-color-light);
+  border-radius: var(--in-radius-card-lg);
+  background: var(--in-bg-color-surface);
+  color: var(--in-text-color);
+  box-shadow: var(--in-shadow-overlay);
+  font-family: var(--in-font-family);
+}
+
+html[data-in-auth] .verifybox-top {
+  border-bottom-color: var(--in-border-color-light);
+  color: var(--in-text-color);
+  font-size: var(--in-font-size-body);
+  font-weight: 500;
+}
+
+html[data-in-auth] .verifybox-close {
+  border-radius: var(--in-radius-control);
+  color: var(--in-text-color-secondary);
+}
+
+html[data-in-auth] .verifybox-close:hover {
+  background: var(--in-bg-color-hover);
+  color: var(--in-text-color);
+}
+
+html[data-in-auth] .verify-bar-area {
+  border-color: var(--in-border-color);
+  border-radius: var(--in-radius-control);
+  background: var(--in-bg-color-muted);
+  color: var(--in-text-color-secondary);
+  font-size: var(--in-font-size-caption);
+}
+
+html[data-in-auth] .verify-bar-area .verify-left-bar {
+  background: color-mix(in srgb, var(--in-color-primary) 10%, var(--in-bg-color-surface));
+}
+
+html[data-in-auth] .verify-bar-area .verify-move-block {
+  border-radius: var(--in-radius-control);
+  box-shadow: var(--in-shadow-sm);
+}
+
+html[data-in-auth] .el-message {
+  max-width: calc(100vw - 32px);
+  border-radius: var(--in-radius-card);
+  box-shadow: var(--in-shadow-md);
+  overflow-wrap: anywhere;
+}
+
+html[data-in-auth] .el-message-box {
+  --el-messagebox-border-radius: var(--in-radius-card-lg);
+  --el-messagebox-title-color: var(--in-text-color);
+  --el-messagebox-content-color: var(--in-text-color-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-in-auth] .mask,
+  html[data-in-auth] .verifybox {
+    transition: none;
+  }
+}

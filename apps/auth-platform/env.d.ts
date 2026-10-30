@@ -26,6 +26,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_LOGIN_BANNER: string;
   readonly VITE_APP_LOGIN_TITLE: string;
   readonly VITE_APP_LOGIN_DESC: string;
+  readonly VITE_APP_LOGIN_COLOR_SCHEME?: import("@ingot/auth-plugin").AuthColorScheme;
   readonly VITE_APP_FINGERPRINT_ENABLED: boolean;
   readonly VITE_AUTH_ENTRY: string;
   readonly VITE_APP_ADMIN_START_URL: string;

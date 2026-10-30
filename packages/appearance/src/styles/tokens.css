@@ -1,0 +1,247 @@
+/**
+ * Ingot 管理台设计 Token。
+ * 分层：基础 → 语义 → 组件。业务页面只消费语义/组件 Token，禁止回写 Element Plus 私有变量。
+ */
+:root {
+  --in-permission-panel-bg: #f8f9fa;
+  /* —— 基础：颜色阶 —— */
+  --in-blue-500: #3370ff;
+  --in-blue-600: #245bdb;
+  --in-blue-400: color-mix(in srgb, var(--in-blue-500) 80%, white);
+  --in-gray-950: #1f2329;
+  --in-gray-900: #2b2f36;
+  --in-gray-700: #646a73;
+  --in-gray-500: #8f959e;
+  --in-gray-400: #bbbfc4;
+  --in-gray-300: #dee0e3;
+  --in-gray-200: #f2f3f5;
+  --in-gray-100: #f5f5f5;
+  --in-white: #ffffff;
+  --in-black: #000000;
+  --in-danger-500: #f54a45;
+  --in-success-500: #34c724;
+  --in-warning-500: #ff8800;
+  --in-warning-600: #de7802;
+  --in-info-500: #8f959e;
+
+  /* —— 基础：间距（4px 基线） —— */
+  --in-space-1: 4px;
+  --in-space-2: 8px;
+  --in-space-3: 12px;
+  --in-space-4: 16px;
+  --in-space-5: 20px;
+  --in-space-6: 24px;
+  --in-space-8: 32px;
+
+  /* —— 基础：圆角 —— */
+  --in-radius-control: 6px;
+  --in-radius-card: 8px;
+  --in-radius-card-lg: 12px;
+
+  /* —— 基础：排版 —— */
+  --in-font-size-page-title: 20px;
+  --in-line-height-page-title: 28px;
+  --in-font-weight-page-title: 600;
+  --in-font-size-section-title: 16px;
+  --in-line-height-section-title: 24px;
+  --in-font-weight-section-title: 500;
+  --in-font-size-body: 14px;
+  --in-line-height-body: 22px;
+  --in-font-weight-body: 400;
+  --in-font-size-caption: 12px;
+  --in-line-height-caption: 18px;
+  --in-font-family: LarkHackSafariFont, LarkEmojiFont, LarkChineseQuote, -apple-system, BlinkMacSystemFont, "Helvetica Neue", Tahoma, "PingFang SC", "Microsoft Yahei", Arial, "Hiragino Sans GB", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* —— 基础：阴影 / 层级 / 动效 —— */
+  --in-shadow-none: none;
+  --in-shadow-sm: 0 1px 2px rgba(31, 35, 41, 0.06);
+  --in-shadow-md: 0 4px 12px rgba(31, 35, 41, 0.1);
+  --in-shadow-overlay:
+    0 8px 24px 8px rgba(31, 35, 41, 0.04), 0 6px 12px 0 rgba(31, 35, 41, 0.04),
+    0 4px 8px -8px rgba(31, 35, 41, 0.06);
+  --in-z-header: 200;
+  --in-z-sidebar: 300;
+  --in-z-overlay-mask: 250;
+  --in-z-overlay-sidebar: 260;
+  --in-z-dropdown: 3100;
+  --in-motion-duration: 200ms;
+  --in-motion-duration-sidebar: 300ms;
+  --in-motion-duration-split: 180ms;
+  --in-motion-duration-tabs-ink: 0.3s;
+  --in-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --in-motion-ease-sidebar: cubic-bezier(0.25, 0.1, 0.05, 1);
+  --in-motion-ease-tabs-ink: cubic-bezier(0.34, 0.69, 0.1, 1);
+
+  /* —— 语义：颜色 —— */
+  --in-color-primary: var(--in-blue-500);
+  --in-color-success: var(--in-success-500);
+  --in-color-warning: var(--in-warning-500);
+  --in-color-danger: var(--in-danger-500);
+  --in-color-info: var(--in-info-500);
+  --in-text-color: var(--in-gray-950);
+  --in-text-color-secondary: var(--in-gray-700);
+  --in-text-color-placeholder: var(--in-gray-500);
+  --in-text-color-disabled: var(--in-gray-400);
+  --in-text-color-inverse: var(--in-white);
+  --in-bg-color-canvas: var(--in-gray-100);
+  --in-bg-color-sidebar: var(--in-gray-100);
+  --in-bg-color-surface: var(--in-white);
+  --in-bg-color-muted: var(--in-gray-200);
+  --in-bg-color-subtle: #fbfbfb;
+  --in-bg-color: var(--in-bg-color-surface);
+  --in-bg-color-page: var(--in-bg-color-canvas);
+  --in-bg-color-mute: var(--in-bg-color-muted);
+  --in-bg-color-hover: rgba(31, 35, 41, 0.05);
+  --in-bg-color-active: rgba(31, 35, 41, 0.05);
+  --in-bg-color-menu-hover: rgba(31, 35, 41, 0.06);
+  --in-bg-color-control-hover: rgba(31, 35, 41, 0.08);
+  --in-border-color: var(--in-gray-300);
+  --in-border-color-light: color-mix(in srgb, var(--in-gray-300) 70%, var(--in-white));
+  --in-focus-ring-color: var(--in-color-primary);
+  --in-overlay-mask: rgba(31, 35, 41, 0.45);
+
+  /* —— 组件：顶栏 / 侧栏 / 控件 —— */
+  --in-app-bar-height: 56px;
+  --in-app-bar-padding-inline: 16px;
+  --in-app-bar-padding: 0 var(--in-app-bar-padding-inline);
+  --in-app-bar-icon-size: 20px;
+  --in-app-bar-nav-max: 560px;
+  --in-app-bar-actions-max: 360px;
+  --in-app-bar-search-width: 400px;
+  --in-app-bar-bg: var(--in-bg-color-surface);
+  --in-app-bar-text: var(--in-text-color);
+  --in-app-bar-border: transparent;
+  --in-icon-button-size: 32px;
+  --in-sidebar-gutter: 8px;
+  --in-sidebar-panel-expanded: 236px;
+  --in-sidebar-panel-collapsed: 52px;
+  --in-menu-show: var(--in-sidebar-panel-expanded);
+  --in-menu-hide: var(--in-sidebar-panel-collapsed);
+  --in-menu-item-height: 40px;
+  --in-menu-item-radius: 8px;
+  --in-menu-item-gap: 2px;
+  --in-menu-content-padding-top: 12px;
+  --in-menu-footer-clearance: 18px;
+  --in-menu-divider-gap: var(--in-space-2);
+  --in-menu-control-height: 44px;
+  --in-menu-control-radius: 6px;
+  --in-menu-icon-size: 20px;
+  --in-menu-arrow-size: 14px;
+  --in-menu-icon-gap: var(--in-space-2);
+  --in-menu-base-level-padding: 16px;
+  --in-menu-level-padding: calc(var(--in-menu-icon-size) + var(--in-menu-icon-gap));
+  --in-menu-nested-indent: 2em;
+  --in-menu-line-height: 20px;
+  --in-menu-bg-color: var(--in-bg-color-sidebar);
+  --in-menu-bg-hover-color: var(--in-bg-color-menu-hover);
+  --in-menu-text-color: var(--in-text-color-secondary);
+  --in-menu-text-plain-color: var(--in-black);
+  --in-menu-text-active-color: var(--in-gray-950);
+  --in-menu-item-font-size: var(--in-font-size-body);
+  --in-menu-item-font-weight: var(--in-font-weight-body);
+  --in-menu-item-font-weight-active: var(--in-font-weight-section-title);
+  --in-container-bg: var(--in-bg-color-surface);
+  --in-container-radius: 0px;
+  --in-container-border-width: 0px;
+  --in-container-border-color: var(--in-border-color);
+  --in-split-left-width: 260px;
+  --in-split-rail-width: 0px;
+  --in-split-collapse-width: 16px;
+  --in-split-collapse-height: 32px;
+  --in-split-collapse-radius: 8px;
+  --in-split-header-min-height: 79px;
+  --in-split-header-padding: 12px 20px;
+  --in-control-height: 32px;
+  --in-control-height-small: 28px;
+  --in-table-header-height: 48px;
+  --in-table-row-height: 48px;
+  --in-table-row-height-compact: 44px;
+  --in-table-header-bg: var(--in-bg-color-muted);
+  --in-table-header-text: var(--in-text-color-secondary);
+  --in-table-cell-text: #18263c;
+  --in-checkbox-radius: 4px;
+  --in-checkbox-size: 16px;
+  --in-radio-size: 16px;
+  --in-choice-border: #e5e7eb;
+  --in-choice-disabled-bg: #eff0f1;
+  --in-choice-disabled-border: #bbbfc4;
+  --in-tree-caret-size: 12px;
+  --in-message-min-width: 204px;
+  --in-message-height: 54px;
+  --in-message-icon-size: 20px;
+  --in-breadcrumb-icon-size: 16px;
+  --in-breadcrumb-height: 24px;
+  --in-page-breadcrumb-height: 46px;
+  --in-page-header-min-height: 80px;
+  --in-form-content-max-width: 840px;
+  --in-avatar-size: 32px;
+  --in-avatar-size-lg: 48px;
+  --in-tag-height: 24px;
+  --in-tag-height-small: 20px;
+  --in-tag-height-large: 32px;
+  --in-tag-radius: 4px;
+  --in-tag-padding-inline: var(--in-space-2);
+  --in-tag-gap: var(--in-space-1);
+  --in-tag-font-size: var(--in-font-size-body);
+  --in-tag-font-weight: var(--in-font-weight-section-title);
+  --in-tag-icon-size: var(--in-font-size-body);
+  --in-selection-tag-bg: #e1eaff;
+  --in-selection-tag-height: var(--in-tag-height);
+  --in-selection-tag-avatar-size: 20px;
+  --in-selection-tag-radius: var(--in-tag-radius);
+  --in-tag-solid-text-color: #ffffff;
+  --in-tag-primary-color: var(--in-blue-600);
+  --in-tag-primary-bg: color-mix(in srgb, var(--in-color-primary) 20%, transparent);
+  --in-tag-success-color: var(--in-color-success);
+  --in-tag-success-bg: color-mix(in srgb, var(--in-color-success) 20%, transparent);
+  --in-tag-info-color: var(--in-text-color-secondary);
+  --in-tag-info-bg: color-mix(in srgb, var(--in-color-info) 20%, transparent);
+  --in-tag-warning-color: var(--in-warning-600);
+  --in-tag-warning-bg: color-mix(in srgb, var(--in-color-warning) 20%, transparent);
+  --in-tag-danger-color: var(--in-color-danger);
+  --in-tag-danger-bg: color-mix(in srgb, var(--in-color-danger) 20%, transparent);
+  --in-status-tag-height: var(--in-tag-height);
+  --in-status-tag-radius: var(--in-tag-radius);
+  --in-status-tag-info-color: var(--in-tag-primary-color);
+  --in-status-tag-info-bg: var(--in-tag-primary-bg);
+  --in-status-tag-warning-color: var(--in-tag-warning-color);
+  --in-status-tag-warning-bg: var(--in-tag-warning-bg);
+  --in-status-tag-danger-color: var(--in-tag-danger-color);
+  --in-status-tag-danger-bg: var(--in-tag-danger-bg);
+  --in-copyright-height: 32px;
+  --in-biz-tabs-font-size: var(--in-font-size-section-title);
+  --in-biz-tabs-color: var(--in-text-color);
+  --in-biz-tabs-color-active: var(--in-color-primary);
+  --in-biz-tabs-ink-height: 3px;
+  --in-biz-tabs-ink-duration: var(--in-motion-duration-tabs-ink);
+  --in-biz-tabs-ink-ease: var(--in-motion-ease-tabs-ink);
+  --in-drawer-width-detail: 480px;
+  --in-page-gutter: var(--in-space-3);
+  --in-section-padding: var(--in-space-4);
+  --in-section-padding-relaxed: var(--in-space-5);
+
+  /* —— 兼容别名：既有 --in-* 不得断裂 —— */
+  --in-text-color-light: var(--in-text-color-secondary);
+  --in-text-color-lighter: var(--in-text-color-placeholder);
+  --in-text-color-primary: var(--in-text-color);
+  --in-common-margin: var(--in-page-gutter);
+  --in-common-padding: var(--in-page-gutter);
+  --in-common-border-radius: var(--in-radius-card);
+  --in-common-title-color: var(--in-text-color);
+  --in-common-title-font-weight: var(--in-font-weight-page-title);
+  --in-common-title-font-size: var(--in-font-size-section-title);
+  --in-box-shadow: var(--in-shadow-overlay);
+  --in-color-info-light-5: color-mix(in srgb, var(--in-color-info) 50%, var(--in-white));
+  --in-border-style: 1px solid var(--in-border-color);
+  --in-transition-duration: var(--in-motion-duration);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --in-motion-duration: 0.01ms;
+    --in-motion-duration-sidebar: 0.01ms;
+    --in-motion-duration-split: 0.01ms;
+    --in-motion-duration-tabs-ink: 0.01ms;
+    --in-transition-duration: 0.01ms;
+  }
+}

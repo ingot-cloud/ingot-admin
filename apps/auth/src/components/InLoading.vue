@@ -20,8 +20,8 @@
   </div>
 </template>
 <script lang="ts" setup>
-import loadingDark from "@/assets/loading/in-loading-dark.svg";
-import loadingLight from "@/assets/loading/in-loading-light.svg";
+import loadingDark from "@ingot/appearance/assets/loading/in-loading-dark.svg";
+import loadingLight from "@ingot/appearance/assets/loading/in-loading-light.svg";
 
 defineOptions({
   name: "InLoading",

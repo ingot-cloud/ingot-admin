@@ -250,7 +250,7 @@ describe("admin UI visual fixtures", () => {
   });
 
   it("顶栏与侧栏尺寸 Token 已对齐验收值", () => {
-    const tokens = readFileSync(resolve(root, "../../styles/tokens.css"), "utf8");
+    const tokens = readFileSync(fileURLToPath(import.meta.resolve("@ingot/appearance/styles/tokens.css")), "utf8");
     expect(tokens).toContain("--in-app-bar-height: 56px");
     expect(tokens).toContain("--in-app-bar-nav-max: 560px");
     expect(tokens).toContain("--in-app-bar-actions-max: 360px");

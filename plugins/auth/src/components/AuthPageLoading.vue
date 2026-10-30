@@ -1,42 +1,58 @@
 <template>
-  <div class="auth-page-loading">
-    <slot />
-    <div v-if="loading" class="auth-page-loading__cover" role="status" aria-live="polite" aria-label="加载中" />
+  <div class="auth-page-loading" :aria-busy="loading">
+    <div :inert="loading"><slot /></div>
+    <div
+      v-if="loading"
+      class="auth-page-loading__cover"
+      role="status"
+      aria-live="polite"
+      aria-label="加载中"
+    >
+      <img class="auth-page-loading__light" :src="loadingLight" alt="" width="64" height="64" />
+      <img class="auth-page-loading__dark" :src="loadingDark" alt="" width="64" height="64" />
+    </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import loadingLight from "@ingot/appearance/assets/loading/in-loading-light.svg";
+import loadingDark from "@ingot/appearance/assets/loading/in-loading-dark.svg";
+
 defineOptions({ name: "AuthPageLoading" });
 
-withDefaults(
-  defineProps<{
-    loading?: boolean;
-  }>(),
-  {
-    loading: false,
-  },
-);
+withDefaults(defineProps<{ loading?: boolean }>(), { loading: false });
 </script>
 
-<style lang="postcss" scoped>
+<style scoped lang="postcss">
 .auth-page-loading {
   position: relative;
-  min-height: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.auth-page-loading > :not(.auth-page-loading__cover) {
-  flex: 1 1 auto;
   min-width: 0;
+  width: 100%;
 }
 
 .auth-page-loading__cover {
   position: absolute;
-  inset: 0;
+  inset: -8px;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.55);
+  display: grid;
+  place-items: center;
+  border-radius: var(--in-radius-card);
+  background: color-mix(in srgb, var(--in-bg-color-surface) 88%, transparent);
+
+  & img {
+    grid-area: 1 / 1;
+  }
+
+  & .auth-page-loading__dark {
+    display: none;
+  }
+}
+
+html.dark .auth-page-loading__light {
+  display: none;
+}
+
+html.dark .auth-page-loading__cover .auth-page-loading__dark {
+  display: block;
 }
 </style>

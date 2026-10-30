@@ -1,0 +1,68 @@
+html.dark:root,
+html.dark {
+  --el-color-primary: var(--in-color-primary);
+  --el-color-primary-light-3: color-mix(in srgb, var(--in-color-primary) 70%, var(--in-bg-color-page));
+  --el-color-primary-light-5: color-mix(in srgb, var(--in-color-primary) 50%, var(--in-bg-color-page));
+  --el-color-primary-light-7: color-mix(in srgb, var(--in-color-primary) 30%, var(--in-bg-color-page));
+  --el-color-primary-light-8: color-mix(in srgb, var(--in-color-primary) 20%, var(--in-bg-color-page));
+  --el-color-primary-light-9: color-mix(in srgb, var(--in-color-primary) 10%, var(--in-bg-color-page));
+  --el-color-primary-dark-2: color-mix(in srgb, var(--in-color-primary) 80%, white);
+
+  --el-color-success: var(--in-color-success);
+  --el-color-warning: var(--in-color-warning);
+  --el-color-danger: var(--in-color-danger);
+  --el-color-error: var(--in-color-danger);
+  --el-color-info: var(--in-color-info);
+
+  --el-text-color-primary: var(--in-text-color);
+  --el-text-color-regular: var(--in-text-color-secondary);
+  --el-text-color-secondary: var(--in-text-color-placeholder);
+  --el-text-color-placeholder: var(--in-text-color-placeholder);
+  --el-text-color-disabled: #6c6e72;
+
+  --el-bg-color: var(--in-bg-color);
+  --el-bg-color-page: var(--in-bg-color-page);
+  --el-bg-color-overlay: #1d1e1f;
+  --el-fill-color-blank: transparent;
+  --el-fill-color: #303030;
+  --el-fill-color-light: var(--in-bg-color-mute);
+  --el-fill-color-lighter: #1d1d1d;
+  --el-fill-color-extra-light: #191919;
+  --el-fill-color-dark: #39393a;
+  --el-fill-color-darker: #424243;
+
+  --el-border-color: var(--in-border-color);
+  --el-border-color-light: var(--in-border-color-light);
+  --el-border-color-lighter: #363637;
+  --el-border-color-extra-light: #2b2b2c;
+  --el-border-color-dark: #58585b;
+  --el-border-color-darker: #636466;
+
+  --el-box-shadow: var(--in-shadow-overlay);
+  --el-box-shadow-light: var(--in-shadow-md);
+  --el-box-shadow-lighter: var(--in-shadow-sm);
+  --el-box-shadow-dark: var(--in-shadow-overlay);
+  --el-mask-color: var(--in-overlay-mask);
+  --el-mask-color-extra-light: rgba(0, 0, 0, 0.3);
+}
+
+html.dark .el-button {
+  --el-button-disabled-text-color: rgba(255, 255, 255, 0.5);
+}
+
+html.dark .el-card {
+  --el-card-bg-color: var(--el-bg-color-overlay);
+}
+
+html.dark .el-empty {
+  --el-empty-fill-color-0: var(--el-color-black);
+  --el-empty-fill-color-1: #4b4b52;
+  --el-empty-fill-color-2: #36383d;
+  --el-empty-fill-color-3: #1e1e20;
+  --el-empty-fill-color-4: #262629;
+  --el-empty-fill-color-5: #202124;
+  --el-empty-fill-color-6: #212224;
+  --el-empty-fill-color-7: #1b1c1f;
+  --el-empty-fill-color-8: #1c1d1f;
+  --el-empty-fill-color-9: #18181a;
+}

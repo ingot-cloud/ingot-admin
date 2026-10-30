@@ -1,4 +1,9 @@
 import "element-plus/theme-chalk/el-button.css";
 import "element-plus/theme-chalk/el-image.css";
 import "element-plus/theme-chalk/el-input.css";
+import "@ingot/appearance/styles/tokens.css";
+import "@ingot/appearance/styles/dark/tokens.css";
+import "@ingot/appearance/styles/el-mapping.css";
+import "@ingot/appearance/styles/dark/el-css-vars.css";
 import "./pages/challenge/login.css";
+import "./styles/feedback.css";

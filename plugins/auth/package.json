@@ -21,7 +21,8 @@
     "clean": "rimraf node_modules dist"
   },
   "dependencies": {
-    "@ingot/auth-core": "workspace:*"
+    "@ingot/auth-core": "workspace:*",
+    "@ingot/appearance": "workspace:*"
   },
   "peerDependencies": {
     "@vueuse/core": "catalog:",

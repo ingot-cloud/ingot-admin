@@ -57,7 +57,8 @@
     "qs": "catalog:",
     "tinymce": "catalog:",
     "vue3-tree-org": "catalog:",
-    "@iconify/vue": "catalog:"
+    "@iconify/vue": "catalog:",
+    "@ingot/appearance": "workspace:*"
   },
   "devDependencies": {
     "@iconify-json/bi": "catalog:",

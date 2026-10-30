@@ -1,47 +1,59 @@
 <template>
   <div class="password-box">
-    <div class="title-container">
-      <img class="logo-image" :src="session.logoUrl" alt="" />
-      <div class="login-title">{{ session.appearance.title }}</div>
-      <div class="login-desc">{{ session.appearance.desc }}</div>
-    </div>
+    <header class="auth-page-header">
+      <AuthBrandLogo />
+      <h1 id="auth-page-title">{{ session.appearance.title }}</h1>
+      <p>{{ session.appearance.desc }}</p>
+    </header>
 
-    <div class="login-container">
-      <LoginInput
-        v-model="formModel.username"
-        placeholder="请输入手机号/账号"
-        clearable
-        @keyup.enter="privateHandleLogin"
-      />
-      <LoginInput
-        v-model="formModel.password"
-        placeholder="请输入密码"
-        type="password"
-        clearable
-        show-password
-        @keyup.enter="privateHandleLogin"
-      >
-        <template #action>
-          <div class="forgot" @click="privateHandleForgot">忘记密码</div>
-        </template>
-      </LoginInput>
+    <form class="login-form" :aria-busy="loading" @submit.prevent="privateHandleLogin">
+      <div class="login-form__field">
+        <label for="login-username">账号</label>
+        <LoginInput
+          id="login-username"
+          v-model="formModel.username"
+          name="username"
+          autocomplete="username"
+          placeholder="请输入手机号或账号"
+          clearable
+        />
+      </div>
+      <div class="login-form__field">
+        <label for="login-password">密码</label>
+        <LoginInput
+          id="login-password"
+          v-model="formModel.password"
+          name="password"
+          autocomplete="current-password"
+          placeholder="请输入密码"
+          type="password"
+          clearable
+          show-password
+        />
+      </div>
+      <div class="login-form__support">
+        <button type="button" class="auth-text-button" @click="privateHandleForgot">
+          忘记密码？
+        </button>
+      </div>
       <el-button
         type="primary"
-        class="login-btn"
+        native-type="submit"
+        class="login-form__submit"
         :loading="loading"
-        :disabled="!canLogin"
-        @click="privateHandleLogin"
+        :disabled="!canLogin || loading"
       >
-        {{ loading ? "登录中..." : "登录" }}
+        {{ loading ? "登录中…" : "登录" }}
       </el-button>
-    </div>
+    </form>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { ElButton } from "element-plus";
 import type { LoginResult } from "@ingot/auth-core";
+import AuthBrandLogo from "../../../components/AuthBrandLogo.vue";
 import { useAuthSession } from "../../../session";
 import LoginInput from "../components/LoginInput.vue";
 import { usePasswordLogin } from "./usePasswordLogin";
@@ -49,102 +61,65 @@ import { usePasswordLogin } from "./usePasswordLogin";
 const session = useAuthSession();
 const emit = defineEmits<{ success: [result: LoginResult] }>();
 const { formModel, loading, init, handleLogin } = usePasswordLogin();
-const canLogin = computed(
-  () => formModel.username.length > 0 && formModel.password.length > 0,
-);
+const canLogin = computed(() => formModel.username.length > 0 && formModel.password.length > 0);
 
-const privateHandleLogin = (): void => {
-  handleLogin().then((result) => {
+const privateHandleLogin = async (): Promise<void> => {
+  if (!canLogin.value || loading.value) {
+    return;
+  }
+  try {
+    const result = await handleLogin();
     emit("success", result);
-  });
+  } catch {
+    // 宿主网络层负责错误提示与挑战取消处理，保留表单供重试。
+  }
 };
 
 const privateHandleForgot = (): void => {
   session.warn("请联系管理员");
 };
 
-onMounted(() => {
-  init();
-});
+onMounted(init);
 </script>
 
-<style lang="postcss" scoped>
+<style scoped lang="postcss">
 .password-box {
-  padding-top: 70px;
+  min-width: 0;
+}
+
+.login-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: var(--in-space-5);
+}
 
-  & .title-container {
-    font-size: 18px;
-    font-weight: 400;
-    margin-bottom: 45px;
-    color: var(--in-text-color-secondary);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.login-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--in-space-2);
 
-    & .logo-image {
-      width: 48px;
-      height: 48px;
-    }
-
-    & .login-title {
-      margin: 10px auto 0;
-      line-height: 30px;
-      font-size: 20px;
-      color: #171a1d;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    & .login-desc {
-      margin: 0 auto;
-      line-height: 30px;
-      font-size: 16px;
-      color: #171a1d;
-      text-align: center;
-    }
+  & label {
+    color: var(--in-text-color);
+    font-weight: 500;
   }
+}
 
-  & .login-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    grid-gap: 12px;
-    width: 310px;
+.login-form__support {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: calc(-1 * var(--in-space-3));
+  margin-bottom: calc(-1 * var(--in-space-2));
 
-    & .forgot {
-      width: 80px;
-      height: var(--login-item-height, 48px);
-      line-height: var(--login-item-height, 48px);
-      font-size: 14px;
-      color: rgba(23, 26, 29, 0.6);
-      text-align: center;
-      cursor: pointer;
-    }
-
-    & .forgot::before {
-      content: "";
-      display: block;
-      position: absolute;
-      width: 1px;
-      height: 12px;
-      left: 0;
-      top: 50%;
-      margin-top: -6px;
-      background: rgba(126, 134, 142, 0.16);
-    }
-
-    & .login-btn {
-      --el-button-disabled-bg-color: var(--in-color-primary);
-      --el-button-disabled-text-color: rgba(255, 255, 255, 0.4);
-
-      width: 100%;
-      height: var(--login-item-height, 48px);
-      font-size: 16px;
-      border-radius: 8px;
-    }
+  & .auth-text-button {
+    font-size: var(--in-font-size-caption);
   }
+}
+
+.login-form__submit {
+  width: 100%;
+  height: var(--in-auth-control-height);
+  border-radius: var(--in-radius-control);
+  font-size: var(--in-font-size-body);
+  font-weight: 500;
 }
 </style>

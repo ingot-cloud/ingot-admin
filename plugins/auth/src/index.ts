@@ -3,5 +3,6 @@ export {
   createAuthRoutes,
   provideAuthSession,
   useAuthSession,
+  useAuthAppearance,
 } from "./plugin";
-export type { AuthAppearance, AuthSession } from "./plugin";
+export type { AuthAppearance, AuthColorScheme, AuthSession } from "./plugin";

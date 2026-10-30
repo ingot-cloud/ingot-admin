@@ -33,7 +33,8 @@
     "@ingot/http-client": "workspace:*",
     "@ingot/auth-core": "workspace:*",
     "@ingot/auth-plugin": "workspace:*",
-    "@ingot/shared": "workspace:*"
+    "@ingot/shared": "workspace:*",
+    "@ingot/appearance": "workspace:*"
   },
   "devDependencies": {
     "@iconify-json/bi": "^1.2.4",

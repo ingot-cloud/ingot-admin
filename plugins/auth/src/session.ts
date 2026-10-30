@@ -13,6 +13,7 @@ export interface AuthSession {
   includeTenantSelect: boolean;
   appearance: AuthAppearance;
   logoUrl: string;
+  logoDarkUrl?: string;
   startUrl: string;
   restoreTransaction: (tx: string) => Promise<TransactionView>;
   preAuthorize: (input: { username: string; password: string }) => Promise<LoginResult>;

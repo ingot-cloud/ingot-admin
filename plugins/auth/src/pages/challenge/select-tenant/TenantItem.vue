@@ -1,5 +1,5 @@
 <template>
-  <div class="tenant-item">
+  <button type="button" class="tenant-item" :title="name">
     <div class="avatar">
       <span class="avatar-fallback" aria-hidden="true">
         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -45,7 +45,7 @@
         />
       </svg>
     </div>
-  </div>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -80,27 +80,37 @@ const privateOnImageError = (): void => {
 
 <style scoped lang="postcss">
 .tenant-item {
-  cursor: pointer;
-  min-height: 48px;
-  margin-top: 12px;
-  padding: 10px;
-  background: #f2f2f6;
-  border-radius: 8px;
-  transition: all 0.3s;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  gap: 10px;
-  grid-gap: 10px;
+  gap: var(--in-space-3);
+  width: 100%;
+  min-height: 68px;
+  padding: var(--in-space-3);
+  border: 1px solid var(--in-border-color-light);
+  border-radius: var(--in-radius-card);
+  background: var(--in-bg-color-surface);
+  color: var(--in-text-color);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--in-motion-duration),
+    background-color var(--in-motion-duration);
+
+  &:hover {
+    border-color: var(--in-color-primary);
+    background: color-mix(in srgb, var(--in-color-primary) 5%, var(--in-bg-color-surface));
+  }
 
   & .avatar {
     position: relative;
+    flex: none;
     overflow: hidden;
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    color: #ffffff;
-    background: var(--in-color-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--in-radius-card);
+    color: var(--in-color-primary);
+    background: var(--in-auth-brand-glow);
   }
 
   & .avatar-fallback {
@@ -109,38 +119,31 @@ const privateOnImageError = (): void => {
     justify-content: center;
     width: 100%;
     height: 100%;
-    font-size: 28px;
+    font-size: 24px;
   }
 
   & .avatar-image {
     position: absolute;
     inset: 0;
-    z-index: 1;
     width: 100%;
     height: 100%;
-    background: transparent;
   }
 
   & .name {
     flex: 1;
-    display: -webkit-box;
-    word-break: break-all;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    color: #171a1d;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: var(--in-font-size-body);
+    line-height: var(--in-line-height-body);
   }
 
   & .icon {
-    width: 20px;
-    height: 20px;
-    right: 12px;
-    font-size: 20px;
-    color: rgba(23, 26, 29, 0.6);
-    line-height: 20px;
-    text-align: center;
+    display: inline-flex;
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--in-text-color-placeholder);
+    font-size: 16px;
   }
 }
 </style>
