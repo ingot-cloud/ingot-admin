@@ -91,10 +91,6 @@ export enum MenuKind {
   PAGE = "PAGE",
 }
 
-export enum PolicyScenario {
-  MANAGEMENT = "MANAGEMENT",
-}
-
 export enum AudienceKind {
   ALL = "ALL",
   SELECTED = "SELECTED",

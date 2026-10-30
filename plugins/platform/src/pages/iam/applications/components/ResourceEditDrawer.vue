@@ -18,6 +18,12 @@
       <el-form-item label="名称" required>
         <el-input v-model="draft.name" placeholder="请输入资源名称" />
       </el-form-item>
+      <el-form-item label="字段策略">
+        <el-checkbox v-model="fieldPolicy" :disabled="!fieldPolicyAllowed">接入租户字段策略</el-checkbox>
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          仅服务器声明具备能力、属于租户域且已配置字段的资源可以接入。
+        </div>
+      </el-form-item>
       <el-form-item label="允许范围">
         <el-checkbox-group v-model="draft.scopeCapabilities">
           <el-checkbox v-for="item in scopeOptions" :key="item.value" :value="item.value">
@@ -131,6 +137,14 @@ const draft = reactive<AppResourceDraft>({
   scopeCapabilities: [ScopeKind.ALL],
   fieldCapabilities: [],
 });
+const fieldPolicy = ref(false);
+const fieldPolicyAllowed = computed(
+  () =>
+    Boolean(editing.value) &&
+    props.domain === AuthorizationDomain.TENANT &&
+    Boolean(editing.value?.record.fieldPolicyEligible) &&
+    draft.fieldCapabilities.length > 0,
+);
 
 const title = computed(() => (editing.value ? "编辑资源" : "创建资源"));
 
@@ -170,7 +184,11 @@ const reset = (): void => {
   draft.name = "";
   draft.scopeCapabilities = [ScopeKind.ALL];
   draft.fieldCapabilities = [];
+  fieldPolicy.value = false;
 };
+watch(fieldPolicyAllowed, (allowed) => {
+  if (!allowed) fieldPolicy.value = false;
+});
 
 const privateAddField = (): void => {
   editingFieldIndex.value = undefined;
@@ -241,6 +259,7 @@ const privateSubmit = (): void => {
       name: draft.name.trim(),
       scopeCapabilities: draft.scopeCapabilities,
       fieldCapabilities: fields,
+      fieldPolicy: fieldPolicyAllowed.value && fieldPolicy.value,
     })
       .then(done)
       .finally(() => {
@@ -273,6 +292,7 @@ defineExpose({
       draft.name = target.record.name;
       draft.scopeCapabilities = [...target.record.scopeCapabilities];
       draft.fieldCapabilities = target.record.fieldCapabilities.map(cloneResourceField);
+      fieldPolicy.value = Boolean(target.record.fieldPolicy) && fieldPolicyAllowed.value;
     } else {
       reset();
     }

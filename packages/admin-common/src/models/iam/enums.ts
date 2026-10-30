@@ -10,7 +10,6 @@ import {
   MenuAccessMode,
   MenuKind,
   MenuMatchMode,
-  PolicyScenario,
   RoleKind,
   AuthorizationDomain,
   SelectionPurpose,
@@ -205,12 +204,6 @@ export const AudienceKindExtArray = [
 ];
 
 export const useAudienceKindEnum = () => useEnum(AudienceKindExtArray);
-
-export const PolicyScenarioExtArray = [
-  newEnumExt(PolicyScenario.MANAGEMENT, "后台管理"),
-];
-
-export const usePolicyScenarioEnum = () => useEnum(PolicyScenarioExtArray);
 
 export const ExportTaskStatusExtArray = [
   newEnumExt(ExportTaskStatus.PENDING, "排队中", "info"),

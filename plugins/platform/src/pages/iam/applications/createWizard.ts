@@ -211,6 +211,8 @@ export function asResourceDetail(resource: DraftResource): ResourceDetail<AppRes
       name: resource.name,
       scopeCapabilities: resource.scopeCapabilities,
       fieldCapabilities: resource.fieldCapabilities,
+      fieldPolicy: false,
+      fieldPolicyEligible: false,
       status: ConfigurationStatus.ENABLED,
     },
     ...emptyMeta(),

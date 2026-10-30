@@ -275,10 +275,6 @@ export function TenantAuditPageAPI(
     .then(asPage);
 }
 
-export function TenantFieldPolicyAPI(options?: RequestOptions): Promise<R<unknown>> {
-  return request.get(`${IAM_API_PREFIX}/v1/tenant/policies/fields`, undefined, options);
-}
-
 export function TenantAssignmentOptionsAPI(query: {
   departmentId?: string;
   kind: TenantAssignmentOptionKind;

@@ -18,7 +18,6 @@ import {
   MenuKind,
   MenuMatchMode,
   MemberStatus,
-  PolicyScenario,
   RoleDeltaOperation,
   RoleKind,
   ScopeBindingKind,
@@ -389,6 +388,8 @@ export interface AppResourceRecord {
   name: string;
   scopeCapabilities: ScopeKind[];
   fieldCapabilities: FieldCapability[];
+  fieldPolicy: boolean;
+  fieldPolicyEligible: boolean;
   status: ConfigurationStatus;
 }
 
@@ -403,6 +404,7 @@ export interface AppResourceUpdateInput extends VersionInput {
   name: string;
   scopeCapabilities: ScopeKind[];
   fieldCapabilities: FieldCapability[];
+  fieldPolicy: boolean;
 }
 
 export interface AppActionRecord {
@@ -1208,8 +1210,20 @@ export interface ActionRecord {
   status: ConfigurationStatus;
 }
 
+export interface FieldPolicyAction {
+  code: string;
+  name: string;
+}
+
+export interface FieldPolicyResource {
+  resourceId: string;
+  resource: FieldResourceKey;
+  name: string;
+  fields: FieldCapability[];
+  actions: FieldPolicyAction[];
+}
+
 export interface FieldRule {
-  scenario: PolicyScenario;
   fieldKey: string;
   viewerSelection: Selection;
   targetScope: ScopeExpression[];
@@ -1218,8 +1232,6 @@ export interface FieldRule {
 }
 
 export interface FieldOperationRule {
-  resource: FieldResourceKey;
-  scenario: PolicyScenario;
   actionCode: string;
   fieldKey: string;
   viewerSelection: Selection;

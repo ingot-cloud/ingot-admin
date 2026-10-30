@@ -59,10 +59,10 @@ const pages = [
   {
     domain: "TENANT",
     app: "1",
-    name: "成员访问策略",
-    path: "/org/member-policies",
-    key: "org.iam.member.policies",
-    description: "配置后台管理中的成员字段可见、编辑和筛选。",
+    name: "字段策略",
+    path: "/org/field-policies",
+    key: "org.iam.field.policies",
+    description: "按已接入资源配置字段的可见、编辑和筛选。",
   },
 ];
 const allReads = [
@@ -137,7 +137,25 @@ async function fixture(
       };
     else if (path.endsWith("/capabilities"))
       data = { context, actionCodes: codes, version: "1", expiresAt: "2099-01-01T00:00:00Z" };
-    else if (path.endsWith("/policies/fields"))
+    else if (path.endsWith("/policies/field-resources"))
+      data = [
+        {
+          resourceId: "6",
+          resource: { domain: "TENANT", applicationCode: "iam-tenant", resourceCode: "member" },
+          name: "成员",
+          fields: [
+            {
+              key: "phone",
+              label: "手机号",
+              visibilities: ["HIDDEN", "MASKED", "FULL"],
+              editable: true,
+              filterable: true,
+            },
+          ],
+          actions: [{ code: "iam-tenant:member:read", name: "查询成员" }],
+        },
+      ];
+    else if (path.includes("/policies/fields/"))
       data = detail({ defaultRevisionId: "1", rules: [], operationRules: [] });
     else if (path.includes("/dictionaries"))
       data =
@@ -201,16 +219,16 @@ test("搜索定位新注册键", async ({ page }, info) => {
   await fixture(page, domain);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(
-    domain === "PLATFORM" ? "/platform/settings/dictionaries" : "/org/member-policies",
+    domain === "PLATFORM" ? "/platform/settings/dictionaries" : "/org/field-policies",
   );
   const search = page.getByRole("textbox", { name: "搜索功能导航", exact: true });
-  await search.fill(domain === "PLATFORM" ? "字典管理" : "成员访问策略");
+  await search.fill(domain === "PLATFORM" ? "字典管理" : "字段策略");
   const result = page.getByTestId("app-bar-search-results");
-  await expect(result).toContainText(domain === "PLATFORM" ? "字典管理" : "成员访问策略");
+  await expect(result).toContainText(domain === "PLATFORM" ? "字典管理" : "字段策略");
   await search.press("Enter");
   await expect(page).toHaveURL(
     new RegExp(
-      domain === "PLATFORM" ? "/platform/settings/dictionaries$" : "/org/member-policies$",
+      domain === "PLATFORM" ? "/platform/settings/dictionaries$" : "/org/field-policies$",
     ),
   );
 });
@@ -250,11 +268,37 @@ test("平台专属：单一安全读取权限仅展示并请求对应 Tab", asyn
 
 test("租户专属：字段读取资格独立开放 Tab，通讯录策略不请求", async ({ page }) => {
   const { reads, errors } = await fixture(page, "TENANT", ["iam-tenant:field-policy:read"]);
-  await page.goto("/org/member-policies");
-  await expect.poll(() => reads.some((path) => path.endsWith("/policies/fields"))).toBe(true);
-  await expect(page.getByText("字段权限", { exact: true })).toBeVisible();
+  await page.goto("/org/field-policies");
+  await expect.poll(() => reads.some((path) => path.endsWith("/policies/field-resources"))).toBe(true);
+  await expect.poll(() => reads.some((path) => path.includes("/policies/fields/"))).toBe(true);
+  await expect(page.getByRole("button", { name: "成员", exact: true })).toBeVisible();
   await expect(page.getByText("通讯录可见范围", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "保存", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "添加规则", exact: true })).toHaveCount(0);
   expect(reads.some((path) => path.endsWith("/policies/directory"))).toBe(false);
+  expect(errors).toEqual([]);
+});
+
+test("租户专属：字段策略用资源列表和规则对话框，不展示默认策略版本", async ({ page }) => {
+  const { errors } = await fixture(page, "TENANT", [
+    "iam-tenant:field-policy:read",
+    "iam-tenant:field-policy:update",
+  ]);
+  await page.goto("/org/field-policies");
+  await expect(page.getByText("默认策略版本")).toHaveCount(0);
+  await page.getByRole("button", { name: "添加规则", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("添加规则", { exact: true })).toBeVisible();
+  await expect(dialog.getByRole("radio", { name: "可见性" })).toBeChecked();
+  await expect(dialog.getByRole("radio", { name: "操作" })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "请选择成员" })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "请选择部门" })).toBeVisible();
+  await expect(dialog.getByRole("combobox", { name: "目标范围" })).toBeVisible();
+  await expect(dialog.getByText("全部对象", { exact: true })).toBeVisible();
+  await dialog.locator(".el-radio").filter({ hasText: "操作" }).click();
+  await expect(dialog.getByRole("combobox", { name: "操作" })).toBeVisible();
+  await expect(dialog.getByRole("checkbox", { name: "可筛选" })).toBeEnabled();
+  await expect(dialog.getByRole("checkbox", { name: "可编辑" })).toBeDisabled();
   expect(errors).toEqual([]);
 });
