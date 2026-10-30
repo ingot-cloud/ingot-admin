@@ -7,7 +7,10 @@
 集中配置入口：
 
 - `apps/admin/src/header.ts` 的 `createAdminHeader()`
+- `apps/admin-platform/src/header.ts` 的 `createAdminHeader()`
 - create-app 生成应用的 `src/header.ts`
+
+租户管理台与平台管理台都使用 `navigation.source: "applications"`：顶栏显示已授权应用，侧栏只显示当前应用菜单。下面的代码块说明 configured 模式怎么写，不是这两个宿主的现行配置。
 
 省略列表使用默认值：小部件为全屏、设置；用户菜单为切换组织、修改密码、退出登录。显式传入数组视为完整列表，空数组清空。用户下拉会在头像区下方、退出登录上方固定画出分割线；其余分组再用 `{ type: InAdminHeaderUserMenuItemType.Divider, key }`。
 
