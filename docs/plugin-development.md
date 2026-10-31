@@ -10,9 +10,9 @@
 | `plugins/security` | `@ingot/security-plugin` | `securityPlugin` | `ingot-security` |
 | `plugins/org` | `@ingot/org-plugin` | `orgPlugin` | `ingot-org` |
 | `plugins/member` | `@ingot/member-plugin` | `memberPlugin` | `ingot-member` |
-| `plugins/auth` | `@ingot/auth-plugin` | `createAuthRoutes` / `provideAuthSession` | 无（不是 `InAdminPlugin`） |
+| `plugins/auth` | `@ingot/auth-plugin` | `createAuthPlugin` | `ingot-auth` |
 
-登录站页面模块是 `plugins/auth`（`@ingot/auth-plugin`）。它同样通过 `src/plugin.ts` 作为宿主编译入口，导出 `createAuthRoutes` / `provideAuthSession`，**不是** `InAdminPlugin`，不要写进管理台 `plugins.ts`。平台登录根通过 `includeTenantSelect: false` 不装配选租户流程。
+同源登录页面由 `plugins/auth`（`@ingot/auth-plugin`）承载。两个管理 App 在 `plugins.ts` 中注册 `createAuthPlugin(createSameOriginAuthSession)`：工厂返回符合 `InAdminPlugin` 的插件，通过公开静态路由挂载 `/login/`，认证适配由 admin-core 公共入口注入。平台/租户行为来自宿主的 `login.entry`，平台不进入租户选择；没有独立登录 App。
 
 Dashboard 属于 platform 插件，canonical key 为 `platform.dashboard`。
 

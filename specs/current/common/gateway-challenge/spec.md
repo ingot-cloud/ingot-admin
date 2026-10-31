@@ -10,13 +10,13 @@
 
 ### In Scope
 
-- `ingot-login` 与 `ingot-admin` 的 axios 412 拦截
+- 两个管理宿主内登录与业务请求的统一 axios 412 拦截
 - 根组件 `ChallengeHost` + 既有 verifition 滑块
-- `@ingot/utils` 契约解析、同 scope 队列、重试上限 2
+- `@ingot/shared` 契约解析、同 scope 队列、重试上限 2
 
 ### Out of Scope
 
-- 把 anji 滑块 SDK 抽到 `packages/`
+- 替换第三方滑块算法
 - SMS / EMAIL 挑战、`/vc/slider/**`
 - 把 PassToken 写入 JSON body 或 query
 
@@ -80,5 +80,7 @@
 
 ## 验收标准
 
-- [x] login 与 admin 均拦截 412 + `CHALLENGE_REQUIRED`
+- [x] 同源登录与管理业务均拦截 412 + `CHALLENGE_REQUIRED`
 - [x] PassToken / scope 只出现在 Header；`/vc/**` 不套拦截
+
+2026-10-31宿主收口：验证组件位于admin-core共享层，各App仅一个ChallengeHost；auth-plugin不再另装solver。重试保留事务、恢复明文快照并重建HYBRID nonce/时间戳，保留原身份纪元，身份已切换则取消旧请求。

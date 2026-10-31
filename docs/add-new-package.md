@@ -144,7 +144,7 @@ packages/
       "path": "./apps/admin"
     },
     {
-      "path": "./apps/auth"
+      "path": "./apps/admin-platform"
     },
     {
       "path": "./packages/shared"
@@ -175,7 +175,7 @@ packages/
 #### 4.3 在 Vite 配置中添加别名（两个应用都要添加）：
 
 ```js
-// apps/auth/vite.config.ts 和 apps/admin/vite.config.ts
+// apps/admin-platform/vite.config.ts 和 apps/admin/vite.config.ts
 resolve: {
   alias: {
     "@": fileURLToPath(new URL("./src", import.meta.url)),

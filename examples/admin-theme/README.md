@@ -25,7 +25,7 @@ await bootstrapAdminApp({
 });
 ```
 
-`apps/auth` 不接入本协议。回退默认外观只需改回 `theme: defaultAdminTheme` 并移除示例 CSS。
+登录插件只在 `/login/` 临时应用登录配色，离开时恢复管理主题。回退默认外观只需改回 `theme: defaultAdminTheme` 并移除示例 CSS。
 
 ## 独立 layout
 

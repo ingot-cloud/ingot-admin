@@ -23,7 +23,7 @@
 
 - 在线上传、远程加载、主题市场或终端用户选择主题包
 - 业务页面模板替换
-- `apps/auth` 登录应用
+- 公开 `/login/` 页面
 - `layout.simple` / `layout.iframe` / `layout.external` 的主题替换入口
 
 ## 用户场景

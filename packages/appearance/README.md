@@ -1,6 +1,6 @@
 # Ingot 共享外观资源
 
-`@ingot/appearance` 提供无运行时依赖的 CSS/SVG 公共资源，由 admin-core 和两个登录站共用。它不提供页面、主题注册或管理台外壳。
+`@ingot/appearance` 提供无运行时依赖的 CSS/SVG 公共资源，由 admin-core 与同源登录插件共用，随两个管理宿主交付。它不提供页面、主题注册或管理台外壳。
 
 - `styles/tokens.css`：默认浅色语义 Token。
 - `styles/dark/tokens.css`：`html.dark` 深色覆盖。

@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "scope": "production frontend + controlled BFF fixture",
+  "modes": [
+    "HTTPS loopback IP dual-port",
+    "HTTPS separate localhost hosts"
+  ],
+  "cases": [
+    "no eager transaction/bootstrap/captcha",
+    "simulated hour dwell",
+    "HYBRID whole request decrypted",
+    "multi-tenant same-page selection",
+    "lost response / one resume",
+    "forced-password gate",
+    "normal dynamic routes and saved deep-link",
+    "empty-menu stable access screen",
+    "Secure HttpOnly cookies and IP cookie overlap",
+    "app-local logout",
+    "explicit exit intent",
+    "legacy local redirects",
+    "360px layout",
+    "theme scope restored",
+    "blocked cookie bounded failure",
+    "412 challenge keyboard cancellation"
+  ],
+  "limits": [
+    "fixture BFF is not real Auth/IAM",
+    "self-signed test TLS ignores trust errors; customer CA/SAN trust still requires acceptance",
+    "real-hour sleep and production rollback pending"
+  ]
+}

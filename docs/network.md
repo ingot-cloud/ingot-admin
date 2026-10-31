@@ -18,7 +18,7 @@ admin-core net（默认入口）：鉴权头、信封、412、全局提示、进
 |----|------|------|
 | `@ingot/http-client` | admin-core、auth 适配器 | `createHttpClient`、拦截器工厂、`RequestOptions`、`ApiError` |
 | `@ingot/admin-core` 的 net | 管理台 App、官方插件、业务页面 | 单例 `request`，内置 Header / Envelope / Challenge |
-| `apps/auth` 的 net | 登录应用 | 自己组 `createHttpClient`，不是 `bootstrapAdminApp` |
+| `@ingot/auth-core` API | 同源登录插件 | 使用 App 注入的 admin-core Http，复用唯一挑战宿主和 HYBRID |
 
 插件和页面不要直接 `createHttpClient`。统一：
 

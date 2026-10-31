@@ -1,0 +1,119 @@
+{
+  "status": "passed",
+  "scope": "production frontend + controlled BFF fixture",
+  "modes": [
+    "HTTPS loopback IP dual-port",
+    "HTTPS separate localhost hosts"
+  ],
+  "cases": [
+    "no eager transaction/bootstrap/captcha",
+    "simulated hour dwell",
+    "HYBRID whole request decrypted",
+    "multi-tenant same-page selection",
+    "lost response / one resume",
+    "forced-password gate",
+    "normal dynamic routes and saved deep-link",
+    "empty-menu stable access screen",
+    "Secure HttpOnly cookies and IP cookie overlap",
+    "app-local logout via actual UI / native cross-tab logout",
+    "existing-session single entry",
+    "completed transaction reload single confirmation",
+    "organization switch forced form with existing cookie",
+    "native identity event one peer bootstrap",
+    "slow logout abort / immediate fresh login cookie preserved",
+    "browser back after logout rejects old identity once",
+    "explicit exit intent",
+    "legacy local redirects",
+    "360px layout",
+    "theme scope restored",
+    "blocked cookie bounded failure",
+    "412 challenge keyboard cancellation"
+  ],
+  "lifecycleEvidence": [
+    {
+      "mode": "ip",
+      "entry": "platform",
+      "restored": [
+        "POST /api/bff/auth/csrf",
+        "GET /api/bff/auth/platform/transactions/:id",
+        "GET /api/bff/auth/me",
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "afterBack": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "peerIdentityRefresh": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "loggedOut": [
+        "POST /api/bff/auth/csrf",
+        "DELETE /api/bff/auth/logout"
+      ]
+    },
+    {
+      "mode": "ip",
+      "entry": "tenant",
+      "restored": [
+        "POST /api/bff/auth/csrf",
+        "GET /api/bff/auth/tenant/transactions/:id",
+        "GET /api/bff/auth/me",
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "afterBack": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "peerIdentityRefresh": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "loggedOut": [
+        "POST /api/bff/auth/csrf",
+        "DELETE /api/bff/auth/logout"
+      ]
+    },
+    {
+      "mode": "domains",
+      "entry": "platform",
+      "restored": [
+        "POST /api/bff/auth/csrf",
+        "GET /api/bff/auth/platform/transactions/:id",
+        "GET /api/bff/auth/me",
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "afterBack": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "peerIdentityRefresh": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "loggedOut": [
+        "POST /api/bff/auth/csrf",
+        "DELETE /api/bff/auth/logout"
+      ]
+    },
+    {
+      "mode": "domains",
+      "entry": "tenant",
+      "restored": [
+        "POST /api/bff/auth/csrf",
+        "GET /api/bff/auth/tenant/transactions/:id",
+        "GET /api/bff/auth/me",
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "afterBack": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "peerIdentityRefresh": [
+        "GET /api/iam/v1/me/bootstrap"
+      ],
+      "loggedOut": [
+        "POST /api/bff/auth/csrf",
+        "DELETE /api/bff/auth/logout"
+      ]
+    }
+  ],
+  "limits": [
+    "fixture BFF is not real Auth/IAM",
+    "self-signed test TLS ignores trust errors; customer CA/SAN trust still requires acceptance",
+    "real-hour sleep and production rollback pending"
+  ]
+}

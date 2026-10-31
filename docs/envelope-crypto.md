@@ -1,6 +1,6 @@
 # 信封加密（Envelope Crypto）前端对接
 
-本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/shared/crypto` 包，`admin-core` 与登录应用 `apps/auth` 通过各自的 axios 拦截器接入，对业务代码透明。网络分层见 [network.md](./network.md)。
+本文说明前端信封加密（HYBRID）的实现原理、配置方式与内部流程。通用加解密能力沉淀在 `@ingot/shared/crypto` 包，管理页与同源登录插件通过 `admin-core` 同一套 axios 拦截器接入，对业务代码透明。网络分层见 [network.md](./network.md)。
 
 ## 1. 背景与原理
 
@@ -132,7 +132,7 @@ flowchart TD
 
 关键点：
 
-- FULL 响应下 `code` 也是密文，解密必须早于业务拦截器（`ingot-admin` 中响应信封拦截器 `order = 5`，早于 `biz` 的 `order = 10`；`ingot-login` 中在 `axiosResponseToR` 拍平前解密）。
+- FULL 响应下 `code` 也是密文，解密必须早于业务拦截器（`ingot-admin` 中响应信封拦截器 `order = 5`，早于 `biz` 的 `order = 10`；同源登录复用该管理宿主的 Http 与响应处理）。
 - 仅响应加密时请求体/query 保持明文，但仍握手发送协议头以携带 CEK。
 - `query` 模式加密 `config.params`（`Http.get(url, params)` 合并后的对象），密文由 axios 序列化时 URL 编码，勿手动 `encodeURIComponent` 避免双重编码。
 
@@ -147,7 +147,7 @@ flowchart TD
 
 注意：
 
-- sessionStorage 按 **origin（协议+主机+端口）** 隔离，`login.ingotcloud.top` 与 `admin.ingotcloud.top` 各自缓存，**不能跨子域共享**（也不会像 Cookie 那样随每个 API 请求自动携带）。
+- sessionStorage 按 **origin（协议+主机+端口）** 隔离，平台与租户管理入口各自缓存，**不能跨 origin 共享**；同一入口的登录与管理页共用缓存（也不会像 Cookie 那样随每个 API 请求自动携带）。
 - 不使用 Cookie 存公钥，避免每个接口请求都带上公钥数据。
 
 轮换与容错（内存 + sessionStorage 同步更新）：
@@ -174,7 +174,7 @@ flowchart TD
 应用接入：
 
 - 管理台：`packages/admin-core/src/net/crypto.ts`、`packages/admin-core/src/net/interceptor/request/envelope.ts`、`packages/admin-core/src/net/interceptor/response/envelope.ts`。
-- 登录应用：`apps/auth/src/net/crypto.ts`、`apps/auth/src/net/interceptor/request.ts`、`apps/auth/src/net/interceptor/response.ts`。
+- 同源登录：`packages/auth-core/src/api.ts` 声明 whole 请求加密，复用上述 admin-core 网络拦截器与挑战宿主。
 
 公钥端点：`GET /crypto/public-keys`（匿名可访问），返回 `active=true` 的 `{kid, publicKey}` 并缓存。
 

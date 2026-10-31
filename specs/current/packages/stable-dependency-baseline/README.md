@@ -11,7 +11,7 @@ workspace 统一 Node.js 22 / pnpm 10 与 Vue 生态稳定版本。两个应用�
 - [.nvmrc](../../../../.nvmrc)
 - [.gitlab-ci.yml](../../../../.gitlab-ci.yml)
 - [apps/admin/package.json](../../../../apps/admin/package.json)
-- [apps/auth/package.json](../../../../apps/auth/package.json)
+- [packages/auth-core/package.json](../../../../packages/auth-core/package.json)
 - [packages/shared/package.json](../../../../packages/shared/package.json)
 
 ## 对接接口

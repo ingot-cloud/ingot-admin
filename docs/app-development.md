@@ -33,7 +33,7 @@ export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
 ];
 ```
 
-跳转登录只走本站 `/auth/start`，由 BFF 按 Host 注入的 appId 读 Nacos 回跳。
+跳转登录只走本站 `/login/`；点击后由当前同源 API 准备事务，BFF 按可信 Host 注入的 appId 选择应用。
 
 ## 裁剪插件
 
@@ -57,7 +57,7 @@ export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
 - `VITE_APP_NET_BASE_URL` 与超时
 - 布局开关：`VITE_APP_SETTINGS_*`
 
-登录应用是独立的 `apps/auth`（租户，:1798）和 `apps/auth-platform`（平台，:1799），不属于管理台插件体系，也不接入管理台主题协议。
+登录页面由 `@ingot/auth-plugin` 承载，分别安装到 `apps/admin` 与 `apps/admin-platform`，路由均为 `/login/`。App 注入 `createSameOriginAuthSession`，登录和管理同源；登录配色在离开页面时恢复管理主题。没有独立登录 App。部署见 [双入口指南](../deploy/same-origin/README.md)。
 
 更换主题见 [主题开发](./theme-development.md)。顶栏五区配置见 [顶栏 APP 配置](./app-header.md)。图标与内网 Iconify 打包见 [图标](./icons.md)。
 

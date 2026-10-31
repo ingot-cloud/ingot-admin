@@ -56,7 +56,7 @@
 {
   "references": [
     { "path": "./apps/admin" },
-    { "path": "./apps/auth" },
+    { "path": "./apps/admin-platform" },
     { "path": "./packages/shared" }
   ]
 }

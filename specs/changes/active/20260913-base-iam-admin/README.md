@@ -1,5 +1,7 @@
 # 20260913-base-iam-admin
 
+> 2026-10-31 登录范围已由[同源登录归档](../../archive/2026/20261031-ingot-login-same-origin/README.md)接管，用户确认两端登录、退出、切换组织和多标签页正常；当前页面行为见[密码登录基线](../../../current/ingot-login/password-login/README.md)。本主change业务进度与历史四站证据保留，其他未验任务不自动完成。
+
 > 状态：implementing
 > 2026-10-08 用户批准强制改密页面与受限顶栏优化，approved → implementing；设计、任务及人工验收见 [FORCED-PASSWORD-CHANGE](./FORCED-PASSWORD-CHANGE.md) 的 FH01–FH04。
 > FH01–FH03 开发、34 项定向回归及双入口宽/窄屏 4 个模拟浏览器检查完成，增量 validating；FH04 与 FP05 真实人工验收待执行。

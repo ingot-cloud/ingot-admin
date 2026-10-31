@@ -24,7 +24,7 @@ App 须在 `package.json` 显式声明主题 workspace 依赖（如 `"@ingot/the
 - `apps/admin` 与 create-app 生成应用显式传入 `defaultAdminTheme`
 - 未配置 `theme` 的应用回退到同一套默认主题
 - 协议版本不匹配时，在挂载前抛出包含主题标识的中文错误
-- `apps/auth` 不使用本协议
+- 登录插件临时应用独立登录配色，离开时恢复管理主题
 
 回退默认外观：改回 `theme: defaultAdminTheme`，并移除自定义主题 CSS。
 

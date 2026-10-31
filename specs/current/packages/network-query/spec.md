@@ -155,7 +155,7 @@ HTTP/2 SHALL 配在浏览器连接的 TLS 终止点。应用容器 `proxy.conf` 
 
 - Query 重试最多 1 次，且仅网络 / 超时 / 502–504
 - NProgress 只计前台请求，静默 Query 不参与
-- HTTP 401、业务码 S0401 / invalid_token 均视为未授权并跳转登录；`feedback: "silent"` 不得跳过该处理
+- 当前身份业务请求的HTTP 401、S0401/invalid_token进入一次本地清理与强制表单，保留安全深链；silent不能跳过。登录页与BFF认证接口的401由认证流处理，不递归退出；旧身份响应在错误钩子前按取消丢弃。
 - 签退、412、信封加解密与 kid 轮换语义不变
 - `@tanstack/vue-query` 锁定 catalog `5.102.2`
 - 网络分层与 order 表以 [docs/network.md](../../../../docs/network.md) 为准
@@ -175,3 +175,5 @@ HTTP/2 SHALL 配在浏览器连接的 TLS 终止点。应用容器 `proxy.conf` 
 - [x] App 只能追加拦截器；官方 order 可引用
 - [x] 容器 Nginx keepalive 与协议边界已写入部署文档
 - [x] `docs/network.md` 覆盖 http-client 与 admin-core net
+
+2026-10-31身份隔离：请求在异步准备前标记纪元，准备后与响应规范化前再核对；旧成功/401/重试不能影响新身份。重验/退出清Query与旧UI，受保护页面完成bootstrap与导航后恢复挂载；公开登录页不随KeepAlive身份key重建。详见[同源登录](../../ingot-login/password-login/spec.md)。

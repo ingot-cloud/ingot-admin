@@ -27,7 +27,7 @@
     "build:apps": "pnpm --filter \"./apps/*\" build",
     "build": "pnpm build:packages && pnpm build:apps",
     "build:admin": "pnpm build:packages && pnpm --filter @ingot/admin-app build",
-    "build:login": "pnpm build:packages && pnpm --filter @ingot/auth-app build"
+    "build:admin-platform": "pnpm build:packages && pnpm build:themes && pnpm --filter @ingot/admin-platform-app build"
   }
 }
 ```
@@ -127,9 +127,9 @@ pnpm add -D turbo
     "build:shared": "pnpm --filter @ingot/shared build",
     "build:admin-core": "pnpm --filter @ingot/admin-core build",
     "build:admin": "pnpm --filter @ingot/admin-app build",
-    "build:login": "pnpm --filter @ingot/auth-app build",
+    "build:admin-platform": "pnpm --filter @ingot/admin-platform-app build",
     "build:packages": "pnpm --filter \"./packages/*\" build",
-    "build:apps": "run-p build:admin build:login",
+    "build:apps": "run-p build:admin build:admin-platform",
     "build": "run-s build:packages build:apps"
   }
 }
@@ -241,7 +241,7 @@ packages/
     { "path": "./packages/shared" },
     { "path": "./packages/admin-core" },
     { "path": "./apps/admin" },
-    { "path": "./apps/auth" }
+    { "path": "./apps/admin-platform" }
   ]
 }
 ```

@@ -10,12 +10,10 @@ pnpm build:packages
 pnpm dev:admin
 ```
 
-平台管理台与两套登录：
+平台管理台（两个管理入口均内置 `/login/`）：
 
 ```bash
 pnpm dev:admin-platform
-pnpm dev:login
-pnpm dev:login-platform
 ```
 
 首次 clone 后必须先构建 `packages/`，否则类型声明和运行时入口还不存在。详见 [首次构建](./docs/getting-started.md)。
@@ -37,19 +35,19 @@ ingot-admin/
 ├── apps/
 │   ├── admin/              # 租户管理台
 │   ├── admin-platform/     # 平台管理台
-│   ├── auth/               # 租户登录应用
-│   ├── auth-platform/      # 平台登录应用
 │   └── dev-portal/         # Ingot 开发者中心（文档 + 本地创建）
 ├── plugins/
 │   ├── platform/           # 平台控制面 + Dashboard
 │   ├── security/           # 安全中心
 │   ├── org/                # 组织管理
-│   └── member/             # 会员管理
+│   ├── member/             # 会员管理
+│   └── auth/               # 同源登录页，安装到管理宿主
 ├── themes/                 # 正式主题包，初期可为空
 ├── packages/
 │   ├── admin-core/         # 管理台 runtime、shell、插件契约与默认主题
 │   ├── admin-common/       # 多插件共享的无页面能力
 │   ├── shared/             # 框架无关工具与 crypto
+│   ├── auth-core/          # 无页面认证契约与状态机
 │   └── vite-config/        # App / library / 源码插件 Vite 配置
 └── examples/
     ├── admin-plugin/       # 完整插件示例
@@ -59,11 +57,9 @@ ingot-admin/
 ## 常用命令
 
 ```bash
-pnpm dev                      # 并行启动租户/平台 admin + 两套 login
+pnpm dev                      # 并行启动租户和平台管理台，各自包含登录页
 pnpm dev:admin                # 租户后台 http://tenant.localhost:5798
 pnpm dev:admin-platform       # 平台后台 http://platform.localhost:5799
-pnpm dev:login                # 租户登录 http://tenant-login.localhost:1798
-pnpm dev:login-platform       # 平台登录 http://platform-login.localhost:1799
 pnpm dev:portal               # 开发者中心 :5801
 pnpm dev:packages             # watch 构建全部 packages
 pnpm dev:admin-with-packages  # admin + packages watch
@@ -72,7 +68,7 @@ pnpm preview:admin-platform   # 预览平台 admin 生产构建
 pnpm build                    # packages → themes → apps
 pnpm build:packages           # 构建共享包
 pnpm build:themes             # 构建正式主题（空目录成功退出）
-pnpm build:apps               # 构建两套 admin + 两套 login
+pnpm build:apps               # 构建租户和平台两份管理台产物
 pnpm build:admin              # 构建租户后台（含 packages 与 themes）
 pnpm build:admin-platform     # 构建平台后台（含 packages 与 themes）
 pnpm type-check               # packages + themes + plugins + apps
@@ -87,7 +83,7 @@ pnpm clean                    # 清理 workspace node_modules 与 dist
 pnpm clean:plugins            # 仅清理插件
 ```
 
-本机 DEV 用 `tenant.localhost` / `tenant-login.localhost` / `platform.localhost` / `platform-login.localhost` 打开（浏览器直接回环，不必写 hosts），不要用光杆 `localhost:端口`。
+本机 DEV 登录地址为 `http://tenant.localhost:5798/login/` 和 `http://platform.localhost:5799/login/`（浏览器直接回环，不必写 hosts），与 Nacos 注册的 origin 保持一致。
 
 ## 文档
 
@@ -110,3 +106,5 @@ pnpm clean:plugins            # 仅清理插件
 - Element Plus 2.14、Pinia 4、Vue Router 5
 - UnoCSS + PostCSS、Axios
 - pnpm 10.12 workspace
+
+内部登录已合并到两个管理宿主的 `/login/`：平台 `http://platform.localhost:5799/login/`，租户 `http://tenant.localhost:5798/login/`。生产支持双域名和纯 IP HTTPS 双端口，见 [同源部署指南](./deploy/same-origin/README.md)。

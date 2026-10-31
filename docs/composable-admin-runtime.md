@@ -13,9 +13,9 @@
 | `plugins/security` | 安全中心；导出 `securityPlugin` |
 | `plugins/org` | 组织管理；导出 `orgPlugin` |
 | `plugins/member` | 会员管理；导出 `memberPlugin` |
-| `plugins/auth` | 登录站页面；导出 `createAuthRoutes`，不是 `InAdminPlugin` |
-| `apps/admin` | 租户管理台 composition root，org + security |
-| `apps/admin-platform` | 平台管理台 composition root，platform + security |
+| `plugins/auth` | 同源登录页面；`createAuthPlugin` 注册公开静态路由 `/login/`，由宿主注入认证适配 |
+| `apps/admin` | 租户管理台 composition root，auth + org |
+| `apps/admin-platform` | 平台管理台 composition root，auth + platform + security |
 
 概念总览见 [开发模式](./development-model.md)。
 
@@ -24,8 +24,8 @@
 ```bash
 pnpm install
 pnpm build:packages
-pnpm dev:admin     # :5798 默认全插件后台
-pnpm dev:login     # 登录应用
+pnpm dev:admin     # tenant.localhost:5798，含 /login/
+pnpm dev:admin-platform # 平台管理与同源登录
 pnpm create:app    # :5801 可视化脚手架（仅本地）
 ```
 
@@ -33,7 +33,7 @@ pnpm create:app    # :5801 可视化脚手架（仅本地）
 
 ```bash
 pnpm build:admin
-pnpm build:login
+pnpm build:admin-platform
 ```
 
 隔离消费验证：
@@ -59,7 +59,7 @@ await bootstrapAdminApp({
 
 约束：
 
-- 插件 `id`：`ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`
+- 插件 `id`：`ingot-platform`、`ingot-security`、`ingot-org`、`ingot-member`、`ingot-auth`
 - 官方插件 `dependsOn` 必须包含 `ingot-admin-core`，彼此不得互相依赖
 - 页面稳定键：官方 `{domain}.*`，布局 `layout.*`，系统 `common.*`，App 本地用 `appCode`（`-` 转 `.`）
 - Vue / Router / Pinia / Element Plus / VueUse 必须单实例（peer + Vite `dedupe`）
@@ -125,7 +125,7 @@ pnpm create:app:cli      # 交互式 CLI
 ## Docker / CI
 
 - `apps/admin/Dockerfile` + `proxy.conf`：Nginx SPA + `/api` 反代
-- 根 `.gitlab-ci.yml`：`build-admin` / `docker-admin` / `deploy-admin`，`changes` 包含 `plugins/**/*`
+- 根 `.gitlab-ci.yml`：admin 和 admin-platform 各自 build / docker / deploy，`changes` 包含 `plugins/**/*`；只发布两份管理台产物，部署方式见 [同源双入口](../deploy/same-origin/README.md)
 
 协议边界：浏览器到公网 TLS 终止代理使用 HTTP/2；应用容器继续 `listen 3000` 明文 HTTP/1.1。容器 Nginx 通过 `upstream ingot_gateway { keepalive 32; }` 复用到 gateway 的 HTTP/1.1 连接，`/api/` 仍使用 `proxy_http_version 1.1` 与空 `Connection` header。不要在应用容器配置证书或明文 h2c。
 

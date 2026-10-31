@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [平台与租户管理台同源登录](./changes/archive/2026/20261031-ingot-login-same-origin/README.md)（completed，2026-10-31用户确认登录、退出、切换组织、多标签页）；[当前能力](./current/ingot-login/password-login/README.md)。
+
 - [部门批量导入导出页](./changes/archive/2026/20261021-org-department-workbook/README.md)（completed，2026-10-21 用户确认测试通过）；[当前能力](./current/org/members-departments/README.md)
 
 - [成员批量变更部门与导入导出页](./changes/archive/2026/20261020-org-member-batch/README.md)（completed，2026-10-21 用户确认验证成功）；[当前能力](./current/org/members-departments/README.md)
