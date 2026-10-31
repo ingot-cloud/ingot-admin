@@ -135,7 +135,7 @@ const isFile = (filePath: string): boolean =>
 
 const OFFICIAL_PLUGIN_ENTRY_FILES = ["plugin.ts", "index.ts"] as const;
 
-/** 官方源码插件入口：登录站等非 InAdminPlugin 模块也可使用 `src/index.ts`。 */
+/** 官方源码插件入口：优先 `src/plugin.ts`，也支持通过 `src/index.ts` 统一导出。 */
 export const resolveOfficialPluginEntry = (srcDir: string): string => {
   for (const name of OFFICIAL_PLUGIN_ENTRY_FILES) {
     const candidate = path.resolve(srcDir, name);

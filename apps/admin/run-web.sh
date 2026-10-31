@@ -1,22 +1,20 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-version=0.1.0
-serviceName=ingot-admin-${version}
-imageName=docker-registry.ingotcloud.top/ingot/web-admin:${version}
-
-VIRTUAL_HOST=admin.ingotcloud.top
+version=${INNER_VERSION:-0.1.0}
+service_name=ingot-admin-${version}
+image_name=docker-registry.ingotcloud.top/ingot/web-admin:${version}
+VIRTUAL_HOST=${VIRTUAL_HOST:-admin.ingotcloud.top}
 VIRTUAL_PORT=3000
 
-# 停止运行当前容器
-docker ps -q --filter name="${serviceName}" | xargs -r docker rm -f
-# 删除当前镜像
-docker images -q --filter reference="${imageName}" | xargs -r docker rmi -f
-# 拉取最新镜像
-docker pull ${imageName}
-# run
-docker run -d --name ${serviceName} --restart always \
+# 容器仅接入受控边缘所在网络，不发布明文端口；纯 IP 部署使用 deploy/same-origin 样例。
+docker pull "${image_name}"
+if docker container inspect "${service_name}" >/dev/null 2>&1; then
+    docker rm -f "${service_name}"
+fi
+docker run -d --name "${service_name}" --restart always \
     --network ingot-net \
-    -e VIRTUAL_HOST=${VIRTUAL_HOST} \
-    -e VIRTUAL_PORT=${VIRTUAL_PORT} \
-    -e LETSENCRYPT_HOST=${VIRTUAL_HOST} \
-    ${imageName}
+    -e "VIRTUAL_HOST=${VIRTUAL_HOST}" \
+    -e "VIRTUAL_PORT=${VIRTUAL_PORT}" \
+    -e "LETSENCRYPT_HOST=${VIRTUAL_HOST}" \
+    "${image_name}"

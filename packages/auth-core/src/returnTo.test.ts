@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { consumeExplicitLogout, markExplicitLogout, sanitizeReturnTo, takeReturnTo } from "./returnTo";
+import {
+  consumeExplicitLogout,
+  saveReturnTo,
+  markExplicitLogout,
+  sanitizeReturnTo,
+  takeReturnTo,
+} from "./returnTo";
 import { EXPLICIT_LOGOUT_STORAGE_KEY, RETURN_TO_STORAGE_KEY } from "./types";
 
 const memoryStorage = (): Storage => {
@@ -43,4 +49,33 @@ describe("markExplicitLogout", () => {
     expect(consumeExplicitLogout(storage)).toBe(true);
     expect(consumeExplicitLogout(storage)).toBe(false);
   });
+});
+
+// 避免站内登录返回路径自循环以及编码后的伪相对路径。
+describe("normalized return path", () => {
+  it("拒绝登录自循环、控制字符与编码斜线", () => {
+    for (const path of [
+      "/login/",
+      "/auth/start?tx=old",
+      "/a/../login/",
+      "/%2F%2Fevil.example",
+      "/%5cevil.example",
+      "/%0alogin",
+    ])
+      expect(sanitizeReturnTo(path)).toBeNull();
+    expect(sanitizeReturnTo("/a/../settings?tab=security#password")).toBe(
+      "/settings?tab=security#password",
+    );
+  });
+});
+
+it("实际应用使用各自命名空间，另一应用不能消费返回路径或退出意图", () => {
+  const storage = memoryStorage();
+  saveReturnTo("/platform/settings", storage, "platform-admin");
+  saveReturnTo("/org/members", storage, "tenant-admin");
+  markExplicitLogout(storage, "platform-admin");
+  expect(consumeExplicitLogout(storage, "tenant-admin")).toBe(false);
+  expect(consumeExplicitLogout(storage, "platform-admin")).toBe(true);
+  expect(takeReturnTo(storage, "tenant-admin")).toBe("/org/members");
+  expect(takeReturnTo(storage, "platform-admin")).toBeNull();
 });

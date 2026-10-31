@@ -6,6 +6,7 @@ import { StatusCode } from "@/net/status-code";
 const IamBootstrapAPI = vi.fn();
 const IamCapabilitiesAPI = vi.fn();
 const PasswordChangeStateAPI = vi.fn();
+const LogoutAPI = vi.fn<(signal?: AbortSignal) => Promise<void>>(() => Promise.resolve());
 vi.mock("@/api/common/password", () => ({
   PasswordChangeStateAPI: (...args: unknown[]) => PasswordChangeStateAPI(...args),
 }));
@@ -16,7 +17,7 @@ vi.mock("@/api/common/iam", () => ({
 }));
 
 vi.mock("@/api/common/auth", () => ({
-  LogoutAPI: vi.fn(() => Promise.resolve()),
+  LogoutAPI: (...args: unknown[]) => LogoutAPI(...args),
 }));
 
 const runtimeState = vi.hoisted(() => ({ expectedDomain: "PLATFORM" as "PLATFORM" | "TENANT" }));
@@ -46,6 +47,7 @@ vi.mock("@/query/client", () => ({
 
 const {
   DomainMismatchError,
+  beginIdentitySwitch,
   ensureSessionBootstrap,
   publishIdentityInvalidated,
   requirePasswordChange,
@@ -53,6 +55,7 @@ const {
   resetSessionBootstrap,
   usePermissions,
   useUserInfoStore,
+  useAuthStore,
 } = await import("./auth");
 
 const bootstrapData = {
@@ -94,11 +97,174 @@ describe("session bootstrap", () => {
     IamBootstrapAPI.mockReset();
     IamCapabilitiesAPI.mockReset();
     PasswordChangeStateAPI.mockReset();
+    LogoutAPI.mockReset().mockResolvedValue(undefined);
   });
 
   afterEach(() => {
     resetSessionBootstrap();
     vi.useRealTimers();
+  });
+
+  it("退出并发合并，未授权本地退出不再请求远端撤销", async () => {
+    const auth = useAuthStore();
+    const first = auth.logout(true);
+    const second = auth.logout(true);
+    await Promise.all([first, second]);
+    expect(LogoutAPI).not.toHaveBeenCalled();
+    expect(auth.loggingOut).toBe(true);
+    expect(usePermissions().contextEpoch).toBe(1);
+  });
+
+  it("显式退出有界中止网络请求，重复调用不重复撤销", async () => {
+    vi.useFakeTimers();
+    LogoutAPI.mockImplementation(() => new Promise<void>(() => undefined));
+    const auth = useAuthStore();
+    const first = auth.logout();
+    expect(auth.loggingOut).toBe(true);
+    const second = auth.logout();
+    await vi.advanceTimersByTimeAsync(1500);
+    await Promise.all([first, second]);
+    expect(LogoutAPI).toHaveBeenCalledOnce();
+    const signal = LogoutAPI.mock.calls[0]?.[0];
+    expect(signal).toBeInstanceOf(AbortSignal);
+    expect((signal as AbortSignal).aborted).toBe(true);
+  });
+
+  it("身份重验直到路由准备完成才恢复业务页，退出可以终止重验", async () => {
+    IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
+    let ready!: () => void;
+    const onReady = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          ready = resolve;
+        }),
+    );
+    const pending = beginIdentitySwitch(onReady);
+    await vi.waitFor(() => expect(onReady).toHaveBeenCalledOnce());
+    expect(useAuthStore().isTransitioning).toBe(true);
+    ready();
+    await pending;
+    expect(useAuthStore().isTransitioning).toBe(false);
+
+    let bootstrap!: (value: { data: typeof bootstrapData }) => void;
+    IamBootstrapAPI.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          bootstrap = resolve;
+        }),
+    );
+    const lateReady = vi.fn();
+    const late = beginIdentitySwitch(lateReady);
+    await useAuthStore().logout(true);
+    bootstrap({ data: bootstrapData });
+    await late;
+    expect(lateReady).not.toHaveBeenCalled();
+    expect(useAuthStore().isTransitioning).toBe(true);
+    expect(useUserInfoStore().getUserInfoWhetherExist).toBe(false);
+  });
+
+  it.each(["PLATFORM", "TENANT"] as const)(
+    "%s身份重验触发强制改密门禁后仍能完成一次路由跳转",
+    async (domain) => {
+      runtimeState.expectedDomain = domain;
+      IamBootstrapAPI.mockRejectedValue(
+        new ApiError({
+          kind: "business",
+          code: StatusCode.PasswordChangeRequired,
+          message: "必须改密",
+        }),
+      );
+      PasswordChangeStateAPI.mockResolvedValue({
+        data: {
+          context: {
+            ...bootstrapData.context,
+            domain,
+            tenantId: domain === "TENANT" ? "42" : null,
+          },
+          mustChangePassword: true,
+        },
+      });
+      const onReady = vi.fn(async () => {
+        expect(useUserInfoStore().getIsInitPwd).toBe(true);
+        expect(useAuthStore().isTransitioning).toBe(true);
+      });
+      await beginIdentitySwitch(onReady);
+      expect(onReady).toHaveBeenCalledOnce();
+      expect(useAuthStore().isTransitioning).toBe(false);
+    },
+  );
+
+  it("旧身份的改密状态晚到时，不阻塞或清除新身份的在途改密检查", async () => {
+    let oldState!: (value: unknown) => void;
+    let newState!: (value: unknown) => void;
+    PasswordChangeStateAPI.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          oldState = resolve;
+        }),
+    ).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          newState = resolve;
+        }),
+    );
+    const old = requirePasswordChange();
+    IamBootstrapAPI.mockRejectedValue(
+      new ApiError({
+        kind: "business",
+        code: StatusCode.PasswordChangeRequired,
+        message: "必须改密",
+      }),
+    );
+    const ready = vi.fn(async () => undefined);
+    const next = beginIdentitySwitch(ready);
+    await vi.waitFor(() => expect(PasswordChangeStateAPI).toHaveBeenCalledTimes(2));
+    oldState({ data: { context: bootstrapData.context, mustChangePassword: true } });
+    await old;
+    expect(useUserInfoStore().getIsInitPwd).toBe(false);
+    const repeat = requirePasswordChange();
+    expect(PasswordChangeStateAPI).toHaveBeenCalledTimes(2);
+    newState({
+      data: {
+        context: { ...bootstrapData.context, memberId: "new-member" },
+        mustChangePassword: true,
+      },
+    });
+    await Promise.all([next, repeat]);
+    expect(ready).toHaveBeenCalledOnce();
+    expect(useUserInfoStore().userInfo.memberId).toBe("new-member");
+    expect(useAuthStore().isTransitioning).toBe(false);
+  });
+
+  it("旧权限刷新结束不清除新身份正在进行的刷新", async () => {
+    let oldCapabilities!: (value: unknown) => void;
+    let newCapabilities!: (value: unknown) => void;
+    IamCapabilitiesAPI.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          oldCapabilities = resolve;
+        }),
+    ).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          newCapabilities = resolve;
+        }),
+    );
+    const old = refreshSessionPermissions();
+    IamBootstrapAPI.mockResolvedValue({ data: bootstrapData });
+    await beginIdentitySwitch();
+    const current = refreshSessionPermissions();
+    oldCapabilities({
+      data: { actionCodes: ["old"], version: "old", expiresAt: bootstrapData.expiresAt },
+    });
+    await old;
+    const repeat = refreshSessionPermissions();
+    expect(IamCapabilitiesAPI).toHaveBeenCalledTimes(2);
+    newCapabilities({
+      data: { actionCodes: ["new"], version: "new", expiresAt: bootstrapData.expiresAt },
+    });
+    await Promise.all([current, repeat]);
+    expect(usePermissions().version).toBe("new");
   });
 
   it("拥有者标记只接受租户服务器事实，两端都不按 expiresAt 轮询", async () => {
@@ -289,7 +455,10 @@ describe("session bootstrap", () => {
       }),
     );
     PasswordChangeStateAPI.mockResolvedValue({
-      data: { context: bootstrapData.context, mustChangePassword: true },
+      data: {
+        context: bootstrapData.context,
+        mustChangePassword: true,
+      },
     });
     await Promise.all([ensureSessionBootstrap(), ensureSessionBootstrap()]);
     expect(IamBootstrapAPI).toHaveBeenCalledTimes(1);
@@ -314,7 +483,10 @@ describe("session bootstrap", () => {
     );
     const pending = refreshSessionPermissions();
     PasswordChangeStateAPI.mockResolvedValue({
-      data: { context: bootstrapData.context, mustChangePassword: true },
+      data: {
+        context: bootstrapData.context,
+        mustChangePassword: true,
+      },
     });
     await Promise.all([requirePasswordChange(), requirePasswordChange()]);
     resolveCapabilities({ data: { actionCodes: ["old-full"], version: "old" } });
@@ -350,7 +522,7 @@ describe("session bootstrap", () => {
     }
     vi.stubGlobal("BroadcastChannel", MockChannel);
     publishIdentityInvalidated();
-    expect(posted).toEqual([{ type: "invalidated" }]);
+    expect(posted).toEqual([{ type: "invalidated", source: expect.any(String) }]);
     vi.unstubAllGlobals();
   });
 });

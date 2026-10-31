@@ -10,7 +10,7 @@ export interface InViteBaseOptions {
   hookDirs?: string[];
   /**
    * 管理台约定目录守卫。为 true 时扫描组件 In*、El* 前缀与 hook/store 保留导出名。
-   * 仅 `apps/admin` 与脚手架生成的后台开启；`apps/auth` 不要开。
+   * 两个管理宿主与脚手架生成的后台开启。
    */
   enforceAppConventions?: boolean;
   iconDir?: string;
@@ -29,7 +29,7 @@ export interface InViteBaseOptions {
   externalizeIconifyOffline?: boolean;
   /**
    * 官方源码插件包名或配置。省略时根据当前 package.json 的 name / dependencies
-   * 自动识别已知官方插件（platform / security / org / member）。
+   * 自动识别已知官方插件（platform / security / org / member / auth）。
    */
   officialPlugins?: Array<string | InOfficialPluginOption>;
   extend?: UserConfig;
@@ -40,7 +40,7 @@ export interface InAppViteOptions extends InViteBaseOptions {
   host?: string;
   /**
    * Vite `server.allowedHosts` / `preview.allowedHosts`。
-   * 本机 DEV 默认放行四个 `*.localhost` 站点；不要用 `true`（Vite 8 下经常仍拦截）。
+   * 本机 DEV 默认放行平台与租户两个 `*.localhost` 入口；不要用 `true`（Vite 8 下经常仍拦截）。
    */
   allowedHosts?: string[];
   /** Vite `base`，同时作为资源 publicPath，默认 `/` */

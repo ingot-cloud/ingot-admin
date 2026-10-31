@@ -16,7 +16,7 @@ export const handleAdminUnauthorized = (error: ApiError): void => {
     return;
   }
   const path = window.location.pathname;
-  if (path === "/auth/start" || path === "/auth/complete") {
+  if (path === "/login" || path === "/login/" || (error.config?.url ?? "").includes("/bff/auth/")) {
     return;
   }
   logoutAndReload(true);
@@ -36,15 +36,25 @@ const schedulePermissionRefresh = (): void => {
   });
 };
 
+let passwordChangeNavigation: Promise<void> | undefined;
+
 const handleAuthorizationFailure = (error: ApiError): boolean => {
   if (error.code === StatusCode.PasswordChangeRequired) {
     // 初始 bootstrap 由 store 处理；禁止进入通用 403 能力刷新，避免重复请求与递归。
     const url = error.config?.url ?? "";
-    if (!url.endsWith("/me/bootstrap") && !url.endsWith("/me/password")) {
-      void import("@/stores/modules/auth").then(async ({ requirePasswordChange }) => {
-        await requirePasswordChange();
-        if (window.location.pathname !== "/init") window.location.replace("/init");
-      }).catch(() => logoutAndReload(true));
+    if (
+      !url.endsWith("/me/bootstrap") &&
+      !url.endsWith("/me/password") &&
+      window.location.pathname !== "/init" &&
+      !passwordChangeNavigation
+    ) {
+      passwordChangeNavigation = import("@/stores/modules/auth")
+        .then(async ({ requirePasswordChange, useAuthStore }) => {
+          useAuthStore().switchingIdentity = true;
+          await requirePasswordChange();
+          window.location.replace("/init");
+        })
+        .catch(() => logoutAndReload(true));
     }
     return true;
   }
@@ -63,14 +73,20 @@ const handleAuthorizationFailure = (error: ApiError): boolean => {
   return false;
 };
 
+let signBackPrompt: Promise<void> | undefined;
+
 export const handleAdminBusinessFailure = (error: ApiError): void => {
   if (error.code === StatusCode.TokenSignBack) {
-    Confirm.warning("您已被签退，可以取消继续留在该页面，或者重新登录", {
+    if (signBackPrompt) return;
+    signBackPrompt = Confirm.warning("您已被签退，可以取消继续留在该页面，或者重新登录", {
       confirmButtonText: "重新登录",
       cancelButtonText: "取消",
-    }).then(() => {
-      logoutAndReload();
-    });
+    })
+      .then(() => logoutAndReload())
+      .catch(() => undefined)
+      .finally(() => {
+        signBackPrompt = undefined;
+      });
     return;
   }
   if (handleAuthorizationFailure(error)) {
@@ -84,7 +100,11 @@ export const handleAdminHttpError = (error: ApiError): void => {
     return;
   }
   const axiosError = error.cause as AxiosError | undefined;
-  if (axiosError?.code === "ERR_BAD_RESPONSE" && axiosError.response && isString(axiosError.response.data)) {
+  if (
+    axiosError?.code === "ERR_BAD_RESPONSE" &&
+    axiosError.response &&
+    isString(axiosError.response.data)
+  ) {
     logoutAndReload(true);
     return;
   }

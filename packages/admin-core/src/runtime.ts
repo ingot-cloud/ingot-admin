@@ -57,6 +57,9 @@ const DEFAULT_CONFIG: InResolvedAppConfig = {
     symbol: "ingot",
   },
   login: {
+    title: "",
+    desc: "请输入账号和密码",
+    colorScheme: "light",
     errorImage: "",
     fingerprintEnabled: false,
     entry: "tenant",
@@ -104,6 +107,10 @@ const resolveBranding = (branding: InBrandingConfig): InResolvedBrandingConfig =
 });
 
 const resolveLogin = (login: InLoginConfig): Required<InLoginConfig> => ({
+  title: login.title ?? "",
+  desc: login.desc ?? "请输入账号和密码",
+  colorScheme:
+    login.colorScheme === "auto" || login.colorScheme === "dark" ? login.colorScheme : "light",
   errorImage: login.errorImage ?? "",
   fingerprintEnabled: login.fingerprintEnabled,
   entry: login.entry ?? "tenant",

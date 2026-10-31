@@ -1,14 +1,20 @@
 <template>
-  <div v-show="showBox" :class="mode == 'pop' ? 'mask' : ''">
+  <div v-show="showBox" :class="mode == 'pop' ? 'mask' : ''" @keydown.esc.prevent.stop="closeBox">
     <div
       :class="mode == 'pop' ? 'verifybox' : ''"
       :style="{ 'max-width': parseInt(imgSize.width) + 30 + 'px' }"
     >
       <div v-if="mode == 'pop'" class="verifybox-top">
         请完成安全验证
-        <span class="verifybox-close" @click="closeBox">
-          <i class="iconfont icon-close"></i>
-        </span>
+        <button
+          ref="closeRef"
+          type="button"
+          class="verifybox-close"
+          aria-label="关闭安全验证"
+          @click="closeBox"
+        >
+          <i class="iconfont icon-close" aria-hidden="true"></i>
+        </button>
       </div>
       <div :style="{ padding: mode == 'pop' ? '15px' : '0' }" class="verifybox-bottom">
         <!-- 验证码容器 -->
@@ -41,7 +47,7 @@
  * Verify 验证码组件
  * @description 分发验证码使用
  * */
-import { computed, ref, toRefs, watchEffect, defineAsyncComponent } from "vue";
+import { computed, ref, toRefs, watchEffect, defineAsyncComponent, nextTick } from "vue";
 const VerifySlide = defineAsyncComponent(
   () => import("@/components/verifition/verify/VerifySlide.vue"),
 );
@@ -113,9 +119,17 @@ export default {
     },
   },
   setup(props, { emit }) {
-    const { captchaType, mode, vcScope, scopeParam, passTokenParam, captchaGetUrl, captchaCheckUrl } =
-      toRefs(props);
+    const {
+      captchaType,
+      mode,
+      vcScope,
+      scopeParam,
+      passTokenParam,
+      captchaGetUrl,
+      captchaCheckUrl,
+    } = toRefs(props);
     const clickShow = ref(false);
+    const closeRef = ref(null);
     const verifyType = ref(undefined);
     const componentType = ref(undefined);
 
@@ -145,6 +159,7 @@ export default {
       refresh();
       if (mode.value == "pop") {
         clickShow.value = true;
+        nextTick(() => closeRef.value?.focus());
       }
     };
     watchEffect(() => {
@@ -161,6 +176,7 @@ export default {
     });
     return {
       clickShow,
+      closeRef,
       verifyType,
       componentType,
       instance,
@@ -206,6 +222,10 @@ export default {
 }
 
 .verifybox-close {
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
   position: absolute;
   top: 13px;
   right: 9px;

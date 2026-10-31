@@ -11,9 +11,13 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../
 const makeRoot = () => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "ingot-scaffold-"));
   fs.mkdirSync(path.join(rootDir, "apps"));
-  fs.cpSync(path.join(repoRoot, "scripts/templates/admin-app"), path.join(rootDir, "scripts/templates/admin-app"), {
-    recursive: true,
-  });
+  fs.cpSync(
+    path.join(repoRoot, "scripts/templates/admin-app"),
+    path.join(rootDir, "scripts/templates/admin-app"),
+    {
+      recursive: true,
+    },
+  );
   return rootDir;
 };
 
@@ -49,15 +53,24 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   assert.match(pluginsTs, /import \{ memberPlugin \} from "@ingot\/member-plugin";/);
   assert.match(pluginsTs, /import \{ createAppLocalPlugin \} from "\.\/app-plugin";/);
   assert.match(pluginsTs, /import \{ createDemoMenus \} from "\.\/demoMenus";/);
-  assert.match(pluginsTs, /export const createAppPlugins = \(appCode: string\): InAdminPlugin\[] => \{/);
-  assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/);
+  assert.match(
+    pluginsTs,
+    /export const createAppPlugins = \(appCode: string\): InAdminPlugin\[] => \{/,
+  );
+  assert.match(
+    pluginsTs,
+    /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/,
+  );
 
   const mainTs = fs.readFileSync(path.join(result.appDir, "src/main.ts"), "utf8");
   assert.match(mainTs, /import \{ createAppPlugins \} from "\.\/plugins";/);
   assert.match(mainTs, /import "@ingot\/admin-core\/style\.css";/);
   assert.match(mainTs, /import "uno\.css";/);
   assert.match(mainTs, /const appCode = env.VITE_APP_CODE \|\| "acme-admin"/);
-  assert.match(mainTs, /import \{ bootstrapAdminApp, defaultAdminTheme, parseBoolean \} from "@ingot\/admin-core";/);
+  assert.match(
+    mainTs,
+    /import \{ bootstrapAdminApp, defaultAdminTheme, parseBoolean \} from "@ingot\/admin-core";/,
+  );
   assert.match(mainTs, /plugins: createAppPlugins\(appCode\)/);
   assert.match(mainTs, /theme: defaultAdminTheme/);
   assert.doesNotMatch(mainTs, /adminPlugin/);
@@ -66,6 +79,7 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
   assert.equal(pkg.dependencies["@ingot/platform-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/security-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/org-plugin"], "workspace:*");
+  assert.equal(pkg.dependencies["@ingot/auth-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/member-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/admin-app"], undefined);
 
@@ -78,7 +92,9 @@ test("脚手架默认全选官方插件，并生成集中式 plugins.ts", () => 
     /BizTargetDemoBadge/,
   );
 
-  const tsconfig = JSON.parse(fs.readFileSync(path.join(result.appDir, "tsconfig.app.json"), "utf8"));
+  const tsconfig = JSON.parse(
+    fs.readFileSync(path.join(result.appDir, "tsconfig.app.json"), "utf8"),
+  );
   assert.deepEqual(tsconfig.compilerOptions.paths["@/*"], ["./src/*"]);
   assert.equal(fs.existsSync(path.join(result.appDir, "org-plugin.d.ts")), false);
   const viteConfig = fs.readFileSync(path.join(result.appDir, "vite.config.ts"), "utf8");
@@ -105,10 +121,14 @@ test("脚手架支持裁剪官方插件", () => {
   assert.doesNotMatch(pluginsTs, /createDemoMenus/);
   assert.match(pluginsTs, /import \{ createAppLocalPlugin \} from "\.\/app-plugin";/);
   assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode\)\);/);
-  assert.match(pluginsTs, /const plugins: InAdminPlugin\[] = \[orgPlugin];/);
+  assert.match(
+    pluginsTs,
+    /const plugins: InAdminPlugin\[] = \[createAuthPlugin\(createSameOriginAuthSession\), orgPlugin];/,
+  );
 
   const pkg = JSON.parse(fs.readFileSync(path.join(result.appDir, "package.json"), "utf8"));
   assert.equal(pkg.dependencies["@ingot/org-plugin"], "workspace:*");
+  assert.equal(pkg.dependencies["@ingot/auth-plugin"], "workspace:*");
   assert.equal(pkg.dependencies["@ingot/platform-plugin"], undefined);
   assert.equal(pkg.dependencies["@ingot/security-plugin"], undefined);
   assert.equal(pkg.dependencies["@ingot/member-plugin"], undefined);
@@ -132,7 +152,10 @@ test("脚手架允许空官方插件并保留约定插件与 Demo", () => {
 
   const pluginsTs = fs.readFileSync(path.join(result.appDir, "src/plugins.ts"), "utf8");
   assert.doesNotMatch(pluginsTs, /@ingot\/(platform|security|org|member)-plugin/);
-  assert.match(pluginsTs, /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/);
+  assert.match(
+    pluginsTs,
+    /plugins.push\(createAppLocalPlugin\(appCode, \{ staticMenus: createDemoMenus\(appCode\) \}\)\);/,
+  );
 
   const pkg = JSON.parse(fs.readFileSync(path.join(result.appDir, "package.json"), "utf8"));
   assert.equal(pkg.dependencies["@ingot/org-plugin"], undefined);

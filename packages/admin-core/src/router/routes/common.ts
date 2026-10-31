@@ -69,12 +69,17 @@ export const commonRoutes: Array<RouteRecordRaw> = [
   {
     path: "/auth/start",
     meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
-    component: () => import("@/pages/auth/start/IndexPage.vue"),
+    redirect: () => ({ path: "/login/", query: {}, hash: "" }),
   },
   {
     path: "/auth/complete",
     meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
-    component: () => import("@/pages/auth/complete/IndexPage.vue"),
+    redirect: () => ({ path: "/login/", query: {}, hash: "" }),
+  },
+  {
+    path: "/oauth2/challenge",
+    meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
+    redirect: () => ({ path: "/login/", query: {}, hash: "" }),
   },
   {
     path: "/auth/identity-error",

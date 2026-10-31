@@ -58,34 +58,6 @@ build-admin:
       allow_failure: true
 
 # ------------------------------
-# login 项目 build
-# ------------------------------
-build-login:
-  stage: build
-  extends: .pnpm
-  script:
-    - pnpm build:login
-  artifacts:
-    paths:
-      - apps/auth/dist/
-    expire_in: 1 hour
-  rules:
-    # 自动触发：当 login 相关文件变化时
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      changes:
-        - apps/auth/**/*
-        - packages/**/*
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - .gitlab-ci.yml
-      when: on_success
-    # 手动触发：在 release_170 分支上始终可以手动执行
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: manual
-      allow_failure: true
-
-# ------------------------------
 # 平台 admin build
 # ------------------------------
 build-admin-platform:
@@ -102,32 +74,6 @@ build-admin-platform:
       changes:
         - apps/admin-platform/**/*
         - plugins/**/*
-        - packages/**/*
-        - package.json
-        - pnpm-lock.yaml
-        - pnpm-workspace.yaml
-        - .gitlab-ci.yml
-      when: on_success
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: manual
-      allow_failure: true
-
-# ------------------------------
-# 平台 login build
-# ------------------------------
-build-login-platform:
-  stage: build
-  extends: .pnpm
-  script:
-    - pnpm build:login-platform
-  artifacts:
-    paths:
-      - apps/auth-platform/dist/
-    expire_in: 1 hour
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      changes:
-        - apps/auth-platform/**/*
         - packages/**/*
         - package.json
         - pnpm-lock.yaml
@@ -172,22 +118,6 @@ docker-admin:
       optional: false
 
 # ------------------------------
-# login Docker 镜像
-# ------------------------------
-docker-login:
-  extends: .docker-build-template
-  variables:
-    MODULE_NAME: "ingot-login"
-    BUILD_CONTEXT: "apps/auth"
-  rules:
-    # 只有当 build-login 成功执行后才触发
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: build-login
-      optional: false
-
-# ------------------------------
 # 部署模板
 # ------------------------------
 .deploy-template:
@@ -223,24 +153,6 @@ deploy-admin:
       optional: false
 
 # ------------------------------
-# login 项目部署
-# ------------------------------
-deploy-login:
-  extends: .deploy-template
-  variables:
-    MODULE_NAME: ingot-login
-    SERVICE_NAME: ingot-login
-    VIRTUAL_HOST: login.ingotcloud.top
-    VIRTUAL_PORT: 3000
-  rules:
-    # 只有当 docker-login 成功执行后才触发
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: docker-login
-      optional: false
-
-# ------------------------------
 # 平台 admin Docker 镜像
 # ------------------------------
 docker-admin-platform:
@@ -253,21 +165,6 @@ docker-admin-platform:
       when: on_success
   needs:
     - job: build-admin-platform
-      optional: false
-
-# ------------------------------
-# 平台 login Docker 镜像
-# ------------------------------
-docker-login-platform:
-  extends: .docker-build-template
-  variables:
-    MODULE_NAME: "ingot-platform-login"
-    BUILD_CONTEXT: "apps/auth-platform"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: build-login-platform
       optional: false
 
 # ------------------------------
@@ -285,21 +182,4 @@ deploy-admin-platform:
       when: on_success
   needs:
     - job: docker-admin-platform
-      optional: false
-
-# ------------------------------
-# 平台 login 部署
-# ------------------------------
-deploy-login-platform:
-  extends: .deploy-template
-  variables:
-    MODULE_NAME: ingot-platform-login
-    SERVICE_NAME: ingot-platform-login
-    VIRTUAL_HOST: platform-login.ingotcloud.top
-    VIRTUAL_PORT: 3000
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "release_170"'
-      when: on_success
-  needs:
-    - job: docker-login-platform
       optional: false

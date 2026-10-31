@@ -1,4 +1,4 @@
-/* 验证器会异步注入自身样式，登录站以限定作用域的高优先级规则保持主题。 */
+/* 验证器会异步注入自身样式，登录页以限定作用域的高优先级规则保持主题。 */
 html[data-in-auth] .mask {
   box-sizing: border-box;
   display: flex;

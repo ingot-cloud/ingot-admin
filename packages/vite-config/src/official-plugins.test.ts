@@ -74,7 +74,7 @@ afterEach(() => {
 });
 
 describe("KNOWN_OFFICIAL_PLUGINS", () => {
-  it("包含官方业务插件与登录站页面插件", () => {
+  it("包含官方业务插件与登录页页面插件", () => {
     expect(KNOWN_OFFICIAL_PLUGINS).toEqual([
       "@ingot/platform-plugin",
       "@ingot/security-plugin",
@@ -107,14 +107,14 @@ describe("resolveOfficialPlugins", () => {
   it("缺少 plugin.ts 时回退到 src/index.ts", () => {
     const workspace = makeTempWorkspace();
     const authDir = path.join(workspace, "plugins/auth");
-    const hostDir = path.join(workspace, "apps/auth");
+    const hostDir = path.join(workspace, "apps/admin");
     writePackage(
       authDir,
       { name: "@ingot/auth-plugin" },
       { "src/index.ts": "export const createAuthRoutes = () => [];\n" },
     );
     writePackage(hostDir, {
-      name: "@ingot/auth-app",
+      name: "@ingot/admin-app",
       dependencies: { "@ingot/auth-plugin": "workspace:*" },
     });
 
@@ -125,14 +125,14 @@ describe("resolveOfficialPlugins", () => {
   it("官方插件缺少入口文件时给出明确错误", () => {
     const workspace = makeTempWorkspace();
     const authDir = path.join(workspace, "plugins/auth");
-    const hostDir = path.join(workspace, "apps/auth");
+    const hostDir = path.join(workspace, "apps/admin");
     writePackage(
       authDir,
       { name: "@ingot/auth-plugin" },
       { "src/routes.ts": "export {};\n" },
     );
     writePackage(hostDir, {
-      name: "@ingot/auth-app",
+      name: "@ingot/admin-app",
       dependencies: { "@ingot/auth-plugin": "workspace:*" },
     });
 

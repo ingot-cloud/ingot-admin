@@ -1,4 +1,5 @@
 export {
+  createAuthPlugin,
   AUTH_SESSION_KEY,
   createAuthRoutes,
   provideAuthSession,

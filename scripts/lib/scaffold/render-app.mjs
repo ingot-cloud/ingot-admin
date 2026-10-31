@@ -50,11 +50,12 @@ const renderPluginsTs = (plugins, withDemo) => {
   const localPush = withDemo
     ? `\n  plugins.push(createAppLocalPlugin(appCode, { staticMenus: createDemoMenus(appCode) }));`
     : `\n  plugins.push(createAppLocalPlugin(appCode));`;
-  return `import type { InAdminPlugin } from "@ingot/admin-core";
+  return `import { createSameOriginAuthSession, type InAdminPlugin } from "@ingot/admin-core";
+import { createAuthPlugin } from "@ingot/auth-plugin";
 ${officialImports ? `${officialImports}\n` : ""}import { createAppLocalPlugin } from "./app-plugin";
 ${demoImport}
 export const createAppPlugins = (appCode: string): InAdminPlugin[] => {
-  const plugins: InAdminPlugin[] = [${list}];${localPush}
+  const plugins: InAdminPlugin[] = [createAuthPlugin(createSameOriginAuthSession)${list ? `, ${list}` : ""}];${localPush}
   return plugins;
 };
 `;
@@ -118,9 +119,7 @@ const renderMainTs = ({ appCode, theme, options }) => {
   const shellExt = options.extensions.shellSlots
     ? `\nimport { createShellSlots } from "./shell-slots";`
     : "";
-  const logo = options.branding.logo
-    ? `\n    logo: ${quoteTs(options.branding.logo)},`
-    : "";
+  const logo = options.branding.logo ? `\n    logo: ${quoteTs(options.branding.logo)},` : "";
   return `${themeImport}
 import type { InComponentSize } from "@ingot/admin-core";
 ${cssImport}
@@ -148,7 +147,7 @@ await bootstrapAdminApp({
     fingerprintEnabled: parseBoolean(env.VITE_APP_FINGERPRINT_ENABLED),
   },
   net: {
-    baseURL: env.VITE_APP_NET_BASE_URL || undefined,
+    baseURL: window.location.origin,
     timeout: Number(env.VITE_APP_NET_DEFAULT_TIMEOUT) || 10_000,
     timeoutErrorMessage: env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,${
       options.extensions.netInterceptors ? "\n    interceptors: createNetInterceptors()," : ""
@@ -174,7 +173,9 @@ await bootstrapAdminApp({
 };
 
 const renderViteConfig = (options, plugins) => {
-  const official = plugins.map((plugin) => `    ${quoteTs(plugin.packageName)},`).join("\n");
+  const official = [{ packageName: "@ingot/auth-plugin" }, ...plugins]
+    .map((plugin) => `    ${quoteTs(plugin.packageName)},`)
+    .join("\n");
   const proxyEntries = options.proxy.map((rule) => {
     const rewrite = rule.stripPrefix
       ? `\n      rewrite: (path) => path.replace(new RegExp(${quoteTs(`^${rule.prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=/|$)`)}), "") || "/",`
@@ -187,9 +188,7 @@ const renderViteConfig = (options, plugins) => {
   const extra = options.iconify.extra.length
     ? `\n    extra: ${tsStringArray(options.iconify.extra)},`
     : "";
-  const viteExt = options.extensions.vite
-    ? `\n  extraPlugins: [],\n  extend: appViteExtend,`
-    : "";
+  const viteExt = options.extensions.vite ? `\n  extraPlugins: [],\n  extend: appViteExtend,` : "";
   const viteExtImport = options.extensions.vite
     ? `\nimport { appViteExtend } from "./vite.extend";`
     : "";
@@ -281,6 +280,7 @@ const patchPackageJson = (content, plugins, theme) => {
   for (const plugin of plugins) {
     pkg.dependencies[plugin.packageName] = "workspace:*";
   }
+  pkg.dependencies["@ingot/auth-plugin"] = "workspace:*";
   if (theme.kind === "workspace") {
     pkg.dependencies[theme.packageName] = "workspace:*";
   }
@@ -345,7 +345,11 @@ export const renderAppFiles = (rootDir, options) => {
   }
   files = upsertFile(files, "src/plugins.ts", renderPluginsTs(plugins, options.withDemo));
   files = upsertFile(files, "src/header.ts", renderHeaderTs(options.header));
-  files = upsertFile(files, "src/main.ts", renderMainTs({ appCode: options.appCode, theme, options }));
+  files = upsertFile(
+    files,
+    "src/main.ts",
+    renderMainTs({ appCode: options.appCode, theme, options }),
+  );
   files = upsertFile(files, "vite.config.ts", renderViteConfig(options, plugins));
   files = upsertFile(files, "env.d.ts", renderEnvDts());
   const pkg = files.find((file) => file.path === "package.json");
@@ -362,7 +366,14 @@ export const renderAppFiles = (rootDir, options) => {
         !file.path.startsWith("src/directives/") &&
         !file.path.startsWith("src/stores/"),
     );
-    for (const dir of ["src/pages", "src/layouts", "src/components", "src/hooks", "src/directives", "src/stores"]) {
+    for (const dir of [
+      "src/pages",
+      "src/layouts",
+      "src/components",
+      "src/hooks",
+      "src/directives",
+      "src/stores",
+    ]) {
       files = ensureGitkeep(files, dir);
     }
   }

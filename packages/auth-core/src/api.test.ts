@@ -1,89 +1,80 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { HttpClient } from "@ingot/http-client";
 import { createAuthApi } from "./api";
-import { clearCsrfToken, rememberCsrfToken, bindCsrfToTransaction } from "./csrf";
-
-const sessionStore = new Map<string, string>();
-
-vi.stubGlobal("sessionStorage", {
-  getItem: (key: string) => sessionStore.get(key) ?? null,
-  setItem: (key: string, value: string) => {
-    sessionStore.set(key, value);
-  },
-  removeItem: (key: string) => {
-    sessionStore.delete(key);
-  },
+import { clearCsrfToken } from "./csrf";
+afterEach(clearCsrfToken);
+const transport = () => ({
+  post: vi.fn(async (url: string) => ({
+    data: url.endsWith("/csrf")
+      ? { csrfToken: "csrf", expiresAt: "2099-01-01T00:00:00Z" }
+      : { transactionId: "opaque-transaction", stage: "LOGIN" },
+  })),
+  get: vi.fn(async () => ({ data: {} })),
+  delete: vi.fn(async () => ({ data: undefined })),
 });
-
-afterEach(() => {
-  sessionStore.clear();
-  clearCsrfToken();
-});
-
-const mockHttp = (csrfToken = "csrf-new") => {
-  const post = vi.fn(async (url: string) => {
-    if (url.includes("/csrf")) {
-      return { data: { csrfToken } };
-    }
-    return { data: { transactionId: "tx-1", loginUrl: "http://localhost:1798/oauth2/challenge?tx=tx-1" } };
-  });
-  const del = vi.fn(async () => ({ data: undefined }));
-  return { post, delete: del } as unknown as HttpClient & {
-    post: ReturnType<typeof vi.fn>;
-    delete: ReturnType<typeof vi.fn>;
-  };
-};
-
-describe("createAuthApi.createTransaction", () => {
-  it("reissues csrf even when a token is already cached", async () => {
-    rememberCsrfToken("csrf-stale");
-    const http = mockHttp("csrf-fresh");
-    const api = createAuthApi(http, "tenant");
-
+describe("same-origin BFF API", () => {
+  it("实例化不请求；点击自举后创建事务，密码整包HYBRID并保持静默", async () => {
+    const http = transport();
+    const api = createAuthApi(http as unknown as HttpClient, "platform");
+    expect(http.post).not.toHaveBeenCalled();
     await api.createTransaction();
-
-    expect(http.post).toHaveBeenCalledTimes(2);
-    expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/csrf");
-    expect(http.post.mock.calls[1]?.[0]).toBe("/api/bff/auth/tenant/transactions");
+    await api.login("owner", "memory-only", "opaque");
+    expect(http.post.mock.calls.map((call) => call[0])).toEqual([
+      "/api/bff/auth/csrf",
+      "/api/bff/auth/platform/transactions",
+      "/api/bff/auth/platform/login",
+    ]);
+    expect(http.post).toHaveBeenLastCalledWith(
+      "/api/bff/auth/platform/login",
+      { username: "owner", password: "memory-only", transactionId: "opaque" },
+      expect.objectContaining({
+        feedback: "silent",
+        crypto: { request: { mode: "whole" } },
+        headers: { "X-CSRF-Token": "csrf" },
+      }),
+    );
   });
-});
-
-describe("createAuthApi.ensureCsrfForTransaction", () => {
-  it("reissues csrf when the cached token belongs to another transaction", async () => {
-    rememberCsrfToken("csrf-stale");
-    bindCsrfToTransaction("tx-old");
-    const http = mockHttp("csrf-fresh");
-    const api = createAuthApi(http, "tenant");
-
-    await api.ensureCsrfForTransaction("tx-new");
-
-    expect(http.post).toHaveBeenCalledTimes(1);
-    expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/csrf");
-  });
-
-  it("reuses csrf for the same transaction", async () => {
-    rememberCsrfToken("csrf-same");
-    bindCsrfToTransaction("tx-1");
-    const http = mockHttp("csrf-fresh");
-    const api = createAuthApi(http, "tenant");
-
-    await api.ensureCsrfForTransaction("tx-1");
-    await api.login("owner", "password", "tx-1");
-
-    expect(http.post.mock.calls.filter((call) => call[0] === "/api/bff/auth/csrf")).toHaveLength(0);
-    expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/tenant/login");
-  });
-});
-
-describe("createAuthApi.logout", () => {
-  it("reissues csrf even when a token is already cached", async () => {
-    rememberCsrfToken("csrf-stale");
-    const http = mockHttp("csrf-fresh");
-    const api = createAuthApi(http, "tenant");
-
+  it("只读/恢复接口没有ticket，退出总清本应用内存凭证", async () => {
+    const http = transport();
+    const api = createAuthApi(http as unknown as HttpClient, "tenant");
+    await api.issueCsrf();
+    await api.readTransaction("opaque");
+    await api.resume("opaque");
     await api.logout();
-
-    expect(http.post.mock.calls[0]?.[0]).toBe("/api/bff/auth/csrf");
-    expect(http.delete).toHaveBeenCalledWith("/api/bff/auth/logout");
+    expect(http.get).toHaveBeenCalledWith("/api/bff/auth/tenant/transactions/opaque", null, {
+      feedback: "silent",
+    });
+    expect(http.post).toHaveBeenCalledWith(
+      "/api/bff/auth/tenant/transactions/opaque/resume",
+      {},
+      expect.any(Object),
+    );
+    expect(http.delete).toHaveBeenCalledWith(
+      "/api/bff/auth/logout",
+      null,
+      expect.objectContaining({ feedback: "silent" }),
+    );
+  });
+  it("退出中止信号覆盖CSRF与DELETE，准备已中止时不再发退出请求", async () => {
+    const http = transport();
+    const api = createAuthApi(http as unknown as HttpClient, "tenant");
+    const controller = new AbortController();
+    await api.logout(controller.signal);
+    expect(http.post).toHaveBeenCalledWith(
+      "/api/bff/auth/csrf",
+      {},
+      expect.objectContaining({ signal: controller.signal }),
+    );
+    expect(http.delete).toHaveBeenCalledWith(
+      "/api/bff/auth/logout",
+      null,
+      expect.objectContaining({ signal: controller.signal }),
+    );
+    const aborted = new AbortController();
+    aborted.abort();
+    http.post.mockRejectedValueOnce(new Error("aborted"));
+    http.delete.mockClear();
+    await expect(api.logout(aborted.signal)).rejects.toThrow("aborted");
+    expect(http.delete).not.toHaveBeenCalled();
   });
 });

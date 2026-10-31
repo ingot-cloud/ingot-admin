@@ -21,7 +21,7 @@ export default defineResponseInterceptor({
         return retried;
       }
     } catch (challengeError) {
-      if (challengeError instanceof Error) {
+      if (challengeError instanceof Error && error.config?.feedback !== "silent") {
         Message.warning(challengeError.message, { showClose: true });
       }
       return Promise.reject(challengeError);

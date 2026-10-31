@@ -22,13 +22,7 @@ export const LEGACY_APP_PACKAGES = [
   "@ingot/member-app",
 ];
 
-export const APP_PACKAGES = [
-  "@ingot/admin-app",
-  "@ingot/admin-platform-app",
-  "@ingot/auth-app",
-  "@ingot/auth-platform-app",
-  "@ingot/dev-portal",
-];
+export const APP_PACKAGES = ["@ingot/admin-app", "@ingot/admin-platform-app", "@ingot/dev-portal"];
 
 export const WORKSPACE_LAYERS = ["apps", "plugins", "themes", "packages"];
 
@@ -385,7 +379,9 @@ const listPluginManifestFiles = (appDir) => {
 };
 
 const checkPluginManifestAlignment = (rootDir, errors, packages) => {
-  const pluginPackages = packages.filter((item) => item.layer === "plugins").map((item) => item.name);
+  const pluginPackages = packages
+    .filter((item) => item.layer === "plugins")
+    .map((item) => item.name);
   const appsDir = path.join(rootDir, "apps");
   if (!fs.existsSync(appsDir)) {
     return;
@@ -412,7 +408,10 @@ const checkPluginManifestAlignment = (rootDir, errors, packages) => {
     const declared = pluginPackages.filter((name) => deps.has(name));
     const imported = new Set();
     for (const manifestPath of manifestFiles) {
-      for (const name of pluginPackagesFromImports(fs.readFileSync(manifestPath, "utf8"), pluginPackages)) {
+      for (const name of pluginPackagesFromImports(
+        fs.readFileSync(manifestPath, "utf8"),
+        pluginPackages,
+      )) {
         imported.add(name);
       }
     }
@@ -426,7 +425,9 @@ const checkPluginManifestAlignment = (rootDir, errors, packages) => {
     }
     for (const name of importedSet) {
       if (!declaredSet.has(name)) {
-        errors.push(`${packageName} 的 ${manifestLabel} 导入了 ${name}，但 package.json 未声明依赖`);
+        errors.push(
+          `${packageName} 的 ${manifestLabel} 导入了 ${name}，但 package.json 未声明依赖`,
+        );
       }
     }
   }

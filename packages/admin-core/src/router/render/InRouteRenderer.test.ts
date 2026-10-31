@@ -5,7 +5,7 @@ import { createRouter, createMemoryHistory, type RouteRecordRaw } from "vue-rout
 import { createPinia, setActivePinia } from "pinia";
 import InRouteRenderer from "./InRouteRenderer.vue";
 import { useRouterStore } from "@/stores/modules/router";
-import { usePermissions } from "@/stores/modules/auth";
+import { useAuthStore, usePermissions } from "@/stores/modules/auth";
 
 let mounts = 0,
   destroys = 0;
@@ -49,6 +49,79 @@ beforeEach(() => {
   destroys = 0;
 });
 describe("route page caching", () => {
+  it("公开登录页在身份纪元、权限版本及菜单更新时保持当前实例", async () => {
+    const { wrapper } = await fixture(
+      [{ path: "/login/", name: "login", component: page(), meta: { permitAuth: true } }],
+      "/login/",
+    );
+    await wrapper.get("input").setValue("current-login-form");
+    usePermissions().bumpContextEpoch();
+    await nextTick();
+    await flushPromises();
+    expect(mounts).toBe(1);
+    expect(destroys).toBe(0);
+    expect(wrapper.get("input").element.value).toBe("current-login-form");
+
+    usePermissions().version = "new-bootstrap-version";
+    useRouterStore().cacheEpoch++;
+    await nextTick();
+    await flushPromises();
+    expect(mounts).toBe(1);
+    expect(destroys).toBe(0);
+    wrapper.unmount();
+  });
+
+  it("公开页面不丢后台缓存，身份切换仍清理已失活的后台页面", async () => {
+    const { wrapper, go } = await fixture(
+      [
+        { path: "/home", name: "home", component: page(), meta: { isCache: true } },
+        { path: "/login/", name: "login", component: page(), meta: { permitAuth: true } },
+      ],
+      "/home",
+    );
+    await wrapper.get("input").setValue("previous-identity-filter");
+    await go("/login/");
+    await go("/home");
+    expect(wrapper.get("input").element.value).toBe("previous-identity-filter");
+    await go("/login/");
+    const previousMounts = mounts;
+    usePermissions().bumpContextEpoch();
+    await nextTick();
+    await flushPromises();
+    expect(mounts).toBe(previousMounts);
+    await go("/home");
+    expect(wrapper.get("input").element.value).toBe("");
+    wrapper.unmount();
+  });
+
+  it("身份重验和退出时不重新挂载受保护业务页，公开登录页仍可显示", async () => {
+    const { wrapper, go } = await fixture(
+      [
+        { path: "/home", name: "home", component: page(), meta: { isCache: true } },
+        { path: "/login/", name: "login", component: page(), meta: { permitAuth: true } },
+      ],
+      "/home",
+    );
+    useAuthStore().switchingIdentity = true;
+    usePermissions().bumpContextEpoch();
+    await nextTick();
+    await flushPromises();
+    expect(mounts).toBe(1);
+    expect(wrapper.find("input").exists()).toBe(false);
+    useAuthStore().switchingIdentity = false;
+    await nextTick();
+    expect(mounts).toBe(2);
+    useAuthStore().loggingOut = true;
+    usePermissions().bumpContextEpoch();
+    await nextTick();
+    await flushPromises();
+    expect(mounts).toBe(2);
+    expect(wrapper.find("input").exists()).toBe(false);
+    await go("/login/");
+    expect(wrapper.find("input").exists()).toBe(true);
+    wrapper.unmount();
+  });
+
   it("透传路径参数，参数组合独立缓存，query/hash复用实例，同名组件隔离", async () => {
     const Page = page();
     const { wrapper, go } = await fixture(

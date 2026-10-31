@@ -112,7 +112,7 @@ const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
   if (name === InAdminHeaderBuiltinUserMenuName.SwitchOrg) {
     try {
       await confirm.warning("是否切换组织");
-      useLogin().go();
+      await useLogin().go({ forceLogin: true });
     } catch {
       return;
     }
@@ -127,7 +127,7 @@ const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
     return;
   }
   if (name === InAdminHeaderBuiltinUserMenuName.Logout) {
-    logoutAndReload();
+    await logoutAndReload();
   }
 };
 

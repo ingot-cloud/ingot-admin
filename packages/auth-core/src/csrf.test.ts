@@ -1,50 +1,44 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AxiosHeaders } from "axios";
+import type { InternalAxiosRequestConfig } from "axios";
 import {
-  bindCsrfToTransaction,
   clearCsrfToken,
-  csrfMatchesTransaction,
   currentCsrfToken,
-  currentCsrfTransactionId,
   rememberCsrfToken,
+  isSameOriginAuthRequest,
+  createCsrfRequestInterceptor,
 } from "./csrf";
-
-const sessionStore = new Map<string, string>();
-
-vi.stubGlobal("sessionStorage", {
-  getItem: (key: string) => sessionStore.get(key) ?? null,
-  setItem: (key: string, value: string) => {
-    sessionStore.set(key, value);
-  },
-  removeItem: (key: string) => {
-    sessionStore.delete(key);
-  },
-});
-
 afterEach(() => {
-  sessionStore.clear();
   clearCsrfToken();
+  vi.unstubAllGlobals();
+  vi.useRealTimers();
 });
-
-describe("csrf transaction binding", () => {
-  it("does not treat a cached token as matching until bound to a transaction", () => {
-    rememberCsrfToken("csrf-1");
-    expect(currentCsrfToken()).toBe("csrf-1");
-    expect(csrfMatchesTransaction("tx-1")).toBe(false);
+describe("application memory-only csrf", () => {
+  it("按应用缓存并按ISO期限失效", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-10-31T00:00:00Z"));
+    rememberCsrfToken("p", "platform", "2026-10-31T00:00:01Z");
+    rememberCsrfToken("t", "tenant");
+    expect(currentCsrfToken("platform")).toBe("p");
+    vi.advanceTimersByTime(1001);
+    expect(currentCsrfToken("platform")).toBeUndefined();
+    expect(currentCsrfToken("tenant")).toBe("t");
   });
-
-  it("matches only the bound transaction", () => {
-    rememberCsrfToken("csrf-1");
-    bindCsrfToTransaction("tx-1");
-    expect(currentCsrfTransactionId()).toBe("tx-1");
-    expect(csrfMatchesTransaction("tx-1")).toBe(true);
-    expect(csrfMatchesTransaction("tx-2")).toBe(false);
-  });
-
-  it("clears the transaction binding when a new token is remembered", () => {
-    rememberCsrfToken("csrf-1");
-    bindCsrfToTransaction("tx-1");
-    rememberCsrfToken("csrf-2");
-    expect(currentCsrfTransactionId()).toBeUndefined();
-    expect(csrfMatchesTransaction("tx-1")).toBe(false);
+  it("禁止其他origin/普通API以及GET附加CSRF", async () => {
+    vi.stubGlobal("location", { origin: "https://127.0.0.1:8443" });
+    rememberCsrfToken("p", "platform");
+    expect(isSameOriginAuthRequest("https://127.0.0.1:9443/api/bff/auth/logout")).toBe(false);
+    const interceptor = createCsrfRequestInterceptor(() => "platform");
+    for (const [url, method, expected] of [
+      ["/api/bff/auth/platform/login", "post", "p"],
+      ["/api/bff/auth/csrf", "post", undefined],
+      ["/api/bff/auth/me", "get", undefined],
+      ["/api/iam/write", "post", undefined],
+      ["https://evil.example/api/bff/auth/logout", "delete", undefined],
+    ] as const) {
+      const config = { url, method, headers: new AxiosHeaders() } as InternalAxiosRequestConfig;
+      const result = await interceptor.resolved?.(config);
+      expect(result?.headers["X-CSRF-Token"]).toBe(expected);
+    }
   });
 });

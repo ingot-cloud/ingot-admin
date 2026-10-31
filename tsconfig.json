@@ -6,10 +6,7 @@
       "path": "./apps/admin"
     },
     {
-      "path": "./apps/auth"
-    },
-    {
-      "path": "./apps/auth-platform"
+      "path": "./apps/admin-platform"
     },
     {
       "path": "./plugins/platform"
@@ -40,6 +37,9 @@
     },
     {
       "path": "./packages/admin-common"
+    },
+    {
+      "path": "./plugins/auth"
     }
   ],
   "compilerOptions": {

@@ -4,7 +4,7 @@
     ref="verifyRef"
     mode="pop"
     captcha-type="blockPuzzle"
-    :img-size="{ width: '330px', height: '155px' }"
+    :img-size="challengeImageSize"
     :captcha-get-url="captchaGetUrl"
     :captcha-check-url="captchaCheckUrl"
     :vc-scope="challenge?.scope"
@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize } from "@vueuse/core";
 import Verify from "@/components/verifition/Verify.vue";
 import {
   bindChallengeSolver,
@@ -35,7 +36,12 @@ interface PendingChallenge {
   reject: (error: Error) => void;
 }
 
-const verifyRef = ref();
+const { width: viewportWidth } = useWindowSize();
+const challengeImageSize = computed(() => ({
+  width: String(Math.min(330, Math.max(120, viewportWidth.value - 64))) + "px",
+  height: "155px",
+}));
+const verifyRef = ref<InstanceType<typeof Verify>>();
 const pending = ref<PendingChallenge | null>(null);
 const settled = ref(false);
 

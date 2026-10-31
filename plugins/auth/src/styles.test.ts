@@ -13,6 +13,6 @@ describe("auth plugin styles", () => {
     expect(styles).toContain("element-plus/theme-chalk/el-button.css");
     expect(styles).toContain("element-plus/theme-chalk/el-input.css");
     expect(styles).toContain("element-plus/theme-chalk/el-image.css");
-    expect(styles).toContain("./pages/challenge/login.css");
+    expect(styles).toContain("./pages/login/login.css");
   });
 });

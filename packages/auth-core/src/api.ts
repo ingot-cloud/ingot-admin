@@ -1,92 +1,103 @@
 import type { HttpClient, HttpRequestConfig, R } from "@ingot/http-client";
+import { clearCsrfToken, currentCsrfToken, rememberCsrfToken } from "./csrf";
 import {
-  bindCsrfToTransaction,
-  clearCsrfToken,
-  csrfMatchesTransaction,
-  currentCsrfToken,
-  rememberCsrfToken,
-} from "./csrf";
-import type {
-  AuthEntry,
-  CompleteResult,
-  CreateTransactionResult,
-  CsrfResult,
-  LoginResult,
-  SessionMe,
-  TransactionView,
+  CSRF_HEADER,
+  type AuthEntry,
+  type CompletedLoginResult,
+  type CreateTransactionResult,
+  type CsrfResult,
+  type LoginResult,
+  type SessionMe,
+  type TransactionView,
 } from "./types";
 
-type HybridConfig = HttpRequestConfig & {
-  crypto?: { request?: { mode: "whole" } };
-};
-
-const entryPath = (entry: AuthEntry): string => `/api/bff/auth/${entry}`;
-
-export const createAuthApi = (http: HttpClient, entry: AuthEntry) => {
-  const issueCsrf = async (): Promise<R<CsrfResult>> => {
-    const result = await http.post<CsrfResult>("/api/bff/auth/csrf", {});
-    rememberCsrfToken(result.data.csrfToken);
-    return result;
+export type AuthTransport = Pick<HttpClient, "post" | "get" | "delete">;
+const ROOT = "/api/bff/auth";
+export const createAuthApi = (http: AuthTransport, entry: AuthEntry) => {
+  const path = `${ROOT}/${entry}`;
+  const silent = {
+    feedback: "silent" as const,
+    ...(typeof location === "undefined" ? {} : { baseURL: location.origin }),
   };
-
+  let issuing: Promise<R<CsrfResult>> | undefined;
+  const issueCsrf = (signal?: AbortSignal): Promise<R<CsrfResult>> => {
+    if (issuing) return issuing;
+    issuing = http
+      .post<CsrfResult>(`${ROOT}/csrf`, {}, { ...silent, ...(signal ? { signal } : {}) })
+      .then((result) => {
+        rememberCsrfToken(result.data.csrfToken, entry, result.data.expiresAt);
+        return result;
+      })
+      .finally(() => {
+        issuing = undefined;
+      });
+    return issuing;
+  };
   const ensureCsrf = async (): Promise<void> => {
-    if (!currentCsrfToken()) {
-      await issueCsrf();
-    }
+    if (!currentCsrfToken(entry)) await issueCsrf();
   };
-
-  const ensureCsrfForTransaction = async (transactionId: string): Promise<void> => {
-    if (csrfMatchesTransaction(transactionId)) {
-      return;
-    }
-    await issueCsrf();
-    bindCsrfToTransaction(transactionId);
-  };
-
+  const writeConfig = (): HttpRequestConfig => ({
+    ...silent,
+    headers: { [CSRF_HEADER]: currentCsrfToken(entry) ?? "" },
+  });
   return {
     issueCsrf,
     ensureCsrf,
-    ensureCsrfForTransaction,
     createTransaction: async (): Promise<R<CreateTransactionResult>> => {
+      // 每次用户尝试都询问服务端，幂等自举不轮换有效绑定。
       await issueCsrf();
-      return http.post<CreateTransactionResult>(`${entryPath(entry)}/transactions`, {});
+      return http.post<CreateTransactionResult>(`${path}/transactions`, {}, writeConfig());
     },
-    readTransaction: (transactionId: string): Promise<R<TransactionView>> =>
-      http.get<TransactionView>(`${entryPath(entry)}/transactions/${transactionId}`),
-    login: async (username: string, password: string, transactionId: string): Promise<R<LoginResult>> => {
-      await ensureCsrfForTransaction(transactionId);
-      const config: HybridConfig = {
+    readTransaction: (id: string, timeoutMs?: number): Promise<R<TransactionView>> =>
+      http.get<TransactionView>(`${path}/transactions/${encodeURIComponent(id)}`, null, {
+        ...silent,
+        ...(timeoutMs === undefined ? {} : { timeout: timeoutMs }),
+      }),
+    login: async (
+      username: string,
+      password: string,
+      transactionId: string,
+    ): Promise<R<LoginResult>> => {
+      await ensureCsrf();
+      const config: HttpRequestConfig & { crypto: { request: { mode: "whole" } } } = {
+        ...writeConfig(),
         crypto: { request: { mode: "whole" } },
       };
-      return http.post<LoginResult>(
-        `${entryPath(entry)}/login`,
-        { transactionId, username, password },
-        config,
-      );
+      return http.post<LoginResult>(`${path}/login`, { transactionId, username, password }, config);
     },
     selectTenant: async (transactionId: string, tenantId: string): Promise<R<LoginResult>> => {
-      await ensureCsrfForTransaction(transactionId);
-      return http.post<LoginResult>("/api/bff/auth/tenant/select", { transactionId, tenantId });
-    },
-    complete: async (ticket: string): Promise<R<CompleteResult>> => {
       await ensureCsrf();
-      return http.post<CompleteResult>(`${entryPath(entry)}/complete`, { ticket });
+      return http.post<LoginResult>(
+        `${ROOT}/tenant/select`,
+        { transactionId, tenantId },
+        writeConfig(),
+      );
     },
-    me: (): Promise<R<SessionMe>> =>
-      http.get<SessionMe>("/api/bff/auth/me", null, { feedback: "silent" }),
-    logout: async (): Promise<R<void>> => {
+    resume: async (id: string): Promise<R<CompletedLoginResult>> => {
+      await ensureCsrf();
+      return http.post<CompletedLoginResult>(
+        `${path}/transactions/${encodeURIComponent(id)}/resume`,
+        {},
+        writeConfig(),
+      );
+    },
+    me: (): Promise<R<SessionMe>> => http.get<SessionMe>(`${ROOT}/me`, null, silent),
+    logout: async (signal?: AbortSignal): Promise<R<void>> => {
       try {
-        await issueCsrf();
-      } catch {
-        // BFF still clears the local session if CSRF later mismatches.
-      }
-      try {
-        return await http.delete<void>("/api/bff/auth/logout");
+        try {
+          await issueCsrf(signal);
+        } catch (error) {
+          if (signal?.aborted) throw error;
+          /* 服务端同源退出仍尽力清Cookie。 */
+        }
+        return await http.delete<void>(`${ROOT}/logout`, null, {
+          ...writeConfig(),
+          ...(signal ? { signal } : {}),
+        });
       } finally {
-        clearCsrfToken();
+        clearCsrfToken(entry);
       }
     },
   };
 };
-
 export type AuthApi = ReturnType<typeof createAuthApi>;

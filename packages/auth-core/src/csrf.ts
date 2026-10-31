@@ -1,89 +1,52 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import { defineRequestInterceptor, InterceptorOrder } from "@ingot/http-client";
-import { CSRF_HEADER } from "./types";
+import { CSRF_HEADER, type AuthEntry } from "./types";
 
-const CSRF_STORAGE_KEY = "ingot.auth.csrfToken";
-const CSRF_TX_STORAGE_KEY = "ingot.auth.csrfTransactionId";
-
-let csrfToken: string | undefined;
-let csrfTransactionId: string | undefined;
-
-const readStored = (key: string): string | undefined => {
-  if (typeof sessionStorage === "undefined") {
-    return undefined;
-  }
+const tokens = new Map<AuthEntry, { token: string; expiresAt: number }>();
+/** 仅在当前进程按应用缓存，刷新后由同源幂等自举恢复，不读旧storage凭证。 */
+export const rememberCsrfToken = (
+  token: string,
+  entry: AuthEntry = "tenant",
+  expiresAt?: string,
+): void => {
+  tokens.set(entry, {
+    token,
+    expiresAt: expiresAt ? Date.parse(expiresAt) : Number.POSITIVE_INFINITY,
+  });
+};
+export const currentCsrfToken = (entry: AuthEntry = "tenant"): string | undefined => {
+  const value = tokens.get(entry);
+  return value && value.expiresAt > Date.now() ? value.token : undefined;
+};
+export const clearCsrfToken = (entry?: AuthEntry): void => {
+  if (entry) tokens.delete(entry);
+  else tokens.clear();
+};
+export const isSameOriginAuthRequest = (url: string | undefined, baseURL?: string): boolean => {
+  if (!url || typeof location === "undefined") return false;
   try {
-    return sessionStorage.getItem(key) ?? undefined;
+    const target = new URL(url, baseURL ? new URL(baseURL, location.origin) : location.origin);
+    return target.origin === location.origin && /^\/(?:api\/)?bff\/auth\//.test(target.pathname);
   } catch {
-    return undefined;
+    return false;
   }
 };
-
-const writeStored = (key: string, value: string | undefined): void => {
-  if (typeof sessionStorage === "undefined") {
-    return;
-  }
-  try {
-    if (value) {
-      sessionStorage.setItem(key, value);
-    } else {
-      sessionStorage.removeItem(key);
-    }
-  } catch {
-    // ignore quota / private mode
-  }
-};
-
-export const rememberCsrfToken = (token: string): void => {
-  csrfToken = token;
-  csrfTransactionId = undefined;
-  writeStored(CSRF_STORAGE_KEY, token);
-  writeStored(CSRF_TX_STORAGE_KEY, undefined);
-};
-
-export const bindCsrfToTransaction = (transactionId: string): void => {
-  csrfTransactionId = transactionId;
-  writeStored(CSRF_TX_STORAGE_KEY, transactionId);
-};
-
-export const currentCsrfToken = (): string | undefined => {
-  if (!csrfToken) {
-    csrfToken = readStored(CSRF_STORAGE_KEY);
-  }
-  return csrfToken;
-};
-
-export const currentCsrfTransactionId = (): string | undefined => {
-  if (!csrfTransactionId) {
-    csrfTransactionId = readStored(CSRF_TX_STORAGE_KEY);
-  }
-  return csrfTransactionId;
-};
-
-export const csrfMatchesTransaction = (transactionId: string): boolean =>
-  Boolean(transactionId) && Boolean(currentCsrfToken()) && currentCsrfTransactionId() === transactionId;
-
-export const clearCsrfToken = (): void => {
-  csrfToken = undefined;
-  csrfTransactionId = undefined;
-  writeStored(CSRF_STORAGE_KEY, undefined);
-  writeStored(CSRF_TX_STORAGE_KEY, undefined);
-};
-
-export const createCsrfRequestInterceptor = () =>
+/** 只给本应用同源BFF写请求附带CSRF，不通过全局默认头泄露到其他URL。 */
+export const createCsrfRequestInterceptor = (entry: () => AuthEntry = () => "tenant") =>
   defineRequestInterceptor({
     name: "bff-csrf",
     order: InterceptorOrder.request.header + 1,
     resolved(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
-      const url = config.url ?? "";
       const method = (config.method ?? "get").toLowerCase();
-      if (url.includes("/bff/auth/csrf") || method === "get" || method === "head") {
+      if (
+        !isSameOriginAuthRequest(config.url, config.baseURL) ||
+        config.url?.endsWith("/csrf") ||
+        method === "get" ||
+        method === "head"
+      )
         return config;
-      }
-      if (currentCsrfToken()) {
-        config.headers = config.headers ?? {};
-        config.headers[CSRF_HEADER] = currentCsrfToken();
-      }
+      const token = currentCsrfToken(entry());
+      if (token) config.headers[CSRF_HEADER] = token;
       return config;
     },
   });

@@ -27,7 +27,8 @@
     "pinia-plugin-persistedstate": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:",
-    "@tanstack/vue-query": "catalog:"
+    "@tanstack/vue-query": "catalog:",
+    "@ingot/auth-plugin": "workspace:*"
   },
   "devDependencies": {
     "@iconify-json/bi": "catalog:",

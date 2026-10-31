@@ -7,6 +7,7 @@ const refresh = vi.fn(() => Promise.resolve());
 const requirePasswordChange = vi.fn(() => Promise.resolve());
 const warning = vi.fn();
 const confirmWarning = vi.fn(() => Promise.resolve());
+const authState = vi.hoisted(() => ({ switchingIdentity: false }));
 
 vi.mock("@/utils/security", () => ({
   logoutAndReload: (...args: unknown[]) => logoutAndReload(...args),
@@ -16,6 +17,7 @@ vi.mock("@/stores/modules/auth", () => ({
   refreshSessionPermissions: (...args: unknown[]) => refresh(...args),
   requirePasswordChange: (...args: unknown[]) => requirePasswordChange(...args),
   usePermissions: () => ({ markUnavailable: vi.fn() }),
+  useAuthStore: () => authState,
 }));
 
 vi.mock("@/utils/message", () => ({
@@ -43,18 +45,29 @@ describe("admin failure hooks", () => {
     warning.mockReset();
     confirmWarning.mockReset();
     confirmWarning.mockResolvedValue(undefined);
+    authState.switchingIdentity = false;
   });
 
   it("识别未授权业务码与 HTTP 401", () => {
-    expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }))).toBe(
+    expect(
+      isAdminUnauthorized(
+        new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }),
+      ),
+    ).toBe(true);
+    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 401 }))).toBe(
       true,
     );
-    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 401 }))).toBe(true);
-    expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.TokenInvalid }))).toBe(
-      true,
+    expect(
+      isAdminUnauthorized(
+        new ApiError({ kind: "business", message: "x", code: StatusCode.TokenInvalid }),
+      ),
+    ).toBe(true);
+    expect(
+      isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.OK })),
+    ).toBe(false);
+    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 500 }))).toBe(
+      false,
     );
-    expect(isAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.OK }))).toBe(false);
-    expect(isAdminUnauthorized(new ApiError({ kind: "http", message: "x", status: 500 }))).toBe(false);
   });
 
   it("412 挑战错误应旁路", () => {
@@ -63,7 +76,9 @@ describe("admin failure hooks", () => {
   });
 
   it("未授权时退出登录，refreshTokenAndRetry 时跳过", () => {
-    handleAdminUnauthorized(new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }));
+    handleAdminUnauthorized(
+      new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }),
+    );
     expect(logoutAndReload).toHaveBeenCalledWith(true);
 
     logoutAndReload.mockReset();
@@ -82,11 +97,11 @@ describe("admin failure hooks", () => {
     expect(logoutAndReload).not.toHaveBeenCalled();
   });
 
-  it("交接页 401 不触发退出跳转", () => {
+  it("登录页 401 不触发退出跳转", () => {
     const original = window.location.pathname;
     Object.defineProperty(window, "location", {
       configurable: true,
-      value: { ...window.location, pathname: "/auth/start" },
+      value: { ...window.location, pathname: "/login/" },
     });
     handleAdminUnauthorized(new ApiError({ kind: "http", message: "unauthorized", status: 401 }));
     expect(logoutAndReload).not.toHaveBeenCalled();
@@ -96,33 +111,65 @@ describe("admin failure hooks", () => {
     });
   });
 
-  it("签退弹出确认框", () => {
-    handleAdminBusinessFailure(
-      new ApiError({ kind: "business", message: "sign out", code: StatusCode.TokenSignBack }),
+  it("并发签退只弹出一次确认框，取消不再退出", async () => {
+    let cancel!: () => void;
+    confirmWarning.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          cancel = () => reject(new Error("cancel"));
+        }),
     );
-    expect(confirmWarning).toHaveBeenCalled();
+    const failure = new ApiError({
+      kind: "business",
+      message: "sign out",
+      code: StatusCode.TokenSignBack,
+    });
+    handleAdminBusinessFailure(failure);
+    handleAdminBusinessFailure(failure);
+    expect(confirmWarning).toHaveBeenCalledOnce();
     expect(warning).not.toHaveBeenCalled();
+    cancel();
+    await vi.dynamicImportSettled();
+    expect(logoutAndReload).not.toHaveBeenCalled();
   });
 
   it("bootstrap 改密错误不触发通用能力刷新或重复状态查询", async () => {
-    handleAdminHttpError(new ApiError({ kind: "http", status: 403, code: StatusCode.PasswordChangeRequired,
-      message: "请先改密", config: { url: "/api/iam/v1/me/bootstrap" } }));
+    handleAdminHttpError(
+      new ApiError({
+        kind: "http",
+        status: 403,
+        code: StatusCode.PasswordChangeRequired,
+        message: "请先改密",
+        config: { url: "/api/iam/v1/me/bootstrap" },
+      }),
+    );
     await vi.dynamicImportSettled();
     expect(refresh).not.toHaveBeenCalled();
     expect(requirePasswordChange).not.toHaveBeenCalled();
     expect(warning).not.toHaveBeenCalled();
   });
 
-  it("业务请求遇到必须改密后清理状态并转改密页", async () => {
+  it("并发业务请求遇到必须改密只清理/跳转一次，期间暂停业务挂载", async () => {
     const original = window.location;
     const replace = vi.fn();
-    Object.defineProperty(window, "location", { configurable: true, value: { pathname: "/platform/members", replace } });
+    Object.defineProperty(window, "location", {
+      configurable: true,
+      value: { pathname: "/platform/members", replace },
+    });
     try {
-      handleAdminHttpError(new ApiError({ kind: "http", status: 403, code: StatusCode.PasswordChangeRequired,
-        message: "请先改密", config: { url: "/api/iam/v1/platform/members" } }));
+      const failure = new ApiError({
+        kind: "http",
+        status: 403,
+        code: StatusCode.PasswordChangeRequired,
+        message: "请先改密",
+        config: { url: "/api/iam/v1/platform/members" },
+      });
+      handleAdminHttpError(failure);
+      handleAdminHttpError(failure);
       await vi.dynamicImportSettled();
       expect(requirePasswordChange).toHaveBeenCalledOnce();
-      expect(replace).toHaveBeenCalledWith("/init");
+      expect(replace).toHaveBeenCalledExactlyOnceWith("/init");
+      expect(authState.switchingIdentity).toBe(true);
       expect(refresh).not.toHaveBeenCalled();
     } finally {
       Object.defineProperty(window, "location", { configurable: true, value: original });
@@ -130,7 +177,9 @@ describe("admin failure hooks", () => {
   });
 
   it("普通业务失败提示一次", () => {
-    handleAdminBusinessFailure(new ApiError({ kind: "business", message: "非法操作", code: "S0002" }));
+    handleAdminBusinessFailure(
+      new ApiError({ kind: "business", message: "非法操作", code: "S0002" }),
+    );
     expect(warning).toHaveBeenCalledWith("非法操作", { showClose: true });
   });
 

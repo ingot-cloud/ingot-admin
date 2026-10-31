@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
 import { defineResponseInterceptor, InterceptorOrder } from "@ingot/http-client";
 import type { R } from "@/models/net";
+import { assertCurrentIdentity } from "../request/identity";
 import {
   createEnvelopeSession,
   applyEncryptedRequest,
@@ -58,6 +59,7 @@ export default defineResponseInterceptor({
       config.__cryptoCtx &&
       hasPlainRequest
     ) {
+      assertCurrentIdentity(config);
       config.__cryptoRetried = true;
       await keyStore.refresh();
       const session = await createEnvelopeSession(keyStore, cryptoHeaderNames);
@@ -81,6 +83,7 @@ export default defineResponseInterceptor({
         config.data = applied.data;
       }
 
+      assertCurrentIdentity(config);
       const retryResponse = await rawInstance.request<R, AxiosResponse<R>>(config);
       if (option.response) {
         await decryptEnvelope(retryResponse, option.response, session.context);

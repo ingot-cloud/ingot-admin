@@ -5,5 +5,5 @@ import "@ingot/appearance/styles/tokens.css";
 import "@ingot/appearance/styles/dark/tokens.css";
 import "@ingot/appearance/styles/el-mapping.css";
 import "@ingot/appearance/styles/dark/el-css-vars.css";
-import "./pages/challenge/login.css";
+import "./pages/login/login.css";
 import "./styles/feedback.css";

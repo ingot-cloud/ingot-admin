@@ -7,13 +7,8 @@ export type InViteConfigFactory = (env: ConfigEnv) => UserConfig;
 
 export type InAppViteOptionsFactory = (env: ConfigEnv) => InAppViteOptions;
 
-/** 本机 DEV 四站点；Vite DNS rebinding 默认只放行 localhost / *.localhost。 */
-export const DEV_BFF_ALLOWED_HOSTS = [
-  "tenant.localhost",
-  "tenant-login.localhost",
-  "platform.localhost",
-  "platform-login.localhost",
-];
+/** 本机 DEV 平台、租户两个同源宿主；Vite DNS rebinding 默认只放行 localhost / *.localhost。 */
+export const DEV_BFF_ALLOWED_HOSTS = ["tenant.localhost", "platform.localhost"];
 
 export const defineInAppConfig = (
   options: InAppViteOptions | InAppViteOptionsFactory,

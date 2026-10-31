@@ -5,6 +5,9 @@ import type { CryptoOption, EnvelopeContext } from "@ingot/shared/crypto";
 
 declare module "axios" {
   interface AxiosRequestConfig {
+    /** 内部：请求发起时的身份纪元；旧身份响应不得触发当前身份退出或回填。 */
+    __ingotIdentityEpoch?: number;
+
     /**
      * 是否为刷新token后的请求重试
      */

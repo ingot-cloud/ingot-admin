@@ -12,11 +12,14 @@ export const useRouterStore = defineStore("router", () => {
   const cacheEpoch = ref(0);
   let fingerprint = "";
   let boundRouter: Router | undefined;
+  let installedFingerprint: string | undefined;
   let removers: Array<() => void> = [];
   const installDynamicRoutes = (router: Router): void => {
+    if (boundRouter === router && installedFingerprint === fingerprint) return;
     boundRouter = router;
     removers.forEach((remove) => remove());
     removers = dynamicRoutes.value.map((route) => router.addRoute(route));
+    installedFingerprint = fingerprint;
   };
   const allRoutes = ref<Array<RouteRecordRaw>>([]);
   const dynamicRoutes = ref<Array<RouteRecordRaw>>([]);
@@ -56,6 +59,7 @@ export const useRouterStore = defineStore("router", () => {
   };
 
   const clearForPasswordChange = (): void => {
+    installedFingerprint = undefined;
     fingerprint = "";
     cacheEpoch.value++;
     removers.forEach((remove) => remove());
@@ -72,10 +76,15 @@ export const useRouterStore = defineStore("router", () => {
       menus: Array<MenuRouteRecord>;
       dynamicRoutes: Array<RouteRecordRaw>;
     }>((resolve) => {
-      if (forceRefresh || menus.value.length === 0) {
+      if (forceRefresh || fingerprint === "") {
+        const epoch = cacheEpoch.value;
         const staticMenus = getAdminRuntimeConfig().staticMenus;
         IamBootstrapAPI()
           .then((response) => {
+            if (epoch !== cacheEpoch.value) {
+              resolve({ menus: menus.value, dynamicRoutes: dynamicRoutes.value });
+              return;
+            }
             applyRemoteMenus(mapIamMenus(response.data.menus));
             resolve({
               menus: menus.value,
@@ -83,7 +92,7 @@ export const useRouterStore = defineStore("router", () => {
             });
           })
           .catch(() => {
-            if (staticMenus.length > 0 && menus.value.length === 0) {
+            if (epoch === cacheEpoch.value && staticMenus.length > 0 && menus.value.length === 0) {
               applyMergedMenus(staticMenus);
             }
             resolve({

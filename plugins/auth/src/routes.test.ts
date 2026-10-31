@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createAuthRoutes } from "./routes";
-
-describe("createAuthRoutes", () => {
-  it("提供登录挑战与错误页，不注册管理台菜单", () => {
+describe("same-origin public login", () => {
+  it("注册一个无需身份的/login/，不占用管理根路由", () => {
     const routes = createAuthRoutes();
-    expect(routes.map((item) => item.path).sort()).toEqual(["/", "/errors", "/oauth2/challenge"]);
-    expect(routes.some((item) => item.path === "/" && "redirect" in item)).toBe(true);
+    expect(routes.map((route) => route.path)).toEqual(["/login/"]);
+    expect(routes[0]?.meta?.permitAuth).toBe(true);
   });
 });

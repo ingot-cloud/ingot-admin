@@ -9,6 +9,10 @@ const decryptResponseBody = vi.fn();
 const refresh = vi.fn();
 const maybeRefreshKeyOnKidMismatch = vi.fn();
 const isEnvelopeResponse = vi.fn();
+const identity = vi.hoisted(() => ({ epoch: 0 }));
+vi.mock("@/stores/modules/auth", () => ({
+  usePermissions: () => ({ contextEpoch: identity.epoch }),
+}));
 
 vi.mock("@ingot/shared/crypto", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@ingot/shared/crypto")>();
@@ -52,6 +56,7 @@ const jsonAdapter = (
 
 describe("信封拦截器", () => {
   beforeEach(() => {
+    identity.epoch = 0;
     createEnvelopeSession.mockReset();
     applyEncryptedRequest.mockReset();
     decryptResponseBody.mockReset();
@@ -63,12 +68,14 @@ describe("信封拦截器", () => {
       context: { kid: "k1" },
       headers: { Md: "h1", Kv: "k1" },
     });
-    applyEncryptedRequest.mockImplementation(async (source: { data?: unknown; params?: unknown }) => ({
-      data: { data: "cipher" },
-      params: source.params,
-      plainData: source.data,
-      plainParams: source.params,
-    }));
+    applyEncryptedRequest.mockImplementation(
+      async (source: { data?: unknown; params?: unknown }) => ({
+        data: { data: "cipher" },
+        params: source.params,
+        plainData: source.data,
+        plainParams: source.params,
+      }),
+    );
     decryptResponseBody.mockImplementation(async (body: unknown) => body);
     isEnvelopeResponse.mockReturnValue(true);
     refresh.mockResolvedValue(undefined);
@@ -85,7 +92,11 @@ describe("信封拦截器", () => {
       },
     });
 
-    decryptResponseBody.mockResolvedValue({ code: "S0200", message: "ok", data: { secret: "plain" } });
+    decryptResponseBody.mockResolvedValue({
+      code: "S0200",
+      message: "ok",
+      data: { secret: "plain" },
+    });
 
     const result = await http.post(
       "/api/secure",
@@ -171,5 +182,26 @@ describe("信封拦截器", () => {
     expect(refresh).toHaveBeenCalled();
     expect(rawInstance.request).toHaveBeenCalledTimes(1);
     expect(result.data).toEqual({ ok: true });
+  });
+
+  it("刷新加密公钥期间身份变化后不重放旧请求", async () => {
+    refresh.mockImplementation(async () => {
+      identity.epoch += 1;
+    });
+    const http = createHttpClient({
+      adapter: jsonAdapter(() => ({ data: { code: CryptoErrorCode.KidUnknown } })),
+      interceptors: {
+        request: [EnvelopeRequestInterceptor],
+        response: [EnvelopeResponseInterceptor],
+      },
+    });
+    await expect(
+      http.post(
+        "/api/secure",
+        { password: "memory-only" },
+        { __ingotIdentityEpoch: 0, crypto: { request: { mode: "whole" } } },
+      ),
+    ).rejects.toMatchObject({ cancelled: true });
+    expect(rawInstance.request).not.toHaveBeenCalled();
   });
 });

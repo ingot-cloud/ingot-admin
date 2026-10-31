@@ -13,7 +13,9 @@ import { LogoutAPI } from "@/api/common/auth";
 import { IamBootstrapAPI, IamCapabilitiesAPI } from "@/api/common/iam";
 import { mapIamMenus } from "@/router/helper/iamMenus";
 import { clearAdminQueryCache } from "@/query/client";
-import { getAdminRuntimeConfig } from "@/runtime";
+import { getAdminRuntimeConfig, getAdminRouter } from "@/runtime";
+import { useLogin } from "@/hooks/biz/useLogin";
+import { PageName } from "@/router/constants";
 import { useRouterStore } from "./router";
 
 export class DomainMismatchError extends Error {
@@ -59,36 +61,39 @@ const toUserInfo = (bootstrap: IamBootstrap): UserInfo => ({
 export const useAuthStore = defineStore(
   "security",
   () => {
-    /**
-     * 退出登录
-     */
-    const logout = async (ignoreRevokeAPI?: boolean): Promise<void> => {
-      return Promise.race([
-        new Promise((resolve) => {
-          LogoutAPI().then(resolve).catch(resolve);
-        }),
-        new Promise<number>((resolve) => {
-          setTimeout(
-            () => {
-              resolve(1);
-            },
-            ignoreRevokeAPI ? 0 : 1500,
-          );
-        }),
-      ]).then(() => {
-        usePermissions().bumpContextEpoch();
-        resetSessionBootstrap();
-        useRouterStore().clearForPasswordChange();
-        useUserInfoStore().clear();
-        usePermissions().clear();
-        clearAdminQueryCache();
-        publishIdentityInvalidated();
-      });
+    const loggingOut = ref(false);
+    const switchingIdentity = ref(false);
+    const isTransitioning = computed(() => loggingOut.value || switchingIdentity.value);
+    let logoutPromise: Promise<void> | undefined;
+    const LOGOUT_TIMEOUT_MILLIS = 1500;
+
+    /** 退出仅执行一次；本地401不撤销远端，显式退出超时中止旧请求。 */
+    const logout = (ignoreRevokeAPI?: boolean): Promise<void> => {
+      if (logoutPromise) return logoutPromise;
+      loggingOut.value = true;
+      clearIdentityContext();
+      let revoke = Promise.resolve();
+      if (!ignoreRevokeAPI) {
+        const controller = new AbortController();
+        let timeout: ReturnType<typeof setTimeout> | undefined;
+        revoke = Promise.race([
+          LogoutAPI(controller.signal).then(
+            () => undefined,
+            () => undefined,
+          ),
+          new Promise<void>((resolve) => {
+            timeout = setTimeout(() => {
+              controller.abort();
+              resolve();
+            }, LOGOUT_TIMEOUT_MILLIS);
+          }),
+        ]).finally(() => clearTimeout(timeout));
+      }
+      logoutPromise = revoke.then(() => publishIdentityLoggedOut());
+      return logoutPromise;
     };
 
-    return {
-      logout,
-    };
+    return { logout, loggingOut, switchingIdentity, isTransitioning };
   },
   {
     persist: {
@@ -253,27 +258,66 @@ let identityChannelBound = false;
 let refreshPromise: Promise<void> | undefined;
 
 const IDENTITY_CHANNEL_NAME = "ingot:identity";
+const IDENTITY_SOURCE_ID = crypto.randomUUID();
 
-export const publishIdentityInvalidated = (): void => {
-  if (typeof BroadcastChannel === "undefined") {
-    return;
-  }
+type IdentityEventType = "invalidated" | "logged-out";
+
+const publishIdentityEvent = (type: IdentityEventType): void => {
+  if (typeof BroadcastChannel === "undefined") return;
   const channel = new BroadcastChannel(IDENTITY_CHANNEL_NAME);
-  channel.postMessage({ type: "invalidated" });
+  channel.postMessage({ type, source: IDENTITY_SOURCE_ID });
   channel.close();
 };
 
-const bindIdentityChannel = (): void => {
-  if (identityChannelBound || typeof BroadcastChannel === "undefined") {
-    return;
-  }
+export const publishIdentityInvalidated = (): void => publishIdentityEvent("invalidated");
+const publishIdentityLoggedOut = (): void => publishIdentityEvent("logged-out");
+
+let identityTransitionVersion = 0;
+
+function clearIdentityContext(): number {
+  const transition = ++identityTransitionVersion;
+  usePermissions().bumpContextEpoch();
+  resetSessionBootstrap();
+  useRouterStore().clearForPasswordChange();
+  useUserInfoStore().clear();
+  usePermissions().clear();
+  clearAdminQueryCache();
+  return transition;
+}
+
+export const bindIdentityChannel = (): void => {
+  if (identityChannelBound || typeof BroadcastChannel === "undefined") return;
   identityChannelBound = true;
   const channel = new BroadcastChannel(IDENTITY_CHANNEL_NAME);
-  channel.addEventListener("message", () => {
-    void beginIdentitySwitch().catch(() => {
-      window.location.assign("/auth/start");
-    });
-  });
+  channel.addEventListener(
+    "message",
+    (event: MessageEvent<{ type?: IdentityEventType; source?: string }>) => {
+      if (event.data?.source === IDENTITY_SOURCE_ID) return;
+      if (event.data?.type === "logged-out") {
+        useAuthStore().loggingOut = true;
+        clearIdentityContext();
+        void useLogin().go({ rememberReturnTo: false });
+        return;
+      }
+      if (event.data?.type !== "invalidated" || useAuthStore().loggingOut) return;
+      if (/^\/login\/?$/.test(window.location.pathname)) {
+        clearIdentityContext();
+        return;
+      }
+      void beginIdentitySwitch(async () => {
+        const router = getAdminRouter();
+        const store = useRouterStore();
+        if (useUserInfoStore().getIsInitPwd) {
+          await router.replace("/init");
+        } else {
+          store.installDynamicRoutes(router);
+          if (router.hasRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP))
+            router.removeRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP);
+          await router.replace(router.currentRoute.value.fullPath);
+        }
+      }).catch(() => useLogin().go({ rememberReturnTo: false }));
+    },
+  );
 };
 
 const bindVisibilityRefresh = (): void => {
@@ -335,14 +379,15 @@ export const requirePasswordChange = (): Promise<void> => {
   useRouterStore().clearForPasswordChange();
   clearAdminQueryCache();
   const epoch = usePermissions().contextEpoch;
-  passwordChangePromise = PasswordChangeStateAPI()
+  const pending = PasswordChangeStateAPI()
     .then((state) => {
       if (usePermissions().contextEpoch === epoch) applyPasswordChangeState(state.data);
     })
     .finally(() => {
-      passwordChangePromise = undefined;
+      if (passwordChangePromise === pending) passwordChangePromise = undefined;
     });
-  return passwordChangePromise;
+  passwordChangePromise = pending;
+  return pending;
 };
 
 const applyBootstrap = (data: IamBootstrap): void => {
@@ -362,6 +407,7 @@ export const resetSessionBootstrap = (): void => {
   bootstrapped = false;
   bootstrapPromise = undefined;
   refreshPromise = undefined;
+  passwordChangePromise = undefined;
 };
 
 export const ensureSessionBootstrap = (): Promise<void> => {
@@ -407,7 +453,7 @@ export const refreshSessionPermissions = (options?: {
   }
   const previousVersion = usePermissions().version;
   const epoch = usePermissions().contextEpoch;
-  refreshPromise = IamCapabilitiesAPI()
+  const pending = IamCapabilitiesAPI()
     .then(async (response) => {
       if (useUserInfoStore().getIsInitPwd || usePermissions().contextEpoch !== epoch) return;
       usePermissions().applyCapabilities(response.data);
@@ -428,19 +474,22 @@ export const refreshSessionPermissions = (options?: {
       throw error;
     })
     .finally(() => {
-      refreshPromise = undefined;
+      if (refreshPromise === pending) refreshPromise = undefined;
     });
-  return refreshPromise;
+  refreshPromise = pending;
+  return pending;
 };
 
-export const beginIdentitySwitch = async (): Promise<void> => {
-  usePermissions().bumpContextEpoch();
-  resetSessionBootstrap();
-  useRouterStore().clearForPasswordChange();
-  useUserInfoStore().clear();
-  usePermissions().clear();
-  clearAdminQueryCache();
+/** 身份重验期间暂停受保护页面；当前切换包含改密门禁，完成路由后恢复渲染。 */
+export const beginIdentitySwitch = async (onReady?: () => Promise<void>): Promise<void> => {
+  const auth = useAuthStore();
+  if (auth.loggingOut) return;
+  auth.switchingIdentity = true;
+  const transition = clearIdentityContext();
   await ensureSessionBootstrap();
+  if (auth.loggingOut || transition !== identityTransitionVersion) return;
+  await onReady?.();
+  if (!auth.loggingOut && transition === identityTransitionVersion) auth.switchingIdentity = false;
 };
 
 /** 菜单写入后主动获取完整会话配置，替换已注册路由。 */

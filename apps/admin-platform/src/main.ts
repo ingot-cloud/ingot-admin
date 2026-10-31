@@ -20,6 +20,12 @@ await bootstrapAdminApp({
     symbol: env.VITE_APP_SYMBOL,
   },
   login: {
+    title: env.VITE_APP_LOGIN_TITLE || env.VITE_APP_TITLE,
+    desc: env.VITE_APP_LOGIN_DESC || "请输入账号和密码",
+    colorScheme:
+      env.VITE_APP_LOGIN_COLOR_SCHEME === "dark" || env.VITE_APP_LOGIN_COLOR_SCHEME === "auto"
+        ? env.VITE_APP_LOGIN_COLOR_SCHEME
+        : "light",
     errorImage: env.VITE_APP_ERROR_IMAGE,
     fingerprintEnabled: parseBoolean(env.VITE_APP_FINGERPRINT_ENABLED),
     entry: "platform",
@@ -27,7 +33,7 @@ await bootstrapAdminApp({
     appId: env.VITE_APP_ID || "platform-admin",
   },
   net: {
-    baseURL: env.VITE_APP_NET_BASE_URL || undefined,
+    baseURL: window.location.origin,
     timeout: Number(env.VITE_APP_NET_DEFAULT_TIMEOUT) || 10_000,
     timeoutErrorMessage: env.VITE_APP_NET_DEFAULT_TIMEOUT_MESSAGE || undefined,
   },
