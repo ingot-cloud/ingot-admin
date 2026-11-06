@@ -21,4 +21,5 @@ export interface AuthSession {
   onAuthenticated: (result: CompletedLoginResult, identity: SessionMe) => Promise<void>;
   onExistingSession: () => Promise<boolean>;
   warn: (message: string) => void;
+  error: (message: string) => void;
 }

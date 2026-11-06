@@ -725,7 +725,10 @@ try {
     await page.locator("#login-username").fill("test-operator");
     await page.locator("#login-password").fill("memory-only-test-password");
     await page.locator("#login-password").press("Enter");
-    await page.getByRole("alert").filter({ hasText: "Cookie" }).waitFor();
+    const toast = page.locator(".in-message.el-message--error").filter({ hasText: "Cookie" });
+    await toast.waitFor();
+    assert.equal(await page.locator(".auth-shell__panel").getByRole("alert").count(), 0);
+    await page.getByRole("button", { name: "重新确认登录结果" }).waitFor();
     assert.equal(new URL(page.url()).pathname, "/login/");
     assert.equal(state.executions, 1);
     assert.equal(state.requests.filter((request) => request.path.endsWith("/resume")).length, 1);
@@ -752,7 +755,9 @@ try {
     const close = page.getByRole("button", { name: "关闭安全验证" });
     await close.waitFor();
     await close.press("Enter");
-    await page.getByRole("alert").filter({ hasText: "已取消安全验证" }).waitFor();
+    const toast = page.locator(".in-message.el-message--error").filter({ hasText: "已取消安全验证" });
+    await toast.waitFor();
+    assert.equal(await page.locator(".auth-shell__panel").getByRole("alert").count(), 0);
     assert.equal(state.executions, 0);
     assert.equal(new URL(page.url()).pathname, "/login/");
     assert.equal(await page.locator("#login-password").inputValue(), "memory-only-test-password");

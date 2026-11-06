@@ -29,7 +29,6 @@ export function useOps() {
   });
   const restoring = ref(false);
   const candidates = ref<TenantCandidate[]>([]);
-  const errorMessage = ref("");
   const recoverable = ref(false);
   let mounted = true;
   onBeforeUnmount(() => {
@@ -37,34 +36,35 @@ export function useOps() {
   });
   const report = (error: unknown): void => {
     if (!mounted) return;
-    if (
-      flow.transaction() &&
-      (isUncertainLogin(error) || error instanceof LoginRecoveryPendingError)
-    )
-      recoverable.value = true;
-    errorMessage.value = error instanceof Error ? error.message : "暂时无法登录，请重试";
     if (isPreparationFailure(error)) {
       candidates.value = [];
+      recoverable.value = false;
       flow.reset();
+    } else if (
+      flow.transaction() &&
+      (isUncertainLogin(error) || error instanceof LoginRecoveryPendingError)
+    ) {
+      recoverable.value = true;
     }
+    session.error(error instanceof Error && error.message ? error.message : "暂时无法登录，请重试");
   };
   let finishing: Promise<void> | undefined;
   const finish = async (result: LoginResult): Promise<void> => {
     if (!mounted) return;
-    errorMessage.value = "";
     if (result.stage === "SELECT_TENANT") {
       candidates.value = result.allows;
       recoverable.value = false;
       return;
     }
     restoring.value = true;
-    recoverable.value = true;
     try {
       const identity = await flow.confirm(result);
       if (!mounted) return;
       await session.onAuthenticated(result, identity);
       flow.reset();
+      recoverable.value = false;
     } catch (error) {
+      recoverable.value = Boolean(flow.transaction());
       report(error);
     } finally {
       restoring.value = false;
@@ -78,7 +78,6 @@ export function useOps() {
     return finishing;
   };
   const submit = async (username: string, password: string): Promise<LoginResult> => {
-    errorMessage.value = "";
     recoverable.value = false;
     try {
       return await flow.submit(username, password);
@@ -88,7 +87,6 @@ export function useOps() {
     }
   };
   const select = async (tenantId: string): Promise<LoginResult> => {
-    errorMessage.value = "";
     try {
       return await flow.select(tenantId);
     } catch (error) {
@@ -98,7 +96,6 @@ export function useOps() {
   };
   const back = (): void => {
     candidates.value = [];
-    errorMessage.value = "";
     recoverable.value = false;
     flow.reset();
   };
@@ -140,5 +137,5 @@ export function useOps() {
       restoring.value = false;
     }
   });
-  return { restoring, candidates, errorMessage, recoverable, submit, select, success, back, retry };
+  return { restoring, candidates, recoverable, submit, select, success, back, retry };
 }

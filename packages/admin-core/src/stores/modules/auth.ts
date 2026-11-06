@@ -8,7 +8,7 @@ import type {
 } from "@/models/iam";
 import { PasswordChangeStateAPI } from "@/api/common/password";
 import { StatusCode } from "@/net/status-code";
-import { ApiError } from "@ingot/http-client";
+import { ApiError, type RequestOptions } from "@ingot/http-client";
 import { LogoutAPI } from "@/api/common/auth";
 import { IamBootstrapAPI, IamCapabilitiesAPI } from "@/api/common/iam";
 import { mapIamMenus } from "@/router/helper/iamMenus";
@@ -369,8 +369,9 @@ const applyPasswordChangeState = (data: PasswordChangeState): void => {
 };
 
 let passwordChangePromise: Promise<void> | undefined;
+type SessionFeedbackOptions = Pick<RequestOptions, "feedback">;
 
-export const requirePasswordChange = (): Promise<void> => {
+export const requirePasswordChange = (options?: SessionFeedbackOptions): Promise<void> => {
   if (useUserInfoStore().getIsInitPwd) return Promise.resolve();
   if (passwordChangePromise) return passwordChangePromise;
   // 先清掉旧业务内容，状态失败时也不能继续用已缓存的菜单和权限。
@@ -379,7 +380,7 @@ export const requirePasswordChange = (): Promise<void> => {
   useRouterStore().clearForPasswordChange();
   clearAdminQueryCache();
   const epoch = usePermissions().contextEpoch;
-  const pending = PasswordChangeStateAPI()
+  const pending = PasswordChangeStateAPI(options)
     .then((state) => {
       if (usePermissions().contextEpoch === epoch) applyPasswordChangeState(state.data);
     })
@@ -410,7 +411,7 @@ export const resetSessionBootstrap = (): void => {
   passwordChangePromise = undefined;
 };
 
-export const ensureSessionBootstrap = (): Promise<void> => {
+export const ensureSessionBootstrap = (options?: SessionFeedbackOptions): Promise<void> => {
   if (bootstrapped) {
     return Promise.resolve();
   }
@@ -418,12 +419,12 @@ export const ensureSessionBootstrap = (): Promise<void> => {
     return bootstrapPromise;
   }
   let epoch = usePermissions().contextEpoch;
-  const pending = IamBootstrapAPI()
+  const pending = IamBootstrapAPI(options)
     .catch(async (error: unknown) => {
       if (epoch !== usePermissions().contextEpoch) return undefined;
       if (!(error instanceof ApiError) || error.code !== StatusCode.PasswordChangeRequired)
         throw error;
-      const passwordChange = requirePasswordChange();
+      const passwordChange = requirePasswordChange(options);
       // 改密门禁自身会推进身份纪元；只接受这一门禁仍属于当前身份的结果。
       epoch = usePermissions().contextEpoch;
       await passwordChange;
@@ -481,12 +482,15 @@ export const refreshSessionPermissions = (options?: {
 };
 
 /** 身份重验期间暂停受保护页面；当前切换包含改密门禁，完成路由后恢复渲染。 */
-export const beginIdentitySwitch = async (onReady?: () => Promise<void>): Promise<void> => {
+export const beginIdentitySwitch = async (
+  onReady?: () => Promise<void>,
+  options?: SessionFeedbackOptions,
+): Promise<void> => {
   const auth = useAuthStore();
   if (auth.loggingOut) return;
   auth.switchingIdentity = true;
   const transition = clearIdentityContext();
-  await ensureSessionBootstrap();
+  await ensureSessionBootstrap(options);
   if (auth.loggingOut || transition !== identityTransitionVersion) return;
   await onReady?.();
   if (!auth.loggingOut && transition === identityTransitionVersion) auth.switchingIdentity = false;

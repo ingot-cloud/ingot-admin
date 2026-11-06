@@ -75,7 +75,7 @@ const privateHandleLogin = async (): Promise<void> => {
     formModel.password = "";
     emit("success", result);
   } catch {
-    // 宿主网络层负责错误提示与挑战取消处理，保留表单供重试。
+    // 共享登录流程负责错误提示，保留表单供重试。
   }
 };
 

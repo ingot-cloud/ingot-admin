@@ -31,19 +31,22 @@ export const createSameOriginAuthSession = (): AuthSession => {
   const enter = (): Promise<void> => {
     if (entering) return entering;
     if (useAuthStore().loggingOut) return Promise.resolve();
-    entering = beginIdentitySwitch(async () => {
-      const router = getAdminRouter();
-      const mustChangePassword = useUserInfoStore().getIsInitPwd;
-      if (!mustChangePassword) {
-        useRouterStore().installDynamicRoutes(router);
-        if (router.hasRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP))
-          router.removeRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP);
-      }
-      const target = mustChangePassword
-        ? "/init"
-        : (takeReturnTo(undefined, config.login.appId) ?? "/");
-      await router.replace(target);
-    }).finally(() => {
+    entering = beginIdentitySwitch(
+      async () => {
+        const router = getAdminRouter();
+        const mustChangePassword = useUserInfoStore().getIsInitPwd;
+        if (!mustChangePassword) {
+          useRouterStore().installDynamicRoutes(router);
+          if (router.hasRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP))
+            router.removeRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP);
+        }
+        const target = mustChangePassword
+          ? "/init"
+          : (takeReturnTo(undefined, config.login.appId) ?? "/");
+        await router.replace(target);
+      },
+      { feedback: "silent" },
+    ).finally(() => {
       entering = undefined;
     });
     return entering;
@@ -90,5 +93,6 @@ export const createSameOriginAuthSession = (): AuthSession => {
       return existing;
     },
     warn: (message) => Message.warning(message, { showClose: true }),
+    error: (message) => Message.error(message, { showClose: true }),
   };
 };

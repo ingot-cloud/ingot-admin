@@ -1,4 +1,4 @@
-import { request } from "@/net";
+import { request, type RequestOptions } from "@/net";
 import type { R } from "@/models";
 import type {
   AccountSelfProfile,
@@ -9,8 +9,8 @@ import type {
 
 const PATH = "/api/iam/v1/me";
 
-export function IamBootstrapAPI(): Promise<R<IamBootstrap>> {
-  return request.get<IamBootstrap>(`${PATH}/bootstrap`);
+export function IamBootstrapAPI(options?: RequestOptions): Promise<R<IamBootstrap>> {
+  return request.get<IamBootstrap>(`${PATH}/bootstrap`, undefined, options);
 }
 
 export function IamCapabilitiesAPI(): Promise<R<CurrentCapabilities>> {
