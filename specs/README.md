@@ -235,6 +235,7 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 2026-11-06 产品验收归档
 
+- [平台与租户统一登录错误提示](./changes/archive/2026/20261106-ingot-login-error-feedback/README.md) · [当前能力](./current/ingot-login/password-login/README.md)
 - [App 用户管理平台应用](./changes/archive/2026/20261106-member-platform-application/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
 - [组织即时授权与拥有者交互](./changes/archive/2026/20261014-org-tenant-live-authorization/README.md) · [当前能力](./current/org/tenant-live-authorization/README.md)
 - [勾选框、单选框与树展开规范](./changes/archive/2026/20261021-choice-controls/README.md) · [当前能力](./current/packages/admin-ui-foundation/README.md)
