@@ -16,6 +16,9 @@
 | 平台审计 | platform/iam/authorization-audit | /platform/authorization-audit | platform.iam.authorization.audit |
 | 组织审计 | org/iam/authorization-audit | /org/authorization-audit | org.iam.authorization.audit |
 | 字段策略 | org/iam/field-policies | /org/field-policies | org.iam.field.policies |
+| App 用户管理 | member/user | /member/users | member.user |
+| App 角色管理 | member/role | /member/roles | member.role |
+| App 权限管理 | member/permission | /member/permissions | member.permission |
 
 ## 用户场景
 
@@ -48,6 +51,14 @@
 - 访问防护和会话管理入口按相应 read 的 ANY 开放；仅展示授权 Tab，默认首个可访问项；未激活或撤权的面板不请求
 - 两域包装页使用 admin-common 无路由审计组件，公共包不依赖业务插件
 - 安全接口通过授权 SDK 执行；读取遵守最长 30 秒热窗口，写入 fresh 求值。撤权、到期、停用或依赖故障按服务端授权规则拒绝
+
+## App 用户管理
+
+平台宿主装配 Member 插件，通过 IAM bootstrap 显示 `platform:member` 应用与三个页面。每页按对应的读取操作显示，按钮按精确操作权限显示。应用切换器、侧栏、功能搜索和深链使用同一组菜单。
+
+用户页支持姓名和手机号搜索、分页、账号状态管理及角色配置。角色页与权限页支持按名称查询树和维护子项，右侧操作列单行显示「详情」「添加子角色」或「添加子权限」。权限页的启停动作位于「更多」菜单，详情抽屉中的字段与顶部权限名称左对齐。
+
+用户角色和角色权限在选择对话框中回显，保存时提交完整选择。内置用户角色只读，权限树保留父子授权语义。
 
 ## 兼容性与依赖
 

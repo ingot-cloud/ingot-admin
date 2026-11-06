@@ -20,15 +20,16 @@ App 只负责启动和部署。默认通用后台是 `apps/admin`。
 
 `apps/admin` 与 `apps/admin-platform` 是两个 composition root，各自 `src/main.ts` 读取 runtime 并调用 `bootstrapAdminApp`。必须同时引入 `@ingot/admin-core/style.css` 和 `uno.css`。
 
-- 租户 `apps/admin`：端口 `5798`，插件 `org` + `security`，`VITE_APP_CODE=ingot-admin`，`VITE_APP_ID=tenant-admin`
-- 平台 `apps/admin-platform`：端口 `5799`，插件 `platform` + `security`，`VITE_APP_CODE=ingot-platform-admin`，`VITE_APP_ID=platform-admin`
+- 租户 `apps/admin` 使用端口 `5798`，业务插件为 `org`，`VITE_APP_CODE=ingot-admin`，`VITE_APP_ID=tenant-admin`。
+- 平台 `apps/admin-platform` 使用端口 `5799`，业务插件为 `platform`、`security` 和 `member`，`VITE_APP_CODE=ingot-platform-admin`，`VITE_APP_ID=platform-admin`。
 
-`VITE_APP_CODE` 只做前端应用编码（本地页面/布局前缀）。`VITE_APP_ID` 是 BFF/Nacos 注册键，二者不要写成同一个值。Member 不默认打进这两份 IAM 构建。
+`VITE_APP_CODE` 只做前端应用编码（本地页面/布局前缀）。`VITE_APP_ID` 是 BFF/Nacos 注册键，二者不要写成同一个值。Member 插件由 `apps/admin-platform` 装配，页面通过 IAM 的 `platform:member` 应用提供。
 
 ```ts
 export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
+  platformPlugin,
   securityPlugin,
-  orgPlugin,
+  memberPlugin,
   createAppLocalPlugin(appCode),
 ];
 ```

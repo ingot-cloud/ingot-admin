@@ -60,7 +60,7 @@ pnpm dev:admin
 pnpm dev:admin-platform
 ```
 
-`pnpm dev` 会并行启动上述两个应用。请用上述 `*.localhost` 打开，不要用光杆 `localhost:端口`。租户后台是 `apps/admin`（auth/org），平台后台是 `apps/admin-platform`（auth/platform/security）。Member 不默认混入。裁剪方式见 [App 开发](./app-development.md)。登录链路见后端 `docs/modules/authorization-server/BFF-AUTH-FLOW.md`。
+`pnpm dev` 会并行启动上述两个应用。请用上述 `*.localhost` 打开，不要用光杆 `localhost:端口`。租户后台是 `apps/admin`（auth/org），平台后台是 `apps/admin-platform`（auth/platform/security/member）。App 用户管理由平台 IAM 目录和 Member 服务共同提供。裁剪方式见 [App 开发](./app-development.md)。登录链路见后端 `docs/modules/authorization-server/BFF-AUTH-FLOW.md`。
 
 ### 5. 生产构建
 
