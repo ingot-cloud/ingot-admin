@@ -29,6 +29,9 @@
       "@ingot/security-plugin": [
         "./security-plugin.d.ts"
       ],
+      "@ingot/member-plugin": [
+        "./member-plugin.d.ts"
+      ],
       "@ingot/help-plugin": [
         "./help-plugin.d.ts"
       ]

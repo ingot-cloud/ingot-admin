@@ -1,6 +1,7 @@
 import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { MemberUser } from "@/models";
+import { MemberAction } from "@/models/actions";
 
 export const MEMBER_USER_TABLE_ID = "member-user";
 
@@ -25,7 +26,7 @@ export const tableHeaders: Array<TableHeaderRecord> = [
     prop: "phone",
   },
   {
-    label: "email",
+    label: "邮箱",
     prop: "email",
     transform: (v) => v || "-",
   },
@@ -55,6 +56,7 @@ export function createMemberUserToolbarActions(
   return [
     {
       key: "create",
+      permission: MemberAction.USER_CREATE,
       label: "添加用户",
       kind: "quick",
       icon: "ep:plus",
@@ -81,12 +83,14 @@ export function createMemberUserRowActions(
   return [
     {
       key: "detail",
+      permission: MemberAction.USER_DETAIL,
       label: "详情",
       kind: "detail",
       onSelect: handlers.onDetail,
     },
     {
       key: "toggle-enabled",
+      permission: MemberAction.USER_UPDATE,
       label: actionDesc,
       kind: "default",
       disabled: !canToggle,
@@ -96,6 +100,7 @@ export function createMemberUserRowActions(
     },
     {
       key: "lock",
+      permission: MemberAction.USER_LOCK,
       label: lockLabel,
       kind: "default",
       disabled: !row.id,
@@ -104,6 +109,7 @@ export function createMemberUserRowActions(
     },
     {
       key: "reset-password",
+      permission: MemberAction.USER_RESET_PWD,
       label: "重置密码",
       kind: "danger",
       confirm: `是否重置该用户(${displayName})密码`,

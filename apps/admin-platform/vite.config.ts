@@ -16,6 +16,7 @@ export default defineInAppConfig({
     "@ingot/auth-plugin",
     "@ingot/platform-plugin",
     "@ingot/security-plugin",
+    "@ingot/member-plugin",
     "@ingot/help-plugin",
   ],
   iconifyOffline: {

@@ -1,19 +1,20 @@
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { MemberPermission, MemberPermissionTreeNodeVO } from "@/models";
 import { getCommonStatusActionDesc, getCommonStatusToggle } from "@/models/enums";
+import { MemberAction } from "@/models/actions";
 
 export const MEMBER_PERMISSION_TABLE_ID = "member-permission";
 
 export const tableHeaders: Array<TableHeaderRecord> = [
   {
-    label: "权限",
-    prop: "code",
+    label: "权限名称",
+    prop: "name",
     required: true,
   },
   {
-    label: "名称",
-    prop: "name",
-    width: "150",
+    label: "权限编码",
+    prop: "code",
+    minWidth: "180",
   },
   {
     label: "类型",
@@ -27,9 +28,10 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "320",
+    width: "220",
     prop: "actions",
     fixed: "right",
+    resizable: false,
   },
 ];
 
@@ -39,6 +41,7 @@ export function createMemberPermissionToolbarActions(
   return [
     {
       key: "create",
+      permission: MemberAction.PERMISSION_CREATE,
       label: "添加权限",
       kind: "quick",
       icon: "ep:plus",
@@ -63,18 +66,21 @@ export function createMemberPermissionRowActions(
   return [
     {
       key: "detail",
-      label: "编辑",
+      label: "详情",
+      permission: MemberAction.PERMISSION_QUERY,
       kind: "detail",
       onSelect: handlers.onDetail,
     },
     {
       key: "add-child",
+      permission: MemberAction.PERMISSION_CREATE,
       label: "添加子权限",
       kind: "quick",
       onSelect: handlers.onAddChild,
     },
     {
       key: "toggle-status",
+      permission: MemberAction.PERMISSION_UPDATE,
       label: actionDesc,
       kind: "default",
       disabled: !canToggle,

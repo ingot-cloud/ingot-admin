@@ -31,6 +31,8 @@
 import { parseInstantDate, toApiInstant } from "@ingot/shared";
 import type { FormInstance } from "element-plus";
 import type { AccountLockDTO, LockAccountAPI, UnlockAccountAPI } from "@ingot/admin-core";
+import { useCapabilities } from "@ingot/admin-core";
+import { MemberAction } from "@/models/actions";
 
 const props = defineProps<{
   lockApi?: LockAccountAPI;
@@ -42,6 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const message = useMessage();
+const { hasAction } = useCapabilities();
 const visible = ref(false);
 const loading = ref(false);
 const userId = ref("");
@@ -76,17 +79,18 @@ const show = (params: { userId: string; locked?: boolean }): void => {
 
 const privateOnConfirm = (): void => {
   formRef.value?.validate((valid: boolean) => {
-    if (!valid) {
+    const request = locked.value ? props.unlockApi : props.lockApi;
+    if (!valid || !request || loading.value || !hasAction(MemberAction.USER_LOCK)) {
       return;
     }
     loading.value = true;
-    const request = locked.value ? props.unlockApi : props.lockApi;
-    request?.(userId.value, { ...form.value, lockedUntil: form.value.lockedUntil || undefined })
+    void request(userId.value, { ...form.value, lockedUntil: form.value.lockedUntil || undefined })
       .then(() => {
         message.success("操作成功");
         visible.value = false;
         emit("success");
       })
+      .catch(() => undefined)
       .finally(() => {
         loading.value = false;
       });

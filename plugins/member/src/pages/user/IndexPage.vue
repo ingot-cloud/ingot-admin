@@ -1,12 +1,19 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="查询和管理会员账号。" />
+      <in-page-header description="查询 App 用户、管理账号状态和角色。" />
     </template>
 
     <in-split-layout>
       <in-table
         :loading="ops.loading.value"
+        :feedback="
+          ops.failed.value
+            ? 'error'
+            : ops.submitted.value.nickname || ops.submitted.value.phone
+              ? 'no-result'
+              : undefined
+        "
         :data="ops.pageInfo.value.records"
         :headers="visibleHeaders"
         :page="ops.pageInfo.value"
@@ -44,9 +51,15 @@
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
         <template #avatar="{ item }">
-          <in-button link text @click="handleDetailUser(item)">
-            <in-avatar :src="item.avatar" :name="item.nickname" />
+          <in-button
+            v-if="hasAction(MemberAction.USER_DETAIL)"
+            link
+            text
+            @click="handleDetailUser(item)"
+          >
+            <in-avatar :src="item.avatar" :name="item.nickname || item.username" />
           </in-button>
+          <in-avatar v-else :src="item.avatar" :name="item.nickname || item.username" />
         </template>
         <template #username="{ item }">
           <in-copy-tag :text="item.username" />
@@ -73,8 +86,9 @@
 </template>
 
 <script lang="ts" setup>
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { applyColumnSelection, useCapabilities, type InTableAction } from "@ingot/admin-core";
 import type { MemberUser } from "@/models";
+import { MemberAction } from "@/models/actions";
 import { Search } from "@element-plus/icons-vue";
 import { useOps } from "./useOps";
 import {
@@ -100,10 +114,11 @@ import { useQueryClient } from "@tanstack/vue-query";
 const ops = useOps();
 const queryClient = useQueryClient();
 const message = useMessage();
+const { hasAction } = useCapabilities();
 
-const CreateDrawerRef = ref();
-const EditDrawerRef = ref();
-const ResetPwdDialogRef = ref();
+const CreateDrawerRef = ref<InstanceType<typeof CreateDrawer>>();
+const EditDrawerRef = ref<InstanceType<typeof EditDrawer>>();
+const ResetPwdDialogRef = ref<InstanceType<typeof ResetPwdDialog>>();
 const LockAccountDialogRef = ref<InstanceType<typeof LockAccountDialog>>();
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: MemberUser = {};
@@ -117,39 +132,45 @@ const privateOnSearch = (): void => {
 };
 
 const handleCreateUser = (): void => {
+  if (!hasAction(MemberAction.USER_CREATE)) return;
   CreateDrawerRef.value?.show();
 };
 
 const handleDetailUser = (params: MemberUser): void => {
-  EditDrawerRef.value.show(params);
+  if (!hasAction(MemberAction.USER_DETAIL)) return;
+  EditDrawerRef.value?.show(params);
 };
 
 const handleToggleEnabled = (params: MemberUser): void => {
-  if (!params.id || typeof params.enabled !== "boolean") {
+  if (!hasAction(MemberAction.USER_UPDATE) || !params.id || typeof params.enabled !== "boolean") {
     return;
   }
   const request = params.enabled ? DisableAccountAPI : EnableAccountAPI;
-  void request(params.id).then(() => {
-    message.success("操作成功");
-    refreshList();
-  });
+  void request(params.id)
+    .then(() => {
+      message.success("操作成功");
+      refreshList();
+    })
+    .catch(() => undefined);
 };
 
 const handleLockUser = (params: MemberUser): void => {
-  if (!params.id) {
+  if (!hasAction(MemberAction.USER_LOCK) || !params.id) {
     return;
   }
   LockAccountDialogRef.value?.show({ userId: params.id, locked: params.locked });
 };
 
 const handleResetPwdUser = (params: MemberUser): void => {
-  if (!params.id) {
+  if (!hasAction(MemberAction.USER_RESET_PWD) || !params.id) {
     return;
   }
-  UserResetPwdAPI(params.id).then((response) => {
-    message.success("操作成功");
-    ResetPwdDialogRef.value.show(response.data.random);
-  });
+  void UserResetPwdAPI(params.id)
+    .then((response) => {
+      message.success("操作成功");
+      if (response.data.random) ResetPwdDialogRef.value?.show(response.data.random);
+    })
+    .catch(() => undefined);
 };
 
 const refreshList = (): void => {

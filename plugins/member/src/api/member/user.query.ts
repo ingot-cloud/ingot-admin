@@ -6,9 +6,13 @@ import {
   silentQueryRequest,
 } from "@ingot/admin-core";
 import type { MemberUser, MemberUserDTO, MemberUserProfileVO } from "@/models";
-import { UserPageAPI, UserProfileAPI } from "./user";
+import { GetUserRolesAPI, UserPageAPI, UserProfileAPI } from "./user";
 
-export const memberUserQueryKeys = createResourceQueryKeys("member", "user");
+const resourceKeys = createResourceQueryKeys("member", "user");
+export const memberUserQueryKeys = {
+  ...resourceKeys,
+  roles: (id: string) => [...resourceKeys.detail(id), "roles"] as const,
+};
 
 export const MemberUserPageQueryOptions = createPageQueryOptions<MemberUser, MemberUserDTO>(
   memberUserQueryKeys,
@@ -22,5 +26,13 @@ export function MemberUserProfileQueryOptions(id: MaybeRefOrGetter<string>) {
     enabled: Boolean(value),
     queryFn: ({ signal }): Promise<MemberUserProfileVO> =>
       UserProfileAPI(value, silentQueryRequest(signal)).then(({ data }) => data),
+  });
+}
+
+export function MemberUserRolesQueryOptions(id: string) {
+  return queryOptions({
+    queryKey: memberUserQueryKeys.roles(id),
+    queryFn: ({ signal }) =>
+      GetUserRolesAPI(id, silentQueryRequest(signal)).then(({ data }) => data ?? []),
   });
 }

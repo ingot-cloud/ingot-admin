@@ -448,6 +448,9 @@ importers:
       '@ingot/help-plugin':
         specifier: workspace:*
         version: link:../../plugins/help
+      '@ingot/member-plugin':
+        specifier: workspace:*
+        version: link:../../plugins/member
       '@ingot/platform-plugin':
         specifier: workspace:*
         version: link:../../plugins/platform

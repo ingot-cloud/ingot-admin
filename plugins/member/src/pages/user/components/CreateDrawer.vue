@@ -12,14 +12,16 @@
       </el-form-item>
     </in-form>
     <template #footer>
-      <in-button :loading="loading" type="primary" @click="handleConfirmClick"> 确定 </in-button>
+      <in-button :disabled="loading" @click="visible = false">取消</in-button>
+      <in-button :loading="loading" type="primary" @click="handleConfirmClick">添加</in-button>
     </template>
   </in-drawer>
 </template>
 <script lang="ts" setup>
 import type { MemberUserDTO } from "@/models";
-import { copyParams } from "@ingot/admin-core";
+import { copyParams, useCapabilities } from "@ingot/admin-core";
 import { CreateUserAPI } from "@/api/member/user";
+import { MemberAction } from "@/models/actions";
 
 const defaultEditForm: MemberUserDTO = {
   phone: undefined,
@@ -27,7 +29,8 @@ const defaultEditForm: MemberUserDTO = {
   avatar: undefined,
 };
 
-const emits = defineEmits(["success"]);
+const emits = defineEmits<{ success: [] }>();
+const { hasAction } = useCapabilities();
 
 const visible = ref(false);
 const loading = ref(false);
@@ -52,7 +55,7 @@ const show = () => {
 const handleConfirmClick = () => {
   const form = unref(FormRef);
   form.validate((valid: boolean) => {
-    if (valid) {
+    if (valid && hasAction(MemberAction.USER_CREATE) && !loading.value) {
       loading.value = true;
       CreateUserAPI(editForm)
         .then(() => {

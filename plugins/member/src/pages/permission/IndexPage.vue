@@ -7,8 +7,10 @@
     <in-split-layout>
       <in-table
         :loading="treeQuery.isFetching.value"
+        :feedback="treeQuery.isError.value ? 'error' : submitted.name ? 'no-result' : undefined"
         :data="treeData"
         :headers="visibleHeaders"
+        tree-column="name"
         :table-id="MEMBER_PERMISSION_TABLE_ID"
         density="compact"
       >
@@ -31,6 +33,9 @@
         <template #tools-end>
           <in-table-actions variant="toolbar" :actions="toolbarActions" :row="toolbarRow" />
         </template>
+        <template #name="{ item }">
+          <in-button text link @click="handleEdit(item)">{{ item.name }}</in-button>
+        </template>
         <template #code="{ item }">
           <in-copy-tag :text="item.code" />
         </template>
@@ -47,13 +52,18 @@
     </in-split-layout>
   </in-page-frame>
 
-  <EditDrawer ref="EditDrawerRef" :select-data="treeData" @success="refreshData" />
+  <EditDrawer ref="EditDrawerRef" @success="refreshData" />
 </template>
 
 <script lang="ts" setup>
-import { applyColumnSelection, Message, silentQueryRequest, type InTableAction } from "@ingot/admin-core";
+import {
+  applyColumnSelection,
+  Message,
+  type InTableAction,
+  useCapabilities,
+} from "@ingot/admin-core";
 import type { MemberPermission, MemberPermissionTreeNodeVO } from "@/models";
-import type { CommonStatus } from "@/models/enums";
+import { MemberAction } from "@/models/actions";
 import { useAuthorityTypeEnums, getCommonStatusToggle } from "@/models/enums";
 import { Search } from "@element-plus/icons-vue";
 import EditDrawer from "./EditDrawer.vue";
@@ -71,12 +81,16 @@ import {
 } from "./table";
 
 const authorityTypeEnums = useAuthorityTypeEnums();
-const EditDrawerRef = ref();
+const EditDrawerRef = ref<InstanceType<typeof EditDrawer>>();
 const queryClient = useQueryClient();
+const { hasAction } = useCapabilities();
 
 const filter = reactive<MemberPermission>({});
 const submitted = ref<MemberPermission>({});
-const treeQuery = useQuery(() => MemberPermissionTreeQueryOptions(() => submitted.value));
+const treeQuery = useQuery(() => ({
+  ...MemberPermissionTreeQueryOptions(() => submitted.value),
+  enabled: hasAction(MemberAction.PERMISSION_QUERY),
+}));
 const treeData = computed(() => treeQuery.data.value ?? []);
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: MemberPermission = {};
@@ -91,28 +105,29 @@ const refreshData = (): void => {
 };
 
 const statusMutation = useMutation({
-  mutationFn: (params: MemberPermission) => UpdateAuthorityAPI(params, silentQueryRequest()),
+  mutationFn: (params: MemberPermission) => UpdateAuthorityAPI(params),
   onSuccess: () => {
     void queryClient.invalidateQueries({ queryKey: memberPermissionQueryKeys.lists() });
+    Message.success("操作成功");
   },
 });
 
 const handleToggleStatus = (item: MemberPermissionTreeNodeVO): void => {
-  if (!item.id || !item.status) {
+  if (!hasAction(MemberAction.PERMISSION_UPDATE) || !item.id || !item.status) {
     return;
   }
-  const next = getCommonStatusToggle(item.status as CommonStatus);
-  statusMutation.mutateAsync({ id: item.id, status: next }).then(() => {
-    Message.success("操作成功");
-  });
+  const next = getCommonStatusToggle(item.status);
+  statusMutation.mutate({ id: item.id, status: next });
 };
 
 const handleCreate = (): void => {
-  EditDrawerRef.value?.show();
+  if (hasAction(MemberAction.PERMISSION_CREATE)) EditDrawerRef.value?.show();
 };
 
-const handleEdit = (params: MemberPermission | string): void => {
-  EditDrawerRef.value?.show(params);
+const handleEdit = (params: MemberPermissionTreeNodeVO, addChild = false): void => {
+  if (hasAction(addChild ? MemberAction.PERMISSION_CREATE : MemberAction.PERMISSION_QUERY)) {
+    EditDrawerRef.value?.show(params, addChild);
+  }
 };
 
 const toolbarActions = computed(() => createMemberPermissionToolbarActions(handleCreate));
@@ -122,15 +137,11 @@ const rowActionsOf = (
 ): Array<InTableAction<MemberPermissionTreeNodeVO>> =>
   createMemberPermissionRowActions(item, {
     onDetail: handleEdit,
-    onAddChild: (row) => handleEdit(row.id!),
+    onAddChild: (row) => handleEdit(row, true),
     onToggleStatus: handleToggleStatus,
   });
 
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };
-
-onMounted(() => {
-  refreshData();
-});
 </script>

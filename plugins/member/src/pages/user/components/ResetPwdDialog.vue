@@ -2,10 +2,10 @@
   <in-dialog :title="title" v-model="visible">
     <div flex flex-col gap-2>
       <div flex flex-row gap-2 p-t-2>
-        <div m-r-10px>密码:</div>
+        <div m-r-10px>临时密码</div>
         <in-copy-tag :text="passwordValue"></in-copy-tag>
       </div>
-      <div font-400 style="font-size: 12px; color: #bbbbbb">*提示:点击即可复制</div>
+      <div class="text-xs" style="color: var(--in-text-color-secondary)">点击密码即可复制。</div>
     </div>
 
     <template #footer>
@@ -18,6 +18,9 @@ const visible = ref(false);
 const title = ref("请妥善保管密码，登录后及时修改新密码");
 
 const passwordValue = ref("");
+watch(visible, (open) => {
+  if (!open) passwordValue.value = "";
+});
 
 const handleConfirmClick = () => {
   visible.value = false;

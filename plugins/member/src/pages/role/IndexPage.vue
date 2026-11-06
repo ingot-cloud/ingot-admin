@@ -7,9 +7,10 @@
     <in-split-layout>
       <in-table
         :loading="roleQuery.isFetching.value"
+        :feedback="roleQuery.isError.value ? 'error' : submitted.name ? 'no-result' : undefined"
         :data="roleTree"
         :headers="visibleHeaders"
-        :expand-row-keys="roleTree.map((item) => item.id!)"
+        tree-column="name"
         :table-id="MEMBER_ROLE_TABLE_ID"
         density="compact"
       >
@@ -38,14 +39,11 @@
           </in-button>
         </template>
         <template #code="{ item }">
-          <el-tag>
-            {{ item.code || "-" }}
-          </el-tag>
+          <in-copy-tag v-if="item.code" :text="item.code" />
+          <span v-else>-</span>
         </template>
         <template #builtIn="{ item }">
-          <el-tag :type="item.builtIn ? 'success' : 'info'">
-            {{ item.builtIn ? "是" : "否" }}
-          </el-tag>
+          <in-tag :value="{ text: item.builtIn ? '内置' : '自定义', tag: 'info' }" />
         </template>
         <template #status="{ item }">
           <in-common-status-tag :status="item.status" />
@@ -57,12 +55,13 @@
     </in-split-layout>
   </in-page-frame>
 
-  <RoleDrawer ref="RoleDrawerRef" :role-list="roleTree" @success="refreshData" />
+  <RoleDrawer ref="RoleDrawerRef" @success="refreshData" />
 </template>
 
 <script lang="ts" setup>
-import { applyColumnSelection, type InTableAction } from "@ingot/admin-core";
+import { applyColumnSelection, useCapabilities, type InTableAction } from "@ingot/admin-core";
 import type { MemberRole, MemberRoleTreeNodeVO } from "@/models";
+import { MemberAction } from "@/models/actions";
 import { Search } from "@element-plus/icons-vue";
 import { MemberRoleTreeQueryOptions, memberRoleQueryKeys } from "@/api/member/role.query";
 import RoleDrawer from "./components/RoleDrawer.vue";
@@ -74,12 +73,16 @@ import {
   tableHeaders,
 } from "./table";
 
-const RoleDrawerRef = ref();
+const RoleDrawerRef = ref<InstanceType<typeof RoleDrawer>>();
 const queryClient = useQueryClient();
+const { hasAction } = useCapabilities();
 
 const filter = reactive<MemberRole>({});
 const submitted = ref<MemberRole>({});
-const roleQuery = useQuery(() => MemberRoleTreeQueryOptions(() => submitted.value));
+const roleQuery = useQuery(() => ({
+  ...MemberRoleTreeQueryOptions(() => submitted.value),
+  enabled: hasAction(MemberAction.ROLE_QUERY),
+}));
 const roleTree = computed(() => roleQuery.data.value ?? []);
 const selectedColumnProps = ref<string[]>([]);
 const toolbarRow: MemberRole = {};
@@ -94,11 +97,13 @@ const refreshData = () => {
 };
 
 const handleCreate = (): void => {
-  RoleDrawerRef.value.show();
+  if (hasAction(MemberAction.ROLE_CREATE)) RoleDrawerRef.value?.show();
 };
 
 const handleEdit = (params: MemberRoleTreeNodeVO, isAddChild: boolean = false): void => {
-  RoleDrawerRef.value.show(params, isAddChild);
+  if (hasAction(isAddChild ? MemberAction.ROLE_CREATE : MemberAction.ROLE_QUERY)) {
+    RoleDrawerRef.value?.show(params, isAddChild);
+  }
 };
 
 const toolbarActions = computed(() => createMemberRoleToolbarActions(handleCreate));
@@ -112,8 +117,4 @@ const rowActionsOf = (item: MemberRoleTreeNodeVO): Array<InTableAction<MemberRol
 const privateOnColumnChange = (value: string[]): void => {
   selectedColumnProps.value = value;
 };
-
-onMounted(() => {
-  refreshData();
-});
 </script>

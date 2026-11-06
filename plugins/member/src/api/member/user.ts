@@ -4,10 +4,11 @@ import type {
   Page,
   MemberUserDTO,
   MemberUserProfileVO,
+  MemberRole,
   R,
   ResetPwdVO,
   SetDTO,
-  AccountLockDTO
+  AccountLockDTO,
 } from "@/models";
 import { filterParams } from "@ingot/admin-core";
 
@@ -82,26 +83,30 @@ export function SetUserRoleAPI(params: SetDTO): Promise<R<void>> {
   return request.put<void>(`${PATH}/${params.id}/roles`, params);
 }
 
+export function GetUserRolesAPI(id: string, options?: RequestOptions): Promise<R<MemberRole[]>> {
+  return request.get<MemberRole[]>(`${PATH}/${id}/roles`, undefined, options);
+}
+
 export function EnableAccountAPI(id: string, reason?: string) {
   return request.put<void>(`${PATH}/${id}/enable`, {
-    reason
+    reason,
   });
 }
 
 export function DisableAccountAPI(id: string, reason?: string) {
   return request.put<void>(`${PATH}/${id}/disable`, {
-    reason
+    reason,
   });
 }
 
 export function LockAccountAPI(id: string, payload: AccountLockDTO) {
   return request.put<void>(`${PATH}/${id}/lock`, {
-    ...payload
+    ...payload,
   });
 }
 
 export function UnlockAccountAPI(id: string, payload: AccountLockDTO) {
   return request.put<void>(`${PATH}/${id}/unlock`, {
-    ...payload
+    ...payload,
   });
 }

@@ -1,6 +1,7 @@
 import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { MemberRole, MemberRoleTreeNodeVO } from "@/models";
+import { MemberAction } from "@/models/actions";
 
 export const MEMBER_ROLE_TABLE_ID = "member-role";
 
@@ -32,9 +33,10 @@ export const tableHeaders: Array<TableHeaderRecord> = [
   },
   {
     label: "操作",
-    width: "320",
+    width: "220",
     prop: "actions",
     fixed: "right",
+    resizable: false,
   },
 ];
 
@@ -44,6 +46,7 @@ export function createMemberRoleToolbarActions(
   return [
     {
       key: "create",
+      permission: MemberAction.ROLE_CREATE,
       label: "添加角色",
       kind: "quick",
       icon: "ep:plus",
@@ -64,12 +67,14 @@ export function createMemberRoleRowActions(
   return [
     {
       key: "detail",
-      label: "编辑",
+      label: "详情",
+      permission: MemberAction.ROLE_QUERY,
       kind: "detail",
       onSelect: handlers.onDetail,
     },
     {
       key: "add-child",
+      permission: MemberAction.ROLE_CREATE,
       label: "添加子角色",
       kind: "quick",
       onSelect: handlers.onAddChild,
