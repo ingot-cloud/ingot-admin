@@ -1,0 +1,16 @@
+{
+  "articleParagraphs": 42,
+  "imageFiles": 8,
+  "apps": {
+    "admin": {
+      "filesChecked": 370,
+      "sourceMaps": 0,
+      "leaks": []
+    },
+    "admin-platform": {
+      "filesChecked": 547,
+      "sourceMaps": 0,
+      "leaks": []
+    }
+  }
+}

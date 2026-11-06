@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-11-03T11:57:05.487355Z",
+  "fixture": "production bundles + auth bootstrap only; no real business account",
+  "tenant": {
+    "article": "tenant-member-workbook",
+    "original": [
+      1280,
+      720
+    ],
+    "thumbnail": [
+      960,
+      540
+    ],
+    "display": [
+      798,
+      449
+    ],
+    "zoom": [
+      100,
+      125
+    ],
+    "escapeFocusRestored": true,
+    "horizontalOverflow": false
+  },
+  "platform": {
+    "article": "platform-roles",
+    "original": [
+      1280,
+      720
+    ],
+    "horizontalOverflow": false
+  },
+  "search": {
+    "query": "部门 替换",
+    "total": 1,
+    "article": "tenant-member-departments",
+    "bothTermsHighlighted": true
+  },
+  "console": {
+    "tenantErrorsAndWarnings": 0,
+    "platformErrorsAndWarnings": 0
+  },
+  "helpApiReads": 0,
+  "realBusinessOperations": "NOT_EXECUTED",
+  "businessScreenshots": "DEFERRED",
+  "staticServerAuthorization": "NOT_IMPLEMENTED"
+}

@@ -235,6 +235,7 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 当前活动变更
 
+- [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
 - [平台与租户登录页视觉统一](./changes/active/20261030-ingot-login-appearance/README.md)（validating；开发与定向静态/构建检查完成，页面与流程测试由用户执行）
 - [租户工作台统计、快捷入口与待办占位](./changes/active/20261030-org-tenant-workbench/README.md)（validating；功能与自动化验证完成，待用户自行测试验收）
 - [授权审计游标分页与可读展示](./changes/active/20261024-base-authorization-audit-readable/README.md)（implementing；2026-10-24 用户确认开工）

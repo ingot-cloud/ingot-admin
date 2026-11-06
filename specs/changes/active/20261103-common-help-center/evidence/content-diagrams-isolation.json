@@ -1,0 +1,230 @@
+{
+  "tenant": {
+    "ownArticleCount": 18,
+    "commonArticleCount": 4,
+    "oppositeArticleCount": 0,
+    "diagramCount": 11,
+    "oppositeImageCount": 0,
+    "productionFileCount": 396,
+    "images": [
+      {
+        "id": "tenant-field-policy",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "2f44977216c0b62c2a25e7e17fe2e0c56ca3c709abc897521181f84d2328653d"
+      },
+      {
+        "id": "tenant-download-states",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "8ed84e1f0b1fc207a1a65d9c77dcfba48fd29cb26335730bc6ea6422e75df891"
+      },
+      {
+        "id": "tenant-delegation-ceilings",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "26e4cc570e425080015eb960f535a4e31e5f5fcbc76dddeb7222cc16793e4ecf"
+      },
+      {
+        "id": "tenant-group-sources",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "2704244758c0affbc36733b3295a244a4e7701be8259d0c458293bd6c7fc4e6f"
+      },
+      {
+        "id": "tenant-department-replace",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "393b1449e55c5408980f2d7870ed43e51239dab11e5c7c89004138346215d373"
+      },
+      {
+        "id": "tenant-department-import",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "f26b01c81a6c69f5695fe3cfe0be35d99cfcd47d0a4fa98c56531c8cdfe2e3a6"
+      },
+      {
+        "id": "tenant-members-lifecycle",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "f23c1be8730368069a6dc440ef16c2901f40799c55d277cb27f972be9a35ca89"
+      },
+      {
+        "id": "tenant-assignment-flow",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "6de2c290c4e97f9cbd2c1529a1a71f28307d212c84baeaa04bd8618af15db42e"
+      },
+      {
+        "id": "tenant-member-import",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "d6572b98c9f66448b0fee6294c159bf12f23b3f3bd802d87d6241a073546def8"
+      },
+      {
+        "id": "tenant-roles-relationship",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "c210b82815366061cbf388d7723ca30af5b0018d79b33592b02bed8caa0835f3"
+      },
+      {
+        "id": "tenant-owner-transfer",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "a8f05fb449fc99291c5e58bc8e093280b814fadf0f897ddb3c322ff97d3b28db"
+      }
+    ]
+  },
+  "platform": {
+    "ownArticleCount": 20,
+    "commonArticleCount": 4,
+    "oppositeArticleCount": 0,
+    "diagramCount": 5,
+    "oppositeImageCount": 0,
+    "productionFileCount": 562,
+    "images": [
+      {
+        "id": "platform-roles-relationship",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "147dc1b2cfac784f1f53a80516d19fc5ecc82953b48dda2297f22cdebc6240e0"
+      },
+      {
+        "id": "platform-accounts-relationship",
+        "size": [
+          1280,
+          360
+        ],
+        "thumbnail": [
+          960,
+          270
+        ],
+        "source": "SVG",
+        "sha256": "e30fa0591e797dc20e2433a638c22bfb6a78a820ae8268b663dbb7df390ced53"
+      },
+      {
+        "id": "platform-security-layers",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "3ae9cca7a632475abcf5111de70ebd5f4a25512bc6f2ac023e94603143e37a67"
+      },
+      {
+        "id": "platform-entitlement-layers",
+        "size": [
+          1280,
+          720
+        ],
+        "thumbnail": [
+          960,
+          540
+        ],
+        "source": "SVG",
+        "sha256": "611ea6930884b52b6d5ccee8b80c9e87158c55af145c7f62bc8b5ac6c275b1c5"
+      },
+      {
+        "id": "platform-applications-relationship",
+        "size": [
+          1280,
+          360
+        ],
+        "thumbnail": [
+          960,
+          270
+        ],
+        "source": "SVG",
+        "sha256": "28cc2ce689cabb3f2fe1a713b31d86413715e2016be01e7e9483ce85848389a0"
+      }
+    ]
+  }
+}

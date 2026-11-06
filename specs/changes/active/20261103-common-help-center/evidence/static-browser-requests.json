@@ -1,0 +1,23 @@
+{
+  "trackedMethod": "GET",
+  "fixture": "production static app with auth/bootstrap stubs; no help endpoint implemented",
+  "entries": {
+    "tenant": {
+      "apiRequests": {
+        "/api/iam/v1/me/bootstrap": 2
+      },
+      "helpApiRequests": {},
+      "helpImageRequests": {
+        "/static/png/tenant-roles-relationship-thumb-BB4w1-2w.png": 3,
+        "/static/png/tenant-roles-relationship-Bs7sPrkM.png": 1
+      }
+    },
+    "platform": {
+      "apiRequests": {
+        "/api/iam/v1/me/bootstrap": 1
+      },
+      "helpApiRequests": {},
+      "helpImageRequests": {}
+    }
+  }
+}

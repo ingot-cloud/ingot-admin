@@ -1,0 +1,45 @@
+{
+  "contentMode": "frontend-static",
+  "apps": {
+    "admin": {
+      "filesChecked": 376,
+      "ownArticleParagraphs": 18,
+      "oppositeArticleParagraphsChecked": 20,
+      "oppositeArticleLeaks": [],
+      "oppositeImageLeaks": [],
+      "ownHelpImageFiles": [
+        "static/png/tenant-roles-relationship-thumb-BB4w1-2w.png",
+        "static/png/tenant-roles-relationship-Bs7sPrkM.png"
+      ],
+      "oppositeHelpImageFiles": [],
+      "commonArticleParagraphs": [
+        "common-account-access",
+        "common-password",
+        "common-navigation",
+        "common-personal-settings"
+      ]
+    },
+    "admin-platform": {
+      "filesChecked": 558,
+      "ownArticleParagraphs": 20,
+      "oppositeArticleParagraphsChecked": 18,
+      "oppositeArticleLeaks": [],
+      "oppositeImageLeaks": [],
+      "ownHelpImageFiles": [
+        "static/png/platform-roles-relationship-D_hv6niI.png",
+        "static/png/platform-accounts-relationship-thumb-CZjgvofU.png",
+        "static/png/platform-applications-relationship-thumb-EB6nTDqA.png",
+        "static/png/platform-accounts-relationship-BYkgQTVQ.png",
+        "static/png/platform-roles-relationship-thumb-B18KlGC1.png",
+        "static/png/platform-applications-relationship-pq5dy9jw.png"
+      ],
+      "oppositeHelpImageFiles": [],
+      "commonArticleParagraphs": [
+        "common-account-access",
+        "common-password",
+        "common-navigation",
+        "common-personal-settings"
+      ]
+    }
+  }
+}
