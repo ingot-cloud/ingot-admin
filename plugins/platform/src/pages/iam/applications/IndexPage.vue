@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="维护应用、资源与操作目录。启用不等于业务授权。" />
+      <in-page-header description="维护应用、资源与操作目录。启用不等于业务授权。"
+        ><template #action><BizHelpLink view-path="platform.iam.applications" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="domainTab">
@@ -108,6 +110,7 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   AuthorizationDomain,
   BizIamRecordLink,
   BizIamStatusTag,
@@ -121,13 +124,7 @@ import ApplicationPurgeDialog from "./components/ApplicationPurgeDialog.vue";
 import CatalogIconPreview from "./components/CatalogIconPreview.vue";
 import CreateWizard from "./components/CreateWizard.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
@@ -201,7 +198,9 @@ const toolbarRow = {
   version: "",
 } satisfies Row;
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 const handleDetail = (item: Row): void => {
   detailRef.value?.show(item);
@@ -234,9 +233,12 @@ const handleDisable = (item: Row): void => {
   });
 };
 const handleDelete = (item: Row): void => {
-  Confirm.error(`是否删除应用（${item.record.name}）？下有资源、菜单或仍被组织开通、套餐引用时无法删除。`, {
-    confirmButtonText: "删除",
-  }).then(() => {
+  Confirm.error(
+    `是否删除应用（${item.record.name}）？下有资源、菜单或仍被组织开通、套餐引用时无法删除。`,
+    {
+      confirmButtonText: "删除",
+    },
+  ).then(() => {
     PlatformApplicationDeleteAPI(item.record.id, { feedback: "silent" })
       .then(() => {
         Message.success("已删除");

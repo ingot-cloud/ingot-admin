@@ -70,6 +70,9 @@ export { default as BizIamTenantDelegationDrawer } from "./components/iam-tenant
 export { default as BizIamAccountSecretDialog } from "./components/BizIamAccountSecretDialog.vue";
 
 export { default as BizTenantMemberSelect } from "./components/BizTenantMemberSelect.vue";
+export { helpNavigationKey, useHelpNavigation } from "./help/navigation";
+export type { HelpNavigation } from "./help/navigation";
+export { default as BizHelpLink } from "./help/BizHelpLink.vue";
 export {
   organizationMemberPickerKey,
   useOrganizationMemberScopeKey,

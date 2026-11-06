@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="按已接入资源配置字段的可见、编辑和筛选。" />
+      <in-page-header description="按已接入资源配置字段的可见、编辑和筛选。"
+        ><template #action><BizHelpLink view-path="org.iam.field.policies" /></template
+      ></in-page-header>
     </template>
     <div v-if="resourcesLoaded && resources.length === 0" class="p-16px">当前没有可配置资源</div>
     <in-split-layout v-else left-collapsible :persistence-key="SPLIT_KEY">
@@ -58,6 +60,7 @@
 <script lang="ts" setup>
 import { Message, useCapabilities, usePermissions } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   AuthorizationDomain,
   IamAction,
   useFieldVisibilityEnum,

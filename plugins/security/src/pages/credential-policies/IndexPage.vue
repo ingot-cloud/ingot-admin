@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="page" surface="workspace" class="security-settings">
     <template #header>
-      <in-page-header description="按类型维护凭证策略，各分组独立保存。" />
+      <in-page-header description="按类型维护凭证策略，各分组独立保存。"
+        ><template #action><BizHelpLink view-path="security.credential.policies" /></template
+      ></in-page-header>
     </template>
     <template #tabs>
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
@@ -25,6 +27,7 @@
   </in-page-frame>
 </template>
 <script lang="ts" setup>
+import { BizHelpLink } from "@ingot/admin-common";
 import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
 import { CredentialPolicyTypeEnum, useCredentialPolicyTypeEnum } from "@/models/enums";
 import PolicyTabPanel from "./components/PolicyTabPanel.vue";

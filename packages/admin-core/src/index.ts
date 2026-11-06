@@ -165,3 +165,6 @@ export * from "./stores/modules/router";
 export * from "./theme";
 
 export { createSameOriginAuthSession } from "./auth/session";
+
+export { helpNavigationKey, useHelpNavigation } from "./help/navigation";
+export type { HelpNavigation } from "./help/navigation";

@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="成员。账号与成员分离；对象操作看后端能力，脱敏值不回传。" />
+      <in-page-header description="成员。账号与成员分离；对象操作看后端能力，脱敏值不回传。"
+        ><template #action><BizHelpLink view-path="org.iam.members" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <MemberTab />
@@ -10,6 +12,7 @@
 </template>
 
 <script lang="ts" setup>
+import { BizHelpLink } from "@ingot/admin-common";
 import MemberTab from "./components/MemberTab.vue";
 
 const LEGACY_DEPARTMENT_TAB = "departments";

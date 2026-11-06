@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="维护组织 Logo 和名称，并查看已有组织资料。" />
+      <in-page-header description="维护组织 Logo 和名称，并查看已有组织资料。"
+        ><template #action><BizHelpLink view-path="org.iam.settings" /></template
+      ></in-page-header>
     </template>
     <in-form-content>
       <section class="org-settings__section">
@@ -79,8 +81,14 @@
 </template>
 
 <script setup lang="ts">
-import { Message, refreshSessionPermissions, useCapabilities, usePermissions } from "@ingot/admin-core";
 import {
+  Message,
+  refreshSessionPermissions,
+  useCapabilities,
+  usePermissions,
+} from "@ingot/admin-core";
+import {
+  BizHelpLink,
   BizIamMemberPickerDialog,
   BizIamStatusTag,
   IamAction,
@@ -165,10 +173,7 @@ const privateOnMember = (members: IamSelectOption[]): void => {
     Message.warning("不能转交给当前所有者");
     return;
   }
-  passwordRef.value?.show(
-    { id: picked.id, name: picked.name || picked.id },
-    current.version,
-  );
+  passwordRef.value?.show({ id: picked.id, name: picked.name || picked.id }, current.version);
 };
 
 const privateOnTransferred = (): void => {

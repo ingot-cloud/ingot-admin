@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<title>成员入职与重新加入</title><desc>交互流程示意，非页面截图。核对手机号：11 位大陆号码，匹配已有全局账号；建立成员资格：新账号显示初始密码，已有账号不重置密码；暂停或移出：先核对成员与影响，移出不删除全局账号；重新加入：复用原成员资格，重新核对角色与关系</desc>
+<rect x="0" y="0" width="1280" height="720" rx="20" fill="#f5f7fb"/>
+<rect x="42" y="36" width="278" height="32" rx="8" fill="#e8efff"/>
+<text x="54" y="57.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#336bdf">交互流程示意 · 非页面截图</text>
+<text x="42" y="117.92" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="34" fill="#172b4d">成员入职与重新加入</text>
+<text x="42" y="155.60" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="20" fill="#667085">按步骤核对关键选择与保存结果</text>
+<rect x="42" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="60" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="67" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">01</text>
+<text x="60" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">核对手机号</text>
+<text x="60" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">11 位大陆号码</text>
+<text x="60" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">匹配已有全局账号</text>
+<path d="M324 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="348" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="366" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="373" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">02</text>
+<text x="366" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">建立成员资格</text>
+<text x="366" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">新账号显示初始密码</text>
+<text x="366" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">已有账号不重置密码</text>
+<path d="M630 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="654" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="672" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="679" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">03</text>
+<text x="672" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">暂停或移出</text>
+<text x="672" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">先核对成员与影响</text>
+<text x="672" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">移出不删除全局账号</text>
+<path d="M936 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="960" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="978" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="985" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">04</text>
+<text x="978" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">重新加入</text>
+<text x="978" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">复用原成员资格</text>
+<text x="978" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">重新核对角色与关系</text>
+<rect x="42" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="60" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="76" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">三种状态需分别处理</text>
+<text x="64" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">在职可暂停，暂停可恢复；已移出需要重新加入。组织所</text>
+<text x="64" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">有者不能按普通成员暂停、移出。</text>
+<rect x="654" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="672" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="688" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">重新加入不恢复原授权</text>
+<text x="676" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">角色、用户组等旧关系已清理。重新设置任职与授权，并</text>
+<text x="676" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">以保存后的列表和有效状态核对。</text>
+<text x="42" y="682.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#667085">图示仅辅助理解；操作名称、资格与最终结果以实际页面和正文为准。</text>
+</svg>

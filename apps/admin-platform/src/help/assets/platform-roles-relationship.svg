@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<title>平台角色：发布与应用分开完成</title><desc>交互流程示意，非页面截图。编辑与预览：核对操作、范围和字段，通过后发布新版本；固定版本发布：形成可分配版本，旧分配保留原版本；准备版本应用：选择处理集合，补齐不兼容范围参数；确认执行并复核：逐条切换目标分配，检查成功、失败和冲突</desc>
+<rect x="0" y="0" width="1280" height="720" rx="20" fill="#f5f7fb"/>
+<rect x="42" y="36" width="278" height="32" rx="8" fill="#e8efff"/>
+<text x="54" y="57.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#336bdf">交互流程示意 · 非页面截图</text>
+<text x="42" y="117.92" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="34" fill="#172b4d">平台角色：发布与应用分开完成</text>
+<text x="42" y="155.60" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="20" fill="#667085">按步骤核对关键选择与保存结果</text>
+<rect x="42" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="60" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="67" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">01</text>
+<text x="60" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">编辑与预览</text>
+<text x="60" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">核对操作、范围和字段</text>
+<text x="60" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">通过后发布新版本</text>
+<path d="M324 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="348" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="366" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="373" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">02</text>
+<text x="366" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">固定版本发布</text>
+<text x="366" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">形成可分配版本</text>
+<text x="366" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">旧分配保留原版本</text>
+<path d="M630 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="654" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="672" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="679" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">03</text>
+<text x="672" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">准备版本应用</text>
+<text x="672" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">选择处理集合</text>
+<text x="672" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">补齐不兼容范围参数</text>
+<path d="M936 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="960" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="978" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="985" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">04</text>
+<text x="978" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">确认执行并复核</text>
+<text x="978" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">逐条切换目标分配</text>
+<text x="978" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">检查成功、失败和冲突</text>
+<rect x="42" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="60" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="76" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">发布 ≠ 升级所有分配</text>
+<text x="64" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">需要显式应用目标版本；兼容范围逐条保留，只覆盖明确</text>
+<text x="64" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">勾选的参数，保留原主体、期限与来源。</text>
+<rect x="654" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="672" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="688" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">任务按快照处理</text>
+<text x="676" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">快照后新增分配不自动纳入。应用任务有冲突时重新读取</text>
+<text x="676" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">并核对；组织共享角色采用当前权限自动生效流程。</text>
+<text x="42" y="682.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#667085">图示仅辅助理解；操作名称、资格与最终结果以实际页面和正文为准。</text>
+</svg>

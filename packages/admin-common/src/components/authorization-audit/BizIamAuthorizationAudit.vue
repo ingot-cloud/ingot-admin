@@ -4,7 +4,8 @@
       <in-page-header
         :title="title"
         description="查看当前管理范围内的授权变更、配置差异与关联记录。"
-      />
+        ><template #action><BizHelpLink :view-path="HELP_VIEWS[domain]" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-table
@@ -123,6 +124,7 @@
   </in-page-frame>
 </template>
 <script setup lang="ts">
+import BizHelpLink from "../../help/BizHelpLink.vue";
 import { computed, ref } from "vue";
 import { formatDateTime } from "@ingot/shared";
 import { applyColumnSelection, withAllPickerOption } from "@ingot/admin-core";
@@ -231,4 +233,8 @@ const privateClearActor = (): void => {
   setActor(undefined);
 };
 const rowKeyOf = (row: ResourceDetail<AuditEntry>): string => row.record.id;
+const HELP_VIEWS = {
+  TENANT: "org.iam.authorization.audit",
+  PLATFORM: "platform.iam.authorization.audit",
+} as const;
 </script>

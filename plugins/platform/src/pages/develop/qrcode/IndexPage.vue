@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="page">
     <template #header>
-      <in-page-header description="生成并下载自定义二维码。" />
+      <in-page-header description="生成并下载自定义二维码。"
+        ><template #action><BizHelpLink view-path="platform.develop.qrcode" /></template
+      ></in-page-header>
     </template>
 
     <in-split-layout :left-width="340">
@@ -117,6 +119,7 @@
   </in-page-frame>
 </template>
 <script setup lang="ts">
+import { BizHelpLink } from "@ingot/admin-common";
 import {
   useQrcodeTypeEnum,
   useCorrectLevelEnum,
@@ -177,9 +180,24 @@ const handleDownload = (isSvg: boolean) => {
   @apply w-full min-w-0 box-border;
   padding: var(--in-space-4);
 }
-.qrcode-config :deep(.el-form-item) { margin-bottom: var(--in-space-5); }
-.qrcode-config :deep(.el-form-item__content) { min-width: 0; }
-.qrcode-config :deep(.in-select), .qrcode-config :deep(.el-select) { width: 100%; --el-select-width: 100%; }
-.qrcode-preview { @apply h-full min-w-0 flex flex-col items-center justify-center; padding: var(--in-space-5); gap: var(--in-space-6); }
-.qrcode-preview :deep(svg) { max-width: 100%; height: auto; }
+.qrcode-config :deep(.el-form-item) {
+  margin-bottom: var(--in-space-5);
+}
+.qrcode-config :deep(.el-form-item__content) {
+  min-width: 0;
+}
+.qrcode-config :deep(.in-select),
+.qrcode-config :deep(.el-select) {
+  width: 100%;
+  --el-select-width: 100%;
+}
+.qrcode-preview {
+  @apply h-full min-w-0 flex flex-col items-center justify-center;
+  padding: var(--in-space-5);
+  gap: var(--in-space-6);
+}
+.qrcode-preview :deep(svg) {
+  max-width: 100%;
+  height: auto;
+}
 </style>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<title>部门工作簿：路径与处理顺序</title><desc>交互流程示意，非页面截图。先准备上级：上级必须已存在，不会自动补中间部门；填写完整路径：根部门 / 上级部门，同级重名需先处理；按顺序上传：先上级行，再下级行，更新文件保留部门 ID；逐行检查结果：失败报告含行号与原因，只重试需要处理的行</desc>
+<rect x="0" y="0" width="1280" height="720" rx="20" fill="#f5f7fb"/>
+<rect x="42" y="36" width="278" height="32" rx="8" fill="#e8efff"/>
+<text x="54" y="57.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#336bdf">交互流程示意 · 非页面截图</text>
+<text x="42" y="117.92" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="34" fill="#172b4d">部门工作簿：路径与处理顺序</text>
+<text x="42" y="155.60" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="20" fill="#667085">按步骤核对关键选择与保存结果</text>
+<rect x="42" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="60" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="67" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">01</text>
+<text x="60" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">先准备上级</text>
+<text x="60" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">上级必须已存在</text>
+<text x="60" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">不会自动补中间部门</text>
+<path d="M324 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="348" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="366" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="373" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">02</text>
+<text x="366" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">填写完整路径</text>
+<text x="366" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">根部门 / 上级部门</text>
+<text x="366" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">同级重名需先处理</text>
+<path d="M630 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="654" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="672" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="679" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">03</text>
+<text x="672" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">按顺序上传</text>
+<text x="672" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">先上级行，再下级行</text>
+<text x="672" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">更新文件保留部门 ID</text>
+<path d="M936 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="960" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="978" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="985" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">04</text>
+<text x="978" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">逐行检查结果</text>
+<text x="978" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">失败报告含行号与原因</text>
+<text x="978" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">只重试需要处理的行</text>
+<rect x="42" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="60" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="76" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">填写示例</text>
+<text x="64" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">根部门名为“示例组织”：下级部门的上级路径可填“示</text>
+<text x="64" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">例组织/研发部”。该路径必须唯一且当前可见。</text>
+<rect x="654" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="672" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="688" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">不能做的结构变化</text>
+<text x="676" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">不能通过导入新增根部门或修改根的上级；层级不能成环</text>
+<text x="676" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">。表格不维护部门负责人和人数。</text>
+<text x="42" y="682.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#667085">图示仅辅助理解；操作名称、资格与最终结果以实际页面和正文为准。</text>
+</svg>

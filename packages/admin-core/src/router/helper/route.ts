@@ -24,6 +24,7 @@ export const generateMenus = (routes: Array<RouteRecordRaw>): Array<MenuRouteRec
       {
         path: item.path,
         applicationId: item.meta?.applicationId,
+        viewPath: item.meta?.viewPath,
         title: item.meta?.title,
         icon: item.meta?.icon,
         ...(children ? { children } : {}),
@@ -107,6 +108,7 @@ const menuToRoute = (menu: MenuTreeNode) => {
   const meta: RouteRecordRaw["meta"] = {
     title: menu.name,
     applicationId: menu.appId,
+    viewPath: menu.viewPath,
     icon: menu.icon,
     hideMenu: menu.hidden,
     hideBreadcrumb: menu.hideBreadcrumb,

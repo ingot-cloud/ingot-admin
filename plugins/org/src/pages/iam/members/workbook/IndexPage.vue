@@ -6,7 +6,8 @@
         :title="MEMBER_WORKBOOK_TITLE"
         show-back
         @back="privateBack"
-      />
+        ><template #action><BizHelpLink view-path="org.iam.members.workbook" /></template
+      ></in-page-header>
     </template>
     <in-form-content class="member-workbook-form">
       <in-loading :loading="busy">
@@ -119,7 +120,10 @@
         class="member-workbook-btn"
         type="primary"
         :loading="busy"
-        :disabled="scopeKind === 'partial' && scopeSelection.departments.length + scopeSelection.members.length === 0"
+        :disabled="
+          scopeKind === 'partial' &&
+          scopeSelection.departments.length + scopeSelection.members.length === 0
+        "
         @in-click="privateConfirmScope"
       >
         确定
@@ -148,11 +152,7 @@
       </el-table-column>
     </el-table>
     <div v-else class="member-workbook-history-empty">
-      <el-empty
-        :image="noContentIllustration"
-        :image-size="120"
-        description="暂无数据"
-      />
+      <el-empty :image="noContentIllustration" :image-size="120" description="暂无数据" />
     </div>
     <template #footer>
       <in-button @in-click="historyVisible = false">我知道了</in-button>
@@ -160,12 +160,18 @@
   </in-dialog>
 
   <in-dialog v-model="resultVisible" title="导入结果" width="480px" append-to-body>
-    <p class="text-14px">成功 {{ result?.successCount ?? 0 }} 人，失败 {{ result?.failCount ?? 0 }} 人</p>
+    <p class="text-14px">
+      成功 {{ result?.successCount ?? 0 }} 人，失败 {{ result?.failCount ?? 0 }} 人
+    </p>
     <div class="mt-16px flex flex-wrap gap-8px">
       <in-button v-if="(result?.failCount ?? 0) > 0" @in-click="privateDownloadErrors">
         下载错误报告
       </in-button>
-      <in-button v-if="result?.passwordAvailable" type="primary" @in-click="privateDownloadPasswords">
+      <in-button
+        v-if="result?.passwordAvailable"
+        type="primary"
+        @in-click="privateDownloadPasswords"
+      >
         下载初始密码
       </in-button>
     </div>
@@ -187,6 +193,7 @@ import {
   usePermissions,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   IamAction,
   IAM_DEFAULT_PAGE_SIZE,
   MemberStatus,
@@ -225,9 +232,7 @@ const canUpdate = computed(
     permissions.permissions.includes(IamAction.TENANT_MEMBER_UPDATE) ||
     permissions.permissions.includes(IamAction.TENANT_MEMBER_DEPARTMENTS),
 );
-const mode = ref(
-  canCreate.value ? MemberWorkbookMode.CREATE : MemberWorkbookMode.UPDATE,
-);
+const mode = ref(canCreate.value ? MemberWorkbookMode.CREATE : MemberWorkbookMode.UPDATE);
 const canImport = computed(() =>
   mode.value === MemberWorkbookMode.CREATE ? canCreate.value : canUpdate.value,
 );
@@ -384,10 +389,12 @@ const privateDownloadPasswords = (): void => {
   if (!result.value) {
     return;
   }
-  TenantMemberWorkbookFileAPI(result.value.id, MemberWorkbookArtifact.PASSWORDS).then((response) => {
-    downloadWorkbookFile(response.data);
-    result.value = { ...result.value!, passwordAvailable: false };
-  });
+  TenantMemberWorkbookFileAPI(result.value.id, MemberWorkbookArtifact.PASSWORDS).then(
+    (response) => {
+      downloadWorkbookFile(response.data);
+      result.value = { ...result.value!, passwordAvailable: false };
+    },
+  );
 };
 </script>
 

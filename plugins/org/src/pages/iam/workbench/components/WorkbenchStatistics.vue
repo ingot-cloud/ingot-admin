@@ -12,6 +12,7 @@
         <h2>{{ statistics?.tenantName || "组织概况" }}</h2>
         <p class="workbench-statistics__scope">统计按当前可见范围展示</p>
       </div>
+      <BizHelpLink view-path="org.iam.workbench" />
     </header>
     <in-loading :loading="loading" class="workbench-statistics__body">
       <div v-if="failed" class="workbench-statistics__error" role="alert">
@@ -35,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+import { BizHelpLink } from "@ingot/admin-common";
 import type { TenantWorkbenchStatistics } from "@/models/workbench";
 import { WORKBENCH_METRICS } from "../table";
 

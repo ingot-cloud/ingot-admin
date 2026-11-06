@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<title>安全配置：按问题定位入口</title><desc>交互流程示意，非页面截图。凭证策略：密码强度、历史、过期，以及初始密码；账号防护：认证失败计数，账号锁定与解锁；访问防护：路径、限流、名单，挑战与请求封禁；会话管理：在线会话与撤销，登录并发策略</desc>
+<rect x="0" y="0" width="1280" height="720" rx="20" fill="#f5f7fb"/>
+<rect x="42" y="36" width="278" height="32" rx="8" fill="#e8efff"/>
+<text x="54" y="57.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#336bdf">交互流程示意 · 非页面截图</text>
+<text x="42" y="117.92" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="34" fill="#172b4d">安全配置：按问题定位入口</text>
+<text x="42" y="155.60" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="20" fill="#667085">按配置项核对边界及适用条件</text>
+<rect x="42" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="60" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="67" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">01</text>
+<text x="60" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">凭证策略</text>
+<text x="60" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">密码强度、历史、过期</text>
+<text x="60" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">以及初始密码</text>
+<rect x="348" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="366" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="373" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">02</text>
+<text x="366" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">账号防护</text>
+<text x="366" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">认证失败计数</text>
+<text x="366" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">账号锁定与解锁</text>
+<rect x="654" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="672" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="679" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">03</text>
+<text x="672" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">访问防护</text>
+<text x="672" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">路径、限流、名单</text>
+<text x="672" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">挑战与请求封禁</text>
+<rect x="960" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="978" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="985" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">04</text>
+<text x="978" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">会话管理</text>
+<text x="978" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">在线会话与撤销</text>
+<text x="978" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">登录并发策略</text>
+<rect x="42" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="60" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="76" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">这四类配置分别维护</text>
+<text x="64" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">密码不合规先看凭证；账号被锁先看账号状态与防护；请</text>
+<text x="64" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">求被拦先查访问规则；并发异常先核对会话策略。</text>
+<rect x="654" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="672" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="688" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">注意单位与适用范围</text>
+<text x="676" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">账号锁定时长按分钟，访问防护部分 TTL 和窗口按秒；各</text>
+<text x="676" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">策略还受端类型、客户端、路径和启用状态约束。</text>
+<text x="42" y="682.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#667085">图示仅辅助理解；操作名称、资格与最终结果以实际页面和正文为准。</text>
+</svg>

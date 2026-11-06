@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<title>导出文件：等待生成后再下载</title><desc>交互流程示意，非页面截图。排队中：任务已提交，等待生成资源；生成中：正在读取数据生成文件，等待状态更新；可下载：核对来源与时间，点击下载；已过期：文件保留 7 天，回原页面重新导出</desc>
+<rect x="0" y="0" width="1280" height="720" rx="20" fill="#f5f7fb"/>
+<rect x="42" y="36" width="278" height="32" rx="8" fill="#e8efff"/>
+<text x="54" y="57.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#336bdf">交互流程示意 · 非页面截图</text>
+<text x="42" y="117.92" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="34" fill="#172b4d">导出文件：等待生成后再下载</text>
+<text x="42" y="155.60" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="20" fill="#667085">按步骤核对关键选择与保存结果</text>
+<rect x="42" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="60" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="67" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">01</text>
+<text x="60" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">排队中</text>
+<text x="60" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">任务已提交</text>
+<text x="60" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">等待生成资源</text>
+<path d="M324 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="348" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="366" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="373" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">02</text>
+<text x="366" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">生成中</text>
+<text x="366" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">正在读取数据生成文件</text>
+<text x="366" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">等待状态更新</text>
+<path d="M630 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="654" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="672" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="679" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">03</text>
+<text x="672" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">可下载</text>
+<text x="672" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">核对来源与时间</text>
+<text x="672" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">点击下载</text>
+<path d="M936 286h18m-7 -6 7 6-7 6" fill="none" stroke="#8da8e7" stroke-width="3"/>
+<rect x="960" y="202" width="278" height="168" rx="14" fill="#ffffff" stroke="#d5def0" stroke-width="2"/>
+<rect x="978" y="220" width="38" height="30" rx="7" fill="#eef3ff"/>
+<text x="985" y="240.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#336bdf">04</text>
+<text x="978" y="289.12" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="24" fill="#172b4d">已过期</text>
+<text x="978" y="325.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">文件保留 7 天</text>
+<text x="978" y="353.84" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="18" fill="#475467">回原页面重新导出</text>
+<rect x="42" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="60" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="76" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">失败分支</text>
+<text x="64" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">生成异常时显示“失败”，不能直接下载。根据业务错误</text>
+<text x="64" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">检查范围和资格，再回原业务页面重新导出。</text>
+<rect x="654" y="416" width="584" height="218" rx="14" fill="#ffffff" stroke="#e1e6ef" stroke-width="2"/>
+<rect x="672" y="436" width="4" height="24" rx="1" fill="#5b83f5"/>
+<text x="688" y="456.24" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172b4d">导入与导出产物分开</text>
+<text x="676" y="502.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">此图对应“我的下载”的导出文件。导入失败报告和一次</text>
+<text x="676" y="536.48" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="21" fill="#475467">性密码在各自的导入结果页处理，保留规则不同。</text>
+<text x="42" y="682.72" font-family="Hiragino Sans GB,PingFang SC,Noto Sans CJK SC,sans-serif" font-size="19" fill="#667085">图示仅辅助理解；操作名称、资格与最终结果以实际页面和正文为准。</text>
+</svg>

@@ -28,7 +28,8 @@
     "vue": "catalog:",
     "vue-router": "catalog:",
     "@tanstack/vue-query": "catalog:",
-    "@ingot/auth-plugin": "workspace:*"
+    "@ingot/auth-plugin": "workspace:*",
+    "@ingot/help-plugin": "workspace:*"
   },
   "devDependencies": {
     "@iconify-json/bi": "catalog:",

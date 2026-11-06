@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="按作用域维护字典类型与字典项。" />
+      <in-page-header description="按作用域维护字典类型与字典项。"
+        ><template #action><BizHelpLink view-path="platform.settings.dictionaries" /></template
+      ></in-page-header>
     </template>
 
     <in-split-layout left-collapsible :persistence-key="DICT_SPLIT_KEY">
@@ -165,7 +167,7 @@ import {
 import { ChangeDictStatusAPI, RemoveDictAPI } from "@/api/settings/dictionaries.ts";
 import { DictPageQueryOptions, dictQueryKeys } from "@/api/settings/dictionaries.query";
 import { useDictionaryOptions } from "./useOps";
-import { IamAction } from "@ingot/admin-common";
+import { BizHelpLink, IamAction } from "@ingot/admin-common";
 import { Search } from "@element-plus/icons-vue";
 import LeftContent from "./components/LeftContent.vue";
 import TypeEditDrawer, { type TypeEditDrawerAPI } from "./TypeEditDrawer.vue";

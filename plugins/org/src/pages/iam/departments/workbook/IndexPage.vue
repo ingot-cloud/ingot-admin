@@ -6,7 +6,8 @@
         :title="DEPT_WORKBOOK_TITLE"
         show-back
         @back="privateBack"
-      />
+        ><template #action><BizHelpLink view-path="org.iam.departments.workbook" /></template
+      ></in-page-header>
     </template>
     <in-form-content class="dept-workbook-form">
       <in-loading :loading="busy">
@@ -182,6 +183,7 @@ import {
   usePermissions,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   IamAction,
   MemberWorkbookArtifact,
   MemberWorkbookMode,
@@ -208,9 +210,15 @@ defineOptions({ name: "DepartmentWorkbookPage" });
 const router = useRouter();
 const permissions = usePermissions();
 const statusEnum = useExportTaskStatusEnum();
-const canCreate = computed(() => permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_CREATE));
-const canExport = computed(() => permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_EXPORT));
-const canUpdate = computed(() => permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_UPDATE));
+const canCreate = computed(() =>
+  permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_CREATE),
+);
+const canExport = computed(() =>
+  permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_EXPORT),
+);
+const canUpdate = computed(() =>
+  permissions.permissions.includes(IamAction.TENANT_DEPARTMENT_UPDATE),
+);
 const mode = ref(canCreate.value ? MemberWorkbookMode.CREATE : MemberWorkbookMode.UPDATE);
 const canImport = computed(() =>
   mode.value === MemberWorkbookMode.CREATE ? canCreate.value : canUpdate.value,

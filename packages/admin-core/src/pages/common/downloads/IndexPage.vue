@@ -1,7 +1,20 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header :title="DOWNLOAD_CENTER_TITLE" description="导出文件保留 7 天，过期后需重新导出。" />
+      <in-page-header
+        :title="DOWNLOAD_CENTER_TITLE"
+        description="导出文件保留 7 天，过期后需重新导出。"
+      >
+        <template #action
+          ><el-button
+            v-if="help"
+            link
+            type="primary"
+            @click="privateOpenHelp"
+            >使用说明</el-button
+          ></template
+        >
+      </in-page-header>
     </template>
     <in-table
       :loading="loading"
@@ -47,6 +60,9 @@
 </template>
 
 <script setup lang="ts">
+import { useHelpNavigation } from "@/help/navigation";
+import { getAdminRuntimeConfig } from "@/runtime";
+import { Message } from "@/utils/message";
 import { emptyIllustration } from "@/components/table/emptyIllustration";
 import { useEnum } from "@/hooks/biz/useEnum";
 import {
@@ -59,6 +75,16 @@ import { useOps } from "./useOps";
 
 defineOptions({ name: "DownloadCenterPage" });
 
+const navigation = useHelpNavigation();
+const help = getAdminRuntimeConfig().login.entry === "tenant" ? navigation : undefined;
+const DOWNLOAD_HELP_ARTICLE = "tenant-downloads";
+const privateOpenHelp = async (): Promise<void> => {
+  try {
+    await help?.openArticle(DOWNLOAD_HELP_ARTICLE);
+  } catch (error) {
+    Message.warning(error instanceof Error ? error.message : "帮助说明暂不可用");
+  }
+};
 const statusEnum = useEnum(DownloadTaskStatusEnumExtArray);
 const { loading, pageInfo, fetchData, linkingId, download } = useOps();
 </script>

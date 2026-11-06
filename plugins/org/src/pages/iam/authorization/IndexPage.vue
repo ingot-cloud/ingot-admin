@@ -3,7 +3,8 @@
     <template #header>
       <in-page-header
         description="管理组织角色、角色分配和授权管理员。角色按名称识别，修改权限后关联人员自动生效。"
-      />
+        ><template #action><BizHelpLink view-path="org.iam.authorization" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
@@ -79,7 +80,11 @@
             }}</template>
             <template #status="{ item }">
               <status-tag
-                :tone="item.record.effectiveStatus === AssignmentEffectiveStatus.ACTIVE ? 'info' : 'warning'"
+                :tone="
+                  item.record.effectiveStatus === AssignmentEffectiveStatus.ACTIVE
+                    ? 'info'
+                    : 'warning'
+                "
                 :label="effectiveStatus.getTagText(item.record.effectiveStatus).text"
               />
               <el-tag v-if="item.record.scopeIssues.length" class="ml-8px" type="warning">
@@ -198,6 +203,7 @@
 import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {
+  BizHelpLink,
   AssignmentEffectiveStatus,
   GrantStatus,
   IamAction,
@@ -288,8 +294,7 @@ const assignmentRef = ref<{ show: (row?: AssignmentRow) => void }>();
 const delegationRef = ref<{
   show: (row?: DelegationRow, mode?: "detail" | "edit") => void;
 }>();
-const diagnoseRef =
-  ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
+const diagnoseRef = ref<{ show: (preset?: { memberId?: string; memberName?: string }) => void }>();
 const selectedAssignmentColumns = ref<string[]>([]);
 const selectedDelegationColumns = ref<string[]>([]);
 const visibleAssignmentHeaders = computed(() =>

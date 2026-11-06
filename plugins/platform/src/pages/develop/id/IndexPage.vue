@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="维护业务 ID 号段。" />
+      <in-page-header description="维护业务 ID 号段。"
+        ><template #action><BizHelpLink view-path="platform.develop.id" /></template
+      ></in-page-header>
     </template>
 
     <in-split-layout>
@@ -48,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import { BizHelpLink } from "@ingot/admin-common";
 import { applyColumnSelection, type InTableAction, useServerPaging } from "@ingot/admin-core";
 import type { BizLeafAlloc } from "@/models";
 import { Search } from "@element-plus/icons-vue";

@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="角色、角色分配与授权管理员。配置资格独立于本人业务权限。" />
+      <in-page-header description="角色、角色分配与授权管理员。配置资格独立于本人业务权限。"
+        ><template #action><BizHelpLink view-path="platform.iam.authorization" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
@@ -255,7 +257,7 @@
 </template>
 
 <script lang="ts" setup>
-import { assignmentVersionLabel } from "@ingot/admin-common";
+import { BizHelpLink, assignmentVersionLabel } from "@ingot/admin-common";
 import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {

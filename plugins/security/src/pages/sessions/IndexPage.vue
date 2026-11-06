@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace" class="security-settings">
     <template #header>
-      <in-page-header description="查询在线会话并配置并发策略。" />
+      <in-page-header description="查询在线会话并配置并发策略。"
+        ><template #action><BizHelpLink view-path="security.sessions" /></template
+      ></in-page-header>
     </template>
     <template #tabs>
       <in-biz-tabs-header v-model="activeTab" :tabs="tabs" />
@@ -21,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { BizHelpLink } from "@ingot/admin-common";
 import { useSecurityTabs, SecurityAction } from "@/hooks/useSecurityTabs";
 import { OnlineTokenTabEnum, useOnlineTokenTabEnum } from "@/models/enums";
 import SessionListPanel from "./components/SessionListPanel.vue";

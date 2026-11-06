@@ -11,6 +11,10 @@ declare module "vue-router" {
     menuId?: string;
     /** IAM 应用标识，服务器菜单映射，不能用于后端鉴权。 */
     applicationId?: string;
+    /** 正式页面注册键，仅用于当前可见菜单的说明关联。 */
+    viewPath?: string;
+    /** 受身份与改密守卫保护的静态帮助阅读路由，不是匿名放行标记。 */
+    helpReader?: boolean;
     /**
      * 路由名称
      */

@@ -34,6 +34,7 @@
 </template>
 <script setup lang="ts">
 import { Message, type InAdminHeaderUtilityComponentProps } from "@ingot/admin-core";
+import { useHelpNavigation } from "@ingot/help-plugin";
 
 defineOptions({
   name: "BizHeaderHelp",
@@ -41,7 +42,12 @@ defineOptions({
 
 defineProps<InAdminHeaderUtilityComponentProps>();
 
-const privateOnClick = () => {
-  Message.success("打开帮助（示例）");
+const help = useHelpNavigation();
+const privateOnClick = async (): Promise<void> => {
+  try {
+    await help?.openHome();
+  } catch (error) {
+    Message.warning(error instanceof Error ? error.message : "帮助中心暂不可用");
+  }
 };
 </script>

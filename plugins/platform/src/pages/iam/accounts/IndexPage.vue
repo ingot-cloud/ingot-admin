@@ -1,7 +1,10 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="全局登录账号与成员资格分离。启停锁定改密走安全用例，不展示组织关系。" />
+      <in-page-header
+        description="全局登录账号与成员资格分离。启停锁定改密走安全用例，不展示组织关系。"
+        ><template #action><BizHelpLink view-path="platform.iam.accounts" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-table
@@ -49,10 +52,16 @@
         <template #phone="{ item }">{{ item.record.phone || "-" }}</template>
         <template #email="{ item }">{{ item.record.email || "-" }}</template>
         <template #enabled="{ item }">
-          <StatusTag :tone="item.record.enabled ? 'info' : 'warning'" :label="item.record.enabled ? '已启用' : '已停用'" />
+          <StatusTag
+            :tone="item.record.enabled ? 'info' : 'warning'"
+            :label="item.record.enabled ? '已启用' : '已停用'"
+          />
         </template>
         <template #locked="{ item }">
-          <StatusTag :tone="item.record.locked ? 'danger' : 'info'" :label="item.record.locked ? '已锁定' : '未锁定'" />
+          <StatusTag
+            :tone="item.record.locked ? 'danger' : 'info'"
+            :label="item.record.locked ? '已锁定' : '未锁定'"
+          />
         </template>
         <template #actions="{ item }">
           <in-table-actions :actions="rowActionsOf(item)" :row="item" />
@@ -78,7 +87,13 @@ import {
   type InTableAction,
   type InTableFeedback,
 } from "@ingot/admin-core";
-import { BizIamAccountSecretDialog, BizIamRecordLink, IamAction, type AccountSecret } from "@ingot/admin-common";
+import {
+  BizHelpLink,
+  BizIamAccountSecretDialog,
+  BizIamRecordLink,
+  IamAction,
+  type AccountSecret,
+} from "@ingot/admin-common";
 import {
   PlatformAccountDeleteAPI,
   PlatformAccountDisableAPI,
@@ -112,7 +127,9 @@ const detailRef = ref<{ show: (row: Row) => void }>();
 const lockRef = ref<{ show: (row: Row) => void }>();
 const secretRef = ref<{ show: (password: string) => void }>();
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 
 const invalidate = (): void => {
@@ -183,16 +200,16 @@ const handleUnlock = (item: Row): void => {
   });
 };
 const handleResetPassword = (item: Row): void => {
-  Confirm.warning(`将生成一次性初始密码，关闭后无法再读。是否重置（${item.record.username}）？`).then(
-    () => {
-      PlatformAccountResetPasswordAPI(item.record.id, { expectedVersion: item.version }).then(
-        (response) => {
-          secretRef.value?.show(response.data.password);
-          invalidate();
-        },
-      );
-    },
-  );
+  Confirm.warning(
+    `将生成一次性初始密码，关闭后无法再读。是否重置（${item.record.username}）？`,
+  ).then(() => {
+    PlatformAccountResetPasswordAPI(item.record.id, { expectedVersion: item.version }).then(
+      (response) => {
+        secretRef.value?.show(response.data.password);
+        invalidate();
+      },
+    );
+  });
 };
 const handleDelete = (item: Row): void => {
   Confirm.error(`仍有成员资格时无法删除。是否删除账号（${item.record.username}）？`, {

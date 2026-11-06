@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="查看开通应用并配置可用人群。人群不等于业务授权。" />
+      <in-page-header description="查看开通应用并配置可用人群。人群不等于业务授权。"
+        ><template #action><BizHelpLink view-path="org.iam.applications" /></template
+      ></in-page-header>
     </template>
     <div class="app-board">
       <el-input
@@ -14,7 +16,7 @@
         @clear="refreshData"
       />
       <in-loading class="app-board__body" :loading="paging.fetching.value">
-        <div v-if="records.length" class="app-grid" role="list">
+        <div v-if="records?.length" class="app-grid" role="list">
           <button
             v-for="item in records"
             :key="item.record.id"
@@ -38,7 +40,7 @@
         />
       </in-loading>
       <el-pagination
-        v-if="paging.pageInfo.value.total > 0"
+        v-if="(paging.pageInfo.value.total ?? 0) > 0"
         class="app-board__pager"
         background
         :current-page="paging.pageInfo.value.current"
@@ -56,6 +58,7 @@
 </template>
 
 <script lang="ts" setup>
+import { BizHelpLink } from "@ingot/admin-common";
 import { Search } from "@element-plus/icons-vue";
 import { noContentIllustration } from "@ingot/admin-core";
 import ApplicationDetailDrawer from "./components/ApplicationDetailDrawer.vue";

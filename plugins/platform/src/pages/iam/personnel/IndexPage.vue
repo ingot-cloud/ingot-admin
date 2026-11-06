@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="平台成员资格与账号分离。组只选择平台成员，不展示租户部门。" />
+      <in-page-header description="平台成员资格与账号分离。组只选择平台成员，不展示租户部门。"
+        ><template #action><BizHelpLink view-path="platform.iam.personnel" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
@@ -113,6 +115,7 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   BizIamRecordLink,
   IamAction,
   MemberStatus,

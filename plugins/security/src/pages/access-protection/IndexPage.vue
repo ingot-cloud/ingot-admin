@@ -2,7 +2,8 @@
   <in-page-frame mode="contained" surface="workspace" class="security-settings">
     <template #header>
       <in-page-header description="维护访问规则、限流与登录失败防护策略。">
-        <template #action>
+        <template #action
+          ><BizHelpLink view-path="security.access.protection" />
           <in-button
             v-auth="SecurityAction.POLICY_UPDATE"
             :loading="broadcasting"
@@ -71,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+import { BizHelpLink } from "@ingot/admin-common";
 import { useSecurityTabs, SecurityAction } from "@/hooks/useSecurityTabs";
 import { AccessProtectionTabEnum, useAccessProtectionTabEnum } from "@/models/enums";
 import { useGatewayPolicy } from "./use/useGatewayPolicy";

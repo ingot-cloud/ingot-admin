@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="平台维护组织默认共享角色，保存权限后所有使用组织自动生效。" />
+      <in-page-header description="平台维护组织默认共享角色，保存权限后所有使用组织自动生效。"
+        ><template #action><BizHelpLink view-path="platform.iam.shared.roles" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-table
@@ -84,6 +86,7 @@ import {
   type R,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   BizIamRecordLink,
   createCurrentRoleApis,
   BizIamStatusTag,

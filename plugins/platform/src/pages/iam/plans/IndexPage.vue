@@ -1,7 +1,9 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="套餐绑定应用清单。修改套餐不会自动改变既有租户开通。" />
+      <in-page-header description="套餐绑定应用清单。修改套餐不会自动改变既有租户开通。"
+        ><template #action><BizHelpLink view-path="platform.iam.plans" /></template
+      ></in-page-header>
     </template>
     <in-split-layout>
       <in-table
@@ -71,6 +73,7 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   BizIamRecordLink,
   BizIamStatusTag,
   ConfigurationStatus,
@@ -79,13 +82,7 @@ import {
 } from "@ingot/admin-common";
 import CreateWizard from "./components/CreateWizard.vue";
 import DetailDrawer from "./components/DetailDrawer.vue";
-import {
-  createRowActions,
-  createToolbarActions,
-  tableHeaders,
-  TABLE_ID,
-  type Row,
-} from "./table";
+import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Row } from "./table";
 import { useOps } from "./useOps";
 
 const { paging, refreshData } = useOps();
@@ -103,13 +100,21 @@ const statusFilter = computed({
   },
 });
 const toolbarRow = {
-  record: { id: "", name: "", applicationIds: [], applications: [], status: ConfigurationStatus.ENABLED },
+  record: {
+    id: "",
+    name: "",
+    applicationIds: [],
+    applications: [],
+    status: ConfigurationStatus.ENABLED,
+  },
   fieldAccess: {},
   capabilities: {},
   version: "",
 } satisfies Row;
 
-const visibleHeaders = computed(() => applyColumnSelection(tableHeaders, selectedColumnProps.value));
+const visibleHeaders = computed(() =>
+  applyColumnSelection(tableHeaders, selectedColumnProps.value),
+);
 const tableFeedback = computed<InTableFeedback>(() => (unavailable.value ? "error" : "empty"));
 const handleDetail = (item: Row): void => {
   detailRef.value?.show(item);

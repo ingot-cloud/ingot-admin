@@ -14,13 +14,14 @@ export class DynamicRouterGuard extends BaseNavigationGuard {
       if (to.meta.dynamicRoutes) {
         const result = await useRouterStore().fetchRoutes();
         if (result.dynamicRoutes.length === 0) {
-          return false;
+          // 身份守卫已完成bootstrap；无业务菜单的有效成员也能阅读已注册的帮助路由。
+          return to.matched.some((record) => record.meta.helpReader === true);
         }
         useRouterStore().installDynamicRoutes(router);
         if (router.hasRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP)) {
           router.removeRoute(PageName.DYNAMIC_ROUTE_BOOTSTRAP);
         }
-        return { path: to.fullPath, replace: true, query: to.query };
+        return { path: to.path, replace: true, query: to.query, hash: to.hash };
       }
 
       return true;

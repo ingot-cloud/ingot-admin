@@ -1,7 +1,10 @@
 <template>
   <in-page-frame mode="contained" surface="workspace">
     <template #header>
-      <in-page-header description="查询、创建和维护平台组织。创建使用向导预览最小初始化结果，不复制角色模板。" />
+      <in-page-header
+        description="查询、创建和维护平台组织。创建使用向导预览最小初始化结果，不复制角色模板。"
+        ><template #action><BizHelpLink view-path="platform.iam.tenants" /></template
+      ></in-page-header>
     </template>
 
     <in-split-layout>
@@ -27,11 +30,7 @@
             @keyup.enter="refreshData"
             @clear="refreshData"
           />
-          <in-picker
-            v-model="statusFilter"
-            label="状态"
-            :options="statusOptions"
-          />
+          <in-picker v-model="statusFilter" label="状态" :options="statusOptions" />
           <in-table-column-setting
             :headers="tableHeaders"
             :table-id="TENANT_TABLE_ID"
@@ -59,7 +58,9 @@
         <template #ownerMemberId="{ item }">
           <div class="flex flex-col">
             <span>{{ item.record.ownerDisplayName || item.record.ownerMemberId }}</span>
-            <span class="text-12px text-[var(--el-text-color-secondary)]">{{ ownerContactOf(item.record) }}</span>
+            <span class="text-12px text-[var(--el-text-color-secondary)]">{{
+              ownerContactOf(item.record)
+            }}</span>
           </div>
         </template>
         <template #actions="{ item }">
@@ -85,6 +86,7 @@ import {
   type InTableFeedback,
 } from "@ingot/admin-core";
 import {
+  BizHelpLink,
   BizIamRecordLink,
   BizIamStatusTag,
   ConfigurationStatus,
