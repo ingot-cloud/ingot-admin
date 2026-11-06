@@ -1,186 +1,174 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     :title="title"
-    :size="editing ? '100%' : 'min(560px, 100vw)'"
-    layout="pinned"
-    padding="0"
-    :close-position="editing ? 'start' : 'end'"
+    :enabled="editing"
+    :width="editing ? undefined : '560px'"
+    :steps="MENU_EDITOR_STEPS"
+    :current="step"
+    :interactive="!isCreate"
+    :statuses="statuses"
+    contained
+    @change="step = $event"
     :loading="loading"
     :before-close="beforeClose"
   >
-    <div v-if="editing" class="in-wizard-frame flex h-full min-h-0">
-      <wizard-nav
-        :steps="MENU_EDITOR_STEPS"
-        :current="step"
-        :interactive="!isCreate"
-        :statuses="statuses"
-        @change="step = $event"
-      />
-      <section
-        ref="editorBody"
-        class="menu-editor-body flex-1 min-w-0 min-h-0 px-32px py-24px overflow-auto"
-      >
-        <div class="text-18px mb-24px">{{ MENU_EDITOR_STEPS[step].title }}</div>
-        <in-form label-position="top" class="max-w-640px">
-          <template v-if="step === 0">
-            <el-form-item label="类型"
-              ><in-select
-                v-model="draft.kind"
-                :options="kindEnum.getOptions()"
-                placeholder="请选择菜单类型"
-            /></el-form-item>
-            <el-form-item label="名称" required :error="fieldError('name')" data-field="name"
-              ><el-input v-model="draft.name" placeholder="如订单详情"
-            /></el-form-item>
-            <el-form-item label="图标"><catalog-icon-field v-model="draft.icon" /></el-form-item>
-            <el-form-item label="父菜单"
-              ><el-select
-                v-model="draft.parentId"
-                clearable
-                filterable
-                class="w-full"
-                placeholder="根节点为空"
+    <section v-if="editing" ref="editorBody" class="flex-1 min-w-0 min-h-0 overflow-auto">
+      <in-form label-position="top">
+        <template v-if="step === 0">
+          <el-form-item label="类型"
+            ><in-select
+              v-model="draft.kind"
+              :options="kindEnum.getOptions()"
+              placeholder="请选择菜单类型"
+          /></el-form-item>
+          <el-form-item label="名称" required :error="fieldError('name')" data-field="name"
+            ><el-input v-model="draft.name" placeholder="如订单详情"
+          /></el-form-item>
+          <el-form-item label="图标"><catalog-icon-field v-model="draft.icon" /></el-form-item>
+          <el-form-item label="父菜单"
+            ><el-select
+              v-model="draft.parentId"
+              clearable
+              filterable
+              class="w-full"
+              placeholder="根节点为空"
+              ><el-option
+                v-for="item in parentOptions"
+                :key="item.record.id"
+                :value="item.record.id"
+                :label="item.record.name" /></el-select
+          ></el-form-item>
+          <el-form-item label="基础路径" :error="fieldError('path')" data-field="path"
+            ><el-input v-model="draft.path" placeholder="如 /orders，目录可空"
+          /></el-form-item>
+          <el-form-item label="绑定视图"
+            ><el-select
+              v-model="draft.viewPath"
+              clearable
+              filterable
+              class="w-full"
+              placeholder="请选择视图注册键"
+              @change="onViewChange"
+              ><el-option-group v-for="group in viewGroups" :key="group.label" :label="group.label"
                 ><el-option
-                  v-for="item in parentOptions"
-                  :key="item.record.id"
-                  :value="item.record.id"
-                  :label="item.record.name" /></el-select
-            ></el-form-item>
-            <el-form-item label="基础路径" :error="fieldError('path')" data-field="path"
-              ><el-input v-model="draft.path" placeholder="如 /orders，目录可空"
-            /></el-form-item>
-            <el-form-item label="绑定视图"
-              ><el-select
-                v-model="draft.viewPath"
-                clearable
-                filterable
-                class="w-full"
-                placeholder="请选择视图注册键"
-                @change="onViewChange"
-                ><el-option-group
-                  v-for="group in viewGroups"
-                  :key="group.label"
-                  :label="group.label"
-                  ><el-option
-                    v-for="item in group.options"
-                    :key="item.value"
-                    :value="item.value"
-                    :label="item.label" /></el-option-group></el-select
-            ></el-form-item>
-            <el-form-item label="排序"
-              ><el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序"
-            /></el-form-item>
-          </template>
-          <template v-else-if="step === 1">
-            <el-alert
-              v-if="directory"
-              title="目录的导航显示由可访问的子页面决定，无需关联操作。"
-              :closable="false"
-            />
-            <template v-else>
-              <el-form-item label="准入方式"
-                ><in-select
-                  v-model="draft.accessMode"
-                  :options="accessEnum.getOptions()"
-                  placeholder="请选择准入方式"
-              /></el-form-item>
-              <template v-if="draft.accessMode === MenuAccessMode.ACTION">
-                <el-form-item label="操作匹配"
-                  ><in-select
-                    v-model="draft.matchMode"
-                    :options="matchEnum.getOptions()"
-                    placeholder="请选择任一或全部匹配"
-                /></el-form-item>
-                <el-form-item
-                  label="关联操作"
-                  required
-                  :error="fieldError('actions')"
-                  data-field="actions"
-                  ><div class="w-full">
-                    <in-button type="primary" link @in-click="openPicker">配置操作</in-button
-                    ><action-hierarchy :actions="selectedActions" /></div
-                ></el-form-item>
-              </template>
-            </template>
-          </template>
+                  v-for="item in group.options"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label" /></el-option-group></el-select
+          ></el-form-item>
+          <el-form-item label="排序"
+            ><el-input-number v-model="draft.sortOrder" :min="0" placeholder="请输入排序"
+          /></el-form-item>
+        </template>
+        <template v-else-if="step === 1">
+          <el-alert
+            v-if="directory"
+            title="目录的导航显示由可访问的子页面决定，无需关联操作。"
+            :closable="false"
+          />
           <template v-else>
-            <el-form-item label="隐藏菜单" :error="fieldError('hidden')" data-field="hidden">
-              <div class="flex items-center gap-[var(--in-space-3)]">
-                <el-switch v-model="draft.hidden" class="shrink-0" />
-                <span class="text-[var(--in-text-color-secondary)]"
-                  >在左侧菜单及搜索中隐藏，仍可通过授权路由访问</span
-                >
-              </div>
-            </el-form-item>
-            <el-form-item v-if="!directory" label="缓存页面"
-              ><el-switch v-model="draft.isCache"
+            <el-form-item label="准入方式"
+              ><in-select
+                v-model="draft.accessMode"
+                :options="accessEnum.getOptions()"
+                placeholder="请选择准入方式"
             /></el-form-item>
-            <el-form-item label="路由名称"
-              ><el-input v-model="draft.routeName" placeholder="留空使用菜单 ID 生成稳定名称"
-            /></el-form-item>
-            <template v-if="!directory">
-              <el-form-item label="传递路由参数">
-                <div class="flex items-center gap-[var(--in-space-3)]">
-                  <el-switch v-model="draft.props" class="shrink-0" />
-                  <span class="text-[var(--in-text-color-secondary)]"
-                    >将匹配的必填路径参数传给页面</span
-                  >
-                </div>
-              </el-form-item>
-              <div
-                v-if="draft.props"
-                class="menu-parameters flex flex-col gap-[var(--in-space-4)]"
-                data-field="params"
-              >
-                <el-alert
-                  title="声明参数名，实际值由业务页面跳转提供；带参页面必须隐藏。"
-                  :closable="false"
-                />
-                <div
-                  v-for="(param, index) in draft.routeParams"
-                  :key="index"
-                  class="menu-parameter-row"
-                >
-                  <el-form-item
-                    :label="`参数 ${index + 1}`"
-                    :error="fieldError(`param-${index}`)"
-                    :data-field="`param-${index}`"
-                  >
-                    <el-input v-model="param.name" placeholder="如 orderId" />
-                  </el-form-item>
-                  <el-form-item label="备注（选填）">
-                    <el-input v-model="param.remark" placeholder="参数备注（选填）" />
-                  </el-form-item>
-                  <div
-                    class="menu-parameter-actions flex flex-wrap justify-end gap-[var(--in-space-2)]"
-                  >
-                    <in-button :disabled="index === 0" @click="moveParam(index, -1)">上移</in-button
-                    ><in-button
-                      :disabled="index === (draft.routeParams?.length ?? 0) - 1"
-                      @click="moveParam(index, 1)"
-                      >下移</in-button
-                    ><in-button type="danger" @click="draft.routeParams?.splice(index, 1)"
-                      >删除</in-button
-                    >
-                  </div>
-                </div>
-                <div v-if="fieldError('params')" class="text-[var(--el-color-danger)]">
-                  {{ fieldError("params") }}
-                </div>
-                <in-button class="self-start" @click="draft.routeParams?.push({ name: '' })"
-                  >新增参数</in-button
-                >
-              </div>
+            <template v-if="draft.accessMode === MenuAccessMode.ACTION">
+              <el-form-item label="操作匹配"
+                ><in-select
+                  v-model="draft.matchMode"
+                  :options="matchEnum.getOptions()"
+                  placeholder="请选择任一或全部匹配"
+              /></el-form-item>
+              <el-form-item
+                label="关联操作"
+                required
+                :error="fieldError('actions')"
+                data-field="actions"
+                ><div class="w-full">
+                  <in-button type="primary" link @in-click="openPicker">配置操作</in-button
+                  ><action-hierarchy :actions="selectedActions" /></div
+              ></el-form-item>
             </template>
-            <el-form-item label="完整路由模板" class="mt-[var(--in-space-6)]">
-              <in-copy-tag v-if="resolvedPath" class="menu-route-template" :text="resolvedPath" />
-              <span v-else>-</span>
-            </el-form-item>
           </template>
-        </in-form>
-      </section>
-    </div>
+        </template>
+        <template v-else>
+          <el-form-item label="隐藏菜单" :error="fieldError('hidden')" data-field="hidden">
+            <div class="flex items-center gap-[var(--in-space-3)]">
+              <el-switch v-model="draft.hidden" class="shrink-0" />
+              <span class="text-[var(--in-text-color-secondary)]"
+                >在左侧菜单及搜索中隐藏，仍可通过授权路由访问</span
+              >
+            </div>
+          </el-form-item>
+          <el-form-item v-if="!directory" label="缓存页面"
+            ><el-switch v-model="draft.isCache"
+          /></el-form-item>
+          <el-form-item label="路由名称"
+            ><el-input v-model="draft.routeName" placeholder="留空使用菜单 ID 生成稳定名称"
+          /></el-form-item>
+          <template v-if="!directory">
+            <el-form-item label="传递路由参数">
+              <div class="flex items-center gap-[var(--in-space-3)]">
+                <el-switch v-model="draft.props" class="shrink-0" />
+                <span class="text-[var(--in-text-color-secondary)]"
+                  >将匹配的必填路径参数传给页面</span
+                >
+              </div>
+            </el-form-item>
+            <div
+              v-if="draft.props"
+              class="menu-parameters flex flex-col gap-[var(--in-space-4)]"
+              data-field="params"
+            >
+              <el-alert
+                title="声明参数名，实际值由业务页面跳转提供；带参页面必须隐藏。"
+                :closable="false"
+              />
+              <div
+                v-for="(param, index) in draft.routeParams"
+                :key="index"
+                class="menu-parameter-row"
+              >
+                <el-form-item
+                  :label="`参数 ${index + 1}`"
+                  :error="fieldError(`param-${index}`)"
+                  :data-field="`param-${index}`"
+                >
+                  <el-input v-model="param.name" placeholder="如 orderId" />
+                </el-form-item>
+                <el-form-item label="备注（选填）">
+                  <el-input v-model="param.remark" placeholder="参数备注（选填）" />
+                </el-form-item>
+                <div
+                  class="menu-parameter-actions flex flex-wrap justify-end gap-[var(--in-space-2)]"
+                >
+                  <in-button :disabled="index === 0" @click="moveParam(index, -1)">上移</in-button
+                  ><in-button
+                    :disabled="index === (draft.routeParams?.length ?? 0) - 1"
+                    @click="moveParam(index, 1)"
+                    >下移</in-button
+                  ><in-button type="danger" @click="draft.routeParams?.splice(index, 1)"
+                    >删除</in-button
+                  >
+                </div>
+              </div>
+              <div v-if="fieldError('params')" class="text-[var(--el-color-danger)]">
+                {{ fieldError("params") }}
+              </div>
+              <in-button class="self-start" @click="draft.routeParams?.push({ name: '' })"
+                >新增参数</in-button
+              >
+            </div>
+          </template>
+          <el-form-item label="完整路由模板" class="mt-[var(--in-space-6)]">
+            <in-copy-tag v-if="resolvedPath" class="menu-route-template" :text="resolvedPath" />
+            <span v-else>-</span>
+          </el-form-item>
+        </template>
+      </in-form>
+    </section>
     <in-biz-tabs v-else v-model="detailTab" align-content>
       <in-biz-tab-panel name="0" title="基本信息"
         ><in-form :editing="false">
@@ -244,6 +232,7 @@
       <template v-if="editing">
         <in-button @click="cancel">取消</in-button>
         <in-button v-if="step > 0" @click="step--">上一步</in-button>
+        <in-button v-if="conflicted" @in-click="reload">重新加载</in-button>
         <in-button v-if="isCreate && step < 2" type="primary" @in-click="next">下一步</in-button>
         <in-button
           v-else
@@ -253,11 +242,10 @@
           @in-click="save"
           >{{ isCreate ? "创建" : "保存" }}</in-button
         >
-        <in-button v-if="conflicted" @in-click="reload">重新加载</in-button>
       </template>
       <in-button v-else-if="canEdit" type="primary" @in-click="enterEdit">编辑当前分组</in-button>
     </template>
-  </in-drawer>
+  </InWizard>
   <action-picker-dialog
     ref="pickerRef"
     :resolve-catalog="resolveActionCatalog"
@@ -266,6 +254,7 @@
 </template>
 <script setup lang="ts">
 import {
+  InWizard,
   confirmUnsavedChanges,
   Message,
   toDefaultMenuPath,
@@ -281,7 +270,6 @@ import {
   useMenuAccessModeEnum,
   useMenuKindEnum,
   useMenuMatchModeEnum,
-  BizIamWizardNav as WizardNav,
   MENU_EDITOR_STEPS,
   resolveMenuPath,
   validateMenu,
@@ -652,10 +640,7 @@ defineExpose({
   min-width: 0;
   overflow-wrap: anywhere;
 }
-@media (max-width: 700px) {
-  .menu-editor-body {
-    padding: var(--in-space-4);
-  }
+@container in-wizard-content (max-width: 520px) {
   .menu-parameter-row {
     grid-template-columns: 1fr;
   }

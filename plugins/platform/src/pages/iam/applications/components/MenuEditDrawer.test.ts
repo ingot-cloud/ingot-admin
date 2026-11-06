@@ -105,12 +105,6 @@ const Tabs = defineComponent({
     () =>
       h("div", slots.default?.()),
 });
-const Nav = defineComponent({
-  name: "BizIamWizardNav",
-  props: ["current", "interactive"],
-  emits: ["change"],
-  setup: () => () => h("aside"),
-});
 const row: MenuTreeRow = {
   record: {
     id: "1",
@@ -148,7 +142,8 @@ function fixture(submit?: (draft: AppMenuDraft, target?: MenuTreeRow) => void | 
         ElFormItem: Box,
         ElInput: Input,
         ElSwitch: Switch,
-        WizardNav: Nav,
+        InWizard: false,
+        InWizardSteps: false,
       },
     },
   });
@@ -179,12 +174,12 @@ describe("menu editor workflow", () => {
     wrapper.findComponent(Tabs).vm.$emit("update:modelValue", "2");
     await flushPromises();
     await click(wrapper, "编辑当前分组");
-    expect(wrapper.findComponent(Nav).props("current")).toBe(2);
+    expect(wrapper.get('.in-wizard-steps [aria-current="step"]').text()).toContain("高级配置");
     const name = wrapper.get('input[placeholder="留空使用菜单 ID 生成稳定名称"]');
     await name.setValue("orders");
     mocks.confirm.mockResolvedValueOnce(false);
     await click(wrapper, "取消");
-    expect(wrapper.find('[data-size="100%"]')).toBeTruthy();
+    expect(wrapper.find('[data-size="100%"]').exists()).toBe(true);
     await click(wrapper, "取消");
     expect(wrapper.findComponent(Tabs).props("modelValue")).toBe("2");
     expect(submit).not.toHaveBeenCalled();
@@ -249,13 +244,13 @@ describe("menu editor workflow", () => {
     wrapper.findComponent(Tabs).vm.$emit("update:modelValue", "2");
     await flushPromises();
     await click(wrapper, "编辑当前分组");
-    wrapper.findComponent(Nav).vm.$emit("change", 0);
+    await wrapper.get(".in-wizard-steps li:nth-child(1) button").trigger("click");
     await flushPromises();
     await wrapper.get('input[placeholder="如订单详情"]').setValue("");
-    wrapper.findComponent(Nav).vm.$emit("change", 2);
+    await wrapper.get(".in-wizard-steps li:nth-child(3) button").trigger("click");
     await flushPromises();
     await click(wrapper, "保存");
-    expect(wrapper.findComponent(Nav).props("current")).toBe(0);
+    expect(wrapper.get('.in-wizard-steps [aria-current="step"]').text()).toContain("基本信息");
     expect(submit).not.toHaveBeenCalled();
     await wrapper.get('input[placeholder="如订单详情"]').setValue("仍保留");
     await click(wrapper, "保存");

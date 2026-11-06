@@ -1,127 +1,113 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="升级角色分配版本"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="loading"
+    :steps="steps"
+    :current="step"
   >
-    <div v-if="visible" class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="steps" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px">{{ steps[step].title }}</div>
-        <div class="flex-1 min-h-0 overflow-auto max-w-900px">
-          <template v-if="step === 0">
-            <el-alert
-              class="mb-24px"
-              title="保留接收对象、原有效期和来源委派；一次仅升级同角色的分配。委派须先加入目标版本及其操作上限。"
-              type="info"
-              :closable="false"
-            />
-            <div
-              v-for="row in rows"
-              :key="row.record.id"
-              class="p-12px mb-8px rounded-8px bg-[var(--in-permission-panel-bg)]"
-            >
-              {{ row.record.subjectName || row.record.assignment.subject.id }} ·
-              {{ row.record.roleName }} · {{ assignmentVersionLabel(row.record) }}<br /><span
-                class="text-12px"
-                >{{ formatDateTime(row.record.assignment.validFrom, { fallback: "立即" }) }} 至
-                {{ formatDateTime(row.record.assignment.validUntil, { fallback: "长期" }) }} ·
-                {{ row.record.delegationSummary || "直接分配" }}</span
-              >
-            </div>
-          </template>
-          <in-form v-else-if="step === 1" label-position="top">
-            <el-form-item label="目标角色版本" required
-              ><biz-iam-delegation-role-picker
-                v-model="targetOptions"
-                :tree-api="treeApi"
-                :detail-api="candidatesApi"
-                :reset-key="session"
-                one-version-per-role
-                title="选择升级目标版本"
-                placeholder="请选择同角色更高版本"
-            /></el-form-item>
-            <div class="text-12px">
-              默认选择当前可用的最新已发布版本；保存固定该版本，后续发布不会自动替换。
-            </div>
-          </in-form>
-          <template v-else-if="step === 2">
-            <el-alert
-              class="mb-24px"
-              title="仅复用参数键、类型和实际资源都相同的绑定。新增或含义变化的范围必须重新配置。"
-              type="info"
-              :closable="false"
-            />
-            <div v-for="(row, index) in rows" :key="row.record.id" class="mb-24px">
-              <div class="mb-12px text-16px">
-                {{ row.record.subjectName || row.record.assignment.subject.id }}
-              </div>
-              <biz-iam-assignment-scope-step
-                v-if="drafts[index]"
-                v-model:roles="drafts[index]"
-                :api="candidatesApiFor(row.record.id)"
-                :reset-key="session"
-              />
-            </div>
-          </template>
-          <template v-else>
-            <biz-iam-preview-alert :preview="previewState.preview.value" />
-            <div
-              v-for="item in previewState.preview.value?.effectiveResult?.items || []"
-              :key="item.id"
-              class="p-16px mt-16px rounded-8px bg-[var(--in-permission-panel-bg)]"
-            >
-              <div>{{ subjectLabel(item.id) }} · {{ item.allowed ? "可以升级" : "不能升级" }}</div>
-              <div class="mt-8px text-12px">
-                新增 {{ added(item).length }} 项操作，移除
-                {{ removed(item).length }} 项操作；范围变化 {{ changed(item).length }} 项。
-              </div>
-              <div v-for="action in added(item)" :key="'add' + action.actionId" class="mt-4px">
-                新增：{{ actionLabel(action.actionId) }}
-              </div>
-              <div v-for="action in removed(item)" :key="'remove' + action.actionId" class="mt-4px">
-                移除：{{ actionLabel(action.actionId) }}
-              </div>
-              <div v-for="action in changed(item)" :key="'change' + action.actionId" class="mt-4px">
-                范围变化：{{ actionLabel(action.actionId) }} · {{ scopeText(action) }}
-              </div>
-              <div
-                v-for="entry in fieldPermissionChanges(
-                  item.beforeFieldPermissions,
-                  item.afterFieldPermissions,
-                )"
-                :key="entry.key"
-                class="mt-4px"
-              >
-                字段变化 · 资源 {{ entry.resourceId }} / {{ entry.field }}：{{ entry.before }} →
-                {{ entry.after }}
-              </div>
-              <div v-for="entry in bindingChanges(item)" :key="entry.key" class="mt-4px">
-                对象范围 {{ entry.key }}：{{ entry.before }} → {{ entry.after }}
-              </div>
-              <div
-                v-for="issue in item.issues"
-                :key="issue.path + issue.message"
-                class="mt-8px text-[var(--el-color-warning)]"
-              >
-                {{ issue.message }}
-              </div>
-            </div>
-          </template>
-          <el-alert
-            v-if="failure"
-            class="mt-16px"
-            :title="failure"
-            type="warning"
-            :closable="false"
+    <template v-if="visible">
+      <template v-if="step === 0">
+        <el-alert
+          class="mb-24px"
+          title="保留接收对象、原有效期和来源委派；一次仅升级同角色的分配。委派须先加入目标版本及其操作上限。"
+          type="info"
+          :closable="false"
+        />
+        <div
+          v-for="row in rows"
+          :key="row.record.id"
+          class="p-12px mb-8px rounded-8px bg-[var(--in-permission-panel-bg)]"
+        >
+          {{ row.record.subjectName || row.record.assignment.subject.id }} ·
+          {{ row.record.roleName }} · {{ assignmentVersionLabel(row.record) }}<br /><span
+            class="text-12px"
+            >{{ formatDateTime(row.record.assignment.validFrom, { fallback: "立即" }) }} 至
+            {{ formatDateTime(row.record.assignment.validUntil, { fallback: "长期" }) }} ·
+            {{ row.record.delegationSummary || "直接分配" }}</span
+          >
+        </div>
+      </template>
+      <in-form v-else-if="step === 1" label-position="top">
+        <el-form-item label="目标角色版本" required
+          ><biz-iam-delegation-role-picker
+            v-model="targetOptions"
+            :tree-api="treeApi"
+            :detail-api="candidatesApi"
+            :reset-key="session"
+            one-version-per-role
+            title="选择升级目标版本"
+            placeholder="请选择同角色更高版本"
+        /></el-form-item>
+        <div class="text-12px">
+          默认选择当前可用的最新已发布版本；保存固定该版本，后续发布不会自动替换。
+        </div>
+      </in-form>
+      <template v-else-if="step === 2">
+        <el-alert
+          class="mb-24px"
+          title="仅复用参数键、类型和实际资源都相同的绑定。新增或含义变化的范围必须重新配置。"
+          type="info"
+          :closable="false"
+        />
+        <div v-for="(row, index) in rows" :key="row.record.id" class="mb-24px">
+          <div class="mb-12px text-16px">
+            {{ row.record.subjectName || row.record.assignment.subject.id }}
+          </div>
+          <biz-iam-assignment-scope-step
+            v-if="drafts[index]"
+            v-model:roles="drafts[index]"
+            :api="candidatesApiFor(row.record.id)"
+            :reset-key="session"
           />
         </div>
-      </section>
-    </div>
+      </template>
+      <template v-else>
+        <biz-iam-preview-alert :preview="previewState.preview.value" />
+        <div
+          v-for="item in previewState.preview.value?.effectiveResult?.items || []"
+          :key="item.id"
+          class="p-16px mt-16px rounded-8px bg-[var(--in-permission-panel-bg)]"
+        >
+          <div>{{ subjectLabel(item.id) }} · {{ item.allowed ? "可以升级" : "不能升级" }}</div>
+          <div class="mt-8px text-12px">
+            新增 {{ added(item).length }} 项操作，移除 {{ removed(item).length }} 项操作；范围变化
+            {{ changed(item).length }} 项。
+          </div>
+          <div v-for="action in added(item)" :key="'add' + action.actionId" class="mt-4px">
+            新增：{{ actionLabel(action.actionId) }}
+          </div>
+          <div v-for="action in removed(item)" :key="'remove' + action.actionId" class="mt-4px">
+            移除：{{ actionLabel(action.actionId) }}
+          </div>
+          <div v-for="action in changed(item)" :key="'change' + action.actionId" class="mt-4px">
+            范围变化：{{ actionLabel(action.actionId) }} · {{ scopeText(action) }}
+          </div>
+          <div
+            v-for="entry in fieldPermissionChanges(
+              item.beforeFieldPermissions,
+              item.afterFieldPermissions,
+            )"
+            :key="entry.key"
+            class="mt-4px"
+          >
+            字段变化 · 资源 {{ entry.resourceId }} / {{ entry.field }}：{{ entry.before }} →
+            {{ entry.after }}
+          </div>
+          <div v-for="entry in bindingChanges(item)" :key="entry.key" class="mt-4px">
+            对象范围 {{ entry.key }}：{{ entry.before }} → {{ entry.after }}
+          </div>
+          <div
+            v-for="issue in item.issues"
+            :key="issue.path + issue.message"
+            class="mt-8px text-[var(--el-color-warning)]"
+          >
+            {{ issue.message }}
+          </div>
+        </div>
+      </template>
+      <el-alert v-if="failure" class="mt-16px" :title="failure" type="warning" :closable="false" />
+    </template>
     <template #footer>
       <in-button :disabled="saving" @in-click="visible = false">取消</in-button>
       <in-button v-if="step > 0" :disabled="saving" @in-click="step--">上一步</in-button>
@@ -147,13 +133,13 @@
         >确认升级</in-button
       >
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 <script setup lang="ts">
 import { assignmentVersionLabel } from "../models/iam";
 import { formatDateTime } from "@ingot/shared";
 import { fieldPermissionChanges } from "../models/iam/roleFields";
-import { Message, useCapabilities } from "@ingot/admin-core";
+import { InWizard, Message, useCapabilities } from "@ingot/admin-core";
 import {
   type ResourceDetail,
   type AssignmentRecord,
@@ -172,7 +158,6 @@ import {
 } from "../models/iam/platformAssignment";
 import { useIamDraftPreview } from "../hooks/useIamDraftPreview";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
-import BizIamWizardNav from "./BizIamWizardNav.vue";
 import BizIamDelegationRolePicker from "./BizIamDelegationRolePicker.vue";
 import BizIamAssignmentScopeStep from "./BizIamAssignmentScopeStep.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";

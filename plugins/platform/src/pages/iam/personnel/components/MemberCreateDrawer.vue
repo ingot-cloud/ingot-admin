@@ -1,5 +1,11 @@
 <template>
-  <in-drawer v-model="visible" title="添加平台成员" :loading="loading" size="520px">
+  <InWizard
+    v-model="visible"
+    title="添加平台成员"
+    :loading="loading"
+    presentation="drawer"
+    width="520px"
+  >
     <in-form v-if="step === 1" label-position="top">
       <el-form-item label="登录名" required>
         <div class="flex gap-8px">
@@ -64,7 +70,7 @@
         <in-button type="primary" :loading="loading" @in-click="privateSubmit">添加</in-button>
       </template>
     </template>
-  </in-drawer>
+  </InWizard>
   <biz-iam-member-picker-dialog
     ref="groupPickerRef"
     title="选择用户组"
@@ -78,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import { Confirm, Message, createLoadGuard, isApiError } from "@ingot/admin-core";
+import { InWizard, Confirm, Message, createLoadGuard, isApiError } from "@ingot/admin-core";
 import {
   AccountLookupPurpose,
   AuthorizationDomain,

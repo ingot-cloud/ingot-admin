@@ -1,184 +1,173 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     :title="!editing ? '创建委派' : readonly ? '委派详情' : '编辑委派'"
     :loading="loading"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :before-close="privateOnBeforeClose"
+    :steps="WIZARD_STEPS"
+    :current="step"
+    contained
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="WIZARD_STEPS" :current="step" />
-      <section
-        class="delegation-wizard-content flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px"
-      >
-        <div class="mb-24px text-18px shrink-0">{{ WIZARD_STEPS[step].title }}</div>
+    <el-alert
+      v-if="unavailableRevisionIds.length"
+      class="mb-12px shrink-0"
+      type="warning"
+      :closable="false"
+      title="部分原有角色版本已不可用，请重新确认允许分配的角色版本后预览"
+    />
+    <div class="flex-1 min-h-0" :class="step === 2 ? 'overflow-hidden' : 'overflow-auto'">
+      <in-form v-if="step === 0" label-position="top">
         <el-alert
-          v-if="unavailableRevisionIds.length"
-          class="mb-12px shrink-0"
-          type="warning"
+          type="info"
           :closable="false"
-          title="部分原有角色版本已不可用，请重新确认允许分配的角色版本后预览"
+          title="委派只提供限定的角色分配能力，不授予业务权限或二次委派资格。"
         />
-        <div class="flex-1 min-h-0" :class="step === 2 ? 'overflow-hidden' : 'overflow-auto'">
-          <in-form v-if="step === 0" label-position="top" class="max-w-720px">
-            <el-alert
-              type="info"
-              :closable="false"
-              title="委派只提供限定的角色分配能力，不授予业务权限或二次委派资格。"
-            />
-            <el-form-item label="授权管理员" required class="mt-24px">
-              <biz-iam-delegation-candidate-picker
-                v-model="administratorId"
-                :api="candidatesApi"
-                :query="{ kind: 'MEMBER' }"
-                :selected-options="administratorOptions"
-                :reset-key="selectionKey"
-                :disabled="readonly"
-                title="选择授权管理员"
-                placeholder="请选择授权管理员"
-                search-placeholder="搜索管理员姓名"
-                @selection="privateOnAdministratorSelection"
-              />
-            </el-form-item>
-            <el-form-item label="允许分配的角色" required>
-              <biz-iam-delegation-role-picker
-                v-model="revisionOptions"
-                :tree-api="roleCandidatesApi"
-                :detail-api="candidatesApi"
-                :disabled="readonly"
-                :reset-key="selectionKey"
-                @update:model-value="unavailableRevisionIds = []"
-              />
-            </el-form-item>
-            <el-form-item label="允许接收的成员" required>
-              <biz-iam-delegation-candidate-picker
-                v-model="recipientIds"
-                :api="candidatesApi"
-                :query="{ kind: 'MEMBER', excludeMemberId: administratorId || undefined }"
-                :selected-options="recipientOptions"
-                :load-selected="selectedCandidates"
-                :reset-key="selectionKey"
-                multiple
-                :disabled="readonly"
-                title="选择允许接收的成员"
-                placeholder="请选择允许接收的成员"
-                search-placeholder="搜索成员姓名"
-                @selection="privateOnRecipientSelection"
-              />
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                授权管理员只能将允许的角色版本分配给这些成员；不因此获得对成员的业务操作权限。
-              </span>
-            </el-form-item>
-            <el-form-item label="委派生效与失效时间（可选）">
-              <div v-if="readonly">
-                {{ privateFormatInstant(validFrom, "立即生效") }} 至
-                {{ privateFormatInstant(validUntil, "长期有效") }}
-              </div>
-              <biz-iam-duration-fields
-                v-else
-                v-model:valid-from="validFrom"
-                v-model:valid-until="validUntil"
-              />
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                留空分别表示立即生效、长期有效。
-              </span>
-            </el-form-item>
-            <el-form-item label="单次分配期限" required>
-              <div v-if="readonly">
-                {{ durationMode === "UNLIMITED" ? "不限期限" : "限制最长时间" }}
-              </div>
-              <el-radio-group v-else v-model="durationMode">
-                <el-radio value="LIMITED">限制最长时间</el-radio>
-                <el-radio value="UNLIMITED">不限期限</el-radio>
-              </el-radio-group>
-              <span class="block w-full text-12px text-[var(--el-text-color-secondary)]"
-                >不限期限可分配长期角色；来源委派到期或撤销后，派生授权仍会失效。</span
-              >
-            </el-form-item>
-            <el-form-item v-if="durationMode === 'LIMITED'" label="单次分配最长时间" required>
-              <div v-if="readonly">{{ maxDurationLabel }}</div>
-              <biz-iam-duration-fields
-                v-else
-                v-model:max-assignment-duration="maxDuration"
-                :show-validity="false"
-                show-max-duration
-              />
-            </el-form-item>
-          </in-form>
-          <div v-else-if="step === 1" class="flex flex-col gap-16px">
-            <biz-iam-role-field-summary
-              v-for="option in revisionOptions"
-              :key="option.id"
-              :permissions="option.resourceFieldPermissions"
-              :names="
-                Object.fromEntries(
-                  (option.actions || []).map((action) => [
-                    action.resourceId,
-                    `${action.applicationName} / ${action.resourceName}`,
-                  ]),
-                )
-              "
-            />
-            <biz-iam-delegation-ceiling-step
-              v-model="ceilings"
-              :actions="actions"
-              :api="candidatesApi"
-              view-only
-            />
-          </div>
-          <biz-iam-delegation-ceiling-step
-            v-else-if="step === 2"
-            v-model="ceilings"
-            :actions="actions"
+        <el-form-item label="授权管理员" required class="mt-24px">
+          <biz-iam-delegation-candidate-picker
+            v-model="administratorId"
             :api="candidatesApi"
-            :disabled="readonly"
-            v-model:object-selections="objectSelections"
-            :selected-api="selectedCandidates"
+            :query="{ kind: 'MEMBER' }"
+            :selected-options="administratorOptions"
             :reset-key="selectionKey"
+            :disabled="readonly"
+            title="选择授权管理员"
+            placeholder="请选择授权管理员"
+            search-placeholder="搜索管理员姓名"
+            @selection="privateOnAdministratorSelection"
           />
-          <div v-else class="max-w-720px flex flex-col gap-20px">
-            <div class="flex flex-col gap-8px">
-              <div>
-                授权管理员：{{
-                  administratorName || editing?.record.administratorName || administratorId
-                }}
-              </div>
-              <div>允许接收的成员：{{ recipientSummary }}</div>
-              <div>固定角色版本：{{ revisionOptions.map((item) => item.name).join("、") }}</div>
-              <div>
-                委派有效期：{{ privateFormatInstant(validFrom, "立即生效") }} 至
-                {{ privateFormatInstant(validUntil, "长期有效") }}
-              </div>
-              <div>单次分配最长时间：{{ maxDurationLabel }}</div>
-            </div>
-            <div class="text-12px text-[var(--el-text-color-secondary)]">
-              请先预览委派影响；预览通过后才能保存，委派不会直接增加管理员的业务权限。
-            </div>
-            <div>
-              <div class="mb-8px">
-                操作及范围上限（{{ configuredCount }} / {{ actions.length }}）
-              </div>
-              <biz-iam-delegation-operation-tree
-                :actions="actions"
-                :ceilings="ceilings"
-                show-ceilings
-              />
-            </div>
-            <biz-iam-preview-alert :preview="previewState.preview.value" />
-            <div
-              v-if="previewState.preview.value?.effectiveResult?.affectedAssignmentIds.length"
-              class="text-[var(--el-text-color-secondary)]"
-            >
-              受影响分配：{{
-                previewState.preview.value.effectiveResult.affectedAssignmentIds.join("、")
-              }}
-            </div>
+        </el-form-item>
+        <el-form-item label="允许分配的角色" required>
+          <biz-iam-delegation-role-picker
+            v-model="revisionOptions"
+            :tree-api="roleCandidatesApi"
+            :detail-api="candidatesApi"
+            :disabled="readonly"
+            :reset-key="selectionKey"
+            @update:model-value="unavailableRevisionIds = []"
+          />
+        </el-form-item>
+        <el-form-item label="允许接收的成员" required>
+          <biz-iam-delegation-candidate-picker
+            v-model="recipientIds"
+            :api="candidatesApi"
+            :query="{ kind: 'MEMBER', excludeMemberId: administratorId || undefined }"
+            :selected-options="recipientOptions"
+            :load-selected="selectedCandidates"
+            :reset-key="selectionKey"
+            multiple
+            :disabled="readonly"
+            title="选择允许接收的成员"
+            placeholder="请选择允许接收的成员"
+            search-placeholder="搜索成员姓名"
+            @selection="privateOnRecipientSelection"
+          />
+          <span class="text-12px text-[var(--el-text-color-secondary)]">
+            授权管理员只能将允许的角色版本分配给这些成员；不因此获得对成员的业务操作权限。
+          </span>
+        </el-form-item>
+        <el-form-item label="委派生效与失效时间（可选）">
+          <div v-if="readonly">
+            {{ privateFormatInstant(validFrom, "立即生效") }} 至
+            {{ privateFormatInstant(validUntil, "长期有效") }}
           </div>
+          <biz-iam-duration-fields
+            v-else
+            v-model:valid-from="validFrom"
+            v-model:valid-until="validUntil"
+          />
+          <span class="text-12px text-[var(--el-text-color-secondary)]">
+            留空分别表示立即生效、长期有效。
+          </span>
+        </el-form-item>
+        <el-form-item label="单次分配期限" required>
+          <div v-if="readonly">
+            {{ durationMode === "UNLIMITED" ? "不限期限" : "限制最长时间" }}
+          </div>
+          <el-radio-group v-else v-model="durationMode">
+            <el-radio value="LIMITED">限制最长时间</el-radio>
+            <el-radio value="UNLIMITED">不限期限</el-radio>
+          </el-radio-group>
+          <span class="block w-full text-12px text-[var(--el-text-color-secondary)]"
+            >不限期限可分配长期角色；来源委派到期或撤销后，派生授权仍会失效。</span
+          >
+        </el-form-item>
+        <el-form-item v-if="durationMode === 'LIMITED'" label="单次分配最长时间" required>
+          <div v-if="readonly">{{ maxDurationLabel }}</div>
+          <biz-iam-duration-fields
+            v-else
+            v-model:max-assignment-duration="maxDuration"
+            :show-validity="false"
+            show-max-duration
+          />
+        </el-form-item>
+      </in-form>
+      <div v-else-if="step === 1" class="flex flex-col gap-16px">
+        <biz-iam-role-field-summary
+          v-for="option in revisionOptions"
+          :key="option.id"
+          :permissions="option.resourceFieldPermissions"
+          :names="
+            Object.fromEntries(
+              (option.actions || []).map((action) => [
+                action.resourceId,
+                `${action.applicationName} / ${action.resourceName}`,
+              ]),
+            )
+          "
+        />
+        <biz-iam-delegation-ceiling-step
+          v-model="ceilings"
+          :actions="actions"
+          :api="candidatesApi"
+          view-only
+        />
+      </div>
+      <biz-iam-delegation-ceiling-step
+        v-else-if="step === 2"
+        v-model="ceilings"
+        :actions="actions"
+        :api="candidatesApi"
+        :disabled="readonly"
+        v-model:object-selections="objectSelections"
+        :selected-api="selectedCandidates"
+        :reset-key="selectionKey"
+      />
+      <div v-else class="max-w-720px flex flex-col gap-20px">
+        <div class="flex flex-col gap-8px">
+          <div>
+            授权管理员：{{
+              administratorName || editing?.record.administratorName || administratorId
+            }}
+          </div>
+          <div>允许接收的成员：{{ recipientSummary }}</div>
+          <div>固定角色版本：{{ revisionOptions.map((item) => item.name).join("、") }}</div>
+          <div>
+            委派有效期：{{ privateFormatInstant(validFrom, "立即生效") }} 至
+            {{ privateFormatInstant(validUntil, "长期有效") }}
+          </div>
+          <div>单次分配最长时间：{{ maxDurationLabel }}</div>
         </div>
-      </section>
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          请先预览委派影响；预览通过后才能保存，委派不会直接增加管理员的业务权限。
+        </div>
+        <div>
+          <div class="mb-8px">操作及范围上限（{{ configuredCount }} / {{ actions.length }}）</div>
+          <biz-iam-delegation-operation-tree
+            :actions="actions"
+            :ceilings="ceilings"
+            show-ceilings
+          />
+        </div>
+        <biz-iam-preview-alert :preview="previewState.preview.value" />
+        <div
+          v-if="previewState.preview.value?.effectiveResult?.affectedAssignmentIds.length"
+          class="text-[var(--el-text-color-secondary)]"
+        >
+          受影响分配：{{
+            previewState.preview.value.effectiveResult.affectedAssignmentIds.join("、")
+          }}
+        </div>
+      </div>
     </div>
     <template #footer>
       <in-button @in-click="privateClose">关闭</in-button>
@@ -203,12 +192,13 @@
         >{{ editing ? "保存" : "创建委派" }}</in-button
       >
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 <script setup lang="ts">
 import { formatDateTime } from "@ingot/shared";
 import BizIamRoleFieldSummary from "./BizIamRoleFieldSummary.vue";
 import {
+  InWizard,
   confirmUnsavedChanges,
   Message,
   objectActionAllowed,
@@ -225,7 +215,6 @@ import BizIamDelegationCeilingStep from "./BizIamDelegationCeilingStep.vue";
 import BizIamDelegationOperationTree from "./BizIamDelegationOperationTree.vue";
 import BizIamDurationFields from "./BizIamDurationFields.vue";
 import BizIamPreviewAlert from "./BizIamPreviewAlert.vue";
-import BizIamWizardNav from "./BizIamWizardNav.vue";
 import {
   IamAction,
   IAM_DEFAULT_PAGE_SIZE,
@@ -620,11 +609,3 @@ watch(visible, (value) => {
   }
 });
 </script>
-
-<style lang="postcss" scoped>
-@media (max-width: 700px) {
-  .delegation-wizard-content {
-    padding: 16px;
-  }
-}
-</style>

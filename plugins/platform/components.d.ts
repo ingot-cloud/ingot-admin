@@ -168,6 +168,8 @@ declare module 'vue' {
     InUploadAvatar: typeof import('./../../packages/admin-core/src/components/upload/InUploadAvatar.vue')['default']
     InUserDropdown: typeof import('./../../packages/admin-core/src/layouts/widgets/user-dropdown/InUserDropdown.vue')['default']
     InWithLabel: typeof import('./../../packages/admin-core/src/components/InWithLabel.vue')['default']
+    InWizard: typeof import('./../../packages/admin-core/src/components/wizard/InWizard.vue')['default']
+    InWizardSteps: typeof import('./../../packages/admin-core/src/components/wizard/InWizardSteps.vue')['default']
     ProfileDialog: typeof import('./../../packages/admin-core/src/layouts/widgets/user-dropdown/ProfileDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

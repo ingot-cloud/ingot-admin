@@ -10,6 +10,7 @@ import InCopyTag from "./InCopyTag.vue";
 import InCloseButton from "./InCloseButton.vue";
 import InDialog from "./InDialog.vue";
 import InDrawer from "./drawer/InDrawer.vue";
+import InWizard from "./wizard/InWizard.vue";
 import InDetailDrawer from "./drawer/InDetailDrawer.vue";
 import InDetailIdentity from "./detail/InDetailIdentity.vue";
 import InDescriptionList from "./description/InDescriptionList.vue";
@@ -85,6 +86,7 @@ export const coreGlobalComponents: Record<string, Component> = {
   InCloseButton,
   InDialog,
   InDrawer,
+  InWizard,
   InDetailDrawer,
   InDetailIdentity,
   InDescriptionList,
@@ -162,6 +164,7 @@ declare module "vue" {
     InCloseButton: typeof InCloseButton;
     InDialog: typeof InDialog;
     InDrawer: typeof InDrawer;
+    InWizard: typeof InWizard;
     InDetailDrawer: typeof InDetailDrawer;
     InDetailIdentity: typeof InDetailIdentity;
     InDescriptionList: typeof InDescriptionList;

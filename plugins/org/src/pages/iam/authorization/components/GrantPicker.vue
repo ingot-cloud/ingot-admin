@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-full min-h-0">
-    <aside class="w-220px shrink-0 flex flex-col min-h-0 pr-16px">
+  <div class="in-wizard__columns">
+    <aside>
       <el-input
         v-model="appQuery"
         class="mb-12px"
@@ -11,7 +11,7 @@
         @clear="privateSearchApps"
       />
       <in-loading :loading="appLoading" class="flex-1 min-h-0">
-        <div class="h-full overflow-auto">
+        <div class="in-wizard__column-list">
           <in-tree
             :data="applications"
             node-key="id"
@@ -34,12 +34,10 @@
         </div>
       </in-loading>
     </aside>
-    <section
-      class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] px-16px"
-    >
+    <section>
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
       <in-loading :loading="resourceLoading" class="flex-1 min-h-0">
-        <div class="h-full overflow-auto">
+        <div class="in-wizard__column-list">
           <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">
             先从左侧选择已开通的应用
           </div>
@@ -67,11 +65,9 @@
         </div>
       </in-loading>
     </section>
-    <aside
-      class="w-280px shrink-0 flex flex-col min-h-0 min-w-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px"
-    >
+    <aside>
       <div class="mb-12px">已选 {{ grants.length }} 个权限</div>
-      <div class="flex-1 min-h-0 overflow-auto">
+      <div class="in-wizard__column-list">
         <div v-if="!selectedGroups.length" class="text-12px text-[var(--el-text-color-secondary)]">
           尚未选择权限
         </div>
@@ -161,7 +157,9 @@ const appPage = ref(1);
 const appTotal = ref(0);
 const appLoading = ref(false);
 const applicationId = ref("");
-const currentApp = computed(() => applications.value.find((item) => item.id === applicationId.value));
+const currentApp = computed(() =>
+  applications.value.find((item) => item.id === applicationId.value),
+);
 const resources = ref<CatalogResource[]>([]);
 const resourceLoading = ref(false);
 const resourceReady = ref(false);
@@ -312,7 +310,10 @@ const privateLoadResources = async (): Promise<void> => {
     resources.value = mergeCatalog([], response.data ?? []);
     resourceCache.set(
       appId,
-      resources.value.map((item) => ({ ...item, actions: item.actions.map((action) => ({ ...action })) })),
+      resources.value.map((item) => ({
+        ...item,
+        actions: item.actions.map((action) => ({ ...action })),
+      })),
     );
     resourceReady.value = true;
     nextTick(applyTreeChecks);
@@ -321,7 +322,10 @@ const privateLoadResources = async (): Promise<void> => {
   }
 };
 
-const toGrant = (resource: CatalogResource, action: CatalogResource["actions"][number]): SelectedGrant =>
+const toGrant = (
+  resource: CatalogResource,
+  action: CatalogResource["actions"][number],
+): SelectedGrant =>
   grantByAction.value.get(action.id) ?? {
     actionId: action.id,
     actionName: action.name,
@@ -355,7 +359,9 @@ const replaceLoadedGrants = (actionIds: Set<string>): void => {
 const privateOnCheck = (): void => {
   if (applyingChecks.value) return;
   const keys = treeRef.value?.getCheckedKeys(true) ?? [];
-  replaceLoadedGrants(new Set(keys.filter((key) => key.startsWith("a:")).map((key) => key.slice(2))));
+  replaceLoadedGrants(
+    new Set(keys.filter((key) => key.startsWith("a:")).map((key) => key.slice(2))),
+  );
 };
 
 const privateRemoveGrant = (actionId: string): void => {

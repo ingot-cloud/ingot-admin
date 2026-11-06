@@ -1,206 +1,190 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     :title="editing ? '调整角色分配' : '分配角色'"
     :loading="loading"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :before-close="privateBeforeClose"
+    :steps="wizardSteps"
+    :current="step"
   >
-    <div v-if="visible" class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="wizardSteps" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ wizardSteps[step].title }}</div>
-        <div class="flex-1 min-h-0 overflow-auto">
-          <in-form v-if="step === 0" label-position="top" class="max-w-720px">
-            <el-form-item label="授权依据" :required="!editing && !canAssignDirectly">
-              <div v-if="editing">{{ basisLabel }}</div>
-              <div v-else-if="!sources.length" class="flex flex-col gap-4px">
-                <span>直接分配</span>
-                <span class="text-12px text-[var(--el-text-color-secondary)]">
-                  你拥有直接分配资格，无需绑定委派。
-                </span>
-              </div>
-              <el-select
-                v-else
-                v-model="sourceId"
-                class="w-full"
-                :disabled="loading || saving"
-                placeholder="请选择授权委派"
-              >
-                <el-option v-if="canAssignDirectly" label="直接分配" value="" />
-                <el-option
-                  v-for="source in sources"
-                  :key="source.id"
-                  :value="source.id"
-                  :label="sourceLabel(source)"
-                />
-              </el-select>
-              <div
-                v-if="!editing && selectedSource"
-                class="mt-8px text-[var(--el-text-color-secondary)]"
-              >
-                可分配角色：{{ selectedSource.allowedRoles.map((role) => role.name).join("、")
-                }}<br />
-                接收人群：{{ selectedSource.recipientSummary }}；单次最长
-                {{ formatDuration(selectedSource.maxAssignmentDuration) }}<br />
-                有效期：{{ formatDateTime(selectedSource.validFrom, { fallback: "立即" }) }} 至
-                {{ formatDateTime(selectedSource.validUntil, { fallback: "长期" }) }}
-              </div>
-              <span
-                v-if="!editing && sources.length"
-                class="mt-4px text-12px text-[var(--el-text-color-secondary)]"
-              >
-                依据你持有的授权委派进行分配，可选角色、接收对象和范围受该委派限制；切换后会清空接收对象和角色。
-              </span>
-            </el-form-item>
-            <el-form-item label="接收对象" required>
-              <div v-if="editing">
-                {{ editing.record.subjectName || editing.record.assignment.subject.id }}
-              </div>
-              <div v-else class="w-full flex flex-col gap-12px">
-                <div class="flex flex-col gap-4px">
-                  <span class="text-12px text-[var(--el-text-color-secondary)]">成员</span>
-                  <biz-iam-delegation-candidate-picker
-                    :model-value="members.map((item) => item.id)"
-                    :api="optionsAPI"
-                    :query="{ kind: 'MEMBER' }"
-                    :load-member-browse="loadMemberBrowse"
-                    :selected-options="members"
-                    :reset-key="selectionKey"
-                    :disabled="!ready || saving"
-                    multiple
-                    title="选择成员"
-                    placeholder="请选择成员"
-                    search-placeholder="搜索成员"
-                    @confirm="members = privateOptions($event)"
-                  />
-                </div>
-                <div class="flex flex-col gap-4px">
-                  <span class="text-12px text-[var(--el-text-color-secondary)]">用户组</span>
-                  <biz-iam-delegation-candidate-picker
-                    :model-value="groups.map((item) => item.id)"
-                    :api="optionsAPI"
-                    :query="{ kind: 'GROUP' }"
-                    :selected-options="groups"
-                    :reset-key="selectionKey"
-                    :disabled="!ready || saving"
-                    multiple
-                    title="选择用户组"
-                    placeholder="请选择用户组"
-                    search-placeholder="搜索用户组"
-                    @confirm="groups = privateOptions($event)"
-                  />
-                </div>
-                <span class="text-12px text-[var(--el-text-color-secondary)]">
-                  成员和用户组可同时选择，所选角色会分配给每个接收对象。
-                </span>
-              </div>
-            </el-form-item>
-          </in-form>
-          <in-form v-else-if="step === 1" label-position="top" class="max-w-720px">
-            <el-form-item label="角色" required>
-              <div v-if="editing">
-                {{ editing.record.roleName || editing.record.assignment.roleId }}
-              </div>
+    <template v-if="visible">
+      <in-form v-if="step === 0" label-position="top">
+        <el-form-item label="授权依据" :required="!editing && !canAssignDirectly">
+          <div v-if="editing">{{ basisLabel }}</div>
+          <div v-else-if="!sources.length" class="flex flex-col gap-4px">
+            <span>直接分配</span>
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              你拥有直接分配资格，无需绑定委派。
+            </span>
+          </div>
+          <el-select
+            v-else
+            v-model="sourceId"
+            class="w-full"
+            :disabled="loading || saving"
+            placeholder="请选择授权委派"
+          >
+            <el-option v-if="canAssignDirectly" label="直接分配" value="" />
+            <el-option
+              v-for="source in sources"
+              :key="source.id"
+              :value="source.id"
+              :label="sourceLabel(source)"
+            />
+          </el-select>
+          <div
+            v-if="!editing && selectedSource"
+            class="mt-8px text-[var(--el-text-color-secondary)]"
+          >
+            可分配角色：{{ selectedSource.allowedRoles.map((role) => role.name).join("、") }}<br />
+            接收人群：{{ selectedSource.recipientSummary }}；单次最长
+            {{ formatDuration(selectedSource.maxAssignmentDuration) }}<br />
+            有效期：{{ formatDateTime(selectedSource.validFrom, { fallback: "立即" }) }} 至
+            {{ formatDateTime(selectedSource.validUntil, { fallback: "长期" }) }}
+          </div>
+          <span
+            v-if="!editing && sources.length"
+            class="mt-4px text-12px text-[var(--el-text-color-secondary)]"
+          >
+            依据你持有的授权委派进行分配，可选角色、接收对象和范围受该委派限制；切换后会清空接收对象和角色。
+          </span>
+        </el-form-item>
+        <el-form-item label="接收对象" required>
+          <div v-if="editing">
+            {{ editing.record.subjectName || editing.record.assignment.subject.id }}
+          </div>
+          <div v-else class="w-full flex flex-col gap-12px">
+            <div class="flex flex-col gap-4px">
+              <span class="text-12px text-[var(--el-text-color-secondary)]">成员</span>
               <biz-iam-delegation-candidate-picker
-                v-else
-                :model-value="roles.map((draft) => draft.role.id)"
+                :model-value="members.map((item) => item.id)"
                 :api="optionsAPI"
-                :query="{ kind: 'ROLE' }"
-                :selected-options="roles.map((draft) => draft.role)"
+                :query="{ kind: 'MEMBER' }"
+                :load-member-browse="loadMemberBrowse"
+                :selected-options="members"
                 :reset-key="selectionKey"
                 :disabled="!ready || saving"
                 multiple
-                title="选择角色"
-                placeholder="请选择角色"
-                search-placeholder="搜索角色名称"
-                @confirm="privateRoles"
+                title="选择成员"
+                placeholder="请选择成员"
+                search-placeholder="搜索成员"
+                @confirm="members = privateOptions($event)"
               />
-              <span class="mt-4px text-12px text-[var(--el-text-color-secondary)]">
-                所选角色分配给所有接收对象；角色权限调整后，已分配的成员自动生效。
-              </span>
-              <div v-if="pendingRoles.length" class="mt-8px">
-                <span class="text-12px text-[var(--el-color-warning)]">
-                  {{
-                    pendingRoles.map((draft) => draft.role.name).join("、")
-                  }}
-                  的角色资料未加载，无法配置范围。
-                </span>
-                <in-button link type="primary" @in-click="privateLoadDefinitions(pendingRoles)">
-                  重新加载
-                </in-button>
-              </div>
-            </el-form-item>
-            <el-form-item label="生效时间与失效时间">
-              <biz-iam-duration-fields
-                v-model:valid-from="validFrom"
-                v-model:valid-until="validUntil"
+            </div>
+            <div class="flex flex-col gap-4px">
+              <span class="text-12px text-[var(--el-text-color-secondary)]">用户组</span>
+              <biz-iam-delegation-candidate-picker
+                :model-value="groups.map((item) => item.id)"
+                :api="optionsAPI"
+                :query="{ kind: 'GROUP' }"
+                :selected-options="groups"
+                :reset-key="selectionKey"
+                :disabled="!ready || saving"
+                multiple
+                title="选择用户组"
+                placeholder="请选择用户组"
+                search-placeholder="搜索用户组"
+                @confirm="groups = privateOptions($event)"
               />
-              <span class="mt-4px text-12px text-[var(--el-text-color-secondary)]">
-                所选角色共用有效期；留空表示立即生效、长期有效。使用委派时须设置失效时间，并符合来源期限与单次最长时长。
-              </span>
-            </el-form-item>
-            <el-alert
-              v-if="validityIssue"
-              :title="validityIssue"
-              type="warning"
-              :closable="false"
-            />
-          </in-form>
-          <div v-else-if="step === 2" class="max-w-720px mb-24px">
-            <biz-iam-tenant-assignment-scope-step
-              ref="scopeStep"
-              v-model:roles="roles"
-              :api-for="scopeApiFor"
-              :reset-key="selectionKey"
-              :disabled="saving"
-            />
+            </div>
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              成员和用户组可同时选择，所选角色会分配给每个接收对象。
+            </span>
           </div>
-          <div v-else class="max-w-720px flex flex-col gap-16px">
-            <div>授权依据：{{ basisLabel }}</div>
-            <div>
-              接收对象：{{
-                editing?.record.subjectName ||
-                [...members, ...groups].map((item) => item.name).join("、")
-              }}
-            </div>
-            <div>角色：{{ roles.map((draft) => draft.role.name).join("、") }}</div>
-            <div>本次共 {{ draft.items.length }} 条分配</div>
-            <div>
-              有效期：{{ formatDateTime(validFrom, { fallback: "立即" }) }} 至
-              {{ formatDateTime(validUntil, { fallback: "长期" }) }}
-            </div>
-            <biz-iam-preview-alert :preview="previewState.preview.value" />
-            <div
-              v-for="(item, index) in previewState.preview.value?.effectiveResult?.items || []"
-              :key="index"
-              class="rounded-4px p-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px"
-            >
-              <div>{{ previewItemLabel(index) }} · {{ item.allowed ? "可分配" : "不可分配" }}</div>
-              <div class="text-12px text-[var(--el-text-color-secondary)]">
-                {{ previewScopeLabel(index) }}
-              </div>
-              <div
-                v-for="(issue, issueIndex) in item.errors"
-                :key="issueIndex"
-                class="text-12px text-[var(--el-color-warning)]"
-              >
-                {{ issue.message }}
-              </div>
-            </div>
-            <el-alert
-              v-if="staleVersion"
-              type="warning"
-              :closable="false"
-              title="分配已被他人修改，当前输入暂留在抽屉中；重新打开会载入最新内容。"
-            />
+        </el-form-item>
+      </in-form>
+      <in-form v-else-if="step === 1" label-position="top">
+        <el-form-item label="角色" required>
+          <div v-if="editing">
+            {{ editing.record.roleName || editing.record.assignment.roleId }}
+          </div>
+          <biz-iam-delegation-candidate-picker
+            v-else
+            :model-value="roles.map((draft) => draft.role.id)"
+            :api="optionsAPI"
+            :query="{ kind: 'ROLE' }"
+            :selected-options="roles.map((draft) => draft.role)"
+            :reset-key="selectionKey"
+            :disabled="!ready || saving"
+            multiple
+            title="选择角色"
+            placeholder="请选择角色"
+            search-placeholder="搜索角色名称"
+            @confirm="privateRoles"
+          />
+          <span class="mt-4px text-12px text-[var(--el-text-color-secondary)]">
+            所选角色分配给所有接收对象；角色权限调整后，已分配的成员自动生效。
+          </span>
+          <div v-if="pendingRoles.length" class="mt-8px">
+            <span class="text-12px text-[var(--el-color-warning)]">
+              {{ pendingRoles.map((draft) => draft.role.name).join("、") }}
+              的角色资料未加载，无法配置范围。
+            </span>
+            <in-button link type="primary" @in-click="privateLoadDefinitions(pendingRoles)">
+              重新加载
+            </in-button>
+          </div>
+        </el-form-item>
+        <el-form-item label="生效时间与失效时间">
+          <biz-iam-duration-fields
+            v-model:valid-from="validFrom"
+            v-model:valid-until="validUntil"
+          />
+          <span class="mt-4px text-12px text-[var(--el-text-color-secondary)]">
+            所选角色共用有效期；留空表示立即生效、长期有效。使用委派时须设置失效时间，并符合来源期限与单次最长时长。
+          </span>
+        </el-form-item>
+        <el-alert v-if="validityIssue" :title="validityIssue" type="warning" :closable="false" />
+      </in-form>
+      <div v-else-if="step === 2" class="max-w-720px mb-24px">
+        <biz-iam-tenant-assignment-scope-step
+          ref="scopeStep"
+          v-model:roles="roles"
+          :api-for="scopeApiFor"
+          :reset-key="selectionKey"
+          :disabled="saving"
+        />
+      </div>
+      <div v-else class="max-w-720px flex flex-col gap-16px">
+        <div>授权依据：{{ basisLabel }}</div>
+        <div>
+          接收对象：{{
+            editing?.record.subjectName ||
+            [...members, ...groups].map((item) => item.name).join("、")
+          }}
+        </div>
+        <div>角色：{{ roles.map((draft) => draft.role.name).join("、") }}</div>
+        <div>本次共 {{ draft.items.length }} 条分配</div>
+        <div>
+          有效期：{{ formatDateTime(validFrom, { fallback: "立即" }) }} 至
+          {{ formatDateTime(validUntil, { fallback: "长期" }) }}
+        </div>
+        <biz-iam-preview-alert :preview="previewState.preview.value" />
+        <div
+          v-for="(item, index) in previewState.preview.value?.effectiveResult?.items || []"
+          :key="index"
+          class="rounded-4px p-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px"
+        >
+          <div>{{ previewItemLabel(index) }} · {{ item.allowed ? "可分配" : "不可分配" }}</div>
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            {{ previewScopeLabel(index) }}
+          </div>
+          <div
+            v-for="(issue, issueIndex) in item.errors"
+            :key="issueIndex"
+            class="text-12px text-[var(--el-color-warning)]"
+          >
+            {{ issue.message }}
           </div>
         </div>
-      </section>
-    </div>
+        <el-alert
+          v-if="staleVersion"
+          type="warning"
+          :closable="false"
+          title="分配已被他人修改，当前输入暂留在抽屉中；重新打开会载入最新内容。"
+        />
+      </div>
+    </template>
     <template #footer>
       <in-button @click="privateBeforeClose(() => (visible = false))">取消</in-button>
       <in-button v-if="step > 0" @in-click="step -= 1">上一步</in-button>
@@ -223,12 +207,13 @@
         >{{ editing ? "保存" : "分配角色" }}</in-button
       >
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 <script setup lang="ts">
 import { computed, inject, ref, watch } from "vue";
 import { formatDateTime } from "@ingot/shared";
 import {
+  InWizard,
   confirmUnsavedChanges,
   isApiError,
   Message,
@@ -266,7 +251,6 @@ import { iamEditorFailure } from "../../hooks/iamEditorFailure";
 import BizIamDelegationCandidatePicker from "../BizIamDelegationCandidatePicker.vue";
 import BizIamDurationFields from "../BizIamDurationFields.vue";
 import BizIamPreviewAlert from "../BizIamPreviewAlert.vue";
-import BizIamWizardNav from "../BizIamWizardNav.vue";
 import BizIamTenantAssignmentScopeStep from "./BizIamTenantAssignmentScopeStep.vue";
 
 defineOptions({ name: "BizIamTenantAssignmentDrawer" });

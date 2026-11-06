@@ -1,43 +1,34 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="编辑权限"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
+    :steps="GRANT_STEPS"
+    :current="step"
+    contained
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="GRANT_STEPS" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ GRANT_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
-          <grant-picker
-            v-if="step === 0"
-            :key="session"
-            v-model="grants"
-            :catalog-a-p-i="catalogAPI"
-            :application-candidates="applicationCandidates"
-          />
-          <scope-step v-else-if="step === 1" v-model="grants" />
-          <biz-iam-role-field-step v-else-if="step === 2" ref="fieldStep" v-model="grants" />
-          <div v-else class="flex flex-col gap-16px">
-            <div class="text-12px text-[var(--el-text-color-secondary)]">
-              保存后关联人员自动生效。
-            </div>
-            <grant-preview :grants="grants" />
-            <biz-iam-preview-alert :preview="currentPreview" />
-            <el-alert
-              v-if="currentPreview?.effectiveResult"
-              type="info"
-              :closable="false"
-              :title="impactTitle"
-            />
-          </div>
-        </div>
-      </section>
+    <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
+      <grant-picker
+        v-if="step === 0"
+        :key="session"
+        v-model="grants"
+        :catalog-a-p-i="catalogAPI"
+        :application-candidates="applicationCandidates"
+      />
+      <scope-step v-else-if="step === 1" v-model="grants" />
+      <biz-iam-role-field-step v-else-if="step === 2" ref="fieldStep" v-model="grants" />
+      <div v-else class="flex flex-col gap-16px">
+        <div class="text-12px text-[var(--el-text-color-secondary)]">保存后关联人员自动生效。</div>
+        <grant-preview :grants="grants" />
+        <biz-iam-preview-alert :preview="currentPreview" />
+        <el-alert
+          v-if="currentPreview?.effectiveResult"
+          type="info"
+          :closable="false"
+          :title="impactTitle"
+        />
+      </div>
     </div>
     <template #footer>
       <in-button v-if="conflicted" @in-click="privateReloadLock">重读当前配置，保留草稿</in-button>
@@ -55,11 +46,12 @@
         保存权限，关联人员自动生效
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
 import {
+  InWizard,
   isApiError,
   Message,
   confirmUnsavedChanges,
@@ -68,7 +60,6 @@ import {
 import {
   BizIamPreviewAlert,
   BizIamRoleFieldStep,
-  BizIamWizardNav,
   createCurrentRoleApis,
   iamEditorFailure,
   type AuthorizationCandidatesApi,

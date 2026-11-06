@@ -1,57 +1,50 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="创建角色"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
+    :steps="CREATE_STEPS"
+    :current="step"
+    contained
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="CREATE_STEPS" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ CREATE_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 1 ? 'overflow-hidden' : 'overflow-auto'">
-          <in-form v-if="step === 0" class="max-w-560px">
-            <el-form-item label="名称" required>
-              <el-input v-model="profile.name" placeholder="请输入角色名称" />
-            </el-form-item>
-            <el-form-item label="说明">
-              <el-input
-                v-model="profile.description"
-                type="textarea"
-                :rows="3"
-                placeholder="请输入角色说明"
-              />
-            </el-form-item>
-            <el-form-item label="分组">
-              <el-input v-model="profile.groupName" placeholder="请输入分组，可空" />
-            </el-form-item>
-          </in-form>
-          <grant-picker
-            v-else-if="step === 1"
-            :key="session"
-            v-model="grants"
-            :catalog-a-p-i="catalogAPI"
-            :application-candidates="applicationCandidates"
+    <div class="flex-1 min-h-0" :class="step === 1 ? 'overflow-hidden' : 'overflow-auto'">
+      <in-form v-if="step === 0" label-position="top">
+        <el-form-item label="名称" required>
+          <el-input v-model="profile.name" placeholder="请输入角色名称" />
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input
+            v-model="profile.description"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入角色说明"
           />
-          <scope-step v-else-if="step === 2" v-model="grants" />
-          <biz-iam-role-field-step v-else-if="step === 3" ref="fieldStep" v-model="grants" />
-          <div v-else class="flex flex-col gap-16px">
-            <div>
-              <div class="text-18px">{{ profile.name }}</div>
-              <div class="mt-8px text-12px text-[var(--el-text-color-secondary)]">
-                {{ profile.description || "暂无说明" }}
-              </div>
-              <div v-if="profile.groupName" class="mt-4px text-12px">分组：{{ profile.groupName }}</div>
-            </div>
-            <grant-preview :grants="grants" />
-            <biz-iam-preview-alert :preview="currentPreview" />
+        </el-form-item>
+        <el-form-item label="分组">
+          <el-input v-model="profile.groupName" placeholder="请输入分组，可空" />
+        </el-form-item>
+      </in-form>
+      <grant-picker
+        v-else-if="step === 1"
+        :key="session"
+        v-model="grants"
+        :catalog-a-p-i="catalogAPI"
+        :application-candidates="applicationCandidates"
+      />
+      <scope-step v-else-if="step === 2" v-model="grants" />
+      <biz-iam-role-field-step v-else-if="step === 3" ref="fieldStep" v-model="grants" />
+      <div v-else class="flex flex-col gap-16px">
+        <div>
+          <div class="text-18px">{{ profile.name }}</div>
+          <div class="mt-8px text-12px text-[var(--el-text-color-secondary)]">
+            {{ profile.description || "暂无说明" }}
           </div>
+          <div v-if="profile.groupName" class="mt-4px text-12px">分组：{{ profile.groupName }}</div>
         </div>
-      </section>
+        <grant-preview :grants="grants" />
+        <biz-iam-preview-alert :preview="currentPreview" />
+      </div>
     </div>
     <template #footer>
       <in-button v-if="step > 0" @in-click="step = Math.max(0, step - 1)">上一步</in-button>
@@ -67,15 +60,14 @@
         >创建角色</in-button
       >
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
-import { Message, confirmUnsavedChanges } from "@ingot/admin-core";
+import { InWizard, Message, confirmUnsavedChanges } from "@ingot/admin-core";
 import {
   BizIamPreviewAlert,
   BizIamRoleFieldStep,
-  BizIamWizardNav,
   createCurrentRoleApis,
   iamEditorFailure,
   type AuthorizationCandidatesApi,
@@ -123,8 +115,8 @@ const fingerprint = computed(
       groupName: profile.groupName,
     }) + grantsFingerprint(grants.value),
 );
-const dirty = computed(
-  () => Boolean(profile.name || profile.description || profile.groupName || grants.value.length),
+const dirty = computed(() =>
+  Boolean(profile.name || profile.description || profile.groupName || grants.value.length),
 );
 
 watch(

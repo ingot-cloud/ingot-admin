@@ -138,11 +138,11 @@ describe("BizIamTenantDelegationDrawer", () => {
     expect(assignments.roleAPI).toHaveBeenCalledWith("3");
     expect(wrapper.text()).toContain("委派详情");
     expect(wrapper.text()).not.toContain("创建委派");
-    expect(wrapper.text()).not.toContain("保存");
     const buttons = wrapper.findAll("button").map((button) => button.text());
+    expect(buttons).not.toContain("保存");
     expect(buttons).toContain("下一步");
     await wrapper.findAll("button").find((button) => button.text() === "下一步")!.trigger("click");
-    expect(wrapper.text()).toContain("确认操作");
+    expect(wrapper.get(".in-wizard__heading h2").text()).toBe("确认操作");
     expect(wrapper.text()).toContain("查看成员");
   });
 

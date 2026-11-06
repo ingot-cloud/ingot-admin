@@ -1,80 +1,76 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="创建组织"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="loading"
     :before-close="privateOnBeforeClose"
+    :steps="CREATE_WIZARD_STEPS"
+    :current="step"
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <wizard-nav :steps="CREATE_WIZARD_STEPS" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ CREATE_WIZARD_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0 overflow-auto">
-          <in-form v-if="step === 0" class="max-w-560px" label-position="top" :model="draft">
-            <el-form-item label="组织头像">
-              <in-detail-identity
-                :name="draft.name || '新组织'"
-                v-model:avatar="draft.avatar"
-                editable
-                :upload-dir="TENANT_AVATAR_DIR"
-              />
-            </el-form-item>
-            <el-form-item label="组织名称" required>
-              <el-input v-model="draft.name" clearable placeholder="请输入组织名称" />
-            </el-form-item>
-            <el-form-item label="根部门名称">
-              <el-input v-model="draft.rootDepartmentName" clearable placeholder="缺省使用组织名称" />
-            </el-form-item>
-          </in-form>
-          <in-form v-else-if="step === 1" class="max-w-560px" label-position="top" :model="draft">
-            <el-form-item label="所有者登录名" required>
-              <div class="flex gap-8px">
-                <el-input v-model="ownerUsername" clearable placeholder="精确查找已有全局账号" />
-                <in-button @in-click="privateLookupOwner">查找</in-button>
-              </div>
-            </el-form-item>
-            <el-form-item v-if="draft.ownerAccountId" label="所有者账号 ID">
-              <span>{{ draft.ownerAccountId }}</span>
-            </el-form-item>
-            <el-form-item label="所有者显示名">
-              <el-input v-model="draft.ownerDisplayName" clearable placeholder="可空，由服务生成" />
-            </el-form-item>
-          </in-form>
-          <entitlement-draft-panel
-            v-if="panelReady"
-            v-show="step === 2"
-            ref="panelRef"
-            :resolve-union="resolveCreateUnion"
-          />
-          <div v-if="step === 3" class="flex flex-col gap-16px">
-            <in-detail-identity :name="previewName" :src="draft.avatar" />
-            <biz-iam-preview-alert :preview="preview" />
-            <div v-if="preview?.effectiveResult" class="flex flex-col gap-8px">
-              <div>组织：{{ preview.effectiveResult.name }}</div>
-              <div>所有者账号：{{ preview.effectiveResult.ownerAccountId }}</div>
-              <div>根部门：{{ preview.effectiveResult.rootDepartmentName }}</div>
-            </div>
-            <entitlement-preview :items="previewItems" />
-          </div>
+    <in-form v-if="step === 0" label-position="top" :model="draft">
+      <el-form-item label="组织头像">
+        <in-detail-identity
+          :name="draft.name || '新组织'"
+          v-model:avatar="draft.avatar"
+          editable
+          :upload-dir="TENANT_AVATAR_DIR"
+        />
+      </el-form-item>
+      <el-form-item label="组织名称" required>
+        <el-input v-model="draft.name" clearable placeholder="请输入组织名称" />
+      </el-form-item>
+      <el-form-item label="根部门名称">
+        <el-input v-model="draft.rootDepartmentName" clearable placeholder="缺省使用组织名称" />
+      </el-form-item>
+    </in-form>
+    <in-form v-else-if="step === 1" label-position="top" :model="draft">
+      <el-form-item label="所有者登录名" required>
+        <div class="flex gap-8px">
+          <el-input v-model="ownerUsername" clearable placeholder="精确查找已有全局账号" />
+          <in-button @in-click="privateLookupOwner">查找</in-button>
         </div>
-      </section>
+      </el-form-item>
+      <el-form-item v-if="draft.ownerAccountId" label="所有者账号 ID">
+        <span>{{ draft.ownerAccountId }}</span>
+      </el-form-item>
+      <el-form-item label="所有者显示名">
+        <el-input v-model="draft.ownerDisplayName" clearable placeholder="可空，由服务生成" />
+      </el-form-item>
+    </in-form>
+    <entitlement-draft-panel
+      v-if="panelReady"
+      v-show="step === 2"
+      ref="panelRef"
+      :resolve-union="resolveCreateUnion"
+    />
+    <div v-if="step === 3" class="flex flex-col gap-16px">
+      <in-detail-identity :name="previewName" :src="draft.avatar" />
+      <biz-iam-preview-alert :preview="preview" />
+      <div v-if="preview?.effectiveResult" class="flex flex-col gap-8px">
+        <div>组织：{{ preview.effectiveResult.name }}</div>
+        <div>所有者账号：{{ preview.effectiveResult.ownerAccountId }}</div>
+        <div>根部门：{{ preview.effectiveResult.rootDepartmentName }}</div>
+      </div>
+      <entitlement-preview :items="previewItems" />
     </div>
     <template #footer>
       <in-button v-if="step > 0" @in-click="privateBack">上一步</in-button>
       <in-button v-if="step < 3" type="primary" @in-click="privateNext">下一步</in-button>
-      <in-button v-else type="primary" :loading="loading" :disabled="!preview?.valid" @in-click="privateSubmit">
+      <in-button
+        v-else
+        type="primary"
+        :loading="loading"
+        :disabled="!preview?.valid"
+        @in-click="privateSubmit"
+      >
         提交创建
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message } from "@ingot/admin-core";
+import { InWizard, confirmUnsavedChanges, Message } from "@ingot/admin-core";
 import {
   AccountLookupPurpose,
   BizIamPreviewAlert,
@@ -87,7 +83,6 @@ import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformTenantCreateAPI, PlatformTenantPreviewAPI } from "@/api/iam/tenants";
 import { platformTenantQueryKeys } from "@/api/iam/tenants.query";
 import { useQueryClient } from "@tanstack/vue-query";
-import WizardNav from "../../shared-roles/components/WizardNav.vue";
 import EntitlementDraftPanel from "./EntitlementDraftPanel.vue";
 import EntitlementPreview from "./EntitlementPreview.vue";
 import { CREATE_WIZARD_STEPS, TENANT_AVATAR_DIR, toPreviewItems, type EntitlementItem } from "../wizard";

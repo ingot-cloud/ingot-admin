@@ -1,101 +1,101 @@
 <template>
-  <in-dialog
+  <InWizard
     v-model="visible"
     title="配置成员角色"
     width="960px"
-    layout="pinned"
     class="member-role-assign-dialog h-85vh !max-h-85vh"
     append-to-body
+    presentation="dialog"
+    :steps="steps"
+    :current="step"
+    contained
   >
-    <div class="h-full flex flex-1 min-h-0 min-w-0 gap-24px">
-      <biz-iam-wizard-nav class="!h-auto self-stretch" :steps="steps" :current="step" />
-      <in-loading :loading="loading" class="min-w-0 flex-1 overflow-y-auto pr-8px py-16px">
-        <div v-if="step === 0" class="flex flex-col gap-16px">
-          <div class="text-12px text-[var(--el-text-color-secondary)]">
-            明确选择固定版本，再配置对象范围。确认后仅更新草稿，保存成员时一起生效。
-          </div>
-          <in-form label-position="top">
-            <el-form-item v-if="canAdd" :label="memberId ? '添加角色' : '角色'">
-              <biz-iam-delegation-role-picker
-                v-model="newOptions"
-                :tree-api="PlatformAssignmentRoleCandidatesAPI"
-                :detail-api="PlatformAssignmentCandidatesAPI"
-                :reset-key="epoch"
-                one-version-per-role
-                allow-empty
-                title="选择角色"
-                placeholder="请选择角色及固定版本"
+    <in-loading :loading="loading" class="min-w-0 flex-1 overflow-auto">
+      <div v-if="step === 0" class="flex flex-col gap-16px">
+        <div class="text-12px text-[var(--el-text-color-secondary)]">
+          明确选择固定版本，再配置对象范围。确认后仅更新草稿，保存成员时一起生效。
+        </div>
+        <in-form label-position="top">
+          <el-form-item v-if="canAdd" :label="memberId ? '添加角色' : '角色'">
+            <biz-iam-delegation-role-picker
+              v-model="newOptions"
+              :tree-api="PlatformAssignmentRoleCandidatesAPI"
+              :detail-api="PlatformAssignmentCandidatesAPI"
+              :reset-key="epoch"
+              one-version-per-role
+              allow-empty
+              title="选择角色"
+              placeholder="请选择角色及固定版本"
+            />
+          </el-form-item>
+          <template v-if="newOptions.length">
+            <el-form-item label="新增角色有效期（可选）">
+              <biz-iam-duration-fields
+                v-model:valid-from="state.validFrom"
+                v-model:valid-until="state.validUntil"
               />
             </el-form-item>
-            <template v-if="newOptions.length">
-              <el-form-item label="新增角色有效期（可选）">
-                <biz-iam-duration-fields
-                  v-model:valid-from="state.validFrom"
-                  v-model:valid-until="state.validUntil"
-                />
-              </el-form-item>
-              <div class="text-12px text-[var(--el-text-color-secondary)]">
-                留空表示立即生效、长期有效；已绑定角色的原有效期保持不变。
-              </div>
-            </template>
-          </in-form>
-          <template v-if="memberId">
-            <div>已绑定的直接角色</div>
             <div class="text-12px text-[var(--el-text-color-secondary)]">
-              用户组继承和委派来源不在此处修改。仅修改已加载记录，其他记录保留。
-            </div>
-            <div
-              v-for="item in currentRecords"
-              :key="item.record.id"
-              class="flex items-center gap-8px p-12px bg-[var(--in-permission-panel-bg)] rounded-4px"
-            >
-              <span class="flex-1"
-                >{{ item.record.roleName }} · {{ assignmentVersionLabel(item.record) }}</span
-              >
-              <in-button
-                v-if="canRemove && recordAllowed(item, IamAction.PLATFORM_ASSIGNMENT_DELETE)"
-                link
-                type="danger"
-                @in-click="privateRemove(item.record.id)"
-                >移除</in-button
-              >
-            </div>
-            <div v-if="!currentRecords.length" class="text-[var(--el-text-color-secondary)]">
-              本页暂无可编辑的直接角色
-            </div>
-            <el-pagination
-              v-if="total > IAM_DEFAULT_PAGE_SIZE"
-              :current-page="page"
-              :page-size="IAM_DEFAULT_PAGE_SIZE"
-              :total="total"
-              layout="prev, pager, next"
-              size="small"
-              @current-change="privatePage"
-            />
-            <div v-if="state.removed.length" class="text-12px">
-              待移除 {{ state.removed.length }} 条
-              <in-button link @in-click="privateRestore">恢复移除</in-button>
+              留空表示立即生效、长期有效；已绑定角色的原有效期保持不变。
             </div>
           </template>
-        </div>
-        <biz-iam-assignment-scope-step
-          v-else
-          ref="scopeStep"
-          v-model:roles="activeRoles"
-          :api="PlatformAssignmentCandidatesAPI"
-          :selected-api-for-role="selectedApiForRole"
-          :readonly-for-role="readonlyForRole"
-          :reset-key="epoch"
-        />
-        <el-alert
-          v-if="failed"
-          class="mt-16px"
-          type="error"
-          title="角色资料加载失败，草稿已保留，请重试"
-          :closable="false"
-        />
-      </in-loading>
-    </div>
+        </in-form>
+        <template v-if="memberId">
+          <div>已绑定的直接角色</div>
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            用户组继承和委派来源不在此处修改。仅修改已加载记录，其他记录保留。
+          </div>
+          <div
+            v-for="item in currentRecords"
+            :key="item.record.id"
+            class="flex items-center gap-8px p-12px bg-[var(--in-permission-panel-bg)] rounded-4px"
+          >
+            <span class="flex-1"
+              >{{ item.record.roleName }} · {{ assignmentVersionLabel(item.record) }}</span
+            >
+            <in-button
+              v-if="canRemove && recordAllowed(item, IamAction.PLATFORM_ASSIGNMENT_DELETE)"
+              link
+              type="danger"
+              @in-click="privateRemove(item.record.id)"
+              >移除</in-button
+            >
+          </div>
+          <div v-if="!currentRecords.length" class="text-[var(--el-text-color-secondary)]">
+            本页暂无可编辑的直接角色
+          </div>
+          <el-pagination
+            v-if="total > IAM_DEFAULT_PAGE_SIZE"
+            :current-page="page"
+            :page-size="IAM_DEFAULT_PAGE_SIZE"
+            :total="total"
+            layout="prev, pager, next"
+            size="small"
+            @current-change="privatePage"
+          />
+          <div v-if="state.removed.length" class="text-12px">
+            待移除 {{ state.removed.length }} 条
+            <in-button link @in-click="privateRestore">恢复移除</in-button>
+          </div>
+        </template>
+      </div>
+      <biz-iam-assignment-scope-step
+        v-else
+        ref="scopeStep"
+        v-model:roles="activeRoles"
+        :api="PlatformAssignmentCandidatesAPI"
+        :selected-api-for-role="selectedApiForRole"
+        :readonly-for-role="readonlyForRole"
+        :reset-key="epoch"
+      />
+      <el-alert
+        v-if="failed"
+        class="mt-16px"
+        type="error"
+        title="角色资料加载失败，草稿已保留，请重试"
+        :closable="false"
+      />
+    </in-loading>
     <template #footer>
       <in-button :disabled="loading" @in-click="visible = false">取消</in-button>
       <in-button v-if="step === 1" :disabled="loading" @in-click="step = 0">上一步</in-button>
@@ -106,16 +106,15 @@
         >确认配置</in-button
       >
     </template>
-  </in-dialog>
+  </InWizard>
 </template>
 <script setup lang="ts">
 import { assignmentVersionLabel } from "@ingot/admin-common";
-import { Message, objectActionAllowed } from "@ingot/admin-core";
+import { InWizard, Message, objectActionAllowed } from "@ingot/admin-core";
 import {
   BizIamAssignmentScopeStep,
   BizIamDelegationRolePicker,
   BizIamDurationFields,
-  BizIamWizardNav,
   IAM_DEFAULT_PAGE_SIZE,
   AssignmentEffectiveStatus,
   IamAction,
@@ -332,11 +331,3 @@ defineExpose({
   },
 });
 </script>
-
-<style lang="postcss" scoped>
-.member-role-assign-dialog :deep(.el-dialog__body) {
-  display: flex;
-  overflow: hidden;
-  padding-block: 0;
-}
-</style>

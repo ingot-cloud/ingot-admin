@@ -123,6 +123,8 @@ export {
   toStringPickerValue,
   withAllPickerOption,
 } from "./components/select/pickerFilter";
+export { default as InWizard } from "./components/wizard/InWizard.vue";
+export type { InWizardStep, InWizardStepStatus } from "./components/wizard/types";
 export { coreGlobalComponents } from "./components/coreComponents";
 export { default as InAvatar } from "./components/avatar/InAvatar.vue";
 export { default as InCloseButton } from "./components/InCloseButton.vue";

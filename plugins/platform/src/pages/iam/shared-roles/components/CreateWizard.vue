@@ -1,78 +1,71 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     :title="title"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
+    :steps="steps"
+    :current="step"
+    contained
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <wizard-nav :steps="steps" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ steps[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 1 ? 'overflow-hidden' : 'overflow-auto'">
-          <in-form v-if="step === 0" class="max-w-560px">
-            <el-form-item label="编码" required>
-              <el-input
-                v-model="profile.code"
-                :placeholder="platform ? '发布后不可改' : '创建后不可改'"
-              />
-            </el-form-item>
-            <el-form-item label="名称" required>
-              <el-input v-model="profile.name" placeholder="请输入角色名称" />
-            </el-form-item>
-            <el-form-item label="说明">
-              <el-input
-                v-model="profile.description"
-                type="textarea"
-                :rows="3"
-                placeholder="请输入说明"
-              />
-            </el-form-item>
-            <el-form-item label="分组">
-              <el-input v-model="profile.groupName" placeholder="请输入分组，可空" />
-            </el-form-item>
-          </in-form>
-          <grant-picker
-            v-else-if="step === 1"
-            v-model="grants"
-            :domain="grantDomain"
-            :current="!platform"
+    <div class="flex-1 min-h-0" :class="step === 1 ? 'overflow-hidden' : 'overflow-auto'">
+      <in-form v-if="step === 0" label-position="top">
+        <el-form-item label="编码" required>
+          <el-input
+            v-model="profile.code"
+            :placeholder="platform ? '发布后不可改' : '创建后不可改'"
           />
-          <scope-step
-            v-else-if="step === 2"
-            v-model="grants"
-            :domain="grantDomain"
-            :current="!platform"
+        </el-form-item>
+        <el-form-item label="名称" required>
+          <el-input v-model="profile.name" placeholder="请输入角色名称" />
+        </el-form-item>
+        <el-form-item label="说明">
+          <el-input
+            v-model="profile.description"
+            type="textarea"
+            :rows="3"
+            placeholder="请输入说明"
           />
-          <biz-iam-role-field-step v-else-if="step === 3" ref="fieldStep" v-model="grants" />
-          <div v-else>
-            <preview-panel
-              :profile="profile"
-              :grants="grants"
-              v-bind="platform ? {} : { hint: '保存后关联组织立即生效。' }"
-            />
-            <biz-iam-role-version-form
-              v-if="platform"
-              v-model:name="versionName"
-              v-model:remark="versionRemark"
-              class="mt-24px max-w-640px"
-            />
-            <div v-if="!platform" class="mt-24px flex flex-col gap-12px">
-              <biz-iam-preview-alert :preview="currentPreview" />
-              <el-alert
-                v-if="currentPreview?.effectiveResult"
-                type="info"
-                :closable="false"
-                :title="currentImpactTitle"
-              />
-            </div>
-          </div>
+        </el-form-item>
+        <el-form-item label="分组">
+          <el-input v-model="profile.groupName" placeholder="请输入分组，可空" />
+        </el-form-item>
+      </in-form>
+      <grant-picker
+        v-else-if="step === 1"
+        v-model="grants"
+        :domain="grantDomain"
+        :current="!platform"
+      />
+      <scope-step
+        v-else-if="step === 2"
+        v-model="grants"
+        :domain="grantDomain"
+        :current="!platform"
+      />
+      <biz-iam-role-field-step v-else-if="step === 3" ref="fieldStep" v-model="grants" />
+      <div v-else>
+        <preview-panel
+          :profile="profile"
+          :grants="grants"
+          v-bind="platform ? {} : { hint: '保存后关联组织立即生效。' }"
+        />
+        <biz-iam-role-version-form
+          v-if="platform"
+          v-model:name="versionName"
+          v-model:remark="versionRemark"
+          class="mt-24px"
+        />
+        <div v-if="!platform" class="mt-24px flex flex-col gap-12px">
+          <biz-iam-preview-alert :preview="currentPreview" />
+          <el-alert
+            v-if="currentPreview?.effectiveResult"
+            type="info"
+            :closable="false"
+            :title="currentImpactTitle"
+          />
         </div>
-      </section>
+      </div>
     </div>
     <template #footer>
       <in-button v-if="step > 0" @in-click="privateBack">上一步</in-button>
@@ -89,11 +82,12 @@
         {{ platform ? "创建并发布首个版本" : "创建角色" }}
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
 import {
+  InWizard,
   confirmUnsavedChanges,
   Message,
   refreshSessionPermissions,
@@ -117,7 +111,6 @@ import { PlatformRoleCreatePreviewAPI } from "@/api/iam/authorization";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
 import ScopeStep from "./ScopeStep.vue";
-import WizardNav from "./WizardNav.vue";
 import {
   emptyWizardProfile,
   grantsFingerprint,

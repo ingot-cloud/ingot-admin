@@ -1,225 +1,219 @@
 <template>
-  <in-drawer v-model="visible" title="应用角色版本" size="100%" layout="pinned" padding="0">
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="steps" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col application-content">
-        <div class="shrink-0 mb-16px flex flex-wrap gap-12px items-center">
-          <span class="text-18px">{{ steps[step].title }}</span>
-          <in-tag v-if="target" :value="{ text: target.name, tag: 'info' }" />
-          <in-tag
-            v-if="task"
-            :value="{
-              text: taskLabels[task.status],
-              tag:
-                task.status === 'SUCCEEDED'
-                  ? 'success'
-                  : task.status === 'PAUSED' || task.status === 'BLOCKED'
-                    ? 'warning'
-                    : 'info',
-            }"
-          />
+  <InWizard v-model="visible" title="应用角色版本" :steps="steps" :current="step" contained>
+    <template #heading-extra>
+      <in-tag v-if="target" :value="{ text: target.name, tag: 'info' }" />
+      <in-tag
+        v-if="task"
+        :value="{
+          text: taskLabels[task.status],
+          tag:
+            task.status === 'SUCCEEDED'
+              ? 'success'
+              : task.status === 'PAUSED' || task.status === 'BLOCKED'
+                ? 'warning'
+                : 'info',
+        }"
+      />
+    </template>
+    <el-alert
+      v-if="failure"
+      class="mb-16px shrink-0"
+      :title="failure"
+      type="error"
+      :closable="false"
+    />
+    <in-loading :loading="loading" class="application-content flex-1 min-h-0 overflow-auto">
+      <template v-if="step === 0">
+        <in-form label-position="top">
+          <el-form-item label="处理集合" required>
+            <el-radio-group v-model="selection">
+              <el-radio value="ALL">全部关联分配</el-radio>
+              <el-radio value="SOURCE_REVISIONS">指定来源版本</el-radio>
+              <el-radio value="ASSIGNMENTS">指定分配</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </in-form>
+        <el-alert
+          title="成员直接分配和用户组分配按原记录切换，保留主体、生效时间、期限和委派来源。快照建立后新增的分配不自动纳入。"
+          type="info"
+          :closable="false"
+          class="mb-16px"
+        />
+        <div v-if="selection === 'SOURCE_REVISIONS'" class="embedded-table">
+          <div class="mb-12px">已选择 {{ sourceIds.length }} 个来源版本</div>
+          <in-table
+            :data="revisionPage.records || []"
+            :page="revisionPage"
+            :headers="revisionHeaders"
+            :row-key="(row: ResourceDetail<RoleRevision>) => row.record.id"
+            density="compact"
+            @handleCurrentChange="privateRevisionPage($event.value)"
+            @handleSizeChange="privateRevisionSize($event.value)"
+          >
+            <template #select="{ item }"
+              ><el-checkbox
+                :model-value="sourceIds.includes(asRevision(item).record.id)"
+                @change="privateToggle(sourceIds, asRevision(item).record.id, $event)"
+            /></template>
+            <template #version="{ item }">{{ roleVersionLabel(asRevision(item).record) }}</template>
+            <template #remark="{ item }">{{ asRevision(item).record.remark || "-" }}</template>
+          </in-table>
         </div>
-        <el-alert v-if="failure" class="mb-16px" :title="failure" type="error" :closable="false" />
-        <in-loading :loading="loading" class="flex-1 min-h-0 overflow-auto">
-          <template v-if="step === 0">
-            <in-form label-position="top">
-              <el-form-item label="处理集合" required>
-                <el-radio-group v-model="selection">
-                  <el-radio value="ALL">全部关联分配</el-radio>
-                  <el-radio value="SOURCE_REVISIONS">指定来源版本</el-radio>
-                  <el-radio value="ASSIGNMENTS">指定分配</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </in-form>
-            <el-alert
-              title="成员直接分配和用户组分配按原记录切换，保留主体、生效时间、期限和委派来源。快照建立后新增的分配不自动纳入。"
-              type="info"
-              :closable="false"
-              class="mb-16px"
-            />
-            <div v-if="selection === 'SOURCE_REVISIONS'" class="embedded-table">
-              <div class="mb-12px">已选择 {{ sourceIds.length }} 个来源版本</div>
-              <in-table
-                :data="revisionPage.records || []"
-                :page="revisionPage"
-                :headers="revisionHeaders"
-                :row-key="(row: ResourceDetail<RoleRevision>) => row.record.id"
-                density="compact"
-                @handleCurrentChange="privateRevisionPage($event.value)"
-                @handleSizeChange="privateRevisionSize($event.value)"
-              >
-                <template #select="{ item }"
-                  ><el-checkbox
-                    :model-value="sourceIds.includes(asRevision(item).record.id)"
-                    @change="privateToggle(sourceIds, asRevision(item).record.id, $event)"
-                /></template>
-                <template #version="{ item }">{{
-                  roleVersionLabel(asRevision(item).record)
-                }}</template>
-                <template #remark="{ item }">{{ asRevision(item).record.remark || "-" }}</template>
-              </in-table>
-            </div>
-            <div v-else-if="selection === 'ASSIGNMENTS'" class="embedded-table">
-              <div class="mb-12px">已选择 {{ assignmentIds.length }} 条分配</div>
-              <in-table
-                :data="candidatePage.records || []"
-                :page="candidatePage"
-                :headers="candidateHeaders"
-                :row-key="(row: ResourceDetail<AssignmentRecord>) => row.record.id"
-                density="compact"
-                @handleCurrentChange="privateCandidatePage($event.value)"
-                @handleSizeChange="privateCandidateSize($event.value)"
-              >
-                <template #select="{ item }"
-                  ><el-checkbox
-                    :model-value="assignmentIds.includes(asAssignment(item).record.id)"
-                    @change="privateToggle(assignmentIds, asAssignment(item).record.id, $event)"
-                /></template>
-                <template #subject="{ item }"
-                  >{{
-                    asAssignment(item).record.assignment.subject.type === "GROUP"
-                      ? "用户组"
-                      : "成员"
-                  }}
-                  ·
-                  {{
-                    asAssignment(item).record.subjectName ||
-                    asAssignment(item).record.assignment.subject.id
-                  }}</template
-                >
-                <template #version="{ item }">{{
-                  assignmentLabel(asAssignment(item).record)
-                }}</template>
-              </in-table>
-            </div>
-          </template>
-          <template v-else-if="task">
-            <div class="flex flex-wrap gap-12px mb-16px" aria-live="polite">
-              <span v-for="state in itemStates" :key="state"
-                >{{ itemLabels[state] }} {{ task.counts[state] || 0 }}</span
-              >
-            </div>
-            <el-alert
-              v-if="task.failureReason"
-              class="mb-16px"
-              :title="task.failureReason"
-              type="warning"
-              :closable="false"
-            />
-            <el-alert
-              v-if="step === 1"
-              class="mb-16px"
-              title="兼容范围逐条保留。新增或不兼容参数需要补齐；批量覆盖只修改明确勾选的参数，其他绑定继续保留。"
-              type="info"
-              :closable="false"
-            />
-            <div
-              v-if="step === 1 && editable"
-              class="mt-16px mb-16px flex flex-wrap gap-8px items-center"
+        <div v-else-if="selection === 'ASSIGNMENTS'" class="embedded-table">
+          <div class="mb-12px">已选择 {{ assignmentIds.length }} 条分配</div>
+          <in-table
+            :data="candidatePage.records || []"
+            :page="candidatePage"
+            :headers="candidateHeaders"
+            :row-key="(row: ResourceDetail<AssignmentRecord>) => row.record.id"
+            density="compact"
+            @handleCurrentChange="privateCandidatePage($event.value)"
+            @handleSizeChange="privateCandidateSize($event.value)"
+          >
+            <template #select="{ item }"
+              ><el-checkbox
+                :model-value="assignmentIds.includes(asAssignment(item).record.id)"
+                @change="privateToggle(assignmentIds, asAssignment(item).record.id, $event)"
+            /></template>
+            <template #subject="{ item }"
+              >{{
+                asAssignment(item).record.assignment.subject.type === "GROUP" ? "用户组" : "成员"
+              }}
+              ·
+              {{
+                asAssignment(item).record.subjectName ||
+                asAssignment(item).record.assignment.subject.id
+              }}</template
             >
-              <span>已选择 {{ itemIds.length }} 条</span>
-              <in-button :disabled="!itemIds.length" @in-click="privateOpenScope(undefined, false)">
-                配置选中范围
-              </in-button>
-              <in-button @in-click="privateOpenScope(undefined, true)">
-                配置全部待处理范围
-              </in-button>
-              <in-button :disabled="!itemIds.length" @in-click="privateExclude(true)">
-                排除选中
-              </in-button>
-              <in-button :disabled="!itemIds.length" @in-click="privateExclude(false)">
-                重新纳入选中</in-button
+            <template #version="{ item }">{{
+              assignmentLabel(asAssignment(item).record)
+            }}</template>
+          </in-table>
+        </div>
+      </template>
+      <template v-else-if="task">
+        <div class="flex flex-wrap gap-12px mb-16px" aria-live="polite">
+          <span v-for="state in itemStates" :key="state"
+            >{{ itemLabels[state] }} {{ task.counts[state] || 0 }}</span
+          >
+        </div>
+        <el-alert
+          v-if="task.failureReason"
+          class="mb-16px"
+          :title="task.failureReason"
+          type="warning"
+          :closable="false"
+        />
+        <el-alert
+          v-if="step === 1"
+          class="mb-16px"
+          title="兼容范围逐条保留。新增或不兼容参数需要补齐；批量覆盖只修改明确勾选的参数，其他绑定继续保留。"
+          type="info"
+          :closable="false"
+        />
+        <div
+          v-if="step === 1 && editable"
+          class="mt-16px mb-16px flex flex-wrap gap-8px items-center"
+        >
+          <span>已选择 {{ itemIds.length }} 条</span>
+          <in-button :disabled="!itemIds.length" @in-click="privateOpenScope(undefined, false)">
+            配置选中范围
+          </in-button>
+          <in-button @in-click="privateOpenScope(undefined, true)"> 配置全部待处理范围 </in-button>
+          <in-button :disabled="!itemIds.length" @in-click="privateExclude(true)">
+            排除选中
+          </in-button>
+          <in-button :disabled="!itemIds.length" @in-click="privateExclude(false)">
+            重新纳入选中</in-button
+          >
+          <in-button :loading="saving" @in-click="privateRefresh">重新预检未完成项</in-button>
+        </div>
+        <div class="embedded-table application-items">
+          <in-table
+            :data="itemPage.records || []"
+            :page="itemPage"
+            :headers="itemHeaders"
+            density="compact"
+            :row-key="(row: RoleApplicationItem) => row.id"
+            @handleCurrentChange="privateItemsPage($event.value)"
+            @handleSizeChange="privateItemsSize($event.value)"
+          >
+            <template #select="{ item }"
+              ><el-checkbox
+                v-if="editable && configurable(asItem(item))"
+                :model-value="itemIds.includes(asItem(item).id)"
+                @change="privateToggle(itemIds, asItem(item).id, $event)"
+            /></template>
+            <template #subject="{ item }"
+              >{{ subjectLabel(asItem(item)) }}
+              <div class="text-12px text-[var(--el-text-color-secondary)]">
+                {{ assignmentLabel(asItem(item).original) }}
+              </div></template
+            >
+            <template #status="{ item }"
+              ><in-tag
+                :value="{
+                  text: itemLabels[asItem(item).status],
+                  tag:
+                    asItem(item).status === 'BLOCKED'
+                      ? 'warning'
+                      : asItem(item).status === 'SUCCEEDED'
+                        ? 'success'
+                        : 'info',
+                }"
+            /></template>
+            <template #impact="{ item }">
+              <div v-if="asItem(item).preview">
+                新增 {{ difference(asItem(item), "added") }} 项操作，移除
+                {{ difference(asItem(item), "removed") }} 项，范围变化
+                {{ difference(asItem(item), "scope") }} 项，字段变化
+                {{ fieldChanges(asItem(item)).length }} 项
+              </div>
+              <div v-if="asItem(item).failureReason" class="text-[var(--el-color-danger)]">
+                {{ asItem(item).failureReason }}
+              </div>
+              <div
+                v-for="issue in asItem(item).preview?.issues || []"
+                :key="issue.path + issue.message"
+                class="text-[var(--el-color-danger)]"
               >
-              <in-button :loading="saving" @in-click="privateRefresh">重新预检未完成项</in-button>
-            </div>
-            <div class="embedded-table application-items">
-              <in-table
-                :data="itemPage.records || []"
-                :page="itemPage"
-                :headers="itemHeaders"
-                density="compact"
-                :row-key="(row: RoleApplicationItem) => row.id"
-                @handleCurrentChange="privateItemsPage($event.value)"
-                @handleSizeChange="privateItemsSize($event.value)"
-              >
-                <template #select="{ item }"
-                  ><el-checkbox
-                    v-if="editable && configurable(asItem(item))"
-                    :model-value="itemIds.includes(asItem(item).id)"
-                    @change="privateToggle(itemIds, asItem(item).id, $event)"
-                /></template>
-                <template #subject="{ item }"
-                  >{{ subjectLabel(asItem(item)) }}
-                  <div class="text-12px text-[var(--el-text-color-secondary)]">
-                    {{ assignmentLabel(asItem(item).original) }}
-                  </div></template
-                >
-                <template #status="{ item }"
-                  ><in-tag
-                    :value="{
-                      text: itemLabels[asItem(item).status],
-                      tag:
-                        asItem(item).status === 'BLOCKED'
-                          ? 'warning'
-                          : asItem(item).status === 'SUCCEEDED'
-                            ? 'success'
-                            : 'info',
-                    }"
-                /></template>
-                <template #impact="{ item }">
-                  <div v-if="asItem(item).preview">
-                    新增 {{ difference(asItem(item), "added") }} 项操作，移除
-                    {{ difference(asItem(item), "removed") }} 项，范围变化
-                    {{ difference(asItem(item), "scope") }} 项，字段变化
-                    {{ fieldChanges(asItem(item)).length }} 项
-                  </div>
-                  <div v-if="asItem(item).failureReason" class="text-[var(--el-color-danger)]">
-                    {{ asItem(item).failureReason }}
-                  </div>
-                  <div
-                    v-for="issue in asItem(item).preview?.issues || []"
-                    :key="issue.path + issue.message"
-                    class="text-[var(--el-color-danger)]"
-                  >
-                    {{ issue.message }}
-                  </div>
-                </template>
-                <template #actions="{ item }">
-                  <in-button link @in-click="privateShowImpact(asItem(item))">查看差异</in-button>
-                  <in-button
-                    v-if="step === 1 && editable && configurable(asItem(item))"
-                    link
-                    type="primary"
-                    @in-click="privateOpenScope(asItem(item), false)"
-                    >配置范围</in-button
-                  >
-                </template>
-              </in-table>
-            </div>
-            <div v-if="step === 3" class="mt-16px">
-              <el-alert
-                :title="
-                  task.status === 'SUCCEEDED'
-                    ? '全部纳入的分配已完成应用，已排除或已失效记录未改写。'
-                    : task.status === 'PAUSED'
-                      ? '执行已暂停，已提交批次保留。重新预检未完成项并再次确认后继续。'
-                      : '任务已保存，正在异步分批执行。关闭页面不会中止任务。'
-                "
-                :type="task.status === 'SUCCEEDED' ? 'success' : 'info'"
-                :closable="false"
-              />
-              <in-button class="mt-12px" @in-click="privateLoadTask">刷新进度</in-button>
+                {{ issue.message }}
+              </div>
+            </template>
+            <template #actions="{ item }">
+              <in-button link @in-click="privateShowImpact(asItem(item))">查看差异</in-button>
               <in-button
-                v-if="task.status === 'PAUSED' || task.status === 'BLOCKED'"
-                class="mt-12px ml-8px"
-                @in-click="privateResume"
-                >继续处理</in-button
+                v-if="step === 1 && editable && configurable(asItem(item))"
+                link
+                type="primary"
+                @in-click="privateOpenScope(asItem(item), false)"
+                >配置范围</in-button
               >
-            </div>
-          </template>
-        </in-loading>
-      </section>
-    </div>
+            </template>
+          </in-table>
+        </div>
+        <div v-if="step === 3" class="mt-16px">
+          <el-alert
+            :title="
+              task.status === 'SUCCEEDED'
+                ? '全部纳入的分配已完成应用，已排除或已失效记录未改写。'
+                : task.status === 'PAUSED'
+                  ? '执行已暂停，已提交批次保留。重新预检未完成项并再次确认后继续。'
+                  : '任务已保存，正在异步分批执行。关闭页面不会中止任务。'
+            "
+            :type="task.status === 'SUCCEEDED' ? 'success' : 'info'"
+            :closable="false"
+          />
+          <in-button class="mt-12px" @in-click="privateLoadTask">刷新进度</in-button>
+          <in-button
+            v-if="task.status === 'PAUSED' || task.status === 'BLOCKED'"
+            class="mt-12px ml-8px"
+            @in-click="privateResume"
+            >继续处理</in-button
+          >
+        </div>
+      </template>
+    </in-loading>
     <template #footer>
       <in-button v-if="step > 1 && step < 3" @in-click="step--">上一步</in-button>
       <in-button
@@ -241,7 +235,7 @@
       >
       <in-button v-else @in-click="visible = false">关闭</in-button>
     </template>
-  </in-drawer>
+  </InWizard>
   <in-dialog
     v-model="scopeVisible"
     title="配置应用范围"
@@ -318,6 +312,7 @@
 </template>
 <script setup lang="ts">
 import {
+  InWizard,
   Confirm,
   Message,
   createLoadGuard,
@@ -342,7 +337,6 @@ import {
   type RoleApplicationItemStatus,
 } from "../models/iam";
 import type { PlatformAssignmentRoleDraft } from "../models/iam/platformAssignment";
-import BizIamWizardNav from "./BizIamWizardNav.vue";
 import BizIamAssignmentScopeStep from "./BizIamAssignmentScopeStep.vue";
 defineOptions({ name: "BizIamRoleApplicationDrawer" });
 const props = defineProps<{
@@ -774,9 +768,6 @@ defineExpose({
 });
 </script>
 <style scoped>
-.application-content {
-  padding: 24px 40px;
-}
 .application-content :deep(.el-alert) {
   flex-shrink: 0;
 }
@@ -787,12 +778,10 @@ defineExpose({
 .embedded-table :deep(.in-table) {
   padding: 0;
 }
-@media (max-width: 700px) {
-  .application-content {
-    padding: 16px 12px;
-  }
-  .application-items {
-    min-width: 900px;
-  }
+.application-items {
+  overflow-x: auto;
+}
+.application-items :deep(.in-table) {
+  min-width: 900px;
 }
 </style>

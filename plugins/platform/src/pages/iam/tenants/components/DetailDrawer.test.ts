@@ -35,12 +35,12 @@ describe("platform iam tenant detail entitlements", () => {
     expect(drawerSource).not.toContain('title="所有者"');
     expect(drawerSource).toContain(':editable="false"');
     expect(drawerSource).toContain("entitlement-edit-wizard");
-    expect(editSource).toContain('size="100%"');
+    expect(editSource).toContain("<InWizard");
     expect(editSource).toContain("ENTITLEMENT_WIZARD_STEPS");
   });
 
   it("创建组织使用全屏向导并上传头像", () => {
-    expect(wizardSource).toContain('size="100%"');
+    expect(wizardSource).toContain("<InWizard");
     expect(wizardSource).toContain("CREATE_WIZARD_STEPS");
     expect(wizardSource).toContain("TENANT_AVATAR_DIR");
     expect(wizardSource).toContain("v-model:avatar");
@@ -64,9 +64,9 @@ describe("platform iam tenant detail entitlements", () => {
     expect(pickerSource).not.toContain("in-avatar");
     expect(catalogSource).toContain("CatalogRecordView.SUMMARY");
     expect(drawerSource).toContain("planId: detail.value.record.planId");
-    expect(drawerSource).toContain("v-loading=\"entitlementsLoading\"");
+    expect(drawerSource).toContain('v-loading="entitlementsLoading"');
     expect(drawerSource).toContain("canEditEntitlements");
-    expect(drawerSource).not.toContain(":loading=\"entitlementsLoading\"");
+    expect(drawerSource).not.toContain(':loading="entitlementsLoading"');
     expect(panelSource).toContain("if (input.items)");
     expect(editSource).toContain("if (!expectedVersion.value)");
     expect(wizardSource).toContain('v-show="step === 2"');

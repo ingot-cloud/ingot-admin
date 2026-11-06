@@ -1,61 +1,49 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="编辑权限"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
+    :steps="steps"
+    :current="step"
+    contained
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <wizard-nav :steps="steps" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ steps[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
-          <grant-picker
-            v-if="step === 0"
-            :key="session"
-            v-model="grants"
-            :domain="domain"
-            :current="immediate"
+    <div class="flex-1 min-h-0" :class="step === 0 ? 'overflow-hidden' : 'overflow-auto'">
+      <grant-picker
+        v-if="step === 0"
+        :key="session"
+        v-model="grants"
+        :domain="domain"
+        :current="immediate"
+      />
+      <scope-step v-else-if="step === 1" v-model="grants" :domain="domain" :current="immediate" />
+      <biz-iam-role-field-step v-else-if="step === 2" ref="fieldStep" v-model="grants" />
+      <div v-else>
+        <preview-panel
+          :profile="profile"
+          :grants="grants"
+          :show-profile="false"
+          :hint="immediate ? '保存后关联人员自动生效。' : '发布新版本后可独立确认版本应用。'"
+        />
+        <biz-iam-role-version-form
+          v-if="!immediate"
+          v-model:name="versionName"
+          v-model:remark="versionRemark"
+          v-model:mode="publishMode"
+          :allow-application="!!applicationApi && canApply"
+          :source-revision-id="sourceRevision?.id"
+          class="mt-24px"
+        />
+        <div v-else class="mt-24px flex flex-col gap-12px">
+          <biz-iam-preview-alert :preview="currentPreview" />
+          <el-alert
+            v-if="currentPreview?.effectiveResult"
+            type="info"
+            :closable="false"
+            :title="currentImpactTitle"
           />
-          <scope-step
-            v-else-if="step === 1"
-            v-model="grants"
-            :domain="domain"
-            :current="immediate"
-          />
-          <biz-iam-role-field-step v-else-if="step === 2" ref="fieldStep" v-model="grants" />
-          <div v-else>
-            <preview-panel
-              :profile="profile"
-              :grants="grants"
-              :show-profile="false"
-              :hint="immediate ? '保存后关联人员自动生效。' : '发布新版本后可独立确认版本应用。'"
-            />
-            <biz-iam-role-version-form
-              v-if="!immediate"
-              v-model:name="versionName"
-              v-model:remark="versionRemark"
-              v-model:mode="publishMode"
-              :allow-application="!!applicationApi && canApply"
-              :source-revision-id="sourceRevision?.id"
-              class="mt-24px max-w-640px"
-            />
-            <div v-else class="mt-24px flex flex-col gap-12px">
-              <biz-iam-preview-alert :preview="currentPreview" />
-              <el-alert
-                v-if="currentPreview?.effectiveResult"
-                type="info"
-                :closable="false"
-                :title="currentImpactTitle"
-              />
-            </div>
-          </div>
         </div>
-      </section>
+      </div>
     </div>
     <template #footer>
       <in-button v-if="immediate && conflicted" @in-click="privateReloadLock"
@@ -75,11 +63,12 @@
         {{ immediate ? "保存权限，关联人员自动生效" : "发布新版本" }}
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
 import {
+  InWizard,
   confirmUnsavedChanges,
   isApiError,
   Message,
@@ -107,7 +96,6 @@ import { PlatformRolePreviewAPI } from "@/api/iam/authorization";
 import GrantPicker from "./GrantPicker.vue";
 import PreviewPanel from "./PreviewPanel.vue";
 import ScopeStep from "./ScopeStep.vue";
-import WizardNav from "./WizardNav.vue";
 import {
   GRANT_WIZARD_STEPS,
   PLATFORM_WIZARD_STEPS,

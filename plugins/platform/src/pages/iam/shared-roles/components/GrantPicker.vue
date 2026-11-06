@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-full min-h-0">
-    <aside class="w-220px shrink-0 flex flex-col min-h-0 pr-16px">
+  <div class="in-wizard__columns">
+    <aside>
       <el-input
         v-model="appQuery"
         class="mb-12px"
@@ -11,7 +11,7 @@
         @clear="privateSearchApps"
       />
       <in-loading :loading="appLoading" class="flex-1 min-h-0">
-        <div class="h-full overflow-auto">
+        <div class="in-wizard__column-list">
           <in-tree
             :data="applications"
             node-key="id"
@@ -34,12 +34,10 @@
         </div>
       </in-loading>
     </aside>
-    <section
-      class="flex-1 min-w-0 flex flex-col min-h-0 b-l b-l-solid b-[var(--in-border-color)] px-16px"
-    >
+    <section>
       <div class="mb-12px text-[var(--in-text-color)]">{{ currentApp?.name || "请选择应用" }}</div>
       <in-loading :loading="resourceLoading" class="flex-1 min-h-0">
-        <div class="h-full overflow-auto">
+        <div class="in-wizard__column-list">
           <div v-if="!applicationId" class="text-12px text-[var(--el-text-color-secondary)]">
             先从左侧选择{{ appKindLabel }}
           </div>
@@ -67,11 +65,9 @@
         </div>
       </in-loading>
     </section>
-    <aside
-      class="w-280px shrink-0 flex flex-col min-h-0 min-w-0 b-l b-l-solid b-[var(--in-border-color)] pl-16px"
-    >
+    <aside>
       <div class="mb-12px">已选 {{ grants.length }} 个权限</div>
-      <div class="flex-1 min-h-0 overflow-auto">
+      <div class="in-wizard__column-list">
         <div v-if="!selectedGroups.length" class="text-12px text-[var(--el-text-color-secondary)]">
           尚未选择权限
         </div>

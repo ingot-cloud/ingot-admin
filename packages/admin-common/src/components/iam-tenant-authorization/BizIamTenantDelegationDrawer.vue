@@ -1,248 +1,245 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     :title="title"
     :loading="loading"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :before-close="privateBeforeClose"
+    :steps="WIZARD_STEPS"
+    :current="step"
+    contained
   >
-    <div v-if="visible" class="in-wizard-frame flex h-full min-h-0">
-      <biz-iam-wizard-nav :steps="WIZARD_STEPS" :current="step" />
-      <section
-        class="delegation-wizard-content flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px"
-      >
-        <div class="mb-24px text-18px shrink-0">{{ WIZARD_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0" :class="step === 2 ? 'overflow-hidden' : 'overflow-auto'">
-          <in-form v-if="step === 0" label-position="top" class="max-w-720px">
-            <el-alert
-              type="info"
-              :closable="false"
-              title="委派只提供限定的角色分配能力，不授予业务权限或再次委派资格。"
+    <template v-if="visible">
+      <div class="flex-1 min-h-0" :class="step === 2 ? 'overflow-hidden' : 'overflow-auto'">
+        <in-form v-if="step === 0" label-position="top">
+          <el-alert
+            type="info"
+            :closable="false"
+            title="委派只提供限定的角色分配能力，不授予业务权限或再次委派资格。"
+          />
+          <el-form-item label="授权管理员" required class="mt-24px">
+            <div v-if="readonly">{{ administratorLabel }}</div>
+            <biz-iam-delegation-candidate-picker
+              v-else
+              v-model="draft.administratorMemberId"
+              :api="optionsAPI"
+              :load-member-browse="loadMemberBrowse"
+              :query="{ kind: 'MEMBER' }"
+              :selected-options="administratorOptions"
+              :reset-key="selectionKey"
+              title="选择授权管理员"
+              placeholder="请选择授权管理员"
+              search-placeholder="搜索管理员姓名"
+              @selection="privateOnAdministratorSelection"
             />
-            <el-form-item label="授权管理员" required class="mt-24px">
-              <div v-if="readonly">{{ administratorLabel }}</div>
+          </el-form-item>
+          <el-form-item label="允许分配的角色" required>
+            <div v-if="readonly">{{ roleSummary }}</div>
+            <biz-iam-delegation-candidate-picker
+              v-else
+              v-model="draft.allowedRoleIds"
+              :api="optionsAPI"
+              :query="{ kind: 'ROLE' }"
+              :selected-options="roleOptions"
+              :reset-key="selectionKey"
+              multiple
+              title="选择角色"
+              placeholder="请选择允许分配的角色"
+              search-placeholder="搜索角色名称"
+              @selection="privateOnRoleSelection"
+            />
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              选择当前角色。角色权限调整后，同一资源上新增的操作会跟随这次委派。
+            </span>
+          </el-form-item>
+          <el-form-item label="允许接收的成员" required>
+            <div v-if="readonly">{{ memberSummary }}</div>
+            <biz-iam-delegation-candidate-picker
+              v-else
+              v-model="draft.recipientSelection.members"
+              :api="optionsAPI"
+              :load-member-browse="loadMemberBrowse"
+              :query="{ kind: 'MEMBER', excludeMemberId: draft.administratorMemberId || undefined }"
+              :selected-options="memberOptions"
+              :reset-key="selectionKey"
+              multiple
+              title="选择允许接收的成员"
+              placeholder="请选择允许接收的成员"
+              search-placeholder="搜索成员姓名"
+              @selection="privateOnMemberSelection"
+            />
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              只能把允许的角色分配给这些成员或下面的部门，不能分配给授权管理员本人。
+            </span>
+          </el-form-item>
+          <el-form-item label="允许接收的部门">
+            <div v-if="readonly">{{ departmentSummary }}</div>
+            <template v-else>
               <biz-iam-delegation-candidate-picker
-                v-else
-                v-model="draft.administratorMemberId"
-                :api="optionsAPI"
-                :load-member-browse="loadMemberBrowse"
-                :query="{ kind: 'MEMBER' }"
-                :selected-options="administratorOptions"
-                :reset-key="selectionKey"
-                title="选择授权管理员"
-                placeholder="请选择授权管理员"
-                search-placeholder="搜索管理员姓名"
-                @selection="privateOnAdministratorSelection"
-              />
-            </el-form-item>
-            <el-form-item label="允许分配的角色" required>
-              <div v-if="readonly">{{ roleSummary }}</div>
-              <biz-iam-delegation-candidate-picker
-                v-else
-                v-model="draft.allowedRoleIds"
-                :api="optionsAPI"
-                :query="{ kind: 'ROLE' }"
-                :selected-options="roleOptions"
+                v-model="departmentIds"
+                :api="departmentCandidates"
+                :query="{ kind: 'OBJECT' }"
+                :selected-options="departmentOptions"
                 :reset-key="selectionKey"
                 multiple
-                title="选择角色"
-                placeholder="请选择允许分配的角色"
-                search-placeholder="搜索角色名称"
-                @selection="privateOnRoleSelection"
+                title="选择允许接收的部门"
+                placeholder="请选择允许接收的部门"
+                search-placeholder="搜索部门名称"
+                @selection="privateOnDepartmentSelection"
               />
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                选择当前角色。角色权限调整后，同一资源上新增的操作会跟随这次委派。
-              </span>
-            </el-form-item>
-            <el-form-item label="允许接收的成员" required>
-              <div v-if="readonly">{{ memberSummary }}</div>
-              <biz-iam-delegation-candidate-picker
-                v-else
-                v-model="draft.recipientSelection.members"
-                :api="optionsAPI"
-                :load-member-browse="loadMemberBrowse"
-                :query="{ kind: 'MEMBER', excludeMemberId: draft.administratorMemberId || undefined }"
-                :selected-options="memberOptions"
-                :reset-key="selectionKey"
-                multiple
-                title="选择允许接收的成员"
-                placeholder="请选择允许接收的成员"
-                search-placeholder="搜索成员姓名"
-                @selection="privateOnMemberSelection"
-              />
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                只能把允许的角色分配给这些成员或下面的部门，不能分配给授权管理员本人。
-              </span>
-            </el-form-item>
-            <el-form-item label="允许接收的部门">
-              <div v-if="readonly">{{ departmentSummary }}</div>
-              <template v-else>
-                <biz-iam-delegation-candidate-picker
-                  v-model="departmentIds"
-                  :api="departmentCandidates"
-                  :query="{ kind: 'OBJECT' }"
-                  :selected-options="departmentOptions"
-                  :reset-key="selectionKey"
-                  multiple
-                  title="选择允许接收的部门"
-                  placeholder="请选择允许接收的部门"
-                  search-placeholder="搜索部门名称"
-                  @selection="privateOnDepartmentSelection"
-                />
-                <el-checkbox
-                  v-for="department in draft.recipientSelection.departments"
-                  :key="department.id"
-                  v-model="department.includeDescendants"
-                >
-                  {{ departmentNames[department.id] || department.id }} 含下级
-                </el-checkbox>
-              </template>
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                成员和部门至少选择一类。勾选含下级后，该部门的下级部门也在接收范围内。
-              </span>
-            </el-form-item>
-            <el-form-item label="委派生效与失效时间（可选）">
-              <div v-if="readonly">
-                {{ formatDateTime(draft.validFrom, { fallback: "立即生效" }) }} 至
-                {{ formatDateTime(draft.validUntil, { fallback: "长期有效" }) }}
-              </div>
-              <biz-iam-duration-fields
-                v-else
-                v-model:valid-from="draft.validFrom"
-                v-model:valid-until="draft.validUntil"
-              />
-              <span class="text-12px text-[var(--el-text-color-secondary)]">
-                留空分别表示立即生效、长期有效。
-              </span>
-            </el-form-item>
-            <el-form-item label="单次分配最长时间" required>
-              <div v-if="readonly">{{ formatDuration(draft.maxAssignmentDuration) }}</div>
-              <biz-iam-duration-fields
-                v-else
-                v-model:max-assignment-duration="duration"
-                :show-validity="false"
-                show-max-duration
-              />
-              <span class="block w-full text-12px text-[var(--el-text-color-secondary)]">
-                每次分配都必须设置失效时间，并且不能超过这段时长。委派到期或撤销后，已经发出的授权也会失效。
-              </span>
-            </el-form-item>
-          </in-form>
-          <div v-else-if="step === 1" class="max-w-720px flex flex-col gap-16px">
-            <div class="text-12px text-[var(--el-text-color-secondary)]">
-              以下是所选角色的当前权限，全部进入委派，不能在此移除。
-            </div>
-            <div v-if="roleLoadFailed" class="flex items-center gap-8px">
-              <span class="text-12px text-[var(--el-color-warning)]">角色权限加载失败</span>
-              <in-button link type="primary" @in-click="privateRoles">重新加载</in-button>
-            </div>
-            <biz-iam-delegation-operation-tree :actions="operationActions" />
-          </div>
-          <div v-else-if="step === 2" class="h-full min-h-0 overflow-auto flex flex-col gap-16px">
-            <div class="text-12px text-[var(--el-text-color-secondary)] max-w-720px">
-              按资源设置数据范围上限。同一资源下的操作共用这一上限；之后在同一资源新增的操作会跟随，新资源需要重新配置。
-            </div>
-            <div
-              v-for="group in resourceGroups"
-              :key="group.name"
-              class="max-w-720px flex flex-col gap-12px"
-            >
-              <div>{{ group.name }}</div>
-              <div
-                v-for="resource in group.resources"
-                :key="resource.id"
-                class="rounded-4px p-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px"
+              <el-checkbox
+                v-for="department in draft.recipientSelection.departments"
+                :key="department.id"
+                v-model="department.includeDescendants"
               >
-                <div>{{ resource.name }}</div>
-                <div v-if="readonly">{{ ceilingLabel(resource.id) }}</div>
-                <template v-else>
-                  <el-select
-                    class="w-320px max-w-full"
-                    :model-value="ceilingOf(resource.id)?.scopes[0]?.kind"
-                    placeholder="请选择资源上限"
-                    @change="(kind: ScopeKind) => privateScope(resource.id, kind)"
-                  >
-                    <el-option
-                      v-for="kind in resource.capabilities"
-                      :key="kind"
-                      :label="formatScopeKinds([kind])"
-                      :value="kind"
-                    />
-                  </el-select>
-                  <el-checkbox
-                    v-if="descendantsToggle(resource.id)"
-                    :model-value="!!ceilingOf(resource.id)?.scopes[0]?.includeDescendants"
-                    @change="(value) => privateDescendants(resource.id, value === true)"
-                  >
-                    含下级
-                  </el-checkbox>
-                  <biz-iam-delegation-candidate-picker
-                    v-if="needsScopeBinding(ceilingOf(resource.id)?.scopes[0]?.kind)"
-                    class="w-320px max-w-full"
-                    :model-value="bindingIds(resource.id)"
-                    :api="scopeAPIOf(resource.id)"
-                    :query="{
-                      kind: 'OBJECT',
-                      parameterKey: ceilingOf(resource.id)?.scopes[0]?.parameterKey,
-                    }"
-                    multiple
-                    title="配置委派范围"
-                    placeholder="请选择资源范围上限"
-                    search-placeholder="搜索对象"
-                    @update:model-value="(value) => privateBinding(resource.id, value)"
-                  />
-                </template>
-              </div>
+                {{ departmentNames[department.id] || department.id }} 含下级
+              </el-checkbox>
+            </template>
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              成员和部门至少选择一类。勾选含下级后，该部门的下级部门也在接收范围内。
+            </span>
+          </el-form-item>
+          <el-form-item label="委派生效与失效时间（可选）">
+            <div v-if="readonly">
+              {{ formatDateTime(draft.validFrom, { fallback: "立即生效" }) }} 至
+              {{ formatDateTime(draft.validUntil, { fallback: "长期有效" }) }}
             </div>
+            <biz-iam-duration-fields
+              v-else
+              v-model:valid-from="draft.validFrom"
+              v-model:valid-until="draft.validUntil"
+            />
+            <span class="text-12px text-[var(--el-text-color-secondary)]">
+              留空分别表示立即生效、长期有效。
+            </span>
+          </el-form-item>
+          <el-form-item label="单次分配最长时间" required>
+            <div v-if="readonly">{{ formatDuration(draft.maxAssignmentDuration) }}</div>
+            <biz-iam-duration-fields
+              v-else
+              v-model:max-assignment-duration="duration"
+              :show-validity="false"
+              show-max-duration
+            />
+            <span class="block w-full text-12px text-[var(--el-text-color-secondary)]">
+              每次分配都必须设置失效时间，并且不能超过这段时长。委派到期或撤销后，已经发出的授权也会失效。
+            </span>
+          </el-form-item>
+        </in-form>
+        <div v-else-if="step === 1" class="max-w-720px flex flex-col gap-16px">
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            以下是所选角色的当前权限，全部进入委派，不能在此移除。
           </div>
-          <div v-else class="max-w-720px flex flex-col gap-20px">
-            <div class="flex flex-col gap-8px">
-              <div>授权管理员：{{ administratorLabel }}</div>
-              <div>允许分配的角色：{{ roleSummary }}</div>
-              <div>允许接收的成员：{{ memberSummary }}</div>
-              <div>允许接收的部门：{{ departmentSummary }}</div>
-              <div>
-                委派有效期：{{ formatDateTime(draft.validFrom, { fallback: "立即生效" }) }} 至
-                {{ formatDateTime(draft.validUntil, { fallback: "长期有效" }) }}
-              </div>
-              <div>单次分配最长时间：{{ formatDuration(draft.maxAssignmentDuration) }}</div>
-            </div>
-            <div class="text-12px text-[var(--el-text-color-secondary)]">
-              {{
-                readonly
-                  ? "以下为当前委派配置，不会因此增加管理员的业务权限。"
-                  : record
-                    ? "请先预览委派影响；预览通过后才能保存。委派不会直接增加管理员的业务权限。"
-                    : "核对以上配置后保存。新建委派在保存时校验，不会直接增加管理员的业务权限。"
-              }}
-            </div>
-            <div>
-              <div class="mb-8px">资源范围上限（{{ readyCeilings }} / {{ resources.length }}）</div>
-              <div class="rounded-4px px-16px py-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px">
-                <div v-for="resource in resources" :key="resource.id">
-                  {{ resource.applicationName }} / {{ resource.name }}：{{ ceilingLabel(resource.id) }}
-                </div>
-                <div v-if="!resources.length" class="text-12px text-[var(--el-text-color-secondary)]">
-                  暂无资源
-                </div>
-              </div>
-            </div>
-            <biz-iam-preview-alert v-if="record" :preview="previewState.preview.value" />
+          <div v-if="roleLoadFailed" class="flex items-center gap-8px">
+            <span class="text-12px text-[var(--el-color-warning)]">角色权限加载失败</span>
+            <in-button link type="primary" @in-click="privateRoles">重新加载</in-button>
+          </div>
+          <biz-iam-delegation-operation-tree :actions="operationActions" />
+        </div>
+        <div v-else-if="step === 2" class="h-full min-h-0 overflow-auto flex flex-col gap-16px">
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            按资源设置数据范围上限。同一资源下的操作共用这一上限；之后在同一资源新增的操作会跟随，新资源需要重新配置。
+          </div>
+          <div
+            v-for="group in resourceGroups"
+            :key="group.name"
+            class="max-w-720px flex flex-col gap-12px"
+          >
+            <div>{{ group.name }}</div>
             <div
-              v-if="previewState.preview.value?.effectiveResult?.affectedAssignmentIds.length"
-              class="text-[var(--el-text-color-secondary)]"
+              v-for="resource in group.resources"
+              :key="resource.id"
+              class="rounded-4px p-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px"
             >
-              受影响分配：{{
-                previewState.preview.value.effectiveResult.affectedAssignmentIds.join("、")
-              }}
+              <div>{{ resource.name }}</div>
+              <div v-if="readonly">{{ ceilingLabel(resource.id) }}</div>
+              <template v-else>
+                <el-select
+                  class="w-320px max-w-full"
+                  :model-value="ceilingOf(resource.id)?.scopes[0]?.kind"
+                  placeholder="请选择资源上限"
+                  @change="(kind: ScopeKind) => privateScope(resource.id, kind)"
+                >
+                  <el-option
+                    v-for="kind in resource.capabilities"
+                    :key="kind"
+                    :label="formatScopeKinds([kind])"
+                    :value="kind"
+                  />
+                </el-select>
+                <el-checkbox
+                  v-if="descendantsToggle(resource.id)"
+                  :model-value="!!ceilingOf(resource.id)?.scopes[0]?.includeDescendants"
+                  @change="(value) => privateDescendants(resource.id, value === true)"
+                >
+                  含下级
+                </el-checkbox>
+                <biz-iam-delegation-candidate-picker
+                  v-if="needsScopeBinding(ceilingOf(resource.id)?.scopes[0]?.kind)"
+                  class="w-320px max-w-full"
+                  :model-value="bindingIds(resource.id)"
+                  :api="scopeAPIOf(resource.id)"
+                  :query="{
+                    kind: 'OBJECT',
+                    parameterKey: ceilingOf(resource.id)?.scopes[0]?.parameterKey,
+                  }"
+                  multiple
+                  title="配置委派范围"
+                  placeholder="请选择资源范围上限"
+                  search-placeholder="搜索对象"
+                  @update:model-value="(value) => privateBinding(resource.id, value)"
+                />
+              </template>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+        <div v-else class="max-w-720px flex flex-col gap-20px">
+          <div class="flex flex-col gap-8px">
+            <div>授权管理员：{{ administratorLabel }}</div>
+            <div>允许分配的角色：{{ roleSummary }}</div>
+            <div>允许接收的成员：{{ memberSummary }}</div>
+            <div>允许接收的部门：{{ departmentSummary }}</div>
+            <div>
+              委派有效期：{{ formatDateTime(draft.validFrom, { fallback: "立即生效" }) }} 至
+              {{ formatDateTime(draft.validUntil, { fallback: "长期有效" }) }}
+            </div>
+            <div>单次分配最长时间：{{ formatDuration(draft.maxAssignmentDuration) }}</div>
+          </div>
+          <div class="text-12px text-[var(--el-text-color-secondary)]">
+            {{
+              readonly
+                ? "以下为当前委派配置，不会因此增加管理员的业务权限。"
+                : record
+                  ? "请先预览委派影响；预览通过后才能保存。委派不会直接增加管理员的业务权限。"
+                  : "核对以上配置后保存。新建委派在保存时校验，不会直接增加管理员的业务权限。"
+            }}
+          </div>
+          <div>
+            <div class="mb-8px">资源范围上限（{{ readyCeilings }} / {{ resources.length }}）</div>
+            <div
+              class="rounded-4px px-16px py-16px bg-[var(--in-permission-panel-bg)] flex flex-col gap-8px"
+            >
+              <div v-for="resource in resources" :key="resource.id">
+                {{ resource.applicationName }} / {{ resource.name }}：{{
+                  ceilingLabel(resource.id)
+                }}
+              </div>
+              <div v-if="!resources.length" class="text-12px text-[var(--el-text-color-secondary)]">
+                暂无资源
+              </div>
+            </div>
+          </div>
+          <biz-iam-preview-alert v-if="record" :preview="previewState.preview.value" />
+          <div
+            v-if="previewState.preview.value?.effectiveResult?.affectedAssignmentIds.length"
+            class="text-[var(--el-text-color-secondary)]"
+          >
+            受影响分配：{{
+              previewState.preview.value.effectiveResult.affectedAssignmentIds.join("、")
+            }}
+          </div>
+        </div>
+      </div>
+    </template>
     <template #footer>
       <in-button @in-click="privateClose">关闭</in-button>
       <in-button v-if="record && !readonly" :loading="loading" @in-click="reloadVersion">
@@ -267,7 +264,7 @@
         {{ record ? "保存" : "创建委派" }}
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 <script setup lang="ts">
 import { formatDateTime } from "@ingot/shared";
@@ -279,6 +276,7 @@ import {
 } from "../organizationMemberPicker";
 import { ref, computed, watch, toRaw } from "vue";
 import {
+  InWizard,
   refreshSessionPermissions,
   useCapabilities,
   objectActionAllowed,
@@ -310,7 +308,6 @@ import BizIamDelegationCandidatePicker from "../BizIamDelegationCandidatePicker.
 import BizIamDelegationOperationTree from "../BizIamDelegationOperationTree.vue";
 import BizIamDurationFields from "../BizIamDurationFields.vue";
 import BizIamPreviewAlert from "../BizIamPreviewAlert.vue";
-import BizIamWizardNav from "../BizIamWizardNav.vue";
 import { iamEditorFailure } from "../../hooks/iamEditorFailure";
 import { useIamDraftPreview } from "../../hooks/useIamDraftPreview";
 import { delegationPeriodError } from "../../models/iam/delegationPeriod";
@@ -359,7 +356,8 @@ const selectionKey = computed(() => `${openingKey.value}:${contextEpoch.value}`)
 const readonly = computed(() => {
   if (mode.value === "detail") return true;
   if (mode.value === "create") return !hasAction(IamAction.TENANT_DELEGATION_CREATE);
-  return !objectActionAllowed(record.value?.capabilities, IamAction.TENANT_DELEGATION_UPDATE).allowed;
+  return !objectActionAllowed(record.value?.capabilities, IamAction.TENANT_DELEGATION_UPDATE)
+    .allowed;
 });
 const title = computed(() =>
   mode.value === "create" ? "创建委派" : readonly.value ? "委派详情" : "编辑委派",
@@ -435,7 +433,11 @@ const departmentOptions = computed(() =>
   })),
 );
 const administratorLabel = computed(
-  () => administratorName.value || record.value?.record.administratorName || draft.value.administratorMemberId || "未选择",
+  () =>
+    administratorName.value ||
+    record.value?.record.administratorName ||
+    draft.value.administratorMemberId ||
+    "未选择",
 );
 const roleSummary = computed(() => namedList(draft.value.allowedRoleIds, roleNames.value));
 const memberSummary = computed(() =>
@@ -468,7 +470,10 @@ const operationActions = computed<AuthorizationActionOption[]>(() => [
   ).values(),
 ]);
 const resources = computed(() => {
-  const seen = new Map<string, { id: string; name: string; applicationName: string; capabilities: ScopeKind[] }>();
+  const seen = new Map<
+    string,
+    { id: string; name: string; applicationName: string; capabilities: ScopeKind[] }
+  >();
   for (const action of actions.value) {
     if (!seen.has(action.resourceId)) {
       seen.set(action.resourceId, {
@@ -535,7 +540,8 @@ const scopeParameter = (resourceId: string, kind: ScopeKind): CurrentRoleParamet
 const ceilingReady = (ceiling: ResourceScopeCeiling): boolean => {
   const scope = ceiling.scopes[0];
   if (!scope) return false;
-  if (scope.kind !== ScopeKind.OBJECT_SET && scope.kind !== ScopeKind.MANAGED_DEPARTMENTS) return true;
+  if (scope.kind !== ScopeKind.OBJECT_SET && scope.kind !== ScopeKind.MANAGED_DEPARTMENTS)
+    return true;
   const key = scope.parameterKey;
   return !!key && (ceiling.scopeBindings[key]?.ids.length ?? 0) > 0;
 };
@@ -642,9 +648,7 @@ const privateScope = (resourceId: string, kind: ScopeKind): void => {
   if (!ceiling) return;
   const parameter = scopeParameter(resourceId, kind);
   ceiling.scopes = [{ kind, ...(parameter ? { parameterKey: parameter.key } : {}) }];
-  ceiling.scopeBindings = parameter
-    ? { [parameter.key]: { kind: parameter.kind, ids: [] } }
-    : {};
+  ceiling.scopeBindings = parameter ? { [parameter.key]: { kind: parameter.kind, ids: [] } } : {};
 };
 const privateDescendants = (resourceId: string, value: boolean): void => {
   const scope = ceilingOf(resourceId)?.scopes[0];
@@ -793,7 +797,11 @@ const reloadVersion = async (): Promise<void> => {
   try {
     const response = await props.apis.detailAPI(record.value.record.id);
     if (current !== epoch || !record.value) return;
-    record.value = { ...record.value, version: response.data.version, capabilities: response.data.capabilities };
+    record.value = {
+      ...record.value,
+      version: response.data.version,
+      capabilities: response.data.capabilities,
+    };
     previewState.bumpDraft();
     Message.success("已刷新记录，草稿已保留，请重新预览");
   } catch (error) {
@@ -823,7 +831,9 @@ const privateSave = async (): Promise<void> => {
   if (readonly.value || saving.value || unavailable.value) return;
   if (record.value && previewState.preview.value?.valid !== true) return;
   if (
-    !hasAction(record.value ? IamAction.TENANT_DELEGATION_UPDATE : IamAction.TENANT_DELEGATION_CREATE)
+    !hasAction(
+      record.value ? IamAction.TENANT_DELEGATION_UPDATE : IamAction.TENANT_DELEGATION_CREATE,
+    )
   )
     return;
   const issue = delegationPeriodError(
@@ -902,10 +912,3 @@ const show = async (
 };
 defineExpose({ show });
 </script>
-<style lang="postcss" scoped>
-@media (max-width: 700px) {
-  .delegation-wizard-content {
-    padding: 16px;
-  }
-}
-</style>

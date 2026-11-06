@@ -1,44 +1,42 @@
 <template>
-  <in-drawer
+  <InWizard
     v-model="visible"
     title="编辑应用开通"
-    size="100%"
-    layout="pinned"
-    padding="0"
-    close-position="start"
     :loading="saving"
     :before-close="privateOnBeforeClose"
+    :steps="ENTITLEMENT_WIZARD_STEPS"
+    :current="step"
   >
-    <div class="in-wizard-frame flex h-full min-h-0">
-      <wizard-nav :steps="ENTITLEMENT_WIZARD_STEPS" :current="step" />
-      <section class="flex-1 min-w-0 min-h-0 flex flex-col px-48px py-24px">
-        <div class="mb-24px text-18px shrink-0">{{ ENTITLEMENT_WIZARD_STEPS[step].title }}</div>
-        <div class="flex-1 min-h-0 overflow-auto">
-          <entitlement-draft-panel
-            v-if="panelReady"
-            v-show="step === 0"
-            ref="panelRef"
-            :resolve-union="resolveEditUnion"
-          />
-          <div v-if="step === 1" class="flex flex-col gap-16px">
-            <entitlement-preview :items="previewItems" />
-            <biz-iam-preview-alert :preview="preview" />
-          </div>
-        </div>
-      </section>
+    <entitlement-draft-panel
+      v-if="panelReady"
+      v-show="step === 0"
+      ref="panelRef"
+      :resolve-union="resolveEditUnion"
+    />
+    <div v-if="step === 1" class="flex flex-col gap-16px">
+      <entitlement-preview :items="previewItems" />
+      <biz-iam-preview-alert :preview="preview" />
     </div>
     <template #footer>
       <in-button v-if="step > 0" @in-click="privateBack">上一步</in-button>
-      <in-button v-if="step < 1" type="primary" :loading="previewing" @in-click="privateNext">下一步</in-button>
-      <in-button v-else type="primary" :loading="saving" :disabled="!preview?.valid" @in-click="privateSubmit">
+      <in-button v-if="step < 1" type="primary" :loading="previewing" @in-click="privateNext"
+        >下一步</in-button
+      >
+      <in-button
+        v-else
+        type="primary"
+        :loading="saving"
+        :disabled="!preview?.valid"
+        @in-click="privateSubmit"
+      >
         保存开通
       </in-button>
     </template>
-  </in-drawer>
+  </InWizard>
 </template>
 
 <script setup lang="ts">
-import { confirmUnsavedChanges, Message } from "@ingot/admin-core";
+import { InWizard, confirmUnsavedChanges, Message } from "@ingot/admin-core";
 import {
   BizIamPreviewAlert,
   type EntitlementDraft,
@@ -50,10 +48,14 @@ import {
   PlatformTenantEntitlementsPreviewAPI,
   PlatformTenantEntitlementsReplaceAPI,
 } from "@/api/iam/tenants";
-import WizardNav from "../../shared-roles/components/WizardNav.vue";
 import EntitlementDraftPanel from "./EntitlementDraftPanel.vue";
 import EntitlementPreview from "./EntitlementPreview.vue";
-import { ENTITLEMENT_WIZARD_STEPS, extraSelectOptionsOf, toPreviewItems, type EntitlementItem } from "../wizard";
+import {
+  ENTITLEMENT_WIZARD_STEPS,
+  extraSelectOptionsOf,
+  toPreviewItems,
+  type EntitlementItem,
+} from "../wizard";
 
 defineOptions({ name: "EntitlementEditWizard" });
 
