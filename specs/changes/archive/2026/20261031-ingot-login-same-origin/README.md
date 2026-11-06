@@ -31,7 +31,7 @@
 
 - [当前密码登录行为](../../../../current/ingot-login/password-login/spec.md)：保留“先提交、412 全局挑战”，改变宿主、事务准备和成功状态。
 - [IAM 主变更](../../../active/20260913-base-iam-admin/README.md)：现有四站 BFF 历史与其他 IAM 任务保持，不将新目标冒充已实施事实；本 change 完成后接管其登录部署条款。
-- [登录外观变更](../../../active/20261030-ingot-login-appearance/README.md)：复用其 Logo、表单、主题配置、响应式与挑战反馈，不撤销已有视觉成果；该 change 的剩余用户验收不自动完成。
+- [登录外观变更](../20261030-ingot-login-appearance/README.md)：复用其 Logo、表单、主题配置、响应式与挑战反馈，不撤销已有视觉成果；该 change 的剩余用户验收不自动完成。
 - apps/admin 与 apps/admin-platform 仍是 composition root，auth-plugin 不复制业务到宿主，不与其他业务插件互相依赖。
 
 ## 范围与限制

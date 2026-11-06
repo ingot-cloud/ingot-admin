@@ -11,3 +11,5 @@
 - [公共挑战](../../common/gateway-challenge/spec.md)、[网络身份约束](../../packages/network-query/spec.md)。
 
 变更来源：20260827-security-challenge-verification 保留412设计；20261031-ingot-login-same-origin 接管当前宿主、事务、恢复及退出。独立视觉细项继续由外观 change 跟踪。
+
+- [登录页视觉与配色验收](../../../changes/archive/2026/20261030-ingot-login-appearance/README.md)

@@ -18,7 +18,7 @@
 
 ## 输入与职责
 
-2026-10-14 新增 [组织角色即时授权与拥有者交互](../20261014-org-tenant-live-authorization/README.md)（validating），关联后端同名租户授权变更（validating）。用户评审批准实施，开发及隔离验证完成；新变更接管租户版本/差异/升级、共享当前权限、资源委派及租户刷新。主变更implementing状态、其他任务与历史证据保持；完整产品人工验收及current更新待确认。旧接口副本不覆盖新变更权威副本。
+2026-11-06 [组织即时授权](../../archive/2026/20261014-org-tenant-live-authorization/README.md)完成产品验收并归档，接管租户与共享角色当前权限、资源委派、拥有者和权限刷新。主变更其他范围继续维护。
 
 2026-10-17 [成员与部门子页面](../../archive/2026/20261017-org-members-dept-tabs/README.md)（completed）接管 UI03 页面布局：组织管理下「成员与部门」目录再拆成员/部门两个子页面，交互对齐 contacts/user 与 contacts/dept。成员导出、字段可见性、capabilities 与部门 CRUD 契约仍由本变更维护。后端人数字段见已归档 `20261017-iam-department-member-count`。菜单种子与已有库迁移见 ingot `023_tenant_members_departments_menus.sql`。
 

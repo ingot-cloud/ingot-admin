@@ -35,3 +35,5 @@
 | 2026-09-08 | [20260908-packages-admin-theme](../../../changes/archive/2026/20260908-packages-admin-theme/)                           | 主题协议、默认主题、布局宿主、create-app 接入与独立主题示例                            |
 | 2026-10-13 | [20261010-packages-unified-tags](../../../changes/archive/2026/20261010-packages-unified-tags/) | 统一标签 Token、保留状态别名并补齐权限面板登记 |
 | 2026-10-13 | [20261012-common-centered-form-layout](../../../changes/archive/2026/20261012-common-centered-form-layout/) | 公开可覆盖的表单正文最大宽度 Token；用户验收完成 |
+
+- [工作台及管理台默认偏好验收](../../../changes/archive/2026/20261030-org-tenant-workbench/README.md)

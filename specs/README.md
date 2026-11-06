@@ -233,11 +233,21 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 - [安全中心页面交互与布局](./changes/archive/2026/20261012-security-page-interactions/README.md)（completed，2026-10-13 用户确认验证完成并归档）；[当前能力](./current/security/credential-policies/README.md)
 
+## 2026-11-06 产品验收归档
+
+- [组织即时授权与拥有者交互](./changes/archive/2026/20261014-org-tenant-live-authorization/README.md) · [当前能力](./current/org/tenant-live-authorization/README.md)
+- [勾选框、单选框与树展开规范](./changes/archive/2026/20261021-choice-controls/README.md) · [当前能力](./current/packages/admin-ui-foundation/README.md)
+- [组织用户组工作区](./changes/archive/2026/20261021-org-group-workspace/README.md) · [当前能力](./current/org/group-workspace/README.md)
+- [组织设置与所有者转交验密](./changes/archive/2026/20261021-org-settings-profile/README.md) · [当前能力](./current/org/settings/README.md)
+- [统一标签录入框](./changes/archive/2026/20261021-selection-field/README.md) · [当前能力](./current/packages/admin-ui-foundation/README.md)
+- [组织角色与授权工作区](./changes/archive/2026/20261022-org-role-workspace/README.md) · [当前能力](./current/org/tenant-live-authorization/README.md)
+- [普通通讯录下线](./changes/archive/2026/20261024-org-remove-directory-browse/README.md) · [当前能力](./current/org/field-policy/README.md)
+- [按资源配置字段策略](./changes/archive/2026/20261027-org-field-policy/README.md) · [当前能力](./current/org/field-policy/README.md)
+- [双入口登录页外观](./changes/archive/2026/20261030-ingot-login-appearance/README.md) · [当前能力](./current/ingot-login/password-login/README.md)
+- [租户工作台](./changes/archive/2026/20261030-org-tenant-workbench/README.md) · [当前能力](./current/org/tenant-workbench/README.md)
+
 ## 当前活动变更
 
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
-- [平台与租户登录页视觉统一](./changes/active/20261030-ingot-login-appearance/README.md)（validating；开发与定向静态/构建检查完成，页面与流程测试由用户执行）
-- [租户工作台统计、快捷入口与待办占位](./changes/active/20261030-org-tenant-workbench/README.md)（validating；功能与自动化验证完成，待用户自行测试验收）
 - [授权审计游标分页与可读展示](./changes/active/20261024-base-authorization-audit-readable/README.md)（implementing；2026-10-24 用户确认开工）
-- [组织角色即时授权与拥有者交互](./changes/active/20261014-org-tenant-live-authorization/README.md)（validating；2026-10-14 开发与隔离验证完成，待用户产品验收，2026-10-19已登记本地提交）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。

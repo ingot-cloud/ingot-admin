@@ -37,3 +37,6 @@
 | 2026-10-13 | [20261010-packages-unified-tags](../../../changes/archive/2026/20261010-packages-unified-tags/) | 统一通用/状态标签的外观与兼容调用 |
 | 2026-10-13 | [20261012-common-centered-form-layout](../../../changes/archive/2026/20261012-common-centered-form-layout/) | 共享 InFormContent 与默认 840px 正文 Token |
 | 2026-10-13 | [20261012-security-access-table-refinement](../../../changes/archive/2026/20261012-security-access-table-refinement/) | 消除单元格重复横向留白并正常终止确认取消；用户验收完成 |
+
+- [勾选框与树展开验收](../../../changes/archive/2026/20261021-choice-controls/README.md)
+- [统一标签录入框验收](../../../changes/archive/2026/20261021-selection-field/README.md)

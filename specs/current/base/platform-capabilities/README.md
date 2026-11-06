@@ -2,14 +2,14 @@
 
 ## 概述
 
-平台治理承载字典等系统设置，安全中心作为独立平台应用。成员访问策略归 org，平台和组织授权审计各有包装页，复用无路由的公共审计组件。
+平台治理承载字典等系统设置，安全中心作为独立平台应用。字段策略归 org，平台和组织授权审计各有包装页，复用无路由的公共审计组件。
 
 ## 相关源码
 
 - [字典管理](../../../../plugins/platform/src/pages/settings/dictionaries)
 - [平台授权审计](../../../../plugins/platform/src/pages/iam/authorization-audit)
 - [组织授权审计](../../../../plugins/org/src/pages/iam/authorization-audit)
-- [成员访问策略](../../../../plugins/org/src/pages/iam/member-policies)
+- [组织资源字段策略](../../org/field-policy/README.md)
 - [公共授权审计](../../../../packages/admin-common/src/components/authorization-audit)
 - [安全中心](../../../../plugins/security/src/pages)
 - [页面注册约定](../../../../docs/menu-view-path.md)
@@ -23,3 +23,4 @@
 | 日期 | 变更 ID | 说明 |
 | --- | --- | --- |
 | 2026-10-13 | [20261012-iam-platform-capability-completion](../../../changes/archive/2026/20261012-iam-platform-capability-completion/) | 用户确认验证完成；固化八页入口、插件归属与精确权限并归档 |
+| 2026-11-06 | [20261024-org-remove-directory-browse](../../../changes/archive/2026/20261024-org-remove-directory-browse/README.md) · [20261027-org-field-policy](../../../changes/archive/2026/20261027-org-field-policy/README.md) | 普通通讯录退出，组织字段策略按资源配置 |
