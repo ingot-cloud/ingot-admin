@@ -3,7 +3,6 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
 import { SecurityAction } from "@/models/securityActions";
-import { SESSION_POLICY_UPDATE_PERMISSION } from "./constants";
 
 vi.mock("@/models/enums/sessionEnums", () => ({
   SessionConcurrencyScopeEnum: { GLOBAL: "GLOBAL", CLIENT: "CLIENT", USER_TYPE: "USER_TYPE" },
@@ -31,7 +30,7 @@ describe("security sessions policy table contract", () => {
     expect(panelSource).not.toContain("#toolbar");
   });
 
-  it("工具栏新建策略始终直出并带更新权限", () => {
+  it("工具栏新建策略始终直出并带创建权限", () => {
     const actions = createConcurrencyPolicyToolbarActions(() => undefined);
     expect(actions).toEqual([
       expect.objectContaining({
@@ -40,7 +39,7 @@ describe("security sessions policy table contract", () => {
         kind: "quick",
         icon: "ep:plus",
         overflow: "never",
-        permission: SESSION_POLICY_UPDATE_PERMISSION,
+        permission: SecurityAction.CONCURRENCY_CREATE,
       }),
     ]);
   });

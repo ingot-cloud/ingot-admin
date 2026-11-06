@@ -12,18 +12,20 @@ import {
 import { Confirm, Message, useCapabilities, useServerPaging } from "@ingot/admin-core";
 import { PlatformGroupUpdateAPI } from "@/api/iam/personnel";
 import { PlatformGroupMemberPageQueryOptions, PlatformGroupPageQueryOptions } from "@/api/iam/personnel.query";
+import type { Ref } from "vue";
 import type { GroupRow } from "./groupTable";
 
-export const useGroupOps = () => {
-  const { unavailable } = useCapabilities();
-  const enabled = () => !unavailable.value;
+export const useGroupOps = (active: Ref<boolean>) => {
+  const { unavailable, hasAction } = useCapabilities();
+  const enabled = () => active.value && !unavailable.value && hasAction(IamAction.PLATFORM_GROUP_READ);
+  const canReadMembers = () => hasAction(IamAction.PLATFORM_MEMBER_READ);
   const groupPaging = useServerPaging<ResourceDetail<GroupRecord>, IamListQuery>({
     queryOptions: PlatformGroupPageQueryOptions,
     enabled,
   });
   const memberPaging = useServerPaging<ResourceDetail<MemberRecord>, IamListQuery>({
     queryOptions: PlatformGroupMemberPageQueryOptions,
-    enabled,
+    enabled: () => enabled() && canReadMembers(),
     queryWhen: (submitted) => Boolean(submitted.groupId),
   });
   const selectedId = ref("");
@@ -34,13 +36,16 @@ export const useGroupOps = () => {
     if (!selectedDetail.value) {
       return { allowed: false, message: "请先选择用户组" };
     }
+    if (selectedDetail.value.record.selectionEditable === false) {
+      return { allowed: false, message: "当前权限只允许编辑用户组基本信息" };
+    }
     return objectActionAllowed(selectedDetail.value.capabilities, IamAction.PLATFORM_GROUP_UPDATE);
   });
   const memberIds = computed(() => selectedDetail.value?.record.selection.members ?? []);
 
   const applyMemberQuery = (groupId: string): void => {
     memberPaging.condition.groupId = groupId;
-    memberPaging.search();
+    if (enabled() && canReadMembers()) memberPaging.search();
   };
 
   const selectGroup = (row?: GroupRow): void => {

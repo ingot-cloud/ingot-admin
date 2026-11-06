@@ -1,3 +1,4 @@
+import { ImagePurpose, stageImageField, withoutLocalImage } from "@ingot/admin-core";
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
@@ -58,24 +59,24 @@ export function PlatformTenantPreviewAPI(
   options?: RequestOptions,
 ): Promise<R<Preview<TenantPreviewResult>>> {
   filterParams(params);
-  return request.post<Preview<TenantPreviewResult>>(`${PATH}/preview`, params, options);
+  return request.post<Preview<TenantPreviewResult>>(`${PATH}/preview`, withoutLocalImage(params, "avatar"), options);
 }
 
-export function PlatformTenantCreateAPI(
+export async function PlatformTenantCreateAPI(
   params: TenantCreateInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
-  return request.post<CreatedResource>(PATH, params, options);
+  return request.post<CreatedResource>(PATH, await stageImageField(params, "avatar", ImagePurpose.PLATFORM_TENANT_CREATE), options);
 }
 
-export function PlatformTenantUpdateAPI(
+export async function PlatformTenantUpdateAPI(
   id: string,
   params: TenantUpdateInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<TenantRecord>>> {
   filterParams(params);
-  return request.patch<ResourceDetail<TenantRecord>>(`${PATH}/${id}`, params, options);
+  return request.patch<ResourceDetail<TenantRecord>>(`${PATH}/${id}`, await stageImageField(params, "avatar", ImagePurpose.PLATFORM_TENANT_UPDATE, id), options);
 }
 
 export function PlatformTenantEntitlementsAPI(

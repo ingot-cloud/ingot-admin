@@ -136,6 +136,7 @@ import {
   createLoadGuard,
   useDetailEditSession,
   usePermissions,
+  useCapabilities,
 } from "@ingot/admin-core";
 import {
   collectIamPageRecords,
@@ -303,6 +304,7 @@ const loadGroups = (): void => {
   if (!id || groupsLoaded.value) {
     return;
   }
+  if (!useCapabilities().hasAction(IamAction.TENANT_GROUP_READ)) return;
   collectIamPageRecords((page) => TenantMemberGroupsAPI(id, page))
     .then((records) => {
       groupNames.value = records.map((item) => item.record.name);

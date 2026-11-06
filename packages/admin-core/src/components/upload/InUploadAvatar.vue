@@ -19,9 +19,10 @@
 </template>
 <script lang="ts" setup>
 import type { PropType } from "vue";
-import type { UploadFile, UploadFiles, UploadRequestOptions } from "element-plus";
+import type { UploadRequestOptions } from "element-plus";
 import type { UploadAPIFn } from "./types";
 import { Message } from "@/utils/message";
+import { BUSINESS_IMAGE_ACCEPT, localImagePreview } from "@/api/common/oss";
 import { Plus } from "@element-plus/icons-vue";
 
 const model = defineModel<string>();
@@ -32,11 +33,11 @@ const props = defineProps({
   },
   accept: {
     type: String,
-    default: ".jpg, .png, .jpeg",
+    default: BUSINESS_IMAGE_ACCEPT,
   },
   api: {
     type: Function as PropType<UploadAPIFn>,
-    required: true,
+    required: false,
   },
   action: {
     type: String,
@@ -67,13 +68,14 @@ watch(
   },
 );
 
-const uploadRequest = (options: UploadRequestOptions): Promise<unknown> => {
+const uploadRequest = async (options: UploadRequestOptions): Promise<unknown> => {
+  if (!props.api) return { data: { url: await localImagePreview(options.file) } };
   return props.api({
     file: options.file,
     fileName: options.file.name,
   });
 };
-const handleUploadSuccess = (res: any, file: UploadFile, fileList: UploadFiles) => {
+const handleUploadSuccess = (res: { data: { url: string } }) => {
   model.value = res.data.url;
 };
 const handleUploadError = (error: Error) => {

@@ -1,3 +1,2 @@
-export const SESSION_REVOKE_PERMISSION = "iam-platform:session:revoke";
-export const SESSION_POLICY_UPDATE_PERMISSION = "iam-platform:session-policy:update";
-export const CLIENT_QUERY_PERMISSION = "platform:develop:client:query";
+export const SESSION_REVOKE_PERMISSION = "platform-security:session:revoke";
+export const CLIENT_QUERY_PERMISSION = "platform-developer:oauth-client:read-list";

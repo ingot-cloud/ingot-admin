@@ -1,3 +1,4 @@
+import { ImagePurpose, stageImageField } from "@ingot/admin-core";
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
@@ -105,29 +106,29 @@ const secretCrypto = {
   },
 };
 
-export function TenantMemberCreateAPI(
+export async function TenantMemberCreateAPI(
   params: TenantMemberCreateInput,
   options?: RequestOptions,
 ): Promise<R<TenantMemberCreated>> {
   filterParams(params);
-  return request.post<TenantMemberCreated>(MEMBER_PATH, params, { ...options, ...secretCrypto });
+  return request.post<TenantMemberCreated>(MEMBER_PATH, await stageImageField(params, "avatar", ImagePurpose.TENANT_MEMBER_CREATE), { ...options, ...secretCrypto });
 }
 
-export function TenantMemberRejoinAPI(
+export async function TenantMemberRejoinAPI(
   id: string,
   params: TenantMemberRejoinInput,
   options?: RequestOptions,
 ): Promise<R<TenantMemberCreated>> {
   filterParams(params);
-  return request.post<TenantMemberCreated>(`${MEMBER_PATH}/${id}/rejoin`, params, options);
+  return request.post<TenantMemberCreated>(`${MEMBER_PATH}/${id}/rejoin`, await stageImageField(params, "avatar", ImagePurpose.TENANT_MEMBER_REJOIN, id), options);
 }
 
-export function TenantMemberUpdateAPI(
+export async function TenantMemberUpdateAPI(
   id: string,
   params: MemberProfileInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
-  return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, params, options);
+  return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, await stageImageField(params, "avatar", ImagePurpose.TENANT_MEMBER_UPDATE, id), options);
 }
 
 export function TenantMemberDepartmentsAPI(
@@ -466,12 +467,12 @@ export function TenantSettingsAPI(
   return request.get(`${SETTINGS_PATH}`, undefined, options);
 }
 
-export function TenantSettingsUpdateAPI(
+export async function TenantSettingsUpdateAPI(
   params: TenantSettingsInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<TenantRecord>>> {
   filterParams(params);
-  return request.put(`${SETTINGS_PATH}`, params, options);
+  return request.put(`${SETTINGS_PATH}`, await stageImageField(params, "avatar", ImagePurpose.TENANT_SETTINGS_UPDATE), options);
 }
 
 const transferCrypto = {

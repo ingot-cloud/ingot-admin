@@ -41,8 +41,7 @@
 </template>
 <script lang="ts" setup>
 import type { UploadRequestOptions } from "element-plus";
-import type { R, OSSResult } from "@/models";
-import { UploadAPI } from "@/api/common/oss";
+import { BUSINESS_IMAGE_ACCEPT, localImagePreview } from "@/api/common/oss";
 import { Message } from "@/utils/message";
 import InAvatar from "../avatar/InAvatar.vue";
 import IconCamera from "../icons/IconCamera.vue";
@@ -63,7 +62,7 @@ const props = withDefaults(
     accept?: string;
   }>(),
   {
-    accept: ".jpg, .png, .jpeg",
+    accept: BUSINESS_IMAGE_ACCEPT,
     showAvatar: true,
   },
 );
@@ -76,15 +75,11 @@ const slots = defineSlots<{
 
 const displaySrc = computed(() => avatarModel.value || props.src || "");
 
-const privateUploadRequest = (options: UploadRequestOptions): Promise<R<OSSResult>> => {
-  const fileName = props.uploadDir ? `${props.uploadDir}/${options.file.name}` : options.file.name;
-  return UploadAPI({
-    file: options.file,
-    fileName,
-  });
-};
+const privateUploadRequest = async (options: UploadRequestOptions): Promise<{ data: { url: string } }> => ({
+  data: { url: await localImagePreview(options.file) },
+});
 
-const privateOnUploadSuccess = (res: R<OSSResult>): void => {
+const privateOnUploadSuccess = (res: { data: { url: string } }): void => {
   const url = res.data?.url;
   if (!url) {
     return;

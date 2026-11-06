@@ -1,6 +1,9 @@
 <template>
   <biz-iam-group-wizard
     ref="inner"
+    :preview-action="IamAction.TENANT_GROUP_PREVIEW"
+    :allow-preview="hasAction(IamAction.TENANT_GROUP_PREVIEW)"
+    :allow-member-selection="hasAction(IamAction.TENANT_MEMBER_READ)"
     allow-departments
     organization
     :load-members="TenantMemberPickerLoad"
@@ -19,9 +22,11 @@
 </template>
 
 <script setup lang="ts">
+import { useCapabilities } from "@ingot/admin-core";
 import type { LoadDataParams } from "@ingot/admin-core";
 import {
   BizIamGroupWizard,
+  IamAction,
   OrganizationMemberScene,
   type GroupRecord,
   type OrganizationMemberBrowseParams,
@@ -41,6 +46,7 @@ import GroupDepartmentField from "./GroupDepartmentField.vue";
 
 defineOptions({ name: "GroupWizard" });
 
+const { hasAction } = useCapabilities();
 const emits = defineEmits<{ success: [] }>();
 const inner = ref<{ show: (row?: ResourceDetail<GroupRecord>) => void }>();
 

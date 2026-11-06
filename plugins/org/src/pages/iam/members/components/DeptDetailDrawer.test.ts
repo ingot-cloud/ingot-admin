@@ -87,7 +87,7 @@ const response = () => ({
     capabilities: {
       "iam-tenant:department:read": { allowed: true },
       "iam-tenant:department:update": { allowed: state.profile },
-      "iam-tenant:department:leaders": { allowed: true },
+      "iam-tenant:department:set-leaders": { allowed: true },
     },
   },
 });

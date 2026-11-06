@@ -2,7 +2,6 @@ import { formatDateTime } from "@ingot/shared";
 import type { InTableAction, TableHeaderRecord } from "@ingot/admin-core";
 import type { SessionConcurrencyPolicy } from "@/models";
 import { SessionConcurrencyScopeEnum } from "@/models/enums/sessionEnums";
-import { SESSION_POLICY_UPDATE_PERMISSION } from "./constants";
 import { SecurityAction } from "@/models/securityActions";
 
 export const SESSIONS_POLICY_TABLE_ID = "security-sessions-policy";
@@ -73,7 +72,7 @@ export function createConcurrencyPolicyToolbarActions(
       icon: "ep:plus",
       overflow: "never",
       priority: 50,
-      permission: SESSION_POLICY_UPDATE_PERMISSION,
+      permission: SecurityAction.CONCURRENCY_CREATE,
       onSelect: () => onCreate(),
     },
   ];
@@ -99,7 +98,7 @@ export function createConcurrencyPolicyRowActions(
       key: "delete",
       label: "删除",
       kind: "danger",
-      permission: SESSION_POLICY_UPDATE_PERMISSION,
+      permission: SecurityAction.CONCURRENCY_DELETE,
       disabled: isGlobal,
       disabledReason: isGlobal
         ? "全局兜底策略不可删除，可将最大会话数改为 0 以关闭限制"

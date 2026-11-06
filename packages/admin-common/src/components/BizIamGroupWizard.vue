@@ -10,13 +10,13 @@
   >
     <div class="in-wizard-frame h-full min-h-0 flex flex-col">
       <el-steps
-        :active="step"
+        :active="!editSelection && step === 2 ? 1 : step"
         finish-status="success"
         align-center
         class="iam-group-wizard__steps shrink-0 mb-32px"
       >
         <el-step title="填写基本信息" />
-        <el-step title="设置用户组成员" />
+        <el-step v-if="editSelection" title="设置用户组成员" />
         <el-step title="检查并保存" />
       </el-steps>
       <div class="flex-1 min-h-0 overflow-auto">
@@ -120,13 +120,13 @@
               </div>
             </div>
           </section>
-          <section>
+          <section v-if="editSelection">
             <div class="mb-12px font-500">用户组成员</div>
             <div class="bg-[var(--in-bg-color-page)] rounded-8px p-16px">
               <biz-iam-member-chips :members="draft.members" :total="draft.memberIds.length" />
             </div>
           </section>
-          <section v-if="allowDepartments">
+          <section v-if="editSelection && allowDepartments">
             <div class="mb-12px font-500">部门来源</div>
             <div class="bg-[var(--in-bg-color-page)] rounded-8px p-16px">
               {{ departmentSummary }}
@@ -144,7 +144,7 @@
         v-else
         type="primary"
         :loading="loading"
-        :disabled="editing ? !preview?.valid : false"
+        :disabled="Boolean(editing && canPreview && !preview?.valid)"
         @in-click="privateSubmit"
       >
         完成
@@ -205,12 +205,17 @@ const props = withDefaults(
     updateApi: (id: string, input: GroupUpdateInput) => Promise<R<ResourceDetail<GroupRecord>>>;
     previewApi: (id: string, input: GroupUpdateInput) => Promise<R<Preview<ReferenceImpactPreview>>>;
     organization?: boolean;
+    allowMemberSelection?: boolean;
+    previewAction?: string;
+    allowPreview?: boolean;
     loadBrowse?: OrganizationMemberBrowseLoader;
     allowDepartments?: boolean;
     loadDepartments?: (params: LoadDataParams) => Promise<Page<IamSelectOption>>;
   }>(),
   {
     organization: false,
+    allowMemberSelection: true,
+    allowPreview: true,
     allowDepartments: false,
   },
 );
@@ -234,6 +239,10 @@ const departmentPick = ref("");
 const departmentLabels = reactive<Record<string, string>>({});
 
 const title = computed(() => (editing.value ? "编辑用户组" : "新建用户组"));
+const editSelection = computed(() => props.allowMemberSelection && editing.value?.record.selectionEditable !== false);
+const canPreview = computed(() =>
+  props.allowPreview && (!props.previewAction || editing.value?.capabilities[props.previewAction]?.allowed !== false),
+);
 const impact = computed(() => preview.value?.effectiveResult);
 const departmentSummary = computed(() => {
   if (!draft.departments.length) {
@@ -272,6 +281,11 @@ const asDraft = (): GroupDraft => ({
       : emptySelectionDepartments(),
   },
 });
+
+const asUpdate = (): GroupUpdateInput["group"] => {
+  const { selection, ...profile } = asDraft();
+  return editSelection.value ? { ...profile, selection } : profile;
+};
 
 const reset = (): void => {
   step.value = 0;
@@ -378,14 +392,14 @@ const privateRemoveDepartment = (index: number): void => {
 };
 
 const privatePreview = (): void => {
-  if (!editing.value) {
+  if (!editing.value || !canPreview.value) {
     return;
   }
   loading.value = true;
   props
     .previewApi(editing.value.record.id, {
       expectedVersion: editing.value.version,
-      group: asDraft(),
+      group: asUpdate(),
     })
     .then((response) => {
       preview.value = response.data;
@@ -396,7 +410,7 @@ const privatePreview = (): void => {
 };
 
 const privateBack = (): void => {
-  step.value = Math.max(0, step.value - 1);
+  step.value = editSelection.value ? Math.max(0, step.value - 1) : 0;
 };
 
 const privateNext = (): void => {
@@ -404,7 +418,7 @@ const privateNext = (): void => {
     Message.warning("请输入用户组名称");
     return;
   }
-  if (step.value === 1 && editing.value) {
+  if (!editSelection.value || step.value === 1) {
     step.value = 2;
     privatePreview();
     return;
@@ -424,7 +438,7 @@ const privateSubmit = (): void => {
     emits("success");
   };
   if (editing.value) {
-    if (!preview.value?.valid) {
+    if (canPreview.value && !preview.value?.valid) {
       loading.value = false;
       Message.warning("请先预览且预览通过后再提交");
       return;
@@ -432,7 +446,7 @@ const privateSubmit = (): void => {
     props
       .updateApi(editing.value.record.id, {
         expectedVersion: editing.value.version,
-        group: asDraft(),
+        group: asUpdate(),
       })
       .then(done)
       .finally(() => {
@@ -462,6 +476,10 @@ defineExpose({
         editing.value = response.data;
         draft.name = response.data.record.name;
         draft.description = response.data.record.description ?? "";
+        if (!editSelection.value) {
+          initial.value = snapshot();
+          return;
+        }
         draft.memberIds = [...response.data.record.selection.members];
         draft.departments = response.data.record.selection.departments.map((item) => ({
           id: item.id,

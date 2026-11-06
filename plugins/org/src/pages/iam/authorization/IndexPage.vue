@@ -164,6 +164,19 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.TENANT_AUTHORIZATION_DIAGNOSE)"
+          title="权限诊断"
+          name="diagnosis"
+        >
+          <biz-iam-diagnose-drawer
+            v-if="tab === 'diagnosis'"
+            ref="diagnoseRef"
+            inline
+            :candidates-api="TenantDiagnoseCandidatesAPI"
+            :diagnose-api="TenantDiagnoseAPI"
+          />
+        </in-biz-tab-panel>
       </in-biz-tabs>
     </in-split-layout>
   </in-page-frame>
@@ -192,11 +205,7 @@
     :department-candidates="departmentCandidates"
     @success="refreshDelegations"
   />
-  <biz-iam-diagnose-drawer
-    ref="diagnoseRef"
-    :candidates-api="TenantDiagnoseCandidatesAPI"
-    :diagnose-api="TenantDiagnoseAPI"
-  />
+
 </template>
 
 <script lang="ts" setup>
@@ -281,10 +290,19 @@ const assignmentSource = useAssignmentSourceEnum();
 const effectiveStatus = useAssignmentEffectiveStatusEnum();
 const grantStatus = useGrantStatusEnum();
 const { hasAction, actionCodes } = useCapabilities();
-const tab = ref(hasAction(IamAction.TENANT_ROLE_READ) ? "roles" : "assignments");
+const tab = ref("");
+const availableTabs = computed(() =>
+  [
+    { name: "roles", action: IamAction.TENANT_ROLE_READ },
+    { name: "assignments", action: IamAction.TENANT_ASSIGNMENT_READ },
+    { name: "delegations", action: IamAction.TENANT_DELEGATION_READ },
+    { name: "diagnosis", action: IamAction.TENANT_AUTHORIZATION_DIAGNOSE },
+  ].filter((item) => hasAction(item.action)),
+);
 watch(actionCodes, () => {
-  if (tab.value === "roles" && !hasAction(IamAction.TENANT_ROLE_READ)) tab.value = "assignments";
-});
+  if (!availableTabs.value.some((item) => item.name === tab.value))
+    tab.value = availableTabs.value[0]?.name || "";
+}, { immediate: true });
 const { roles, assignments, delegations, refreshRoles, refreshAssignments, refreshDelegations } =
   useOps(tab);
 const createRef = ref<{ show: () => void }>();
@@ -370,7 +388,9 @@ const handleRoleDelete = (item: RoleRow): void => {
   });
 };
 const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
-  diagnoseRef.value?.show(preset);
+  if (!hasAction(IamAction.TENANT_AUTHORIZATION_DIAGNOSE)) return;
+  tab.value = "diagnosis";
+  void nextTick(() => diagnoseRef.value?.show(preset));
 };
 const handleAssignmentCreate = (): void => {
   assignmentRef.value?.show();

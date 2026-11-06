@@ -3,6 +3,9 @@
     <div class="mb-16px text-16px font-500 text-[#1f2329]">基础信息</div>
     <in-form label-position="top">
       <div class="grid grid-cols-2 gap-x-24px">
+        <el-form-item v-if="canEditAvatar" label="头像">
+          <in-common-upload-avatar v-model="avatar" />
+        </el-form-item>
         <el-form-item label="姓名" required>
           <el-input
             v-model="displayName"
@@ -71,6 +74,7 @@ const loading = ref(false);
 const displayName = ref("");
 const phone = ref("");
 const email = ref("");
+const avatar = ref("");
 const departments = ref<MemberDepartmentView[]>([]);
 const secretRef = ref<{ show: (password: string) => void }>();
 const fields = useFieldContext(IamAction.TENANT_MEMBER_CREATE, TenantMemberContextAPI, visible);
@@ -78,12 +82,14 @@ const createFields = computed(
   () => fields.context.value?.fieldOperations[IamAction.TENANT_MEMBER_CREATE],
 );
 const canEditName = computed(() => createFields.value?.displayName?.editable === true);
+const canEditAvatar = computed(() => createFields.value?.avatar?.editable === true);
 const canEditEmail = computed(() => createFields.value?.email?.editable === true);
 
 const privateReset = (department?: MemberDepartmentView): void => {
   displayName.value = "";
   phone.value = "";
   email.value = "";
+  avatar.value = "";
   departments.value = department?.id ? [{ ...department, primary: true }] : [];
 };
 
@@ -102,6 +108,7 @@ const privateSubmit = (): void => {
   TenantMemberCreateAPI({
     displayName: name,
     phone: mobile,
+    ...(canEditAvatar.value && avatar.value ? { avatar: avatar.value } : {}),
     ...(canEditEmail.value && email.value.trim() ? { email: email.value.trim() } : {}),
     departments: departments.value.map((item, index) => ({ id: item.id, primary: index === 0 })),
   })

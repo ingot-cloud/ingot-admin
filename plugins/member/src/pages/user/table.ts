@@ -90,7 +90,7 @@ export function createMemberUserRowActions(
     },
     {
       key: "toggle-enabled",
-      permission: MemberAction.USER_UPDATE,
+      permission: row.enabled ? MemberAction.USER_DISABLE : MemberAction.USER_ENABLE,
       label: actionDesc,
       kind: "default",
       disabled: !canToggle,
@@ -100,7 +100,7 @@ export function createMemberUserRowActions(
     },
     {
       key: "lock",
-      permission: MemberAction.USER_LOCK,
+      permission: row.locked ? MemberAction.USER_UNLOCK : MemberAction.USER_LOCK,
       label: lockLabel,
       kind: "default",
       disabled: !row.id,

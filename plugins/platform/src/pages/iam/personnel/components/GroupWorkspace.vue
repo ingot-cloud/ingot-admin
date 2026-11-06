@@ -24,6 +24,7 @@
       />
     </template>
     <in-table
+      v-if="canReadMembers"
       :loading="memberPaging.fetching.value || contextLoading || saving"
       :data="memberPaging.pageInfo.value.records"
       :page="memberPaging.pageInfo.value"
@@ -159,8 +160,11 @@ import { memberFieldVisible, memberPermissionHeaders } from "../memberFieldAcces
 
 defineOptions({ name: "GroupWorkspace" });
 const props = withDefaults(defineProps<{ active?: boolean }>(), { active: true });
+const { unavailable, hasAction } = useCapabilities();
+const canReadMembers = computed(() => hasAction(IamAction.PLATFORM_MEMBER_READ));
+const active = computed(() => props.active && hasAction(IamAction.PLATFORM_GROUP_READ));
 const { context, contextLoading, contextError, refreshContext } = useMemberFieldContext(
-  computed(() => props.active),
+  computed(() => active.value && canReadMembers.value),
 );
 
 const {
@@ -176,9 +180,7 @@ const {
   reloadSelected,
   removeMember,
   addMembers,
-} = useGroupOps();
-
-const { unavailable, hasAction } = useCapabilities();
+} = useGroupOps(active);
 const memberStatusEnum = useMemberStatusEnum();
 const selectedColumns = ref<string[]>([]);
 const wizardRef = ref<{ show: (row?: GroupRow) => void }>();

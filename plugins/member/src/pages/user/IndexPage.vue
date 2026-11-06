@@ -142,7 +142,7 @@ const handleDetailUser = (params: MemberUser): void => {
 };
 
 const handleToggleEnabled = (params: MemberUser): void => {
-  if (!hasAction(MemberAction.USER_UPDATE) || !params.id || typeof params.enabled !== "boolean") {
+  if (typeof params.enabled !== "boolean" || !params.id || !hasAction(params.enabled ? MemberAction.USER_DISABLE : MemberAction.USER_ENABLE)) {
     return;
   }
   const request = params.enabled ? DisableAccountAPI : EnableAccountAPI;
@@ -155,7 +155,7 @@ const handleToggleEnabled = (params: MemberUser): void => {
 };
 
 const handleLockUser = (params: MemberUser): void => {
-  if (!hasAction(MemberAction.USER_LOCK) || !params.id) {
+  if (!params.id || !hasAction(params.locked ? MemberAction.USER_UNLOCK : MemberAction.USER_LOCK)) {
     return;
   }
   LockAccountDialogRef.value?.show({ userId: params.id, locked: params.locked });

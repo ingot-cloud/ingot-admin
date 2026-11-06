@@ -113,7 +113,7 @@ const statusMutation = useMutation({
 });
 
 const handleToggleStatus = (item: MemberPermissionTreeNodeVO): void => {
-  if (!hasAction(MemberAction.PERMISSION_UPDATE) || !item.id || !item.status) {
+  if (!hasAction(MemberAction.PERMISSION_CHANGE_STATUS) || !item.id || !item.status) {
     return;
   }
   const next = getCommonStatusToggle(item.status);

@@ -161,6 +161,7 @@ import {
   isApiError,
   objectActionAllowed,
   useDetailEditSession,
+  useCapabilities,
 } from "@ingot/admin-core";
 import {
   collectIamPageRecords,
@@ -289,6 +290,7 @@ const loadGroups = (): void => {
   if (!id || groupsLoaded.value) {
     return;
   }
+  if (!useCapabilities().hasAction(IamAction.PLATFORM_GROUP_READ)) return;
   collectIamPageRecords((page) => PlatformMemberGroupsAPI(id, page)).then((records) => {
     groupNames.value = records.map((item) => item.record.name);
     groupsLoaded.value = true;

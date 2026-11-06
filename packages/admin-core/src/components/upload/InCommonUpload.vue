@@ -1,19 +1,9 @@
 <template>
-  <in-upload :api="commonApi" />
+  <in-upload :api="api" />
 </template>
+
 <script setup lang="ts">
-import type { UploadRequestParams } from "./types";
-import { UploadAPI } from "@/api/common/oss";
+import type { UploadAPIFn } from "./types";
 
-const props = defineProps({
-  dir: {
-    type: String,
-    default: "",
-  },
-});
-
-const commonApi = (params: UploadRequestParams) => {
-  params.fileName = props.dir ? `${props.dir}/${params.fileName}` : params.fileName;
-  return UploadAPI(params);
-};
+defineProps<{ api: UploadAPIFn }>();
 </script>

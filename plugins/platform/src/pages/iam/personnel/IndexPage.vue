@@ -7,7 +7,7 @@
     </template>
     <in-split-layout>
       <in-biz-tabs v-model="tab">
-        <in-biz-tab-panel title="成员" name="members">
+        <in-biz-tab-panel v-if="canReadMembers" title="平台成员" name="members">
           <in-table
             :loading="loading"
             :data="paging.pageInfo.value.records"
@@ -89,7 +89,7 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
-        <in-biz-tab-panel title="组" name="groups" fill>
+        <in-biz-tab-panel v-if="canReadGroups" title="用户组" name="groups" fill>
           <GroupWorkspace :active="tab === 'groups'" />
         </in-biz-tab-panel>
       </in-biz-tabs>
@@ -130,11 +130,17 @@ import { createRowActions, createToolbarActions, tableHeaders, TABLE_ID, type Ro
 import { useOps } from "./useOps";
 import { memberFieldVisible, memberPermissionHeaders } from "./memberFieldAccess";
 
-const tab = ref("members");
+const { unavailable, hasAction } = useCapabilities();
+const canReadMembers = computed(() => hasAction(IamAction.PLATFORM_MEMBER_READ));
+const canReadGroups = computed(() => hasAction(IamAction.PLATFORM_GROUP_READ));
+const tab = ref("");
+watch([canReadMembers, canReadGroups], ([members, groups]) => {
+  if ((tab.value === "members" && members) || (tab.value === "groups" && groups)) return;
+  tab.value = members ? "members" : groups ? "groups" : "";
+}, { immediate: true });
 const { paging, refreshData, context, loading, contextError, refreshContext } = useOps(
-  computed(() => tab.value === "members"),
+  computed(() => canReadMembers.value && tab.value === "members"),
 );
-const { unavailable } = useCapabilities();
 const memberStatusEnum = useMemberStatusEnum();
 const statusToneOf = (status: string): "info" | "warning" | "danger" =>
   memberStatusTone(status) ?? "info";

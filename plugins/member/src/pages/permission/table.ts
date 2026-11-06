@@ -80,7 +80,7 @@ export function createMemberPermissionRowActions(
     },
     {
       key: "toggle-status",
-      permission: MemberAction.PERMISSION_UPDATE,
+      permission: MemberAction.PERMISSION_CHANGE_STATUS,
       label: actionDesc,
       kind: "default",
       disabled: !canToggle,

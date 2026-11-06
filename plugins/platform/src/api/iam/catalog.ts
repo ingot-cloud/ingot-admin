@@ -1,3 +1,4 @@
+import { ImagePurpose, stageImageField } from "@ingot/admin-core";
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
@@ -80,28 +81,28 @@ export function PlatformApplicationDetailAPI(
   return request.get<ResourceDetail<ApplicationRecord>>(`${APP_PATH}/${id}`, undefined, options);
 }
 
-export function PlatformApplicationCreateAPI(
+export async function PlatformApplicationCreateAPI(
   params: ApplicationDraft,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
-  return request.post<CreatedResource>(APP_PATH, params, options);
+  return request.post<CreatedResource>(APP_PATH, await stageImageField(params, "icon", ImagePurpose.APPLICATION_CREATE), options);
 }
 
-export function PlatformApplicationBundleCreateAPI(
+export async function PlatformApplicationBundleCreateAPI(
   params: ApplicationBundleDraft,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
-  return request.post<CreatedResource>(`${APP_PATH}/bundles`, params, options);
+  return request.post<CreatedResource>(`${APP_PATH}/bundles`, { ...params, application: await stageImageField(params.application, "icon", ImagePurpose.APPLICATION_CREATE) }, options);
 }
 
-export function PlatformApplicationUpdateAPI(
+export async function PlatformApplicationUpdateAPI(
   id: string,
   params: ApplicationUpdateInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<ApplicationRecord>>> {
   filterParams(params);
-  return request.put<ResourceDetail<ApplicationRecord>>(`${APP_PATH}/${id}`, params, options);
+  return request.put<ResourceDetail<ApplicationRecord>>(`${APP_PATH}/${id}`, await stageImageField(params, "icon", ImagePurpose.APPLICATION_UPDATE, id), options);
 }
 
 export function PlatformApplicationStatusAPI(

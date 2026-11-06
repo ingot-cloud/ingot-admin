@@ -116,7 +116,7 @@
     <template #footer>
       <in-button
         v-if="edit && !editing && editForm.scope !== SessionConcurrencyScopeEnum.GLOBAL"
-        v-auth="SecurityAction.CONCURRENCY_UPDATE"
+        v-auth="SecurityAction.CONCURRENCY_DELETE"
         type="danger"
         :disabled="loading"
         @click="privateOnRemoveClick"
@@ -183,7 +183,7 @@ const loading = ref(false);
 const title = ref("");
 const edit = ref(false);
 const visible = ref(false);
-const canWrite = computed(() => hasAction(SecurityAction.CONCURRENCY_UPDATE));
+const canWrite = computed(() => hasAction(!edit.value ? SecurityAction.CONCURRENCY_CREATE : SecurityAction.CONCURRENCY_UPDATE));
 const { editing, enterEdit, cancelEdit, open, beforeClose } = useSecurityPolicyDrawer({
   form: editForm,
   formRef: editFormRef,
@@ -262,7 +262,7 @@ const buildPayload = (): SessionConcurrencyPolicy => {
 };
 
 const privateOnRemoveClick = (): void => {
-  if (!hasAction(SecurityAction.CONCURRENCY_UPDATE)) return;
+  if (!hasAction(SecurityAction.CONCURRENCY_DELETE)) return;
   if (!editForm.id || editForm.scope === SessionConcurrencyScopeEnum.GLOBAL) {
     return;
   }

@@ -18,15 +18,16 @@ import { applyMemberChanges } from "./membership";
 import type { GroupMemberRow, GroupRow } from "./table";
 
 export const useOps = () => {
-  const { unavailable } = useCapabilities();
-  const enabled = () => !unavailable.value;
+  const { unavailable, hasAction } = useCapabilities();
+  const enabled = () => !unavailable.value && hasAction(IamAction.TENANT_GROUP_READ);
+  const canReadMembers = () => enabled() && hasAction(IamAction.TENANT_MEMBER_READ);
   const groupPaging = useServerPaging<ResourceDetail<GroupRecord>, IamListQuery>({
     queryOptions: TenantGroupPageQueryOptions,
     enabled,
   });
   const memberPaging = useServerPaging<GroupEffectiveMemberRecord, IamListQuery>({
     queryOptions: TenantGroupEffectiveMemberPageQueryOptions,
-    enabled,
+    enabled: canReadMembers,
     queryWhen: (submitted) => Boolean(submitted.groupId),
   });
   const selectedId = ref("");
@@ -37,12 +38,15 @@ export const useOps = () => {
     if (!selectedDetail.value) {
       return { allowed: false, message: "请先选择用户组" };
     }
+    if (selectedDetail.value.record.selectionEditable === false) {
+      return { allowed: false, message: "当前权限只允许编辑用户组基本信息" };
+    }
     return objectActionAllowed(selectedDetail.value.capabilities, IamAction.TENANT_GROUP_UPDATE);
   });
 
   const applyMemberQuery = (groupId: string): void => {
     memberPaging.condition.groupId = groupId;
-    memberPaging.search();
+    if (canReadMembers()) memberPaging.search();
   };
 
   const selectGroup = (row?: GroupRow): void => {

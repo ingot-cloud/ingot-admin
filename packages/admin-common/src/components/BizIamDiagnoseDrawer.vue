@@ -1,5 +1,9 @@
 <template>
-  <in-drawer v-model="visible" title="权限诊断" :loading="loading" size="600px">
+  <component
+    :is="inline ? 'div' : drawer"
+    v-bind="inline ? { class: 'p-16px max-w-840px mx-auto' } : { modelValue: visible, title: '权限诊断', loading, size: '600px' }"
+    @update:model-value="visible = $event"
+  >
     <el-alert
       type="info"
       :closable="false"
@@ -63,20 +67,25 @@
         </in-button>
       </div>
     </in-form>
-    <template #footer>
+    <div v-if="inline" class="mt-12px">
+      <in-button type="primary" :loading="loading" @in-click="run">诊断</in-button>
+    </div>
+    <template v-if="!inline" #footer>
       <in-button @click="visible = false">关闭</in-button>
       <in-button type="primary" :loading="loading" @in-click="run">诊断</in-button>
     </template>
-  </in-drawer>
+  </component>
 </template>
 <script setup lang="ts">
-import { Message, useCapabilities, type R } from "@ingot/admin-core";
+import { resolveComponent } from "vue";
+import { Message, useCapabilities, useUserInfoStore, type R } from "@ingot/admin-core";
 import type { AuthorizationCandidatesApi, Decision, DiagnoseInput } from "../models/iam";
 import { iamEditorFailure } from "../hooks/iamEditorFailure";
 import BizIamDiagnoseCandidatePicker from "./BizIamDiagnoseCandidatePicker.vue";
 import BizIamDiagnosePanel from "./BizIamDiagnosePanel.vue";
 defineOptions({ name: "BizIamDiagnoseDrawer" });
 const props = defineProps<{
+  inline?: boolean;
   candidatesApi: AuthorizationCandidatesApi;
   diagnoseApi: (input: DiagnoseInput) => Promise<R<Decision>>;
   /** 有该操作时才显示「查看分配」；不传表示该域不支持从诊断跳转分配。 */
@@ -85,8 +94,10 @@ const props = defineProps<{
 const emits = defineEmits<{ openAssignment: [id: string] }>();
 const { hasAction, contextEpoch } = useCapabilities();
 const visible = ref(false);
+const drawer = resolveComponent("in-drawer");
+const user = useUserInfoStore();
 const loading = ref(false);
-const memberId = ref("");
+const memberId = ref(props.inline ? user.userInfo.memberId ?? "" : "");
 const memberName = ref("");
 const memberLocked = ref(false);
 const applicationId = ref("");
@@ -136,7 +147,7 @@ const run = async (): Promise<void> => {
 };
 defineExpose({
   show(preset?: { memberId?: string; memberName?: string }) {
-    memberId.value = preset?.memberId || "";
+    memberId.value = preset?.memberId || (props.inline ? user.userInfo.memberId ?? "" : "");
     memberName.value = preset?.memberName || "";
     memberLocked.value = Boolean(preset?.memberId);
     applicationId.value = "";

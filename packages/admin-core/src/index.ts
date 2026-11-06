@@ -168,3 +168,5 @@ export { createSameOriginAuthSession } from "./auth/session";
 
 export { helpNavigationKey, useHelpNavigation } from "./help/navigation";
 export type { HelpNavigation } from "./help/navigation";
+
+export { ImagePurpose, stageImageField, withoutLocalImage } from "./api/common/oss";

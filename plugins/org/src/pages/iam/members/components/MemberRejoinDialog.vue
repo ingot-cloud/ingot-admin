@@ -10,6 +10,9 @@
     <div class="mb-16px text-16px font-500 text-[#1f2329]">基础信息</div>
     <in-form label-position="top">
       <div class="grid grid-cols-2 gap-x-24px">
+        <el-form-item v-if="canEditAvatar" label="头像">
+          <in-common-upload-avatar v-model="avatar" />
+        </el-form-item>
         <el-form-item label="姓名" required>
           <el-input
             v-model="displayName"
@@ -76,12 +79,14 @@ const expectedVersion = ref("");
 const displayName = ref("");
 const phone = ref("");
 const email = ref("");
+const avatar = ref("");
 const departments = ref<MemberDepartmentView[]>([]);
 const fields = useFieldContext(IamAction.TENANT_MEMBER_CREATE, TenantMemberContextAPI, visible);
 const createFields = computed(
   () => fields.context.value?.fieldOperations[IamAction.TENANT_MEMBER_CREATE],
 );
 const canEditName = computed(() => createFields.value?.displayName?.editable === true);
+const canEditAvatar = computed(() => createFields.value?.avatar?.editable === true);
 const canEditEmail = computed(() => createFields.value?.email?.editable === true);
 
 const privateSubmit = (): void => {
@@ -100,6 +105,7 @@ const privateSubmit = (): void => {
     expectedVersion: expectedVersion.value,
     displayName: name,
     phone: mobile,
+    ...(canEditAvatar.value && avatar.value ? { avatar: avatar.value } : {}),
     ...(canEditEmail.value && email.value.trim() ? { email: email.value.trim() } : {}),
     departments: departments.value.map((item, index) => ({ id: item.id, primary: index === 0 })),
   })
@@ -119,6 +125,7 @@ defineExpose({
     expectedVersion.value = row.version;
     displayName.value = row.record.displayName?.trim() || "";
     phone.value = plainMemberPhone(row.record.phone);
+    avatar.value = "";
     email.value = plainMemberEmail(row.record.email);
     departments.value = (row.record.departments ?? []).map((item, index) => ({
       ...item,

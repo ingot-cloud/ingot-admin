@@ -186,6 +186,21 @@
             </template>
           </in-table>
         </in-biz-tab-panel>
+        <in-biz-tab-panel
+          v-if="hasAction(IamAction.PLATFORM_AUTHORIZATION_DIAGNOSE)"
+          title="权限诊断"
+          name="diagnosis"
+        >
+          <biz-iam-diagnose-drawer
+            v-if="tab === 'diagnosis'"
+            ref="diagnoseRef"
+            inline
+            :candidates-api="PlatformDiagnoseCandidatesAPI"
+            :diagnose-api="PlatformDiagnoseAPI"
+            :assignment-read-action="IamAction.PLATFORM_ASSIGNMENT_READ"
+            @open-assignment="openAssignment"
+          />
+        </in-biz-tab-panel>
       </in-biz-tabs>
     </in-split-layout>
   </in-page-frame>
@@ -247,13 +262,7 @@
     :create-preview-api="PlatformDelegationCreatePreviewAPI"
     @success="refreshDelegations"
   />
-  <biz-iam-diagnose-drawer
-    ref="diagnoseRef"
-    :candidates-api="PlatformDiagnoseCandidatesAPI"
-    :diagnose-api="PlatformDiagnoseAPI"
-    :assignment-read-action="IamAction.PLATFORM_ASSIGNMENT_READ"
-    @open-assignment="openAssignment"
-  />
+
 </template>
 
 <script lang="ts" setup>
@@ -384,6 +393,7 @@ const availableTabs = computed(() =>
     { name: "roles", action: IamAction.PLATFORM_ROLE_READ },
     { name: "assignments", action: IamAction.PLATFORM_ASSIGNMENT_READ },
     { name: "delegations", action: IamAction.PLATFORM_DELEGATION_READ },
+    { name: "diagnosis", action: IamAction.PLATFORM_AUTHORIZATION_DIAGNOSE },
   ].filter((item) => hasAction(item.action)),
 );
 watch(
@@ -498,7 +508,9 @@ const handleRoleDelete = (item: RoleRow): void => {
   });
 };
 const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
-  diagnoseRef.value?.show(preset);
+  if (!hasAction(IamAction.PLATFORM_AUTHORIZATION_DIAGNOSE)) return;
+  tab.value = "diagnosis";
+  void nextTick(() => diagnoseRef.value?.show(preset));
 };
 const handleAssignmentCreate = (): void => {
   assignmentRef.value?.show();

@@ -24,6 +24,7 @@
       />
     </template>
     <in-table
+      v-if="canReadMembers"
       :loading="memberPaging.fetching.value || contextLoading || saving"
       :data="memberPaging.pageInfo.value.records"
       :page="memberPaging.pageInfo.value"
@@ -172,10 +173,12 @@ import { useOps } from "../useOps";
 defineOptions({ name: "GroupWorkspace" });
 
 const FIELD_HEADER_PROPS = new Set(["displayName", "phone"]);
+const { unavailable, hasAction } = useCapabilities();
+const canReadMembers = computed(() => hasAction(IamAction.TENANT_MEMBER_READ));
 const { context, contextLoading, contextError, refreshContext } = useFieldContext(
   IamAction.TENANT_MEMBER_READ,
   TenantMemberContextAPI,
-  computed(() => true),
+  canReadMembers,
 );
 const {
   groupPaging,
@@ -192,7 +195,6 @@ const {
   removeMember,
 } = useOps();
 
-const { unavailable, hasAction } = useCapabilities();
 const memberStatusEnum = useMemberStatusEnum();
 const selectedColumns = ref<string[]>([]);
 const wizardRef = ref<{ show: (row?: GroupRow) => void }>();

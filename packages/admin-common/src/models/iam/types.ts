@@ -607,6 +607,7 @@ export interface MemberCreateInput {
 }
 
 export interface TenantMemberCreateInput {
+  avatar?: string;
   displayName: string;
   phone: string;
   email?: string;
@@ -614,6 +615,7 @@ export interface TenantMemberCreateInput {
 }
 
 export interface TenantMemberRejoinInput {
+  avatar?: string;
   expectedVersion: string;
   displayName: string;
   phone: string;
@@ -823,6 +825,7 @@ export interface GroupRecord {
   description?: string;
   selection: Selection;
   visibleMemberCount?: number;
+  selectionEditable?: boolean;
 }
 
 export interface GroupMembershipDepartment {
@@ -848,7 +851,7 @@ export interface GroupDraft {
 }
 
 export interface GroupUpdateInput extends VersionInput {
-  group: GroupDraft;
+  group: Omit<GroupDraft, "selection"> & { selection?: Selection };
 }
 
 export interface SubjectRef {

@@ -1,3 +1,4 @@
+import { ImagePurpose, stageImageField } from "@ingot/admin-core";
 import { request, type RequestOptions } from "@ingot/admin-core";
 import type {
   MemberUser,
@@ -50,18 +51,18 @@ export function UserProfileAPI(
  * 创建用户
  * @param params 参数
  */
-export function CreateUserAPI(params: MemberUserDTO): Promise<R<void>> {
+export async function CreateUserAPI(params: MemberUserDTO): Promise<R<void>> {
   filterParams(params);
-  return request.post<void>(`${PATH}`, params);
+  return request.post<void>(`${PATH}`, await stageImageField(params, "avatar", ImagePurpose.APP_USER_CREATE));
 }
 
 /**
  * 更新用户信息
  * @param params 参数
  */
-export function UpdateUserAPI(params: MemberUserDTO): Promise<R<void>> {
+export async function UpdateUserAPI(params: MemberUserDTO): Promise<R<void>> {
   filterParams(params);
-  return request.put<void>(`${PATH}`, params);
+  return request.put<void>(`${PATH}`, await stageImageField(params, "avatar", ImagePurpose.APP_USER_UPDATE, params.id));
 }
 
 /**

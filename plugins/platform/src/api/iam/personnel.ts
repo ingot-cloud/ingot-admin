@@ -1,3 +1,4 @@
+import { ImagePurpose, stageImageField, withoutLocalImage } from "@ingot/admin-core";
 import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
@@ -65,20 +66,20 @@ export function PlatformMemberDetailAPI(
   return request.get<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, undefined, options);
 }
 
-export function PlatformMemberCreateAPI(
+export async function PlatformMemberCreateAPI(
   params: MemberCreateInput,
   options?: RequestOptions,
 ): Promise<R<CreatedResource>> {
   filterParams(params);
-  return request.post<CreatedResource>(MEMBER_PATH, params, options);
+  return request.post<CreatedResource>(MEMBER_PATH, await stageImageField(params, "avatar", ImagePurpose.PLATFORM_MEMBER_CREATE), options);
 }
 
-export function PlatformMemberUpdateAPI(
+export async function PlatformMemberUpdateAPI(
   id: string,
   params: PlatformMemberEditInput,
   options?: RequestOptions,
 ): Promise<R<ResourceDetail<MemberRecord>>> {
-  return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, params, options);
+  return request.patch<ResourceDetail<MemberRecord>>(`${MEMBER_PATH}/${id}`, await stageImageField(params, "avatar", ImagePurpose.PLATFORM_MEMBER_UPDATE, id), options);
 }
 
 export function PlatformMemberEditPreviewAPI(
@@ -88,7 +89,7 @@ export function PlatformMemberEditPreviewAPI(
 ): Promise<R<Preview<PlatformMemberEditPreview>>> {
   return request.post<Preview<PlatformMemberEditPreview>>(
     `${MEMBER_PATH}/${id}/preview`,
-    params,
+    withoutLocalImage(params, "avatar"),
     options,
   );
 }

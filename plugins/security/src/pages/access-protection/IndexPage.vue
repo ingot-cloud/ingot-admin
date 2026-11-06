@@ -5,7 +5,7 @@
         <template #action
           ><BizHelpLink view-path="security.access.protection" />
           <in-button
-            v-auth="SecurityAction.POLICY_UPDATE"
+            v-if="hasAction(SecurityAction.POLICY_READ) && hasAction(SecurityAction.POLICY_REFRESH)"
             :loading="broadcasting"
             @click="privateOnBroadcastClick"
           >
@@ -73,6 +73,7 @@
 
 <script setup lang="ts">
 import { BizHelpLink } from "@ingot/admin-common";
+import { useCapabilities } from "@ingot/admin-core";
 import { useSecurityTabs, SecurityAction } from "@/hooks/useSecurityTabs";
 import { AccessProtectionTabEnum, useAccessProtectionTabEnum } from "@/models/enums";
 import { useGatewayPolicy } from "./use/useGatewayPolicy";
@@ -84,6 +85,7 @@ import LoginFailurePanel from "./components/LoginFailurePanel.vue";
 import ChallengePolicyPanel from "./components/ChallengePolicyPanel.vue";
 import BlockEventPanel from "./components/BlockEventPanel.vue";
 
+const { hasAction } = useCapabilities();
 const accessProtectionTabEnum = useAccessProtectionTabEnum();
 const tabOptions = accessProtectionTabEnum.getOptions();
 const { activeTab, visitedTabs, tabs, allowed } = useSecurityTabs(tabOptions, {
@@ -93,12 +95,13 @@ const { activeTab, visitedTabs, tabs, allowed } = useSecurityTabs(tabOptions, {
   [AccessProtectionTabEnum.VIOLATION_ESCALATION]: SecurityAction.POLICY_READ,
   [AccessProtectionTabEnum.LOGIN_FAILURE]: SecurityAction.LOGIN_READ,
   [AccessProtectionTabEnum.CHALLENGE]: SecurityAction.POLICY_READ,
-  [AccessProtectionTabEnum.BLOCK_EVENT]: SecurityAction.POLICY_READ,
+  [AccessProtectionTabEnum.BLOCK_EVENT]: SecurityAction.BLOCK_EVENT_READ,
 });
 
 const { broadcasting, broadcastInvalidation } = useGatewayPolicy();
 
 const privateOnBroadcastClick = async (): Promise<void> => {
+  if (!hasAction(SecurityAction.POLICY_READ) || !hasAction(SecurityAction.POLICY_REFRESH)) return;
   await broadcastInvalidation();
 };
 </script>

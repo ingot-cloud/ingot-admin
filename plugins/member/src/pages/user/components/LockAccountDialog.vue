@@ -80,7 +80,7 @@ const show = (params: { userId: string; locked?: boolean }): void => {
 const privateOnConfirm = (): void => {
   formRef.value?.validate((valid: boolean) => {
     const request = locked.value ? props.unlockApi : props.lockApi;
-    if (!valid || !request || loading.value || !hasAction(MemberAction.USER_LOCK)) {
+    if (!valid || !request || loading.value || !hasAction(locked.value ? MemberAction.USER_UNLOCK : MemberAction.USER_LOCK)) {
       return;
     }
     loading.value = true;

@@ -177,10 +177,10 @@ const actions = computed<InTableAction<MemberRoleTreeNodeVO>[]>(() => {
             label: getCommonStatusActionDesc(next),
             kind: "default" as const,
             overflow: "always" as const,
-            permission: MemberAction.ROLE_UPDATE,
+            permission: MemberAction.ROLE_CHANGE_STATUS,
             confirm: "确定更改此角色的状态？",
             onSelect: (row: MemberRoleTreeNodeVO) => {
-              if (row.id && hasAction(MemberAction.ROLE_UPDATE))
+              if (row.id && hasAction(MemberAction.ROLE_CHANGE_STATUS))
                 void mutate(() => UpdateRoleAPI({ id: row.id, status: next }));
             },
           },

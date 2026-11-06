@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { useActiveSecurityRead, SecurityAction } from "@/hooks/useSecurityTabs";
-const enabled = useActiveSecurityRead(SecurityAction.POLICY_READ, "block-event");
+const enabled = useActiveSecurityRead(SecurityAction.BLOCK_EVENT_READ, "block-event");
 
 import { applyColumnSelection } from "@ingot/admin-core";
 import { useIpListKeyTypeEnum, useIpListSourceEnum } from "@/models/enums";
