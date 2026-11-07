@@ -10,7 +10,7 @@
 
 ### In Scope
 
-- 页面 `/security/sessions`，归属 `PLATFORM / platform:security` 独立安全应用
+- 页面 `/security/sessions`，归属 `PLATFORM / platform-security` 独立安全应用
 - 源码 `plugins/security/src/pages/sessions`
 - canonical viewPath `security.sessions`
 - Tab：在线会话、并发策略
@@ -40,7 +40,7 @@
 
 ### 场景 3：维护并发策略
 
-- **角色**：平台管理员（写操作需 `iam-platform:session-policy:update` 或超级管理员）
+- **角色**：具备相应并发策略创建、编辑或删除权限的平台管理员
 - **前置条件**：打开「并发策略」Tab
 - **步骤**：查看列表；新增或编辑（scope 联动 clientId / userType）；GLOBAL 不可删除
 - **预期结果**：保存后提示下次登录生效；`maxSessions=0` 展示为「不限制」
@@ -99,14 +99,14 @@
 
 - 前端不在请求头加 `Authorization: Bearer`；由网关用 session 换 token
 - 下线类 DELETE 参数走 query，不走 body
-- 无 `platform:develop:client:query` 且非超级管理员时，客户端改为手填 `clientId`
+- 无 `platform-developer:oauth-client:read-list` 权限时，客户端改为手填 `clientId`
 
 ## 依赖与约束
 
 - 会话与策略接口见归档 [API.md](../../../changes/archive/2026/20260820-security-session-management/API.md)
 - 客户端列表复用 `GET /auth/client/page`（`ClientPageAPI`）；租户 / Client 选择器来自 `@ingot/admin-common`，不依赖 platform 插件
-- 菜单按 `iam-platform:session:read` 与 `iam-platform:session-policy:read` 的 ANY 开放；仅显示授权 Tab
-- 下线检查 `iam-platform:session:revoke`；并发策略新增、更新和删除均检查 `iam-platform:session-policy:update`
+- 菜单按 `platform-security:session:read` 与 `platform-security:session-concurrency-policy:read` 的 ANY 开放，仅显示授权 Tab
+- 下线检查 `platform-security:session:revoke`。并发策略新增、更新和删除分别检查 `session-concurrency-policy` 的 `create`、`update`、`delete`
 - 跨页面布局与表格操作分层见 [管理台 UI 体验](../../common/admin-ui-experience/spec.md)
 
 ## 验收标准

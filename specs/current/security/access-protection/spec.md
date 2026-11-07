@@ -9,32 +9,32 @@
 - 路径分组、限流规则、黑白名单、挑战策略、封禁审计五种列表
 - 登录失败保护四维度及违规升级配置
 - 精确操作权限、激活查询、策略预览/编辑、行内删除及共享布局
-- 页头「强制刷新策略」按 security-policy update 权限执行全域广播
+- 页头「强制刷新策略」需 `platform-security:access-policy:read` 和 `platform-security:access-policy:refresh`，执行全域广播
 - 不包含网关 Nacos 开关或 SMS/EMAIL 挑战类型配置
 
 ## 用户场景
 
 ### 场景 1：按权限进入激活面板
 
-- **角色**：具有 security-policy 或 login-failure-policy read 的平台人员
+- **角色**：具有访问防护策略、登录失败防护或封禁记录任一读取权限的平台人员
 - **步骤**：打开访问防护，选择可访问的一级 Tab
-- **预期结果**：入口按两个 read 的 ANY 开放，只显示授权 Tab，默认首个可访问项；仅当前激活面板请求，隐藏或撤权面板不请求
+- **预期结果**：入口按三个 read 的 ANY 开放，只显示授权 Tab，默认首个可访问项。仅当前激活且授权的面板发起请求
 
 ### 场景 2：查看或维护网关策略
 
-- **角色**：具有相应 `iam-platform:security-policy:*` 操作的平台人员
+- **角色**：具有相应 `platform-security:access-policy:*` 操作的平台人员
 - **步骤**：查看列表，打开详情，再按 update 权限编辑；新增直接进入编辑
 - **预期结果**：已有详情默认预览；取消恢复快照，关闭未保存编辑需确认，失败留草稿，成功刷新自身数据。预览不加载编辑目录选择器
 
 ### 场景 3：从更多菜单删除
 
-- **角色**：具有 `iam-platform:security-policy:delete` 的维护人员
+- **角色**：具有 `platform-security:access-policy:delete` 的维护人员
 - **步骤**：在路径分组、限流、名单或挑战列表打开行内更多，选择删除并确认
 - **预期结果**：仅一次确认；取消/关闭不发写请求且不产生页面异常，失败保留数据，成功仅刷新当前列表。详情抽屉无删除入口；只读人员与封禁审计无删除操作
 
 ### 场景 4：独立维护登录失败维度
 
-- **角色**：具有 `iam-platform:login-failure-policy:read` 的平台人员，维护另需 update
+- **角色**：具有 `platform-security:login-failure-policy:read` 的平台人员，维护另需 update
 - **步骤**：打开登录失败保护，在正文「防护维度」分段选择器选择 IP、设备、客户端或账号 + IP
 - **预期结果**：当前策略标题及保存确认明确维度，四策略可同时启用、独立保存。选择不预取其他维度，加载时不展示上一维度策略；已有面板保留挂载，缓存隔离维度与身份
 
@@ -42,7 +42,7 @@
 
 ### REQ-001：激活查询与精确权限
 
-系统 MUST 按 security-policy/login-failure-policy 对应 read 控制面板，按精确 create/update/delete 控制维护。只有激活且有读取权限时查询；提交处理器复核写权限，撤销写权限后退出编辑。
+系统按 `access-policy`、`login-failure-policy` 和 `block-event` 的读取权限控制各自面板，按精确操作控制维护。只有激活且有读取权限时查询。提交处理器复核写权限，撤销写权限后退出编辑。
 
 ### REQ-002：策略校验与预览
 

@@ -162,7 +162,7 @@ MT01–MT03 开发、来源同步与定向自动化完成，时间增量进入 v
 
 用户已批准并要求实施 [授权审计增量](./AUTHORIZATION-AUDIT-REFINEMENT.md)。固定当前域、统一审计文本格式、补齐服务端筛选与页面状态；保留平台/租户隔离及历史审计。主 change 保持 implementing。
 
-2026-10-11：授权审计 AU01–AU04 开发与限定自动化完成，本增量 validating；AU05 真实服务发布和两站验收待执行。主 change 保持 implementing，证据见 [授权审计增量](./AUTHORIZATION-AUDIT-REFINEMENT.md)。
+2026-10-11 授权审计 AU01–AU04 开发与限定自动化完成。2026-11-07 用户确认两端按[游标分页与可读展示](../../archive/2026/20261024-base-authorization-audit-readable/README.md)的新版契约联调通过。
 
 
 ## 2026-10-12 角色详情加载优化（用户已批准）

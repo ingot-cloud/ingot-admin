@@ -3,7 +3,7 @@
 ## 来源
 
 - 原始文件：无，依据后端 change 的 DESIGN 编写
-- 后端仓库：`ingot/specs/changes/active/20261024-iam-authorization-audit-readable/DESIGN.md`
+- [后端接口设计](../../../../../../ingot/specs/changes/archive/2026/20261024-iam-authorization-audit-readable/DESIGN.md)
 
 ## 服务与约定
 

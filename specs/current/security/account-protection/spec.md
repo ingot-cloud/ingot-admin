@@ -14,13 +14,13 @@
 
 ### 场景 1：按需查看两端策略
 
-- **角色**：具有 `iam-platform:lockout-policy:read` 的平台管理员
+- **角色**：具有 `platform-security:account-lockout-policy:read` 的平台管理员
 - **步骤**：打开账号保护页，默认查看 B 端；选择「C 端锁定策略」
 - **预期结果**：仅激活的用户类型请求现有单项接口；缺少策略时展示空态，不伪造提交；隐藏面板不请求
 
 ### 场景 2：独立维护某一端
 
-- **角色**：具有 `iam-platform:lockout-policy:update` 的维护人员
+- **角色**：具有 `platform-security:account-lockout-policy:update` 的维护人员
 - **步骤**：预览 → 编辑 → 修改字段 → 确认保存，或取消
 - **预期结果**：只提交当前 userType，成功仅失效对应策略并回到预览；失败保留草稿；取消恢复服务端快照。已访问 Tab 切换保留各自草稿，互不合并提交
 

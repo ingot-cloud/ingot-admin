@@ -5,3 +5,4 @@
 - [当前规格](./spec.md)
 - [工作台验收](../../../changes/archive/2026/20261030-org-tenant-workbench/README.md)
 - [统计接口副本](../../../changes/archive/2026/20261030-org-tenant-workbench/API.md)
+- [独立工作台授权验收](../../../changes/archive/2026/20261106-base-resource-catalog/README.md)

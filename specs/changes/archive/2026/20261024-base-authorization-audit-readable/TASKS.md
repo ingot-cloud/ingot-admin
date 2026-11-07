@@ -6,7 +6,7 @@
 
 - [x] 确认本 change README 状态为 `approved`（开工后改为 `implementing`），且后端 change 同为 approved
 - [x] 阅读本 change 的 [API.md](./API.md) 与 [REQUIREMENTS.md](./REQUIREMENTS.md)
-- [x] 阅读 [CONSTITUTION.md](../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../.agents/skills/in-coding-standards/SKILL.md)
+- [x] 阅读 [CONSTITUTION.md](../../../../CONSTITUTION.md) 与 [in-coding-standards](../../../../../.agents/skills/in-coding-standards/SKILL.md)
 - [x] 确认 DESIGN.md 的页面路径与对接映射
 
 ## 实现
@@ -20,13 +20,13 @@
 
 ## 验证
 
-- [ ] 满足 REQUIREMENTS.md 验收标准
-- [ ] 对接行为与 API.md 一致
-- [ ] 本地构建通过（`pnpm build:packages`，以及 admin、admin-platform 的 build），类型检查与 lint 通过
-- [ ] 两个站点手动验收：翻页、筛选、名称、无权限/已删除、窄屏抽屉
+- [x] 满足 REQUIREMENTS.md 验收标准。
+- [x] 对接行为与 API.md 一致。分页、格式化及两域接口定向测试共 17 项通过。
+- [x] 2026-11-07 共享包构建、admin 和 admin-platform 的类型检查及生产构建通过。审计变更文件 ESLint 无错误，公共表格有 17 个警告。全仓 `lint:check` 有 8 个错误，均位于审计变更前已存在且内容未变的 `apps/dev-portal` 文件。
+- [x] 2026-11-07 用户确认两个站点手动验收通过，覆盖翻页、筛选、名称、无权限/已删除及窄屏抽屉。
 
 ## 收尾
 
-- [ ] 更新 `current/base/platform-capabilities/spec.md` 中的授权审计页面行为
-- [ ] 在 capability README 记录变更 ID，并链到归档后的 `API.md`
-- [ ] README 状态改为 `completed`，将变更目录移至 `changes/archive/<year>/<change-id>/`
+- [x] 更新 `current/base/platform-capabilities/spec.md` 中的授权审计页面行为。
+- [x] 在 capability README 记录变更 ID 和归档后的 API。
+- [x] README 状态改为 `completed`，变更目录移至 `changes/archive/<year>/<change-id>/`。

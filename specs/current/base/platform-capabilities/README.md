@@ -19,6 +19,9 @@
 
 - [20261012-iam-platform-capability-completion API](../../../changes/archive/2026/20261012-iam-platform-capability-completion/API.md)
 - [App 用户管理 API](../../../changes/archive/2026/20261106-member-platform-application/API.md)
+- [资源目录与授权 API](../../../changes/archive/2026/20261106-base-resource-catalog/API.md)
+- [授权审计游标 API](../../../changes/archive/2026/20261024-base-authorization-audit-readable/API.md)
+- [平台全局账号选择 API](../../../changes/archive/2026/20261106-base-account-picker/API.md)
 
 ## 变更记录
 
@@ -27,3 +30,6 @@
 | 2026-10-13 | [20261012-iam-platform-capability-completion](../../../changes/archive/2026/20261012-iam-platform-capability-completion/) | 用户确认验证完成；固化八页入口、插件归属与精确权限并归档 |
 | 2026-11-06 | [20261024-org-remove-directory-browse](../../../changes/archive/2026/20261024-org-remove-directory-browse/README.md) · [20261027-org-field-policy](../../../changes/archive/2026/20261027-org-field-policy/README.md) | 普通通讯录退出，组织字段策略按资源配置 |
 | 2026-11-06 | [20261106-member-platform-application](../../../changes/archive/2026/20261106-member-platform-application/README.md) | App 用户管理独立入口、精确权限与页面布局 |
+| 2026-11-07 | [20261106-base-resource-catalog](../../../changes/archive/2026/20261106-base-resource-catalog/README.md) | 更新资源编码、平台用户组、权限诊断、图片上传及工作台门禁 |
+| 2026-11-07 | [20261024-base-authorization-audit-readable](../../../changes/archive/2026/20261024-base-authorization-audit-readable/README.md) | 两域审计按游标翻页，按可见性展示名称与差异 |
+| 2026-11-07 | [20261106-base-account-picker](../../../changes/archive/2026/20261106-base-account-picker/README.md) | 平台创建流程复用全局账号选择器，按用途过滤候选 |

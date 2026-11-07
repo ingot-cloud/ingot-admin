@@ -1,11 +1,11 @@
 # 20261024-base-authorization-audit-readable
 
-> 状态：implementing
+> 状态：completed
 > 批准记录：2026-10-24，用户确认设计并要求开工（approved → implementing）。
 
 ## 协作模式
 
-一人全栈。后端变更为 `ingot/specs/changes/active/20261024-iam-authorization-audit-readable/`。
+一人全栈，前后端同批验收。[后端归档](../../../../../../ingot/specs/changes/archive/2026/20261024-iam-authorization-audit-readable/README.md)
 
 ## 背景与动机
 
@@ -39,7 +39,7 @@
 
 - 接口文档：[API.md](./API.md)，依据后端 change 的 DESIGN 编写。
 - 需求文档：对话中用户确认的四项决策（游标分页采用上一页/下一页；平台和租户两个域一起改；筛选改为选择器；详情中的关联对象显示名称，审计 ID 和追踪 ID 保留并可复制）。
-- 后端来源：`ingot/specs/changes/active/20261024-iam-authorization-audit-readable/DESIGN.md`
+- [后端设计](../../../../../../ingot/specs/changes/archive/2026/20261024-iam-authorization-audit-readable/DESIGN.md)
 
 ## 工件
 
@@ -53,14 +53,9 @@
 - 接口是破坏性变更，前端必须与后端同窗口发布。
 - 部分取代 `20260913-base-iam-admin` 中“目标仅展示资源及 ID”的展示约定。
 
-## 相关链接
-
-- 后端变更：`ingot/specs/changes/active/20261024-iam-authorization-audit-readable/`
-
 ## 完成记录
 
-- 完成日期：
-- 关联提交或 PR：
-- 更新的 current capability：
-- 与原设计的差异：
-- 取消原因：
+- 2026-11-07 用户确认平台及组织端的浏览器人工验收通过。
+- 实现提交为前端 `0776295`、后端 `9719d178`。
+- 更新[平台能力与页面归属](../../../../current/base/platform-capabilities/README.md)的授权审计页面行为和接口索引。
+- 游标分页、筛选和详情展示遵循批准设计。对象名称和可见状态按页消费 `references`。

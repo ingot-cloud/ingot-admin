@@ -249,8 +249,13 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 - [双入口登录页外观](./changes/archive/2026/20261030-ingot-login-appearance/README.md) · [当前能力](./current/ingot-login/password-login/README.md)
 - [租户工作台](./changes/archive/2026/20261030-org-tenant-workbench/README.md) · [当前能力](./current/org/tenant-workbench/README.md)
 
+## 2026-11-07 产品验收归档
+
+- [管理台资源目录与授权补齐](./changes/archive/2026/20261106-base-resource-catalog/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
+- [授权审计游标分页与可读展示](./changes/archive/2026/20261024-base-authorization-audit-readable/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
+- [平台创建流程的全局账号选择](./changes/archive/2026/20261106-base-account-picker/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
+
 ## 当前活动变更
 
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
-- [授权审计游标分页与可读展示](./changes/active/20261024-base-authorization-audit-readable/README.md)（implementing；2026-10-24 用户确认开工）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。
