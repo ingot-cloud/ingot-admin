@@ -1,0 +1,602 @@
+[
+  {
+    "path": "packages/admin-common/src/api/tenant.query.ts",
+    "sha256": "0fd47665dd242f1bd7cd7641e4b009113d686a651365c108c6e072d92d354909"
+  },
+  {
+    "path": "packages/admin-common/src/api/tenant.ts",
+    "sha256": "17ed4df3b8f18c3228cd1b53c57b01717a7ef77a24b91f4ac74c5da11643b352"
+  },
+  {
+    "path": "packages/admin-common/src/components/TenantSelect.vue",
+    "sha256": "6c429190c956824f0b83409b719ad1e8f5c863088a4400a491130e9a59488a17"
+  },
+  {
+    "path": "packages/admin-common/src/models/tenant.ts",
+    "sha256": "dd1baf4302720fdbb6075921b15dea70d29c242a57d8ee6c1a5176bd7bf8d0e5"
+  },
+  {
+    "path": "packages/admin-core/src/api/common/user.ts",
+    "sha256": "a29cc06c2a719d4390f58986d39bc6037113197f1864dbebfc10e2a55dba185d"
+  },
+  {
+    "path": "plugins/org/src/api/org/auth.query.ts",
+    "sha256": "23edd7c8488bd2a3a12f0938b3e8f344a8336b92bacd8404e0e7759ae5934392"
+  },
+  {
+    "path": "plugins/org/src/api/org/auth.ts",
+    "sha256": "84ed65f8488b33e9066510fc46d012361134c94ce77f79c84843633282b9dd35"
+  },
+  {
+    "path": "plugins/org/src/api/org/dept.query.ts",
+    "sha256": "29216da7d7af56ff9fc9f0a6d109375c54fa4eb422ed693aaefc1e241822b3c3"
+  },
+  {
+    "path": "plugins/org/src/api/org/dept.ts",
+    "sha256": "215f62491e2ad65b986ece906621d38d0cdb018af7dc6571878dccaa5ac3acf3"
+  },
+  {
+    "path": "plugins/org/src/api/org/role.query.ts",
+    "sha256": "9b7e28df4e8d946091143f30ec444b89f51b6d6d8db281df3e5f5881fce0fba7"
+  },
+  {
+    "path": "plugins/org/src/api/org/role.ts",
+    "sha256": "b8df9cee95ce51fcdbcc81a02e184c8e46ca6e284e5dcd2afd4b646806db96c8"
+  },
+  {
+    "path": "plugins/org/src/api/org/user.query.ts",
+    "sha256": "8e311c71dbf55f690cbe151ca53ca181f0eb667edff401aee3dd33629819becc"
+  },
+  {
+    "path": "plugins/org/src/api/org/user.ts",
+    "sha256": "a9a4cf601a9131bb9f35ba4654f275a91d7dbb55c7072cc3fb9bb5afd72ebb31"
+  },
+  {
+    "path": "plugins/org/src/components/biz/dept-select/BizDeptSelect.vue",
+    "sha256": "bb535a1e7ee34fc31a7ead3c57623acafe71cbd8b2cac201ce4aa8dd63b90434"
+  },
+  {
+    "path": "plugins/org/src/components/global.ts",
+    "sha256": "fbc2a0b0ac8b1f88b517663262a2e93b7f74bf6aec92a10c51dca3d5f1975241"
+  },
+  {
+    "path": "plugins/org/src/models/authority.ts",
+    "sha256": "b2bf93c275aac9a9f77b43fabadce8fb3e72467d674bf94f7ebaecf4e30b11cc"
+  },
+  {
+    "path": "plugins/org/src/models/dataRule.ts",
+    "sha256": "a43ee9d02f0c7426b6ce5f1871a112ab5f616ca6fec08a83e8779e38c40163e7"
+  },
+  {
+    "path": "plugins/org/src/models/dept.ts",
+    "sha256": "a3d771f020feac0410918a392899d711aaef876619ec3efac54c81ba78d2535e"
+  },
+  {
+    "path": "plugins/org/src/models/role.ts",
+    "sha256": "25ce40e15666d48531e2aea49eefad9128fb4f69581d571e5cbc5869356e919a"
+  },
+  {
+    "path": "plugins/org/src/models/user.ts",
+    "sha256": "663208d5956c5943fa45b32fe786e48c1646c1a1c667829501cdce565bc08ef7"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/IndexPage.test.ts",
+    "sha256": "f622b30a728458a09232fd18d0bb96434a5d550208df8030f2e45f072cdfc2f1"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/IndexPage.vue",
+    "sha256": "830eb005015e23d88e06b448420a59a79dd61effbcf5cd92bab7f6c3828bf4ba"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/components/AddAuthDrawer.vue",
+    "sha256": "3d4c199659393818b60a6647464ab603955629bb3ca0c19fc26f17729bff2408"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/components/LeftContent.vue",
+    "sha256": "9b698ebb58e4e45d822e583f14c1b334c7c3a169a7db575e6a12c8ddab6ea8f0"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/table.test.ts",
+    "sha256": "f4ae881340007a693df6a8471000441b5809158ce60f30ee52135946cd01b395"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/table.ts",
+    "sha256": "14eb1d7dbe2879b3d1fce2dcd37bfd374d60064fdf2b4b986231132334aa3a1c"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/auth/useOps.ts",
+    "sha256": "1791ebcf866ae124ddd3b3fe5b64812b597b80f79f82fd43b8604d605a3831bf"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/IndexPage.test.ts",
+    "sha256": "15f9c19ab7843504004c597c26d24ed0c4460caf1c035ac50b22a1556ef0b138"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/IndexPage.vue",
+    "sha256": "b78d59f8376fc59521b356cb7f5c1c935de34939a46a1ac5a6695e6683ee5023"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/components/CreateDrawer.vue",
+    "sha256": "3c57161c2871e4f287ab1298ac582f054d266e86d75df15376cdf0526aab1673"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/components/DetailDrawer.test.ts",
+    "sha256": "01985046a9c7f86f0cc4b577a9a0e43168b046cb7e590fcc02d2bef46e0f7e81"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/components/DetailDrawer.vue",
+    "sha256": "2801d9186982eaf0ac3f7e97dc5f2e8241d37bd77155ada9b743281827558cbf"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/deptTree.test.ts",
+    "sha256": "5f40c573abe25071bcc037c7d6d9fc13aef885006c5da8c3df228508da375731"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/deptTree.ts",
+    "sha256": "ca6711c043f9416fdf2e35b28ee319b7e283221d6fd4700159e5f723412dd998"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/table.test.ts",
+    "sha256": "31b31c81971aff063368e8e3e9b990dbb2b23606618f7f767d7415a05c69761b"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/dept/table.ts",
+    "sha256": "60aa5a2de30299cd3c42c245e80564bfb48b8f487d07b64574a7cd06493e6ff8"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/IndexPage.test.ts",
+    "sha256": "22b3960d64e4f4e08928e61fb1726b385058d50ca5a0c0c598ba0e61efcdff53"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/IndexPage.vue",
+    "sha256": "fc6b5bc4d4cd70f2069a74f8dc263fd1004161c1e2b175b302f0dd1608fcaf70"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/AddMemberDialog.test.ts",
+    "sha256": "5e836b9c071eec453bdad375a9e5b5f1d2ce91ae1bbfe0f557a0565b6b7fc1b1"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/AddMemberDialog.vue",
+    "sha256": "d76513b6717239d536677107b31e3b639b4670b13f049182587842f56e0ca840"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/DataRuleDrawer.vue",
+    "sha256": "44303e229f280c961abfab7fbcfb7041e3c6b69ffc6d2fa3721089635146ccbd"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/LeftContent.vue",
+    "sha256": "48301c4d4d2c44b477c9a60dbe20fd4035de740f474f0860ea020e69f1c39656"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/RoleDrawer.vue",
+    "sha256": "b3616e3e0fac8fa5b9c4a91e3efa3798af2960f854937fc13d8c9d3ebdeb4b8f"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/RoleGroupDrawer.vue",
+    "sha256": "e1590b041cd9085c4260eb53f08a1ff4384a3578efcf375ec21b87c780590d04"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/components/SelectDeptDialog.vue",
+    "sha256": "c7ba0a0de6fd49d2c7edd1686a872cc0e9bfecf934f4afbe291980d863dd9ea8"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/table.test.ts",
+    "sha256": "5ebd4736f5aa5af6856ab5b9681ac33e36f308f32af82cdacb85f667f8ab49b6"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/table.ts",
+    "sha256": "7bbd88fbf87dbc40967ee4e4fd177ee067e2c5baa3891d7914281f02c756e168"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/role/useOps.ts",
+    "sha256": "67ca9cbbfddde688ddf52c703c410ce270084ce7056c6a49b7b0c9e05bf0598f"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/structure/DeptTreeView.vue",
+    "sha256": "fe0ac4aa897135fabbeeb62b4da21a958f622dc742c026443cd4e5f5cad97020"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/structure/IndexPage.test.ts",
+    "sha256": "8249e3ffbaca479c2c75446bb1cb8b59d04fc9ca2604e376a2593bf06638ea46"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/structure/IndexPage.vue",
+    "sha256": "49f02f9a0c40c2e3c6c22ce5fb1bd26bfbdcfbc1c7ddd83a83d5802a487ff913"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/IndexPage.test.ts",
+    "sha256": "bc2411904dae413c939d97fb23ee8aa3fd3d6bca3ac034b07e8a65265ef17609"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/IndexPage.vue",
+    "sha256": "2672741b7152d41a8eb4a7d0dae0625463651809fc62f9a4a9d8c18ec2b000c5"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/components/CreateDrawer.vue",
+    "sha256": "023492cfdf5d7327b19ff52a7fab549f7f821ce03c05d2a43239f4a21a7b41e4"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/components/DetailDrawer.test.ts",
+    "sha256": "270ae7996c131e017345702a39e5d973f3e790e695ff0e01b07f7cf7ebdf03ae"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/components/DetailDrawer.vue",
+    "sha256": "136e386762154eea3cb3dd2e2a1048957a2a2988be5595f58932d4420836e19a"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/components/LeftContent.vue",
+    "sha256": "d1a0f98b1ad97bbe0b2b4dba8ac106118de17ff6a8ac6ca065ba8a3bbdb3d492"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/deptNames.test.ts",
+    "sha256": "ec2d92d0ad9de8eb4f30f53128a95f370edd1359a2ac5b3bdce8bafda764c257"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/deptNames.ts",
+    "sha256": "3da15f9f8492d55229d088a1d7490c9c257a0c616e5c52972e448ebc9b0d2436"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/table.test.ts",
+    "sha256": "6317b6ac267b7463a83fff2a35a82f3dc7a8801a345b85a5d62455869bf9bc35"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/table.ts",
+    "sha256": "1e5169dd6230a7c60f628c6b927a6d7c36dc071f7e882a1a016758337f1d95fc"
+  },
+  {
+    "path": "plugins/org/src/pages/contacts/user/useUserOps.ts",
+    "sha256": "0f46da7ce10d8a85d2f614ebcc5dc43cc5ee401a71146cdd1c5dfd294725f06d"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/dept.query.ts",
+    "sha256": "7516371ef13afe474e7c68d06924428fe069a6f4664981d82773c00f50c180e3"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/dept.ts",
+    "sha256": "16cc7d078321d3a929d0ced61833e7a6267d2aba49fd7e3b6019ea57ff95f159"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/role.query.ts",
+    "sha256": "48a4a1c9d7b68c758d33471d77bc4467dadd8c62a3bdcbb0e600ca37531f6349"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/role.ts",
+    "sha256": "c9f926067f30432a1b1465adb55e1fd9a8beb64e769d37bdce8303e3c59ed69d"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/user.query.test.ts",
+    "sha256": "db7fcac0f79d51c9b730c184d121cb9a85ea18d26d2a3db85fd3df5acef57f6e"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/user.query.ts",
+    "sha256": "0922ecbb1d2aaa3f759d0a4d4f35213bba406888ebfd116664c6d9de120cd44d"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/admin/user.ts",
+    "sha256": "ccb094d7d5a36c2ec825e36226d03bfeb397e8b34defe9166bef3f98fcd2bf23"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/app.query.test.ts",
+    "sha256": "23a9269d7e1b76430359f0d2414248544541b1671f9811106610bd2ca73a428f"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/app.query.ts",
+    "sha256": "c3c55058b8df284f910a3c3d42f6cabe714c6e0666c42e3d4f5918d786a5cef7"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/app.ts",
+    "sha256": "68261035c059db7fb541f406cacfac753b9f7117df55d25b9d3607853bae0665"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/authority.query.test.ts",
+    "sha256": "a7c93ea4824f0811e653833690854dbda311018500a6dad45df12cf17d1d6d9d"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/authority.query.ts",
+    "sha256": "066803c61434d80586055bfe8dbaa9ef221685a4ab7f2d9899f7d6b726528526"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/authority.ts",
+    "sha256": "8c94e60872ffa5c9b878bb454f0ff82ea1f20d688195e65a097d4672544332f0"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/menu.query.ts",
+    "sha256": "f1e060f7972ce75babdb5994b8a888b65eee7d426ceed2fa5b8d3a44338d26a0"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/menu.ts",
+    "sha256": "6920ff924d79ff7e98a6c726a19bcee24425b89e0aaf4ca001121e7009baae02"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/role.query.ts",
+    "sha256": "625b3cb3469e6c095ddcd7f69fe75ea5c81269bd47d5ef9048d7ce316144818a"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/config/role.ts",
+    "sha256": "8622f4b0c4bd8ef0646da335d693d1c4851d3cc6b38362125974e109523d15e1"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/org/tenant.query.ts",
+    "sha256": "3946a89a0ad5ed48a763a6693c126c8496190ee8abcc42b683287062fba0ea3f"
+  },
+  {
+    "path": "plugins/platform/src/api/platform/org/tenant.ts",
+    "sha256": "dae4267af8a285659c84b5ffb43454f219670a16d2881fc2afbb19869a5c2142"
+  },
+  {
+    "path": "plugins/platform/src/components/biz/search-user-by-phone/BizSearchUserByPhone.vue",
+    "sha256": "aa58d45408a3f68f725edb7633182dcb3ca5fe60d99018bc99caa6b03cfd610f"
+  },
+  {
+    "path": "plugins/platform/src/components/biz/tenant-options/TenantOptions.vue",
+    "sha256": "82c90fa2998ff2c0e1c678d97c214c05062032279a2184df88a96c0b3e217c83"
+  },
+  {
+    "path": "plugins/platform/src/components/global.ts",
+    "sha256": "b925e68e97b2311309422243b5f5d6f86c775e2d94de5aca9d03b34110c30ee2"
+  },
+  {
+    "path": "plugins/platform/src/models/application.ts",
+    "sha256": "06b5c7ed796143b9c18abaf01223d4e6adc00b05cd2ec8bf2a16bfb32b729c6d"
+  },
+  {
+    "path": "plugins/platform/src/models/authority.ts",
+    "sha256": "dfd5dff37f5ed3535b0a6238ccaada422a17b7e912f5610fa970ef4e0c55035f"
+  },
+  {
+    "path": "plugins/platform/src/models/dataRule.ts",
+    "sha256": "a43ee9d02f0c7426b6ce5f1871a112ab5f616ca6fec08a83e8779e38c40163e7"
+  },
+  {
+    "path": "plugins/platform/src/models/dept.ts",
+    "sha256": "a3d771f020feac0410918a392899d711aaef876619ec3efac54c81ba78d2535e"
+  },
+  {
+    "path": "plugins/platform/src/models/enums/appEnums.ts",
+    "sha256": "eaecce2de3d55a959dc92f4e37edea0466fa42951041c3343c08ff565d7eef63"
+  },
+  {
+    "path": "plugins/platform/src/models/resource.ts",
+    "sha256": "eb092a1d8d3fd8db5cc3a4f26e94d8725bf08d28c2e2ef7a067f0b2f21d56c18"
+  },
+  {
+    "path": "plugins/platform/src/models/role.ts",
+    "sha256": "d3df593d8e9f61525637e95d0bddff75ecab86e5e402d2a311dc4c29cdd9f432"
+  },
+  {
+    "path": "plugins/platform/src/models/tenant.ts",
+    "sha256": "63708712f24c8f3c454d9346d18a73aadc28b4339bf03abc4990c2f87891a226"
+  },
+  {
+    "path": "plugins/platform/src/models/user.ts",
+    "sha256": "0eee61c41fc99c338ff5b622d3e59daa59814e7c5f244103b912af4a689c5f66"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/IndexPage.test.ts",
+    "sha256": "9088f288b4b77a938261c99e2338bbeca0bf011c6b617ba6caf89733057855fe"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/IndexPage.vue",
+    "sha256": "a23f3ea197a72fa6c5901d6af9894440bb8b5964593776f4f4ddd3a59ffb87f3"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/BaseInfoForm.vue",
+    "sha256": "19211cd69777236d6f08ddca64b7b6ba887b7014b6a62738a4fa663a3ef3172f"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/CreateDrawer.vue",
+    "sha256": "56bd516e7a98f251c7200250007c94a059f52e17a66e2f25d8cf98f90519ee19"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/EditDrawer.vue",
+    "sha256": "88281ad360068ef6c627967c36373d70d43ecfea977df34f8c29a4263a56d3bf"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/LockAccountDialog.vue",
+    "sha256": "e811fc61cc2e24dac1f8c71b1a66d6c6b18cf6ac521092d3377e61b7aca205ec"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/OrgInfoCreateDialog.vue",
+    "sha256": "355c99a3a55ec5ab7dd6a6a014fb019a0220084ef0beac999936542098be3bbf"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/OrgInfoForm.vue",
+    "sha256": "f00c20e5650ba13a53bccaad4eea8d1a3c30464827dc68f17dba4e5057309c58"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/OrgInfoFormItem.vue",
+    "sha256": "516376362e0fb1f27313ee16866eabeffbecba17ce2966c6f22e69506ed0e8bf"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/components/ResetPwdDialog.vue",
+    "sha256": "d14c708a8115e284cdb9574fffcaede9704aabcac300f2249b7252c8fa6cd689"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/table.test.ts",
+    "sha256": "09d7db6e49d04e193ef4238fc958b6f1a9b9b93420a71faf4c1cf70b96bce399"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/table.ts",
+    "sha256": "f156c60283c5fbc771f421670da7897a3dd8f1acb8e771443ad6e29f6de5c281"
+  },
+  {
+    "path": "plugins/platform/src/pages/admin/user/useOps.ts",
+    "sha256": "ae68905ec30c3a3c5ce11ed6718195089c70342c62bf0aa465b78d4bf9b07741"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/README.md",
+    "sha256": "e140cc7218efafb4e9f016e3f4d3dded9d224be47dbaa3d1e73c105a2c553d14"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/IndexPage.test.ts",
+    "sha256": "d7f24f65cbf7a12222b5f4bfbbe7e8914d67a8336f1f37a70964bd2ad1499208"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/IndexPage.vue",
+    "sha256": "dba0bf1cd1a36085fead483f6fc50960874ed5c252333581155641d5e7556fdb"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/BasicInfoPanel.vue",
+    "sha256": "35e3f6d4d14de20c04409b9f13a70a37fa4918530297292b3b7fb3337ce6c57b"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/MenuEditDrawer.vue",
+    "sha256": "063bf4d4228c67199dd64bdaa468e1c2d8f66618e11ff7cb9a769efbd1bf7529"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/MenuPanel.vue",
+    "sha256": "745262b8ac512df64b97ab4b0dbace8873980e2bdfc0ce59d28c59499a7616de"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/PermissionEditDrawer.vue",
+    "sha256": "81775733f5cf0a6b6c6b6149391fdc984722ec4f8ed7b30eac0b155a310ea978"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/PermissionPanel.vue",
+    "sha256": "d0de88fc624bf2a5a35d6015668f61b5ed1ff42e7de1768d9b8e6e2f5b10cb5c"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/ResourceEditDrawer.vue",
+    "sha256": "5afd06cad7173025e35a95da1e8375a0907ebfd45cc1d307cc54ac2e78360372"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/ResourcePanel.vue",
+    "sha256": "eb676d1b75732f1179146bb53c71fd582b2dfe7e3d2aa373319f27863f902b2c"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/menuTable.ts",
+    "sha256": "ebb58bce409a5924f9fe252d72b490f1eb3c6eb8ae62dbfb14b0fdc2295eaa0f"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/permissionTable.ts",
+    "sha256": "306835fe877ac08de1e899d90311eca2aaea32fca7e78dae882bba4836076937"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/permissionTree.ts",
+    "sha256": "a3b65a714391c61ca5d4cf86e51a89883d002037d38c9008560be176fa33c142"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/detail/components/resourceTable.ts",
+    "sha256": "139a2a0e28e0e7ddfb6f8b27434ca4c97b4285dc95d4f769c0656af75535b147"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/IndexPage.test.ts",
+    "sha256": "0a290523e9698cbbf368d76574f10baea4f525d0d2e8273a721299df122b0af0"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/IndexPage.vue",
+    "sha256": "852ccc107164e350d9dd1b30cf6f11b0242ea81ba061e7761eeb9d96fbf933d6"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/components/CreateDrawer.vue",
+    "sha256": "f91fd3a8985b34bf1e7ca222d2229535b88ff292216c0ac51c377c0198fd83dc"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/table.test.ts",
+    "sha256": "54433811dc05754c0ce96fe6304b9308205756e50047caeaf50083bcfabd2b8d"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/table.ts",
+    "sha256": "8bca2c736bf00ed43c9bb68d4299692598c9884517f6cd6519574db584b50d90"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/app/home/useOps.ts",
+    "sha256": "404164fc438f453944a66dfc04833d5b4e9ed02374e656ce27156345630e13aa"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/menu/IndexPage.test.ts",
+    "sha256": "5b26aae0216b185f8cdcf908f2edc80fd332ea023d15c577fa1a6010f59dc337"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/menu/IndexPage.vue",
+    "sha256": "d4002fb58721d299dd38a6a708abb1db6a29059e27dfe8564b6c8a1fd2d29449"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/menu/table.test.ts",
+    "sha256": "3164d829cda5bef69eefd96ca2d48fd79a1ccfd86a81b88dde217c067b53b4f4"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/menu/table.ts",
+    "sha256": "477c781e7494061d15e2dcccf399ad6285e7dfcf102d0fc606c3a2b11c8b2fdd"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/permission/IndexPage.test.ts",
+    "sha256": "a8387df988cf08c1ca6b317d3b09745a71d1352086d555365cbeedf23223f803"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/permission/IndexPage.vue",
+    "sha256": "d4f3d4a611d88d330119bc704bce2dfe1484ee41d1e19b2fd5c99e7f813b4a4b"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/permission/table.test.ts",
+    "sha256": "42e33fd96a16c2d20da96761f5fa74164393e384e5921912f428a51d6e589fa1"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/permission/table.ts",
+    "sha256": "79842c5397d392dc962b344f79aff5d90cf6ed58972a573b4238c87f83245bbb"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/IndexPage.test.ts",
+    "sha256": "ed95a476425e138db56b52231968680d47fd676612b638884f24a3ffddbb3fd9"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/IndexPage.vue",
+    "sha256": "efa24e21e5b4502840467a853f581a5973891ab9ae9d83c6a47d83d14ddea4a4"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/components/BindAuthDialog.vue",
+    "sha256": "812586cf5a10cb36a8e060182dfb98bada5da3aed0d64df821e436195163640e"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/components/DataRuleDrawer.vue",
+    "sha256": "092d21fa13ac485e40e31ae95367c0e9107276803742bf779c093578212ed7f2"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/components/RoleDrawer.vue",
+    "sha256": "4de98c493166b8b29a93cdde9e1470201da17f78faa5446a9970178121834ffa"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/table.test.ts",
+    "sha256": "a64417f855ecf5a9d5ace16e363c8e5d320b83ec8c6f3fd7441820fd162e0217"
+  },
+  {
+    "path": "plugins/platform/src/pages/config/role/table.ts",
+    "sha256": "53812d5ea248137a35a7663bf8610576f316aed389689c605f263ea279b47eb5"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/IndexPage.test.ts",
+    "sha256": "bc2488466cd5913f493e2557eabba246af668c9724cbf5256f9bac13f2982707"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/IndexPage.vue",
+    "sha256": "fcefbbff54825d90ce3b82fb9f3117b8ae911a09e346e11f6f3cb2164bbf8083"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/components/AppInfo.vue",
+    "sha256": "075780bc5971bff59c50724f35f63b3133b1397c9af11e41435ca81e5aaa5a75"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/components/BaseInfoForm.vue",
+    "sha256": "3b06193b8666c2168c91bbb9d33322c0fea7ddd4d10c3ffe8c330a42899c4b94"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/components/CreateDrawer.vue",
+    "sha256": "c95636e8ebbd64fc24acfd86e691388d24870a09315344c3b9150eb75e33ead7"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/components/EditDrawer.vue",
+    "sha256": "24810b3c9f3eb0763860fc0b51f78d73a60c40f0c230ce244b42880ab6ddc937"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/table.test.ts",
+    "sha256": "9b9d29f6d280da0315ed8768257048bb9338d7eb414ece13d3c9bcdc422db828"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/table.ts",
+    "sha256": "46336d5d6bb8e5b4404ccc49f6aa8d691e82c17f26b3f775764f8226488bfbf7"
+  },
+  {
+    "path": "plugins/platform/src/pages/org/tenant/useOps.ts",
+    "sha256": "f86f724222fd7cd157c6e74e624c7e9fac7c8a96a902fbffd9f9790192b733b6"
+  }
+]

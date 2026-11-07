@@ -1,0 +1,6 @@
+{
+  "packages/admin-core/src/components/__fixtures__/visual-contract.test.ts": true,
+  "packages/admin-core/src/layouts/widgets/InAppBar.vue": true,
+  "packages/admin-core/src/components/table/InTable.vue": true,
+  "packages/admin-core/src/components/table/InTable.test.ts": true
+}

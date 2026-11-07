@@ -1,0 +1,386 @@
+[
+  {
+    "domain": "tenant",
+    "mode": "create",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "list": {
+      "client": 579,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 579,
+      "scroll": 756,
+      "top": 0
+    },
+    "footer": {
+      "x": 0,
+      "y": 836,
+      "width": 1440,
+      "height": 64,
+      "top": 836,
+      "right": 1440,
+      "bottom": 900,
+      "left": 0
+    },
+    "body": {
+      "client": 729,
+      "scroll": 729
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "tenant",
+    "mode": "create",
+    "viewport": {
+      "width": 1440,
+      "height": 600
+    },
+    "list": {
+      "client": 279,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 279,
+      "scroll": 756,
+      "top": 9
+    },
+    "footer": {
+      "x": 0,
+      "y": 536,
+      "width": 1440,
+      "height": 64,
+      "top": 536,
+      "right": 1440,
+      "bottom": 600,
+      "left": 0
+    },
+    "body": {
+      "client": 429,
+      "scroll": 429
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "tenant",
+    "mode": "create",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "list": {
+      "client": 756,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 537,
+      "scroll": 1085,
+      "top": 131
+    },
+    "footer": {
+      "x": 0,
+      "y": 780,
+      "width": 390,
+      "height": 64,
+      "top": 780,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "body": {
+      "client": 673,
+      "scroll": 673
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "tenant",
+    "mode": "edit",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "list": {
+      "client": 579,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 579,
+      "scroll": 756,
+      "top": 0
+    },
+    "footer": {
+      "x": 0,
+      "y": 836,
+      "width": 1440,
+      "height": 64,
+      "top": 836,
+      "right": 1440,
+      "bottom": 900,
+      "left": 0
+    },
+    "body": {
+      "client": 729,
+      "scroll": 729
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "tenant",
+    "mode": "edit",
+    "viewport": {
+      "width": 1440,
+      "height": 600
+    },
+    "list": {
+      "client": 279,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 279,
+      "scroll": 756,
+      "top": 9
+    },
+    "footer": {
+      "x": 0,
+      "y": 536,
+      "width": 1440,
+      "height": 64,
+      "top": 536,
+      "right": 1440,
+      "bottom": 600,
+      "left": 0
+    },
+    "body": {
+      "client": 429,
+      "scroll": 429
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "tenant",
+    "mode": "edit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "list": {
+      "client": 756,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 537,
+      "scroll": 1085,
+      "top": 131
+    },
+    "footer": {
+      "x": 0,
+      "y": 780,
+      "width": 390,
+      "height": 64,
+      "top": 780,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "body": {
+      "client": 673,
+      "scroll": 673
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "create",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "list": {
+      "client": 579,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 579,
+      "scroll": 756,
+      "top": 0
+    },
+    "footer": {
+      "x": 0,
+      "y": 836,
+      "width": 1440,
+      "height": 64,
+      "top": 836,
+      "right": 1440,
+      "bottom": 900,
+      "left": 0
+    },
+    "body": {
+      "client": 729,
+      "scroll": 729
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "create",
+    "viewport": {
+      "width": 1440,
+      "height": 600
+    },
+    "list": {
+      "client": 279,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 279,
+      "scroll": 756,
+      "top": 9
+    },
+    "footer": {
+      "x": 0,
+      "y": 536,
+      "width": 1440,
+      "height": 64,
+      "top": 536,
+      "right": 1440,
+      "bottom": 600,
+      "left": 0
+    },
+    "body": {
+      "client": 429,
+      "scroll": 429
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "create",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "list": {
+      "client": 756,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 537,
+      "scroll": 1085,
+      "top": 131
+    },
+    "footer": {
+      "x": 0,
+      "y": 780,
+      "width": 390,
+      "height": 64,
+      "top": 780,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "body": {
+      "client": 673,
+      "scroll": 673
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "edit",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "list": {
+      "client": 579,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 579,
+      "scroll": 756,
+      "top": 0
+    },
+    "footer": {
+      "x": 0,
+      "y": 836,
+      "width": 1440,
+      "height": 64,
+      "top": 836,
+      "right": 1440,
+      "bottom": 900,
+      "left": 0
+    },
+    "body": {
+      "client": 729,
+      "scroll": 729
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "edit",
+    "viewport": {
+      "width": 1440,
+      "height": 600
+    },
+    "list": {
+      "client": 279,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 279,
+      "scroll": 756,
+      "top": 9
+    },
+    "footer": {
+      "x": 0,
+      "y": 536,
+      "width": 1440,
+      "height": 64,
+      "top": 536,
+      "right": 1440,
+      "bottom": 600,
+      "left": 0
+    },
+    "body": {
+      "client": 429,
+      "scroll": 429
+    },
+    "windowY": 0
+  },
+  {
+    "domain": "platform",
+    "mode": "edit",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "list": {
+      "client": 756,
+      "scroll": 756
+    },
+    "scrollArea": {
+      "client": 537,
+      "scroll": 1085,
+      "top": 131
+    },
+    "footer": {
+      "x": 0,
+      "y": 780,
+      "width": 390,
+      "height": 64,
+      "top": 780,
+      "right": 390,
+      "bottom": 844,
+      "left": 0
+    },
+    "body": {
+      "client": 673,
+      "scroll": 673
+    },
+    "windowY": 0
+  }
+]

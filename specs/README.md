@@ -259,3 +259,7 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。
+
+- [IAM 历史前端调用清理](./changes/active/20261107-base-iam-legacy-cleanup/README.md)（validating，退役PMS调用子图已清理；目标环境/人工验收待办）
+
+- [角色向导权限树滚动修复](./changes/active/20261107-org-role-permission-scroll/README.md)（validating，长树滚动与固定页脚修复，待实际环境复测）

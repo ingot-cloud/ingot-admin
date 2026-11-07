@@ -1,7 +1,3 @@
-# 管理身份（Admin Identity）
+# 平台管理
 
-## 目录
-
-管理身份
-├── 用户管理
-├── 角色分配（User ↔ Role）
+历史 PMS 用户页面已退出；平台人员与用户组见 `../iam/personnel/`，组织治理见 `../iam/tenants/`。
