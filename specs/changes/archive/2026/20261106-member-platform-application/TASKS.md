@@ -8,4 +8,4 @@
 - [x] 执行 Member 插件与平台宿主类型检查、定向单测和 Chromium 模拟接口回归。
 - [x] 修复角色、权限表的操作列换行和裁切。Chromium 已验证两种视口下的行内按钮和权限操作菜单。
 - [x] 去掉权限详情表单重复的内边距。Chrome 已验证查看和编辑时字段左对齐。
-- [x] 按用户要求更新系统基线并归档。真实会话、入口隔离、撤权和回滚移交 [目标环境发布验收](../../../../../../ingot/specs/changes/active/20261106-member-platform-release-acceptance/TASKS.md)。
+- [x] 按用户要求更新系统基线并归档。真实会话、入口隔离、撤权和回滚移交 [目标环境发布验收](../../../../../../ingot/specs/changes/archive/2026/20261106-member-platform-release-acceptance/TASKS.md)。

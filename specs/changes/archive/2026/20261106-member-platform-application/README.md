@@ -28,4 +28,4 @@
 - 系统基线更新见 [平台能力与页面归属](../../../../current/base/platform-capabilities/README.md)。
 - 联调修正了角色与权限页的操作列裁切和权限详情的重复内边距。
 - [后端配套归档](../../../../../../ingot/specs/changes/archive/2026/20261106-member-platform-application/README.md)
-- 目标库与真实平台会话证据交由 [目标环境发布验收](../../../../../../ingot/specs/changes/active/20261106-member-platform-release-acceptance/README.md) 跟踪。
+- 目标库与真实平台会话证据交由 [目标环境发布验收](../../../../../../ingot/specs/changes/archive/2026/20261106-member-platform-release-acceptance/README.md) 跟踪。
