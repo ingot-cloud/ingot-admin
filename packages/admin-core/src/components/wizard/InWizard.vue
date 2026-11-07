@@ -102,6 +102,7 @@ const currentStep = computed(() => props.steps?.[props.current]);
 
   &.in-drawer.in-drawer--pinned > .el-drawer__body > .in-drawer__body > .in-loading {
     flex: 1 1 auto;
+    min-height: 0;
   }
 
   &.in-dialog > .el-dialog__footer,
