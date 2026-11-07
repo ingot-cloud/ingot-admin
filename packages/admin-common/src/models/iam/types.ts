@@ -175,6 +175,7 @@ export interface AccountListQuery {
   username?: string;
   phone?: string;
   email?: string;
+  excludePlatformMembers?: boolean;
 }
 
 export interface AccountRecord {

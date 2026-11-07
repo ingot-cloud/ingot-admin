@@ -7,11 +7,14 @@
     width="520px"
   >
     <in-form v-if="step === 1" label-position="top">
-      <el-form-item label="登录名" required>
-        <div class="flex gap-8px">
-          <el-input v-model="username" clearable placeholder="精确查找已有全局账号" />
-          <in-button :disabled="!fieldsReady || loading" @click="privateLookup">查找</in-button>
-        </div>
+      <el-form-item label="全局账号" required>
+        <biz-platform-account-select
+          :model-value="account"
+          :disabled="!visible || !fieldsReady || loading"
+          for-platform-member
+          @update:model-value="privateSelectAccount"
+          @create-account="privateCreateAccount"
+        />
       </el-form-item>
       <template v-if="accountId">
         <el-form-item v-if="memberFieldVisible(createFields, 'avatar')" label="头像">
@@ -31,14 +34,11 @@
           />
           <span v-else>由系统设置默认显示名</span>
         </el-form-item>
-        <el-form-item label="登录名">
-          <el-input :model-value="lookedUpUsername" disabled placeholder="不可修改" />
-        </el-form-item>
         <el-form-item v-if="memberFieldVisible(createFields, 'phone')" label="初始联系手机号">
-          <el-input :model-value="phone || '-'" disabled placeholder="不可修改" />
+          <el-input :model-value="account?.record.phone || '-'" disabled placeholder="不可修改" />
         </el-form-item>
         <el-form-item v-if="memberFieldVisible(createFields, 'email')" label="初始联系邮箱">
-          <el-input :model-value="email || '-'" disabled placeholder="不可修改" />
+          <el-input :model-value="account?.record.email || '-'" disabled placeholder="不可修改" />
         </el-form-item>
         <div class="text-12px text-[var(--el-text-color-secondary)]">
           创建时从账号复制初始联系方式，之后可在成员详情独立修改，不影响账号登录信息。
@@ -84,20 +84,20 @@
 </template>
 
 <script setup lang="ts">
-import { InWizard, Confirm, Message, createLoadGuard, isApiError } from "@ingot/admin-core";
+import { InWizard, Message, createLoadGuard } from "@ingot/admin-core";
 import {
-  AccountLookupPurpose,
-  AuthorizationDomain,
   BizIamMemberPickerDialog,
   BizIamOptionTagField,
   isFieldEditable,
+  type AccountRecord,
   type FieldAccessMap,
   type IamSelectOption,
+  type ResourceDetail,
 } from "@ingot/admin-common";
-import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformMemberCreateAPI, PlatformMemberContextAPI } from "@/api/iam/personnel";
 import { platformMemberQueryKeys } from "@/api/iam/personnel.query";
 import { useQueryClient } from "@tanstack/vue-query";
+import BizPlatformAccountSelect from "../../components/BizPlatformAccountSelect.vue";
 import { loadPlatformGroupOptions } from "../iamMemberOptions";
 import { useDirectRoleEligibility } from "../useDirectRoleEligibility";
 import MemberRolesField from "./MemberRolesField.vue";
@@ -107,7 +107,6 @@ import { memberCreateProfile, memberFieldVisible } from "../memberFieldAccess";
 defineOptions({ name: "MemberCreateDrawer" });
 
 const { canGrantDirect, refresh: refreshEligibility } = useDirectRoleEligibility();
-const OBJECT_NOT_FOUND = "ObjectNotFound";
 const ACCOUNTS_ROUTE = "platform.iam.accounts";
 
 const emits = defineEmits<{ success: [] }>();
@@ -115,81 +114,44 @@ const queryClient = useQueryClient();
 const go = useGo();
 const visible = ref(false);
 const loading = ref(false);
-const createFields = ref<FieldAccessMap>({});
 const fieldsReady = ref(false);
 const loadGuard = createLoadGuard();
 const step = ref<1 | 2>(1);
-const username = ref("");
-const accountId = ref("");
-const lookedUpUsername = ref("");
-const phone = ref("");
-const email = ref("");
+const account = ref<ResourceDetail<AccountRecord>>();
+const accountId = computed(() => account.value?.record.id ?? "");
+const createFields = computed<FieldAccessMap>(() => account.value?.fieldAccess ?? {});
 const displayName = ref("");
 const avatar = ref<string | undefined>();
 const roleState = ref<MemberRoleEditorState>();
 const groups = ref<IamSelectOption[]>([]);
 const groupPickerRef = ref<{ show: (current: IamSelectOption[]) => void }>();
 
-const resetHit = (): void => {
-  accountId.value = "";
-  lookedUpUsername.value = "";
-  phone.value = "";
-  email.value = "";
+const resetDraft = (): void => {
+  account.value = undefined;
   displayName.value = "";
   avatar.value = undefined;
-};
-
-const resetDraft = (): void => {
-  username.value = "";
-  resetHit();
   roleState.value = undefined;
   groups.value = [];
   step.value = 1;
 };
 
-const privateLookup = (): void => {
-  if (!fieldsReady.value || loading.value) return;
-  const guard = loadGuard.begin();
-  const loginName = username.value.trim();
-  if (!loginName) {
-    Message.warning("请输入登录名");
-    return;
-  }
-  loading.value = true;
-  resetHit();
-  PlatformAccountLookupAPI({
-    purpose: AccountLookupPurpose.MEMBER_CREATE,
-    domain: AuthorizationDomain.PLATFORM,
-    username: loginName,
-  })
-    .then((response) => {
-      if (!guard.isCurrent() || !visible.value) return;
-      createFields.value = response.data.fieldAccess;
-      const record = response.data.record;
-      accountId.value = record.id;
-      lookedUpUsername.value = record.username;
-      phone.value = record.phone ?? "";
-      email.value = record.email ?? "";
-      displayName.value = isFieldEditable(createFields.value, "displayName") ? record.username : "";
-      Message.success("已定位账号，不展示组织关系");
-    })
-    .catch((error: unknown) => {
-      if (!guard.isCurrent() || !visible.value) return;
-      if (isApiError(error) && error.code === OBJECT_NOT_FOUND) {
-        Confirm.warning("未找到该登录名，是否前往创建全局账号？").then(() => {
-          visible.value = false;
-          go({ name: ACCOUNTS_ROUTE, query: { username: loginName } });
-        });
-      }
-    })
-    .finally(() => {
-      if (guard.isCurrent()) loading.value = false;
-    });
+const privateSelectAccount = (selected?: ResourceDetail<AccountRecord>): void => {
+  const previousId = accountId.value;
+  account.value = selected;
+  if (previousId === accountId.value) return;
+  displayName.value =
+    selected && isFieldEditable(createFields.value, "displayName") ? selected.record.username : "";
+  avatar.value = undefined;
+};
+
+const privateCreateAccount = (username: string): void => {
+  visible.value = false;
+  go({ name: ACCOUNTS_ROUTE, query: { username } });
 };
 
 const privateNext = (): void => {
   if (!accountId.value) {
-    Message.warning("请先查找账号");
+    Message.warning("请先选择全局账号");
     return;
   }
   step.value = 2;
@@ -215,7 +177,7 @@ const privateOnGroupsConfirm = (selected: IamSelectOption[]): void => {
 
 const privateSubmit = (): void => {
   if (!accountId.value || !fieldsReady.value || loading.value) {
-    Message.warning("请先查找账号");
+    Message.warning("请先选择全局账号");
     return;
   }
   loading.value = true;
@@ -247,15 +209,13 @@ defineExpose({
   show() {
     void refreshEligibility();
     resetDraft();
-    createFields.value = {};
     fieldsReady.value = false;
     visible.value = true;
     const guard = loadGuard.begin();
     loading.value = true;
     PlatformMemberContextAPI()
-      .then((response) => {
+      .then(() => {
         if (!guard.isCurrent() || !visible.value) return;
-        createFields.value = response.data.createFieldAccess;
         fieldsReady.value = true;
       })
       .catch(() => undefined)

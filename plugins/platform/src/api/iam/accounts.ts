@@ -71,7 +71,11 @@ export function PlatformAccountPageAPI(
     return PlatformAccountLookupAPI(lookup, options).then(lookupToPage);
   }
   return request
-    .get<IamPageResponse<ResourceDetail<AccountRecord>>>(PATH, toIamListParams(page), options)
+    .get<IamPageResponse<ResourceDetail<AccountRecord>>>(
+      PATH,
+      toIamListParams(page, { excludePlatformMembers: condition?.excludePlatformMembers }),
+      options,
+    )
     .then(asPage);
 }
 

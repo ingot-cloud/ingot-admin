@@ -24,14 +24,12 @@
       </el-form-item>
     </in-form>
     <in-form v-else-if="step === 1" label-position="top" :model="draft">
-      <el-form-item label="所有者登录名" required>
-        <div class="flex gap-8px">
-          <el-input v-model="ownerUsername" clearable placeholder="精确查找已有全局账号" />
-          <in-button @in-click="privateLookupOwner">查找</in-button>
-        </div>
-      </el-form-item>
-      <el-form-item v-if="draft.ownerAccountId" label="所有者账号 ID">
-        <span>{{ draft.ownerAccountId }}</span>
+      <el-form-item label="所有者账号" required>
+        <biz-platform-account-select
+          v-model="ownerAccount"
+          :disabled="loading || !visible"
+          placeholder="请选择所有者账号"
+        />
       </el-form-item>
       <el-form-item label="所有者显示名">
         <el-input v-model="draft.ownerDisplayName" clearable placeholder="可空，由服务生成" />
@@ -72,20 +70,26 @@
 <script setup lang="ts">
 import { InWizard, confirmUnsavedChanges, Message } from "@ingot/admin-core";
 import {
-  AccountLookupPurpose,
   BizIamPreviewAlert,
+  type AccountRecord,
   type EntitlementDraft,
   type Preview,
+  type ResourceDetail,
   type TenantCreateInput,
   type TenantPreviewResult,
 } from "@ingot/admin-common";
-import { PlatformAccountLookupAPI } from "@/api/iam/accounts";
 import { PlatformTenantCreateAPI, PlatformTenantPreviewAPI } from "@/api/iam/tenants";
 import { platformTenantQueryKeys } from "@/api/iam/tenants.query";
 import { useQueryClient } from "@tanstack/vue-query";
+import BizPlatformAccountSelect from "../../components/BizPlatformAccountSelect.vue";
 import EntitlementDraftPanel from "./EntitlementDraftPanel.vue";
 import EntitlementPreview from "./EntitlementPreview.vue";
-import { CREATE_WIZARD_STEPS, TENANT_AVATAR_DIR, toPreviewItems, type EntitlementItem } from "../wizard";
+import {
+  CREATE_WIZARD_STEPS,
+  TENANT_AVATAR_DIR,
+  toPreviewItems,
+  type EntitlementItem,
+} from "../wizard";
 
 defineOptions({ name: "CreateWizard" });
 
@@ -94,7 +98,7 @@ const queryClient = useQueryClient();
 const visible = ref(false);
 const loading = ref(false);
 const step = ref(0);
-const ownerUsername = ref("");
+const ownerAccount = ref<ResourceDetail<AccountRecord>>();
 const preview = ref<Preview<TenantPreviewResult> | null>(null);
 const previewItems = ref<EntitlementItem[]>([]);
 const panelReady = ref(false);
@@ -105,9 +109,8 @@ const panelRef = ref<{
   extras: { value: Array<{ id: string }> };
   load: (input: { extras: Array<{ id: string; name: string }> }) => Promise<void>;
 }>();
-const draft = reactive<TenantCreateInput>({
+const draft = reactive<Omit<TenantCreateInput, "ownerAccountId">>({
   name: "",
-  ownerAccountId: "",
   ownerDisplayName: "",
   rootDepartmentName: "",
   avatar: "",
@@ -116,22 +119,21 @@ const draft = reactive<TenantCreateInput>({
 
 const previewName = computed(() => preview.value?.effectiveResult?.name || draft.name || "新组织");
 
-const dirty = computed(
-  () =>
-    Boolean(
-      draft.name ||
-        draft.ownerAccountId ||
-        draft.ownerDisplayName ||
-        draft.rootDepartmentName ||
-        draft.avatar ||
-        panelRef.value?.planId.value ||
-        panelRef.value?.extras.value.length,
-    ),
+const dirty = computed(() =>
+  Boolean(
+    draft.name ||
+    ownerAccount.value ||
+    draft.ownerDisplayName ||
+    draft.rootDepartmentName ||
+    draft.avatar ||
+    panelRef.value?.planId.value ||
+    panelRef.value?.extras.value.length,
+  ),
 );
 
 const createPayload = (): TenantCreateInput => ({
   name: draft.name.trim(),
-  ownerAccountId: draft.ownerAccountId.trim(),
+  ownerAccountId: ownerAccount.value?.record.id ?? "",
   ownerDisplayName: draft.ownerDisplayName || undefined,
   rootDepartmentName: draft.rootDepartmentName || undefined,
   avatar: draft.avatar || undefined,
@@ -158,33 +160,13 @@ const reset = (): void => {
   preview.value = null;
   previewItems.value = [];
   draft.name = "";
-  draft.ownerAccountId = "";
   draft.ownerDisplayName = "";
   draft.rootDepartmentName = "";
   draft.avatar = "";
   draft.planId = "";
-  ownerUsername.value = "";
+  ownerAccount.value = undefined;
   panelReady.value = false;
   panelRef.value?.reset();
-};
-
-const privateLookupOwner = (): void => {
-  if (!ownerUsername.value.trim()) {
-    Message.warning("请输入所有者登录名");
-    return;
-  }
-  loading.value = true;
-  PlatformAccountLookupAPI({
-    purpose: AccountLookupPurpose.MEMBER_CREATE,
-    username: ownerUsername.value.trim(),
-  })
-    .then((response) => {
-      draft.ownerAccountId = response.data.record.id;
-      Message.success("已定位账号，不展示其是否属于其他组织");
-    })
-    .finally(() => {
-      loading.value = false;
-    });
 };
 
 const privateBack = (): void => {
@@ -197,8 +179,8 @@ const privateNext = (): void => {
     Message.warning("请输入组织名称");
     return;
   }
-  if (step.value === 1 && !draft.ownerAccountId.trim()) {
-    Message.warning("请先查找所有者账号");
+  if (step.value === 1 && !ownerAccount.value) {
+    Message.warning("请先选择所有者账号");
     return;
   }
   if (step.value === 1) {

@@ -18,8 +18,7 @@ describe("platform personnel member drawers", () => {
     expect(createSource).toContain("roleAssignments");
     expect(createSource).toContain("groupIds");
     expect(createSource).toContain("loadPlatformGroupOptions");
-    expect(createSource).toContain("AuthorizationDomain.PLATFORM");
-    expect(createSource).toContain("AccountLookupPurpose.MEMBER_CREATE");
+    expect(createSource).toContain("for-platform-member");
   });
 
   it("详情更多操作与列表溢出菜单一致，其他 Tab 预览用户组", () => {
