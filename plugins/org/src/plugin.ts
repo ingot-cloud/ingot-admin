@@ -7,7 +7,6 @@ import {
   PageLayoutViewPath,
   type InAdminPlugin,
 } from "@ingot/admin-core";
-import { domainGlobalComponents } from "./components/global";
 
 import { organizationMemberPickerKey } from "@ingot/admin-common";
 import {
@@ -68,7 +67,6 @@ export const orgPlugin: InAdminPlugin = {
       ],
     },
   ]),
-  components: domainGlobalComponents,
   install({ app }) {
     app.provide(organizationMemberPickerKey, {
       browse: async (params) => (await TenantOrganizationMemberBrowseAPI(params)).data,

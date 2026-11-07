@@ -1,15 +1,7 @@
-export * from "./application";
-export * from "./authority";
 export * from "./client";
-export * from "./dataRule";
-export * from "./dept";
 export * from "./dict";
 export * from "./id";
-export * from "./resource";
-export * from "./role";
 export * from "./social";
-export * from "./tenant";
-export * from "./user";
 export type {
   AccountLockDTO,
   ButtonStatusParams,

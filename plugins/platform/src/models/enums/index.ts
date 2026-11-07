@@ -1,4 +1,3 @@
-export * from "./appEnums";
 export * from "./clientEnums";
 export * from "./dictEnums";
 export * from "./socialEnums";

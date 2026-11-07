@@ -220,7 +220,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StatusTag: typeof import('./../admin-core/src/components/status/StatusTag.vue')['default']
-    TenantSelect: typeof import('./src/components/TenantSelect.vue')['default']
     Verify: typeof import('./../admin-core/src/components/verifition/Verify.vue')['default']
     VerifyPoints: typeof import('./../admin-core/src/components/verifition/verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./../admin-core/src/components/verifition/verify/VerifySlide.vue')['default']

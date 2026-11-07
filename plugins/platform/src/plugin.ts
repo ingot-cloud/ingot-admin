@@ -4,7 +4,6 @@ import {
   INGOT_ADMIN_PLUGIN_API_VERSION,
   type InAdminPlugin,
 } from "@ingot/admin-core";
-import { domainGlobalComponents } from "./components/global";
 
 interface InPageModule {
   default: Component;
@@ -21,5 +20,4 @@ export const platformPlugin: InAdminPlugin = {
     sourceRoot: "./pages",
     canonicalPrefix: "platform",
   }),
-  components: domainGlobalComponents,
 };

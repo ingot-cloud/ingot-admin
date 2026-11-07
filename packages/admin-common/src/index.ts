@@ -1,12 +1,9 @@
 export * from "./models";
-export * from "./api/tenant";
-export * from "./api/tenant.query";
 export * from "./api/client";
 export * from "./api/client.query";
 export * from "./api/iam/page-options";
 export { createIamListLoader, createIamOptionLoader } from "./api/iam/option-loader";
 export { useIamDraftPreview } from "./hooks/useIamDraftPreview";
-export { default as TenantSelect } from "./components/TenantSelect.vue";
 export { default as ClientSelect } from "./components/ClientSelect.vue";
 export { default as BizIamRoleFieldSummary } from "./components/BizIamRoleFieldSummary.vue";
 export { default as BizIamMaskEditor } from "./components/BizIamMaskEditor.vue";

@@ -12,7 +12,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AccountStatusEditButton: typeof import('./../../packages/admin-core/src/components/user/AccountStatusEditButton.vue')['default']
-    BizSearchUserByPhone: typeof import('./src/components/biz/search-user-by-phone/BizSearchUserByPhone.vue')['default']
     ChallengeHost: typeof import('./../../packages/admin-core/src/components/challenge/ChallengeHost.vue')['default']
     CommonStatusButton: typeof import('./../../packages/admin-core/src/components/status/CommonStatusButton.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
@@ -174,7 +173,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StatusTag: typeof import('./../../packages/admin-core/src/components/status/StatusTag.vue')['default']
-    TenantOptions: typeof import('./src/components/biz/tenant-options/TenantOptions.vue')['default']
     Verify: typeof import('./../../packages/admin-core/src/components/verifition/Verify.vue')['default']
     VerifyPoints: typeof import('./../../packages/admin-core/src/components/verifition/verify/VerifyPoints.vue')['default']
     VerifySlide: typeof import('./../../packages/admin-core/src/components/verifition/verify/VerifySlide.vue')['default']
