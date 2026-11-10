@@ -49,4 +49,4 @@
 
 ## 归档验收
 
-2026-11-06 用户确认本次产品范围验收通过。实现和自动化证据沿用各阶段记录，验收确认来源为本次人工确认。 实际来源库预检、备份还原、目标环境切换及联合回滚证据移交 [实际库发布跟踪](../../../../../../ingot/specs/changes/active/20261106-iam-tenant-live-authorization-release/README.md)。
+2026-11-06 用户确认本次产品范围验收通过。实现和自动化证据沿用各阶段记录。旧库预检、备份还原、切换及联合回滚移交 [后端独立变更](../../../../../../ingot/specs/changes/archive/2026/20261106-iam-tenant-live-authorization-release/README.md)，该变更于 2026-11-10 随首次部署范围确认而取消归档。

@@ -46,7 +46,7 @@
 - 完成日期：2026-11-06（用户确认产品验收通过并要求归档）。
 - 关联实现提交：734bca6、261d2bd。
 - 更新的 current：[org/tenant-live-authorization](../../../../current/org/tenant-live-authorization/README.md)、[base/role-version-application](../../../../current/base/role-version-application/README.md)。
-- 最终交付：共享角色使用分步向导和当前权限，平台自有角色保留固定版本。实际库与联合发布移交 [后端独立跟踪](../../../../../../ingot/specs/changes/active/20261106-iam-tenant-live-authorization-release/README.md)。
+- 最终交付：共享角色使用分步向导和当前权限，平台自有角色保留固定版本。旧库迁移曾移交 [后端独立变更](../../../../../../ingot/specs/changes/archive/2026/20261106-iam-tenant-live-authorization-release/README.md)，后因确认按新库首次部署而取消归档。
 
 ## 历史完成检查
 
