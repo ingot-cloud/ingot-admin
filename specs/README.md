@@ -255,7 +255,13 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 - [授权审计游标分页与可读展示](./changes/archive/2026/20261024-base-authorization-audit-readable/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
 - [平台创建流程的全局账号选择](./changes/archive/2026/20261106-base-account-picker/README.md) · [当前能力](./current/base/platform-capabilities/README.md)
 
+## 2026-11-10 归档
+
+- [IAM 登录后接口提速与场景提示](./changes/archive/2026/20261109-iam-post-login-read-performance/README.md)（completed，实现及隔离验证完成）
+
 ## 当前活动变更
+
+- [IAM 登录后接口联合现场与发布验收](../../ingot/specs/changes/active/20261110-iam-post-login-release-acceptance/README.md)（draft，真实 BFF、页面 P95 与缓存命中率待验证）
 
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
 - [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。
