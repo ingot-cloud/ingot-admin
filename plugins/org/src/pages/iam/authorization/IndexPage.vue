@@ -212,6 +212,7 @@
 import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {
+  iamEditorFailure,
   BizHelpLink,
   AssignmentEffectiveStatus,
   GrantStatus,
@@ -337,9 +338,9 @@ const assignmentApis: TenantAssignmentApis = {
   roleAPI: TenantAssignmentRoleDefinitionAPI,
   mineAPI: TenantDelegationMineAPI,
   scopeAPI: TenantAssignmentScopeCandidatesAPI,
-  createAPI: TenantAssignmentCreateAPI,
+  createAPI: (input) => TenantAssignmentCreateAPI(input, { feedback: "silent" }),
   previewAPI: TenantAssignmentPreviewAPI,
-  updateAPI: TenantAssignmentUpdateAPI,
+  updateAPI: (id, input) => TenantAssignmentUpdateAPI(id, input, { feedback: "silent" }),
 };
 const delegationApis: TenantDelegationApis = {
   createAPI: TenantDelegationCreateAPI,
@@ -381,10 +382,14 @@ const handleRoleDelete = (item: RoleRow): void => {
   Confirm.error(`未引用角色才会删除。是否删除（${item.record.name || "未命名角色"}）？`, {
     confirmButtonText: "删除",
   }).then(() => {
-    TenantRoleDeleteAPI(item.record.id).then(() => {
-      Message.success("已删除");
-      refreshRoles();
-    });
+    return TenantRoleDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已删除");
+        refreshRoles();
+      })
+      .catch((error: unknown) =>
+        iamEditorFailure(error, `无法删除组织角色「${item.record.name || item.record.id}」`),
+      );
   });
 };
 const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
@@ -402,10 +407,14 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   Confirm.error("撤销授权并保留审计，不会静默改写其它记录。是否撤销？", {
     confirmButtonText: "撤销",
   }).then(() => {
-    TenantAssignmentDeleteAPI(item.record.id).then(() => {
-      Message.success("已撤销授权");
-      refreshAssignmentViews();
-    });
+    return TenantAssignmentDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已撤销授权");
+        refreshAssignmentViews();
+      })
+      .catch((error: unknown) =>
+        iamEditorFailure(error, `无法撤销「${item.record.subjectName || item.record.assignment.subject.id}」的角色分配`),
+      );
   });
 };
 const handleAssignmentDiagnose = (item: AssignmentRow): void => {

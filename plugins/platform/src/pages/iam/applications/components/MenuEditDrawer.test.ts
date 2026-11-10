@@ -237,7 +237,15 @@ describe("menu editor workflow", () => {
   });
 
   it("统一校验定位错误分组，保存失败保留草稿", async () => {
-    const submit = vi.fn().mockRejectedValue(new Error("failed"));
+    const submit = vi.fn().mockRejectedValue(
+      new ApiError({
+        kind: "http",
+        status: 400,
+        code: "InvalidArgument",
+        message: "菜单不能移到自己的下级菜单下",
+        config: { feedback: "silent" },
+      }),
+    );
     const wrapper = fixture(submit);
     wrapper.vm.show("app", [row], row);
     await flushPromises();
@@ -253,7 +261,11 @@ describe("menu editor workflow", () => {
     expect(wrapper.get('.in-wizard-steps [aria-current="step"]').text()).toContain("基本信息");
     expect(submit).not.toHaveBeenCalled();
     await wrapper.get('input[placeholder="如订单详情"]').setValue("仍保留");
+    mocks.warning.mockClear();
     await click(wrapper, "保存");
+    expect(mocks.warning).toHaveBeenCalledExactlyOnceWith(
+      "无法保存菜单「仍保留」，菜单不能移到自己的下级菜单下",
+    );
     expect(wrapper.get('input[placeholder="如订单详情"]').element.value).toBe("仍保留");
     wrapper.unmount();
   });

@@ -52,16 +52,20 @@ const canUpdate = computed(() => {
     : false;
 });
 
-const show = (row: GroupRow): void => {
+let request = 0;
+
+const show = (id: string): void => {
+  const current = ++request;
   visible.value = true;
-  detail.value = row;
+  detail.value = undefined;
   loading.value = true;
-  PlatformGroupDetailAPI(row.record.id)
+  PlatformGroupDetailAPI(id)
     .then((response) => {
-      detail.value = response.data;
+      if (current === request) detail.value = response.data;
     })
+    .catch(() => undefined)
     .finally(() => {
-      loading.value = false;
+      if (current === request) loading.value = false;
     });
 };
 
@@ -80,6 +84,7 @@ const privateOnDelete = (): void => {
 };
 
 const hide = (): void => {
+  request += 1;
   visible.value = false;
 };
 

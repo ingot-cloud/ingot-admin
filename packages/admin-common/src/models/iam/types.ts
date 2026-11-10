@@ -820,10 +820,13 @@ export interface Selection {
   departments: DepartmentSelection[];
 }
 
-export interface GroupRecord {
+export interface GroupSummary {
   id: string;
   name: string;
   description?: string;
+}
+
+export interface GroupRecord extends GroupSummary {
   selection: Selection;
   visibleMemberCount?: number;
   selectionEditable?: boolean;

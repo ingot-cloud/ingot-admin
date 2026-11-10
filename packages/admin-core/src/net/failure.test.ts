@@ -183,6 +183,18 @@ describe("admin failure hooks", () => {
     expect(warning).toHaveBeenCalledWith("非法操作", { showClose: true });
   });
 
+  it("IAM 详情 404 仅提示服务端的具体业务文案", () => {
+    handleAdminHttpError(
+      new ApiError({
+        kind: "http",
+        status: 404,
+        code: "ObjectNotFound",
+        message: "账号不存在或不可访问",
+      }),
+    );
+    expect(warning).toHaveBeenCalledExactlyOnceWith("账号不存在或不可访问", { showClose: true });
+  });
+
   it("403 明确无权限时提示且不登出", () => {
     handleAdminHttpError(
       new ApiError({ kind: "http", message: "无权限", status: 403, code: StatusCode.FORBIDDEN }),

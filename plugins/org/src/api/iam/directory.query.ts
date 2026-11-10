@@ -4,13 +4,13 @@ import {
   TenantApplicationPageAPI,
   TenantDepartmentPageAPI,
   TenantGroupEffectiveMembersAPI,
-  TenantGroupPageAPI,
+  TenantGroupSummaryPageAPI,
   TenantMemberPageAPI,
 } from "./directory";
 
 export const tenantMemberQueryKeys = createResourceQueryKeys("iam-tenant", "member");
 export const tenantDepartmentQueryKeys = createResourceQueryKeys("iam-tenant", "department");
-export const tenantGroupQueryKeys = createResourceQueryKeys("iam-tenant", "group");
+export const tenantGroupQueryKeys = createResourceQueryKeys("iam-tenant", "group-summary");
 export const tenantGroupEffectiveMemberQueryKeys = createResourceQueryKeys(
   "iam-tenant",
   "group-effective-member",
@@ -25,9 +25,9 @@ export const TenantDepartmentPageQueryOptions = createIamPageQueryOptions(
   tenantDepartmentQueryKeys,
   TenantDepartmentPageAPI,
 );
-export const TenantGroupPageQueryOptions = createIamPageQueryOptions(
+export const TenantGroupSummaryPageQueryOptions = createIamPageQueryOptions(
   tenantGroupQueryKeys,
-  TenantGroupPageAPI,
+  TenantGroupSummaryPageAPI,
 );
 export const TenantGroupEffectiveMemberPageQueryOptions = createIamPageQueryOptions(
   tenantGroupEffectiveMemberQueryKeys,

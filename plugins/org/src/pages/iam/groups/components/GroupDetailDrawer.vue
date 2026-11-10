@@ -96,13 +96,13 @@ const privateLoadNames = async (current: number): Promise<void> => {
   }
 };
 
-const show = (row: GroupRow): void => {
+const show = (id: string): void => {
   const current = ++request;
   visible.value = true;
-  detail.value = row;
+  detail.value = undefined;
   departmentNames.value = new Map();
   loading.value = true;
-  TenantGroupDetailAPI(row.record.id)
+  TenantGroupDetailAPI(id)
     .then(async (response) => {
       if (current !== request) {
         return;
@@ -110,6 +110,7 @@ const show = (row: GroupRow): void => {
       detail.value = response.data;
       await privateLoadNames(current);
     })
+    .catch(() => undefined)
     .finally(() => {
       if (current === request) {
         loading.value = false;

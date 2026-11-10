@@ -26,7 +26,7 @@ describe("org group workspace", () => {
   });
 
   it("进入页面且已有用户组时默认选中第一条", () => {
-    expect(opsSource).toContain("selectGroup(records[0])");
+    expect(opsSource).toContain("selectGroup(current ?? records[0])");
     expect(opsSource).toContain("{ immediate: true }");
   });
 

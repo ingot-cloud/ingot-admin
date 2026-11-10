@@ -3,12 +3,14 @@ import { filterParams, request, type RequestOptions } from "@ingot/admin-core";
 import type { Page, R } from "@ingot/admin-core";
 import {
   IAM_API_PREFIX,
+  CatalogRecordView,
   mapIamPage,
   toIamListParams,
   type CreatedResource,
   type AssignmentRecord,
   type GroupDraft,
   type GroupRecord,
+  type GroupSummary,
   type GroupUpdateInput,
   type IamListQuery,
   type IamPageResponse,
@@ -182,6 +184,23 @@ export function PlatformGroupPageAPI(
     .get<IamPageResponse<ResourceDetail<GroupRecord>>>(
       GROUP_PATH,
       toIamListParams(page, condition),
+      options,
+    )
+    .then(asPage);
+}
+
+export function PlatformGroupSummaryPageAPI(
+  page: Page,
+  condition?: IamListQuery,
+  options?: RequestOptions,
+): Promise<R<Page<ResourceDetail<GroupSummary>>>> {
+  if (condition) {
+    filterParams(condition);
+  }
+  return request
+    .get<IamPageResponse<ResourceDetail<GroupSummary>>>(
+      GROUP_PATH,
+      { ...toIamListParams(page, condition), view: CatalogRecordView.SUMMARY },
       options,
     )
     .then(asPage);

@@ -59,14 +59,14 @@
 <script setup lang="ts">
 import { Search } from "@element-plus/icons-vue";
 import { IAM_DEFAULT_PAGE_SIZE, IamAction, objectActionAllowed } from "@ingot/admin-common";
-import type { GroupRow } from "../groupTable";
+import type { GroupSummaryRow } from "../groupTable";
 import IconGroupOutlined from "./IconGroupOutlined.vue";
 
 defineOptions({ name: "GroupList" });
 
 const name = defineModel<string>("name", { default: "" });
 defineProps<{
-  records: GroupRow[];
+  records: GroupSummaryRow[];
   selectedId: string;
   loading: boolean;
   current: number;
@@ -76,14 +76,14 @@ defineProps<{
 }>();
 const emits = defineEmits<{
   search: [];
-  select: [row: GroupRow];
-  detail: [row: GroupRow];
-  delete: [row: GroupRow];
+  select: [row: GroupSummaryRow];
+  detail: [row: GroupSummaryRow];
+  delete: [row: GroupSummaryRow];
   create: [];
   page: [current: number];
 }>();
 
-const canDelete = (item: GroupRow): boolean =>
+const canDelete = (item: GroupSummaryRow): boolean =>
   objectActionAllowed(item.capabilities, IamAction.PLATFORM_GROUP_DELETE).allowed;
 
 const privateOnPage = (current: number): void => {

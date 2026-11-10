@@ -7,7 +7,7 @@ import {
 } from "@ingot/admin-common";
 import type { LoadDataParams, Page } from "@ingot/admin-core";
 import { PlatformRolePageAPI } from "@/api/iam/authorization";
-import { PlatformGroupMembersAPI, PlatformGroupPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
+import { PlatformGroupMembersAPI, PlatformGroupSummaryPageAPI, PlatformMemberPageAPI } from "@/api/iam/personnel";
 
 export const loadPlatformMemberOptions = createIamListLoader(async (page, condition) => {
   const response = await PlatformMemberPageAPI(page, condition);
@@ -23,7 +23,7 @@ export const loadPlatformRoleOptions = createIamListLoader(async (page, conditio
 });
 
 export const loadPlatformGroupOptions = createIamListLoader(async (page, condition) => {
-  const response = await PlatformGroupPageAPI(page, condition);
+  const response = await PlatformGroupSummaryPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };
 });
 

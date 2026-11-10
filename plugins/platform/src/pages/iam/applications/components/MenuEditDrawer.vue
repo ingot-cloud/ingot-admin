@@ -552,12 +552,14 @@ async function save(): Promise<void> {
           },
         };
     } else if (target.value) {
-      const response = await PlatformMenuUpdateAPI(applicationId.value, target.value.record.id, {
-        expectedVersion: target.value.version,
-        menu: payload,
-      });
+      const response = await PlatformMenuUpdateAPI(
+        applicationId.value,
+        target.value.record.id,
+        { expectedVersion: target.value.version, menu: payload },
+        { feedback: "silent" },
+      );
       target.value = { ...target.value, ...response.data };
-    } else await PlatformMenuCreateAPI(applicationId.value, payload);
+    } else await PlatformMenuCreateAPI(applicationId.value, payload, { feedback: "silent" });
     // 保存已经成功，刷新失败不能再次提交同一个创建请求。
     if (!props.submit) {
       try {
@@ -574,7 +576,7 @@ async function save(): Promise<void> {
     emits("success");
   } catch (error) {
     conflicted.value = isApiError(error) && error.status === 409;
-    await iamEditorFailure(error);
+    await iamEditorFailure(error, `无法保存菜单「${draft.name.trim()}」`);
   } finally {
     loading.value = false;
   }

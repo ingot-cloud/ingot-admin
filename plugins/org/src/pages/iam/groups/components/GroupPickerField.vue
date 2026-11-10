@@ -28,7 +28,7 @@ import {
   toIamSelectRecords,
   type IamSelectOption,
 } from "@ingot/admin-common";
-import { TenantGroupPageAPI } from "@/api/iam/directory";
+import { TenantGroupSummaryPageAPI } from "@/api/iam/directory";
 
 defineOptions({ name: "GroupPickerField" });
 
@@ -36,7 +36,7 @@ const model = defineModel<IamSelectOption[]>({ default: () => [] });
 const dialogRef = ref<InstanceType<typeof BizIamMemberPickerDialog>>();
 
 const privateLoad = createIamListLoader(async (page, condition) => {
-  const response = await TenantGroupPageAPI(page, condition);
+  const response = await TenantGroupSummaryPageAPI(page, condition);
   return { data: toIamSelectRecords(response.data) };
 });
 

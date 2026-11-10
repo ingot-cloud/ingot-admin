@@ -181,6 +181,7 @@ import {
   type Page,
 } from "@ingot/admin-core";
 import {
+  iamEditorFailure,
   AuthorizationDomainExtArray,
   AuthorizationDomain,
   BizIamStatusTag,
@@ -468,7 +469,7 @@ const privateSave = (): void => {
     icon: draft.icon || undefined,
     sortOrder: draft.sortOrder,
     baseline: draft.baseline,
-  })
+  }, { feedback: "silent" })
     .then((response) => {
       detail.value = response.data;
       applyDraft(response.data.record);
@@ -478,6 +479,7 @@ const privateSave = (): void => {
       void queryClient.invalidateQueries({ queryKey: platformApplicationQueryKeys.lists() });
       emits("success");
     })
+    .catch((error: unknown) => iamEditorFailure(error, `无法保存应用「${draft.name.trim()}」`))
     .finally(() => {
       session.saving.value = false;
     });
@@ -546,13 +548,15 @@ const privateDeleteMenu = (row: MenuTreeRow): void => {
     return;
   }
   Confirm.warning(`是否删除菜单（${row.record.name}）？`).then(() => {
-    PlatformMenuDeleteAPI(id, row.record.id).then(() => {
-      Message.success("已删除");
-      loadMenus();
-      void refreshSessionMenus().catch(() =>
-        Message.warning("菜单已删除，当前会话刷新失败，请刷新页面"),
-      );
-    });
+    return PlatformMenuDeleteAPI(id, row.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已删除");
+        loadMenus();
+        void refreshSessionMenus().catch(() =>
+          Message.warning("菜单已删除，当前会话刷新失败，请刷新页面"),
+        );
+      })
+      .catch((error: unknown) => iamEditorFailure(error, `无法删除菜单「${row.record.name}」`));
   });
 };
 

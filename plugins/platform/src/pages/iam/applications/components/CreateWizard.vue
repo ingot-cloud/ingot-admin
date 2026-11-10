@@ -67,7 +67,7 @@
 
 <script setup lang="ts">
 import { InWizard, confirmUnsavedChanges, Message } from "@ingot/admin-core";
-import { AuthorizationDomain } from "@ingot/admin-common";
+import { AuthorizationDomain, iamEditorFailure } from "@ingot/admin-common";
 import { PlatformApplicationBundleCreateAPI } from "@/api/iam/catalog";
 import { platformApplicationQueryKeys } from "@/api/iam/catalog.query";
 import { useQueryClient } from "@tanstack/vue-query";
@@ -164,11 +164,14 @@ const privateSubmit = async (): Promise<void> => {
   try {
     await PlatformApplicationBundleCreateAPI(
       toApplicationBundle(profile, domain.value, resources.value, menus.value),
+      { feedback: "silent" },
     );
     Message.success("创建成功");
     visible.value = false;
     void queryClient.invalidateQueries({ queryKey: platformApplicationQueryKeys.lists() });
     emits("success");
+  } catch (error) {
+    await iamEditorFailure(error, `无法创建应用「${profile.name.trim()}」`);
   } finally {
     saving.value = false;
   }

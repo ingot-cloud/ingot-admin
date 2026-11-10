@@ -96,7 +96,7 @@ defineProps<{
 }>();
 
 const emits = defineEmits<{ success: [] }>();
-const apis = createCurrentRoleApis("tenant");
+const apis = createCurrentRoleApis("tenant", { feedback: "silent" });
 const fieldStep = ref<InstanceType<typeof BizIamRoleFieldStep>>();
 const visible = ref(false);
 const saving = ref(false);
@@ -195,7 +195,7 @@ const privateSubmit = (): void => {
     })
     .catch((error: unknown) => {
       previewed.value = "";
-      void iamEditorFailure(error);
+      void iamEditorFailure(error, `无法创建组织角色「${profile.name.trim()}」`);
     })
     .finally(() => {
       saving.value = false;

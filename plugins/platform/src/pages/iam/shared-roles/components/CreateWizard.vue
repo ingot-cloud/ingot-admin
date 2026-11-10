@@ -137,7 +137,7 @@ const props = withDefaults(
 );
 
 const emits = defineEmits<{ success: [] }>();
-const currentApis = createCurrentRoleApis("shared");
+const currentApis = createCurrentRoleApis("shared", { feedback: "silent" });
 const grantDomain = computed(() =>
   props.kind === RoleKind.PLATFORM_CUSTOM
     ? AuthorizationDomain.PLATFORM
@@ -275,7 +275,7 @@ const privateSubmit = (): void => {
     })
     .catch((error: unknown) => {
       previewed.value = "";
-      void iamEditorFailure(error);
+      void iamEditorFailure(error, `无法创建${platform.value ? "平台" : "共享"}角色「${profile.name.trim()}」`);
     })
     .finally(() => {
       saving.value = false;

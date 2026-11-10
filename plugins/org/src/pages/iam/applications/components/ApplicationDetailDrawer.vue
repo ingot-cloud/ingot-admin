@@ -290,12 +290,13 @@ const privateSave = (): void => {
   TenantApplicationAudienceUpdateAPI(applicationId.value, {
     expectedVersion: audience.value.version,
     audience: next,
-  })
+  }, { feedback: "silent" })
     .then((response) => {
       privateApplyAudience(response.data);
       session.exitEdit();
       Message.success("人群已保存");
     })
+    .catch((error: unknown) => iamEditorFailure(error, `无法保存应用「${title.value}」的使用范围`))
     .finally(() => {
       session.saving.value = false;
     });

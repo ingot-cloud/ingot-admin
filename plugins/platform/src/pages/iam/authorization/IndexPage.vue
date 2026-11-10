@@ -209,7 +209,7 @@
     ref="createRef"
     title="创建平台角色"
     :kind="RoleKind.PLATFORM_CUSTOM"
-    :create-api="PlatformRoleCreateAPI"
+    :create-api="(input) => PlatformRoleCreateAPI(input, { feedback: 'silent' })"
     @success="refreshRoles"
   />
   <shared-role-detail-drawer
@@ -236,10 +236,10 @@
     :context-api="PlatformAssignmentContextAPI"
     :get-api="PlatformAssignmentDetailAPI"
     :selected-candidates-api="PlatformAssignmentSelectedCandidatesAPI"
-    :create-api="PlatformAssignmentCreateAPI"
+    :create-api="(input) => PlatformAssignmentCreateAPI(input, { feedback: 'silent' })"
     :preview-api="PlatformAssignmentPreviewAPI"
     :update-preview-api="PlatformAssignmentUpdatePreviewAPI"
-    :update-api="PlatformAssignmentUpdateAPI"
+    :update-api="(id, input) => PlatformAssignmentUpdateAPI(id, input, { feedback: 'silent' })"
     @success="refreshAssignmentViews"
   />
   <biz-iam-assignment-upgrade-drawer
@@ -266,7 +266,7 @@
 </template>
 
 <script lang="ts" setup>
-import { BizHelpLink, assignmentVersionLabel } from "@ingot/admin-common";
+import { BizHelpLink, assignmentVersionLabel, iamEditorFailure } from "@ingot/admin-common";
 import { formatDateTime } from "@ingot/shared";
 import { Search } from "@element-plus/icons-vue";
 import {
@@ -501,10 +501,14 @@ const handleRoleDelete = (item: RoleRow): void => {
   Confirm.error(`未引用角色才会删除。是否删除（${item.record.name || item.record.id}）？`, {
     confirmButtonText: "删除",
   }).then(() => {
-    PlatformRoleDeleteAPI(item.record.id).then(() => {
-      Message.success("已删除");
-      refreshRoles();
-    });
+    return PlatformRoleDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已删除");
+        refreshRoles();
+      })
+      .catch((error: unknown) =>
+        iamEditorFailure(error, `无法删除角色「${item.record.name || item.record.id}」`),
+      );
   });
 };
 const handleDiagnose = (preset?: { memberId?: string; memberName?: string }): void => {
@@ -522,10 +526,14 @@ const handleAssignmentDelete = (item: AssignmentRow): void => {
   Confirm.error("撤销授权并保留审计，不会静默改写其它记录。是否撤销？", {
     confirmButtonText: "撤销",
   }).then(() => {
-    PlatformAssignmentDeleteAPI(item.record.id).then(() => {
-      Message.success("已撤销授权");
-      refreshAssignmentViews();
-    });
+    return PlatformAssignmentDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已撤销授权");
+        refreshAssignmentViews();
+      })
+      .catch((error: unknown) =>
+        iamEditorFailure(error, `无法撤销「${item.record.subjectName || item.record.assignment.subject.id}」的角色分配`),
+      );
   });
 };
 const handleAssignmentDiagnose = (item: AssignmentRow): void => {

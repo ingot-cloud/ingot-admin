@@ -2,7 +2,6 @@ import {
   IamAction,
   objectActionAllowed,
   type GroupEffectiveMemberRecord,
-  type GroupRecord,
   type GroupUpdateInput,
   type IamListQuery,
   type MemberPickerChanges,
@@ -12,17 +11,17 @@ import { Confirm, Message, useCapabilities, useServerPaging } from "@ingot/admin
 import { TenantGroupDetailAPI, TenantGroupUpdateAPI } from "@/api/iam/directory";
 import {
   TenantGroupEffectiveMemberPageQueryOptions,
-  TenantGroupPageQueryOptions,
+  TenantGroupSummaryPageQueryOptions,
 } from "@/api/iam/directory.query";
 import { applyMemberChanges } from "./membership";
-import type { GroupMemberRow, GroupRow } from "./table";
+import type { GroupMemberRow, GroupRow, GroupSummaryRow } from "./table";
 
 export const useOps = () => {
   const { unavailable, hasAction } = useCapabilities();
   const enabled = () => !unavailable.value && hasAction(IamAction.TENANT_GROUP_READ);
   const canReadMembers = () => enabled() && hasAction(IamAction.TENANT_MEMBER_READ);
-  const groupPaging = useServerPaging<ResourceDetail<GroupRecord>, IamListQuery>({
-    queryOptions: TenantGroupPageQueryOptions,
+  const groupPaging = useServerPaging<GroupSummaryRow, IamListQuery>({
+    queryOptions: TenantGroupSummaryPageQueryOptions,
     enabled,
   });
   const memberPaging = useServerPaging<GroupEffectiveMemberRecord, IamListQuery>({
@@ -31,17 +30,17 @@ export const useOps = () => {
     queryWhen: (submitted) => Boolean(submitted.groupId),
   });
   const selectedId = ref("");
-  const selectedDetail = ref<GroupRow>();
+  const selectedGroup = ref<GroupSummaryRow>();
+  let selectionEpoch = 0;
+  let pickerRequest = 0;
+  let pickerGroup: GroupRow | undefined;
   const saving = ref(false);
 
   const updateAccess = computed(() => {
-    if (!selectedDetail.value) {
+    if (!selectedGroup.value) {
       return { allowed: false, message: "请先选择用户组" };
     }
-    if (selectedDetail.value.record.selectionEditable === false) {
-      return { allowed: false, message: "当前权限只允许编辑用户组基本信息" };
-    }
-    return objectActionAllowed(selectedDetail.value.capabilities, IamAction.TENANT_GROUP_UPDATE);
+    return objectActionAllowed(selectedGroup.value.capabilities, IamAction.TENANT_GROUP_UPDATE);
   });
 
   const applyMemberQuery = (groupId: string): void => {
@@ -49,16 +48,15 @@ export const useOps = () => {
     if (canReadMembers()) memberPaging.search();
   };
 
-  const selectGroup = (row?: GroupRow): void => {
-    if (!row) {
-      selectedId.value = "";
-      selectedDetail.value = undefined;
-      applyMemberQuery("");
-      return;
-    }
-    selectedId.value = row.record.id;
-    selectedDetail.value = row;
-    applyMemberQuery(row.record.id);
+  const selectGroup = (row?: GroupSummaryRow): void => {
+    const id = row?.record.id ?? "";
+    selectedGroup.value = row;
+    if (selectedId.value === id) return;
+    selectionEpoch += 1;
+    pickerRequest += 1;
+    pickerGroup = undefined;
+    selectedId.value = id;
+    applyMemberQuery(id);
   };
 
   const refreshGroups = (): void => {
@@ -66,28 +64,31 @@ export const useOps = () => {
   };
 
   const reloadSelected = (): void => {
-    const current = (groupPaging.pageInfo.value.records ?? []).find(
-      (item) => item.record.id === selectedId.value,
-    );
-    if (current) {
-      selectGroup(current);
-      return;
-    }
-    if (selectedId.value) {
-      applyMemberQuery(selectedId.value);
-      void groupPaging.query.refetch();
-      return;
-    }
+    if (selectedId.value) applyMemberQuery(selectedId.value);
     void groupPaging.query.refetch();
   };
 
-  const ensureSelectedDetail = async (): Promise<GroupRow | undefined> => {
-    if (!selectedId.value) {
-      return undefined;
+  const readEditableGroup = async (): Promise<GroupRow | undefined> => {
+    const id = selectedId.value;
+    if (!id) return;
+    const epoch = selectionEpoch;
+    const { data } = await TenantGroupDetailAPI(id);
+    if (epoch !== selectionEpoch) return;
+    const access = objectActionAllowed(data.capabilities, IamAction.TENANT_GROUP_UPDATE);
+    if (!access.allowed || data.record.selectionEditable !== true) {
+      Message.warning(access.message ?? "当前权限只允许编辑用户组基本信息");
+      return;
     }
-    const { data } = await TenantGroupDetailAPI(selectedId.value);
-    selectedDetail.value = data;
     return data;
+  };
+
+  const prepareMemberPicker = async (): Promise<GroupRow | undefined> => {
+    const request = ++pickerRequest;
+    pickerGroup = undefined;
+    const current = await readEditableGroup();
+    if (request !== pickerRequest) return;
+    pickerGroup = current;
+    return current;
   };
 
   const commitMembers = async (
@@ -95,10 +96,10 @@ export const useOps = () => {
     members: string[],
     confirmText?: string,
   ): Promise<void> => {
-    if (!updateAccess.value.allowed) {
-      Message.warning(updateAccess.value.message ?? "当前对象不允许该操作");
-      return;
-    }
+    if (saving.value || current.record.id !== selectedId.value) return;
+    const epoch = selectionEpoch;
+    if (confirmText) await Confirm.warning(confirmText);
+    if (saving.value || epoch !== selectionEpoch) return;
     const input: GroupUpdateInput = {
       expectedVersion: current.version,
       group: {
@@ -110,15 +111,11 @@ export const useOps = () => {
         },
       },
     };
-    if (confirmText) {
-      await Confirm.warning(confirmText);
-    }
     saving.value = true;
     try {
-      const { data } = await TenantGroupUpdateAPI(current.record.id, input);
-      selectedDetail.value = data;
+      await TenantGroupUpdateAPI(current.record.id, input);
       Message.success("已保存");
-      memberPaging.search();
+      if (epoch === selectionEpoch) memberPaging.search();
       void groupPaging.query.refetch();
     } finally {
       saving.value = false;
@@ -126,29 +123,25 @@ export const useOps = () => {
   };
 
   const addMembers = async (changes: MemberPickerChanges): Promise<void> => {
-    const current = (await ensureSelectedDetail()) ?? selectedDetail.value;
-    if (!current) {
-      return;
-    }
-    const next = applyMemberChanges(current.record.selection.members, changes);
+    const current = pickerGroup;
+    pickerGroup = undefined;
+    if (!current) return;
     const previous = current.record.selection.members;
-    if (next.length === previous.length && next.every((id, index) => id === previous[index])) {
+    const next = applyMemberChanges(previous, changes);
+    if (next.length === previous.length && next.every((id, index) => id === previous[index]))
       return;
-    }
     await commitMembers(current, next);
   };
 
   const removeMember = async (row: GroupMemberRow): Promise<void> => {
-    const current = (await ensureSelectedDetail()) ?? selectedDetail.value;
-    if (!current) {
-      return;
-    }
+    const current = await readEditableGroup();
+    if (!current) return;
     const name = row.member.displayName || row.member.id;
     const groupName = current.record.name;
-    const remainsByDepartment = row.membership.departments.length > 0;
-    const confirmText = remainsByDepartment
-      ? `是否将 ${name} 的直接添加关系移出用户组（${groupName}）？移出后此人仍会因部门范围留在组内。`
-      : `是否将 ${name} 移出用户组（${groupName}）？`;
+    const confirmText =
+      row.membership.departments.length > 0
+        ? `是否将 ${name} 的直接添加关系移出用户组（${groupName}）？移出后此人仍会因部门范围留在组内。`
+        : `是否将 ${name} 移出用户组（${groupName}）？`;
     await commitMembers(
       current,
       current.record.selection.members.filter((id) => id !== row.member.id),
@@ -167,15 +160,7 @@ export const useOps = () => {
         return;
       }
       const current = records.find((item) => item.record.id === selectedId.value);
-      if (current) {
-        if (!selectedDetail.value || selectedDetail.value.record.id !== current.record.id) {
-          selectGroup(current);
-        } else {
-          selectedDetail.value = current;
-        }
-        return;
-      }
-      selectGroup(records[0]);
+      selectGroup(current ?? records[0]);
     },
     { immediate: true },
   );
@@ -184,13 +169,13 @@ export const useOps = () => {
     groupPaging,
     memberPaging,
     selectedId,
-    selectedDetail,
+    selectedGroup,
     saving,
     updateAccess,
     selectGroup,
     refreshGroups,
     reloadSelected,
-    ensureSelectedDetail,
+    prepareMemberPicker,
     addMembers,
     removeMember,
   };

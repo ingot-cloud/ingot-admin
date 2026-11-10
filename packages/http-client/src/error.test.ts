@@ -47,6 +47,21 @@ describe("ApiError", () => {
     expect(error.retriable).toBe(true);
   });
 
+  it("隐藏内部错误消息与附带诊断数据", () => {
+    const internal = new AxiosError("fixture-diagnostic");
+    internal.response = {
+      data: { code: "S0500", message: "fixture-diagnostic", data: { detail: "fixture-diagnostic" } },
+      status: 500,
+      statusText: "Internal Server Error",
+      headers: {},
+      config: { headers: axios.AxiosHeaders.from({}) },
+    };
+    const error = classifyAxiosError(internal);
+    expect(error.code).toBe("S0500");
+    expect(error.message).toBe("服务暂时无法处理请求，请稍后重试");
+    expect(error.response?.data).toBeUndefined();
+  });
+
   it("将 503 分类为可重试 http 错误", () => {
     const httpError = new AxiosError("bad gateway");
     httpError.response = {

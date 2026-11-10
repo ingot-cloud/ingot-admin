@@ -1,9 +1,9 @@
 import { createIamPageQueryOptions } from "@ingot/admin-common";
 import { createResourceQueryKeys } from "@ingot/admin-core";
-import { PlatformGroupMembersAPI, PlatformGroupPageAPI, PlatformMemberPageAPI } from "./personnel";
+import { PlatformGroupMembersAPI, PlatformGroupSummaryPageAPI, PlatformMemberPageAPI } from "./personnel";
 
 export const platformMemberQueryKeys = createResourceQueryKeys("iam-platform", "member");
-export const platformGroupQueryKeys = createResourceQueryKeys("iam-platform", "group");
+export const platformGroupQueryKeys = createResourceQueryKeys("iam-platform", "group-summary");
 export const platformGroupMemberQueryKeys = createResourceQueryKeys("iam-platform", "group-member");
 
 export const PlatformMemberPageQueryOptions = createIamPageQueryOptions(
@@ -11,9 +11,9 @@ export const PlatformMemberPageQueryOptions = createIamPageQueryOptions(
   PlatformMemberPageAPI,
 );
 
-export const PlatformGroupPageQueryOptions = createIamPageQueryOptions(
+export const PlatformGroupSummaryPageQueryOptions = createIamPageQueryOptions(
   platformGroupQueryKeys,
-  PlatformGroupPageAPI,
+  PlatformGroupSummaryPageAPI,
 );
 
 export const PlatformGroupMemberPageQueryOptions = createIamPageQueryOptions(

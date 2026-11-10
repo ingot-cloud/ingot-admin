@@ -86,6 +86,7 @@ import {
   type R,
 } from "@ingot/admin-core";
 import {
+  iamEditorFailure,
   BizHelpLink,
   BizIamRecordLink,
   createCurrentRoleApis,
@@ -143,10 +144,14 @@ const handleDelete = (item: Row): void => {
   Confirm.error(`未引用角色才会删除。是否删除（${item.record.name || item.record.id}）？`, {
     confirmButtonText: "删除",
   }).then(() => {
-    PlatformSharedRoleDeleteAPI(item.record.id).then(() => {
-      Message.success("已删除");
-      refreshData();
-    });
+    return PlatformSharedRoleDeleteAPI(item.record.id, { feedback: "silent" })
+      .then(() => {
+        Message.success("已删除");
+        refreshData();
+      })
+      .catch((error: unknown) =>
+        iamEditorFailure(error, `无法删除共享角色「${item.record.name || item.record.id}」`),
+      );
   });
 };
 const knownStatus = (status?: ConfigurationStatus): status is ConfigurationStatus =>

@@ -122,7 +122,7 @@ const props = withDefaults(
 );
 
 const emits = defineEmits<{ success: []; prepared: [task: RoleApplicationTask] }>();
-const currentApis = createCurrentRoleApis("shared");
+const currentApis = createCurrentRoleApis("shared", { feedback: "silent" });
 const { hasAction } = useCapabilities();
 const canApply = computed(() => hasAction(IamAction.PLATFORM_ASSIGNMENT_UPGRADE));
 const sourceRevision = ref<RoleRevision>();
@@ -298,7 +298,7 @@ const privateSubmit = (): void => {
       .catch((error: unknown) => {
         previewed.value = "";
         conflicted.value = isApiError(error) && error.status === 409;
-        void iamEditorFailure(error);
+        void iamEditorFailure(error, "无法保存当前共享角色的权限");
       })
       .finally(() => {
         saving.value = false;

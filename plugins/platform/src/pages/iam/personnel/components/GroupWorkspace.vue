@@ -43,7 +43,7 @@
         </div></template
       >
       <template #title>
-        <span>{{ selectedDetail?.record.name || "用户组" }}</span>
+        <span>{{ selectedGroup?.record.name || "用户组" }}</span>
         <span class="in-table__count">共 {{ memberTotal }} 人</span>
       </template>
       <template #tools-start>
@@ -54,7 +54,7 @@
           clearable
           placeholder="搜索成员"
           :prefix-icon="Search"
-          :disabled="!selectedDetail"
+          :disabled="!selectedGroup"
           @keyup.enter="refreshMembers"
           @clear="refreshMembers"
         />
@@ -139,13 +139,13 @@ import {
   MemberStatus,
   memberStatusTone,
   useMemberStatusEnum,
-  type IamSelectOption,
+  type MemberPickerChanges,
 } from "@ingot/admin-common";
 import { PlatformGroupDeleteAPI } from "@/api/iam/personnel";
 import GroupDetailDrawer from "./GroupDetailDrawer.vue";
 import GroupList from "./GroupList.vue";
 import GroupWizard from "./GroupWizard.vue";
-import type { GroupRow } from "../groupTable";
+import type { GroupRow, GroupSummaryRow } from "../groupTable";
 import {
   createGroupMemberToolbarActions,
   GROUP_MEMBER_TABLE_ID,
@@ -171,10 +171,10 @@ const {
   groupPaging,
   memberPaging,
   selectedId,
-  selectedDetail,
+  selectedGroup,
   saving,
   updateAccess,
-  memberIds,
+  prepareMemberPicker,
   selectGroup,
   refreshGroups,
   reloadSelected,
@@ -184,8 +184,8 @@ const {
 const memberStatusEnum = useMemberStatusEnum();
 const selectedColumns = ref<string[]>([]);
 const wizardRef = ref<{ show: (row?: GroupRow) => void }>();
-const detailRef = ref<{ show: (row: GroupRow) => void; hide: () => void }>();
-const pickerRef = ref<{ show: (current?: { boundIds: string[] }) => void }>();
+const detailRef = ref<{ show: (id: string) => void; hide: () => void }>();
+const pickerRef = ref<{ show: (current?: { boundIds: string[]; partial: boolean }) => void }>();
 const toolbarRow = {
   record: { id: "", status: MemberStatus.ACTIVE, departments: [] },
   fieldAccess: {},
@@ -207,7 +207,7 @@ watch(context, (value) => {
   if (value && !value.canSearchDisplayName) memberPaging.condition.name = undefined;
 });
 const memberTotal = computed(
-  () => memberPaging.pageInfo.value.total ?? selectedDetail.value?.record.visibleMemberCount ?? 0,
+  () => memberPaging.pageInfo.value.total ?? 0,
 );
 const memberFeedback = computed<InTableFeedback>(() =>
   unavailable.value || contextError.value ? "error" : "empty",
@@ -230,14 +230,14 @@ const handleWizardSuccess = (): void => {
 const handleCreate = (): void => {
   wizardRef.value?.show();
 };
-const handleGroupDetail = (row: GroupRow): void => {
+const handleGroupDetail = (row: GroupSummaryRow): void => {
   selectGroup(row);
-  detailRef.value?.show(row);
+  detailRef.value?.show(row.record.id);
 };
 const handleGroupEdit = (row: GroupRow): void => {
   wizardRef.value?.show(row);
 };
-const handleGroupDelete = (row: GroupRow): void => {
+const handleGroupDelete = (row: GroupSummaryRow): void => {
   Confirm.error(`被引用的组不能静默级联撤权。是否删除（${row.record.name}）？`, {
     confirmButtonText: "删除",
   }).then(() => {
@@ -249,16 +249,15 @@ const handleGroupDelete = (row: GroupRow): void => {
   });
 };
 const handleAdd = (): void => {
-  if (!selectedDetail.value) {
-    return;
-  }
-  pickerRef.value?.show({ boundIds: memberIds.value });
+  void prepareMemberPicker().then((current) => {
+    if (current) pickerRef.value?.show({ boundIds: current.record.selection.members, partial: true });
+  }).catch(() => undefined);
 };
-const handlePicked = (members: IamSelectOption[]): void => {
-  void addMembers(members);
+const handlePicked = (_members: unknown, _primary?: string, changes?: MemberPickerChanges): void => {
+  if (changes) void addMembers(changes).catch(() => undefined);
 };
 const handleRemove = (item: GroupMemberRow): void => {
-  void removeMember(item);
+  void removeMember(item).catch(() => undefined);
 };
 const refreshMembers = (): void => {
   memberPaging.search();

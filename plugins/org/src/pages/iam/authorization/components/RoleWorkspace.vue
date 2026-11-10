@@ -171,7 +171,7 @@
               "
               link
               type="primary"
-              @in-click="showGroup(item.record.assignment.subject.id, item.record.subjectName)"
+              @in-click="showGroup(item.record.assignment.subject.id)"
               >查看用户组</in-button
             >
           </div>
@@ -300,18 +300,13 @@ const selectRole = (row?: RoleRow): void => {
   selectedRole.value = row;
   roleId.value = row?.record.id || "";
 };
-const showGroup = (id: string, name?: string): void => {
+const showGroup = (id: string): void => {
   if (!hasAction(IamAction.TENANT_GROUP_READ)) return;
-  groupDetail.value?.show({
-    record: { id, name: name || "", selection: { members: [], departments: [] } },
-    capabilities: {},
-    fieldAccess: {},
-    version: "",
-  });
+  groupDetail.value?.show(id);
 };
 const showSubject = (item: RoleSubjectSummary): void => {
   if (subjectKind.value === "groups") {
-    showGroup(item.id, item.name);
+    showGroup(item.id);
     return;
   }
   if (!hasAction(IamAction.TENANT_MEMBER_READ)) return;

@@ -16,6 +16,8 @@ export interface ApiErrorInit<T = unknown> {
 }
 
 const RETRIABLE_HTTP_STATUS = new Set([502, 503, 504]);
+const INTERNAL_ERROR_CODE = "S0500";
+const INTERNAL_ERROR_MESSAGE = "服务暂时无法处理请求，请稍后重试";
 
 export class ApiError<T = unknown> extends Error {
   readonly kind: ApiErrorKind;
@@ -55,13 +57,14 @@ export const createUnknownResponse = (): R =>
   }) as R;
 
 export const axiosResponseToR = <T = unknown>(response?: AxiosResponse<R<T>>): R<T> => {
-  if (!response || !response.data) {
+  if (!response || (!response.data && response.status < 500)) {
     return createUnknownResponse() as R<T>;
   }
-  const body = response.data as R<T> & { msg?: string };
+  const body = (response.data || {}) as R<T> & { msg?: string };
+  const internal = body.code === INTERNAL_ERROR_CODE || (response.status >= 500 && !body.code);
   return Object.assign({}, response, {
-    data: body.data,
-    message: body.message || body.msg || "",
+    data: internal ? undefined : body.data,
+    message: internal ? INTERNAL_ERROR_MESSAGE : body.message || body.msg || "",
     code: body.code,
   }) as R<T>;
 };

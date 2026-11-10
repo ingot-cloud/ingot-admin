@@ -3,12 +3,14 @@ import {
   IamAction,
   type GroupEffectiveMemberRecord,
   type GroupRecord,
+  type GroupSummary,
   type ResourceDetail,
 } from "@ingot/admin-common";
 
 export const GROUP_SPLIT_KEY = "org-iam-groups";
 export const GROUP_MEMBER_TABLE_ID = "org-iam-group-members";
 export type GroupRow = ResourceDetail<GroupRecord>;
+export type GroupSummaryRow = ResourceDetail<GroupSummary>;
 export type GroupMemberRow = GroupEffectiveMemberRecord;
 
 export const tableHeaders: Array<TableHeaderRecord> = [

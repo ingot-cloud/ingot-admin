@@ -43,7 +43,7 @@
         </div>
       </template>
       <template #title>
-        <span>{{ selectedDetail?.record.name || "用户组" }}</span>
+        <span>{{ selectedGroup?.record.name || "用户组" }}</span>
         <span class="in-table__count">共 {{ memberTotal }} 人</span>
       </template>
       <template #tools-start>
@@ -54,7 +54,7 @@
           clearable
           placeholder="搜索成员"
           :prefix-icon="Search"
-          :disabled="!selectedDetail"
+          :disabled="!selectedGroup"
           @keyup.enter="refreshMembers"
           @clear="refreshMembers"
         />
@@ -167,6 +167,7 @@ import {
   tableHeaders,
   type GroupMemberRow,
   type GroupRow,
+  type GroupSummaryRow,
 } from "../table";
 import { useOps } from "../useOps";
 
@@ -184,13 +185,13 @@ const {
   groupPaging,
   memberPaging,
   selectedId,
-  selectedDetail,
+  selectedGroup,
   saving,
   updateAccess,
   selectGroup,
   refreshGroups,
   reloadSelected,
-  ensureSelectedDetail,
+  prepareMemberPicker,
   addMembers,
   removeMember,
 } = useOps();
@@ -198,7 +199,7 @@ const {
 const memberStatusEnum = useMemberStatusEnum();
 const selectedColumns = ref<string[]>([]);
 const wizardRef = ref<{ show: (row?: GroupRow) => void }>();
-const detailRef = ref<{ show: (row: GroupRow) => void; hide: () => void }>();
+const detailRef = ref<{ show: (id: string) => void; hide: () => void }>();
 const pickerRef = ref<{ show: (current?: { boundIds: string[]; partial?: boolean }) => void }>();
 const toolbarRow = {
   member: { id: "", status: MemberStatus.ACTIVE, departments: [] },
@@ -249,14 +250,14 @@ const handleEditSuccess = (): void => {
 const handleCreate = (): void => {
   wizardRef.value?.show();
 };
-const handleGroupDetail = (row: GroupRow): void => {
+const handleGroupDetail = (row: GroupSummaryRow): void => {
   selectGroup(row);
-  detailRef.value?.show(row);
+  detailRef.value?.show(row.record.id);
 };
 const handleGroupEdit = (row: GroupRow): void => {
   wizardRef.value?.show(row);
 };
-const handleGroupDelete = (row: GroupRow): void => {
+const handleGroupDelete = (row: GroupSummaryRow): void => {
   Confirm.error(`被引用的组不能静默级联撤权。是否删除（${row.record.name}）？`, {
     confirmButtonText: "删除",
   }).then(() => {
@@ -268,7 +269,7 @@ const handleGroupDelete = (row: GroupRow): void => {
   });
 };
 const handleAdd = (): void => {
-  void ensureSelectedDetail().then((current) => {
+  void prepareMemberPicker().then((current) => {
     if (!current) {
       return;
     }
@@ -276,7 +277,7 @@ const handleAdd = (): void => {
       boundIds: current.record.selection.members,
       partial: true,
     });
-  });
+  }).catch(() => undefined);
 };
 const handlePicked = (
   _members: unknown,
@@ -286,10 +287,10 @@ const handlePicked = (
   if (!changes) {
     return;
   }
-  void addMembers(changes);
+  void addMembers(changes).catch(() => undefined);
 };
 const handleRemove = (item: GroupMemberRow): void => {
-  void removeMember(item);
+  void removeMember(item).catch(() => undefined);
 };
 const refreshMembers = (): void => {
   memberPaging.search();

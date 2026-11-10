@@ -335,6 +335,7 @@ import {
   isApiError,
   type Page,
   type R,
+  type RequestOptions,
   type TableHeaderRecord,
 } from "@ingot/admin-core";
 import {
@@ -349,6 +350,7 @@ import {
   BizIamStatusTag,
   ConfigurationStatus,
   IamAction,
+  iamEditorFailure,
   objectActionAllowed,
   useConfigurationStatusEnum,
   type ConfigurationStatusInput,
@@ -383,8 +385,8 @@ const props = withDefaults(
     getApi?: (id: string) => Promise<R<ResourceDetail<RoleSummary>>>;
     listGrantsApi?: (id: string) => Promise<R<RoleGrantList>>;
     listRevisionsApi?: (id: string, page: Page) => Promise<R<Page<ResourceDetail<RoleRevision>>>>;
-    updateApi?: (id: string, input: RoleUpdateInput) => Promise<R<CreatedResource>>;
-    statusApi?: (id: string, input: ConfigurationStatusInput) => Promise<R<CreatedResource>>;
+    updateApi?: (id: string, input: RoleUpdateInput, options?: RequestOptions) => Promise<R<CreatedResource>>;
+    statusApi?: (id: string, input: ConfigurationStatusInput, options?: RequestOptions) => Promise<R<CreatedResource>>;
     publishApi?: (id: string, input: RolePublishInput) => Promise<R<CreatedResource>>;
     grantDomain?: AuthorizationDomain;
     metadataApi?: RoleRevisionMetadataApi;
@@ -604,18 +606,20 @@ const privateSaveProfile = (): void => {
     return;
   }
   saving.value = true;
+  const options = { feedback: "silent" } as const;
+  const name = profileDraft.name.trim();
   const request = canEditProfile.value
     ? (props.updateApi ?? PlatformSharedRoleUpdateAPI)(roleId.value, {
         expectedVersion: detail.value.version,
-        name: profileDraft.name.trim(),
+        name,
         description: profileDraft.description.trim() || undefined,
         groupName: profileDraft.groupName.trim() || undefined,
         status: profileDraft.status,
-      })
+      }, options)
     : props.statusApi?.(roleId.value, {
         expectedVersion: detail.value.version,
         status: profileDraft.status,
-      });
+      }, options);
   if (!request) {
     saving.value = false;
     return;
@@ -627,6 +631,7 @@ const privateSaveProfile = (): void => {
       emits("success");
       void privateLoadDetail();
     })
+    .catch((error: unknown) => iamEditorFailure(error, `无法保存角色「${name}」`))
     .finally(() => {
       saving.value = false;
     });

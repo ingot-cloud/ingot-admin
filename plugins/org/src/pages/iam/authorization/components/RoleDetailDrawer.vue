@@ -140,7 +140,7 @@ defineProps<{
 }>();
 
 const emits = defineEmits<{ success: [] }>();
-const apis = createCurrentRoleApis("tenant");
+const apis = createCurrentRoleApis("tenant", { feedback: "silent" });
 const { hasAction } = useCapabilities();
 const statusEnum = useConfigurationStatusEnum();
 const statusOptions = computed(() => statusEnum.getOptions());
@@ -256,7 +256,7 @@ const privateSaveProfile = (): void => {
       void privateLoad();
     })
     .catch((error: unknown) => {
-      void iamEditorFailure(error);
+      void iamEditorFailure(error, `无法保存组织角色「${profileDraft.name.trim()}」`);
     })
     .finally(() => {
       saving.value = false;

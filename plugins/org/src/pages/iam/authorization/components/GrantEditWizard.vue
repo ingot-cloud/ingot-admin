@@ -80,7 +80,7 @@ defineProps<{
 }>();
 
 const emits = defineEmits<{ success: [] }>();
-const apis = createCurrentRoleApis("tenant");
+const apis = createCurrentRoleApis("tenant", { feedback: "silent" });
 const fieldStep = ref<InstanceType<typeof BizIamRoleFieldStep>>();
 const visible = ref(false);
 const saving = ref(false);
@@ -191,7 +191,7 @@ const privateSubmit = (): void => {
     .catch((error: unknown) => {
       previewed.value = "";
       conflicted.value = isApiError(error) && error.status === 409;
-      void iamEditorFailure(error);
+      void iamEditorFailure(error, "无法保存当前组织角色的权限");
     })
     .finally(() => {
       saving.value = false;

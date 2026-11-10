@@ -341,12 +341,7 @@ const selectRole = (row?: RoleRow): void => {
 };
 const showGroup = async (id: string): Promise<void> => {
   if (!hasAction(IamAction.PLATFORM_GROUP_READ)) return;
-  groupDetail.value?.show({
-    record: { id, name: "", selection: { members: [], departments: [] } },
-    capabilities: {},
-    fieldAccess: {},
-    version: "",
-  });
+  groupDetail.value?.show(id);
 };
 const confirmVersion = (): void => {
   const selected = knownVersions.value.get(draftVersionId.value);

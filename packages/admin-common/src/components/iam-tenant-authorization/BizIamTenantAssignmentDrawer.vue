@@ -502,17 +502,18 @@ const privateNext = (): void => {
   }
   if (canAdvance.value && step.value < wizardSteps.length - 1) step.value += 1;
 };
-const handleFailure = async (error: unknown): Promise<void> => {
+const handleFailure = async (error: unknown, operation?: string): Promise<void> => {
   if (isApiError(error) && error.status === 409) {
-    if (editing.value) {
-      staleVersion.value = true;
-      Message.warning("分配已被他人修改，当前输入暂留在抽屉中，请重新打开查看最新内容");
-    } else {
-      Message.warning("授权条件已变化，请检查当前选择并重新预览");
+    if (editing.value) staleVersion.value = true;
+    if (!error.config || error.config.feedback === "silent") {
+      const reason = editing.value
+        ? "分配已被修改，草稿已保留，请重新打开查看最新内容"
+        : "授权条件已变化，请检查当前选择并重新预览";
+      Message.warning(operation ? `${operation}，${reason}` : reason);
     }
     return;
   }
-  await iamEditorFailure(error);
+  await iamEditorFailure(error, operation);
 };
 const runPreview = async (): Promise<void> => {
   if (saving.value || staleVersion.value || previewState.loading.value) return;
@@ -548,6 +549,9 @@ const runPreview = async (): Promise<void> => {
 };
 const submit = async (): Promise<void> => {
   if (!canSubmit.value) return;
+  const operation = draft.value.items.length === 1
+    ? `无法保存角色分配「${previewItemLabel(0)}」`
+    : `无法保存这 ${draft.value.items.length} 条角色分配`;
   const epoch = opening;
   saving.value = true;
   try {
@@ -566,7 +570,7 @@ const submit = async (): Promise<void> => {
   } catch (error) {
     if (epoch === opening) {
       previewState.bumpDraft();
-      await handleFailure(error);
+      await handleFailure(error, operation);
     }
   } finally {
     saving.value = false;

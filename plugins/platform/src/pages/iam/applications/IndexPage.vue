@@ -111,6 +111,7 @@ import {
 } from "@ingot/admin-core";
 import {
   BizHelpLink,
+  iamEditorFailure,
   AuthorizationDomain,
   BizIamRecordLink,
   BizIamStatusTag,
@@ -250,12 +251,8 @@ const handleDelete = (item: Row): void => {
             purgeRef.value?.show(item, error.message);
             return;
           }
-          Message.warning(error.message);
-          return;
         }
-        if (isApiError(error)) {
-          Message.warning(error.message);
-        }
+        return iamEditorFailure(error, `无法删除应用「${item.record.name}」`);
       });
   });
 };
