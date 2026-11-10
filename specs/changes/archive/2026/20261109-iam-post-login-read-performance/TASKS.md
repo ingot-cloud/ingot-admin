@@ -12,4 +12,4 @@
 
 ## 移交事项
 
-真实 BFF 会话及代表接口、两端首批成员可见的 P95 对照与本机缓存命中率仍待现场证据，已转入[联合现场与发布验收](../../../../../../ingot/specs/changes/active/20261110-iam-post-login-release-acceptance/TASKS.md)。
+真实 BFF 会话及代表接口、两端首批成员可见的 P95 对照与本机缓存命中率已在[联合现场与发布验收](../../../../../../ingot/specs/changes/archive/2026/20261110-iam-post-login-release-acceptance/TASKS.md)完成。

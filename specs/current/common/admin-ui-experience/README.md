@@ -23,6 +23,7 @@
 - [访问防护行操作](../../../changes/archive/2026/20261012-security-access-table-refinement/API.md)
 - [登录失败维度选择](../../../changes/archive/2026/20261012-security-login-failure-dimension-selection/API.md)
 - [20261109 IAM 写入提示和共享 HTTP 错误处理实现档案](../../../changes/archive/2026/20261109-iam-post-login-read-performance/README.md)
+- [真实受限成员提示现场验收](../../../../../ingot/specs/changes/archive/2026/20261110-iam-post-login-release-acceptance/VALIDATION.md#真实受限成员的权限与租户隔离)
 
 ## 变更记录
 

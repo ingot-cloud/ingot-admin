@@ -23,6 +23,7 @@
 - [授权审计游标 API](../../../changes/archive/2026/20261024-base-authorization-audit-readable/API.md)
 - [平台全局账号选择 API](../../../changes/archive/2026/20261106-base-account-picker/API.md)
 - [20261109 用户组摘要接口与实现验收](../../../changes/archive/2026/20261109-iam-post-login-read-performance/API.md)
+- [平台用户组首屏现场对照](../../../../../ingot/specs/changes/archive/2026/20261110-iam-post-login-release-acceptance/VALIDATION.md#页面-p95-正式对照)
 
 ## 变更记录
 
