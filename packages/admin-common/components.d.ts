@@ -161,6 +161,7 @@ declare module 'vue' {
     InContainer: typeof import('./../admin-core/src/components/container/InContainer.vue')['default']
     InCopyright: typeof import('./../admin-core/src/layouts/widgets/InCopyright.vue')['default']
     InCopyTag: typeof import('./../admin-core/src/components/InCopyTag.vue')['default']
+    InCursorPager: typeof import('./../admin-core/src/components/table/InCursorPager.vue')['default']
     InDescriptionItem: typeof import('./../admin-core/src/components/description/InDescriptionItem.vue')['default']
     InDescriptionList: typeof import('./../admin-core/src/components/description/InDescriptionList.vue')['default']
     InDetailDrawer: typeof import('./../admin-core/src/components/drawer/InDetailDrawer.vue')['default']

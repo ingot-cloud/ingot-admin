@@ -30,8 +30,11 @@ vi.mock("@/runtime", () => ({
 }));
 
 vi.mock("@/router/helper/menus", () => ({
-  mergeMenuTrees: (_staticMenus: unknown, remote: unknown) => remote,
+  mergeMenuTrees: vi.fn((_staticMenus: unknown, remote: unknown) => remote),
 }));
+import { mergeMenuTrees } from "@/router/helper/menus";
+import { MenuConfigurationError } from "@/router/navigationError";
+import { useRouterStore } from "./router";
 
 vi.mock("@/router/helper/route", () => ({
   generateMenus: () => [],
@@ -103,6 +106,19 @@ describe("session bootstrap", () => {
   afterEach(() => {
     resetSessionBootstrap();
     vi.useRealTimers();
+  });
+
+  it("菜单冲突的 bootstrap 不留下半初始化身份或权限", async () => {
+    vi.mocked(mergeMenuTrees).mockImplementationOnce(() => {
+      throw new MenuConfigurationError("path", "/same", "重复地址");
+    });
+    IamBootstrapAPI.mockResolvedValueOnce({ data: bootstrapData });
+    await expect(ensureSessionBootstrap()).rejects.toBeInstanceOf(MenuConfigurationError);
+    expect(useUserInfoStore().getUserInfoWhetherExist).toBe(false);
+    expect(usePermissions().permissions).toEqual([]);
+    expect(usePermissions().domain).toBeUndefined();
+    expect(useRouterStore().menus).toEqual([]);
+    expect(useRouterStore().configurationError?.value).toBe("/same");
   });
 
   it("退出并发合并，未授权本地退出不再请求远端撤销", async () => {

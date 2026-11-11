@@ -1,7 +1,13 @@
 import type { NavigationGuardWithThis } from "vue-router";
 import { BaseNavigationGuard } from "@/router/types";
-import { DomainMismatchError, ensureSessionBootstrap, useUserInfoStore } from "@/stores/modules/auth";
+import {
+  DomainMismatchError,
+  ensureSessionBootstrap,
+  useUserInfoStore,
+} from "@/stores/modules/auth";
 import { useGlobalLoading } from "@/hooks/biz/useGlobalLoading";
+import { MenuConfigurationError, navigationErrorLocation } from "@/router/navigationError";
+import { useRouterStore } from "@/stores/modules/router";
 
 export class UserInfoGuard extends BaseNavigationGuard {
   public order(): number {
@@ -12,6 +18,9 @@ export class UserInfoGuard extends BaseNavigationGuard {
     const globalLoading = useGlobalLoading();
     return async (to) => {
       const user = useUserInfoStore();
+      if (!to.meta.permitAuth && useRouterStore().configurationError) {
+        return navigationErrorLocation(to.fullPath);
+      }
       let loaded = false;
       if (!to.meta.permitAuth && !user.getUserInfoWhetherExist) {
         globalLoading.start();
@@ -23,6 +32,7 @@ export class UserInfoGuard extends BaseNavigationGuard {
           if (error instanceof DomainMismatchError) {
             return { path: "/auth/identity-error", replace: true };
           }
+          if (error instanceof MenuConfigurationError) return navigationErrorLocation(to.fullPath);
           return false;
         }
       }

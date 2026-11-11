@@ -197,6 +197,7 @@ const handleDownload = (isSvg: boolean) => {
   gap: var(--in-space-6);
 }
 .qrcode-preview :deep(svg) {
+  background-color: var(--el-color-white);
   max-width: 100%;
   height: auto;
 }

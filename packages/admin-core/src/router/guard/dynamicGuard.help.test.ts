@@ -1,10 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createMemoryHistory, createRouter } from "vue-router";
+import { MenuConfigurationError, NAVIGATION_ERROR_PATH } from "@/router/navigationError";
 
-const state = vi.hoisted(() => ({ hasMenus: false, install: vi.fn() }));
+const state = vi.hoisted(() => ({ hasMenus: false, conflict: false, install: vi.fn() }));
 vi.mock("@/stores/modules/router", () => ({
   useRouterStore: () => ({
-    fetchRoutes: async () => ({ dynamicRoutes: state.hasMenus ? [{ path: "/business" }] : [] }),
+    fetchRoutes: async () => {
+      if (state.conflict) throw new MenuConfigurationError("path", "/same", "重复地址");
+      return { dynamicRoutes: state.hasMenus ? [{ path: "/business" }] : [] };
+    },
     installDynamicRoutes: state.install,
   }),
 }));
@@ -13,6 +17,7 @@ const { DynamicRouterGuard } = await import("./dynamicGuard");
 describe("受保护帮助路由的动态菜单装配", () => {
   beforeEach(() => {
     state.hasMenus = false;
+    state.conflict = false;
     vi.clearAllMocks();
   });
   it("没有菜单时只允许已注册帮助路由，不扩展普通业务或未知路由", async () => {
@@ -49,5 +54,21 @@ describe("受保护帮助路由的动态菜单装配", () => {
     });
     expect(router.resolve(result as { path: string; hash: string }).fullPath).toBe(target.fullPath);
     expect(state.install).toHaveBeenCalledOnce();
+  });
+
+  it("路由装配再次遇到冲突时进入错误页，不安装部分路由", async () => {
+    state.conflict = true;
+    const router = createRouter({
+      history: createMemoryHistory(),
+      routes: [{ path: "/orders", component: {} }],
+    });
+    const to = router.resolve("/orders?q=1#details");
+    to.meta.dynamicRoutes = true;
+    expect(await new DynamicRouterGuard().exec(router)(to, to, vi.fn())).toEqual({
+      path: NAVIGATION_ERROR_PATH,
+      replace: true,
+      query: { returnTo: to.fullPath },
+    });
+    expect(state.install).not.toHaveBeenCalled();
   });
 });

@@ -1,11 +1,17 @@
 import type { RouteRecordRaw } from "vue-router";
 import { DOWNLOAD_CENTER_PATH, DOWNLOAD_CENTER_TITLE } from "@/models/download";
 import { LAYOUT_MAIN, PageName, RedirectPageField } from "@/router/constants";
+import { NAVIGATION_ERROR_PATH } from "@/router/navigationError";
 
 /**
  * 公共路由
  */
 export const commonRoutes: Array<RouteRecordRaw> = [
+  {
+    path: NAVIGATION_ERROR_PATH,
+    meta: { hideMenu: true, hideBreadcrumb: true, permitAuth: true },
+    component: () => import("@/pages/auth/navigation-error/IndexPage.vue"),
+  },
   {
     path: "/redirect",
     component: LAYOUT_MAIN,

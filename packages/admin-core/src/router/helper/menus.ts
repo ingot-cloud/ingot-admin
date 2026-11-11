@@ -1,4 +1,5 @@
 import type { MenuTreeNode } from "@/models";
+import { MenuConfigurationError } from "@/router/navigationError";
 
 /** 与后端菜单节点同构，供 `transformMenu` / 侧栏合并使用 */
 export type InStaticMenuNode = MenuTreeNode;
@@ -13,7 +14,11 @@ const walkMenus = (
     if (node.path) {
       const existing = seenPaths.get(node.path);
       if (existing) {
-        throw new Error(`菜单 path “${node.path}” 冲突（${existing} 与 ${source}）`);
+        throw new MenuConfigurationError(
+          "path",
+          node.path,
+          `菜单 path “${node.path}” 冲突（${existing} 与 ${source}）`,
+        );
       }
       seenPaths.set(node.path, source);
     }
@@ -21,7 +26,11 @@ const walkMenus = (
     if (routeName) {
       const existing = seenNames.get(routeName);
       if (existing) {
-        throw new Error(`菜单 routeName “${routeName}” 冲突（${existing} 与 ${source}）`);
+        throw new MenuConfigurationError(
+          "routeName",
+          routeName,
+          `菜单 routeName “${routeName}” 冲突（${existing} 与 ${source}）`,
+        );
       }
       seenNames.set(routeName, source);
     }

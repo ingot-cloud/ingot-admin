@@ -50,7 +50,9 @@ watch(
   () => appStateStore.showWatermark,
   (val) => {
     if (val) {
-      watermark.set(`${userInfoStore.getUsername!}@${userInfoStore.getSensitivePhone}`);
+      watermark.set(
+        [userInfoStore.getUsername, userInfoStore.getSensitivePhone].filter(Boolean).join("@"),
+      );
     } else {
       watermark.del();
     }

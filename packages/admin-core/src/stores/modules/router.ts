@@ -7,6 +7,7 @@ import { generateMenus, transformMenu, cacheRoutes } from "@/router/helper/route
 import { mergeMenuTrees } from "@/router/helper/menus";
 import { mapIamMenus } from "@/router/helper/iamMenus";
 import { getAdminRuntimeConfig } from "@/runtime";
+import { MenuConfigurationError, navigationErrorLocation } from "@/router/navigationError";
 
 export const useRouterStore = defineStore("router", () => {
   const cacheEpoch = ref(0);
@@ -25,6 +26,7 @@ export const useRouterStore = defineStore("router", () => {
   const dynamicRoutes = ref<Array<RouteRecordRaw>>([]);
   const menus = ref<Array<MenuRouteRecord>>([]);
   const cacheNames = ref<Array<string>>([]);
+  const configurationError = shallowRef<MenuConfigurationError>();
 
   const getMenus = computed(() => menus.value);
   const activeApplicationId = ref<string>();
@@ -55,7 +57,18 @@ export const useRouterStore = defineStore("router", () => {
 
   const applyRemoteMenus = (remoteMenus: Array<MenuTreeNode>): void => {
     const staticMenus = getAdminRuntimeConfig().staticMenus;
-    applyMergedMenus(mergeMenuTrees(staticMenus, remoteMenus));
+    try {
+      applyMergedMenus(mergeMenuTrees(staticMenus, remoteMenus));
+      configurationError.value = undefined;
+    } catch (error: unknown) {
+      if (error instanceof MenuConfigurationError) {
+        const returnTo = boundRouter?.currentRoute.value.fullPath;
+        clearForPasswordChange();
+        configurationError.value = error;
+        if (boundRouter && returnTo) void boundRouter.replace(navigationErrorLocation(returnTo));
+      }
+      throw error;
+    }
   };
 
   const clearForPasswordChange = (): void => {
@@ -69,13 +82,14 @@ export const useRouterStore = defineStore("router", () => {
     menus.value = [];
     cacheNames.value = [];
     activeApplicationId.value = undefined;
+    configurationError.value = undefined;
   };
 
   const fetchRoutes = async (forceRefresh?: boolean) => {
     return new Promise<{
       menus: Array<MenuRouteRecord>;
       dynamicRoutes: Array<RouteRecordRaw>;
-    }>((resolve) => {
+    }>((resolve, reject) => {
       if (forceRefresh || fingerprint === "") {
         const epoch = cacheEpoch.value;
         const staticMenus = getAdminRuntimeConfig().staticMenus;
@@ -91,7 +105,11 @@ export const useRouterStore = defineStore("router", () => {
               dynamicRoutes: dynamicRoutes.value,
             });
           })
-          .catch(() => {
+          .catch((error: unknown) => {
+            if (error instanceof MenuConfigurationError) {
+              reject(error);
+              return;
+            }
             if (epoch === cacheEpoch.value && staticMenus.length > 0 && menus.value.length === 0) {
               applyMergedMenus(staticMenus);
             }
@@ -112,6 +130,7 @@ export const useRouterStore = defineStore("router", () => {
 
   return {
     cacheEpoch,
+    configurationError,
     installDynamicRoutes,
     menus,
     cacheNames,

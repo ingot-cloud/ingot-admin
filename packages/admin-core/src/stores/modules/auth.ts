@@ -115,9 +115,8 @@ export const useUserInfoStore = defineStore("security.user", () => {
     return userInfo.user ? userInfo.user.nickname : "未登录";
   });
   const getSensitivePhone = computed(() => {
-    return userInfo.user
-      ? `${userInfo.user.phone?.slice(0, 3)}****${userInfo.user.phone?.slice(-4)}`
-      : "";
+    const phone = userInfo.user?.phone;
+    return phone ? `${phone.slice(0, 3)}****${phone.slice(-4)}` : "";
   });
   const getAvatar = computed(() => {
     return userInfo.user ? userInfo.user.avatar : "";
@@ -393,6 +392,8 @@ export const requirePasswordChange = (options?: SessionFeedbackOptions): Promise
 
 const applyBootstrap = (data: IamBootstrap): void => {
   assertExpectedDomain(data);
+  // 菜单校验失败时，不留下部分应用的身份资料或权限。
+  useRouterStore().applyRemoteMenus(mapIamMenus(data.menus));
   useUserInfoStore().applyUserInfo(toUserInfo(data));
   const permissions = usePermissions();
   permissions.applyCapabilities({
@@ -401,7 +402,6 @@ const applyBootstrap = (data: IamBootstrap): void => {
     expiresAt: data.expiresAt,
   });
   permissions.applyContext(data);
-  useRouterStore().applyRemoteMenus(mapIamMenus(data.menus));
 };
 
 export const resetSessionBootstrap = (): void => {

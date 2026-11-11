@@ -20,6 +20,7 @@ declare global {
   const asyncComputed: typeof import('@vueuse/core').asyncComputed
   const autoResetRef: typeof import('@vueuse/core').autoResetRef
   const beginIdentitySwitch: typeof import('../../packages/admin-core/src/stores/modules/auth').beginIdentitySwitch
+  const bindIdentityChannel: typeof import('../../packages/admin-core/src/stores/modules/auth').bindIdentityChannel
   const computed: typeof import('vue').computed
   const computedAsync: typeof import('@vueuse/core').computedAsync
   const computedEager: typeof import('@vueuse/core').computedEager
@@ -403,6 +404,7 @@ declare module 'vue' {
     readonly asyncComputed: UnwrapRef<typeof import('@vueuse/core')['asyncComputed']>
     readonly autoResetRef: UnwrapRef<typeof import('@vueuse/core')['autoResetRef']>
     readonly beginIdentitySwitch: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['beginIdentitySwitch']>
+    readonly bindIdentityChannel: UnwrapRef<typeof import('../../packages/admin-core/src/stores/modules/auth')['bindIdentityChannel']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly computedAsync: UnwrapRef<typeof import('@vueuse/core')['computedAsync']>
     readonly computedEager: UnwrapRef<typeof import('@vueuse/core')['computedEager']>

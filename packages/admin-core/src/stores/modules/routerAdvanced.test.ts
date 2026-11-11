@@ -5,6 +5,7 @@ import { defineComponent, h } from "vue";
 import { configurePageResolver } from "@/router/constants";
 import { configureAdminRuntime } from "@/runtime";
 import { useRouterStore } from "./router";
+import { MenuConfigurationError, NAVIGATION_ERROR_PATH } from "@/router/navigationError";
 vi.mock("@/api/common/iam", () => ({ IamBootstrapAPI: vi.fn() }));
 import { IamBootstrapAPI } from "@/api/common/iam";
 const Page = defineComponent({ render: () => h("div") });
@@ -94,4 +95,46 @@ it("同一菜单指纹重复安装不移除再注册路由，身份清理后仍�
   store.applyRemoteMenus(menus);
   store.installDynamicRoutes(router);
   expect(add.mock.calls.length).toBeGreaterThan(count);
+});
+
+it("刷新冲突移除旧业务路由和缓存，进入静态错误页，身份清理丢弃冲突", async () => {
+  const store = useRouterStore();
+  store.applyRemoteMenus(menus);
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [{ path: NAVIGATION_ERROR_PATH, component: Page }],
+  });
+  store.installDynamicRoutes(router);
+  await router.push("/orders?q=1#details");
+  const epoch = store.cacheEpoch;
+  expect(() =>
+    store.applyRemoteMenus([...menus, { ...menus[0]!, id: "2", routeName: "other" }]),
+  ).toThrow(MenuConfigurationError);
+  await vi.waitFor(() => expect(router.currentRoute.value.path).toBe(NAVIGATION_ERROR_PATH));
+  expect(router.currentRoute.value.query.returnTo).toBe("/orders?q=1#details");
+  expect(router.hasRoute("orders")).toBe(false);
+  expect(store.cacheEpoch).toBeGreaterThan(epoch);
+  expect(store.menus).toEqual([]);
+  expect(store.configurationError?.value).toBe("/orders");
+  store.clearForPasswordChange();
+  expect(store.configurationError).toBeUndefined();
+});
+
+it("动态冲突不能退回静态菜单绕过，修正配置后才重新装配", async () => {
+  configureAdminRuntime({
+    appCode: "test",
+    branding: { title: "test" },
+    login: { fingerprintEnabled: false },
+    plugins: [],
+    staticMenus: menus,
+  });
+  const store = useRouterStore();
+  vi.mocked(IamBootstrapAPI).mockResolvedValueOnce({
+    data: { menus: [{ id: "2", name: "重复", path: "/orders", kind: "PAGE", children: [] }] },
+  } as Awaited<ReturnType<typeof IamBootstrapAPI>>);
+  await expect(store.fetchRoutes()).rejects.toBeInstanceOf(MenuConfigurationError);
+  expect(store.menus).toEqual([]);
+  store.applyRemoteMenus([{ ...menus[0]!, id: "2", path: "/fixed", routeName: "fixed" }]);
+  expect(store.configurationError).toBeUndefined();
+  expect(store.menus.map((row) => row.path)).toContain("/fixed");
 });

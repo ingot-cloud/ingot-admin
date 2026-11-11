@@ -462,14 +462,18 @@ const privateSave = (): void => {
     return;
   }
   session.saving.value = true;
-  PlatformApplicationUpdateAPI(detail.value.record.id, {
-    expectedVersion: detail.value.version,
-    name: draft.name.trim(),
-    description: draft.description.trim() || undefined,
-    icon: draft.icon || undefined,
-    sortOrder: draft.sortOrder,
-    baseline: draft.baseline,
-  }, { feedback: "silent" })
+  PlatformApplicationUpdateAPI(
+    detail.value.record.id,
+    {
+      expectedVersion: detail.value.version,
+      name: draft.name.trim(),
+      description: draft.description.trim() || undefined,
+      icon: draft.icon || undefined,
+      sortOrder: draft.sortOrder,
+      baseline: draft.baseline,
+    },
+    { feedback: "silent" },
+  )
     .then((response) => {
       detail.value = response.data;
       applyDraft(response.data.record);
@@ -583,5 +587,18 @@ defineExpose({
   flex: 1;
   min-height: 0;
   padding: 0;
+}
+
+.embedded-table :deep(.in-table__tools) {
+  flex-wrap: wrap;
+}
+
+.embedded-table :deep(.in-table__tools-start) {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.embedded-table :deep(.in-table__tools-end) {
+  flex: 1 0 auto;
 }
 </style>
