@@ -60,6 +60,24 @@
 
     <in-biz-tab-panel title="基本信息" name="basic" :editable="canEditMember">
       <in-form v-if="detail" :editing="editing">
+        <section v-if="blockedDraft" aria-label="未保存草稿" class="mb-16px flex flex-col gap-8px">
+          <el-alert
+            title="编辑权限已变化，草稿仅供查看，不能保存。"
+            type="warning"
+            :closable="false"
+          />
+          <in-detail-field
+            v-for="{ key, label, value } in blockedProfile"
+            :key="key"
+            :label="label"
+            :value="value"
+          />
+          <in-detail-field v-if="blockedDraft.departments?.length" label="草稿部门">
+            <template #view>
+              <member-department-readout :departments="blockedDraft.departments" />
+            </template>
+          </in-detail-field>
+        </section>
         <in-detail-field
           v-if="isFieldVisible(detail.fieldAccess, 'displayName')"
           label="显示名"
@@ -134,6 +152,7 @@ import {
   Message,
   StatusTag,
   createLoadGuard,
+  isApiError,
   useDetailEditSession,
   usePermissions,
   useCapabilities,
@@ -170,6 +189,7 @@ import {
 } from "../departmentSelection";
 import MemberDepartmentField from "./MemberDepartmentField.vue";
 import MemberDepartmentReadout from "./MemberDepartmentReadout.vue";
+import { useMemberRevokedDraft } from "../useMemberRevokedDraft";
 
 defineOptions({ name: "MemberDetailDrawer" });
 
@@ -182,6 +202,8 @@ const props = withDefaults(
   { departments: () => [], viewOnly: false },
 );
 const permissions = usePermissions();
+const router = useRouter();
+const revokedDraft = useMemberRevokedDraft();
 const emits = defineEmits<{ success: [] }>();
 const session = useDetailEditSession();
 const { editing } = session;
@@ -211,6 +233,21 @@ const dirty = reactive(new Set<ProfileKey>());
 const groupNames = ref<string[]>([]);
 const groupsLoaded = ref(false);
 const loadGuard = createLoadGuard();
+const blockedDraft = shallowRef<ReturnType<typeof revokedDraft.take>>();
+const blockedProfileLabels = {
+  displayName: "草稿显示名",
+  phone: "草稿手机号",
+  email: "草稿邮箱",
+  avatar: "草稿头像",
+} satisfies Record<ProfileKey, string>;
+const blockedProfile = computed(() => {
+  const profile = blockedDraft.value?.profile;
+  return (Object.keys(blockedProfileLabels) as ProfileKey[]).flatMap((key) => {
+    if (!profile || !(key in profile)) return [];
+    const value = key === "avatar" && profile.avatar ? "已更换" : profile[key] || "已清空";
+    return [{ key, label: blockedProfileLabels[key], value }];
+  });
+});
 const EMPTY_PREVIEW = "-";
 
 const identityName = computed(
@@ -276,7 +313,7 @@ const canEditDepartments = computed(
     detail.value.record.status !== MemberStatus.REMOVED,
 );
 const canEditMember = computed(
-  () => !props.viewOnly && (canEditProfile.value || canEditDepartments.value),
+  () => !props.viewOnly && !blockedDraft.value && (canEditProfile.value || canEditDepartments.value),
 );
 const canEditField = (key: ProfileKey): boolean =>
   canEditProfile.value && isFieldEditable(detail.value?.fieldAccess, key);
@@ -362,6 +399,7 @@ const privateFinish = (message: string): void => {
 };
 
 watch(visible, (open) => {
+  if (!open) blockedDraft.value = undefined;
   if (open || !listStale.value) {
     return;
   }
@@ -416,10 +454,21 @@ const privateSave = async (): Promise<void> => {
   const departmentsChanged =
     canEditDepartments.value &&
     !sameDepartmentOrder(departmentDraft.value, current.record.departments);
+  const departments = departmentsChanged
+    ? departmentDraft.value.map((item, index) => ({ id: item.id, primary: index === 0 }))
+    : undefined;
   if (!Object.keys(patch).length && !departmentsChanged) {
     session.exitEdit();
     return;
   }
+  const epoch = permissions.contextEpoch;
+  const location = router.currentRoute.value.fullPath;
+  const currentEditor = (): boolean =>
+    epoch === permissions.contextEpoch &&
+    location === router.currentRoute.value.fullPath &&
+    visible.value &&
+    detail.value?.record.id === current.record.id;
+  let remainingProfile = patch;
   session.saving.value = true;
   try {
     let version = current.version;
@@ -429,24 +478,48 @@ const privateSave = async (): Promise<void> => {
         ...patch,
       });
       version = response.data.version;
+      remainingProfile = {};
     }
-    if (departmentsChanged) {
+    if (!currentEditor()) return;
+    if (departments) {
       await TenantMemberDepartmentsAPI(current.record.id, {
         expectedVersion: version,
-        departments: departmentDraft.value.map((item, index) => ({
-          id: item.id,
-          primary: index === 0,
-        })),
+        departments,
       });
     }
+    if (!currentEditor()) return;
     privateFinish("保存成功");
     privateReload(current.record.id);
-  } catch {
-    // 网络层统一显示错误，保留当前草稿供用户检查。
+  } catch (error) {
+    if (currentEditor() && isApiError(error) && error.status === 403) {
+      session.exitEdit();
+      detail.value = undefined;
+      visible.value = false;
+      void revokedDraft.recover(current.record.id, { profile: remainingProfile, departments });
+    }
   } finally {
     session.saving.value = false;
   }
 };
+
+watch(
+  () => revokedDraft.recovered,
+  (value) => {
+    if (!value || props.viewOnly) return;
+    const recovered = revokedDraft.take();
+    if (!recovered) return;
+    detail.value = recovered.detail;
+    applyDraft(recovered.detail);
+    blockedDraft.value = recovered;
+    session.exitEdit();
+    groupNames.value = [];
+    groupsLoaded.value = false;
+    loading.value = false;
+    tab.value = "basic";
+    visible.value = true;
+  },
+  { immediate: true, flush: "post" },
+);
 
 const privateChangeStatus = (
   status: MemberStatus.ACTIVE | MemberStatus.SUSPENDED,
@@ -508,6 +581,8 @@ const privateOnMoreCommand = (command: string | number | object): void => {
 
 defineExpose({
   show(row: Row) {
+    revokedDraft.clear();
+    blockedDraft.value = undefined;
     visible.value = true;
     tab.value = "basic";
     session.exitEdit();

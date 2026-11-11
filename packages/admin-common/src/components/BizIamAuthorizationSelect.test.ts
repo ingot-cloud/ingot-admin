@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { mount, flushPromises } from "@vue/test-utils";
+import { ElOption, ElSelect } from "element-plus";
 import { createPinia } from "pinia";
 import { describe, expect, it, vi } from "vitest";
 import BizIamAuthorizationSelect from "./BizIamAuthorizationSelect.vue";
@@ -18,6 +19,27 @@ const stubs = {
 };
 const global = () => ({ stubs, plugins: [createPinia()] });
 describe("授权分页候选", () => {
+  it("首次展开委派下拉即显示候选，无需输入搜索词", async () => {
+    const response = envelope("100");
+    const api = vi.fn(async () => response);
+    const wrapper = mount(BizIamAuthorizationSelect, {
+      attachTo: document.body,
+      props: { api, query: { kind: "DELEGATION" }, initialPage: response.data },
+      global: {
+        components: { ElSelect, ElOption },
+        plugins: [createPinia()],
+      },
+    });
+    try {
+      await wrapper.get(".el-select__wrapper").trigger("click");
+      await vi.waitFor(() =>
+        expect(document.body.querySelector('[role="option"]')?.textContent).toContain("成员 100"),
+      );
+      expect(api).not.toHaveBeenCalled();
+    } finally {
+      wrapper.unmount();
+    }
+  });
   it("依据改变后丢弃迟到响应，不覆盖新候选", async () => {
     const pending: Array<(response: R<AuthorizationCandidatePage>) => void> = [];
     const api = vi.fn(

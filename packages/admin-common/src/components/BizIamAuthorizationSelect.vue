@@ -18,6 +18,9 @@
       <el-option v-for="option in options" :key="option.id" :value="option.id" :label="option.name">
         <div>{{ option.name }}</div>
       </el-option>
+      <template #empty>
+        <p class="el-select__empty">{{ loading ? "加载中" : "暂无候选" }}</p>
+      </template>
       <template v-if="hasMore" #footer>
         <in-button :loading="loading" @click="load(page + 1, keyword, true)">加载更多</in-button>
       </template>

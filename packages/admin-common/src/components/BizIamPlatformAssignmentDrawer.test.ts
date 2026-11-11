@@ -2,7 +2,7 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia } from "pinia";
 import { describe, expect, it, vi } from "vitest";
-import { Message, type R } from "@ingot/admin-core";
+import { Confirm, Message, type R } from "@ingot/admin-core";
 import {
   AssignmentSource,
   GrantStatus,
@@ -109,6 +109,41 @@ const props = () => ({
 });
 
 describe("平台角色分配向导", () => {
+  it("取消未完成草稿时确认，继续编辑保留接收对象", async () => {
+    const confirm = vi.spyOn(Confirm, "warning");
+    const wrapper = mount(BizIamPlatformAssignmentDrawer, {
+      props: props(),
+      global: { plugins: [createPinia()], stubs },
+    });
+    const click = async (text: string): Promise<void> => {
+      await wrapper
+        .findAll("button")
+        .find((item) => item.text() === text)!
+        .trigger("click");
+      await flushPromises();
+    };
+    try {
+      await wrapper.vm.show();
+      await click("取消");
+      expect(confirm).not.toHaveBeenCalled();
+      expect(wrapper.text()).not.toContain("选择接收对象");
+
+      await wrapper.vm.show();
+      await click("选择接收对象");
+      confirm.mockRejectedValueOnce("cancel");
+      await click("取消");
+      expect(confirm).toHaveBeenCalledOnce();
+      await click("下一步");
+      expect(wrapper.text()).toContain("选择两个角色");
+
+      confirm.mockResolvedValueOnce("confirm");
+      await click("取消");
+      expect(wrapper.text()).not.toContain("选择两个角色");
+    } finally {
+      confirm.mockRestore();
+      wrapper.unmount();
+    }
+  });
   it("范围尚未配置时下一步展示全量待办，不能进入预览", async () => {
     const api = props();
     const showOutstanding = vi.fn();

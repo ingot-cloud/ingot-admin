@@ -1,6 +1,7 @@
 <template>
   <InWizard
     v-model="visible"
+    :before-close="privateBeforeClose"
     :title="editing ? '调整角色分配' : '分配角色'"
     :loading="loading"
     :steps="wizardSteps"
@@ -165,7 +166,7 @@
       </div>
     </template>
     <template #footer>
-      <in-button @click="visible = false">取消</in-button>
+      <in-button :disabled="saving" @click="privateClose">取消</in-button>
       <in-button v-if="step > 0" @in-click="step -= 1">上一步</in-button>
       <in-button v-if="step < 3" type="primary" :disabled="!canAdvance" @in-click="privateNext">
         下一步
@@ -193,6 +194,7 @@ import { assignmentVersionLabel } from "../models/iam";
 import { formatDateTime } from "@ingot/shared";
 import {
   InWizard,
+  confirmUnsavedChanges,
   isApiError,
   Message,
   objectActionAllowed,
@@ -293,6 +295,41 @@ const previewSnapshot = ref<AssignmentBatchInput>();
 const validFrom = ref<string>();
 const validUntil = ref<string>();
 const staleVersion = ref(false);
+const initialDraftSignature = ref("");
+let confirmingClose = false;
+const privateDraftSignature = (): string =>
+  JSON.stringify([
+    sourceId.value,
+    members.value.map(({ id }) => id).sort(),
+    groups.value.map(({ id }) => id).sort(),
+    validFrom.value || "",
+    validUntil.value || "",
+    roles.value.map(({ option, bindings }) => [
+      option.id,
+      Object.keys(bindings)
+        .sort()
+        .map((key) => [key, bindings[key].kind, [...bindings[key].ids].sort()]),
+    ]),
+  ]);
+const privateBeforeClose = async (done: () => void): Promise<void> => {
+  if (saving.value || confirmingClose) return;
+  if (loading.value || readonly.value || initialDraftSignature.value === privateDraftSignature()) {
+    done();
+    return;
+  }
+  const epoch = opening;
+  confirmingClose = true;
+  try {
+    if ((await confirmUnsavedChanges()) && epoch === opening) done();
+  } finally {
+    confirmingClose = false;
+  }
+};
+const privateClose = (): void => {
+  void privateBeforeClose(() => {
+    visible.value = false;
+  });
+};
 const { contextEpoch } = useCapabilities();
 const openingKey = ref(0);
 const sourceOptions = ref<AuthorizationOption[]>([]);
@@ -714,7 +751,10 @@ defineExpose({
     } catch (error) {
       if (epoch === opening) await iamEditorFailure(error);
     } finally {
-      if (epoch === opening) loading.value = false;
+      if (epoch === opening) {
+        initialDraftSignature.value = privateDraftSignature();
+        loading.value = false;
+      }
     }
   },
 });

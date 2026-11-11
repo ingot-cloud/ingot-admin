@@ -38,7 +38,9 @@ describe("InTableColumnSetting", () => {
   it("全部半选、必选列禁用，切换后即时应用并持久化", async () => {
     const { wrapper, panel } = await openPanel();
     expect(panel?.textContent).toContain("请选择列表中要展示的信息");
-    const inputs = [...(panel?.querySelectorAll("input[type='checkbox']") ?? [])] as HTMLInputElement[];
+    const inputs = [
+      ...(panel?.querySelectorAll("input[type='checkbox']") ?? []),
+    ] as HTMLInputElement[];
     expect(inputs[0]?.indeterminate).toBe(true);
     expect(inputs[1]?.disabled).toBe(true);
     expect(inputs[4]?.disabled).toBe(true);
@@ -104,6 +106,89 @@ describe("InTableColumnSetting", () => {
     });
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["name", "actions"]);
+    wrapper.unmount();
+  });
+
+  it("异步权限列默认可见，初始化不保存尚未完整的列设置", async () => {
+    const wrapper = mount(InTableColumnSetting, {
+      props: { headers: [headers[0]!, headers[3]!], tableId: "member-list" },
+      global: { stubs },
+    });
+    expect(localStorage.length).toBe(0);
+    await wrapper.setProps({ headers });
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["name", "phone", "actions"]);
+    expect(localStorage.length).toBe(0);
+    wrapper.unmount();
+  });
+
+  it("权限加载前后保留主动隐藏和排序，重新勾选列能显示", async () => {
+    const key = `${COLUMN_SETTING_STORAGE_PREFIX}:browser:member-list`;
+    const saved = {
+      selected: ["email", "name", "actions"],
+      order: ["email", "name", "phone", "actions"],
+    };
+    localStorage.setItem(key, JSON.stringify(saved));
+    const wrapper = mount(InTableColumnSetting, {
+      props: { headers: [headers[0]!, headers[3]!], tableId: "member-list" },
+      attachTo: document.body,
+      global: { stubs },
+    });
+    await wrapper.setProps({ headers });
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["email", "name", "actions"]);
+    expect(JSON.parse(localStorage.getItem(key)!)).toEqual(saved);
+    await wrapper.get("[aria-label='设置显示字段']").trigger("click");
+    const rows = [...document.body.querySelectorAll(".in-table-column-setting__item")];
+    const phone = rows.find((row) => row.textContent?.includes("手机号"))!.querySelector("input")!;
+    phone.dispatchEvent(new Event("change", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["email", "name", "phone", "actions"]);
+    wrapper.unmount();
+  });
+
+  it("用户修改当前列时不抹除暂时无权限列的显隐和顺序", async () => {
+    const key = `${COLUMN_SETTING_STORAGE_PREFIX}:browser:member-list`;
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        selected: ["email", "name", "phone", "actions"],
+        order: ["email", "phone", "name", "actions"],
+      }),
+    );
+    const { wrapper } = await openPanel();
+    await wrapper.setProps({ data: headers.filter((item) => item.prop !== "email") });
+    const rows = [...document.body.querySelectorAll(".in-table-column-setting__item")];
+    rows
+      .find((row) => row.textContent?.includes("手机号"))!
+      .querySelector("input")!
+      .dispatchEvent(new Event("change", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+    expect(JSON.parse(localStorage.getItem(key)!).selected).toContain("email");
+    await wrapper.setProps({ data: headers });
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["email", "name", "actions"]);
+    expect(JSON.parse(localStorage.getItem(key)!).order).toEqual([
+      "email",
+      "phone",
+      "name",
+      "actions",
+    ]);
+    wrapper.unmount();
+  });
+
+  it("已保存的旧列集合不阻止新增权限列显示或切换", async () => {
+    const key = `${COLUMN_SETTING_STORAGE_PREFIX}:browser:member-list`;
+    localStorage.setItem(
+      key,
+      JSON.stringify({ selected: ["name", "actions"], order: ["name", "actions"] }),
+    );
+    const { wrapper, panel } = await openPanel();
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toEqual(["name", "actions", "phone"]);
+    const rows = [...panel!.querySelectorAll(".in-table-column-setting__item")];
+    const phone = rows.find((row) => row.textContent?.includes("手机号"))!.querySelector("input")!;
+    phone.dispatchEvent(new Event("change", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+    phone.dispatchEvent(new Event("change", { bubbles: true }));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted("change")?.at(-1)?.[0]).toContain("phone");
     wrapper.unmount();
   });
 });

@@ -112,9 +112,9 @@ export const useTableColumnSetting = (
       .map((item) => String(item.prop));
   };
 
-  const emitSelection = (selected: string[], order = columnOrder.value) => {
+  const emitSelection = (selected: string[], order = columnOrder.value, persist = true) => {
     const selectedSet = new Set(selected);
-    const nextOrder = order.length > 0 ? order : defaultOrder();
+    const nextOrder = [...new Set([...order, ...defaultOrder()])];
     const next = nextOrder.filter((prop) => {
       const header = headerByProp.value.get(prop);
       if (!header) {
@@ -132,22 +132,43 @@ export const useTableColumnSetting = (
     columnOrder.value = nextOrder;
     emits("onSelectionChange", next);
     emits("change", next);
-    if (storageKey.value) {
-      writeUiPreference(storageKey.value, { selected: next, order: nextOrder });
+    if (persist && storageKey.value) {
+      // 暂无权限的列仍保留用户偏好，只向表格发出当前允许的列。
+      const previous = normalizeColumnSettingPreference(
+        readUiPreference<unknown>(storageKey.value, null),
+        { selected: [], order: [] },
+      );
+      const pendingOrder = nextOrder.filter((prop) => headerByProp.value.has(prop));
+      const preservedOrder = previous.order.map((prop) =>
+        headerByProp.value.has(prop) ? (pendingOrder.shift() ?? prop) : prop,
+      );
+      writeUiPreference(storageKey.value, {
+        selected: [
+          ...new Set([
+            ...next,
+            ...previous.selected.filter((prop) => !headerByProp.value.has(prop)),
+          ]),
+        ],
+        order: [...new Set([...preservedOrder, ...pendingOrder])],
+      });
     }
   };
 
   const hydrate = () => {
     const fallback = { selected: defaultSelected(), order: defaultOrder() };
     if (!storageKey.value) {
-      emitSelection(fallback.selected, fallback.order);
+      emitSelection(fallback.selected, fallback.order, false);
       return;
     }
     const stored = normalizeColumnSettingPreference(
       readUiPreference<unknown>(storageKey.value, fallback),
       fallback,
     );
-    emitSelection(stored.selected, stored.order);
+    emitSelection(
+      [...stored.selected, ...fallback.selected.filter((prop) => !stored.order.includes(prop))],
+      stored.order,
+      false,
+    );
   };
 
   const privatePlacePanel = () => {
