@@ -1,0 +1,7 @@
+# IAM 管理页面
+
+[页面行为](./spec.md)统一双域成员、目录、角色、分配/委派及异常状态。租户即时授权、平台能力、字段和版本应用沿各自基线；接口只维护在后端及归档变更副本。
+
+来源：[IAM 前端主变更](../../../changes/archive/2026/20260913-base-iam-admin/README.md)。
+
+接口副本：[API.md](../../../changes/archive/2026/20260913-base-iam-admin/API.md)。

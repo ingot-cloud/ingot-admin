@@ -1,0 +1,73 @@
+{
+  "status": "applied-and-archived",
+  "generatedDate": "2026-11-11",
+  "applyAfter": [
+    "H01",
+    "H02",
+    "H03",
+    "H04"
+  ],
+  "currentNotApplied": false,
+  "files": [
+    {
+      "target": "specs/current/base/iam-management/README.md",
+      "candidate": "closeout/candidates/specs/current/base/iam-management/README.md",
+      "beforeSha256": null,
+      "afterSha256": "3edece72c0d79977f5dd48a2d0bf5ac2d48d532189f09d237c7e5193695ad322",
+      "appliedSha256": "8b8688e536de9ad5d7b03946faf575873525398dfd5fde7ec4974d6eaee69277",
+      "postApplyAdjustment": "仅规范归档后的结构引用或增加接口副本索引；审阅时完整候选保留原字节。"
+    },
+    {
+      "target": "specs/current/base/iam-management/spec.md",
+      "candidate": "closeout/candidates/specs/current/base/iam-management/spec.md",
+      "beforeSha256": null,
+      "afterSha256": "38a6e159ddd32f4d2256d3865922526a979684342b556fa519f0c9f6d8d931c4",
+      "appliedSha256": "38a6e159ddd32f4d2256d3865922526a979684342b556fa519f0c9f6d8d931c4"
+    },
+    {
+      "target": "specs/current/base/rbac-data-authorization/README.md",
+      "candidate": "closeout/candidates/specs/current/base/rbac-data-authorization/README.md",
+      "beforeSha256": "87a634d306a0cb6352f42e47bbde8ddbef7c7a603a1f02556ff2e88266e1d85b",
+      "afterSha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451",
+      "appliedSha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "target": "specs/current/base/rbac-data-authorization/spec.md",
+      "candidate": "closeout/candidates/specs/current/base/rbac-data-authorization/spec.md",
+      "beforeSha256": "cd3dc389abf7018594da47288d957b9c183e3e6d50fe3ac1c9c079ecaf52c0d3",
+      "afterSha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451",
+      "appliedSha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "target": "specs/current/base/platform-capabilities/spec.md",
+      "candidate": "closeout/candidates/specs/current/base/platform-capabilities/spec.md",
+      "beforeSha256": "577a249a309f8a0679c31f30e2f0741c358aba41a592d915e07d1cdf7cb1e26a",
+      "afterSha256": "4c23eb80b35b3f8e2a1ec92ad2d9bd11e71809dcc3e25bed2a9705c6e1e4c1b4",
+      "appliedSha256": "4c23eb80b35b3f8e2a1ec92ad2d9bd11e71809dcc3e25bed2a9705c6e1e4c1b4"
+    },
+    {
+      "target": "specs/current/base/role-version-application/spec.md",
+      "candidate": "closeout/candidates/specs/current/base/role-version-application/spec.md",
+      "beforeSha256": "619975489465ca8c978a9ba41d80ae0d320fcc9f13a7a10212fd6841254c09ca",
+      "afterSha256": "91dce2b75617833838a76b50ba016eac22d87af4e44a76745fc39453a463ad91",
+      "appliedSha256": "91dce2b75617833838a76b50ba016eac22d87af4e44a76745fc39453a463ad91"
+    },
+    {
+      "target": "specs/current/common/field-access-control/spec.md",
+      "candidate": "closeout/candidates/specs/current/common/field-access-control/spec.md",
+      "beforeSha256": "9455b2bb741317ec61e0f31b01bf262387bdfe9d73a560866a9e7b1746867ba4",
+      "afterSha256": "fdc7dfe4c040d1f45f8fdfee7d177e2f248ea0a91680673a3b6a4987bb009cbf",
+      "appliedSha256": "fdc7dfe4c040d1f45f8fdfee7d177e2f248ea0a91680673a3b6a4987bb009cbf"
+    }
+  ],
+  "appliedDate": "2026-11-11",
+  "userAcceptance": {
+    "H01": "passed",
+    "H02": "passed",
+    "H03": "passed",
+    "H04": "passed"
+  },
+  "confirmationMessage": "确认通过",
+  "archivedDate": "2026-11-11",
+  "archivePath": "specs/changes/archive/2026/20260913-base-iam-admin"
+}

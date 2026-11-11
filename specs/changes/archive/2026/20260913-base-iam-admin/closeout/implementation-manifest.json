@@ -1,0 +1,339 @@
+{
+  "date": "2026-11-11",
+  "repository": "frontend",
+  "baseCommit": "34dbc25fa8b61ba4cc544ab72c9559136524b20c",
+  "scope": "现有工作区未提交差异快照，不声称这些变更全部由本轮新增；排除自引用的收口与来源副本",
+  "commitCreated": false,
+  "files": [
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/.vitepress/theme/Layout.vue",
+      "sha256": "c7ef4a66ae5ab1b88b060607aa2918227a2c150d2118d16b59c06b0de72dab7f"
+    },
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/eslint.config.ts",
+      "sha256": "149b5f4bcf33c135b0e5cc991d92e63b09cd139ac879ecf2090a57045e8ce085"
+    },
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/page-map.mjs",
+      "sha256": "a0ff573f68bf5ff6b9458ac584cecf2e69ab7604b9ae0d92726b76f4aa457706"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/components.d.ts",
+      "sha256": "e2dc5a08ae18522e103ca8838da22b4e36efe3dd27e29e97fbfd4d928064f347"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamAuthorizationSelect.test.ts",
+      "sha256": "2b98fb78942f7dfce6a17e0874a48d95a5c30fb58deea40f0e9e38fa5f1b8537"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamAuthorizationSelect.vue",
+      "sha256": "2c299ba7af285512abdd38e2c10707de237dfbfbc1d2cb55f8d3912eb10fa946"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamPlatformAssignmentDrawer.test.ts",
+      "sha256": "8e978b77365661705e801f6244ea630214149e4a98561cbd67269d7cad958a4e"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamPlatformAssignmentDrawer.vue",
+      "sha256": "827051ed229e28fe3389458710566a9663b3e1d1a66745b526c1217c2e370e38"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/__fixtures__/visual-contract.test.ts",
+      "sha256": "1df44febb39cf5deaaf68c0312d894874d13cff0e6fe1f76e984ac16890f94f5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/drawer/InDrawer.vue",
+      "sha256": "69527f9948808833045b289cd9c24dd5aa99f93af341fcb79c2954367f69054e"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/InTable.test.ts",
+      "sha256": "b124878ff1adc0f4a5baef244dd1f667857432a53d413eded89db02573b73049"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/InTableColumnSetting.test.ts",
+      "sha256": "fa376c635e7ffbf2405d28301875fce499426204d42d91e324e4abd268ccc4ff"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/useTableColumnSetting.ts",
+      "sha256": "7f29884d778cbf4eaff0cf9cddc0881d3a831671ced80d3a83a6a849e558a1a5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/layouts/widgets/InGlobalSetting.vue",
+      "sha256": "96a0c9d4456a8d94d021a40cf40f0a590b5d29c1b9827dc399228040d21dc22c"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/dynamicGuard.help.test.ts",
+      "sha256": "d1e528204359160a3d58c90f21183a3a54e97aef7ae85e93fa008c79a1f91aac"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/dynamicGuard.ts",
+      "sha256": "f6a3f5472c31ee62da28ea08217d1cefa8f15f48844e41b6286517933dcf9312"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/userGuard.test.ts",
+      "sha256": "41d7a16204efd5f40a7f0183571d04a8fbb6369246d673768eeabb50a24bf3ff"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/userGuard.ts",
+      "sha256": "f9c1c33420fcb96754d10f10c2ac53039c914e6abd31adcabfd7cd1c655862cf"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/helper/menus.ts",
+      "sha256": "64b677923e43fe9f69e126dd5dc4220206bce39eca2665e0bec6a65bccf84b73"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/routes/common.ts",
+      "sha256": "86d31bdb6abc72981fdacba2b0d7950c490b30cf105f8f690d463c4dcda60d15"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/auth.test.ts",
+      "sha256": "a61c581f959f3e175cef8266ba24ec019c43022aa781ede3121c2198fd4edbb2"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/auth.ts",
+      "sha256": "71125026530f335c34be5f7989d89516e5dd86406397d345ab6b8a8ded683499"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/router.ts",
+      "sha256": "1d5bb3fc1b6608ce6bdea394ace39262422d9a8bb07e27d85063e9e629986976"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/routerAdvanced.test.ts",
+      "sha256": "beefd3455159139ed6d0d5bccf6d20ea918da32c6d3787d5e6b3a53886ef6957"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/member/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/components.d.ts",
+      "sha256": "8eb87d33bc0bc6b0d2229be0acb637e2b10295cb8142a9d1e7476ab10cd45301"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/src/pages/iam/authorization/components/RoleWorkspace.test.ts",
+      "sha256": "a5341d043cae7c8c8c80ccfb1f930f7eaa4e1c604077fc23674362fc04cf8899"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/src/pages/iam/members/components/MemberDetailDrawer.vue",
+      "sha256": "923352f05446ced67aecf30c56d7a86417c54f81344bdf38d2484cd7386de844"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/components.d.ts",
+      "sha256": "4cf6d3bf83b28d15702e360944c8efcf5fc4490df4795f49fda69f3686be10d0"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/src/pages/develop/qrcode/IndexPage.vue",
+      "sha256": "77a4f209cd7fdb43b1486c5e38bbea9306a162b979a12c83ab923eadc85953dc"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue",
+      "sha256": "26693c72d03f4dd763be10a15e737a2446cb075be03214601ee203223298615d"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/security/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/security/components.d.ts",
+      "sha256": "ea91525843d51c889ebbcd01ac0370993c6a29e3024c27a4ba99b91e34a603d6"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-iam-group-workspace-browser.mjs",
+      "sha256": "86b05c6e9ccecad33d7837e219575a47fae0bbcefe66576f07d7f30bb6603fac"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-same-origin-login-browser.mjs",
+      "sha256": "ebfc439098b73725539995ef84d3a258e20b1d53145021beda3d60806a501410"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-tenant-live-browser.mjs",
+      "sha256": "fa367b23bb87ce0f05736ddd239dbf467f948ceb40a2a2521e9c40c10e759eee"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ACCEPTANCE.md",
+      "sha256": "bd839ef3f6c77b7910bc38408214efd5e2f0b39cf177dc74a32fab03574b4a40"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/API.md",
+      "sha256": "9c6a19704d8865931cabacd0248ed2560597e5eb633469e873ad960e85a26ee3"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "sha256": "91feb8a23b31fee5ec50d1b89d0e9a710d0890b45e12da6519669293ee4ff40b"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ASSIGNMENT-TABLE-REFINEMENT.md",
+      "sha256": "5be687a2d5413a44ddf8900a1477065596c02900664c16f9335d1a402df9f186"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/AUTHORIZATION-AUDIT-REFINEMENT.md",
+      "sha256": "e5308dfa8a51a5693776a8040a574cd1ee43e7760d697d8a9252c5d3ce7d49f7"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/DESIGN.md",
+      "sha256": "e98c7203917f669717bf8575f82c214c39b912fb6d6730a9ab092ba8af9b9bfb"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md",
+      "sha256": "3ef2a881653a89503599cd878f2ef951d5c963de50a5af92ac73bc9da8ef3828"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/IAM-INTEGRATION.md",
+      "sha256": "1efaa86798d7d9913a1bcbac763d43ef9748d0f3a8eac819c7959f5017c03431"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/MENU-ADVANCED-CONFIGURATION.md",
+      "sha256": "dfadf394b92e65ddfaeba832aa111811ac4e96ec426f479d0f663bb4ae5ea8b5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-CONTACTS-REFINEMENT.md",
+      "sha256": "f63e0d1ff3c375eaab4f15fddb17c2102275cc4272fe73c850ba52ff588b7c44"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md",
+      "sha256": "cdc4b2037a745686e73b137aa27c22d8c03d5bbc6e2d235b84bb80164ef67e05"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-ROLE-EDITOR.md",
+      "sha256": "694d54663cee9d63e01de6343feded0409fbbdf0b53732b93f2207d80ea0aa37"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-TIMES.md",
+      "sha256": "02a9e6ee5912a1bb157c3d78ad795c10ac9543b36a0abbcb042e5bf22f601176"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md",
+      "sha256": "0bf107b8fd8954c5379ef39afdea64abdc1216497f298a3f05599f27b3e0b541"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/README.md",
+      "sha256": "af9e715378ed6eb5b0bb938035adbd1d14b3cc7a5b2b14b9902b1f5b07dc81bb"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/REQUIREMENTS.md",
+      "sha256": "c36064011e789704008b35afe9ae6ed464569f8f38b8af905bce9064114295d0"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-FIELD-AUTHORIZATION-REFINEMENT.md",
+      "sha256": "9d6513d97a8b9a1c02b7955f233318bc51aab75e6db15d99c46e5979c8753873"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-PICKER-REFINEMENT.md",
+      "sha256": "7caf7ffac3b9be0c6b6c2bb5f0f4c324804a3b20e65e32e015f624a94f994685"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "sha256": "22074b7470db8373b3af67f9326af93882d3814a4c02af27dd2f7a8e08dd15ee"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20260913-base-iam-admin/TASKS.md",
+      "sha256": "73367ad2f5efff7df38a3458cab8335fef740ad7cb4c7a33312eb81947ce12f6"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20261107-base-iam-legacy-cleanup/VALIDATION.md",
+      "sha256": "a08807c6fbd13cf01eb4dada5c3150e27bfa042031ff8631c44b64035b22f3cb"
+    },
+    {
+      "gitStatus": " M",
+      "path": "tests/tenant-live-browser/main.js",
+      "sha256": "607280e75d6a699d29a2c9ac18d9888a9e3f9773f0eccf64c2a2e93de5af469d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/pages/auth/navigation-error/IndexPage.vue",
+      "sha256": "4758450ba59bf293812df354132928c8d5d327ba25508a98b64cec1dc8f0643d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/router/navigationError.test.ts",
+      "sha256": "8c076d8be1affb7cade41a28f5664f86f78d4980ab31a0fb6d12e1b8be8cfbca"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/router/navigationError.ts",
+      "sha256": "d63d71ff583096c8666ff96634319ab8282df9d09588ec47e43957d1624cbbab"
+    },
+    {
+      "gitStatus": "??",
+      "path": "plugins/org/src/pages/iam/members/useMemberRevokedDraft.test.ts",
+      "sha256": "b62d675abbb86aceeabfa8a8f57e76439016cf8683e4c9208439c23662d786e1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "plugins/org/src/pages/iam/members/useMemberRevokedDraft.ts",
+      "sha256": "b82fcb277e94a3f24a293cbe6e7d1f90e2eae4a21db6e63aa62ee1143d449684"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/active/20261103-common-help-center/references/feishu-admin-help-entry.png",
+      "sha256": "6cb511eca424919b25007208ad350360190d41c69610891f96948d7dd969fbe6"
+    }
+  ]
+}

@@ -1,0 +1,1467 @@
+{
+  "date": "2026-11-11",
+  "baseCommit": "34dbc25fa8b61ba4cc544ab72c9559136524b20c",
+  "scope": "已验收 IAM 范围的文件及归档指纹；gitStatus/baseCommit 为归档时快照。随后按用户授权创建实现及文档提交。原验收前清单保留；最终清单排除未纳入本次提交的无关帮助截图。",
+  "commitCreated": false,
+  "files": [
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/.vitepress/theme/Layout.vue",
+      "sha256": "c7ef4a66ae5ab1b88b060607aa2918227a2c150d2118d16b59c06b0de72dab7f"
+    },
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/eslint.config.ts",
+      "sha256": "149b5f4bcf33c135b0e5cc991d92e63b09cd139ac879ecf2090a57045e8ce085"
+    },
+    {
+      "gitStatus": " M",
+      "path": "apps/dev-portal/page-map.mjs",
+      "sha256": "7a63fc8d960c9d1b7deb726c2688d284d43c34eab2443a6a505178f04f390e07"
+    },
+    {
+      "gitStatus": " M",
+      "path": "docs/app-header.md",
+      "sha256": "516a271d29bfaf0a42ce64a27704388ce004a906a86899bb1ee37ed041d13d7f"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/components.d.ts",
+      "sha256": "e2dc5a08ae18522e103ca8838da22b4e36efe3dd27e29e97fbfd4d928064f347"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamAuthorizationSelect.test.ts",
+      "sha256": "2b98fb78942f7dfce6a17e0874a48d95a5c30fb58deea40f0e9e38fa5f1b8537"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamAuthorizationSelect.vue",
+      "sha256": "2c299ba7af285512abdd38e2c10707de237dfbfbc1d2cb55f8d3912eb10fa946"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamPlatformAssignmentDrawer.test.ts",
+      "sha256": "8e978b77365661705e801f6244ea630214149e4a98561cbd67269d7cad958a4e"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-common/src/components/BizIamPlatformAssignmentDrawer.vue",
+      "sha256": "827051ed229e28fe3389458710566a9663b3e1d1a66745b526c1217c2e370e38"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/__fixtures__/visual-contract.test.ts",
+      "sha256": "1df44febb39cf5deaaf68c0312d894874d13cff0e6fe1f76e984ac16890f94f5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/drawer/InDrawer.vue",
+      "sha256": "69527f9948808833045b289cd9c24dd5aa99f93af341fcb79c2954367f69054e"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/InTable.test.ts",
+      "sha256": "b124878ff1adc0f4a5baef244dd1f667857432a53d413eded89db02573b73049"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/InTableColumnSetting.test.ts",
+      "sha256": "fa376c635e7ffbf2405d28301875fce499426204d42d91e324e4abd268ccc4ff"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/components/table/useTableColumnSetting.ts",
+      "sha256": "7f29884d778cbf4eaff0cf9cddc0881d3a831671ced80d3a83a6a849e558a1a5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/layouts/widgets/InGlobalSetting.vue",
+      "sha256": "96a0c9d4456a8d94d021a40cf40f0a590b5d29c1b9827dc399228040d21dc22c"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/dynamicGuard.help.test.ts",
+      "sha256": "d1e528204359160a3d58c90f21183a3a54e97aef7ae85e93fa008c79a1f91aac"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/dynamicGuard.ts",
+      "sha256": "f6a3f5472c31ee62da28ea08217d1cefa8f15f48844e41b6286517933dcf9312"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/userGuard.test.ts",
+      "sha256": "41d7a16204efd5f40a7f0183571d04a8fbb6369246d673768eeabb50a24bf3ff"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/guard/userGuard.ts",
+      "sha256": "f9c1c33420fcb96754d10f10c2ac53039c914e6abd31adcabfd7cd1c655862cf"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/helper/menus.ts",
+      "sha256": "64b677923e43fe9f69e126dd5dc4220206bce39eca2665e0bec6a65bccf84b73"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/router/routes/common.ts",
+      "sha256": "86d31bdb6abc72981fdacba2b0d7950c490b30cf105f8f690d463c4dcda60d15"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/auth.test.ts",
+      "sha256": "a61c581f959f3e175cef8266ba24ec019c43022aa781ede3121c2198fd4edbb2"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/auth.ts",
+      "sha256": "71125026530f335c34be5f7989d89516e5dd86406397d345ab6b8a8ded683499"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/router.ts",
+      "sha256": "1d5bb3fc1b6608ce6bdea394ace39262422d9a8bb07e27d85063e9e629986976"
+    },
+    {
+      "gitStatus": " M",
+      "path": "packages/admin-core/src/stores/modules/routerAdvanced.test.ts",
+      "sha256": "beefd3455159139ed6d0d5bccf6d20ea918da32c6d3787d5e6b3a53886ef6957"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/member/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/components.d.ts",
+      "sha256": "8eb87d33bc0bc6b0d2229be0acb637e2b10295cb8142a9d1e7476ab10cd45301"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/src/pages/iam/authorization/components/RoleWorkspace.test.ts",
+      "sha256": "a5341d043cae7c8c8c80ccfb1f930f7eaa4e1c604077fc23674362fc04cf8899"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/org/src/pages/iam/members/components/MemberDetailDrawer.vue",
+      "sha256": "923352f05446ced67aecf30c56d7a86417c54f81344bdf38d2484cd7386de844"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/components.d.ts",
+      "sha256": "4cf6d3bf83b28d15702e360944c8efcf5fc4490df4795f49fda69f3686be10d0"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/src/pages/develop/qrcode/IndexPage.vue",
+      "sha256": "77a4f209cd7fdb43b1486c5e38bbea9306a162b979a12c83ab923eadc85953dc"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/platform/src/pages/iam/applications/components/DetailDrawer.vue",
+      "sha256": "26693c72d03f4dd763be10a15e737a2446cb075be03214601ee203223298615d"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/security/auto-imports.d.ts",
+      "sha256": "3f8d6de0eac4200904b0710a36a74f9bdadf3a80d9cf545c70959a0e6cd24bce"
+    },
+    {
+      "gitStatus": " M",
+      "path": "plugins/security/components.d.ts",
+      "sha256": "ea91525843d51c889ebbcd01ac0370993c6a29e3024c27a4ba99b91e34a603d6"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-iam-group-workspace-browser.mjs",
+      "sha256": "86b05c6e9ccecad33d7837e219575a47fae0bbcefe66576f07d7f30bb6603fac"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-same-origin-login-browser.mjs",
+      "sha256": "ebfc439098b73725539995ef84d3a258e20b1d53145021beda3d60806a501410"
+    },
+    {
+      "gitStatus": " M",
+      "path": "scripts/verify-tenant-live-browser.mjs",
+      "sha256": "fa367b23bb87ce0f05736ddd239dbf467f948ceb40a2a2521e9c40c10e759eee"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/README.md",
+      "sha256": "7b2afeab50f31665ef811179dd795e88609358d154fbb5c2fcffd62fbf7be583"
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ACCEPTANCE.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/API.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ASSIGNMENT-TABLE-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/AUTHORIZATION-AUDIT-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/AUTHORIZATION-REFINEMENT-STATUS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/AUTHORIZATION-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/BFF-LOGIN.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/DESIGN.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/IAM-INTEGRATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/IMPLEMENTATION-STATUS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/INTERACTIONS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/MENU-ADVANCED-CONFIGURATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/MENU-ADVANCED-VERIFICATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-CONTACTS-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-ROLE-EDITOR.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-MEMBER-TIMES.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/README.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/REQUIREMENTS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/RESOURCE-EXTENSION-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-FIELD-AUTHORIZATION-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-PICKER-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/SOURCES.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/TASKS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ACCEPTANCE.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_API.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_REFINEMENT_STATUS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_DESIGN.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_FORCED_PASSWORD_CHANGE.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_FRONTEND.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_MENU_ADVANCED_CONFIGURATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_MENU_ADVANCED_VERIFICATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_MIGRATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_CONTACTS_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_FIELD_UI_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_ROLE_EDITOR.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_TIMES.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_PLATFORM_SUPER_ADMIN_APPLICATION_NAVIGATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_REQUIREMENTS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ROLE_DETAIL_LOADING_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ROLE_FIELD_AUTHORIZATION_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ROLE_PICKER_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_TASKS.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_TEST_DATA.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/BACKEND_VERIFICATION_GUIDE.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/README.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment-context.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment-multi-role.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment-record.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment-selected-candidates.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment-upgrade.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/assignment.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/audit.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/authorization-candidates.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/authorization-role-candidates.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/authorization-role-versions.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/authorization-snapshot.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/authorization-v2-request.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/bootstrap.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/decision-restricted.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/delegation-unlimited.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/delegation.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/directory-policy.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/field-policy.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/field-readonly.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/member-bound-roles.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/member-detail.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/member-page.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/member-role-edit.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/password-change-state.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/platform-member-context.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/policy-preview.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/preview-invalid.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-create.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-delta.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-platform-fields.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-publish.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-shared.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-subject-page.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/role-upgrade.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/tenant-create.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/examples/upgrade-conflict.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/internal-openapi.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/openapi.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/routes.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/contracts/schemas.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/endpoint-mapping.json",
+      "sha256": null
+    },
+    {
+      "gitStatus": " D",
+      "path": "specs/changes/active/20260913-base-iam-admin/sources/history/SOURCES-20260914.md",
+      "sha256": null
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/active/20261107-base-iam-legacy-cleanup/VALIDATION.md",
+      "sha256": "e0741fbc7275304d8336473a0dbb2759e261a2c4e568b3d468ea0ddffff55cc4"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261010-base-role-version-application/API.md",
+      "sha256": "7c0ab364d900f55926a68e14244d21bfd17ebe19c7673d57d8dc44acf386b7f9"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261012-iam-platform-capability-completion/README.md",
+      "sha256": "41685883800cb75bc0536bd9ae4de30cd53eea8fc8f248dfb424b02cd8dd7ffc"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261013-packages-application-navigation/README.md",
+      "sha256": "1a028db42818cf65f4fdc189f4f04d3a0cf94379ebf2745bc2d642042b4aa0ae"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261014-org-tenant-live-authorization/README.md",
+      "sha256": "bfb97b786513f82807938b7a513fb269cf6cb5c3cda2fa81c9c4c56557c238a3"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261017-org-members-dept-tabs/README.md",
+      "sha256": "0d830840c5f0162db541df2e8b04caf6b796e9bea38338d67c098f842a0dbb64"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261031-ingot-login-same-origin/README.md",
+      "sha256": "7c9f7dfc6d6449ce55c5d3323c64b15378354fcb4baaddab5659973b503f4a31"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/changes/archive/2026/20261106-base-account-picker/README.md",
+      "sha256": "d2ba7008642df7a50621e0e37e8e8b979ca7933d506b055b151f1a65e39160d5"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/current/base/platform-capabilities/spec.md",
+      "sha256": "4c23eb80b35b3f8e2a1ec92ad2d9bd11e71809dcc3e25bed2a9705c6e1e4c1b4"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/current/base/rbac-data-authorization/README.md",
+      "sha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/current/base/rbac-data-authorization/spec.md",
+      "sha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/current/base/role-version-application/spec.md",
+      "sha256": "91dce2b75617833838a76b50ba016eac22d87af4e44a76745fc39453a463ad91"
+    },
+    {
+      "gitStatus": " M",
+      "path": "specs/current/common/field-access-control/spec.md",
+      "sha256": "fdc7dfe4c040d1f45f8fdfee7d177e2f248ea0a91680673a3b6a4987bb009cbf"
+    },
+    {
+      "gitStatus": " M",
+      "path": "tests/tenant-live-browser/main.js",
+      "sha256": "607280e75d6a699d29a2c9ac18d9888a9e3f9773f0eccf64c2a2e93de5af469d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/pages/auth/navigation-error/IndexPage.vue",
+      "sha256": "4758450ba59bf293812df354132928c8d5d327ba25508a98b64cec1dc8f0643d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/router/navigationError.test.ts",
+      "sha256": "8c076d8be1affb7cade41a28f5664f86f78d4980ab31a0fb6d12e1b8be8cfbca"
+    },
+    {
+      "gitStatus": "??",
+      "path": "packages/admin-core/src/router/navigationError.ts",
+      "sha256": "d63d71ff583096c8666ff96634319ab8282df9d09588ec47e43957d1624cbbab"
+    },
+    {
+      "gitStatus": "??",
+      "path": "plugins/org/src/pages/iam/members/useMemberRevokedDraft.test.ts",
+      "sha256": "b62d675abbb86aceeabfa8a8f57e76439016cf8683e4c9208439c23662d786e1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "plugins/org/src/pages/iam/members/useMemberRevokedDraft.ts",
+      "sha256": "b82fcb277e94a3f24a293cbe6e7d1f90e2eae4a21db6e63aa62ee1143d449684"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ACCEPTANCE-CLOSEOUT.md",
+      "sha256": "6fee8ff0584c36542397ba6dc1fd6050ed3915665f2479b268eda4110979e64c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ACCEPTANCE.md",
+      "sha256": "69b91db248cef472c381d26275a3f65f5dfc6e98676437784501a9d8f2d1f95f"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/API.md",
+      "sha256": "962c7f48ebf0175d0da5529a6045b36f022bee2735969968edf5f9aa335bcdb2"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "sha256": "91feb8a23b31fee5ec50d1b89d0e9a710d0890b45e12da6519669293ee4ff40b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ASSIGNMENT-TABLE-REFINEMENT.md",
+      "sha256": "5be687a2d5413a44ddf8900a1477065596c02900664c16f9335d1a402df9f186"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/AUTHORIZATION-AUDIT-REFINEMENT.md",
+      "sha256": "09b89d3663827cba46afecef0011c93144bb2a1907626748e3ef3f251a8c3a4c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/AUTHORIZATION-REFINEMENT-STATUS.md",
+      "sha256": "b332ea852d3ea34134d6f8e925652e2f695d075940539a65a1b23b34fd8d31cf"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/AUTHORIZATION-REFINEMENT.md",
+      "sha256": "82dc7b51a4faeb2d5e3f0a5ab72e9efd9f822773890f82de9b9b9ef2d18b8feb"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/BFF-LOGIN.md",
+      "sha256": "13ea82307f6e69eb4c92054ce0386fa0be4d9cf5a242d32fbfca125fd6950f9b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/DESIGN.md",
+      "sha256": "b90e8aaa6a23c891027204967fb05d8175f6d67082975b95ea9f07802c876d43"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md",
+      "sha256": "3ef2a881653a89503599cd878f2ef951d5c963de50a5af92ac73bc9da8ef3828"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/IAM-INTEGRATION.md",
+      "sha256": "940b368fe851364c00a445f738db64a54ff19dd1ebb5396db49f7a5e6094b537"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/IMPLEMENTATION-STATUS.md",
+      "sha256": "56a70ce2381e22da96c7e6b26b27373ecadc367b269f1d8aeef751dd07254cab"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/INTERACTIONS.md",
+      "sha256": "03b742a27f2d71ece2f83bf69b85e61aed1fa7f69f73e9c487170073ff56dad9"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/MENU-ADVANCED-CONFIGURATION.md",
+      "sha256": "dfadf394b92e65ddfaeba832aa111811ac4e96ec426f479d0f663bb4ae5ea8b5"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/MENU-ADVANCED-VERIFICATION.md",
+      "sha256": "4c0e7e2b8074a4cc8165b198793c2eb4f97d88172d8630564aba737315f43c19"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/PLATFORM-MEMBER-CONTACTS-REFINEMENT.md",
+      "sha256": "f63e0d1ff3c375eaab4f15fddb17c2102275cc4272fe73c850ba52ff588b7c44"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md",
+      "sha256": "53717dd8565a8fb735a4e64281b5e187a986deacd1a56bf563db5dc0eb326ca8"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/PLATFORM-MEMBER-ROLE-EDITOR.md",
+      "sha256": "694d54663cee9d63e01de6343feded0409fbbdf0b53732b93f2207d80ea0aa37"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/PLATFORM-MEMBER-TIMES.md",
+      "sha256": "02a9e6ee5912a1bb157c3d78ad795c10ac9543b36a0abbcb042e5bf22f601176"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md",
+      "sha256": "0bf107b8fd8954c5379ef39afdea64abdc1216497f298a3f05599f27b3e0b541"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/README.md",
+      "sha256": "637671f6a3dd9d83694053446b75f7e318879d619e72afa9817fe28b654a5991"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/REQUIREMENTS.md",
+      "sha256": "c36064011e789704008b35afe9ae6ed464569f8f38b8af905bce9064114295d0"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/RESOURCE-EXTENSION-REFINEMENT.md",
+      "sha256": "3370b6b6cdcb04f1fc3ebe36b70455b8b3e2f22efd6ccf96fef938b38c02c7ab"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ROLE-FIELD-AUTHORIZATION-REFINEMENT.md",
+      "sha256": "40d229d0f5fe03bdb30c0f1616cd33d2c3b2f81f0fbea28856f234512c1a6b0e"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ROLE-PICKER-REFINEMENT.md",
+      "sha256": "7caf7ffac3b9be0c6b6c2bb5f0f4c324804a3b20e65e32e015f624a94f994685"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "sha256": "22074b7470db8373b3af67f9326af93882d3814a4c02af27dd2f7a8e08dd15ee"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/SOURCES.md",
+      "sha256": "1315a27603bcc4b76b5ac8cbbac08546065e89e4933ac65b5ffbe5fb9b9fca94"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/TASKS.md",
+      "sha256": "88796f13cf335e22ad4f506790af8be347e001ac835b474a2d842eac1cbfae7a"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/USER-ACCEPTANCE.md",
+      "sha256": "bf853ca0a8858e01927a0a1952be9fea514e818ad3ade5de5cf749492c8a9b25"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/README.md",
+      "sha256": "74c456e0770ecb12f00370414be32505581f99099c643eb36848bc6837d564db"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/archive-transition.json",
+      "sha256": "9abcb9624ffab06d0a37a1726bd1543665c7c465b7382dd565502d1bcb199d4c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/baseline-plan.json",
+      "sha256": "3e2de7e83f99ffb8e0260fc82d2d4ff8d5d996c6987dfa644fcacee4816bbed0"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/iam-management/README.md",
+      "sha256": "3edece72c0d79977f5dd48a2d0bf5ac2d48d532189f09d237c7e5193695ad322"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/iam-management/spec.md",
+      "sha256": "38a6e159ddd32f4d2256d3865922526a979684342b556fa519f0c9f6d8d931c4"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/platform-capabilities/spec.md",
+      "sha256": "4c23eb80b35b3f8e2a1ec92ad2d9bd11e71809dcc3e25bed2a9705c6e1e4c1b4"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/rbac-data-authorization/README.md",
+      "sha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/rbac-data-authorization/spec.md",
+      "sha256": "dc3b016eb9bdad8843b1a7209ba3dcb0288ed6e3398958fe7ca9c628edfc9451"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/base/role-version-application/spec.md",
+      "sha256": "91dce2b75617833838a76b50ba016eac22d87af4e44a76745fc39453a463ad91"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/candidates/specs/current/common/field-access-control/spec.md",
+      "sha256": "fdc7dfe4c040d1f45f8fdfee7d177e2f248ea0a91680673a3b6a4987bb009cbf"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/implementation-manifest.json",
+      "sha256": "bc90f3dab555d1ea31fec4e86b4433b6403b70b02741ad51c0466f1a27fa1440"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/pre-archive-verification.json",
+      "sha256": "ff45e6af8970183af9648d88a0403f21c71d239b1f36d0e7311d534cdc56f90b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/conflict-platform-narrow.png",
+      "sha256": "68e240de96fe2cdfabbaaede6ef3814eaf556404195fd4e28bf2a1548a93ce88"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/drawer-390.png",
+      "sha256": "a63b40ff94471d75f6563d9c6d08105b2c070c8fc6a58bf78af97e81924cd8a8"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/menu-platform-narrow.png",
+      "sha256": "171b0eb9e99040906bdae8abf36e1bf51df54f81053d7648b38283a00427972b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/menu-tenant-narrow.png",
+      "sha256": "aa354eabf9c627db046ed441aa2e93566340d83632539810d28b94e02ee9bd01"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/qrcode-dark.png",
+      "sha256": "87409605ff45e812efe84341e3f447d66d5e638a5536b982631876ad51565e33"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/upgrade-preview.png",
+      "sha256": "0df354d6116a39235af272888e4fb5c85681cd53576beb59cb58fd303a59fda7"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/review/upgrade-remote-picker.png",
+      "sha256": "6bfd890bdb496e5ba3590dd04413a9c745116596961bc81495af31cfad6ea831"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/unchecked-disposition.json",
+      "sha256": "d6caa48143ca7e72a935d31c42d8aaac1da3c0c595a443dad36669a374015f0e"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/closeout/validation.json",
+      "sha256": "a0ce4391b5a034852a15d41f82a4e5b55ea1cbe5af2716b2c0a1686f9ff4866d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ACCEPTANCE.md",
+      "sha256": "0e5cccdbc8e39c96f090541a58c79deacda1057eb2f0472d56290f3afc7d8c0a"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ACCEPTANCE_CLOSEOUT.md",
+      "sha256": "f27306226b0b86e3e31cb030d190bbd1777a09e5c0648aa1982baca1b698f2bb"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_API.md",
+      "sha256": "16b539aba126f06260ce362d8ae538250bac466584391235f31c8f2d7885df4f"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ASSIGNMENT_MULTI_ROLE_REFINEMENT.md",
+      "sha256": "6de9523a10e6447e4b01c51f98a10204891b029d9cb84dc78ec05c15c7a2d358"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_AUDIT_REFINEMENT.md",
+      "sha256": "60b4ccbe35390da77fba33b045ac0863a7b52693f0d139f7e037a331b5df52e3"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_REFINEMENT.md",
+      "sha256": "f71d5846863e674fdd09679c9642134d21862c5ee059d13735502ba4e9557c58"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_AUTHORIZATION_REFINEMENT_STATUS.md",
+      "sha256": "9ba413fe167207ed163626f973ac8d50a07e86728a9f2f4ccf25d3e7697bf4c4"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_DATABASE_SCRIPT_REFINEMENT.md",
+      "sha256": "7db0e0d73e0eda00366624e8d02d463fed9aab930517f1cda3422f85fb4dec52"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_DESIGN.md",
+      "sha256": "c40c506919c858179c903b6769e1fd2507dfd7891793acca9b41105e962cbed1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_FORCED_PASSWORD_CHANGE.md",
+      "sha256": "0d8b6dd0b8648ffdf7eb5adef9786ec80168325aba48add7e8114bcd91033401"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_FRONTEND.md",
+      "sha256": "68dea43284f997b5825b003814e0be04688addcba11cc90dc5fc3e74121108be"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_MENU_ADVANCED_CONFIGURATION.md",
+      "sha256": "584ed09a891f17adae26d64e6fe4e618f3c07680f4310735a35366de2c2a2b21"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_MENU_ADVANCED_VERIFICATION.md",
+      "sha256": "91e5f7c3cc3e538e2670257ff9c726ec70ff28f4d05c3bfd192a5a051c0eece5"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_MIGRATION.md",
+      "sha256": "a72a6afc456c605f42d4d2b148d5a28a43234fc707f2724755d65ecdbc388c6c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_CONTACTS_REFINEMENT.md",
+      "sha256": "51a10b0c2bc92c7684569602f738f7b31a2651cfb9d6c1d538129b40b48482e7"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_FIELD_UI_REFINEMENT.md",
+      "sha256": "66bdb61f74803446ecad5ec4c1ee605f2a747743608ee7fcb77fcc4a81c39c55"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_ROLE_EDITOR.md",
+      "sha256": "298b916ab2a9be6a3079fb8b92071fa7a61e8cfc8f4eec2b35f923bd17559931"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_MEMBER_TIMES.md",
+      "sha256": "bee25cd2bf2ba7f4241e9a08538f3e67c1b586637489d1c1e614e3677aa58a06"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_OBJECT_RESOLUTION_REFINEMENT.md",
+      "sha256": "b0db713763a38d76757d8afb24261b6a675cafaa083d642b3666ff6151d8e374"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_PLATFORM_SUPER_ADMIN_APPLICATION_NAVIGATION.md",
+      "sha256": "edde73c0467c725b9df1fd336a7add785ed7d51a144dc3895dd762ad46d347a0"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_REQUIREMENTS.md",
+      "sha256": "77168d635faab79050c174e5c8548c779671b4034203a230791a7cbca7cbe392"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_RESOURCE_EXTENSION_REFINEMENT.md",
+      "sha256": "49e6c50a8074c7e36f5e39c9bedf364522bcaf9d6b3ca6a9817c665f3073bbc8"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_RESOURCE_EXTENSION_VERIFICATION.md",
+      "sha256": "e7c981f031de90f53045cf3cb185d215abcd8ae78ced9ba7005e1ea47edd8601"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ROLE_DETAIL_LOADING_REFINEMENT.md",
+      "sha256": "2aac54ce51691b48009bf7d21ec7ef597547332928fa860615318dcd537b55ca"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ROLE_FIELD_AUTHORIZATION_REFINEMENT.md",
+      "sha256": "ef10de1f160370a6db1c68812dac691ec03f13e0bed93526007fc15796d48180"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ROLE_PICKER_REFINEMENT.md",
+      "sha256": "32a59841cc3a01aabaed5e6453afb77e81e76fd62a5ed8159298e0471fb26241"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_ROLE_WORKSPACE_DELEGATION_REFINEMENT.md",
+      "sha256": "c438bf6c2cab8aa9075a10c59f858469ab0be70ac9eaea783389788fc4298c5e"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_TASKS.md",
+      "sha256": "24bd79fca8f3b26c919b4d40cee7ddf743e1a48517d725d377442a64dd004ba9"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_TEST_DATA.md",
+      "sha256": "672648212601b5eaa8950c2d8eb98557db05a8c216ec775b183b6d1204952275"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_USER_ACCEPTANCE.md",
+      "sha256": "6767af2837eb77730759329f01cf73bd0d562579e488546deb412c1038edff5b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/BACKEND_VERIFICATION_GUIDE.md",
+      "sha256": "15731bae49e3463332fa8577779edb5766baab05f5f51253ac4c46dd847cc55e"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/README.md",
+      "sha256": "01c9f67129aa6b1c6a7392da7a62d45778847f2c1f18bccaabec5cc42095feed"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment-context.json",
+      "sha256": "f3f8a4690aa00488056b33036b1c7fdaff3a90e93e4ab24de4c1459d40173e24"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment-multi-role.json",
+      "sha256": "4d179982f861974708d6fbe0c34c0b8a522926223bc005636d06d490abe18f0a"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment-record.json",
+      "sha256": "ceb58e46f3e4bb487961a8241100cc4d92cf21064ced0c8a5653ea3dadf86899"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment-selected-candidates.json",
+      "sha256": "cc18ba779fd71bdb03500ea7ca0b6c1734f5247415115da3c7adb57c138a649c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment-upgrade.json",
+      "sha256": "692ded7fdad3fd63b6fb22c80e58e4f806ba47d2a0e2572ad7b5185076dfff35"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/assignment.json",
+      "sha256": "0534cb7b5dc00abfa9d9c2bedc978860c7c31e84f2cdf6bde0cbc6470b6c57fa"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/audit.json",
+      "sha256": "b12020ba0d27febc71e4a4b64fead0f1a92feb1deae6cb27d0d1f29ad09ad3f1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/authorization-candidates.json",
+      "sha256": "c58b40eefc464fe561a65c00789257dc0d338960172a08854fbb25e1ed6cffc8"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/authorization-role-candidates.json",
+      "sha256": "3002bf2b20aa23025e322a0caa0c46688d6c85312b0f448246f33252ffb01421"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/authorization-role-versions.json",
+      "sha256": "d43205669c3e8b440249b1779a9db822e756dca02e56d72ebcbe13a5ff5f1802"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/authorization-snapshot.json",
+      "sha256": "4921931f10dd6a64ba74a6bad545a4de6526f5991bd08bf2ac841de3440883d8"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/authorization-v2-request.json",
+      "sha256": "167abd84380f4a801ad942b36ec762577b52a61636e3b896cdea8746f1296af1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/bootstrap.json",
+      "sha256": "0cbd924febdbff6dab1f857c241c9593906d6a0dcd9d9ccf9c60f6185aaf6ad4"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/decision-restricted.json",
+      "sha256": "0b33df4ccb9c3adad9434d2a4cc4f0b4e93ebe36e9b83610b6429a8607867ce9"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/delegation-unlimited.json",
+      "sha256": "b70d04b8138fae40556a8f2d0505b60b451b6839ad4f7ab044d5456ad2b24e14"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/delegation.json",
+      "sha256": "f1ff9fd992b75c3525226095802b847d87b64226ed2a5cf8120aaa52392b21ae"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/directory-policy.json",
+      "sha256": "7cbf037239d1f2e5e1de2805e4effec9150e4e6dcd188644bfbb8b97653bd90c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/field-policy.json",
+      "sha256": "cb9ac4b9feb084979dbd2558f4481e1dc3458c8a0b57fb3cb11191061b68d7e1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/field-readonly.json",
+      "sha256": "fc3e25a2ccb1968b68c14e757528b00472f6b37649e38fb9c7d4d2f5b76c2acf"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/member-bound-roles.json",
+      "sha256": "f13756efb9b4551c676a61cfc07f565b5bcbd6b2cf91bdc8397e52e80f230711"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/member-detail.json",
+      "sha256": "4d834165ab6fc03bd8d51648c58ae9768b5fe39ccd61a298aaebbac7b0a02685"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/member-page.json",
+      "sha256": "6df8ae4f9aa0e49588d6b46b4022f96a7b593f42dae47e81bc92a961265cdf49"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/member-role-edit.json",
+      "sha256": "d360063c8189b334b666178eb9d2f49c5a7bec7dd8921efb8dae527443cf986b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/password-change-state.json",
+      "sha256": "077f2c128c3afb0a78bc63d03da8c115b3281d4e195d99d5f984e09071ae5377"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/platform-member-context.json",
+      "sha256": "4926fe1833c7ce3290f94bfa6e4a79c1dafde4a0ee4c5b727999af7f84cc0bb3"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/policy-preview.json",
+      "sha256": "95ef6260bc1984d2f3a6aedeb0355fde34cd25f75fcdd8ad8190d8d5c8bb437c"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/preview-invalid.json",
+      "sha256": "594ce7180a49ab5d478d90ee758e1e40512a166f8ae6e46285c338565cb86d53"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-create.json",
+      "sha256": "e407fa60b63de59abfc98db91af42a9d23df1903a5340d1361630da4cba3c43d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-delta.json",
+      "sha256": "af2f8b4456a4075cd77addebf33db78cdefb38edf633777b6eac5136e9fc7fcf"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-platform-fields.json",
+      "sha256": "619daf5e8049c832585d08a730fcc7d499adfa550cd89f9f683be47799be708b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-publish.json",
+      "sha256": "161f3c178e679952c5f21a320b30f02eb8ba5b432835b686bf8ac7881abfbdae"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-shared.json",
+      "sha256": "a6c0f4f037d83d87245fad242f27cf3b69d7fe78beebd60d6058c87cb6326dba"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-subject-page.json",
+      "sha256": "3c16da306274394837943e410d9d7b24f268b990a1a98a7ac2b75e80cc2091ba"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/role-upgrade.json",
+      "sha256": "6bbf746c86a3a96e83ea64108c5ee07070723b1f6aa347c4308ca9ab8876844b"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/tenant-create.json",
+      "sha256": "bce0ddc96c0131ce8e4beb620a23bb88766456d5796c957651e7217ead46f133"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/examples/upgrade-conflict.json",
+      "sha256": "d9a8bb044a0a4ec7f3228dbe253accfd971bfbff5006def695b868fb71751e70"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/internal-openapi.json",
+      "sha256": "08fa2dceee93f86cbde216831fc74d91de130eb39ed5b4c5183fdc40f23268cc"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/openapi.json",
+      "sha256": "cfd03ce18c312ccd2c5fdf5420dacf6ceb5fb4ffb95764bde5c9e9c5838faafe"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/routes.json",
+      "sha256": "572f1b9f0158f53c64a7e9da352629a260224ca8f880a513c008309738e24579"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/contracts/schemas.json",
+      "sha256": "2af85586d5be23030930c1ebf4fba8205f345dd756221f5461be7ad3492fd82d"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/endpoint-mapping.json",
+      "sha256": "6eff4056434a6f307b62bccf4dd2170c013d089943dd7c8461b8da89846a16ec"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/changes/archive/2026/20260913-base-iam-admin/sources/history/SOURCES-20260914.md",
+      "sha256": "ed944b60fe9397b08d83a27480ea7df8ffc802860478df284203902a15d222f1"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/current/base/iam-management/README.md",
+      "sha256": "8b8688e536de9ad5d7b03946faf575873525398dfd5fde7ec4974d6eaee69277"
+    },
+    {
+      "gitStatus": "??",
+      "path": "specs/current/base/iam-management/spec.md",
+      "sha256": "38a6e159ddd32f4d2256d3865922526a979684342b556fa519f0c9f6d8d931c4"
+    }
+  ],
+  "implementationCommits": [
+    {
+      "group": "draft",
+      "commit": "32a71b18d02ed3809daf619cb9d5bc222816689d",
+      "subject": "fix: 保留授权草稿并同步字段列偏好",
+      "plannedPaths": 9
+    },
+    {
+      "group": "navigation",
+      "commit": "70d079bab0ec3b2f83c538a2c38730d49eb74af3",
+      "subject": "fix: 为导航冲突提供恢复并修正窄屏展示",
+      "plannedPaths": 25
+    },
+    {
+      "group": "build",
+      "commit": "66cf04eaee19e419b1523eaaf503b5a46281f0db",
+      "subject": "build: 让文档站静态检查与生产构建通过",
+      "plannedPaths": 3
+    },
+    {
+      "group": "tests",
+      "commit": "c29fe899fa1913b21b08f81a5950ba2a4741ee4c",
+      "subject": "test: 对齐 IAM 现行浏览器与组件验收夹具",
+      "plannedPaths": 7
+    }
+  ],
+  "excludedUnrelatedLocalFiles": [
+    "specs/changes/active/20261103-common-help-center/references/feishu-admin-help-entry.png"
+  ]
+}

@@ -62,7 +62,7 @@
 
 ## 相关链接
 
-- 主 IAM 前端变更 UI03：[20260913-base-iam-admin](../../../active/20260913-base-iam-admin/README.md)
+- 主 IAM 前端变更 UI03：[20260913-base-iam-admin](../20260913-base-iam-admin/README.md)
 - 后端：`ingot/specs/changes/archive/2026/20261017-iam-department-member-count/`
 
 ## 完成记录

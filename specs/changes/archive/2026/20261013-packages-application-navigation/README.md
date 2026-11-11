@@ -27,7 +27,7 @@
 - 本次对话及用户提供的三张截图，副本保存于 [references](./references/)：现有顶栏、飞书顶栏、飞书分类面板。
 - 用户确认分类在前端导航配置中维护。
 - 当前顶栏基线：[app-header](../../../../current/packages/app-header/spec.md)。
-- 相关活动增量：[平台超级管理员与应用导航](../../../active/20260913-base-iam-admin/PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)，本次只调整导航展示与溢出交互，不改变其授权或侧栏规则，也不代替其未完成验收。
+- 相关活动增量：[平台超级管理员与应用导航](../20260913-base-iam-admin/PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md)，本次只调整导航展示与溢出交互，不改变其授权或侧栏规则，也不代替其未完成验收。
 
 ## 工件
 

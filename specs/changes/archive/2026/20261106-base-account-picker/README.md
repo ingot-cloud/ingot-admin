@@ -22,5 +22,5 @@
 ## 完成记录
 
 - 2026-11-07 用户确认两处账号弹窗人工验收通过。提交前复核 12 项定向测试、共享包构建、平台插件与宿主类型检查、平台端生产构建和本次改动文件 ESLint 均通过。
-- 实现提交为前端 `4d9042b`、后端 `91684b97`。[后端增量记录](../../../../../../ingot/specs/changes/active/20260912-iam-identity-access-management/PLATFORM-ACCOUNT-PICKER-PAGE.md)
+- 实现提交为前端 `4d9042b`、后端 `91684b97`。[后端增量记录](../../../../../../ingot/specs/changes/archive/2026/20260912-iam-identity-access-management/PLATFORM-ACCOUNT-PICKER-PAGE.md)
 - 更新[平台能力与页面归属](../../../../current/base/platform-capabilities/README.md)的账号选择行为与接口索引。最终实现按确认后的双栏、分页与用途过滤方案交付。

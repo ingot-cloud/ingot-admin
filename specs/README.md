@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [IAM 管理页面主变更](./changes/archive/2026/20260913-base-iam-admin/README.md)（completed，2026-11-11 用户确认通过）；[当前页面行为](./current/base/iam-management/README.md)。
+
 - [平台与租户管理台同源登录](./changes/archive/2026/20261031-ingot-login-same-origin/README.md)（completed，2026-10-31用户确认登录、退出、切换组织、多标签页）；[当前能力](./current/ingot-login/password-login/README.md)。
 
 - [部门批量导入导出页](./changes/archive/2026/20261021-org-department-workbook/README.md)（completed，2026-10-21 用户确认测试通过）；[当前能力](./current/org/members-departments/README.md)
@@ -263,7 +265,6 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 ## 当前活动变更
 
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
-- [基础 IAM 管理台](./changes/active/20260913-base-iam-admin/README.md)：按用户要求保留 active，继续独立维护。
 
 - [IAM 历史前端调用清理](./changes/active/20261107-base-iam-legacy-cleanup/README.md)（validating，退役PMS调用子图已清理；目标环境/人工验收待办）
 

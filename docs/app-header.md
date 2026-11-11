@@ -236,7 +236,7 @@ const privateOnClick = () => {
 
 强制改密时，`InAppBar` 根据账号状态使用受限顶栏，仅保留默认品牌和用户退出登录入口；导航、搜索、小部件及旧插槽均不挂载，自定义品牌/搜索/用户组件不生效。`InUserDropdown` 同样只允许内置退出登录，不挂载个人资料与普通改密弹窗，缺少资料时显示“当前账号”。该限制不会修改持久化搜索偏好。
 
-`InAppBar` 与 `InUserDropdown` 的可选 `passwordChangeRequired` prop 可显式保持该视图；`/init` 会启用它，让清理会话到跳转登录期间也保持受限。省略时仍按账号状态判断，显式 `false` 不能解除真实限制。正常状态沿用原 APP 配置和设置。增量验收见 [强制改密页面与顶栏](../specs/changes/active/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md)。
+`InAppBar` 与 `InUserDropdown` 的可选 `passwordChangeRequired` prop 可显式保持该视图；`/init` 会启用它，让清理会话到跳转登录期间也保持受限。省略时仍按账号状态判断，显式 `false` 不能解除真实限制。正常状态沿用原 APP 配置和设置。增量验收见 [强制改密页面与顶栏](../specs/changes/archive/2026/20260913-base-iam-admin/FORCED-PASSWORD-CHANGE.md)。
 
 ## 默认菜单搜索
 

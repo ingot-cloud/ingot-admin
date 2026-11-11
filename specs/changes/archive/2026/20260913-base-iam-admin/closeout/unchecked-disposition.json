@@ -1,0 +1,1486 @@
+{
+  "date": "2026-11-11",
+  "repo": "frontend",
+  "scope": "active change 顶层 Markdown 的原空框及新增当前门禁；sources 历史副本不作为独立任务",
+  "lineNumbers": "capturedBeforeCloseout 为收口前行号，text 保留原文；新增记录为当前行号",
+  "evidenceNamespace": "backend 20260912-iam-identity-access-management（前端同时见 sources/BACKEND_ACCEPTANCE_CLOSEOUT.md 和 IAM-INTEGRATION.md）",
+  "summary": {
+    "verified-technical-user-review": 63,
+    "verified-technical": 8,
+    "post-acceptance-agent": 2,
+    "standing-rule": 1,
+    "superseded-with-current-evidence": 6,
+    "user-review": 1
+  },
+  "unresolvedAgentTechnicalTasks": [],
+  "pendingUserReview": [],
+  "records": [
+    {
+      "file": "ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "line": 32,
+      "text": "- [ ] MA05（人工验收）：多主体多角色、版本替换、跨页回显、树对象、范围与有效期限制、预览失效、窄屏及主题；由用户执行。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "line": 103,
+      "text": "- [ ] SF04（人工验收）：新建/编辑/只读身份、第二步时间限制、超过20配置项的进度及定位、搜索分页、主题与窄屏；用户执行，独立于自动化。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ASSIGNMENT-MULTI-ROLE-REFINEMENT.md",
+      "line": 136,
+      "text": "- [ ] SC03.verify：人工新建和编辑分配，确认对象后核对录入框、配置进度、预览与保存后的回显；取消选择保留原值。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ASSIGNMENT-TABLE-REFINEMENT.md",
+      "line": 29,
+      "text": "- [ ] AT05：用户人工验收窄屏、横向滚动、固定列、主题及真实身份；开发和自动化不代替人工验收。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "AUTHORIZATION-AUDIT-REFINEMENT.md",
+      "line": 44,
+      "text": "- [ ] AU05：真实两站联调与部署验收。检查平台第一页含历史 FIELD_CAPABILITIES 数组时正常，租户不越界，手工跨域请求仍403，无权限不请求，筛选与总数一致。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "FORCED-PASSWORD-CHANGE.md",
+      "line": 25,
+      "text": "- [ ] FP05（人工）：新账号及重置账号登录只可 GET/PUT 密码；普通及超级管理员直接调用业务/仅登录接口均 403；公开入口正常。错误确认及弱密码仍受限；改密后旧 token/刷新会话不可使用，新登录恢复业务。租户及远端资源服务相同，故障时 503。人工结果单独记录。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "password",
+      "evidence": [
+        "TASKS.md#2026-11-10-收尾实施与验证",
+        "FORCED-PASSWORD-CHANGE.md#实施与自动化结果",
+        "FORCED-PASSWORD-CHANGE.md#fp06-用户验收缺陷2026-10-06validating",
+        "ACCEPTANCE-CLOSEOUT.md"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "FORCED-PASSWORD-CHANGE.md",
+      "line": 100,
+      "text": "- [ ] FH04（人工）：平台及租户强制改密首屏/刷新/窄屏只展示品牌、账号入口和表单；无业务浮层及额外业务请求。失败继续受限，成功使用新密码重新登录；退出可用，正常登录后原导航与搜索设置保持。真实密码策略与会话撤销继续按 FP05 验收。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "password",
+      "evidence": [
+        "TASKS.md#2026-11-10-收尾实施与验证",
+        "FORCED-PASSWORD-CHANGE.md#实施与自动化结果",
+        "FORCED-PASSWORD-CHANGE.md#fp06-用户验收缺陷2026-10-06validating",
+        "ACCEPTANCE-CLOSEOUT.md"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "MENU-ADVANCED-CONFIGURATION.md",
+      "line": 31,
+      "text": "- [ ] MA06-B 真实服务与身份联调及上线验收；全仓库既有主题 Token/lint 失败单独记录，不标记全量质量门禁通过",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "navigation",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "NAVIGATION-RECOVERY-RUNTIME.json",
+        "ACCEPTANCE.md#导航冲突恢复与超管保护续验"
+      ],
+      "userReview": [
+        "H01"
+      ],
+      "note": "当前新库及双域真实菜单/导航结果已验；旧库迁移发布步骤不在本次范围。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-MEMBER-CONTACTS-REFINEMENT.md",
+      "line": 12,
+      "text": "- [ ] PC05：人工添加/编辑/清空联系方式，核对与全局账号、租户资料相互独立，字段脱敏/隐藏/可编辑权限保持。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "member",
+      "evidence": [
+        "PLATFORM-MEMBER-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#平台成员字段角色与时间续验"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-MEMBER-FIELD-UI-REFINEMENT.md",
+      "line": 26,
+      "text": "- [ ] MF04 人工使用普通角色验证：phone MASKED/readonly、email HIDDEN、displayName FULL/readonly、avatar FULL/editable；update 指定对象内外；创建不可写默认、混合对象范围、超管FULL、列表/详情/编辑/列设置一致",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "member",
+      "evidence": [
+        "PLATFORM-MEMBER-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#平台成员字段角色与时间续验"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-MEMBER-ROLE-EDITOR.md",
+      "line": 28,
+      "text": "- [ ] MR04 人工：创建多角色并配置对象；编辑自动回显，取消不提交，保存一起生效；跨页未加载记录不丢失；只读有效摘要无状态；继承/委派只读；范围外与受限管理员拒绝；版本冲突整批回滚；旧固定版本保留、非最新版可明确分配；字段不可写仍可按资格编辑角色",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "member",
+      "evidence": [
+        "PLATFORM-MEMBER-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#平台成员字段角色与时间续验"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-MEMBER-ROLE-EDITOR.md",
+      "line": 53,
+      "text": "- [ ] MR06 人工：创建/编辑两种入口、两步切换、较矮窗口及长内容滚动时，分割线到底、按钮可见，角色选择/确认/取消行为保持。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "member",
+      "evidence": [
+        "PLATFORM-MEMBER-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#平台成员字段角色与时间续验"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-MEMBER-TIMES.md",
+      "line": 23,
+      "text": "- [ ] MT04 人工：真实详情/未登录/保存刷新/暂停恢复/范围/两时区展示。验收前不更新 current 或归档。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "member",
+      "evidence": [
+        "PLATFORM-MEMBER-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#平台成员字段角色与时间续验"
+      ],
+      "userReview": [
+        "H03"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "PLATFORM-SUPER-ADMIN-APPLICATION-NAVIGATION.md",
+      "line": 35,
+      "text": "- [ ] SN07 用户人工：初始化登录、应用图标/更多/侧栏/深链接、三类身份、最后超管门禁、二维码与状态、主题和窄屏；人工项独立于开发和自动化，不更新current、不归档",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "navigation",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "NAVIGATION-RECOVERY-RUNTIME.json",
+        "ACCEPTANCE.md#导航冲突恢复与超管保护续验"
+      ],
+      "userReview": [
+        "H01"
+      ],
+      "note": "当前新库及双域真实菜单/导航结果已验；旧库迁移发布步骤不在本次范围。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "REQUIREMENTS.md",
+      "line": 42,
+      "text": "- [ ] 逐页交互 UI01–UI12 及本文件 R01–R16 均通过 ACCEPTANCE。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "REQUIREMENTS.md",
+      "line": 43,
+      "text": "- [ ] 后端字段和操作 code 未确认的接口不冒充可用，不按猜测完成集成。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "REQUIREMENTS.md",
+      "line": 44,
+      "text": "- [ ] 全新系统初始化由后端验收；前端提供新系统登录、权限和异常场景联调证据，不要求旧库迁移。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-FIELD-AUTHORIZATION-REFINEMENT.md",
+      "line": 39,
+      "text": "- [ ] RF08 用户人工及部署验收（独立于开发）",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "remote",
+      "evidence": [
+        "REMOTE-UPGRADE-RUNTIME.json",
+        "ACCEPTANCE.md#独立对象服务性能与升级组合续验",
+        "ROLE-FIELD-AUTHORIZATION-REFINEMENT.md#直接替换后最终证据"
+      ],
+      "userReview": [
+        "H02",
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-PICKER-REFINEMENT.md",
+      "line": 21,
+      "text": "- [ ] RP04：用户手动验收两级单选、同名角色、跨页旧版本、混合主体、受限身份、慢网络和重试。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 41,
+      "text": "- [ ] 治理、纯受限委派、兼具两类资格各验证一次；角色读取与分配读取独立，没有资格的页面和来源数据不加载。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 42,
+      "text": "- [ ] 角色左侧搜索分页；右侧成员/用户组仅请求激活页；所有固定版本默认纳入，指定版本可筛选，直接与多个组来源去重。成员查看实际分配来源，按逐条能力修改/撤销，组继承可只读查看组，历史记录继续在角色分配 Tab 查看。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 43,
+      "text": "- [ ] 委派允许多个固定角色版本和多个成员；更换管理员自动移除本人。LIMITED 默认 30 天并要求派生截止；UNLIMITED 可长期，但委派撤销/到期仍使来源失效，不能通过组自我授权。历史异常记录保留并显示来源失效。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 44,
+      "text": "- [ ] 未指定起止时间、未来生效、有限/无限来源、来源结束前后、收窄有冲突、预览后组扩大均按后端规则拒绝或失效；并发失败没有部分保存。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 45,
+      "text": "- [ ] 新增操作仅在支持 ALL 时显式默认全部；编辑不重置旧配置。ALL 与受限范围互斥；同资源批量范围及指定对象复制覆盖前确认，跨资源不复用对象。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 46,
+      "text": "- [ ] 各弹窗右侧已选不依赖第一页，搜索/分页/取消正常。已有完整显示信息时通常只请求候选第一页；对象第一页兼作树判断和展示。首次编辑缺信息才使用回显/关联分页，后续不强制重复 ids 请求；上下文变更重新校验，迟到响应不覆盖。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "ROLE-WORKSPACE-DELEGATION-REFINEMENT.md",
+      "line": 47,
+      "text": "- [ ] 检查说明与 label 间距、范围对象输入框对齐、统一权限背景、InLoading、宽窄屏与深浅主题；修改任一草稿后重新预览，通过后才保存。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 52,
+      "text": "- [ ] T12 组件及集成测试、静态检查。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "quality",
+      "evidence": [
+        "closeout/validation.json",
+        "ACCEPTANCE.md#导航冲突恢复与超管保护续验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 54,
+      "text": "- [ ] T13 非超管端到端测试与全新系统联调。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02",
+        "H03",
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 56,
+      "text": "- [ ] T14 更新 current 的页面行为及归档引用，记录完成后归档。",
+      "capturedBeforeCloseout": true,
+      "disposition": "post-acceptance-agent",
+      "technicalEvidenceGroup": "closeout",
+      "evidence": [
+        "closeout/README.md",
+        "closeout/baseline-plan.json",
+        "USER-ACCEPTANCE.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "候选及引用计划已准备；H01–H04 通过后由 Agent 实际应用基线并归档。",
+      "finalResolution": "completed"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 58,
+      "text": "- [ ] 未明确请求提交时不 commit；提交时使用仓库约定 skill。",
+      "capturedBeforeCloseout": true,
+      "disposition": "standing-rule",
+      "technicalEvidenceGroup": "closeout",
+      "evidence": [
+        "closeout/README.md",
+        "closeout/baseline-plan.json",
+        "USER-ACCEPTANCE.md"
+      ],
+      "userReview": [],
+      "note": "未请求提交的持续约束，本轮未创建提交。",
+      "finalResolution": "standing-rule"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 66,
+      "text": "| [ ] | N01 | 确认增量设计；逐操作核对 IAM-INTEGRATION 的 API/页面/ACTION、DTO与辅助接口归属；核对完整来源哈希 | Spec确认 / A14/A16 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 67,
+      "text": "| [ ] | N02 | auth-core 与 auth 页面插件分离，两个登录 App 独立构建；挑战/加密/凭证流程复用，隐藏静态二维码 | N01、后端B01 / A17/L08/L12 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 68,
+      "text": "| [ ] | N03 | 管理台两份配置、启动/完成页、事务/CSRF/交接、设备指纹和安全返回 | N02、后端B02–B05 / A17–A19/L01–L09 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 69,
+      "text": "| [ ] | N04 | bootstrap预期域校验、退出独立、切租户成功后清理/同源标签通知、无菜单及深链处理 | N03 / A02/A11/A12/A20/L10 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 70,
+      "text": "| [ ] | N05 | 平台账号/成员/组、租户创建/开通、应用资源操作菜单Tab、套餐完整对齐 | N01/N04 / A04/A16/A21 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 71,
+      "text": "| [ ] | N06 | 角色完整向导、差异与恢复、版本及三方冲突、授权/受限委派/预览诊断补齐 | N01/N04 / A05–A07/A13/A21 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 72,
+      "text": "| [ ] | N07 | 租户成员/部门/组/设置与owner-transfer、应用人群、通讯录/字段策略、工作台和审计补齐 | N01/N04 / A03/A08–A10/A13/A21 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 73,
+      "text": "| [ ] | N08 | 本人资料/密码、字典/发号/社交、安全与OSS归属核对；成员导出状态→下载；退出被替代PMS调用 | N05/N07 / A14/A16/A22 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 74,
+      "text": "| [ ] | N09 | 四产物CI/镜像及本地四host HTTPS代理；单元/集成/类型/边界/构建检查；配置与日志预检 | N02–N08 / A23/L11 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 75,
+      "text": "| [ ] | N10 | 非超管真实后端全矩阵和四站浏览器验收，填证据；通过后更新current并归档 | N09、后端B06/可用验收环境 / A01–A23、P24–P26、L01–L12、F01–F09 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 106,
+      "text": "| [ ] | U01 / N02–N04、N09 | 抽取尚缺的auth页面插件，清理双App页面复制；完成四App配置/构建/部署核对、CSRF/交接/退出/切租户/深链/域校验及异常闭环；复用既有安全流程 | A17–A20/A23；L01–L12；TD02/TD17 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "superseded-with-current-evidence",
+      "technicalEvidenceGroup": "same-origin",
+      "evidence": [
+        "../../../../current/security/same-origin-login/SPEC.md",
+        "ACCEPTANCE.md#身份与页面操作补验"
+      ],
+      "userReview": [],
+      "note": "旧四站/登录 App 被同源双入口接管；当前链路已有受控浏览器及用户实际登录证据，外部发布独立。",
+      "finalResolution": "superseded-with-current-evidence"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 107,
+      "text": "| [ ] | U02 / T04/T05、N01 | 补类型化角色/范围/主体/期限编辑、版本差异与预览组件，消除本次unknown契约占位；候选purpose及远程分页正确；draftRevision/contextEpoch隔离预览且草稿改变后重新预览 | A05–A12/A16；TD05–TD11/TD18 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "contract",
+      "evidence": [
+        "TD-OPERATIONS.md",
+        "TD-RUNTIME-READS.json",
+        "TD-RUNTIME-WRITES.json",
+        "ACCEPTANCE.md#现行逐入口补验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 108,
+      "text": "| [ ] | U03 / N05 | 账号、平台成员/组、租户创建/详情/开通逐操作闭环；补有效候选分页、套餐/基础应用选择、组引用/有效成员和预览失效；已接操作补字段/对象能力、409/403/503、危险确认 | A03/A04/A08/A16/A21；TD02–TD04/TD09/TD16 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 109,
+      "text": "| [ ] | U04 / N05 | 应用、资源、操作、菜单、套餐按契约完整CRUD/启停；资源字段能力完整编辑并用中文解释范围；菜单注册键/ANY/ALL/OPEN与域边界正确；选择器不截断首200条 | A01/A04/A16/A21；TD03/TD04/TD18 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 110,
+      "text": "| [ ] | U05 / N06 | 平台/共享/租户角色详情、创建/定制向导、参数/逐操作范围、预览发布、状态/删除、版本历史、差异恢复及三方升级冲突；默认不升级既有授权，选中授权原子提交并处理409 | A05/A06/A16/A21；TD05/TD06/TD07 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "remote",
+      "evidence": [
+        "REMOTE-UPGRADE-RUNTIME.json",
+        "ACCEPTANCE.md#独立对象服务性能与升级组合续验",
+        "ROLE-FIELD-AUTHORIZATION-REFINEMENT.md#直接替换后最终证据"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "平台固定版本/升级沿现行证据；旧租户差异、版本和三方升级被即时授权替代，不能照旧重做。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 111,
+      "text": "| [ ] | U06 / N06 | 两域授权分配/修改/撤销/预览、委派详情/创建/修改/撤销/影响预览；受限选择器及单一来源、逐操作上限/期限；接通诊断工具及成员详情入口，受限来源不泄露 | A07/A13/A16/A21；TD09/TD12/TD13 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 112,
+      "text": "| [ ] | U07 / N07/N08 | 成员只读详情、创建/编辑/状态/移出/任职；部门详情/新增/编辑/移动/删除；字段可编辑patch和多部门对象能力；导出创建→状态轮询→下载及失败/过期/撤权处理 | A03/A08/A10/A16/A22；TD07/TD08/TD11/TD14 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 113,
+      "text": "| [ ] | U08 / N07 | 租户用户组详情/创建/修改/删除、成员与部门来源/下级开关、有效成员/引用及影响预览；组织设置只读编辑与有效成员选择，所有者转交影响确认、防重复提交和权限刷新 | A08/A16/A21；TD08/TD09/TD15 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 114,
+      "text": "| [ ] | U09 / N07 | 租户已开通应用的人群读取/修改及角色操作选择；工作台以服务端可见菜单提供入口；通讯录树/搜索/详情/count/字段一致，删除无契约创建动作 | A01/A09/A16/A21；TD04/TD10/TD11 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 115,
+      "text": "| [ ] | U10 / N07 | 用类型化可视编辑替代策略JSON展示；默认/允许/禁止及字段矩阵、真实草稿预览/保存/冲突；审计按域筛选、详情及来源跳转，未发布的审计导出不提供按钮 | A09/A10/A13/A16/A21；TD10/TD11/TD13 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 116,
+      "text": "| [ ] | U11 / N08 | 本人资料/改密、字典/发号/社交逐项迁到有效IAM接口并复用原安全流程；OSS/Security/Member按现有契约核对；旧PMS调用逐个分类替换或确认无消费后退出 | A14/A16/A22；TD16/TD18 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "business",
+      "evidence": [
+        "ACCEPTANCE.md#双节点缓存与写入续验",
+        "TD-RUNTIME-WRITES.json",
+        "RUNTIME-FAILURE-ANALYSIS.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 117,
+      "text": "| [ ] | U12 / T12/T13、N09/N10 | 按实际受影响范围执行单元/集成、type-check、lint:check、依赖边界、四产物构建及真实后端E2E；填每个I操作和BFF/辅助覆盖证据，关联测试数据 D01–D05 runId；无静默占位/遗漏 | A01–A23、P24–P26、L01–L12、F01–F09；全部TD |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "quality",
+      "evidence": [
+        "closeout/validation.json",
+        "ACCEPTANCE.md#导航冲突恢复与超管保护续验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 118,
+      "text": "| [ ] | U13 / T06–T11、N05–N08 | 全部IAM新旧页面遵循INTERACTIONS第5节：action/按钮/搜索/筛选/详情/抽屉/向导/反馈及主题统一；人工视觉与交互验收，不能只通过静态检查 | P24/P25；各业务TD场景 |",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02",
+        "H03",
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 183,
+      "text": "- [ ] PR07：真实平台 HTTP/MySQL/浏览器 PR-A01–PR-A07 证据；与开发完成分开。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 190,
+      "text": "- [ ] U06.verify.assignment-preview-flow：用户人工检查新建、修改、草稿失效、预览未通过、预览和保存阶段的并发 409，不以开发完成代替验收。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 198,
+      "text": "- [ ] U06.verify.assignment-list-filter：用户人工检查两类主体、组合条件、翻页、受限身份、特殊字符与窄屏横向滚动。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 203,
+      "text": "- [ ] U06.verify.authorization-tab-lists：人工检查三个 Tab 的列偏好互不影响，回车/清空与分页总数正确，管理员名称匹配、窄屏和治理权限边界正常。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 209,
+      "text": "- [ ] U06.verify.diagnose-dialogs：人工核验两入口、资源目标范围、无目标与越界结论、分页/迟到响应/未知资源。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 214,
+      "text": "- [ ] U06.verify.diagnose-action-label：人工验证同名“创建”、资源/操作名称搜索、跨页选中回显、应用变化清理及诊断请求单个 actionId。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 220,
+      "text": "- [ ] U06.verify.delegation-pickers：人工核验多版本、同名操作、跨页与回显、无权对象、组边界、主题和窄屏；与自动化通过分开。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 225,
+      "text": "- [ ] U06.test.scope-interactions：组件测试、两管理台类型检查和构建、后端契约来源校验已通过；改动文件定向 lint 通过。全仓库 lint 仍有 8 处既有配置/命名错误，需单独清理后再勾选。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical",
+      "technicalEvidenceGroup": "quality",
+      "evidence": [
+        "closeout/validation.json",
+        "ACCEPTANCE.md#导航冲突恢复与超管保护续验"
+      ],
+      "userReview": [],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "verified-technical"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 226,
+      "text": "- [ ] U06.verify.scope-interactions：真实身份、跨页回显、旧键/旧记录、同名操作、范围越界、窄屏和主题人工验收。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 233,
+      "text": "- [ ] U06.verify.delegation-wizard-layout：真实环境人工核验创建/编辑/只读、宽窄屏、主题、操作并集、对象选择、留空时间及预览门禁。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 241,
+      "text": "- [ ] IA06 使用完整治理、仅持委派、兼具两类资格成员做人工验收；开发完成不代表验收通过。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 252,
+      "text": "- [ ] RW07 人工验收：宽窄屏、主题、三类身份、真实权限/记录、浏览器请求次数；由用户执行。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 259,
+      "text": "- [ ] RW08.verify：人工检查左栏搜索/列表/分页对齐、长角色名称、详情菜单、删除限制和角色切换，确认详情内状态仍可查看。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 262,
+      "text": "- [ ] RW09.verify：人工检查两个或单个可见按钮的对齐、按钮点击功能、窄屏与主题，以及“角色分配” Tab 的分配入口和关联来源管理。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 265,
+      "text": "- [ ] RW10.verify：人工选择指定对象并应用到本资源其他操作，确认控制台无属性继承 warning，输入框宽度与弹窗、范围复制结果正常。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 268,
+      "text": "- [ ] RW11.verify：人工对同资源多个操作批量设置范围、复制指定对象，翻页及预览核对全部目标已生效，其他资源和非指定对象操作不变，取消覆盖保留原配置。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 271,
+      "text": "- [ ] RW12.verify：人工检查有效/撤销标签、有限时长及不限期限、列表与详情/预览文案和窄屏显示。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 274,
+      "text": "- [ ] RW13.verify：刷新角色 Tab 及打开相关选择弹窗，确认控制台无分页 small 弃用提示，尺寸、分页和翻页请求正常。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 282,
+      "text": "- [ ] AS03.verify：人工验证全部/五种状态、组合搜索、翻页与总数、受限身份及宽窄屏；不提前更新 current，代码提交不代替人工验收。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 291,
+      "text": "- [ ] SO02.verify：人工创建分配/委派后刷新，核对大 ID 在前、搜索/状态筛选及跨页顺序和总数；受限管理员只查看本人来源记录。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 302,
+      "text": "- [ ] MA05（人工验收）：执行增量记录的 7 项步骤，开发完成不替代页面验收；保留前轮人工待办。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 312,
+      "text": "- [ ] SF04（人工验收）：按增量记录核对新建/编辑、跨页范围及时间约束。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 322,
+      "text": "- [ ] OR04 人工验证仅 aaaa 指定对象即可查询应用，加入/移除创建应用不改变结果；分配、委派与诊断对象选择一致。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 330,
+      "text": "- [ ] SC03.verify：人工检查新建/编辑、对象确认/取消/清空、配置进度与预览保存回显。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "assignment",
+      "evidence": [
+        "ACCEPTANCE.md#多角色分配与权限边界补验",
+        "ACCEPTANCE.md#身份与页面操作补验",
+        "ACCEPTANCE.md#应用对象候选与编辑失败补验"
+      ],
+      "userReview": [
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 340,
+      "text": "- [ ] RE09 三类管理员人工验收",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "remote",
+      "evidence": [
+        "REMOTE-UPGRADE-RUNTIME.json",
+        "ACCEPTANCE.md#独立对象服务性能与升级组合续验",
+        "ROLE-FIELD-AUTHORIZATION-REFINEMENT.md#直接替换后最终证据"
+      ],
+      "userReview": [
+        "H02",
+        "H04"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 360,
+      "text": "- [ ] RW09：人工确认0/1/多条、搜索和翻页仅一条、加载/窄屏，列表始终从顶部排列。",
+      "capturedBeforeCloseout": true,
+      "disposition": "verified-technical-user-review",
+      "technicalEvidenceGroup": "workspace",
+      "evidence": [
+        "NAVIGATION-MENU-RUNTIME.json",
+        "COLUMN-STATUS-RUNTIME.json",
+        "ACCEPTANCE.md#本机写入与分配列表补验"
+      ],
+      "userReview": [
+        "H01",
+        "H02"
+      ],
+      "note": "技术结果按现行范围复用；不把原手工空框补写成用户通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 10,
+      "text": "- [ ] H01–H04 用户体验与范围确认；不冒充已通过。",
+      "capturedBeforeCloseout": false,
+      "disposition": "user-review",
+      "technicalEvidenceGroup": "closeout",
+      "evidence": [
+        "closeout/README.md",
+        "closeout/baseline-plan.json",
+        "USER-ACCEPTANCE.md"
+      ],
+      "userReview": [
+        "H01",
+        "H02",
+        "H03",
+        "H04"
+      ],
+      "note": "当前指定用户确认，尚未通过。",
+      "finalResolution": "user-accepted"
+    },
+    {
+      "file": "TASKS.md",
+      "line": 11,
+      "text": "- [ ] T14 确认后由 Agent 应用 current 并更新引用、完成记录和归档。",
+      "capturedBeforeCloseout": false,
+      "disposition": "post-acceptance-agent",
+      "technicalEvidenceGroup": "closeout",
+      "evidence": [
+        "closeout/README.md",
+        "closeout/baseline-plan.json",
+        "USER-ACCEPTANCE.md"
+      ],
+      "userReview": [
+        "H04"
+      ],
+      "note": "用户确认后的 Agent 自动结项；候选已准备，未应用。",
+      "finalResolution": "completed"
+    }
+  ],
+  "completedUserReview": [
+    "H01",
+    "H02",
+    "H03",
+    "H04"
+  ],
+  "remainingAgentWork": [],
+  "finalStatus": "completed",
+  "userConfirmation": "2026-11-11 用户回复“确认通过”"
+}

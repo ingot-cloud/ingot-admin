@@ -33,7 +33,7 @@
 
 ## 相关变更与适用范围
 
-- [基础 IAM 管理台](../../../active/20260913-base-iam-admin/README.md) 保留 implementing 状态和历史证据；本变更批准后接管租户授权中的版本/差异/升级与共享管理交互，其余工作继续独立维护。
+- [基础 IAM 管理台](../20260913-base-iam-admin/README.md) 保留 implementing 状态和历史证据；本变更批准后接管租户授权中的版本/差异/升级与共享管理交互，其余工作继续独立维护。
 - [角色版本页面基线](../../../../current/base/role-version-application/README.md) 的平台自有能力保留，租户及共享角色适用范围验收后再修订。
 - 旧 current/历史来源不得提前改写或删除；完整页面联调不能仅用接口封装或隐藏按钮宣称完成。
 
