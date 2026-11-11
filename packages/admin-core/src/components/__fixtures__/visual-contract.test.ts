@@ -378,16 +378,22 @@ describe("admin UI visual fixtures", () => {
     expect(nav).toContain("font-weight: var(--in-font-weight-body)");
     expect(nav).toContain("font-weight: var(--in-font-weight-section-title)");
     expect(nav).toContain("padding: 7px var(--in-space-3)");
-    expect(nav).toContain("margin: 0 var(--in-space-6) 0 0");
+    expect(nav).toMatch(/\.in-app-bar-nav \{[^}]*gap: var\(--in-space-6\);/);
+    expect(nav).toMatch(/\.in-app-bar-nav__measure \{[^}]*gap: var\(--in-space-6\);/);
+    expect(nav).toMatch(/\.in-app-bar-nav__item \{[^}]*margin: 0;/);
     expect(nav).toContain("border-radius: var(--in-radius-card)");
     expect(nav).toContain("line-height: var(--in-line-height-body)");
     expect(nav).toContain("color-mix(in srgb, var(--in-text-color) 6%, transparent)");
     expect(nav).toContain("in-app-bar-overlay--nav");
-    expect(nav).toContain("in-app-bar-nav-panel__title");
-    expect(nav).toContain("border-bottom: 1px solid var(--in-border-color)");
-    expect(nav).toContain("grid-auto-flow: column");
-    expect(nav).toContain("in-app-bar-nav-panel__label");
-    expect(nav).toContain("height: 42px");
+    const navPanel = readFileSync(
+      resolve(root, "../../layouts/widgets/header/InAppBarNavPanel.vue"),
+      "utf8",
+    );
+    expect(navPanel).toContain("in-app-bar-nav-panel__title");
+    expect(navPanel).toContain("border-bottom: 1px solid var(--in-border-color)");
+    expect(navPanel).toContain("grid-auto-flow: column");
+    expect(navPanel).toContain("in-app-bar-nav-panel__label");
+    expect(navPanel).toContain("height: 42px");
     expect(nav).toContain("icon-more-outlined");
     expect(nav).not.toContain("ep:more");
     expect(nav).toContain("in-app-bar-nav__caret");

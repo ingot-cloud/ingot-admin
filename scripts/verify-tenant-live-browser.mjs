@@ -95,6 +95,15 @@ const open = async (actor, params = "") => {
   return page;
 };
 try {
+  const applications = await api("platform", "/fixture/applications");
+  const governance = applications.data.items.find(({ name }) => name === "组织治理");
+  assert(governance);
+  const catalog = await api(
+    "platform",
+    `/fixture/catalog?${new URLSearchParams({ applicationId: governance.id, keyword: "查看组织成员" })}`,
+  );
+  const memberRead = catalog.data.items.find(({ actionCode }) => actionCode === "iam-tenant:member:read");
+  assert(memberRead);
   const platform = await open("platform", "shared=true");
   await platform.getByTestId("new-role").click();
   await platform.getByPlaceholder("请输入角色编码，创建后不可修改").fill("browser-shared");
@@ -103,12 +112,11 @@ try {
   await platform.getByRole("button", { name: "请选择已开通应用", exact: true }).click();
   await platform.getByRole("button", { name: "组织治理", exact: true }).click();
   await platform.getByRole("dialog").getByRole("button", { name: "确定", exact: true }).click();
-  await platform.getByPlaceholder("搜索权限名称").fill("查看成员");
+  await platform.getByPlaceholder("搜索权限名称").fill(memberRead.actionName);
   await platform.getByPlaceholder("搜索权限名称").press("Enter");
   await platform
     .locator("label.el-checkbox")
-    .filter({ hasText: /^成员\s*\/\s*查看成员$/ })
-    .first()
+    .filter({ hasText: `${memberRead.resourceName} / ${memberRead.actionName}` })
     .click();
   await platform.getByRole("button", { name: "预览", exact: true }).click();
   await platform.getByRole("dialog").getByRole("button", { name: "创建角色", exact: true }).click();
@@ -121,6 +129,7 @@ try {
   assert(memberAction);
   const grants = (await api("platform", `/v1/platform/shared-roles/${role}/grants`)).data;
   assert.equal(grants.definition.grants.length, 1);
+  assert.equal(grants.items[0].actionCode, memberRead.actionCode);
   for (const [actor, recipient] of [
     ["owner-a", "102"],
     ["owner-b", "202"],

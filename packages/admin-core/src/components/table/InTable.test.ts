@@ -222,9 +222,15 @@ describe("InTable", () => {
     expect(treeCell).toContain('v-else class="in-table-tree-expand-spacer"');
     expect(treeCell).not.toContain("v-else-if=\"checkboxMode !== 'off'\"");
     expect(source).toContain("--in-checkbox-size");
-    expect(source).toContain("background-position: center");
-    expect(source).toContain("background-color var(--in-motion-duration)");
-    expect(source).not.toContain("background var(--in-motion-duration)");
+    expect(source).toMatch(
+      /background: url\("[^"]+table-expand-collapsed\.svg"\) center \/ contain no-repeat/,
+    );
+    const choice = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), "../../styles/choice.css"),
+      "utf8",
+    );
+    expect(choice).toContain("background-color var(--in-motion-duration)");
+    expect(choice).not.toContain("background var(--in-motion-duration)");
     expect(source).toContain("font-weight: var(--in-font-weight-body)");
     expect(source).toContain("in-table-tree-cell");
     expect(source).toContain(".el-table .cell:has(> .el-table__expand-icon)");

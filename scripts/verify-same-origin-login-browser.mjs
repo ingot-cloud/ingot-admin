@@ -631,6 +631,8 @@ try {
       start = state.requests.length;
       await clickLogout(page);
       await peer.locator("#login-username").waitFor();
+      const loginRouteSettled = (url) => url.pathname === "/login/" && url.search === "";
+      await Promise.all([page.waitForURL(loginRouteSettled), peer.waitForURL(loginRouteSettled)]);
       const loggedOut = summarize(state.requests.slice(start));
       assert.deepEqual(
         loggedOut,

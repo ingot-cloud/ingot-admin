@@ -78,11 +78,11 @@ const Root = {
               : request(
                   `/v1/tenant/assignments/options?kind=APPLICATION&page=${q.page || 1}&pageSize=${q.pageSize || 20}`,
                 ),
-          catalogAPI: async (applicationId, page, keyword) => {
-            const result = await request(
-              `${shared ? "/fixture/catalog" : "/v1/tenant/roles/grant-catalog"}?applicationId=${applicationId}&page=${page.current || 1}&pageSize=${page.size || 20}&keyword=${encodeURIComponent(keyword || "")}`,
-            );
-            return { ...result, data: { records: result.data.items, total: result.data.total } };
+          catalogAPI: async (applicationId, keyword = "") => {
+            const params = new URLSearchParams({ applicationId, keyword });
+            if (!shared) return request(`/v1/tenant/roles/grant-catalog?${params}`);
+            const result = await request(`/fixture/catalog?${params}`);
+            return { ...result, data: result.data.items };
           },
           onSuccess: () => saved.value++,
         }),

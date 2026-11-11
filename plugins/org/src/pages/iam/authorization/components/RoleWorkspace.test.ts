@@ -176,9 +176,7 @@ describe("角色工作区主体列表", () => {
     expect(wrapper.findAll(".headers").at(-1)?.text()).toBe("名称");
     expect(wrapper.findAll("button").some((item) => item.text() === "查看来源")).toBe(false);
     await wrapper.get(".name-link").trigger("click");
-    expect(state.groupShow).toHaveBeenCalledWith(
-      expect.objectContaining({ record: expect.objectContaining({ id: "4", name: "张三" }) }),
-    );
+    expect(state.groupShow).toHaveBeenCalledWith("4");
     expect(wrapper.findComponent({ name: "GroupDetailDrawer" }).props("viewOnly")).toBe(true);
   });
 });

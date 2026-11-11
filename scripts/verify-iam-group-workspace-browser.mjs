@@ -58,22 +58,38 @@ try {
           url: backend + path + url.search,
           headers: { ...route.request().headers(), "X-Fixture-Actor": profile.actor },
         });
-        reads.push({ path, view: url.searchParams.get("view"), status: response.status() });
+        const total =
+          path === profile.members && response.ok()
+            ? (await response.json()).data.total
+            : undefined;
+        reads.push({ path, view: url.searchParams.get("view"), status: response.status(), total });
         await route.fulfill({ response });
       });
       await page.goto(profile.url.href, { waitUntil: "domcontentloaded" });
       if (profile.domain === "platform") {
         await page.getByRole("tab", { name: "用户组", exact: true }).click();
       }
-      await page.getByText(profile.label, { exact: true }).first().waitFor();
-      await page.getByText("共 1 人", { exact: true }).waitFor();
+      const group = page.locator(".group-item").filter({
+        has: page.getByText(profile.label, { exact: true }),
+      });
+      await group.click();
+      if (!reads.some((read) => read.path === profile.members && read.status === 200)) {
+        await page.waitForResponse(
+          (response) => response.ok() && new URL(response.url()).pathname.endsWith(profile.members),
+        );
+      }
+      const members = reads.findLast(
+        (read) => read.path === profile.members && read.status === 200,
+      );
+      assert.ok(members?.total > 0, `${profile.domain} 测试组须包含有效成员`);
+      await page.getByText(`共 ${members.total} 人`, { exact: true }).waitFor();
 
       assert(
         reads.some(
           (read) => read.path.endsWith("/groups") && read.view === "SUMMARY" && read.status === 200,
         ),
+        `${profile.domain} 组摘要请求记录 ${JSON.stringify(reads)}`,
       );
-      assert(reads.some((read) => read.path === profile.members && read.status === 200));
       assert(!reads.some((read) => /\/groups\/\d+$/.test(read.path)), "首屏额外读取了完整组详情");
       assert.deepEqual(pageErrors, []);
       console.log(JSON.stringify({ domain: profile.domain, reads }));
