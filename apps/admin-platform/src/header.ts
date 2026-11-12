@@ -41,7 +41,6 @@ export const createAdminHeader = (): InAdminHeaderConfig => ({
   user: {
     menu: [
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.Profile),
-      defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.SwitchOrg),
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.FixPwd),
       defineHeaderBuiltinUserMenuItem(InAdminHeaderBuiltinUserMenuName.Logout),
     ],
