@@ -205,6 +205,8 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 近期归档
 
+- [平台头像菜单移除切换组织](./changes/archive/2026/20261112-base-platform-user-menu/README.md)（completed，2026-11-12 用户确认测试通过）；[当前页面行为](./current/packages/app-header/spec.md)。
+
 - [IAM 管理页面主变更](./changes/archive/2026/20260913-base-iam-admin/README.md)（completed，2026-11-11 用户确认通过）；[当前页面行为](./current/base/iam-management/README.md)。
 
 - [平台与租户管理台同源登录](./changes/archive/2026/20261031-ingot-login-same-origin/README.md)（completed，2026-10-31用户确认登录、退出、切换组织、多标签页）；[当前能力](./current/ingot-login/password-login/README.md)。

@@ -26,5 +26,6 @@
 | ---------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | 2026-09-09 | [20260908-packages-app-header](../../../changes/archive/2026/20260908-packages-app-header/)                         | 五区顶栏、APP `header` 配置、分组折列与宽度收纳                   |
 | 2026-09-09 | [20260909-packages-app-header-search](../../../changes/archive/2026/20260909-packages-app-header-search/)           | 默认搜索按已授权菜单本地过滤、历史与常用入口                      |
-| 2026-10-21 | [20261021-common-download-center](../../../changes/archive/2026/20261021-common-download-center/) | 租户管理台顶栏增加「我的下载」 |
+| 2026-10-21 | [20261021-common-download-center](../../../changes/archive/2026/20261021-common-download-center/)                   | 租户管理台顶栏增加「我的下载」                                    |
 | 2026-10-13 | [20261013-packages-application-navigation](../../../changes/archive/2026/20261013-packages-application-navigation/) | 默认两个快捷应用、最后入口箭头与 hover 分类多列面板，用户验收通过 |
+| 2026-11-12 | [20261112-base-platform-user-menu](../../../changes/archive/2026/20261112-base-platform-user-menu/)                 | 平台头像菜单移除切换组织，租户端保留；用户确认测试通过            |
