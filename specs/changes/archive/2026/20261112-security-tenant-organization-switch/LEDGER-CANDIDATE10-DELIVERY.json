@@ -1,0 +1,149 @@
+{
+  "date": "2026-11-14T06:57:58.002Z",
+  "cases": [
+    {
+      "name": "commit response actually dropped then committing BFF SIGKILL; peer resumes identical canonical result",
+      "status": "passed",
+      "before": {
+        "sidHash": "f72fd6db48895612",
+        "accessDigest": "5668ef3d3eb27fd4",
+        "tenantId": "1000003",
+        "contextVersion": "lh9ql1Ie9bsq4Q4Kv_N_wQ",
+        "rootHash": "38fd94124d688871",
+        "generation": 0,
+        "expiresAt": 1794640082,
+        "jwtExpiresAt": 1794640082,
+        "cookieExpiresAt": 1794640082.673714,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "result": {
+        "sidHash": "34e058f9e08e5309",
+        "accessDigest": "e659a4ea0b759e9b",
+        "tenantId": "1000008",
+        "contextVersion": "l6OGF_Dw77d4E0ccy_KaSQ",
+        "rootHash": "38fd94124d688871",
+        "generation": 1,
+        "expiresAt": 1794640082,
+        "jwtExpiresAt": 1794640082,
+        "cookieExpiresAt": 1794640082,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "same": {
+        "sidHash": "34e058f9e08e5309",
+        "accessDigest": "e659a4ea0b759e9b",
+        "tenantId": "1000008",
+        "contextVersion": "l6OGF_Dw77d4E0ccy_KaSQ",
+        "rootHash": "38fd94124d688871",
+        "generation": 1,
+        "expiresAt": 1794640082,
+        "jwtExpiresAt": 1794640082,
+        "cookieExpiresAt": 1794640082,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "34e058f9e08e5309",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "34e058f9e08e5309",
+        "rootDeadline": "2026-11-14T07:08:02Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:08:02Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:08:02Z"
+          }
+        ]
+      },
+      "responseDropped": true
+    },
+    {
+      "name": "durably acknowledged old-root logout reply arrives after new login and cannot clear or revoke its cookie/root",
+      "status": "passed",
+      "before": {
+        "sidHash": "6518cd5f459b5087",
+        "accessDigest": "65798f6cd1a5ff86",
+        "tenantId": "1000003",
+        "contextVersion": "OY1tFRYK_Q6oRQkLJLJLCg",
+        "rootHash": "04104645f04cc432",
+        "generation": 0,
+        "expiresAt": 1794640116,
+        "jwtExpiresAt": 1794640116,
+        "cookieExpiresAt": 1794640116.001807,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "after": {
+        "sidHash": "8c24a0c7c1b6028c",
+        "accessDigest": "9b8595f13d23e68c",
+        "tenantId": "1000003",
+        "contextVersion": "gTyVhzf5gCIgq27VpuCuyw",
+        "rootHash": "eb392b971af09f92",
+        "generation": 0,
+        "expiresAt": 1794640121,
+        "jwtExpiresAt": 1794640121,
+        "cookieExpiresAt": 1794640121.343129,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "final": {
+        "sidHash": "8c24a0c7c1b6028c",
+        "accessDigest": "9b8595f13d23e68c",
+        "tenantId": "1000003",
+        "contextVersion": "gTyVhzf5gCIgq27VpuCuyw",
+        "rootHash": "eb392b971af09f92",
+        "generation": 0,
+        "expiresAt": 1794640121,
+        "jwtExpiresAt": 1794640121,
+        "cookieExpiresAt": 1794640121.343129,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "logoutStatus": 200,
+      "logoutHasSetCookie": false
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "releaseBlocked": true,
+  "committed": false
+}

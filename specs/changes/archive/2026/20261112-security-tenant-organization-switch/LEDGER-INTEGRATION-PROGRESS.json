@@ -1,0 +1,237 @@
+{
+  "status": "validating",
+  "date": "2026-11-14",
+  "releaseBlocked": true,
+  "committed": false,
+  "authLedgerLatest": {
+    "tests": 114,
+    "passed": 114,
+    "failures": 0,
+    "skipped": 0,
+    "note": "candidate10 full run with real Redis/MySQL/GR after capacity recovery"
+  },
+  "backend": {
+    "bff": 34,
+    "gateway": 46,
+    "securityCommon": 71,
+    "authorizationServer": 60,
+    "accountCore": 26,
+    "iam": {
+      "tests": 1525,
+      "passed": 1519,
+      "failures": 0,
+      "skipped": 6
+    },
+    "auth": {
+      "tests": 114,
+      "skipped": 0,
+      "failures": 0
+    }
+  },
+  "frontend": {
+    "authCore": 39,
+    "authPlugin": 7,
+    "adminCore": 570,
+    "typeCheck": [
+      "auth-core",
+      "admin-core",
+      "auth-plugin"
+    ],
+    "build": "packages and both applications passed"
+  },
+  "realCluster": {
+    "R1": {
+      "acceptedRounds": 20,
+      "requiredRounds": 20,
+      "status": "passed",
+      "candidate": "candidate10",
+      "evidence": "LEDGER-CANDIDATE10-R1.json",
+      "mysqlBoundary": "two ONLINE members forming durable majority; third exited by VM global OOM; see secondary recovery evidence"
+    },
+    "R2": {
+      "acceptedRounds": 20,
+      "requiredRounds": 20,
+      "candidate": "candidate10",
+      "status": "passed",
+      "evidence": "LEDGER-CANDIDATE10-R2.json"
+    },
+    "crossNodeRaces": {
+      "accepted": 1000,
+      "required": 1000,
+      "candidate": "candidate10",
+      "status": "passed",
+      "artifact": "LEDGER-CANDIDATE10-RACES.json"
+    },
+    "mysqlGR": "candidate8 three authority fault scenarios passed; candidate10 native restore/fresh incarnation passed; topology and capacity boundaries recorded separately",
+    "vms": "restored original 3G/2G/2G and Stopped; CPU/disk unchanged",
+    "fixtureMemory": "GR message cache128MiB/server minimum and log buffer16MiB; VM memory4G unchanged this continuation; restore original3G/2G/2G at cleanup"
+  },
+  "latestRegression": {
+    "date": "2026-11-14",
+    "packageCohort": "candidate10 (Auth diagnostics delta; other modules unchanged from candidate9)",
+    "status": "passed",
+    "modules": {
+      "auth": {
+        "totals": {
+          "tests": 114,
+          "failures": 0,
+          "skipped": 0,
+          "errors": 0
+        },
+        "skippedTests": [],
+        "jarSha256": "b68c76c1b2982e26ecfaadd07d31dc20147425f725f726ed9bc9a482e0ae0a0f",
+        "changeFromCandidate9": "storage-failure diagnostics only; no identity behavior change"
+      },
+      "bff": {
+        "totals": {
+          "tests": 34,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": [],
+        "jarSha256": "ba63061c2be4460a9bb4efc0a5846fd7dc81f90f0176a8ab06e2d6bd1036e62e"
+      },
+      "gateway": {
+        "totals": {
+          "tests": 46,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": [],
+        "jarSha256": "c353e3b2c1fa45239b943d789bbcb081d394ccd24e079a626291ebd05419f687"
+      },
+      "iam": {
+        "totals": {
+          "tests": 1525,
+          "skipped": 6,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": [
+          "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.onlineEvaluationAt100TenantsAnd1000Members()",
+          "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.actualBrowserComponentsAgainstLiveControllers()",
+          "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.largeGroupReadBenchmark()",
+          "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.groupWorkspaceBrowserAgainstMySql()",
+          "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.tenantContextAndAssignmentReadBenchmark()",
+          "com.ingot.cloud.iam.application.asset.StagedImageUploadsTest.boundImageRequiresSignedReadAndExpiredUploadIsDeletedFromStorage()"
+        ],
+        "jarSha256": "99caa46bace0a80ae8b2266fc8a960f5bfa8f86504b81bf346aae7c570fc0020"
+      },
+      "commons": {
+        "totals": {
+          "tests": 17,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": []
+      },
+      "feign": {
+        "totals": {
+          "tests": 12,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": []
+      },
+      "security-common": {
+        "totals": {
+          "tests": 71,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": []
+      },
+      "authorization-server": {
+        "totals": {
+          "tests": 60,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": []
+      },
+      "account-core": {
+        "totals": {
+          "tests": 26,
+          "skipped": 0,
+          "failures": 0,
+          "errors": 0
+        },
+        "skippedTests": []
+      }
+    },
+    "iamTestHeap": "2g; temporary Gradle init script only",
+    "firstFullRun": "IAM test JVM exhausted default heap; failed observation retained, not counted as pass",
+    "releaseBlocked": true,
+    "committed": false,
+    "boundary": "Auth114 real Redis/MySQL/three-node GR passed after capacity recovery; other eight modules retain candidate9 results and package hashes; six IAM independent optional gates remain skipped"
+  },
+  "latestRealUi": {
+    "passed": 5,
+    "cohort": "candidate10",
+    "artifact": "LEDGER-CANDIDATE10-UI.json"
+  },
+  "latestR2": {
+    "acceptedRounds": 20,
+    "requiredRounds": 20,
+    "candidate": "candidate10",
+    "status": "passed",
+    "evidence": "LEDGER-CANDIDATE10-R2.json"
+  },
+  "latestContinuation": "LEDGER-CONTINUATION-20261114.json",
+  "latestBackendRegression": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "latestStorageRecovery": "LEDGER-CAPACITY-RECOVERY.json",
+  "latestPerformance": "LEDGER-PERFORMANCE-CONTROLS.json",
+  "latestDelivery": {
+    "passed": 2,
+    "cohort": "candidate10",
+    "artifact": "LEDGER-CANDIDATE10-DELIVERY.json"
+  },
+  "latestR1": {
+    "acceptedRounds": 20,
+    "requiredRounds": 20,
+    "status": "passed",
+    "candidate": "candidate10",
+    "evidence": "LEDGER-CANDIDATE10-R1.json",
+    "mysqlBoundary": "two ONLINE members forming durable majority; third exited by VM global OOM; see secondary recovery evidence"
+  },
+  "latestSecondaryRecovery": "LEDGER-CANDIDATE10-SECONDARY-RECOVERY.json",
+  "performanceScope": {
+    "deferredByUser": true,
+    "decision": "先收束功能与安全，性能另做",
+    "gateStatus": "not passed",
+    "releaseBlocked": true,
+    "runMorePerformanceThisTurn": false
+  },
+  "latestMutationAcceptance": {
+    "status": "passed",
+    "crashPoints": 35,
+    "browserProofGroups": 5,
+    "candidate": "candidate10",
+    "evidence": "LEDGER-CANDIDATE10-MUTATIONS.md"
+  },
+  "latestFixedRootRt": {
+    "status": "passed",
+    "refreshes": 21,
+    "naturalExpiry": {
+      "cookie": 401,
+      "refresh": 400,
+      "resume": 410,
+      "resumeHasSetCookie": false,
+      "at": "2026-11-14T10:16:57.201Z"
+    },
+    "evidence": "LEDGER-CANDIDATE10-FIXED-ROOT-RT.md"
+  },
+  "functionalSecurityClosure": "LEDGER-FUNCTIONAL-SECURITY-CLOSURE.md",
+  "latestRecovery": {
+    "status": "passed",
+    "cases": 2,
+    "evidence": "LEDGER-CANDIDATE10-RECOVERY.json"
+  },
+  "cleanup": "LEDGER-CANDIDATE10-CLEANUP.json"
+}

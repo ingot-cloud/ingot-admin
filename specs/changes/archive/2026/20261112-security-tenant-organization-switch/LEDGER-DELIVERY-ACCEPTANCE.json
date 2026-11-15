@@ -1,0 +1,146 @@
+{
+  "date": "2026-11-14T04:48:44.867Z",
+  "cases": [
+    {
+      "name": "commit response actually dropped then committing BFF SIGKILL; peer resumes identical canonical result",
+      "status": "passed",
+      "before": {
+        "sidHash": "ae73b1b12f5a41ee",
+        "accessDigest": "38cd0af8e5808fa2",
+        "tenantId": "1000003",
+        "contextVersion": "jiDaqNd6tFaMD75SPLHG8A",
+        "rootHash": "f6f62f85074192ff",
+        "generation": 0,
+        "expiresAt": 1794632328,
+        "jwtExpiresAt": 1794632328,
+        "cookieExpiresAt": 1794632328.040595,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "result": {
+        "sidHash": "e64f355195c4eba0",
+        "accessDigest": "31a954a49c11c24e",
+        "tenantId": "1000008",
+        "contextVersion": "7CBKgTj5e1Te6mqNS4eVlQ",
+        "rootHash": "f6f62f85074192ff",
+        "generation": 1,
+        "expiresAt": 1794632328,
+        "jwtExpiresAt": 1794632328,
+        "cookieExpiresAt": 1794632328,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "same": {
+        "sidHash": "e64f355195c4eba0",
+        "accessDigest": "31a954a49c11c24e",
+        "tenantId": "1000008",
+        "contextVersion": "7CBKgTj5e1Te6mqNS4eVlQ",
+        "rootHash": "f6f62f85074192ff",
+        "generation": 1,
+        "expiresAt": 1794632328,
+        "jwtExpiresAt": 1794632328,
+        "cookieExpiresAt": 1794632328,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e64f355195c4eba0",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e64f355195c4eba0",
+        "rootDeadline": "2026-11-14T04:58:48Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:58:48Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:58:48Z"
+          }
+        ]
+      },
+      "responseDropped": true
+    },
+    {
+      "name": "durably acknowledged old-root logout reply arrives after new login and cannot clear or revoke its cookie/root",
+      "status": "passed",
+      "before": {
+        "sidHash": "72746567031f9e91",
+        "accessDigest": "282e87f9309f9c24",
+        "tenantId": "1000003",
+        "contextVersion": "yyv652h-QihOaayMuz8Uiw",
+        "rootHash": "5df19cc003ad3de2",
+        "generation": 0,
+        "expiresAt": 1794632359,
+        "jwtExpiresAt": 1794632359,
+        "cookieExpiresAt": 1794632359.745363,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "after": {
+        "sidHash": "dbc96e96afae875a",
+        "accessDigest": "eadbe0dbc0acdf21",
+        "tenantId": "1000003",
+        "contextVersion": "tvWJsM5Wym77Qu4bijE_rA",
+        "rootHash": "3f20577af9c7a7c0",
+        "generation": 0,
+        "expiresAt": 1794632364,
+        "jwtExpiresAt": 1794632364,
+        "cookieExpiresAt": 1794632364.29675,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "final": {
+        "sidHash": "dbc96e96afae875a",
+        "accessDigest": "eadbe0dbc0acdf21",
+        "tenantId": "1000003",
+        "contextVersion": "tvWJsM5Wym77Qu4bijE_rA",
+        "rootHash": "3f20577af9c7a7c0",
+        "generation": 0,
+        "expiresAt": 1794632364,
+        "jwtExpiresAt": 1794632364,
+        "cookieExpiresAt": 1794632364.29675,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "logoutStatus": 200,
+      "logoutHasSetCookie": false
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "packageCohort": "candidate8 Auth/BFF; candidate5 Gateway/IAM"
+}

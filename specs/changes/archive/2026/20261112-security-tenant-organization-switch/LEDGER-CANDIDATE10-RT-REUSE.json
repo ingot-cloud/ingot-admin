@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-14T08:34:18.672Z",
+  "policy": "ordinary confidential OAuth; reuse-refresh-tokens=true; independent of fixed BFF root gate",
+  "refreshes": [
+    {
+      "node": 0,
+      "status": 200,
+      "accessDigest": "b5eeaa9b35fa11ff",
+      "refreshDigest": "c69d9d91094a5fcd"
+    },
+    {
+      "node": 1,
+      "status": 200,
+      "accessDigest": "cb671d7310160914",
+      "refreshDigest": "c69d9d91094a5fcd"
+    },
+    {
+      "node": 0,
+      "status": 200,
+      "accessDigest": "89ad9614aee59ed6",
+      "refreshDigest": "c69d9d91094a5fcd"
+    }
+  ],
+  "errors": [],
+  "before": {
+    "sidHash": "5c30ccc07fc78161",
+    "familyState": "ACTIVE",
+    "createdAt": "2026-11-14T08:34:30.173853Z",
+    "updatedAt": "2026-11-14T08:34:30.173853Z",
+    "refreshExpiresAt": "2026-11-14T08:44:22.772275Z",
+    "refreshRecords": 1
+  },
+  "after": {
+    "sidHash": "5c30ccc07fc78161",
+    "familyState": "REVOKED",
+    "createdAt": "2026-11-14T08:34:30.173853Z",
+    "updatedAt": "2026-11-14T08:34:40.977686Z",
+    "refreshExpiresAt": "2026-11-14T08:44:22.772275Z",
+    "refreshRecords": 1
+  },
+  "logoutStatus": 200,
+  "afterLogoutRefresh": 400,
+  "status": "passed"
+}

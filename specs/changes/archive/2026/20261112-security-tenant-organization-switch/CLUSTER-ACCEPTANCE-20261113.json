@@ -1,0 +1,1868 @@
+{
+  "date": "2026-11-13",
+  "status": "failed",
+  "executionComplete": true,
+  "releaseGate": "blocked by acknowledged-state rollback",
+  "recordedAt": "2026-11-13T03:11:44.433825Z",
+  "topology": "Three user-approved Ubuntu VMs with distinct kernels on one physical host; six real Redis 8.2 nodes (three primaries, three cross-VM replicas); IAM/Gateway on manager, Auth/BFF on each worker; isolated MySQL/proxies/browser on host.",
+  "vmIdentitiesAndClockBounds": [
+    {
+      "hostname": "test-manager",
+      "bootId": "7a7159f2-ba21-4bd4-823e-1f40dc4fa54a",
+      "epochSeconds": 1794538873.5100994,
+      "host": "192.168.252.12",
+      "hostBeforeEpoch": 1794538872.3999732,
+      "hostAfterEpoch": 1794538872.9857159,
+      "roundTripSeconds": 0.585742712020874,
+      "estimatedClockOffsetSeconds": 0.8172550201416016,
+      "ntpSynchronized": "yes"
+    },
+    {
+      "hostname": "test-worker1",
+      "bootId": "0ff4c3de-bab1-4c05-8565-07ff4c8a9ce5",
+      "epochSeconds": 1794538874.7673542,
+      "host": "192.168.252.10",
+      "hostBeforeEpoch": 1794538873.840016,
+      "hostAfterEpoch": 1794538874.229377,
+      "roundTripSeconds": 0.3893611431121826,
+      "estimatedClockOffsetSeconds": 0.7326576709747314,
+      "ntpSynchronized": "yes"
+    },
+    {
+      "hostname": "test-worker2",
+      "bootId": "0343ef06-b0dd-49fb-b0eb-2c4a61bc0ef4",
+      "epochSeconds": 1794538876.0903213,
+      "host": "192.168.252.11",
+      "hostBeforeEpoch": 1794538875.021465,
+      "hostAfterEpoch": 1794538875.591381,
+      "roundTripSeconds": 0.5699160099029541,
+      "estimatedClockOffsetSeconds": 0.783898115158081,
+      "ntpSynchronized": "yes"
+    }
+  ],
+  "initialRedisTopology": [
+    {
+      "vm": "test-manager",
+      "host": "192.168.252.12",
+      "port": 25110,
+      "name": "org-cluster-3nlucg7n-redis-0",
+      "nodeId": "70595ec977619146d948f8ecd3b1f4d9cde68df3",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "14",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    },
+    {
+      "vm": "test-worker1",
+      "host": "192.168.252.10",
+      "port": 25111,
+      "name": "org-cluster-3nlucg7n-redis-1",
+      "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "0",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    },
+    {
+      "vm": "test-worker2",
+      "host": "192.168.252.11",
+      "port": 25112,
+      "name": "org-cluster-3nlucg7n-redis-2",
+      "nodeId": "e75f005f08147da3591af3e1f979716d81a5172c",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "14",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    },
+    {
+      "vm": "test-manager",
+      "host": "192.168.252.12",
+      "port": 25113,
+      "name": "org-cluster-3nlucg7n-redis-3",
+      "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0",
+      "role": "slave",
+      "masterHost": "192.168.252.10",
+      "masterPort": "25111",
+      "masterReplOffset": "0",
+      "replicaReplOffset": "0",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    },
+    {
+      "vm": "test-worker1",
+      "host": "192.168.252.10",
+      "port": 25114,
+      "name": "org-cluster-3nlucg7n-redis-4",
+      "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396",
+      "role": "slave",
+      "masterHost": "192.168.252.11",
+      "masterPort": "25112",
+      "masterReplOffset": "14",
+      "replicaReplOffset": "14",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    },
+    {
+      "vm": "test-worker2",
+      "host": "192.168.252.11",
+      "port": 25115,
+      "name": "org-cluster-3nlucg7n-redis-5",
+      "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d",
+      "role": "slave",
+      "masterHost": "192.168.252.12",
+      "masterPort": "25110",
+      "masterReplOffset": "14",
+      "replicaReplOffset": "14",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "4"
+    }
+  ],
+  "finalRecoveredTopology": [
+    {
+      "vm": "test-manager",
+      "host": "192.168.252.12",
+      "port": 25110,
+      "name": "org-cluster-3nlucg7n-redis-0",
+      "nodeId": "70595ec977619146d948f8ecd3b1f4d9cde68df3",
+      "role": "slave",
+      "masterHost": "192.168.252.11",
+      "masterPort": "25115",
+      "masterReplOffset": "87980",
+      "replicaReplOffset": "87980",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    },
+    {
+      "vm": "test-worker1",
+      "host": "192.168.252.10",
+      "port": 25111,
+      "name": "org-cluster-3nlucg7n-redis-1",
+      "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561",
+      "role": "slave",
+      "masterHost": "192.168.252.12",
+      "masterPort": "25113",
+      "masterReplOffset": "321746",
+      "replicaReplOffset": "321746",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    },
+    {
+      "vm": "test-worker2",
+      "host": "192.168.252.11",
+      "port": 25112,
+      "name": "org-cluster-3nlucg7n-redis-2",
+      "nodeId": "e75f005f08147da3591af3e1f979716d81a5172c",
+      "role": "slave",
+      "masterHost": "192.168.252.10",
+      "masterPort": "25114",
+      "masterReplOffset": "91880",
+      "replicaReplOffset": "91880",
+      "masterLinkStatus": "up",
+      "connectedReplicas": "0",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    },
+    {
+      "vm": "test-manager",
+      "host": "192.168.252.12",
+      "port": 25113,
+      "name": "org-cluster-3nlucg7n-redis-3",
+      "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "321746",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    },
+    {
+      "vm": "test-worker1",
+      "host": "192.168.252.10",
+      "port": 25114,
+      "name": "org-cluster-3nlucg7n-redis-4",
+      "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "91880",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    },
+    {
+      "vm": "test-worker2",
+      "host": "192.168.252.11",
+      "port": 25115,
+      "name": "org-cluster-3nlucg7n-redis-5",
+      "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d",
+      "role": "master",
+      "masterHost": null,
+      "masterPort": null,
+      "masterReplOffset": "87980",
+      "replicaReplOffset": null,
+      "masterLinkStatus": null,
+      "connectedReplicas": "1",
+      "clusterState": "ok",
+      "clusterEpoch": "13"
+    }
+  ],
+  "run": {
+    "date": "2026-11-13",
+    "environment": "Three independent Ubuntu VMs; real 3-primary/3-replica Redis Cluster; real IAM, Gateway, 2 Auth, 2 BFF",
+    "cases": [
+      {
+        "name": "cross-VM application-to-cluster TCP partition",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "b56ceff234e908dd",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "p5fHI4RvGY5-giyXP8igIw",
+          "expiresAt": 1794538805,
+          "jwtExpiresAt": 1794539284,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:08:04.943798283Z"
+          },
+          "redisTtl": 119,
+          "cookieExpiresAt": 1794538805.671157,
+          "accessDigest": "6d6838e963062149"
+        },
+        "final": {
+          "present": true,
+          "sidHash": "f25ccecfad82f5a5",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "GiuvE-SQdzuok7kE6ewg3g",
+          "expiresAt": 1794538805,
+          "jwtExpiresAt": 1794538805,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:00:05Z"
+          },
+          "redisTtl": 106,
+          "cookieExpiresAt": 1794538805,
+          "accessDigest": "6c90c35163cd77f7"
+        },
+        "blocked": {
+          "vm": "test-worker1",
+          "rules": [
+            {
+              "host": "192.168.252.12",
+              "port": 25110
+            },
+            {
+              "host": "192.168.252.10",
+              "port": 25111
+            },
+            {
+              "host": "192.168.252.11",
+              "port": 25112
+            },
+            {
+              "host": "192.168.252.12",
+              "port": 25113
+            },
+            {
+              "host": "192.168.252.10",
+              "port": 25114
+            },
+            {
+              "host": "192.168.252.11",
+              "port": 25115
+            }
+          ]
+        },
+        "dropCounters": {
+          "rules": [
+            {
+              "packets": 25,
+              "bytes": 2016,
+              "rule": "25     2016 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.11 ctorigdstport 25115 /* org-cluster-3nlucg7n */"
+            },
+            {
+              "packets": 25,
+              "bytes": 2016,
+              "rule": "25     2016 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.10 ctorigdstport 25114 /* org-cluster-3nlucg7n */"
+            },
+            {
+              "packets": 25,
+              "bytes": 2016,
+              "rule": "25     2016 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.12 ctorigdstport 25113 /* org-cluster-3nlucg7n */"
+            },
+            {
+              "packets": 45,
+              "bytes": 4156,
+              "rule": "45     4156 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.11 ctorigdstport 25112 /* org-cluster-3nlucg7n */"
+            },
+            {
+              "packets": 22,
+              "bytes": 3067,
+              "rule": "22     3067 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.10 ctorigdstport 25111 /* org-cluster-3nlucg7n */"
+            },
+            {
+              "packets": 19,
+              "bytes": 1579,
+              "rule": "19     1579 DROP       6    --  *      *       0.0.0.0/0            0.0.0.0/0            ctorigdst 192.168.252.12 ctorigdstport 25110 /* org-cluster-3nlucg7n */"
+            }
+          ],
+          "packets": 161
+        },
+        "bffStatuses": [
+          503,
+          503,
+          503
+        ],
+        "directAuthStatuses": [
+          503,
+          503
+        ],
+        "peerAuthStatus": 200,
+        "issuances": 1,
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 100
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/GiuvE-SQdzuok7kE6ewg3g",
+              "status": 200,
+              "ms": 128
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 89
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 17
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 117
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/GiuvE-SQdzuok7kE6ewg3g/commit",
+              "status": 200,
+              "ms": 939,
+              "formalCookie": {
+                "expiresAt": 1794538805,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/GiuvE-SQdzuok7kE6ewg3g/commit",
+              "status": 200,
+              "ms": 954
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 33
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "GiuvE-SQdzuok7kE6ewg3g",
+              "sidHash": "f25ccecfad82f5a5",
+              "expiresAt": "2026-11-13T03:00:05Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "synchronized Redis Cluster automatic failover after lost commit reply",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "13ee3b145354e050",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "f0cZOfLIyr6iHSYTx177KQ",
+          "expiresAt": 1794538822,
+          "jwtExpiresAt": 1794539302,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:08:22.442222302Z"
+          },
+          "redisTtl": 119,
+          "cookieExpiresAt": 1794538822.169678,
+          "accessDigest": "06165af6b06798f5"
+        },
+        "final": {
+          "present": true,
+          "sidHash": "465f262aa0f2cb82",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "FSq850QdHmmD9ncpaq78dg",
+          "expiresAt": 1794538822,
+          "jwtExpiresAt": 1794538822,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:00:22Z"
+          },
+          "redisTtl": 102,
+          "cookieExpiresAt": 1794538822,
+          "accessDigest": "3349e4c3bcd718f2"
+        },
+        "barrier": {
+          "barriers": [
+            {
+              "vm": "test-manager",
+              "port": 25110,
+              "replicasAcknowledged": 1,
+              "offset": "41623"
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25111,
+              "replicasAcknowledged": 1,
+              "offset": "179543"
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25112,
+              "replicasAcknowledged": 1,
+              "offset": "45986"
+            }
+          ]
+        },
+        "failover": {
+          "events": [
+            {
+              "action": "kill",
+              "vm": "test-manager",
+              "port": 25110,
+              "at": 1794538705.1537762,
+              "newMasters": [
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker1",
+              "port": 25111,
+              "at": 1794538709.742605,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25113,
+                  "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker2",
+              "port": 25112,
+              "at": 1794538715.0480351,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25113,
+                  "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0"
+                },
+                {
+                  "vm": "test-worker1",
+                  "port": 25114,
+                  "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            }
+          ],
+          "nodes": [
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-cluster-3nlucg7n-redis-0",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-cluster-3nlucg7n-redis-1",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-cluster-3nlucg7n-redis-2",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-cluster-3nlucg7n-redis-3",
+              "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "180598",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "7"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-cluster-3nlucg7n-redis-4",
+              "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "46242",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "7"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-cluster-3nlucg7n-redis-5",
+              "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "41761",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "7"
+            }
+          ]
+        },
+        "issuances": 1,
+        "trace": {
+          "mode": "normal",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 148
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/FSq850QdHmmD9ncpaq78dg",
+              "status": 200,
+              "ms": 106
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 335
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 98
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/commit",
+              "status": 200,
+              "ms": 1114,
+              "formalCookie": {
+                "expiresAt": 1794538822,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/commit",
+              "status": 500,
+              "ms": 1154
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 24
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 101
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/resume",
+              "status": 200,
+              "ms": 128,
+              "formalCookie": {
+                "expiresAt": 1794538822,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/resume",
+              "status": 200,
+              "ms": 142
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/commit",
+              "status": 200,
+              "ms": 24
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FSq850QdHmmD9ncpaq78dg/commit",
+              "status": 200,
+              "ms": 44
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 27
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 82
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "FSq850QdHmmD9ncpaq78dg",
+              "sidHash": "465f262aa0f2cb82",
+              "expiresAt": "2026-11-13T03:00:22Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "replication-lag failover after acknowledged organization commit",
+        "status": "failed",
+        "originalDeadline": "2026-11-13T03:00:50Z",
+        "source": {
+          "present": true,
+          "sidHash": "89bfcccf5fa2659b",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "PinwMXro2J6GAkd5SkNv5g",
+          "expiresAt": 1794538850,
+          "jwtExpiresAt": 1794539330,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:08:50.716983957Z"
+          },
+          "redisTtl": 119,
+          "cookieExpiresAt": 1794538850.336956,
+          "accessDigest": "f29d72c292cbb965"
+        },
+        "originalResult": {
+          "present": true,
+          "sidHash": "edacda356e810ddf",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "AE-LqpMffwrgiFpWhD1_2A",
+          "expiresAt": 1794538850,
+          "jwtExpiresAt": 1794538850,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:00:50Z"
+          },
+          "redisTtl": 115,
+          "cookieExpiresAt": 1794538850,
+          "accessDigest": "239a8f910c3bc2f0"
+        },
+        "result": {
+          "present": true,
+          "sidHash": "edacda356e810ddf",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "AE-LqpMffwrgiFpWhD1_2A",
+          "expiresAt": 1794538850,
+          "jwtExpiresAt": 1794538850,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:00:50Z"
+          },
+          "redisTtl": 98,
+          "cookieExpiresAt": 1794538850,
+          "accessDigest": "b0695d99e05aead9"
+        },
+        "oldCookieBeforeFailover": 401,
+        "oldCookieAfterFailover": 200,
+        "retryStatus": 200,
+        "issuances": 2,
+        "duplicateIssuanceObserved": true,
+        "deadlineUnchanged": true,
+        "barrier": {
+          "barriers": [
+            {
+              "vm": "test-manager",
+              "port": 25113,
+              "replicasAcknowledged": 1,
+              "offset": "216604"
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25114,
+              "replicasAcknowledged": 1,
+              "offset": "46831"
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25115,
+              "replicasAcknowledged": 1,
+              "offset": "44701"
+            }
+          ]
+        },
+        "replicationPartition": {
+          "partitions": [
+            {
+              "replica": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25110,
+                "name": "org-cluster-3nlucg7n-redis-0"
+              },
+              "master": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25115,
+                "name": "org-cluster-3nlucg7n-redis-5"
+              },
+              "offset": "44701"
+            },
+            {
+              "replica": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25111,
+                "name": "org-cluster-3nlucg7n-redis-1"
+              },
+              "master": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25113,
+                "name": "org-cluster-3nlucg7n-redis-3"
+              },
+              "offset": "216604"
+            },
+            {
+              "replica": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25112,
+                "name": "org-cluster-3nlucg7n-redis-2"
+              },
+              "master": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25114,
+                "name": "org-cluster-3nlucg7n-redis-4"
+              },
+              "offset": "46831"
+            }
+          ]
+        },
+        "dropCounters": {
+          "rules": [
+            {
+              "vm": "test-manager",
+              "port": 25110,
+              "packets": 16,
+              "bytes": 9866
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25111,
+              "packets": 12,
+              "bytes": 6730
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25112,
+              "packets": 12,
+              "bytes": 2156
+            }
+          ],
+          "packets": 40
+        },
+        "failover": {
+          "events": [
+            {
+              "action": "kill",
+              "vm": "test-manager",
+              "port": 25113,
+              "at": 1794538738.234026,
+              "newMasters": [
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker1",
+              "port": 25114,
+              "at": 1794538742.292493,
+              "newMasters": [
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25112,
+                  "nodeId": "e75f005f08147da3591af3e1f979716d81a5172c"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker2",
+              "port": 25115,
+              "at": 1794538746.860058,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25110,
+                  "nodeId": "70595ec977619146d948f8ecd3b1f4d9cde68df3"
+                },
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25112,
+                  "nodeId": "e75f005f08147da3591af3e1f979716d81a5172c"
+                }
+              ]
+            }
+          ],
+          "nodes": [
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-cluster-3nlucg7n-redis-0",
+              "nodeId": "70595ec977619146d948f8ecd3b1f4d9cde68df3",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "44701",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "10"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-cluster-3nlucg7n-redis-1",
+              "nodeId": "d2a7dca43949c38ec3642bf7f309af9c5c945561",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "216697",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "10"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-cluster-3nlucg7n-redis-2",
+              "nodeId": "e75f005f08147da3591af3e1f979716d81a5172c",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "46831",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "10"
+            },
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-cluster-3nlucg7n-redis-3",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-cluster-3nlucg7n-redis-4",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-cluster-3nlucg7n-redis-5",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            }
+          ]
+        },
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 90
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/AE-LqpMffwrgiFpWhD1_2A",
+              "status": 200,
+              "ms": 106
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 70
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 7
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 7
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 64
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/AE-LqpMffwrgiFpWhD1_2A/commit",
+              "status": 200,
+              "ms": 669,
+              "formalCookie": {
+                "expiresAt": 1794538850,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/AE-LqpMffwrgiFpWhD1_2A/commit",
+              "status": 200,
+              "ms": 676
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 401,
+              "ms": 8
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 401,
+              "ms": 23
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 37
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 17
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 37
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 50
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 19
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 109
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/AE-LqpMffwrgiFpWhD1_2A",
+              "status": 200,
+              "ms": 94
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 66
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 67
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/AE-LqpMffwrgiFpWhD1_2A/commit",
+              "status": 200,
+              "ms": 742,
+              "formalCookie": {
+                "expiresAt": 1794538850,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/AE-LqpMffwrgiFpWhD1_2A/commit",
+              "status": 200,
+              "ms": 804
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 28
+            }
+          ],
+          "issued": [
+            {
+              "node": 1,
+              "operationId": "AE-LqpMffwrgiFpWhD1_2A",
+              "sidHash": "edacda356e810ddf",
+              "expiresAt": "2026-11-13T03:00:50Z"
+            },
+            {
+              "node": 0,
+              "operationId": "AE-LqpMffwrgiFpWhD1_2A",
+              "sidHash": "edacda356e810ddf",
+              "expiresAt": "2026-11-13T03:00:50Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "replication-lag failover after acknowledged logout and RT revocation",
+        "status": "failed",
+        "originalDeadline": "2026-11-13T03:01:23Z",
+        "source": {
+          "present": true,
+          "sidHash": "ec063103af2c86fb",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "NjAC3fHVGzIQppYGu_CEhg",
+          "expiresAt": 1794538883,
+          "jwtExpiresAt": 1794538883,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:01:23Z"
+          },
+          "redisTtl": 118,
+          "cookieExpiresAt": 1794538883,
+          "accessDigest": "067fab20ccfcdc8d"
+        },
+        "beforeFailover": {
+          "oldCookieMe": 401,
+          "refresh": 400
+        },
+        "afterFailover": {
+          "oldCookieMe": 200,
+          "resume": 200,
+          "setsCookie": true,
+          "refresh": 200
+        },
+        "revokedRefreshSidHash": "35444174b0bd06f1",
+        "refreshCutoffUnchanged": true,
+        "barrier": {
+          "barriers": [
+            {
+              "vm": "test-manager",
+              "port": 25110,
+              "replicasAcknowledged": 1,
+              "offset": "58246"
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25111,
+              "replicasAcknowledged": 1,
+              "offset": "288613"
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25112,
+              "replicasAcknowledged": 1,
+              "offset": "59885"
+            }
+          ]
+        },
+        "replicationPartition": {
+          "partitions": [
+            {
+              "replica": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25113,
+                "name": "org-cluster-3nlucg7n-redis-3"
+              },
+              "master": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25111,
+                "name": "org-cluster-3nlucg7n-redis-1"
+              },
+              "offset": "288613"
+            },
+            {
+              "replica": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25114,
+                "name": "org-cluster-3nlucg7n-redis-4"
+              },
+              "master": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25112,
+                "name": "org-cluster-3nlucg7n-redis-2"
+              },
+              "offset": "59885"
+            },
+            {
+              "replica": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25115,
+                "name": "org-cluster-3nlucg7n-redis-5"
+              },
+              "master": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25110,
+                "name": "org-cluster-3nlucg7n-redis-0"
+              },
+              "offset": "58246"
+            }
+          ]
+        },
+        "dropCounters": {
+          "rules": [
+            {
+              "vm": "test-manager",
+              "port": 25113,
+              "packets": 18,
+              "bytes": 5546
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25114,
+              "packets": 13,
+              "bytes": 2409
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25115,
+              "packets": 12,
+              "bytes": 1870
+            }
+          ],
+          "packets": 43
+        },
+        "failover": {
+          "events": [
+            {
+              "action": "kill",
+              "vm": "test-manager",
+              "port": 25110,
+              "at": 1794538770.8735082,
+              "newMasters": [
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker1",
+              "port": 25111,
+              "at": 1794538775.369581,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25113,
+                  "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker2",
+              "port": 25112,
+              "at": 1794538779.7980149,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25113,
+                  "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0"
+                },
+                {
+                  "vm": "test-worker1",
+                  "port": 25114,
+                  "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25115,
+                  "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d"
+                }
+              ]
+            }
+          ],
+          "nodes": [
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-cluster-3nlucg7n-redis-0",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-cluster-3nlucg7n-redis-1",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-cluster-3nlucg7n-redis-2",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-cluster-3nlucg7n-redis-3",
+              "nodeId": "d58a0fed73f352829203d8abab49e8b095ffafd0",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "288613",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "13"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-cluster-3nlucg7n-redis-4",
+              "nodeId": "71fc50edaebcccdeff236bfcc07edfc5dfde0396",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "59885",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "13"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-cluster-3nlucg7n-redis-5",
+              "nodeId": "32408bda37de14f19b3096c8013cfe7b2c0e135d",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "58246",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "13"
+            }
+          ]
+        }
+      },
+      {
+        "name": "original absolute deadline with clustered session and RT after topology changes",
+        "status": "passed",
+        "deadline": "2026-11-13T03:01:57Z",
+        "final": {
+          "present": true,
+          "sidHash": "77835c80b9e2ca23",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "ZDqiZn5sE-5jKrIAGhx6Bw",
+          "expiresAt": 1794538917,
+          "jwtExpiresAt": 1794538917,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          "redisTtl": 119,
+          "cookieExpiresAt": 1794538917,
+          "accessDigest": "e8d2c546587124dd"
+        },
+        "samples": [
+          {
+            "at": "2026-11-13T02:59:59.250Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:04.314Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:09.359Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:14.398Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:19.447Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:24.493Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:29.561Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:34.622Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:39.686Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:44.739Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:49.801Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:54.877Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:00:59.947Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:05.007Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:10.061Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:15.096Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:20.147Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:25.185Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:30.228Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:35.331Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:40.395Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:45.428Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          },
+          {
+            "at": "2026-11-13T03:01:50.463Z",
+            "expiresAt": "2026-11-13T03:01:57Z"
+          }
+        ],
+        "oldCookieStatus": 401,
+        "refreshStatus": 400
+      }
+    ],
+    "errors": [],
+    "status": "failed",
+    "completedAt": "2026-11-13T03:01:58.742Z"
+  },
+  "packageSha256": {
+    "auth": "9884ca76e907e01e5523ada547717332aab06377f09131f621c54a9997ca1461",
+    "bff": "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449",
+    "iam": "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc",
+    "gateway": "87e6f071173c2c6fa2afac5a0318ce70dfc43d3b6fd39e7e34d0b6ad90e291cb"
+  },
+  "deployedVmPackageSha256": {
+    "test-manager": [
+      "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc  /dev/shm/org-cluster-3nlucg7n/iam.jar",
+      "87e6f071173c2c6fa2afac5a0318ce70dfc43d3b6fd39e7e34d0b6ad90e291cb  /dev/shm/org-cluster-3nlucg7n/gateway.jar"
+    ],
+    "test-worker1": [
+      "9884ca76e907e01e5523ada547717332aab06377f09131f621c54a9997ca1461  /dev/shm/org-cluster-3nlucg7n/auth0.jar",
+      "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449  /dev/shm/org-cluster-3nlucg7n/bff0.jar"
+    ],
+    "test-worker2": [
+      "9884ca76e907e01e5523ada547717332aab06377f09131f621c54a9997ca1461  /dev/shm/org-cluster-3nlucg7n/auth1.jar",
+      "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449  /dev/shm/org-cluster-3nlucg7n/bff1.jar"
+    ]
+  },
+  "samePackagesAsPrevious288TestRegression": true,
+  "regressionExecutionThisRound": "No Java/frontend production source changes. The prior 288-test result is reference evidence, not rerun or a substitute for this failed distributed acceptance.",
+  "harnessSha256": {
+    "lab.py": "6f3499e3fa7c66d66ec433c08d95bd8a2077a4bd1905a6b51f581b05c4c87910",
+    "setup.py": "c999086104044b4d1a6f96a44bdeb982d4b7b3dcd24db2f9e63496700a3022ff",
+    "runtime.py": "c107870b2bd7df9dd67b39280ffc0bc795b0c5cdb35158b5e2a00cc2bcc17330",
+    "proxies.py": "2667dc92884e99f0c00ca5b4cacd9ee240c730f60652acd7b42746ff7519c01b",
+    "actions.py": "83b43080c12fa78fec87f8d4d64c981eed10f2765fdd1c727a23b3e82bbf1efe",
+    "redis-cli.py": "d81f591694d29a116ed3f07b0b1180321328b229ff4b0391b9b30f06b2256662",
+    "browser.mjs": "282a0218f947ca70163436d2f668e18b5aa53a1211d0fbe71e6405c695f79cd0",
+    "cleanup.py": "cc1fbe7bcf096f22116d4c5ff4600215391cf9ecd13edac6e3cbc90d78a117ea"
+  },
+  "cleanup": {
+    "namespace": "org-cluster-3nlucg7n",
+    "vms": {
+      "test-manager": {
+        "ownedRulesRemaining": 0,
+        "ownedContainersRemaining": 0,
+        "ownedNetworksRemaining": 0,
+        "ownedDirectoryExists": false,
+        "preexistingContainersBeforeVmStop": [],
+        "restoredVmState": "Stopped"
+      },
+      "test-worker1": {
+        "ownedRulesRemaining": 0,
+        "ownedContainersRemaining": 0,
+        "ownedNetworksRemaining": 0,
+        "ownedDirectoryExists": false,
+        "preexistingContainersBeforeVmStop": [
+          "demo_api.1.wl2bmyno496dwthya0es0y0pt Up 37 minutes (healthy)",
+          "demo_api.2.81vpz6isff1gs9i59b8p5vyuq Up 37 minutes (healthy)",
+          "demo_api.3.24ouq51kdbakpmf4366gjord0 Up 38 minutes (healthy)"
+        ],
+        "restoredVmState": "Stopped"
+      },
+      "test-worker2": {
+        "ownedRulesRemaining": 0,
+        "ownedContainersRemaining": 0,
+        "ownedNetworksRemaining": 0,
+        "ownedDirectoryExists": false,
+        "preexistingContainersBeforeVmStop": [],
+        "restoredVmState": "Stopped"
+      }
+    },
+    "local": {
+      "ownedContainersRemaining": 0,
+      "privateCredentialsDeleted": true
+    }
+  },
+  "rootCause": "All authoritative BFF binding/session/transaction data, Auth operation idempotency, authorization and online/revocation state can roll back with asynchronous Redis replication. Revalidation consults the available but reverted state; single-node CAS/hash tags do not provide an external irreversible revocation/issuance fence.",
+  "methodology": [
+    "Only newly labeled containers/directories/ports were modified. Existing demo services were not stopped or deleted.",
+    "Application partition used actual kernel OUTPUT drops to the owned Redis endpoints; replication lag used INPUT drops in only the new replica container namespaces, leaving cluster voting traffic available.",
+    "Healthy baseline used SET plus WAIT on the same connection for each primary. Lagged writes occurred afterwards while replica data traffic was blocked.",
+    "Primary processes were killed in sequence; replicas promoted through automatic elections. No CLUSTER FAILOVER FORCE/TAKEOVER or injected business responses were used.",
+    "FLUSHALL was used only on the new exclusive cluster before the real application environment started, to discard failed startup artifacts. No keys were manually restored/edited to create the observed rollback.",
+    "Normal API calls and replay checks used actual server credentials, CSRF, precise Origin, device fingerprint and current-context proof; credentials never entered this report."
+  ],
+  "limitations": [
+    "Independent virtual hosts share a physical computer; physical power failure and separate datacenters are outside this run.",
+    "Data directories used owned tmpfs in each VM; this verifies replication/election rollback rather than physical disk durability.",
+    "Self-signed HTTPS trust was bypassed in isolated Chrome.",
+    "Observed VM clock offset estimates were approximately +0.7 to +0.9 seconds relative to the host, with recorded RTT uncertainty; all VMs reported synchronized NTP. Natural expiry was checked after the declared cutoff plus 1.5 seconds.",
+    "Client revalidation and current-token checks cannot distinguish valid current state from an authoritative store restored to an earlier valid state. Fixing this requires a reviewed consistency design; no production code or deployed environment was changed this round."
+  ],
+  "sources": [
+    {
+      "title": "Redis Cluster specification — Write safety",
+      "url": "https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/#write-safety"
+    }
+  ]
+}

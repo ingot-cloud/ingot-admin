@@ -1,0 +1,626 @@
+{
+  "date": "2026-11-14T22:17:07.178985Z",
+  "clientDate": "2026-11-15",
+  "clientTimezone": "Asia/Shanghai",
+  "phase": "F10 final F09 package multi-node verification",
+  "status": "passed_functional_security_performance_gate_unchanged",
+  "approval": "User authorized the same three VMs, final package multi-node verification and related GR tests; no commit",
+  "productChanges": false,
+  "artifacts": {
+    "ingot-auth/ingot-auth-provider": {
+      "artifact": "ingot-auth-provider-0.1.0.jar",
+      "sha256": "e5a2c7d5fd11d3896442b7492faba250b07b7f29b553114ff7bcd795277c4768",
+      "matchesF09Final": true
+    },
+    "ingot-bff": {
+      "artifact": "ingot-bff-0.1.0.jar",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesF09Final": true
+    },
+    "ingot-iam/ingot-iam-provider": {
+      "artifact": "ingot-iam-provider-0.1.0.jar",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc",
+      "matchesF09Final": true
+    },
+    "ingot-gateway": {
+      "artifact": "ingot-gateway-0.1.0.jar",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de",
+      "matchesF09Final": true
+    }
+  },
+  "deployedArtifacts": {
+    "iam": {
+      "vm": "test-manager",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc",
+      "matchesF09Final": true
+    },
+    "auth0": {
+      "vm": "test-worker1",
+      "sha256": "e5a2c7d5fd11d3896442b7492faba250b07b7f29b553114ff7bcd795277c4768",
+      "matchesF09Final": true
+    },
+    "auth1": {
+      "vm": "test-worker2",
+      "sha256": "e5a2c7d5fd11d3896442b7492faba250b07b7f29b553114ff7bcd795277c4768",
+      "matchesF09Final": true
+    },
+    "bff0": {
+      "vm": "test-worker1",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesF09Final": true
+    },
+    "bff1": {
+      "vm": "test-worker2",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesF09Final": true
+    },
+    "gateway": {
+      "vm": "test-manager",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de",
+      "matchesF09Final": true
+    }
+  },
+  "topology": {
+    "test-manager": [
+      "MySQL GR member",
+      "Redis master/replica",
+      "IAM",
+      "Gateway"
+    ],
+    "test-worker1": [
+      "MySQL GR member",
+      "Redis master/replica",
+      "Auth0",
+      "BFF0"
+    ],
+    "test-worker2": [
+      "MySQL GR member",
+      "Redis master/replica",
+      "Auth1",
+      "BFF1"
+    ],
+    "independentVmKernels": true,
+    "samePhysicalHost": true,
+    "runtimeProfile": "dev; no isolated-test profile or standalone override",
+    "https": "Chrome same-origin HTTPS through Gateway; private test certificate"
+  },
+  "multiNode": {
+    "date": "2026-11-14T22:03:50.720Z",
+    "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+    "groups": [
+      {
+        "case": "R02",
+        "source": 0,
+        "status": "passed",
+        "positiveRecoveredByBothNodes": true,
+        "sameCookieSidTokenDeadline": true,
+        "dependency503BothNodesWithoutCookie": true,
+        "oldRecoveryDeniedInsideWindow": true,
+        "recoveryAgeSeconds": 10,
+        "crossTenantPasswordMutation": true,
+        "authoritativeFenceActiveVerified": {
+          "credentialFenceActive": true,
+          "waitSeconds": 3.246,
+          "observedBlocked": true
+        },
+        "ordinaryTenantAFormalATPreserved": true,
+        "rejects": [
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          }
+        ],
+        "tokenEndpointCallsDuringRecovery": 0,
+        "newPasswordFreshLogin": true,
+        "gatewayRecoveryDenied": true
+      },
+      {
+        "case": "R03-delayed-binding",
+        "source": 0,
+        "target": 1,
+        "status": "passed",
+        "actualDelayedCookieAcrossNodes": true,
+        "logoutNode": 0,
+        "newLoginNode": 1,
+        "originalRootRejectedByBothAuthNodes": true,
+        "publicOperationWithoutCookieDenied": true,
+        "anotherRootsCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "oldCandidateStatuses": [
+          403,
+          403,
+          403
+        ],
+        "oldCandidatesCannotResume": true,
+        "noLogoutSetCookie": true,
+        "newIdentityPreservedAcrossBothNodes": true
+      },
+      {
+        "case": "R03-concurrent-new-login",
+        "source": 0,
+        "target": 1,
+        "status": "passed",
+        "actualDelayedCookieAcrossNodes": true,
+        "logoutNode": 0,
+        "newLoginNode": 1,
+        "originalRootRejectedByBothAuthNodes": true,
+        "publicOperationWithoutCookieDenied": true,
+        "anotherRootsCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "oldCandidateStatuses": [
+          403,
+          403,
+          403
+        ],
+        "oldCandidatesCannotResume": true,
+        "noLogoutSetCookie": true,
+        "newIdentityPreservedAcrossBothNodes": true
+      },
+      {
+        "case": "node-restart",
+        "node": 0,
+        "status": "passed",
+        "newCookieSidRootTokenDeadlineUnchanged": true,
+        "oldLoggedOutCookieRejectedByBothNodes": true
+      },
+      {
+        "case": "planned-GR-primary-switchover",
+        "status": "passed",
+        "oldRootStayedRevoked": true,
+        "newIdentityAndCutoffUnchanged": true
+      },
+      {
+        "case": "R02",
+        "source": 1,
+        "status": "passed",
+        "positiveRecoveredByBothNodes": true,
+        "sameCookieSidTokenDeadline": true,
+        "dependency503BothNodesWithoutCookie": true,
+        "oldRecoveryDeniedInsideWindow": true,
+        "recoveryAgeSeconds": 13,
+        "crossTenantPasswordMutation": true,
+        "authoritativeFenceActiveVerified": {
+          "credentialFenceActive": true,
+          "waitSeconds": 0.139,
+          "observedBlocked": false
+        },
+        "ordinaryTenantAFormalATPreserved": true,
+        "rejects": [
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 0,
+            "auth": 0,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          },
+          {
+            "bff": 1,
+            "auth": 1,
+            "status": 401,
+            "phase": "after-authoritative-fence-active"
+          }
+        ],
+        "tokenEndpointCallsDuringRecovery": 0,
+        "newPasswordFreshLogin": true,
+        "gatewayRecoveryDenied": true
+      },
+      {
+        "case": "R03-delayed-binding",
+        "source": 1,
+        "target": 0,
+        "status": "passed",
+        "actualDelayedCookieAcrossNodes": true,
+        "logoutNode": 1,
+        "newLoginNode": 0,
+        "originalRootRejectedByBothAuthNodes": true,
+        "publicOperationWithoutCookieDenied": true,
+        "anotherRootsCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "oldCandidateStatuses": [
+          403,
+          403,
+          403
+        ],
+        "oldCandidatesCannotResume": true,
+        "noLogoutSetCookie": true,
+        "newIdentityPreservedAcrossBothNodes": true
+      },
+      {
+        "case": "R03-concurrent-new-login",
+        "source": 1,
+        "target": 0,
+        "status": "passed",
+        "actualDelayedCookieAcrossNodes": true,
+        "logoutNode": 1,
+        "newLoginNode": 0,
+        "originalRootRejectedByBothAuthNodes": true,
+        "publicOperationWithoutCookieDenied": true,
+        "anotherRootsCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "oldCandidateStatuses": [
+          403,
+          403,
+          403
+        ],
+        "oldCandidatesCannotResume": true,
+        "noLogoutSetCookie": true,
+        "newIdentityPreservedAcrossBothNodes": true
+      },
+      {
+        "case": "node-restart",
+        "node": 1,
+        "status": "passed",
+        "newCookieSidRootTokenDeadlineUnchanged": true,
+        "oldLoggedOutCookieRejectedByBothNodes": true
+      }
+    ],
+    "status": "passed",
+    "maxObservedBrowserCookieFraction": 0.9423079490661621,
+    "routingProof": {
+      "scope": "final complete batch only",
+      "eventCount": 1068,
+      "bffNodes": [
+        0,
+        1
+      ],
+      "authNodes": [
+        0,
+        1
+      ],
+      "strictRecoveryByNode": [
+        {
+          "node": 0,
+          "statuses": [
+            200,
+            401,
+            503
+          ]
+        },
+        {
+          "node": 1,
+          "statuses": [
+            200,
+            401,
+            503
+          ]
+        }
+      ],
+      "logoutByNode": [
+        {
+          "node": 0,
+          "statuses": [
+            200,
+            409
+          ]
+        },
+        {
+          "node": 1,
+          "statuses": [
+            200,
+            409
+          ]
+        }
+      ]
+    }
+  },
+  "switchSmoke": {
+    "date": "2026-11-14T22:07:32.590Z",
+    "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+    "groups": [
+      {
+        "case": "A-to-B-to-A-cross-nodes",
+        "status": "passed",
+        "createAndCommitOnDifferentNodes": true,
+        "memberAndDepartmentRebound": true,
+        "oneRootTwoGenerations": true,
+        "originalCutoffAndCookieHeaderPreserved": true,
+        "oldCookieRejected": true,
+        "staleContextWithNewCookie409": true,
+        "eachSwitchReplacesSourceSid": true
+      }
+    ],
+    "status": "passed",
+    "maxObservedBrowserCookieFraction": 0.9342958927154541
+  },
+  "gr": {
+    "distinctCases": 3,
+    "executions": 6,
+    "failures": 0,
+    "skipped": 0,
+    "before": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+        "nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+        "caughtNestedFailureStillRollsBackWholeRequiredTransaction()"
+      ],
+      "primary": "test-manager"
+    },
+    "after": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "primary": "test-worker1",
+      "cases": [
+        "newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+        "nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+        "caughtNestedFailureStillRollsBackWholeRequiredTransaction()"
+      ]
+    }
+  },
+  "plannedSwitchover": {
+    "from": "test-manager",
+    "to": "test-worker1",
+    "onlineMembers": 3,
+    "plannedPrimarySwitchover": true,
+    "historyReset": false
+  },
+  "quiescent": {
+    "status": "passed",
+    "quiescentAfterStoppingSixJvms": true,
+    "sameView": true,
+    "nineAuthTablesAndIamResultTableMatch": true,
+    "nodes": [
+      {
+        "vm": "test-manager",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "13439d75535abf32",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2137893816",
+          "ingot_auth.auth_security_binding": "888608691",
+          "ingot_auth.auth_security_context": "179347514",
+          "ingot_auth.auth_security_session": "2428892721",
+          "ingot_auth.auth_security_token": "3012835377",
+          "ingot_auth.auth_security_operation": "2833195339",
+          "ingot_auth.auth_security_scope": "900419038",
+          "ingot_auth.auth_security_outbox": "1995943540",
+          "ingot_auth.auth_security_signing_key": "2135576533",
+          "ingot_iam.iam_security_mutation": "3285041604"
+        }
+      },
+      {
+        "vm": "test-worker1",
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "viewHash": "13439d75535abf32",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2137893816",
+          "ingot_auth.auth_security_binding": "888608691",
+          "ingot_auth.auth_security_context": "179347514",
+          "ingot_auth.auth_security_session": "2428892721",
+          "ingot_auth.auth_security_token": "3012835377",
+          "ingot_auth.auth_security_operation": "2833195339",
+          "ingot_auth.auth_security_scope": "900419038",
+          "ingot_auth.auth_security_outbox": "1995943540",
+          "ingot_auth.auth_security_signing_key": "2135576533",
+          "ingot_iam.iam_security_mutation": "3285041604"
+        }
+      },
+      {
+        "vm": "test-worker2",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "13439d75535abf32",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2137893816",
+          "ingot_auth.auth_security_binding": "888608691",
+          "ingot_auth.auth_security_context": "179347514",
+          "ingot_auth.auth_security_session": "2428892721",
+          "ingot_auth.auth_security_token": "3012835377",
+          "ingot_auth.auth_security_operation": "2833195339",
+          "ingot_auth.auth_security_scope": "900419038",
+          "ingot_auth.auth_security_outbox": "1995943540",
+          "ingot_auth.auth_security_signing_key": "2135576533",
+          "ingot_iam.iam_security_mutation": "3285041604"
+        }
+      }
+    ]
+  },
+  "cleanup": {
+    "namespace": "org-ledger-f10-71e1ffd6",
+    "vms": {
+      "test-manager": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "restoredMemory": "3G",
+        "restoredState": "Stopped",
+        "shmPreStopRemount": "size=2045603840",
+        "temporaryShmMountEndedWithVmStop": true
+      },
+      "test-worker1": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "restoredMemory": "2G",
+        "restoredState": "Stopped",
+        "shmPreStopRemount": "size=2045603840",
+        "temporaryShmMountEndedWithVmStop": true
+      },
+      "test-worker2": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "restoredMemory": "2G",
+        "restoredState": "Stopped",
+        "shmPreStopRemount": "size=3040870400",
+        "temporaryShmMountEndedWithVmStop": true
+      }
+    },
+    "host": {
+      "ownedListenersClosed": true,
+      "privateFilesAndRawArtifactsRemoved": 24,
+      "sharedImagesRemoved": false,
+      "persistentShmConfigurationChanged": false
+    },
+    "completedAt": "2026-11-14T22:12:26Z"
+  },
+  "resolvedFixtureIssues": {
+    "vmStart": "Multipass multi-start returned mount argument error although all three VMs running; explicit exec and boot IDs verified",
+    "cliAllocation": "Parallel Anaconda Multipass subprocess allocation failed; lightweight serial CLI completed",
+    "GRRecoveryPassword": "Initial fixture recovery password exceeded MySQL replication credential 32-character limit; corrected before forming group",
+    "proxyTransport": "Initial account seed failed before mutation: fixture proxy did not decode chunked resource-authority requests. Added existing proven chunked decoder and hop-header normalization; restarted host proxy only, reused the same six JVMs and ledger.",
+    "mutationReadiness": "Initial browser attempts reached old-result refusal but immediately attempted fresh preauthorization while durable account fence was still BLOCKED. Test now waits for authoritative ACTIVE before testing new password and repeats old-result denial after unblock, inside the original recovery window.",
+    "cookieTimeAssertion": "Browser cookie model showed +0.4788599 fractional seconds. Test now uses the existing candidate10 whole-second comparison and separately requires actual Set-Cookie UTC Expires to equal the ledger cutoff exactly; JWT/sid/token/root deadlines remain exact.",
+    "foreignCookieFixture": "First R03 negative probe reused an earlier root of the same account; the unchanged target concurrency policy had already retired that root. Use a separate real control account to assert another live root is preserved, rather than disabling the policy."
+  },
+  "preApplicationGrBootstrap": {
+    "initialJoin": "Docker account bootstrap created independent local initialization GTIDs before group formation",
+    "recovery": "All three owned instances verified system schemas only, group stopped, empty bootstrap history reset once, then formed group",
+    "applicationHistoryReset": false,
+    "groupOnline": 3
+  },
+  "earlierIncompleteBrowserAttempts": 6,
+  "limitations": [
+    "No performance/QPS campaign; previous failed performance gate stays open and release blocked",
+    "No re-counting candidate10 or F09 single-host evidence as this batch",
+    "No new cross-machine partition/Redis rollback or continuous RT campaign",
+    "The six unrelated optional IAM cases from F09 remain outside this batch",
+    "VMs are separate kernels on one physical host, not different physical machines",
+    "No staging, commit, current baseline or archive update"
+  ]
+}

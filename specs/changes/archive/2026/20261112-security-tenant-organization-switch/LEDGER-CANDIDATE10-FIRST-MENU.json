@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-14T08:31:34.491Z",
+  "errors": [],
+  "status": "passed",
+  "path": "/org/iam/groups",
+  "workbenchGranted": false,
+  "firstAccessibleMenu": "用户组",
+  "after": {
+    "sidHash": "deea2ee2d04d9dba",
+    "accessDigest": "d81b00e9565759b4",
+    "tenantId": "1000003",
+    "contextVersion": "p6e8SRLB7cpMDIhXVs_4xw",
+    "rootHash": "ab71da7ff0e93ba8",
+    "generation": 1,
+    "expiresAt": 1794645699,
+    "jwtExpiresAt": 1794645699,
+    "cookieExpiresAt": 1794645699.920093,
+    "hasRefreshToken": false,
+    "hasAuthCookie": false,
+    "memberId": "1000211",
+    "deptIds": []
+  },
+  "fixtureCleanup": {
+    "ownedAssignmentRevoked": true,
+    "ownedRoleDisabled": true,
+    "historyPreserved": true
+  },
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "releaseBlocked": true
+}

@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15T06:29:35.608Z",
+  "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+  "groups": [
+    {
+      "case": "standard-rt-revocation",
+      "loginAuth": 0,
+      "revokeAuth": 1,
+      "revokeStatus": 400,
+      "revokeError": "invalid_grant",
+      "oldRtRefreshStatus": 200,
+      "accessAfterRevokeStatus": 200,
+      "credentialsIncluded": false
+    },
+    {
+      "case": "standard-rt-revocation",
+      "loginAuth": 1,
+      "revokeAuth": 0,
+      "revokeStatus": 400,
+      "revokeError": "invalid_grant",
+      "oldRtRefreshStatus": 200,
+      "accessAfterRevokeStatus": 200,
+      "credentialsIncluded": false
+    }
+  ],
+  "status": "failed_release_blocking",
+  "batchStartedAt": "2026-11-15T06:29:35.609Z",
+  "severity": "P1",
+  "artifact": "frozen F11",
+  "notImplemented": true
+}

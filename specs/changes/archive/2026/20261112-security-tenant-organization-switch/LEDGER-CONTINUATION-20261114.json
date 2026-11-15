@@ -1,0 +1,135 @@
+{
+  "date": "2026-11-14",
+  "status": "implementing",
+  "releaseBlocked": true,
+  "committed": false,
+  "candidate8Regression": {
+    "auth": {
+      "totals": {
+        "tests": 112,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "jarSha256": "099bfabb9280b06db4ef4db94b3be14d5cbf3074f04d2077ebb0e0fb4e764b2b"
+    },
+    "bff": {
+      "totals": {
+        "tests": 28,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "jarSha256": "4b86766ba58751514d37f12d263f10b8228d2f424bd35578fdd7938683e3af4e"
+    }
+  },
+  "candidate5RtRaces": {
+    "status": "passed",
+    "counts": {
+      "two-node different switch operations": 0,
+      "two-node RT consumption": 450,
+      "RT versus logout": 450
+    },
+    "caseCount": 900,
+    "errors": [],
+    "evidenceSha256": "e3fa333e98a6b59c081bfa4eb78e9b1737bc30e97f255df9850a15650980285c",
+    "boundary": "Separate ordinary confidential-client RTs; not fixed BFF-root RT deadline proof; earlier package cohort"
+  },
+  "authorityLatencyCandidate7": {
+    "label": "candidate7 shared-transaction aggregated-read idle sequential actual-AT HTTP baseline; no concurrent test load; retained audit backlog remains",
+    "date": "2026-11-14T03:34:22.537Z",
+    "samples": 1000,
+    "sidHash": "d6ec363be1f74232",
+    "p50": 27.7342499999977,
+    "p95": 54.574500000000626,
+    "p99": 69.27087500000016,
+    "max": 328.4250000000029
+  },
+  "performancePassed": false,
+  "infrastructureRecovery": {
+    "status": "passed",
+    "classification": "infrastructure recovery only; planned application fault cases still pending",
+    "cloneStatus": [
+      "Completed",
+      0
+    ],
+    "gtidReset": false,
+    "bootstrap": false,
+    "authorityIncarnationPreserved": true,
+    "incarnationHash": "9ded21eaad4898b8",
+    "donorAndRecipientChecksumsEqual": true,
+    "checksums": {
+      "auth_security_control": 718166519,
+      "auth_security_binding": 3422802341,
+      "auth_security_context": 1309976443,
+      "auth_security_session": 758324779,
+      "auth_security_token": 195178737,
+      "auth_security_operation": 4044924732,
+      "auth_security_scope": 3821948822,
+      "auth_security_outbox": 1227074921,
+      "auth_security_signing_key": 3913390764,
+      "ingot_iam.iam_security_mutation": 23514602
+    },
+    "sourceGtidIncludedOnRecipient": true,
+    "preCloneCountArtifactMissing": true,
+    "completedAt": "2026-11-14T04:12:46Z"
+  },
+  "mysqlPeerNamesRolling": {
+    "status": "passed",
+    "nodes": [
+      {
+        "vm": "test-manager",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "readOnly": 1,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:93"
+      },
+      {
+        "vm": "test-worker1",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "readOnly": 1,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:93"
+      },
+      {
+        "vm": "test-worker2",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "readOnly": 0,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:93"
+      }
+    ],
+    "oneAtATime": true,
+    "persistentDataPreserved": true,
+    "gtidReset": false,
+    "bootstrap": false
+  },
+  "remaining": [
+    "final-cohort R1/R2 each20",
+    "final-cohort >=1000 cross-node races",
+    "fixed BFF-root continuous RT",
+    "actual DB partition/rejoin/restore",
+    "C02 crash points",
+    "performance and compatible release rollback",
+    "final environment restoration"
+  ],
+  "candidate8MysqlFaults": {
+    "status": "passed",
+    "cases": 3,
+    "evidence": "LEDGER-MYSQL-FAULT-ACCEPTANCE.json"
+  },
+  "candidate8Ui": {
+    "status": "passed",
+    "cases": 5
+  },
+  "candidate8DeliveryLogout": {
+    "status": "passed",
+    "cases": 2
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-14T08:22:52.849Z",
+  "cases": [
+    {
+      "name": "platform login has no switch menu and tenant candidate API refuses platform application",
+      "status": "passed",
+      "candidateQuery": {
+        "status": 403,
+        "code": "BFF_ENTRY_MISMATCH"
+      }
+    },
+    {
+      "name": "platform logout acknowledges durable revocation without Cookie deletion",
+      "status": "passed",
+      "httpStatus": 200,
+      "setsCookie": false
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "releaseBlocked": true
+}

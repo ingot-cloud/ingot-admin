@@ -1,0 +1,361 @@
+{
+  "date": "2026-11-14T23:43:08.067288Z",
+  "change": "20261112-security-tenant-organization-switch",
+  "phase": "F11 P1 completed delivery and focus identity adoption",
+  "approval": "User authorized both P1 fixes, dual-repo Spec/tasks first, directed/related regressions and real environment verification; no commit",
+  "status": "validated_functional_security_performance_release_gate_open",
+  "backend": {
+    "modules": [
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "tests": 129,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3,
+        "passed": 126
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 36
+      },
+      {
+        "module": "ingot-service/ingot-iam/ingot-iam-provider",
+        "tests": 1527,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 6,
+        "passed": 1521
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 46
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 17
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "tests": 60,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 60
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "tests": 71,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 71
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 26
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 12
+      }
+    ],
+    "totals": {
+      "tests": 1924,
+      "passed": 1915,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 9
+    },
+    "skipped": [
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.caughtNestedFailureStillRollsBackWholeRequiredTransaction()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.onlineEvaluationAt100TenantsAnd1000Members()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.actualBrowserComponentsAgainstLiveControllers()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.largeGroupReadBenchmark()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.groupWorkspaceBrowserAgainstMySql()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.tenantContextAndAssignmentReadBenchmark()",
+      "com.ingot.cloud.iam.application.asset.StagedImageUploadsTest.boundImageRequiresSignedReadAndExpiredUploadIsDeletedFromStorage()"
+    ],
+    "supplementalIamRealMySqlHttp": {
+      "passed": 37,
+      "skipped": 5,
+      "deduplicatedIntoTotals": true
+    }
+  },
+  "frontend": {
+    "tests": {
+      "httpClient": 40,
+      "authCore": 40,
+      "adminCore": 578,
+      "total": 658,
+      "failed": 0,
+      "unhandledErrors": 0
+    },
+    "firstBuild": [
+      {
+        "step": 0,
+        "command": [
+          "pnpm",
+          "--filter",
+          "@ingot/auth-core",
+          "build"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 1,
+        "command": [
+          "pnpm",
+          "--filter",
+          "@ingot/admin-core",
+          "build"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 2,
+        "command": [
+          "pnpm",
+          "type-check:apps"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 3,
+        "command": [
+          "pnpm",
+          "build:apps"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 4,
+        "command": [
+          "pnpm",
+          "check:boundaries"
+        ],
+        "exit": 0
+      }
+    ],
+    "finalBuild": [
+      {
+        "step": 0,
+        "command": [
+          "pnpm",
+          "--filter",
+          "@ingot/admin-core",
+          "build"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 1,
+        "command": [
+          "pnpm",
+          "type-check:apps"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 2,
+        "command": [
+          "pnpm",
+          "build:apps"
+        ],
+        "exit": 0
+      },
+      {
+        "step": 3,
+        "command": [
+          "pnpm",
+          "check:boundaries"
+        ],
+        "exit": 0
+      }
+    ]
+  },
+  "realEnvironment": {
+    "lateCommit": {
+      "date": "2026-11-14T23:29:51.515Z",
+      "topology": "single-host isolated JVMs, real MySQL8.4/Redis8.2 and Chrome HTTPS; not HA/performance",
+      "groups": [
+        {
+          "case": "late-commit-positive",
+          "status": "passed",
+          "heldOriginalBffCommit": true,
+          "authBackgroundCompleted": true,
+          "onePersistedSession": true,
+          "canonicalResultUnchanged": true,
+          "httpStatus": 200,
+          "credentialFenceActive": false,
+          "replayAgeSeconds": 0.6,
+          "insideRecoveryWindow": true
+        },
+        {
+          "case": "late-commit-credential-change",
+          "status": "passed",
+          "heldOriginalBffCommit": true,
+          "authBackgroundCompleted": true,
+          "onePersistedSession": true,
+          "canonicalResultUnchanged": true,
+          "httpStatus": 401,
+          "noCookieOnRejection": true,
+          "strictRecoveryStatus": 401,
+          "credentialFenceActive": true,
+          "replayAgeSeconds": 2.9,
+          "insideRecoveryWindow": true
+        },
+        {
+          "case": "late-commit-dependency-failure",
+          "status": "passed",
+          "heldOriginalBffCommit": true,
+          "authBackgroundCompleted": true,
+          "onePersistedSession": true,
+          "canonicalResultUnchanged": true,
+          "httpStatus": 503,
+          "noCookieOnRejection": true,
+          "credentialFenceActive": false,
+          "replayAgeSeconds": 0.8,
+          "insideRecoveryWindow": true
+        },
+        {
+          "case": "fresh-password-login-and-logout",
+          "status": "passed",
+          "newPasswordLogin": true,
+          "logoutStatus": 200,
+          "logoutNoSetCookie": true,
+          "oldResumeStatus": 403,
+          "oldFormalCookieRejected": true
+        }
+      ],
+      "status": "passed"
+    },
+    "focus": {
+      "date": "2026-11-14T23:37:36.891Z",
+      "environment": "actual built tenant admin app + Chrome HTTPS + real four services / MySQL / Redis; single host",
+      "cases": [
+        {
+          "case": "missed-sync-focus-adoption",
+          "status": "passed",
+          "focusTrigger": "Chrome focus event dispatched",
+          "actualBuiltAdminPage": true,
+          "noBroadcastOrStorageSyncPublished": true,
+          "oldFormClearedBeforeNewBusiness": true,
+          "oldSaveAttemptedDuringHeldBootstrap": true,
+          "meCalls": 1,
+          "bootstrapCalls": 1,
+          "bootstrapBoundToTarget": true,
+          "oldBusinessWrites": 0,
+          "ownedGroupRows": 0,
+          "sameRoot": true,
+          "generationAdvancedOnce": true,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "unchanged-focus-visibility",
+          "status": "passed",
+          "extraBootstrap": 0,
+          "extraWrites": 0
+        },
+        {
+          "case": "bootstrap-failure-retry-current-identity",
+          "status": "passed",
+          "failedBootstrap": 1,
+          "retainedTargetCookie": true,
+          "returnedToCurrentOrganization": true,
+          "noOldDraftRestored": true,
+          "oldBusinessWrites": 0,
+          "originalDeadlineKept": true
+        }
+      ],
+      "status": "passed"
+    }
+  },
+  "artifacts": [
+    {
+      "module": "ingot-service/ingot-auth/ingot-auth-provider",
+      "sha256": "61f59915663e92f3953bda956da4d675e01104a390ca6189c9f79a0e0c68b198"
+    },
+    {
+      "module": "ingot-service/ingot-bff",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b"
+    },
+    {
+      "module": "ingot-service/ingot-iam/ingot-iam-provider",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc"
+    },
+    {
+      "module": "ingot-service/ingot-gateway",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de"
+    },
+    {
+      "app": "admin",
+      "files": 350,
+      "manifestSha256": "6417ed7d65cd96acf6142b97b9716f3ea6bf8a7ddeb8e030f77c22aa40e7b39d"
+    },
+    {
+      "app": "admin-platform",
+      "files": 514,
+      "manifestSha256": "d15e15e789879bca89a1d6792ec170da83464c16c5dacd71ce5cbe3e74dd5328"
+    }
+  ],
+  "pythonChecks": {
+    "packageBoundaries": 10,
+    "contract": 8,
+    "frameworkSchemas": 6,
+    "failed": 0
+  },
+  "cleanup": {
+    "ownedProcessesStopped": true,
+    "ownedContainersRemoved": true,
+    "ownedPersistentVolumeRemoved": true,
+    "ownedPortsClosed": true,
+    "privateRuntimeFilesRemoved": 20,
+    "privateRecordingsAndKeysRemoved": true,
+    "vmStates": {
+      "test-manager": "Stopped",
+      "test-worker1": "Stopped",
+      "test-worker2": "Stopped"
+    },
+    "vmMutationPerformed": false,
+    "unrelatedDockerResourcesModified": false
+  },
+  "limitations": [
+    "Real F11 environment is isolated single host; no new three-VM/GR/failover or performance claim",
+    "Three GR tests not enabled in F11; earlier F10 evidence remains attached to the F09 package",
+    "Six independent optional IAM cases remain skipped: three performance, two browser and one OSS",
+    "Auth/BFF initial-login Cookie delivery cannot be made atomic with browser receipt; the new authoritative delivery admission point is checked before returning the result",
+    "Performance remains failed/deferred; publishing blocked; no current/archive update; no staging or commit"
+  ],
+  "resolvedExecutionIssues": [
+    "Private Gateway fixture included BFF-only settings; removed only from private config",
+    "Private confidential OAuth fixture client lacked required boolean TokenSettings and cached incomplete settings; a fresh private client with complete settings and fresh secret was created",
+    "Private Auth fault proxy initially did not decode WebClient chunked request bodies; added decoding and removed Transfer-Encoding before forwarding",
+    "Initial password changes required waiting for durable credential fence convergence before seeding logins; final acceptance explicitly waits for ACTIVE",
+    "Backend acceptance corrected optional null field omission assertion and all four cases reran from start",
+    "UI fixture pinned Python interpreter and waited for actual asynchronous wizard step completion",
+    "Real failed-bootstrap return exposed a paused blank page; return now uses identity retry, with a directed regression and all three browser cases rerun on final frontend",
+    "Bootstrap integration test waits for actual route loading animation before jsdom disposal; final full regression has zero unhandled errors"
+  ]
+}

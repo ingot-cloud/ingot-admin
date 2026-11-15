@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-13",
+  "scope": "isolated real Redis and MySQL integration",
+  "runId": "ingot-time-contract-de325a2a2ddb",
+  "services": {
+    "redis": {
+      "version": "8.2.0",
+      "port": "56773"
+    },
+    "mysql": {
+      "version": "8.4.13",
+      "globalTimeZone": "+08:00",
+      "port": "56774"
+    }
+  },
+  "targeted": {
+    "exitCode": 0,
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "auth-full": {
+    "exitCode": 0,
+    "tests": 25,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "cleanupBeforeShutdown": {
+    "mysqlPersistentTables": 0,
+    "redisRemainingKeys": 0
+  },
+  "status": "passed",
+  "containersRemoved": {
+    "redis": true,
+    "mysql": true
+  },
+  "jvmTimeZones": [
+    "UTC",
+    "Asia/Shanghai",
+    "America/New_York"
+  ],
+  "jdbcTimeZoneParameters": {
+    "connectionTimeZone": "UTC",
+    "forceConnectionTimeZoneToSession": true
+  },
+  "cases": [
+    {
+      "class": "com.ingot.cloud.auth.client.RedisAuthorizationTimeContractTest",
+      "method": "authorizationAndSessionInstantsSurviveRoundTripRefreshAndRevocation()",
+      "durationSeconds": "1.611",
+      "status": "passed"
+    },
+    {
+      "class": "com.ingot.cloud.auth.client.UtcJdbcContractTest",
+      "method": "utcSessionAndOAuthClientInstantsRoundTripAcrossJvmTimeZones()",
+      "durationSeconds": "0.595",
+      "status": "passed"
+    }
+  ],
+  "notes": [
+    "Ephemeral loopback-published containers from cached images; no business database or Redis instance used.",
+    "MySQL global time zone +08:00 deliberately verifies JDBC UTC session enforcement.",
+    "The existing Redis integration test now covers Authentication/InUser, IAM member identity and non-empty read-only department collections.",
+    "No production code or configuration changed in this follow-up. No commit created."
+  ]
+}

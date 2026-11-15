@@ -1,0 +1,372 @@
+{
+  "date": "2026-11-14T06:57:16.679Z",
+  "cases": [
+    {
+      "name": "no other organization returns current tenant without transaction or identity replacement",
+      "status": "passed",
+      "before": {
+        "sidHash": "6e5ecd50b867e32f",
+        "accessDigest": "0a6b4bf06cf52c60",
+        "tenantId": "1000203",
+        "contextVersion": "mvIBJ_przVO9XOrUV7mHag",
+        "rootHash": "e5043b748bedce5b",
+        "generation": 0,
+        "expiresAt": 1794640040,
+        "jwtExpiresAt": 1794640040,
+        "cookieExpiresAt": 1794640040.171116,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000204",
+        "deptIds": [
+          "1000205"
+        ]
+      },
+      "after": {
+        "sidHash": "6e5ecd50b867e32f",
+        "accessDigest": "0a6b4bf06cf52c60",
+        "tenantId": "1000203",
+        "contextVersion": "mvIBJ_przVO9XOrUV7mHag",
+        "rootHash": "e5043b748bedce5b",
+        "generation": 0,
+        "expiresAt": 1794640040,
+        "jwtExpiresAt": 1794640040,
+        "cookieExpiresAt": 1794640040.171116,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000204",
+        "deptIds": [
+          "1000205"
+        ]
+      },
+      "switchRequests": 0
+    },
+    {
+      "name": "no-menu stable state and search empty state retain switch/logout and unfiltered total",
+      "status": "passed",
+      "before": {
+        "sidHash": "5c37ecb19b16a801",
+        "accessDigest": "2fe8a5f2a415018a",
+        "tenantId": "1000203",
+        "contextVersion": "xbxp6RA7f4WsOd8me-nn8Q",
+        "rootHash": "185ba014a1435b08",
+        "generation": 0,
+        "expiresAt": 1794640047,
+        "jwtExpiresAt": 1794640047,
+        "cookieExpiresAt": 1794640047.384045,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000209",
+        "deptIds": []
+      },
+      "search": {
+        "total": 0,
+        "switchableTotal": 1
+      }
+    },
+    {
+      "name": "inactive source membership with valid account session switches to another effective organization",
+      "status": "passed",
+      "before": {
+        "sidHash": "5c37ecb19b16a801",
+        "accessDigest": "2fe8a5f2a415018a",
+        "tenantId": "1000203",
+        "contextVersion": "xbxp6RA7f4WsOd8me-nn8Q",
+        "rootHash": "185ba014a1435b08",
+        "generation": 0,
+        "expiresAt": 1794640047,
+        "jwtExpiresAt": 1794640047,
+        "cookieExpiresAt": 1794640047.384045,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000209",
+        "deptIds": []
+      },
+      "after": {
+        "sidHash": "96e69073fe74e224",
+        "accessDigest": "dca59a6b5213b620",
+        "tenantId": "1000003",
+        "contextVersion": "yeN_WB4BZkkWDn0z1x7i4Q",
+        "rootHash": "185ba014a1435b08",
+        "generation": 1,
+        "expiresAt": 1794640047,
+        "jwtExpiresAt": 1794640047,
+        "cookieExpiresAt": 1794640047.746547,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000211",
+        "deptIds": []
+      }
+    },
+    {
+      "name": "inactive source and no other effective organization return safe state without restoring privileges",
+      "status": "passed",
+      "before": {
+        "sidHash": "96e69073fe74e224",
+        "accessDigest": "dca59a6b5213b620",
+        "tenantId": "1000003",
+        "contextVersion": "yeN_WB4BZkkWDn0z1x7i4Q",
+        "rootHash": "185ba014a1435b08",
+        "generation": 1,
+        "expiresAt": 1794640047,
+        "jwtExpiresAt": 1794640047,
+        "cookieExpiresAt": 1794640047.746547,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000211",
+        "deptIds": []
+      },
+      "after": {
+        "sidHash": "96e69073fe74e224",
+        "accessDigest": "dca59a6b5213b620",
+        "tenantId": "1000003",
+        "contextVersion": "yeN_WB4BZkkWDn0z1x7i4Q",
+        "rootHash": "185ba014a1435b08",
+        "generation": 1,
+        "expiresAt": 1794640047,
+        "jwtExpiresAt": 1794640047,
+        "cookieExpiresAt": 1794640047.746547,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000211",
+        "deptIds": []
+      }
+    },
+    {
+      "name": "member invalidated after committed response loss recovers only account context and exposes another effective organization",
+      "status": "passed",
+      "before": {
+        "sidHash": "ff54311103881b78",
+        "accessDigest": "263925da39128b03",
+        "tenantId": "1000203",
+        "contextVersion": "x1N_GZYcoMO9rmAMgg4tBg",
+        "rootHash": "77cdb8b162741831",
+        "generation": 0,
+        "expiresAt": 1794640068,
+        "jwtExpiresAt": 1794640068,
+        "cookieExpiresAt": 1794640068.634739,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000209",
+        "deptIds": []
+      },
+      "after": {
+        "sidHash": "e7c0305dc9c4f6f0",
+        "accessDigest": "5b2089c47b82a111",
+        "tenantId": "1000003",
+        "contextVersion": "Ek1io46LAG_R0idfM5ZLDQ",
+        "rootHash": "77cdb8b162741831",
+        "generation": 1,
+        "expiresAt": 1794640068,
+        "jwtExpiresAt": 1794640068,
+        "cookieExpiresAt": 1794640068,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000211",
+        "deptIds": []
+      },
+      "responseDropped": true,
+      "currentTenantAccessible": false,
+      "switchableTotal": 1
+    }
+  ],
+  "errors": [],
+  "currentWireQuery": {
+    "status": 200,
+    "code": "S0200",
+    "message": "Success",
+    "data": {
+      "currentTenant": {
+        "id": "1000203",
+        "name": "单组织验收 C"
+      },
+      "currentTenantAccessible": true,
+      "records": [],
+      "total": 0,
+      "switchableTotal": 0,
+      "page": 1,
+      "pageSize": 20
+    },
+    "success": true
+  },
+  "lossAttempt": {
+    "status": 500,
+    "code": "S0500",
+    "setsSession": false,
+    "proxy": {
+      "mode": "normal",
+      "held": true,
+      "arrived": 0,
+      "events": [
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 26,
+          "completedAtEpochSeconds": 1794639470.997296,
+          "authorityAction": "FIND_BINDING",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 21,
+          "completedAtEpochSeconds": 1794639471.023929,
+          "authorityAction": "READ_TRANSACTION",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 13,
+          "completedAtEpochSeconds": 1794639471.085233,
+          "authorityAction": "FIND_BINDING",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 25,
+          "completedAtEpochSeconds": 1794639471.1559622,
+          "authorityAction": "READ_SESSION",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 28,
+          "completedAtEpochSeconds": 1794639471.186728,
+          "authorityAction": "CONFIRM",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/organization-session/verify",
+          "status": 200,
+          "ms": 89,
+          "completedAtEpochSeconds": 1794639471.3263922
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 25,
+          "completedAtEpochSeconds": 1794639471.39456,
+          "authorityAction": "TRANSITION",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 25,
+          "completedAtEpochSeconds": 1794639471.464347,
+          "authorityAction": "REGISTER_ISSUANCE",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/organization-session/operations/Ek1io46LAG_R0idfM5ZLDQ",
+          "status": 200,
+          "ms": 419,
+          "completedAtEpochSeconds": 1794639471.926574
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 20,
+          "completedAtEpochSeconds": 1794639471.989323,
+          "authorityAction": "INSPECT_CANDIDATE",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 45,
+          "completedAtEpochSeconds": 1794639472.077779,
+          "authorityAction": "TRANSITION",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 311,
+          "completedAtEpochSeconds": 1794639472.4311821,
+          "authorityAction": "COMMIT",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 0,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 15,
+          "completedAtEpochSeconds": 1794639472.4493299,
+          "authorityAction": "BINDING_TTL",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "auth",
+          "node": 1,
+          "path": "/inner/session-authority/bff-command",
+          "status": 200,
+          "ms": 26,
+          "completedAtEpochSeconds": 1794639472.5223198,
+          "authorityAction": "READ_SESSION",
+          "responseCode": "S0200"
+        },
+        {
+          "role": "bff",
+          "node": 0,
+          "path": "/bff/auth/tenant/switch-transactions/Ek1io46LAG_R0idfM5ZLDQ/commit",
+          "status": 200,
+          "ms": 1607,
+          "completedAtEpochSeconds": 1794639472.565003,
+          "formalCookie": {
+            "expiresAt": 1794640068,
+            "maxAge": null
+          }
+        },
+        {
+          "role": "tls",
+          "node": 0,
+          "path": "/bff/auth/tenant/switch-transactions/Ek1io46LAG_R0idfM5ZLDQ/commit",
+          "status": 500,
+          "ms": 1670,
+          "completedAtEpochSeconds": 1794639472.621998
+        }
+      ],
+      "issued": [
+        {
+          "node": 0,
+          "operationId": "Ek1io46LAG_R0idfM5ZLDQ",
+          "sidHash": "e7c0305dc9c4f6f0",
+          "expiresAt": "2026-11-14T07:07:48Z"
+        }
+      ]
+    }
+  },
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "releaseBlocked": true,
+  "committed": false
+}

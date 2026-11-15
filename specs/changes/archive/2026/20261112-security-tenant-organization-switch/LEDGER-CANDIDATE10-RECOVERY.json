@@ -1,0 +1,187 @@
+{
+  "date": "2026-11-14T10:25:11.955Z",
+  "packageCohort": "candidate10",
+  "cases": [
+    {
+      "name": "stop new switching and restore saved compatible bundle; live identity preserved and revoked identities remain denied",
+      "status": "passed",
+      "packages": {
+        "savedCompatibleCohort": "candidate10",
+        "packages": {
+          "iam": "99caa46bace0a80ae8b2266fc8a960f5bfa8f86504b81bf346aae7c570fc0020",
+          "auth0": "b68c76c1b2982e26ecfaadd07d31dc20147425f725f726ed9bc9a482e0ae0a0f",
+          "auth1": "b68c76c1b2982e26ecfaadd07d31dc20147425f725f726ed9bc9a482e0ae0a0f",
+          "bff0": "ba63061c2be4460a9bb4efc0a5846fd7dc81f90f0176a8ab06e2d6bd1036e62e",
+          "bff1": "ba63061c2be4460a9bb4efc0a5846fd7dc81f90f0176a8ab06e2d6bd1036e62e",
+          "gateway": "c353e3b2c1fa45239b943d789bbcb081d394ccd24e079a626291ebd05419f687"
+        },
+        "binarySchemaDowngrade": false,
+        "purpose": "restore verified ledger-v1 bundle with new-switch gate off; never deploy Redis authority"
+      },
+      "current": {
+        "sidHash": "6425390b162fbfe0",
+        "accessDigest": "14f31987ebb87355",
+        "tenantId": "1000008",
+        "contextVersion": "BJ30h393uQNuTifdFm8PPQ",
+        "rootHash": "ccc06c98b176456e",
+        "generation": 1,
+        "expiresAt": 1794652125,
+        "jwtExpiresAt": 1794652125,
+        "cookieExpiresAt": 1794652125,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "live": {
+        "sidHash": "cecb9c5a2a1cd42a",
+        "accessDigest": "5c0264f093a3e507",
+        "tenantId": "1000003",
+        "contextVersion": "VvwmYaZ-C_xA8i-mPBsPtA",
+        "rootHash": "6027a4ff989a494d",
+        "generation": 0,
+        "expiresAt": 1794652152,
+        "jwtExpiresAt": 1794652152,
+        "cookieExpiresAt": 1794652152.732468,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "after": {
+        "sidHash": "cecb9c5a2a1cd42a",
+        "accessDigest": "5c0264f093a3e507",
+        "tenantId": "1000003",
+        "contextVersion": "VvwmYaZ-C_xA8i-mPBsPtA",
+        "rootHash": "6027a4ff989a494d",
+        "generation": 0,
+        "expiresAt": 1794652152,
+        "jwtExpiresAt": 1794652152,
+        "cookieExpiresAt": 1794652152.732468,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "beforeRedeploy": {
+        "me": 401,
+        "transactions": [
+          {
+            "action": "commit",
+            "status": 403,
+            "setsSession": false
+          },
+          {
+            "action": "resume",
+            "status": 403,
+            "setsSession": false
+          }
+        ]
+      },
+      "afterRedeploy": {
+        "me": 401,
+        "transactions": [
+          {
+            "action": "commit",
+            "status": 403,
+            "setsSession": false
+          },
+          {
+            "action": "resume",
+            "status": 403,
+            "setsSession": false
+          }
+        ]
+      },
+      "switchGateStatus": 503
+    },
+    {
+      "name": "native backup restoration requires fresh incarnation and fresh login; previously acknowledged logout and RT revocation cannot revive",
+      "status": "passed",
+      "backup": {
+        "sqlBytes": 60382073,
+        "sha256": "e003c85d272af6826c4c4be1208d733e85bd92b622608c36dbc90ea765df08bb",
+        "nativeConsistentBackup": true,
+        "savedAt": "2026-11-14T10:25:43Z"
+      },
+      "restored": {
+        "nativeRestoreCompleted": true,
+        "applicationsIsolated": true,
+        "transferredSha256Verified": true,
+        "nativeClientReadsFileWithoutSshStdin": true
+      },
+      "incarnation": {
+        "freshIncarnationPreparedAndRequired": true,
+        "oldDeploymentMaintenanceRejected": true,
+        "switchGateClosed": true,
+        "newIncarnationHash": "954473c0b499f023"
+      },
+      "source": {
+        "sidHash": "e99368e47c40117d",
+        "accessDigest": "7374465df1e7e9df",
+        "tenantId": "1000003",
+        "contextVersion": "t9wQnybEVEX6rjHLzW8fLA",
+        "rootHash": "14e9005efa8da786",
+        "generation": 0,
+        "expiresAt": 1794652520,
+        "jwtExpiresAt": 1794652520,
+        "cookieExpiresAt": 1794652520.880921,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "fresh": {
+        "sidHash": "7085c322f71b8251",
+        "accessDigest": "ef9681200dcf25eb",
+        "tenantId": "1000003",
+        "contextVersion": "OU49Atl67VV0Gsfi52Qa0A",
+        "rootHash": "1638002f164d4a70",
+        "generation": 0,
+        "expiresAt": 1794652630,
+        "jwtExpiresAt": 1794652630,
+        "cookieExpiresAt": 1794652630.048043,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "oldDenied": {
+        "me": 401,
+        "transactions": [
+          {
+            "action": "commit",
+            "status": 403,
+            "setsSession": false
+          },
+          {
+            "action": "resume",
+            "status": 403,
+            "setsSession": false
+          }
+        ]
+      },
+      "oldRtStatus": 400,
+      "oldAtStatus": 401,
+      "oldAtIdentityPresent": false,
+      "oldPlatformStatus": 401,
+      "oldFormalCheckedBeforeOriginalCutoff": true,
+      "platformFreshLogin": true
+    }
+  ],
+  "errors": [],
+  "boundary": "functional rollback disables new switching and restores saved ledger-v1 compatible packages; no claim of schema-version downgrade; legacy Redis authority is prohibited; two independent cases; native import retry after SSH stdin transport failure retained",
+  "status": "passed",
+  "realmChanged": true,
+  "appsOffline": false
+}

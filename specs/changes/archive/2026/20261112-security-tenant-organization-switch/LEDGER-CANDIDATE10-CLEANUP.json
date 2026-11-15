@@ -1,0 +1,46 @@
+{
+  "namespace": "org-ledger-tl23qepg",
+  "vms": {
+    "test-manager": {
+      "ownedContainersRemaining": 0,
+      "ownedTaggedRulesRemaining": 0,
+      "ownedDirectoriesRemoved": true,
+      "ownedNamespaceMountsRemoved": 1,
+      "originalDockerInventoryBeforeVmStop": [],
+      "restoredMemory": "3.0GiB",
+      "restoredState": "Stopped"
+    },
+    "test-worker1": {
+      "ownedContainersRemaining": 0,
+      "ownedTaggedRulesRemaining": 0,
+      "ownedDirectoriesRemoved": true,
+      "originalDockerInventoryBeforeVmStop": [
+        "demo_api.2.f5v5fycdqci95q2yqeervhe93 Exited (137) 51 minutes ago",
+        "demo_api.1.fc58h2slo74wl8d62ycvhtf3c Exited (137) 51 minutes ago",
+        "demo_api.3.w1dwyhcrvkb01wp3ftgz00f4z Exited (137) 51 minutes ago",
+        "demo_api.2.tyksyx8pd29sfstnl5toh49t8 Created",
+        "demo_api.3.ve4ogu6f0xk3vav8c9x8ero1b Exited (137) 10 hours ago",
+        "demo_api.1.qaleaxh58o74owavx0vdwsz3d Exited (137) 10 hours ago"
+      ],
+      "restoredMemory": "2.0GiB",
+      "restoredState": "Stopped"
+    },
+    "test-worker2": {
+      "ownedContainersRemaining": 0,
+      "ownedTaggedRulesRemaining": 0,
+      "ownedDirectoriesRemoved": true,
+      "originalDockerInventoryBeforeVmStop": [],
+      "restoredMemory": "2.0GiB",
+      "restoredState": "Stopped"
+    }
+  },
+  "local": {
+    "mysql": "owned container removed",
+    "redis": "owned container removed",
+    "ownedWebFixtureRemoved": true,
+    "privateFilesAndRawLogsRemoved": 255,
+    "ownedArtifactBytesRemoved": 5270410016,
+    "ownedArtifactFilesRemoved": 1552
+  },
+  "completedAt": "2026-11-14T10:32:30Z"
+}

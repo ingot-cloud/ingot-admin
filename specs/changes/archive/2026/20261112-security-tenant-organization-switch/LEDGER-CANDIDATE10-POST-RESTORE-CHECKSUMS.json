@@ -1,0 +1,84 @@
+{
+  "at": "2026-11-14T10:28:49Z",
+  "nodes": [
+    {
+      "node": "test-manager",
+      "viewId": "17945563439378678:115",
+      "checksums": {
+        "auth_security_control": 3483202379,
+        "auth_security_binding": 1903637754,
+        "auth_security_context": 2546774684,
+        "auth_security_session": 4046045981,
+        "auth_security_token": 1382755598,
+        "auth_security_operation": 3089109768,
+        "auth_security_scope": 1437873609,
+        "auth_security_outbox": 364142701,
+        "auth_security_signing_key": 2228155306,
+        "ingot_iam.iam_security_mutation": 1091952767
+      },
+      "sessionStates": {
+        "REVOKED": 1707,
+        "RETIRED": 360,
+        "ACTIVE": 8
+      },
+      "incarnationHash": "954473c0b499f023",
+      "flush": 1,
+      "syncBinlog": 1,
+      "exitAction": "ABORT_SERVER",
+      "redoBytes": 67108864
+    },
+    {
+      "node": "test-worker1",
+      "viewId": "17945563439378678:115",
+      "checksums": {
+        "auth_security_control": 3483202379,
+        "auth_security_binding": 1903637754,
+        "auth_security_context": 2546774684,
+        "auth_security_session": 4046045981,
+        "auth_security_token": 1382755598,
+        "auth_security_operation": 3089109768,
+        "auth_security_scope": 1437873609,
+        "auth_security_outbox": 364142701,
+        "auth_security_signing_key": 2228155306,
+        "ingot_iam.iam_security_mutation": 1091952767
+      },
+      "sessionStates": {
+        "REVOKED": 1707,
+        "RETIRED": 360,
+        "ACTIVE": 8
+      },
+      "incarnationHash": "954473c0b499f023",
+      "flush": 1,
+      "syncBinlog": 1,
+      "exitAction": "ABORT_SERVER",
+      "redoBytes": 67108864
+    },
+    {
+      "node": "test-worker2",
+      "viewId": "17945563439378678:115",
+      "checksums": {
+        "auth_security_control": 3483202379,
+        "auth_security_binding": 1903637754,
+        "auth_security_context": 2546774684,
+        "auth_security_session": 4046045981,
+        "auth_security_token": 1382755598,
+        "auth_security_operation": 3089109768,
+        "auth_security_scope": 1437873609,
+        "auth_security_outbox": 364142701,
+        "auth_security_signing_key": 2228155306,
+        "ingot_iam.iam_security_mutation": 1091952767
+      },
+      "sessionStates": {
+        "REVOKED": 1707,
+        "RETIRED": 360,
+        "ACTIVE": 8
+      },
+      "incarnationHash": "954473c0b499f023",
+      "flush": 1,
+      "syncBinlog": 1,
+      "exitAction": "ABORT_SERVER",
+      "redoBytes": 67108864
+    }
+  ],
+  "status": "passed"
+}

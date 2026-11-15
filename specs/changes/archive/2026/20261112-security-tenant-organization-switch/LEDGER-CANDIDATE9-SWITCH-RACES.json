@@ -1,0 +1,1713 @@
+{
+  "date": "2026-11-14T05:12:27.940Z",
+  "environment": "real HTTP, actual credentials, two Auth/BFF nodes and durable three-node GR",
+  "cases": [
+    {
+      "kind": "two-node different switch operations",
+      "case": 1,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 1,
+      "accessDigest": "8eccdee883f2d28c",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 2,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 2,
+      "accessDigest": "cf17f611f282e875",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 3,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 3,
+      "accessDigest": "86f0cb578aaeed8f",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 4,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 4,
+      "accessDigest": "f7e281a32a2ae95f",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 5,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 5,
+      "accessDigest": "5062223ef3c5b017",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 6,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 6,
+      "accessDigest": "4ad59bb92949e0d4",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 7,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 7,
+      "accessDigest": "ac9ac52c56ccca45",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 8,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 8,
+      "accessDigest": "50069c81efeea780",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 9,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 9,
+      "accessDigest": "d9a2e5c3e22627d2",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 10,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 10,
+      "accessDigest": "fc4a6721884471b9",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 11,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 11,
+      "accessDigest": "6be76b82a9535485",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 12,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 12,
+      "accessDigest": "11706f36b91cb5a2",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 13,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 13,
+      "accessDigest": "683de8a683e84e54",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 14,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 14,
+      "accessDigest": "2fed476ae25004ec",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 15,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 15,
+      "accessDigest": "e5be1ec3d6def0d0",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 16,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 16,
+      "accessDigest": "5ec086f75f9daed9",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 17,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 17,
+      "accessDigest": "5550bad6e806d7dc",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 18,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 18,
+      "accessDigest": "d02baa26b2140ae7",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 19,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 19,
+      "accessDigest": "02896dd05403ba22",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 20,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 20,
+      "accessDigest": "5897bc5aa45580a5",
+      "rootHash": "1285fb6d9ce36847",
+      "deadline": "2026-11-14T05:22:45Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 21,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 1,
+      "accessDigest": "6751e362adbe3911",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 22,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 2,
+      "accessDigest": "4c2a16d028629dd7",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 23,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 3,
+      "accessDigest": "f705b6a4000e59f7",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 24,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 4,
+      "accessDigest": "60db4503a36e8c1e",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 25,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 5,
+      "accessDigest": "9cbc2b9f57912d36",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 26,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 6,
+      "accessDigest": "e249802977785092",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 27,
+      "status": "passed",
+      "statuses": [
+        200,
+        401
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 7,
+      "accessDigest": "55903df3f9f41d31",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 28,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 8,
+      "accessDigest": "cc6ff26a3986bb06",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 29,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 9,
+      "accessDigest": "7391103a8513f817",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 30,
+      "status": "passed",
+      "statuses": [
+        200,
+        401
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 10,
+      "accessDigest": "0f4ee2999e42a578",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 31,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 11,
+      "accessDigest": "35c43b91fff35904",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 32,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 12,
+      "accessDigest": "37ee2df317ff207c",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 33,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 13,
+      "accessDigest": "0f0504125b0b3396",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 34,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 14,
+      "accessDigest": "87e01d0659ede0df",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 35,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 15,
+      "accessDigest": "4fbcde9947a35971",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 36,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 16,
+      "accessDigest": "7f3f66ac037ccf10",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 37,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 17,
+      "accessDigest": "b807d040e119ddcb",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 38,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 18,
+      "accessDigest": "3a90189a4f06e7a9",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 39,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 19,
+      "accessDigest": "781b1c3dccfc623b",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 40,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 20,
+      "accessDigest": "b8965e1068570d8d",
+      "rootHash": "79c9ac02c4ce821c",
+      "deadline": "2026-11-14T05:25:09Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 41,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 1,
+      "accessDigest": "e0cb08ad24ade26c",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 42,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 2,
+      "accessDigest": "993ccf4b6523f03a",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 43,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 3,
+      "accessDigest": "535d56acfa6c16ff",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 44,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 4,
+      "accessDigest": "f6add57502bf9125",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 45,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 5,
+      "accessDigest": "1882c17ae03cc7a1",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 46,
+      "status": "passed",
+      "statuses": [
+        401,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 6,
+      "accessDigest": "62a8e98a579a2c58",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 47,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 7,
+      "accessDigest": "1fdbd2259804b09c",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 48,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 8,
+      "accessDigest": "f9876052c2ba0be6",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 49,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 9,
+      "accessDigest": "812bc8ae75054515",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 50,
+      "status": "passed",
+      "statuses": [
+        401,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 10,
+      "accessDigest": "9418c5d6d1dd5818",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 51,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 11,
+      "accessDigest": "da38dcbfd2c14323",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 52,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 12,
+      "accessDigest": "749ec5ece1531c3e",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 53,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 13,
+      "accessDigest": "7e1c9e791f40fd72",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 54,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 14,
+      "accessDigest": "aa9e6edfeb08cdf3",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 55,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 15,
+      "accessDigest": "a8b4bbbfcc65e560",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 56,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 16,
+      "accessDigest": "59b72bfdb1bfec0d",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 57,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 17,
+      "accessDigest": "9e724c6cf5d0c769",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 58,
+      "status": "passed",
+      "statuses": [
+        200,
+        401
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 18,
+      "accessDigest": "7f84a0fea10acd19",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 59,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 19,
+      "accessDigest": "c782690df94e3d5a",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 60,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 20,
+      "accessDigest": "3af8f88b8b9fe6fa",
+      "rootHash": "6f2889a29337dfb3",
+      "deadline": "2026-11-14T05:26:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 61,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 1,
+      "accessDigest": "f98e9738629fed68",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 62,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 2,
+      "accessDigest": "cc4c60f5c5402f9f",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 63,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 3,
+      "accessDigest": "2d274c629d8dbc7e",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 64,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 4,
+      "accessDigest": "7abfa647dcf43ea0",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 65,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 5,
+      "accessDigest": "09d52e9a446e8d1a",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 66,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 6,
+      "accessDigest": "cd77efefa89f0877",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 67,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 7,
+      "accessDigest": "cd062afc973ef9ad",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 68,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 8,
+      "accessDigest": "56e0b80d2d9b2fcc",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 69,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 9,
+      "accessDigest": "e588d79156402c88",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 70,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 10,
+      "accessDigest": "1fc6d0142a4a450a",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 71,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 11,
+      "accessDigest": "58d310dbee61a050",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 72,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 12,
+      "accessDigest": "2dda263f120512b6",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 73,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 13,
+      "accessDigest": "92f27cae4d4d883d",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 74,
+      "status": "passed",
+      "statuses": [
+        200,
+        401
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 14,
+      "accessDigest": "be42502cbd636fb8",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 75,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 15,
+      "accessDigest": "f57efe4bd0b361a1",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 76,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 16,
+      "accessDigest": "10a42f0a37969e06",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 77,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 17,
+      "accessDigest": "41bd714a15f0daad",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 78,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 18,
+      "accessDigest": "d8b6106cc4dddae2",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 79,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 19,
+      "accessDigest": "f8e2916a7570ea3a",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 80,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 20,
+      "accessDigest": "9fae2755568c03b8",
+      "rootHash": "c3447168e3ade7f5",
+      "deadline": "2026-11-14T05:28:22Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 81,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 1,
+      "accessDigest": "3eb966d4ca1edff5",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 82,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 2,
+      "accessDigest": "4f50165cfc24bf70",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 83,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 3,
+      "accessDigest": "a0045a1a07884c7f",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 84,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 4,
+      "accessDigest": "4b1c15889ad4f6b7",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 85,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 5,
+      "accessDigest": "7dd746f51cde1de9",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 86,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 6,
+      "accessDigest": "63f4515b8312bec8",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 87,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 7,
+      "accessDigest": "85443d0408621485",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 88,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 8,
+      "accessDigest": "24c64d40202eb7ce",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 89,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 9,
+      "accessDigest": "ed7f2950240ab44c",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 90,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 10,
+      "accessDigest": "7ad57ed0f01c7ef4",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 91,
+      "status": "passed",
+      "statuses": [
+        200,
+        401
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 11,
+      "accessDigest": "3eb1f07b8057db9e",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 92,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 12,
+      "accessDigest": "d220ea62fed8dec6",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 93,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 13,
+      "accessDigest": "82b59ce12746bfd2",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 94,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 14,
+      "accessDigest": "8bbedfaef5ccc261",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 95,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 15,
+      "accessDigest": "2a05a8293d34bc06",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 96,
+      "status": "passed",
+      "statuses": [
+        200,
+        409
+      ],
+      "stages": [
+        "COMPLETED",
+        "FAILED"
+      ],
+      "generation": 16,
+      "accessDigest": "b6913f77f5583b80",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 97,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 17,
+      "accessDigest": "142d22a86310b140",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 98,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 18,
+      "accessDigest": "b5aa28187470a869",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 99,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 19,
+      "accessDigest": "c232871dffe32bda",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    },
+    {
+      "kind": "two-node different switch operations",
+      "case": 100,
+      "status": "passed",
+      "statuses": [
+        409,
+        200
+      ],
+      "stages": [
+        "FAILED",
+        "COMPLETED"
+      ],
+      "generation": 20,
+      "accessDigest": "eb98aa0ee4da21eb",
+      "rootHash": "141feefe51c1a39f",
+      "deadline": "2026-11-14T05:29:52Z"
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "counts": {
+    "two-node different switch operations": 100,
+    "two-node RT consumption": 0,
+    "RT versus logout": 0
+  }
+}

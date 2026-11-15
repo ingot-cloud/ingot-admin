@@ -1,0 +1,5975 @@
+{
+  "date": "2026-11-14T07:07:59.119Z",
+  "group": "R1",
+  "rounds": [
+    {
+      "round": 1,
+      "status": "passed",
+      "seconds": 102.965,
+      "source": {
+        "sidHash": "4ab89cf97e7c6f50",
+        "accessDigest": "80e21356ff29a23a",
+        "tenantId": "1000003",
+        "contextVersion": "cpJ4J7MkMNeLuf4GqbGxBQ",
+        "rootHash": "b193cf261cd6e14c",
+        "generation": 0,
+        "expiresAt": 1794640686,
+        "jwtExpiresAt": 1794640686,
+        "cookieExpiresAt": 1794640686.220611,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "d5aaaa73f353d17f",
+        "accessDigest": "139fc2cde5a6063d",
+        "tenantId": "1000008",
+        "contextVersion": "SEfwnC9EvUuc6OMTWQ2v2g",
+        "rootHash": "b193cf261cd6e14c",
+        "generation": 1,
+        "expiresAt": 1794640686,
+        "jwtExpiresAt": 1794640686,
+        "cookieExpiresAt": 1794640686,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "d5aaaa73f353d17f",
+        "accessDigest": "139fc2cde5a6063d",
+        "tenantId": "1000008",
+        "contextVersion": "SEfwnC9EvUuc6OMTWQ2v2g",
+        "rootHash": "b193cf261cd6e14c",
+        "generation": 1,
+        "expiresAt": 1794640686,
+        "jwtExpiresAt": 1794640686,
+        "cookieExpiresAt": 1794640686,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "cpJ4J7MkMNeLuf4GqbGxBQ",
+        "rootDigest": "ceaea8fa03c11c97fb48402eeec60da181913aa085f41e30dcfe8c0905d54428",
+        "sidDigest": "f8645afc14d68673ec51bd6d1376e27fd1333a968a250f7b885d348e71d893bd",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:18:06Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "796707"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "66495"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "72852"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "72852"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "796707"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "66495"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794640096.800883,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794640101.6481931,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794640106.6936388,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "72852",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "167"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "796707",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "167"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "66495",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "167"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "d5aaaa73f353d17f",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "d5aaaa73f353d17f",
+        "rootDeadline": "2026-11-14T07:18:06Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:18:06Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:18:06Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 2,
+      "status": "passed",
+      "seconds": 99.362,
+      "source": {
+        "sidHash": "b3a9f144df27a7ce",
+        "accessDigest": "7a51c168c583e2ef",
+        "tenantId": "1000003",
+        "contextVersion": "nsAuQJS5UMC4q__rVcqRag",
+        "rootHash": "89397cb8ba3510a8",
+        "generation": 0,
+        "expiresAt": 1794640805,
+        "jwtExpiresAt": 1794640805,
+        "cookieExpiresAt": 1794640805.872463,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "0749cd3144ee9cc9",
+        "accessDigest": "e09289677d250f2b",
+        "tenantId": "1000008",
+        "contextVersion": "RS_c132OsLiXjB7vM4wmrQ",
+        "rootHash": "89397cb8ba3510a8",
+        "generation": 1,
+        "expiresAt": 1794640805,
+        "jwtExpiresAt": 1794640805,
+        "cookieExpiresAt": 1794640805,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "0749cd3144ee9cc9",
+        "accessDigest": "e09289677d250f2b",
+        "tenantId": "1000008",
+        "contextVersion": "RS_c132OsLiXjB7vM4wmrQ",
+        "rootHash": "89397cb8ba3510a8",
+        "generation": 1,
+        "expiresAt": 1794640805,
+        "jwtExpiresAt": 1794640805,
+        "cookieExpiresAt": 1794640805,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "nsAuQJS5UMC4q__rVcqRag",
+        "rootDigest": "56a77aca5997f5a01d01785df58d45ca3d0abf87784aa8de377be01bd7b7626d",
+        "sidDigest": "9102ee0ba7485debdaf7b1c3dc97289cf3c2d3da8d4e7a43e063fb9527e05dfa",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:20:05Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "73026"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "797775"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "66764"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "797775"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "66764"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "73026"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794640222.1842299,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794640226.844022,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794640231.644455,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "797775",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "170"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "66764",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "170"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "73026",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "170"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "0749cd3144ee9cc9",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "0749cd3144ee9cc9",
+        "rootDeadline": "2026-11-14T07:20:05Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:20:05Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:20:05Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 3,
+      "status": "passed",
+      "seconds": 124.372,
+      "source": {
+        "sidHash": "57b42a447039c450",
+        "accessDigest": "46db2decf9adf6c0",
+        "tenantId": "1000003",
+        "contextVersion": "x1Zb4Mivc6AHY2aUjFW6oA",
+        "rootHash": "f51186ba5730d478",
+        "generation": 0,
+        "expiresAt": 1794640932,
+        "jwtExpiresAt": 1794640932,
+        "cookieExpiresAt": 1794640932.817361,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "839bb0fc3a6fb6d1",
+        "accessDigest": "dcc385f49c909c97",
+        "tenantId": "1000008",
+        "contextVersion": "cyXMU8sHGZsUUMiySNdzdg",
+        "rootHash": "f51186ba5730d478",
+        "generation": 1,
+        "expiresAt": 1794640932,
+        "jwtExpiresAt": 1794640932,
+        "cookieExpiresAt": 1794640932,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "839bb0fc3a6fb6d1",
+        "accessDigest": "dcc385f49c909c97",
+        "tenantId": "1000008",
+        "contextVersion": "cyXMU8sHGZsUUMiySNdzdg",
+        "rootHash": "f51186ba5730d478",
+        "generation": 1,
+        "expiresAt": 1794640932,
+        "jwtExpiresAt": 1794640932,
+        "cookieExpiresAt": 1794640932,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "x1Zb4Mivc6AHY2aUjFW6oA",
+        "rootDigest": "57873d0a5db07321837d125c1088e95f39e1decd394a02f04eb075b9eb088398",
+        "sidDigest": "b489ed5942ba80920659b67866d430d29d4d29216ad7c50f9aa5beb6bfe207f3",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:22:12Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "67070"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "798629"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "73228"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "73228"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "798629"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "67070"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794640351.257618,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794640355.2861178,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794640359.5046248,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "73228",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "174"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "798629",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "174"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "67070",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "174"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "839bb0fc3a6fb6d1",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "839bb0fc3a6fb6d1",
+        "rootDeadline": "2026-11-14T07:22:12Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:22:12Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:22:12Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 4,
+      "status": "passed",
+      "seconds": 123.305,
+      "source": {
+        "sidHash": "be2c54dce840f0d2",
+        "accessDigest": "f37f5d9bd808f823",
+        "tenantId": "1000003",
+        "contextVersion": "M4B7ggwkG82t4lae_GRsDg",
+        "rootHash": "109bb6b505fc58a1",
+        "generation": 0,
+        "expiresAt": 1794641069,
+        "jwtExpiresAt": 1794641069,
+        "cookieExpiresAt": 1794641069.709485,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "927de96627eb79b0",
+        "accessDigest": "cecab508bb773bf8",
+        "tenantId": "1000008",
+        "contextVersion": "R2VbtEQTNflQO224u3t_GA",
+        "rootHash": "109bb6b505fc58a1",
+        "generation": 1,
+        "expiresAt": 1794641069,
+        "jwtExpiresAt": 1794641069,
+        "cookieExpiresAt": 1794641069,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "927de96627eb79b0",
+        "accessDigest": "cecab508bb773bf8",
+        "tenantId": "1000008",
+        "contextVersion": "R2VbtEQTNflQO224u3t_GA",
+        "rootHash": "109bb6b505fc58a1",
+        "generation": 1,
+        "expiresAt": 1794641069,
+        "jwtExpiresAt": 1794641069,
+        "cookieExpiresAt": 1794641069,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "M4B7ggwkG82t4lae_GRsDg",
+        "rootDigest": "45360efba567f16cf10ee1f674faee326391f310aab99b6edab37b0be7acd0e9",
+        "sidDigest": "b45da9cd75df960c41dddd4f3f302242e94d4eb119cb2a312d9cf650a59c9193",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:24:29Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "73416"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "799346"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "67434"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "67434"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "799346"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "73416"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794640494.068363,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794640499.5034251,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794640504.247644,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "67515",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "177"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "799346",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "177"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "73416",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "177"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "927de96627eb79b0",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "927de96627eb79b0",
+        "rootDeadline": "2026-11-14T07:24:29Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:24:29Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:24:29Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 5,
+      "status": "passed",
+      "seconds": 100.202,
+      "source": {
+        "sidHash": "9eb5080f1ecf67fd",
+        "accessDigest": "64d19d0e2e4ee793",
+        "tenantId": "1000003",
+        "contextVersion": "4H-vJQUQmi66hCVtQ6mdmQ",
+        "rootHash": "a01b81f38f4d4c6f",
+        "generation": 0,
+        "expiresAt": 1794641210,
+        "jwtExpiresAt": 1794641210,
+        "cookieExpiresAt": 1794641210.222592,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "fdd86a93aabf8cc4",
+        "accessDigest": "3a17f2b11e57d701",
+        "tenantId": "1000008",
+        "contextVersion": "CwMY-LN5RiVMjHfbI6dlEg",
+        "rootHash": "a01b81f38f4d4c6f",
+        "generation": 1,
+        "expiresAt": 1794641210,
+        "jwtExpiresAt": 1794641210,
+        "cookieExpiresAt": 1794641210,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "fdd86a93aabf8cc4",
+        "accessDigest": "3a17f2b11e57d701",
+        "tenantId": "1000008",
+        "contextVersion": "CwMY-LN5RiVMjHfbI6dlEg",
+        "rootHash": "a01b81f38f4d4c6f",
+        "generation": 1,
+        "expiresAt": 1794641210,
+        "jwtExpiresAt": 1794641210,
+        "cookieExpiresAt": 1794641210,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "4H-vJQUQmi66hCVtQ6mdmQ",
+        "rootDigest": "fe0719843c2cad7458e5d695ee30d374fc63611d47eb10d8bc072cce1cd3f424",
+        "sidDigest": "c5642c55e40387fabb585d348edd8c881e2bb232b378c4f1fe882b1246b50936",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:26:50Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "67689"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "800130"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "73590"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "73590"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "800130"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "67689"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794640629.35259,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794640634.201361,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794640639.047631,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "73590",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "180"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "800130",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "180"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "67770",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "180"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "fdd86a93aabf8cc4",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "fdd86a93aabf8cc4",
+        "rootDeadline": "2026-11-14T07:26:50Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:26:50Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:26:50Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 6,
+      "status": "passed",
+      "seconds": 95.696,
+      "source": {
+        "sidHash": "0e7be66e926981c4",
+        "accessDigest": "9228dcc0fb8faa50",
+        "tenantId": "1000003",
+        "contextVersion": "Ao_0AZF_eeOGMT9SYwREeg",
+        "rootHash": "4362f2a5ba918360",
+        "generation": 0,
+        "expiresAt": 1794641327,
+        "jwtExpiresAt": 1794641327,
+        "cookieExpiresAt": 1794641327.560941,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "d5e9059f9ef17a05",
+        "accessDigest": "1f219c92795e62ad",
+        "tenantId": "1000008",
+        "contextVersion": "a9CNFtz5kThf_6J65ES6fQ",
+        "rootHash": "4362f2a5ba918360",
+        "generation": 1,
+        "expiresAt": 1794641327,
+        "jwtExpiresAt": 1794641327,
+        "cookieExpiresAt": 1794641327,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "d5e9059f9ef17a05",
+        "accessDigest": "1f219c92795e62ad",
+        "tenantId": "1000008",
+        "contextVersion": "a9CNFtz5kThf_6J65ES6fQ",
+        "rootHash": "4362f2a5ba918360",
+        "generation": 1,
+        "expiresAt": 1794641327,
+        "jwtExpiresAt": 1794641327,
+        "cookieExpiresAt": 1794641327,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "Ao_0AZF_eeOGMT9SYwREeg",
+        "rootDigest": "7a9c00948bc24ab69674b35d2069d2dc23edabb7c337bb8b64ba4cee30b8c783",
+        "sidDigest": "ab8841684209f18610318fc92d397968a55682f222f39be358bde2602be0e0f0",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:28:47Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "73845"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "800970"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "67944"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "67944"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "800970"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "73845"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794640744.0371368,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794640749.594576,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794640754.1160629,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "67944",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "183"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "800970",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "183"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "73845",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "183"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "d5e9059f9ef17a05",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "d5e9059f9ef17a05",
+        "rootDeadline": "2026-11-14T07:28:47Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:28:47Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:28:47Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 7,
+      "status": "passed",
+      "seconds": 92.014,
+      "source": {
+        "sidHash": "2c7aef949437a2f5",
+        "accessDigest": "8e1d9683924e95bf",
+        "tenantId": "1000003",
+        "contextVersion": "dSgb7QKwWVy2fWbwIE57cg",
+        "rootHash": "37d768f9841db9de",
+        "generation": 0,
+        "expiresAt": 1794641442,
+        "jwtExpiresAt": 1794641442,
+        "cookieExpiresAt": 1794641442.219139,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "864212506f453218",
+        "accessDigest": "e9f885ea5c7b4a70",
+        "tenantId": "1000008",
+        "contextVersion": "fZ2NBjSuobs8Msh-nAA6yg",
+        "rootHash": "37d768f9841db9de",
+        "generation": 1,
+        "expiresAt": 1794641442,
+        "jwtExpiresAt": 1794641442,
+        "cookieExpiresAt": 1794641442,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "864212506f453218",
+        "accessDigest": "e9f885ea5c7b4a70",
+        "tenantId": "1000008",
+        "contextVersion": "fZ2NBjSuobs8Msh-nAA6yg",
+        "rootHash": "37d768f9841db9de",
+        "generation": 1,
+        "expiresAt": 1794641442,
+        "jwtExpiresAt": 1794641442,
+        "cookieExpiresAt": 1794641442,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "dSgb7QKwWVy2fWbwIE57cg",
+        "rootDigest": "57b35a5d2941a1b46a7ed4613ff445aeb249603661d505d81e5ef24623618316",
+        "sidDigest": "40de5ed32523ec29a420d7ac7166793fd33d8f6d4e738e95376e05770e952c43",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:30:42Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "68199"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "801810"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "74100"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "74100"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "801810"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "68199"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794640853.220806,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794640858.357586,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794640862.587085,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "74100",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "186"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "801810",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "186"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "68199",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "186"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "864212506f453218",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "864212506f453218",
+        "rootDeadline": "2026-11-14T07:30:42Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:30:42Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:30:42Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 8,
+      "status": "passed",
+      "seconds": 92.894,
+      "source": {
+        "sidHash": "db532dacac4b4dc0",
+        "accessDigest": "61d07cd49f707fe0",
+        "tenantId": "1000003",
+        "contextVersion": "R05icIuGwM3B9eAJwIDcQA",
+        "rootHash": "b217d51ac4604aac",
+        "generation": 0,
+        "expiresAt": 1794641551,
+        "jwtExpiresAt": 1794641551,
+        "cookieExpiresAt": 1794641551.858324,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "7921a412f462dada",
+        "accessDigest": "5f750984784c17e2",
+        "tenantId": "1000008",
+        "contextVersion": "QwihjO8soByDc0y6rz2C0A",
+        "rootHash": "b217d51ac4604aac",
+        "generation": 1,
+        "expiresAt": 1794641551,
+        "jwtExpiresAt": 1794641551,
+        "cookieExpiresAt": 1794641551,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "7921a412f462dada",
+        "accessDigest": "5f750984784c17e2",
+        "tenantId": "1000008",
+        "contextVersion": "QwihjO8soByDc0y6rz2C0A",
+        "rootHash": "b217d51ac4604aac",
+        "generation": 1,
+        "expiresAt": 1794641551,
+        "jwtExpiresAt": 1794641551,
+        "cookieExpiresAt": 1794641551,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "R05icIuGwM3B9eAJwIDcQA",
+        "rootDigest": "aa62e52859c7c70b4dc66b2565f14246bad11e1c0e8652196a257ce47d98802f",
+        "sidDigest": "9c4843b693905e667aa0d21e2b1f8da047c25bd5e6a3d039b23e564a87371e09",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:32:31Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "74274"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "802708"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "68468"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "68468"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "802708"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "74274"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794640968.7322829,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794640973.351124,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794640977.523059,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "68468",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "189"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "802708",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "189"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "74274",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "189"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "7921a412f462dada",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "7921a412f462dada",
+        "rootDeadline": "2026-11-14T07:32:31Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:32:31Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:32:31Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 9,
+      "status": "passed",
+      "seconds": 100.132,
+      "source": {
+        "sidHash": "bcd36ef758fd54e4",
+        "accessDigest": "054fefd5f61d5acf",
+        "tenantId": "1000003",
+        "contextVersion": "zdxSiBDi0UQiGzRqMUpbug",
+        "rootHash": "c459f55f505a9054",
+        "generation": 0,
+        "expiresAt": 1794641661,
+        "jwtExpiresAt": 1794641661,
+        "cookieExpiresAt": 1794641661.698372,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "e704b670d16b481e",
+        "accessDigest": "cf8040999ddccd7b",
+        "tenantId": "1000008",
+        "contextVersion": "ooSWtu4a4EXxEN4ytX5o1g",
+        "rootHash": "c459f55f505a9054",
+        "generation": 1,
+        "expiresAt": 1794641661,
+        "jwtExpiresAt": 1794641661,
+        "cookieExpiresAt": 1794641661,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "e704b670d16b481e",
+        "accessDigest": "cf8040999ddccd7b",
+        "tenantId": "1000008",
+        "contextVersion": "ooSWtu4a4EXxEN4ytX5o1g",
+        "rootHash": "c459f55f505a9054",
+        "generation": 1,
+        "expiresAt": 1794641661,
+        "jwtExpiresAt": 1794641661,
+        "cookieExpiresAt": 1794641661,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "zdxSiBDi0UQiGzRqMUpbug",
+        "rootDigest": "3af4f95004435f00df0c820c9cb0072e0098a4b0b51472505457c34c3f99dd9e",
+        "sidDigest": "99c5b4e0744d87fd5ecb2a04e47ea497f1f6aec4a01ff09b1c809d7c248dfcdc",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:34:21Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "68656"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "803620"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "74543"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "74543"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "803620"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "68656"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794641080.324109,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794641085.241468,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794641089.728118,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "74543",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "192"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "803620",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "192"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "68656",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "192"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e704b670d16b481e",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e704b670d16b481e",
+        "rootDeadline": "2026-11-14T07:34:21Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:34:21Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:34:21Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 10,
+      "status": "passed",
+      "seconds": 101.106,
+      "source": {
+        "sidHash": "10484267e5cfb0d5",
+        "accessDigest": "beeae13b9c71380e",
+        "tenantId": "1000003",
+        "contextVersion": "rp1A8BAZxgQCcAVV5zumEw",
+        "rootHash": "d8063aaa49d5b649",
+        "generation": 0,
+        "expiresAt": 1794641779,
+        "jwtExpiresAt": 1794641779,
+        "cookieExpiresAt": 1794641779.117482,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "662f04fe62cbbcb5",
+        "accessDigest": "8ec1dedbfe127c9f",
+        "tenantId": "1000008",
+        "contextVersion": "tA3V3zxxzyAWi1vrZ5zNhw",
+        "rootHash": "d8063aaa49d5b649",
+        "generation": 1,
+        "expiresAt": 1794641779,
+        "jwtExpiresAt": 1794641779,
+        "cookieExpiresAt": 1794641779,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "662f04fe62cbbcb5",
+        "accessDigest": "8ec1dedbfe127c9f",
+        "tenantId": "1000008",
+        "contextVersion": "tA3V3zxxzyAWi1vrZ5zNhw",
+        "rootHash": "d8063aaa49d5b649",
+        "generation": 1,
+        "expiresAt": 1794641779,
+        "jwtExpiresAt": 1794641779,
+        "cookieExpiresAt": 1794641779,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "rp1A8BAZxgQCcAVV5zumEw",
+        "rootDigest": "fb26663af32958e16c519a9f3e505c33955bfba73a9846957530c02bcea49899",
+        "sidDigest": "c9e5635f7796b57ceb4307021911475553755391752147092308b563c6a0fa42",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:36:19Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "74812"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "804337"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "68925"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "68925"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "804337"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "74812"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794641200.5088232,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794641204.991958,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794641208.424621,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "68925",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "195"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "804474",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "195"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "74812",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "195"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "662f04fe62cbbcb5",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "662f04fe62cbbcb5",
+        "rootDeadline": "2026-11-14T07:36:19Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:36:19Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:36:19Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 11,
+      "status": "passed",
+      "seconds": 87.482,
+      "source": {
+        "sidHash": "6eaa9daee05c3bbf",
+        "accessDigest": "0aa8dc675b15a546",
+        "tenantId": "1000003",
+        "contextVersion": "617Hg_OWVWezxEHazt-gEw",
+        "rootHash": "b644a189ff105cdb",
+        "generation": 0,
+        "expiresAt": 1794641898,
+        "jwtExpiresAt": 1794641898,
+        "cookieExpiresAt": 1794641898.953596,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "0cb3ec2a1d2f83d8",
+        "accessDigest": "1816dd8cc4939326",
+        "tenantId": "1000008",
+        "contextVersion": "TNhiGahzT0tmuqNHXT66aw",
+        "rootHash": "b644a189ff105cdb",
+        "generation": 1,
+        "expiresAt": 1794641898,
+        "jwtExpiresAt": 1794641898,
+        "cookieExpiresAt": 1794641898,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "0cb3ec2a1d2f83d8",
+        "accessDigest": "1816dd8cc4939326",
+        "tenantId": "1000008",
+        "contextVersion": "TNhiGahzT0tmuqNHXT66aw",
+        "rootHash": "b644a189ff105cdb",
+        "generation": 1,
+        "expiresAt": 1794641898,
+        "jwtExpiresAt": 1794641898,
+        "cookieExpiresAt": 1794641898,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "617Hg_OWVWezxEHazt-gEw",
+        "rootDigest": "958763e14f954781af98f99d2bb34a4a3b5a1c8d839810073a502c653fdafc16",
+        "sidDigest": "8c0b59e4b130d8c019d0d450721bbad2a959d29636f801ae1cbbc967d48b211b",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:38:18Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "69180"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "805258"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "74986"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "74986"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "805258"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "69180"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794641313.2394722,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794641317.503903,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794641321.3113651,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "74986",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "198"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "805258",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "198"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "69180",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "198"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "0cb3ec2a1d2f83d8",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "0cb3ec2a1d2f83d8",
+        "rootDeadline": "2026-11-14T07:38:18Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:38:18Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:38:18Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 12,
+      "status": "passed",
+      "seconds": 89.04,
+      "source": {
+        "sidHash": "253a9fb2a09830c0",
+        "accessDigest": "a1ed765859763ad6",
+        "tenantId": "1000003",
+        "contextVersion": "wJfHTTT_3j45v1D7ZeQXLw",
+        "rootHash": "427b6923f44b230e",
+        "generation": 0,
+        "expiresAt": 1794642003,
+        "jwtExpiresAt": 1794642003,
+        "cookieExpiresAt": 1794642003.399096,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "417bbf37e8acb944",
+        "accessDigest": "950464e9f3d49aaa",
+        "tenantId": "1000008",
+        "contextVersion": "XwWK0AYy-IU75sjgNTco-Q",
+        "rootHash": "427b6923f44b230e",
+        "generation": 1,
+        "expiresAt": 1794642003,
+        "jwtExpiresAt": 1794642003,
+        "cookieExpiresAt": 1794642003,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "417bbf37e8acb944",
+        "accessDigest": "950464e9f3d49aaa",
+        "tenantId": "1000008",
+        "contextVersion": "XwWK0AYy-IU75sjgNTco-Q",
+        "rootHash": "427b6923f44b230e",
+        "generation": 1,
+        "expiresAt": 1794642003,
+        "jwtExpiresAt": 1794642003,
+        "cookieExpiresAt": 1794642003,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "wJfHTTT_3j45v1D7ZeQXLw",
+        "rootDigest": "524ea049e14bdd769daeb33520b9217a3e1d6fbf06de5e7e40fdf0df5b11dea1",
+        "sidDigest": "bfd63f2e621dc6fa936a1528a0f567895fde6f7099b30cc810e433144a275a72",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:40:03Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "75241"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "806156"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "69354"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "69354"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "806156"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "75241"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794641419.475212,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794641423.953782,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794641428.401647,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "69354",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "201"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "806156",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "201"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "75241",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "201"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "417bbf37e8acb944",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "417bbf37e8acb944",
+        "rootDeadline": "2026-11-14T07:40:03Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:40:03Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:40:03Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 13,
+      "status": "passed",
+      "seconds": 79.471,
+      "source": {
+        "sidHash": "6e37e45d6a9e4cea",
+        "accessDigest": "ae0f5e65f1aff9f0",
+        "tenantId": "1000003",
+        "contextVersion": "vVDmjWFmtwZVY2ZMe6kMdA",
+        "rootHash": "8806e7dbfa089387",
+        "generation": 0,
+        "expiresAt": 1794642108,
+        "jwtExpiresAt": 1794642108,
+        "cookieExpiresAt": 1794642108.869143,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "e42ebedf9fbcf7d3",
+        "accessDigest": "c24f20d3fa1cfd0a",
+        "tenantId": "1000008",
+        "contextVersion": "NsUdXQDHykjpuQei8EHWrg",
+        "rootHash": "8806e7dbfa089387",
+        "generation": 1,
+        "expiresAt": 1794642108,
+        "jwtExpiresAt": 1794642108,
+        "cookieExpiresAt": 1794642108,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "e42ebedf9fbcf7d3",
+        "accessDigest": "c24f20d3fa1cfd0a",
+        "tenantId": "1000008",
+        "contextVersion": "NsUdXQDHykjpuQei8EHWrg",
+        "rootHash": "8806e7dbfa089387",
+        "generation": 1,
+        "expiresAt": 1794642108,
+        "jwtExpiresAt": 1794642108,
+        "cookieExpiresAt": 1794642108,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "vVDmjWFmtwZVY2ZMe6kMdA",
+        "rootDigest": "3aba292c70a85afcf5cba180864536306a17908aa3b8165c494b50c24c87ead8",
+        "sidDigest": "f703ec4189a83b48f13d57c0a5418f587bbc60368879bb213656e0d74b838fdd",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:41:48Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "69609"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "806996"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "75496"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "75496"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "806996"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "69609"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794641517.7513862,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794641522.441928,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794641526.45815,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "75496",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "204"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "806996",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "204"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "69609",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "204"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e42ebedf9fbcf7d3",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e42ebedf9fbcf7d3",
+        "rootDeadline": "2026-11-14T07:41:48Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:41:48Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:41:48Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 14,
+      "status": "passed",
+      "seconds": 86.083,
+      "source": {
+        "sidHash": "42e08a6bf7fee5c3",
+        "accessDigest": "d90e916dfa3e1f7d",
+        "tenantId": "1000003",
+        "contextVersion": "pdtPcqck8A56nA3qw3wHLQ",
+        "rootHash": "52c94e63af7da67b",
+        "generation": 0,
+        "expiresAt": 1794642205,
+        "jwtExpiresAt": 1794642205,
+        "cookieExpiresAt": 1794642205.769723,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "131f025e2dbc0041",
+        "accessDigest": "db42ccc942f9a145",
+        "tenantId": "1000008",
+        "contextVersion": "lIx9xnw4mMzIWipGKqJLrg",
+        "rootHash": "52c94e63af7da67b",
+        "generation": 1,
+        "expiresAt": 1794642205,
+        "jwtExpiresAt": 1794642205,
+        "cookieExpiresAt": 1794642205,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "131f025e2dbc0041",
+        "accessDigest": "db42ccc942f9a145",
+        "tenantId": "1000008",
+        "contextVersion": "lIx9xnw4mMzIWipGKqJLrg",
+        "rootHash": "52c94e63af7da67b",
+        "generation": 1,
+        "expiresAt": 1794642205,
+        "jwtExpiresAt": 1794642205,
+        "cookieExpiresAt": 1794642205,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "pdtPcqck8A56nA3qw3wHLQ",
+        "rootDigest": "746a41a385d2222d55a9b5a125c794c05f99d8fd387c5821ea8d1362db93b3e7",
+        "sidDigest": "d41c1291180c5297b54acea572b3b6e797e6aaa71593b916c8746955c5bca8a9",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:43:25Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "75670"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "807975"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "69783"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "69783"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "807975"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "75670"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794641620.701109,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794641625.557219,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794641630.001111,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "69783",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "207"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "807975",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "207"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "75670",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "207"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "131f025e2dbc0041",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "131f025e2dbc0041",
+        "rootDeadline": "2026-11-14T07:43:25Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:43:25Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:43:25Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 15,
+      "status": "passed",
+      "seconds": 84.91,
+      "source": {
+        "sidHash": "e230671bfbac4427",
+        "accessDigest": "e7b5dc2d4dd7a520",
+        "tenantId": "1000003",
+        "contextVersion": "-zJNjvhAZXYtaTsvbxHoJw",
+        "rootHash": "61cffe6aae76eccd",
+        "generation": 0,
+        "expiresAt": 1794642307,
+        "jwtExpiresAt": 1794642307,
+        "cookieExpiresAt": 1794642307.504586,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "559c6941d43a4916",
+        "accessDigest": "9cd54ecfa74d9c9f",
+        "tenantId": "1000008",
+        "contextVersion": "nqTMYJj-HwCA3Na9D7H_wA",
+        "rootHash": "61cffe6aae76eccd",
+        "generation": 1,
+        "expiresAt": 1794642307,
+        "jwtExpiresAt": 1794642307,
+        "cookieExpiresAt": 1794642307,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "559c6941d43a4916",
+        "accessDigest": "9cd54ecfa74d9c9f",
+        "tenantId": "1000008",
+        "contextVersion": "nqTMYJj-HwCA3Na9D7H_wA",
+        "rootHash": "61cffe6aae76eccd",
+        "generation": 1,
+        "expiresAt": 1794642307,
+        "jwtExpiresAt": 1794642307,
+        "cookieExpiresAt": 1794642307,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "-zJNjvhAZXYtaTsvbxHoJw",
+        "rootDigest": "1f1a8bf17092c1cab08150f47afee81f79f658b4db34f72664bf4365a6ae5f22",
+        "sidDigest": "b72b00bc259a4680ed29f94e34020b132bac17f712a2ac16ca56a036beacc64e",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:45:07Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "70052"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "808815"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "75925"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "75925"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "808815"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "70052"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794641722.604892,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794641727.4356139,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794641731.404842,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "75925",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "210"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "808815",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "210"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "70052",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "210"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "559c6941d43a4916",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "559c6941d43a4916",
+        "rootDeadline": "2026-11-14T07:45:07Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:45:07Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:45:07Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 16,
+      "status": "passed",
+      "seconds": 83.914,
+      "source": {
+        "sidHash": "1922aeb5474732cf",
+        "accessDigest": "73c2f9ef3f86e752",
+        "tenantId": "1000003",
+        "contextVersion": "Vcx6kbwC1Qt3cUFhRGpzAQ",
+        "rootHash": "5a8445119c1ac0b1",
+        "generation": 0,
+        "expiresAt": 1794642409,
+        "jwtExpiresAt": 1794642409,
+        "cookieExpiresAt": 1794642409.814772,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "20b7a774c4fed698",
+        "accessDigest": "37c566f42ef34295",
+        "tenantId": "1000008",
+        "contextVersion": "7e4R4llFLtG0CXRp89X6UQ",
+        "rootHash": "5a8445119c1ac0b1",
+        "generation": 1,
+        "expiresAt": 1794642409,
+        "jwtExpiresAt": 1794642409,
+        "cookieExpiresAt": 1794642409,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "20b7a774c4fed698",
+        "accessDigest": "37c566f42ef34295",
+        "tenantId": "1000008",
+        "contextVersion": "7e4R4llFLtG0CXRp89X6UQ",
+        "rootHash": "5a8445119c1ac0b1",
+        "generation": 1,
+        "expiresAt": 1794642409,
+        "jwtExpiresAt": 1794642409,
+        "cookieExpiresAt": 1794642409,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "Vcx6kbwC1Qt3cUFhRGpzAQ",
+        "rootDigest": "954c499955781219c80a7cbbfe643cd325aa3a710d449832c10a9007ee88c40e",
+        "sidDigest": "3931c9b674b9ac5fad14eeb0e86e751c9c506c01a2a84c93c3a5f3fca7301ee1",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:46:49Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "76157"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "809736"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "70226"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "70226"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "809736"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "76157"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794641824.4462268,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794641828.513535,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794641833.229151,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "70226",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "213"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "809736",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "213"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "76157",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "213"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "20b7a774c4fed698",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "20b7a774c4fed698",
+        "rootDeadline": "2026-11-14T07:46:49Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:46:49Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:46:49Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 17,
+      "status": "passed",
+      "seconds": 85.61,
+      "source": {
+        "sidHash": "ca4b6955d0d67bc4",
+        "accessDigest": "9d83b9b21767c730",
+        "tenantId": "1000003",
+        "contextVersion": "gwyP1QB-bbPlW5n4LJJsKQ",
+        "rootHash": "e4021d3190bae4ad",
+        "generation": 0,
+        "expiresAt": 1794642511,
+        "jwtExpiresAt": 1794642511,
+        "cookieExpiresAt": 1794642511.946766,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "574ed311936a5b20",
+        "accessDigest": "8155c53ac9ed447c",
+        "tenantId": "1000008",
+        "contextVersion": "MiV6Dw81fsu2JbUcifZgGw",
+        "rootHash": "e4021d3190bae4ad",
+        "generation": 1,
+        "expiresAt": 1794642511,
+        "jwtExpiresAt": 1794642511,
+        "cookieExpiresAt": 1794642511,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "574ed311936a5b20",
+        "accessDigest": "8155c53ac9ed447c",
+        "tenantId": "1000008",
+        "contextVersion": "MiV6Dw81fsu2JbUcifZgGw",
+        "rootHash": "e4021d3190bae4ad",
+        "generation": 1,
+        "expiresAt": 1794642511,
+        "jwtExpiresAt": 1794642511,
+        "cookieExpiresAt": 1794642511,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "gwyP1QB-bbPlW5n4LJJsKQ",
+        "rootDigest": "6ee80840a876b950a63bfb9b34dd569403ebaa53eaa7b8241d2b1c53c6c7a251",
+        "sidDigest": "e622f48f4591615cab785befddf792fd9ac0a95465f40522862be92eb0e0d502",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:48:31Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "70481"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "810606"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "76331"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "76331"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "810606"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "70481"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794641926.5128162,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794641930.5494962,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794641934.582997,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "76331",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "216"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "810606",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "216"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "70481",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "216"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "574ed311936a5b20",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "574ed311936a5b20",
+        "rootDeadline": "2026-11-14T07:48:31Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:48:31Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:48:31Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 18,
+      "status": "passed",
+      "seconds": 82.697,
+      "source": {
+        "sidHash": "1b083ea152f687c5",
+        "accessDigest": "8cd562f5cbe021f6",
+        "tenantId": "1000003",
+        "contextVersion": "9rSNvY7qrZ9Is-gghvZEiA",
+        "rootHash": "c9427a45a4de6599",
+        "generation": 0,
+        "expiresAt": 1794642612,
+        "jwtExpiresAt": 1794642612,
+        "cookieExpiresAt": 1794642612.7948,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "e197535c9f8be325",
+        "accessDigest": "52f20199bcb85c65",
+        "tenantId": "1000008",
+        "contextVersion": "ElC93yOgrw4S8f6Iq6nO9Q",
+        "rootHash": "c9427a45a4de6599",
+        "generation": 1,
+        "expiresAt": 1794642612,
+        "jwtExpiresAt": 1794642612,
+        "cookieExpiresAt": 1794642612,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "e197535c9f8be325",
+        "accessDigest": "52f20199bcb85c65",
+        "tenantId": "1000008",
+        "contextVersion": "ElC93yOgrw4S8f6Iq6nO9Q",
+        "rootHash": "c9427a45a4de6599",
+        "generation": 1,
+        "expiresAt": 1794642612,
+        "jwtExpiresAt": 1794642612,
+        "cookieExpiresAt": 1794642612,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "9rSNvY7qrZ9Is-gghvZEiA",
+        "rootDigest": "dbe25ccce98e26a90b9109be3b0400debeb9e2ff8bda83e3d9d00babc573a4a0",
+        "sidDigest": "309692f225772dab7ead4a5efde8c2c2e6e2b36285a55213b14f4eb9ee8dcc3f",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:50:12Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "76505"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "811432"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "70817"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "70817"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "811432"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "76505"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794642027.1201549,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794642031.856437,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794642036.301215,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "70817",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "219"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "811432",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "219"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "76505",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "219"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e197535c9f8be325",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e197535c9f8be325",
+        "rootDeadline": "2026-11-14T07:50:12Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:50:12Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:50:12Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 19,
+      "status": "passed",
+      "seconds": 83.28,
+      "source": {
+        "sidHash": "5ad967378cc485f2",
+        "accessDigest": "3d1f086b88103927",
+        "tenantId": "1000003",
+        "contextVersion": "ck1o89uccyBsMP_0ftpyoQ",
+        "rootHash": "10ed0603181da3ae",
+        "generation": 0,
+        "expiresAt": 1794642711,
+        "jwtExpiresAt": 1794642711,
+        "cookieExpiresAt": 1794642711.089925,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "e37a32a76a1ef640",
+        "accessDigest": "eb79945a556a24f8",
+        "tenantId": "1000008",
+        "contextVersion": "SM6PtUsDrKfpxYwQEprAUg",
+        "rootHash": "10ed0603181da3ae",
+        "generation": 1,
+        "expiresAt": 1794642711,
+        "jwtExpiresAt": 1794642711,
+        "cookieExpiresAt": 1794642711,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "e37a32a76a1ef640",
+        "accessDigest": "eb79945a556a24f8",
+        "tenantId": "1000008",
+        "contextVersion": "SM6PtUsDrKfpxYwQEprAUg",
+        "rootHash": "10ed0603181da3ae",
+        "generation": 1,
+        "expiresAt": 1794642711,
+        "jwtExpiresAt": 1794642711,
+        "cookieExpiresAt": 1794642711,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "ck1o89uccyBsMP_0ftpyoQ",
+        "rootDigest": "0dd19d6c0d0c3fc23f01eea0ccbf50312e177a61e3718955fc4c82ac5755c317",
+        "sidDigest": "d992a5c3a2b174e715d3c5ab02d857db06c694f99a5ef99dacdef15ac7108b3f",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:51:51Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-worker2",
+            "port": 25112,
+            "replicasAcknowledged": 1,
+            "offset": "70991"
+          },
+          {
+            "vm": "test-manager",
+            "port": 25113,
+            "replicasAcknowledged": 1,
+            "offset": "812388"
+          },
+          {
+            "vm": "test-worker2",
+            "port": 25115,
+            "replicasAcknowledged": 1,
+            "offset": "76679"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "offset": "76679"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "offset": "812388"
+          },
+          {
+            "replica": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "master": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "offset": "70991"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25112,
+            "at": 1794642125.5466702,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25113,
+            "at": 1794642129.9594839,
+            "newMasters": [
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker2",
+            "port": 25115,
+            "at": 1794642134.400985,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25110,
+                "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25111,
+                "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+              },
+              {
+                "vm": "test-worker1",
+                "port": 25114,
+                "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "76679",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "222"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "812388",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "222"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "nodeId": "7637d5a8a73ba6e111fdb219c07214c8a059392c",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "70991",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "222"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e37a32a76a1ef640",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e37a32a76a1ef640",
+        "rootDeadline": "2026-11-14T07:51:51Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:51:51Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:51:51Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    },
+    {
+      "round": 20,
+      "status": "passed",
+      "seconds": 76.572,
+      "source": {
+        "sidHash": "54bbddcec6500cd2",
+        "accessDigest": "ed6599d04a0d845f",
+        "tenantId": "1000003",
+        "contextVersion": "IGoTxHTtlYlhshN71E39XQ",
+        "rootHash": "c4a1f37ae69e952c",
+        "generation": 0,
+        "expiresAt": 1794642810,
+        "jwtExpiresAt": 1794642810,
+        "cookieExpiresAt": 1794642810.19521,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "target": {
+        "sidHash": "97ef7fdcc989df1d",
+        "accessDigest": "0a67f6eb884f9c34",
+        "tenantId": "1000008",
+        "contextVersion": "_C77ACthPg4A678bEXWklw",
+        "rootHash": "c4a1f37ae69e952c",
+        "generation": 1,
+        "expiresAt": 1794642810,
+        "jwtExpiresAt": 1794642810,
+        "cookieExpiresAt": 1794642810,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "afterRestart": {
+        "sidHash": "97ef7fdcc989df1d",
+        "accessDigest": "0a67f6eb884f9c34",
+        "tenantId": "1000008",
+        "contextVersion": "_C77ACthPg4A678bEXWklw",
+        "rootHash": "c4a1f37ae69e952c",
+        "generation": 1,
+        "expiresAt": 1794642810,
+        "jwtExpiresAt": 1794642810,
+        "cookieExpiresAt": 1794642810,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "staleProjection": {
+        "schemaVersion": 1,
+        "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+        "appId": "tenant-admin",
+        "contextVersion": "IGoTxHTtlYlhshN71E39XQ",
+        "rootDigest": "c7b0cda123a43570e1765e19668250ebbd796980ec219cb50eb4b9e90172b616",
+        "sidDigest": "672ac4184fe14968f79a61b3b3f6f12d37f04c8882b80a3b8e3ca88ff4240113",
+        "revision": "2",
+        "generation": 0,
+        "state": "ACTIVE",
+        "expiresAt": "2026-11-14T07:53:30Z"
+      },
+      "barriers": {
+        "barriers": [
+          {
+            "vm": "test-manager",
+            "port": 25110,
+            "replicasAcknowledged": 1,
+            "offset": "76853"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25111,
+            "replicasAcknowledged": 1,
+            "offset": "813214"
+          },
+          {
+            "vm": "test-worker1",
+            "port": 25114,
+            "replicasAcknowledged": 1,
+            "offset": "71304"
+          }
+        ]
+      },
+      "frozen": {
+        "partitions": [
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4"
+            },
+            "offset": "71304"
+          },
+          {
+            "replica": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3"
+            },
+            "master": {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1"
+            },
+            "offset": "813214"
+          },
+          {
+            "replica": {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5"
+            },
+            "master": {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0"
+            },
+            "offset": "76853"
+          }
+        ]
+      },
+      "failover": {
+        "events": [
+          {
+            "action": "kill",
+            "vm": "test-manager",
+            "port": 25110,
+            "at": 1794642219.979983,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25111,
+            "at": 1794642224.408735,
+            "newMasters": [
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          },
+          {
+            "action": "kill",
+            "vm": "test-worker1",
+            "port": 25114,
+            "at": 1794642229.0392718,
+            "newMasters": [
+              {
+                "vm": "test-worker2",
+                "port": 25112,
+                "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+              },
+              {
+                "vm": "test-manager",
+                "port": 25113,
+                "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6"
+              },
+              {
+                "vm": "test-worker2",
+                "port": 25115,
+                "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82"
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25110,
+            "name": "org-ledger-tl23qepg-redis-0",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25111,
+            "name": "org-ledger-tl23qepg-redis-1",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25112,
+            "name": "org-ledger-tl23qepg-redis-2",
+            "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "71304",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "225"
+          },
+          {
+            "vm": "test-manager",
+            "host": "192.168.252.12",
+            "port": 25113,
+            "name": "org-ledger-tl23qepg-redis-3",
+            "nodeId": "fbdfe52193737676995fc55631653b0c5c7f26b6",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "813214",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "225"
+          },
+          {
+            "vm": "test-worker1",
+            "host": "192.168.252.10",
+            "port": 25114,
+            "name": "org-ledger-tl23qepg-redis-4",
+            "available": false,
+            "errorType": "ConnectionRefusedError"
+          },
+          {
+            "vm": "test-worker2",
+            "host": "192.168.252.11",
+            "port": 25115,
+            "name": "org-ledger-tl23qepg-redis-5",
+            "nodeId": "365e17154ab86d8a741520a7345e5beb8a782c82",
+            "role": "master",
+            "masterHost": null,
+            "masterPort": null,
+            "masterReplOffset": "76853",
+            "replicaReplOffset": null,
+            "masterLinkStatus": null,
+            "connectedReplicas": "0",
+            "clusterState": "ok",
+            "clusterEpoch": "225"
+          }
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "97ef7fdcc989df1d",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "97ef7fdcc989df1d",
+        "rootDeadline": "2026-11-14T07:53:30Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:53:30Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T07:53:30Z"
+          }
+        ]
+      },
+      "oldCookieStatus": 401,
+      "oldSourceIssueStatus": 401
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "coldReadinessBudgetSeconds": 120,
+  "releaseBlocked": true,
+  "committed": false,
+  "mysqlTopologyBoundary": "candidate10 readiness120 batch all20 rounds ran with two ONLINE members forming the durable majority of the configured three-member GR group; third MySQL member exited at07:04:41Z; all three VMs and both Auth/BFF pairs remained running",
+  "capacityEvidence": "LEDGER-CANDIDATE10-SECONDARY-RECOVERY.json"
+}

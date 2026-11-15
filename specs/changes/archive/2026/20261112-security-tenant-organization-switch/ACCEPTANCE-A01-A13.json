@@ -1,0 +1,176 @@
+{
+  "date": "2026-11-15T09:32:10.455756Z",
+  "artifactCohort": "F14 Auth+BFF; frozen F13 IAM/Gateway and both frontend manifests",
+  "artifactsReference": "LEDGER-F14-RECOVERY-AT-ONLY.json#artifacts",
+  "status": "local_three_vm_functional_security_accepted",
+  "rows": [
+    {
+      "id": "A01",
+      "requirement": "正常A→B→A；成员、部门、菜单与权限刷新",
+      "result": "通过（当前包实测＋明确复用）",
+      "evidence": "F14最终40组/418相关补验；F13真实往返/安全及410组件回归补验；F12 switchRoundTrip、twoTabs；businessEdges无菜单；F11回归；candidate10 FIRST-MENU",
+      "boundary": "F11：跨节点往返、重新解析成员/部门、各标签每代一次bootstrap。首个非工作台菜单为candidate10历史实证；目标差异权限重载由F11组件与本轮无角色账号安全空态共同覆盖。 F13仅标准撤销/provider新增，未变动其他前端产品路径；原证据保留版本边界。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A02",
+      "requirement": "无其他有效组织友好返回且不改变会话",
+      "result": "通过（F11实际页面）",
+      "evidence": "F12 businessEdges 第1组",
+      "boundary": "零switch请求，Cookie/AT/sid/context/generation相同；router.replace后返回不反复进入选择页。"
+    },
+    {
+      "id": "A03",
+      "requirement": "搜索无结果不等于无组织",
+      "result": "通过（F11实际页面）",
+      "evidence": "F12 businessEdges 第2组",
+      "boundary": "搜索total0、switchableTotal1，保留选择页，清空恢复候选。"
+    },
+    {
+      "id": "A04",
+      "requirement": "候选提交前失效",
+      "result": "通过（F11真实API＋页面）",
+      "evidence": "F12 businessEdges 第5组；F11 IAM/BFF组件",
+      "boundary": "prepare后实际停用目标成员；commit拒绝且无Cookie、原身份保持；刷新零候选友好返回。"
+    },
+    {
+      "id": "A05",
+      "requirement": "缺失/伪造/过期/撤销/不一致凭据拒绝",
+      "result": "通过（当前包组合证据）",
+      "evidence": "F14最终40组/418相关补验；F12 tokens第1/2/4组、security R02/R03；F11 JWT/BFF定向",
+      "boundary": "两Auth真实JWT/错sid、Cookie不能由Bearer或Inside替代；自然AT过期与BFF已撤销身份拒绝；issuer/domain/client及三个浏览器操作的完整组合由F11组件覆盖。F12原标准撤销失败已由F13 A13实证关闭，历史失败保留。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A06",
+      "requirement": "依赖不可用fail-closed且不伪造零候选",
+      "result": "通过（版本边界内组合证据）",
+      "evidence": "F14最终40组/418相关补验；F12 lateCommit/security IAM503；F11依赖/零候选组件；MYSQL-FAULT及RESILIENCE历史",
+      "boundary": "F11最终包实际IAM503且无Cookie，无token调用。Auth/Redis/MySQL完整断链与少数派反例引用原故障版本，非本轮重跑；Redis不再是身份权威，不以Redis回滚恢复身份。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A07",
+      "requirement": "原组织失效可恢复／无其他时安全空态",
+      "result": "通过（F11实际页面）",
+      "evidence": "F12 businessEdges第3/4组",
+      "boundary": "不使账号会话失效；有效其他组织可切；全无时保留新当前身份和切换/退出入口，不恢复失效权限。"
+    },
+    {
+      "id": "A08",
+      "requirement": "原截止与连续refresh不延长",
+      "result": "通过（当前包截止＋历史长窗）",
+      "evidence": "F14最终40组/418相关补验；F13真实往返/安全及410组件回归补验；F12 switch/lateCommit/security/focus/tokens；F11 MySQL截止；candidate10 FIXED-ROOT-RT",
+      "boundary": "F11各切换/恢复/重启保持固定root截止和Set-Cookie UTC Expires；独立机密客户端本轮自然AT过期及3次RT轮换，不冒称其为BFF-root RT。21次BFF-root RT及自然截止仍为candidate10历史；标准RT撤销已由F13 A13闭环，历史失败不计通过。 F13仅标准撤销/provider新增，未变动其他前端产品路径；原证据保留版本边界。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A09",
+      "requirement": "双击／双标签／退出重登录竞态",
+      "result": "通过（当前包敏感路径＋历史竞争）",
+      "evidence": "F14最终40组/418相关补验；F13真实往返/安全及410组件回归补验；F12 twoTabs、security R03与lateCommit；F11 CAS组件；candidate10 RACES",
+      "boundary": "实际双标签只加一代；错位绑定注销不关闭并发新登录；同操作结果唯一。1000次竞争保持candidate10归属，不宣称F11压力次数。 F13仅标准撤销/provider新增，未变动其他前端产品路径；原证据保留版本边界。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A10",
+      "requirement": "丢响应／节点重启／清理恢复",
+      "result": "通过（所列范围）",
+      "evidence": "F14最终40组/418相关补验；F13真实往返/安全及410组件回归补验；F12 security/lateCommit/GR/quiescent；F11幂等组件；candidate10 RECOVERY/原故障批次",
+      "boundary": "当前包跨节点恢复同结果，实际两Auth/BFF重启、计划内GR换主及十表静稳一致；历史全崩溃点/备份回滚不重计。前两批恢复期失败和精确原因未知的OAuth403保留，不宣称立即恢复SLO。 F13仅标准撤销/provider新增，未变动其他前端产品路径；原证据保留版本边界。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A11",
+      "requirement": "多标签、旧请求/响应、写操作不重放",
+      "result": "通过（F11实际页面＋HTTP组件）",
+      "evidence": "F14最终40组/418相关补验；F13真实往返/安全及410组件回归补验；F12 focus双向6组、twoTabs、switch旧context409；F11 HTTP40/admin-core578",
+      "boundary": "漏广播后首个me同步清理旧身份；旧按钮在held bootstrap期间0 POST/库0行；版本按创建时固定，迟到响应/异步加密/重试由F11组件覆盖，不自动重放写。 F13仅标准撤销/provider新增，未变动其他前端产品路径；原证据保留版本边界。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A12",
+      "requirement": "无工作台/无菜单/初始强制改密落地",
+      "result": "通过（当前页＋明确复用）",
+      "evidence": "F14最终40组/418相关补验；F12 businessEdges第2/6组；candidate10 FIRST-MENU；F11守卫回归",
+      "boundary": "真实无菜单稳定空态并保留入口；初始密码进/init、business bootstrap403 PasswordChangeRequired。首个可访问菜单为历史candidate10实证；账号禁用/锁定及栅栏故障引用candidate10 MUTATIONS与F11相关组件。 F14 Auth/BFF新包敏感路径补验，前端/IAM及历史长期批次保留原版本边界。"
+    },
+    {
+      "id": "A13",
+      "requirement": "原登录/退出/改密及平台兼容回归",
+      "result": "通过（F14修复及双向三VM实证）",
+      "evidence": "F14 RT18、AT4、BFF安全9、A→B→A1、平台2、组织恢复2、AT-only/REJECT4；相关418",
+      "boundary": "标准RT撤销后旧族AT/RT拒绝；AT-only唯一AT撤销释放REJECT名额，重复/迟到及并发撤销不影响新登录；跨租户真实改密在IAM成功回包期间完成后组织resume401无Cookie、普通另一租户AT保持、fresh密码登录成功。性能及目标发布独立未通过。"
+    }
+  ],
+  "allPassed": true,
+  "v02Closed": true,
+  "blockingIssues": [
+    "independent performance gate not passed",
+    "target-environment release acceptance pending"
+  ],
+  "historicalEvidence": [
+    {
+      "file": "LEDGER-CANDIDATE10-R1.json",
+      "evidenceSha256": "91e64e964fdb55f3eb34404d5ed50aa614dcee78d6ee2fe1578d692cac2bdfd4",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-R2.json",
+      "evidenceSha256": "4950775230fbd9ec32c1aa313a6e8d4ae515d58ff7005872683a2d3a6b2d758d",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-RACES.json",
+      "evidenceSha256": "bdecaf956ce6ee3482f8032b7299e7be90fb0e9de8665411805d2ca966196560",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-FIXED-ROOT-RT.json",
+      "evidenceSha256": "3a9c2c79b5973c0a1a5d9b4fe63a0e873bd94550e64ba80b31154d6d4c5405e9",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-RECOVERY.json",
+      "evidenceSha256": "a03f24af9079db29cfd09bce1e6fc41e902d8a68feed39af631bc5557dfcf2bc",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-MUTATIONS.json",
+      "evidenceSha256": "87fdbe226503371351dcee3d1cdbf600861f4e3984b747c84c7cf1d08fa1f5e4",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-FIRST-MENU.json",
+      "evidenceSha256": "a72dcd04cf512a74b801640a913cc4cd8cb6c609299e8bef2886774f39a13541",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-MYSQL-FAULT-ACCEPTANCE.json",
+      "evidenceSha256": "5f39773f3afa575e577c5a0fad9a2cc64837085692614f7837c13b4401582369",
+      "cohort": "original version documented in evidence",
+      "rerunOnF11": false
+    },
+    {
+      "file": "INTEGRATION-RESULTS-20261113.json",
+      "evidenceSha256": "1f71cde5004642284a44483d54eda474734eb6172d7af031ee180d415c07e9a8",
+      "cohort": "original version documented in evidence",
+      "rerunOnF11": false
+    }
+  ],
+  "currentUpdated": false,
+  "archived": false,
+  "committed": false,
+  "closureScope": "local and three-VM functional/security only; performance and target-release gates remain",
+  "newEvidence": "LEDGER-F14-RECOVERY-AT-ONLY.json",
+  "historicalFailure": "LEDGER-F12-OAUTH-REVOCATION.json",
+  "reuseBoundary": "Auth revocation and BFF organization resume changed; 418 and final40 fresh. Frozen frontend/IAM and historical endurance retain original cohort evidence; performance/target release not passed.",
+  "f14Progress": {
+    "directed": 57,
+    "relatedRegression": 418,
+    "realGroups": 40,
+    "failures": 0,
+    "skipped": 0,
+    "realVmRevalidation": "passed"
+  }
+}

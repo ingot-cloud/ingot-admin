@@ -1,0 +1,53 @@
+{
+  "node": "test-worker2",
+  "startedAt": "2026-11-14T07:53:13Z",
+  "cause": "VM global OOM at2026-11-14T07:04:41Z; MySQL~1GBRSS",
+  "dataPreserved": true,
+  "configurationChanged": false,
+  "oldAuth1RestartedByR2": "R2 independently resets the previously warmed Auth1 process; no extra application intervention",
+  "status": "rejoined",
+  "clone": {
+    "state": "Completed",
+    "errorNumber": 0,
+    "beginUtc": "2026-11-14T07:53:31.406Z",
+    "endUtc": "2026-11-14T07:56:26.959Z"
+  },
+  "topology": {
+    "nodes": [
+      {
+        "node": "test-manager",
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "view": "17945563439378678:115"
+      },
+      {
+        "node": "test-worker1",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "view": "17945563439378678:115"
+      },
+      {
+        "node": "test-worker2",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "view": "17945563439378678:115"
+      }
+    ],
+    "observedAt": "2026-11-14T07:56:52Z"
+  },
+  "wholeTableChecksums": "passed in stopped-application window: all9 Auth tables and IAM mutation table, session states, incarnation and durability match on all3 ONLINE same-view nodes",
+  "r1Boundary": "candidate10 readiness120 batch all20 rounds ran with two ONLINE members forming the durable majority of the configured three-member GR group; third MySQL member exited at07:04:41Z; all three VMs and both Auth/BFF pairs remained running",
+  "r2Boundary": "first8 rounds overlap secondary outage and recovery; no quorum loss or weaker authority path was accepted",
+  "memory": {
+    "vmMiB": 3901,
+    "mysqlRssAtOomKb": 996904,
+    "mysqlBufferPoolBytes": 67108864,
+    "grMessageCacheBytes": 134217728,
+    "innodbLogBufferBytes": 16777216,
+    "dockerDataTmpfsApproxGiB": 1.3,
+    "swapEnabled": false
+  },
+  "releaseBlocked": true,
+  "committed": false,
+  "checksumEvidence": "LEDGER-CANDIDATE10-QUIESCENT-CHECKSUMS.json"
+}

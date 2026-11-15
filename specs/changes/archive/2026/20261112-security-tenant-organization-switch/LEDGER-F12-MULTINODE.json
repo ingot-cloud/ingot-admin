@@ -1,0 +1,1940 @@
+{
+  "date": "2026-11-15T06:39:39.049733Z",
+  "change": "20261112-security-tenant-organization-switch",
+  "phase": "F12 frozen F11 final multi-node verification",
+  "status": "failed_standard_oauth_revocation_release_blocked",
+  "productCodeChangedThisRound": false,
+  "committed": false,
+  "staged": false,
+  "currentUpdated": false,
+  "archived": false,
+  "releaseBlocked": true,
+  "blockingIssues": [
+    "F12-N01 standard OAuth refresh-token revocation returns400 and old RT remains usable",
+    "independent performance gate not passed"
+  ],
+  "performanceChange": "20261115-security-session-ledger-performance",
+  "artifacts": [
+    {
+      "module": "ingot-service/ingot-auth/ingot-auth-provider",
+      "sha256": "61f59915663e92f3953bda956da4d675e01104a390ca6189c9f79a0e0c68b198"
+    },
+    {
+      "module": "ingot-service/ingot-bff",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b"
+    },
+    {
+      "module": "ingot-service/ingot-iam/ingot-iam-provider",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc"
+    },
+    {
+      "module": "ingot-service/ingot-gateway",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de"
+    },
+    {
+      "app": "admin",
+      "files": 350,
+      "manifestSha256": "6417ed7d65cd96acf6142b97b9716f3ea6bf8a7ddeb8e030f77c22aa40e7b39d"
+    },
+    {
+      "app": "admin-platform",
+      "files": 514,
+      "manifestSha256": "d15e15e789879bca89a1d6792ec170da83464c16c5dacd71ce5cbe3e74dd5328"
+    }
+  ],
+  "sixJvmDeployment": [
+    {
+      "node": "iam",
+      "vm": "test-manager",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc",
+      "matchesF11": true
+    },
+    {
+      "node": "auth0",
+      "vm": "test-worker1",
+      "sha256": "61f59915663e92f3953bda956da4d675e01104a390ca6189c9f79a0e0c68b198",
+      "matchesF11": true
+    },
+    {
+      "node": "auth1",
+      "vm": "test-worker2",
+      "sha256": "61f59915663e92f3953bda956da4d675e01104a390ca6189c9f79a0e0c68b198",
+      "matchesF11": true
+    },
+    {
+      "node": "bff0",
+      "vm": "test-worker1",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesF11": true
+    },
+    {
+      "node": "bff1",
+      "vm": "test-worker2",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesF11": true
+    },
+    {
+      "node": "gateway",
+      "vm": "test-manager",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de",
+      "matchesF11": true
+    }
+  ],
+  "environment": {
+    "vmNames": [
+      "test-manager",
+      "test-worker1",
+      "test-worker2"
+    ],
+    "independentKernels": [
+      {
+        "vm": "test-manager",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "d6086b036463000a"
+      },
+      {
+        "vm": "test-worker1",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "9aaf8928a5e3fbfe"
+      },
+      {
+        "vm": "test-worker2",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "f7966d7b3dbeca17"
+      }
+    ],
+    "samePhysicalHost": true,
+    "temporaryMemoryGiB": [
+      4,
+      4,
+      4
+    ],
+    "originalMemoryGiB": [
+      3,
+      2,
+      2
+    ],
+    "mysql": "8.4 three-member single-primary Group Replication",
+    "durability": {
+      "consistency": "BEFORE_AND_AFTER",
+      "innodbFlushLogAtTrxCommit": 1,
+      "syncBinlog": 1,
+      "exitStateAction": "ABORT_SERVER",
+      "standaloneProfile": false
+    },
+    "redis": "8.2 three primaries and three replicas",
+    "sixJvmPlacement": {
+      "test-manager": [
+        "iam",
+        "gateway"
+      ],
+      "test-worker1": [
+        "auth0",
+        "bff0"
+      ],
+      "test-worker2": [
+        "auth1",
+        "bff1"
+      ]
+    },
+    "actualAdminAndPlatformStaticBuilds": true,
+    "browser": "Chrome HTTPS; isolated certificate, not customer CA",
+    "fixtureCapacityDifference": {
+      "originalDiskHealthThresholdBytes": 10737418240,
+      "testDiskHealthThresholdBytes": 134217728,
+      "workingDirectoryFreeObservedMinimumBytes": 1675345920,
+      "persistentFilesystemFreeObservedMinimumBytes": 297730048,
+      "reason": "4GB functional VMs cannot satisfy a 10GB filesystem alert threshold",
+      "productionConfigChanged": false,
+      "ledgerAndGrGatesChanged": false,
+      "performanceOrProductionCapacityPassClaimed": false
+    },
+    "physicalHostDisasterRecoveryClaim": false,
+    "performanceOrCapacityPassClaim": false
+  },
+  "scenarioGroupCounts": {
+    "passed": 35,
+    "failed": 1,
+    "unitTestCount": false,
+    "additionalTwoDirectionRevocationReproductionsCountedSeparately": true
+  },
+  "scenarios": {
+    "security": {
+      "date": "2026-11-15T06:12:01.462Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 8,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 0.15,
+            "observedBlocked": false
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 0,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        },
+        {
+          "case": "planned-GR-primary-switchover",
+          "status": "passed",
+          "oldRootStayedRevoked": true,
+          "newIdentityAndCutoffUnchanged": true
+        },
+        {
+          "case": "R02",
+          "source": 1,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 17,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 3.926,
+            "observedBlocked": true
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 1,
+          "target": 0,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 1,
+          "newLoginNode": 0,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 1,
+          "target": 0,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 1,
+          "newLoginNode": 0,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 1,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        }
+      ],
+      "status": "passed",
+      "batchStartedAt": "2026-11-15T06:12:01.462Z",
+      "baselineReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 3,
+        "transient503": 1,
+        "healthyConsecutiveBatches": 2
+      },
+      "maxObservedBrowserCookieFraction": 0.9873979091644287,
+      "postSwitchReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 3,
+        "transient503": 3,
+        "healthyConsecutiveBatches": 2
+      },
+      "postSwitchIamReadPoolCheck": {
+        "safeReadsOnly": true,
+        "healthyConsecutiveBatches": 2,
+        "statuses": [
+          "200:S0200"
+        ]
+      },
+      "routingProof": {
+        "bffNodes": [
+          0,
+          1
+        ],
+        "authNodes": [
+          0,
+          1
+        ],
+        "strictRecoveryByNode": [
+          {
+            "node": 0,
+            "statuses": [
+              200,
+              503,
+              401
+            ]
+          },
+          {
+            "node": 1,
+            "statuses": [
+              200,
+              503,
+              401
+            ]
+          }
+        ],
+        "logoutByNode": [
+          {
+            "node": 0,
+            "statuses": [
+              409,
+              200
+            ]
+          },
+          {
+            "node": 1,
+            "statuses": [
+              200,
+              409
+            ]
+          }
+        ]
+      }
+    },
+    "lateCommit": {
+      "date": "2026-11-15T06:16:21.542Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "late-commit-positive",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 8.34,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 200,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 29,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-credential-change",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 10.57,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 401,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [
+            401,
+            401,
+            401
+          ],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 36,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-dependency-failure",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 3.97,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 503,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 28,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-positive",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 10.23,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 200,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 26,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-credential-change",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 7.78,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 401,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [
+            401,
+            401,
+            401
+          ],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 28,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-dependency-failure",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartAfterLateCommit": true,
+          "serviceSignatureUpperBoundSeconds": 4.06,
+          "serviceSignatureWindowSeconds": 30,
+          "serviceSignatureProvenValid": true,
+          "httpStatus": 503,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 24,
+          "originalDeadlineKept": true
+        }
+      ],
+      "status": "passed",
+      "maxObservedBrowserCookieFraction": 0
+    },
+    "switchRoundTrip": {
+      "date": "2026-11-15T06:23:30.490Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "A-to-B-to-A-cross-nodes",
+          "status": "passed",
+          "createAndCommitOnDifferentNodes": true,
+          "memberAndDepartmentRebound": true,
+          "oneRootTwoGenerations": true,
+          "threeDistinctSids": true,
+          "originalCutoffAndCookieHeaderPreserved": true,
+          "oldCookieRejected": true,
+          "staleContextWithNewCookie409": true
+        }
+      ],
+      "status": "passed",
+      "maxObservedBrowserCookieFraction": 0.9328439235687256
+    },
+    "focusSource0": {
+      "date": "2026-11-15T06:28:26.525Z",
+      "environment": "frozen F11 actual admin app + Chrome HTTPS + three VM / six JVM / three-member GR / Redis Cluster; one physical host",
+      "cases": [
+        {
+          "case": "missed-sync-focus-adoption",
+          "status": "passed",
+          "focusTrigger": "Chrome focus event dispatched",
+          "actualBuiltAdminPage": true,
+          "noBroadcastOrStorageSyncPublished": true,
+          "oldFormClearedBeforeNewBusiness": true,
+          "oldSaveAttemptedDuringHeldBootstrap": true,
+          "meCalls": 1,
+          "bootstrapCalls": 1,
+          "bootstrapBoundToTarget": true,
+          "oldBusinessWrites": 0,
+          "ownedGroupRows": 0,
+          "sameRoot": true,
+          "generationAdvancedOnce": true,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "unchanged-focus-visibility",
+          "status": "passed",
+          "extraBootstrap": 0,
+          "extraWrites": 0
+        },
+        {
+          "case": "bootstrap-failure-retry-current-identity",
+          "status": "passed",
+          "failedBootstrap": 1,
+          "retainedTargetCookie": true,
+          "returnedToCurrentOrganization": true,
+          "noOldDraftRestored": true,
+          "oldBusinessWrites": 0,
+          "originalDeadlineKept": true
+        }
+      ],
+      "status": "passed",
+      "sourceBff": 0,
+      "peerBff": 1
+    },
+    "focusSource1": {
+      "date": "2026-11-15T06:29:00.702Z",
+      "environment": "frozen F11 actual admin app + Chrome HTTPS + three VM / six JVM / three-member GR / Redis Cluster; one physical host",
+      "cases": [
+        {
+          "case": "missed-sync-focus-adoption",
+          "status": "passed",
+          "focusTrigger": "Chrome focus event dispatched",
+          "actualBuiltAdminPage": true,
+          "noBroadcastOrStorageSyncPublished": true,
+          "oldFormClearedBeforeNewBusiness": true,
+          "oldSaveAttemptedDuringHeldBootstrap": true,
+          "meCalls": 1,
+          "bootstrapCalls": 1,
+          "bootstrapBoundToTarget": true,
+          "oldBusinessWrites": 0,
+          "ownedGroupRows": 0,
+          "sameRoot": true,
+          "generationAdvancedOnce": true,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "unchanged-focus-visibility",
+          "status": "passed",
+          "extraBootstrap": 0,
+          "extraWrites": 0
+        },
+        {
+          "case": "bootstrap-failure-retry-current-identity",
+          "status": "passed",
+          "failedBootstrap": 1,
+          "retainedTargetCookie": true,
+          "returnedToCurrentOrganization": true,
+          "noOldDraftRestored": true,
+          "oldBusinessWrites": 0,
+          "originalDeadlineKept": true
+        }
+      ],
+      "status": "passed",
+      "sourceBff": 1,
+      "peerBff": 0
+    },
+    "twoTabs": {
+      "date": "2026-11-15T06:29:59.140Z",
+      "cases": [
+        {
+          "name": "two actual UI tabs A to B to A; one bootstrap per tab per identity",
+          "status": "passed",
+          "before": {
+            "sidHash": "e16363dcdf7916de",
+            "accessDigest": "4065f0e15c039a59",
+            "tenantId": "1000003",
+            "contextVersion": "cUYzL79WSQQfSXM8Pefauw",
+            "rootHash": "8caae477efd0a9dd",
+            "generation": 0,
+            "expiresAt": 1794724804,
+            "jwtExpiresAt": 1794724804,
+            "cookieExpiresAt": 1794724804.798425,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000004",
+            "deptIds": [
+              "1000005"
+            ]
+          },
+          "inB": {
+            "sidHash": "f0e7d8b6f374ce23",
+            "accessDigest": "49c8857eacfe0c4b",
+            "tenantId": "1000008",
+            "contextVersion": "nBgfngm1asgP0yAs1l90XQ",
+            "rootHash": "8caae477efd0a9dd",
+            "generation": 1,
+            "expiresAt": 1794724804,
+            "jwtExpiresAt": 1794724804,
+            "cookieExpiresAt": 1794724804.302583,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000009",
+            "deptIds": [
+              "1000010"
+            ]
+          },
+          "inA": {
+            "sidHash": "f2267b135cec4c5e",
+            "accessDigest": "67e7a8b5e42f28a4",
+            "tenantId": "1000003",
+            "contextVersion": "NVbUv7M6PgrB-e2FFYJAAg",
+            "rootHash": "8caae477efd0a9dd",
+            "generation": 2,
+            "expiresAt": 1794724804,
+            "jwtExpiresAt": 1794724804,
+            "cookieExpiresAt": 1794724804.142874,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000004",
+            "deptIds": [
+              "1000005"
+            ]
+          },
+          "bootstrapEach": [
+            1,
+            1
+          ]
+        },
+        {
+          "name": "two actual selector tabs compete for one organization result",
+          "status": "passed",
+          "clickOutcomes": [
+            "fulfilled",
+            "fulfilled"
+          ],
+          "generationBefore": 2,
+          "generationAfter": 3
+        }
+      ],
+      "errors": [],
+      "status": "passed"
+    },
+    "businessEdges": {
+      "date": "2026-11-15T06:31:20.383Z",
+      "cases": [
+        {
+          "name": "no other organization returns current tenant without transaction or identity replacement",
+          "status": "passed",
+          "before": {
+            "sidHash": "4e8848db211119f1",
+            "accessDigest": "9b987e39a89150e0",
+            "tenantId": "1000203",
+            "contextVersion": "QP2wuU-Lyb6T0nK7MghgRA",
+            "rootHash": "63e8505767bd7955",
+            "generation": 0,
+            "expiresAt": 1794724884,
+            "jwtExpiresAt": 1794724884,
+            "cookieExpiresAt": 1794724884.321825,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000204",
+            "deptIds": [
+              "1000205"
+            ]
+          },
+          "after": {
+            "sidHash": "4e8848db211119f1",
+            "accessDigest": "9b987e39a89150e0",
+            "tenantId": "1000203",
+            "contextVersion": "QP2wuU-Lyb6T0nK7MghgRA",
+            "rootHash": "63e8505767bd7955",
+            "generation": 0,
+            "expiresAt": 1794724884,
+            "jwtExpiresAt": 1794724884,
+            "cookieExpiresAt": 1794724884.321825,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000204",
+            "deptIds": [
+              "1000205"
+            ]
+          },
+          "switchRequests": 0
+        },
+        {
+          "name": "no-menu stable state and search empty state retain switch/logout and unfiltered total",
+          "status": "passed",
+          "before": {
+            "sidHash": "5d1cbaf470a14669",
+            "accessDigest": "b5124382ec595769",
+            "tenantId": "1000203",
+            "contextVersion": "r9vsaSlRsZriwWV2T7FtJQ",
+            "rootHash": "140416dd2530276b",
+            "generation": 0,
+            "expiresAt": 1794724892,
+            "jwtExpiresAt": 1794724892,
+            "cookieExpiresAt": 1794724892.740244,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000209",
+            "deptIds": []
+          },
+          "search": {
+            "total": 0,
+            "switchableTotal": 1
+          }
+        },
+        {
+          "name": "inactive source membership with valid account session switches to another effective organization",
+          "status": "passed",
+          "before": {
+            "sidHash": "5d1cbaf470a14669",
+            "accessDigest": "b5124382ec595769",
+            "tenantId": "1000203",
+            "contextVersion": "r9vsaSlRsZriwWV2T7FtJQ",
+            "rootHash": "140416dd2530276b",
+            "generation": 0,
+            "expiresAt": 1794724892,
+            "jwtExpiresAt": 1794724892,
+            "cookieExpiresAt": 1794724892.740244,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000209",
+            "deptIds": []
+          },
+          "after": {
+            "sidHash": "dcf8102f9b2606da",
+            "accessDigest": "9626a9efb34b6da9",
+            "tenantId": "1000003",
+            "contextVersion": "-Tsr9yJPJkTCgXmdlwREsQ",
+            "rootHash": "140416dd2530276b",
+            "generation": 1,
+            "expiresAt": 1794724892,
+            "jwtExpiresAt": 1794724892,
+            "cookieExpiresAt": 1794724892.049432,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000211",
+            "deptIds": []
+          }
+        },
+        {
+          "name": "inactive source and no other effective organization return safe state without restoring privileges",
+          "status": "passed",
+          "before": {
+            "sidHash": "dcf8102f9b2606da",
+            "accessDigest": "9626a9efb34b6da9",
+            "tenantId": "1000003",
+            "contextVersion": "-Tsr9yJPJkTCgXmdlwREsQ",
+            "rootHash": "140416dd2530276b",
+            "generation": 1,
+            "expiresAt": 1794724892,
+            "jwtExpiresAt": 1794724892,
+            "cookieExpiresAt": 1794724892.049432,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000211",
+            "deptIds": []
+          },
+          "after": {
+            "sidHash": "dcf8102f9b2606da",
+            "accessDigest": "9626a9efb34b6da9",
+            "tenantId": "1000003",
+            "contextVersion": "-Tsr9yJPJkTCgXmdlwREsQ",
+            "rootHash": "140416dd2530276b",
+            "generation": 1,
+            "expiresAt": 1794724892,
+            "jwtExpiresAt": 1794724892,
+            "cookieExpiresAt": 1794724892.049432,
+            "hasRefreshToken": false,
+            "hasAuthCookie": false,
+            "memberId": "1000211",
+            "deptIds": []
+          }
+        },
+        {
+          "name": "candidate becomes invalid after prepare; commit refuses, refresh returns current without replacing identity",
+          "status": "passed",
+          "commitStatus": 403,
+          "noSessionCookie": true,
+          "sameIdentity": true,
+          "originalDeadlineKept": true
+        },
+        {
+          "name": "initial-password login keeps account recovery exemption but enters restricted password page and refuses business bootstrap",
+          "status": "passed",
+          "landing": "/init",
+          "businessStatus": 403,
+          "code": "PasswordChangeRequired",
+          "originalDeadlineKept": true
+        }
+      ],
+      "errors": [],
+      "currentWireQuery": {
+        "status": 200,
+        "code": "S0200",
+        "message": "Success",
+        "data": {
+          "currentTenant": {
+            "id": "1000203",
+            "name": "单组织验收 C"
+          },
+          "currentTenantAccessible": true,
+          "records": [],
+          "total": 0,
+          "switchableTotal": 0,
+          "page": 1,
+          "pageSize": 20
+        },
+        "success": true
+      },
+      "status": "passed"
+    },
+    "platform": {
+      "date": "2026-11-15T06:32:21.625Z",
+      "cases": [
+        {
+          "name": "platform login has no switch menu and tenant candidate API refuses platform application",
+          "status": "passed",
+          "candidateQuery": {
+            "status": 403,
+            "code": "BFF_ENTRY_MISMATCH"
+          }
+        },
+        {
+          "name": "platform logout acknowledges durable revocation without Cookie deletion",
+          "status": "passed",
+          "httpStatus": 200,
+          "setsCookie": false
+        }
+      ],
+      "errors": [],
+      "status": "passed"
+    },
+    "tokens": {
+      "date": "2026-11-15T06:32:43.430Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "invalid-user-token-and-missing-forged-cookie",
+          "status": "passed",
+          "bothAuthorityNodesVerifyRealJwt": true,
+          "missingForgedAndSidMismatch401": true,
+          "validBearerAndInsideHeaderCannotReplaceBffCookie": true,
+          "candidateAndPrepare401WithoutCookie": true,
+          "noTokenIssue": true
+        },
+        {
+          "case": "natural-access-expiry-and-three-real-rt-rotations",
+          "status": "passed",
+          "naturalExpiryObserved": true,
+          "expiredAccessRejectedByBothNodes": true,
+          "refreshes": 3,
+          "oldRtRejectedOnOppositeNode": true,
+          "sidPreserved": true,
+          "bffDeadlineClaim": "separate fixed-root evidence; this is the independent confidential OAuth client"
+        },
+        {
+          "case": "standard-oauth-rt-revocation",
+          "status": "failed",
+          "expected": {
+            "revoke": 200,
+            "oldRtRefresh": 400,
+            "oldAccess": 401
+          },
+          "actual": {
+            "revoke": 400,
+            "revokeError": "invalid_grant",
+            "oldRtRefresh": 200,
+            "oldAccess": 200
+          },
+          "releaseBlocking": true
+        },
+        {
+          "case": "revoked-bff-root",
+          "status": "passed",
+          "logoutNoSetCookie": true,
+          "oldCookieAndAccessIdentityRejectedBothNodes": true
+        }
+      ],
+      "status": "failed",
+      "batchStartedAt": "2026-11-15T06:32:43.430Z"
+    }
+  },
+  "gr": {
+    "before": {
+      "phase": "before",
+      "primary": "test-manager",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "names": [
+        "newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+        "nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+        "caughtNestedFailureStillRollsBackWholeRequiredTransaction()"
+      ],
+      "exit": 0
+    },
+    "after": {
+      "phase": "after",
+      "primary": "test-worker1",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "names": [
+        "newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+        "nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+        "caughtNestedFailureStillRollsBackWholeRequiredTransaction()"
+      ],
+      "exit": 0
+    },
+    "executions": 6,
+    "uniqueTests": 3,
+    "skipped": 0,
+    "plannedSwitchover": {
+      "from": "test-manager",
+      "to": "test-worker1",
+      "onlineMembers": 3,
+      "plannedPrimarySwitchover": true,
+      "historyReset": false
+    }
+  },
+  "quiescent": {
+    "status": "passed",
+    "quiescentAfterStoppingSixJvms": true,
+    "sameView": true,
+    "nineAuthTablesAndIamResultTableMatch": true,
+    "nodes": [
+      {
+        "vm": "test-manager",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "98c0197419e8c36c",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2466540324",
+          "ingot_auth.auth_security_binding": "1530922237",
+          "ingot_auth.auth_security_context": "4035381862",
+          "ingot_auth.auth_security_session": "2656126167",
+          "ingot_auth.auth_security_token": "586178684",
+          "ingot_auth.auth_security_operation": "1932485976",
+          "ingot_auth.auth_security_scope": "1499100450",
+          "ingot_auth.auth_security_outbox": "3758612420",
+          "ingot_auth.auth_security_signing_key": "682537459",
+          "ingot_iam.iam_security_mutation": "1230182639"
+        }
+      },
+      {
+        "vm": "test-worker1",
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "viewHash": "98c0197419e8c36c",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2466540324",
+          "ingot_auth.auth_security_binding": "1530922237",
+          "ingot_auth.auth_security_context": "4035381862",
+          "ingot_auth.auth_security_session": "2656126167",
+          "ingot_auth.auth_security_token": "586178684",
+          "ingot_auth.auth_security_operation": "1932485976",
+          "ingot_auth.auth_security_scope": "1499100450",
+          "ingot_auth.auth_security_outbox": "3758612420",
+          "ingot_auth.auth_security_signing_key": "682537459",
+          "ingot_iam.iam_security_mutation": "1230182639"
+        }
+      },
+      {
+        "vm": "test-worker2",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "98c0197419e8c36c",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "2466540324",
+          "ingot_auth.auth_security_binding": "1530922237",
+          "ingot_auth.auth_security_context": "4035381862",
+          "ingot_auth.auth_security_session": "2656126167",
+          "ingot_auth.auth_security_token": "586178684",
+          "ingot_auth.auth_security_operation": "1932485976",
+          "ingot_auth.auth_security_scope": "1499100450",
+          "ingot_auth.auth_security_outbox": "3758612420",
+          "ingot_auth.auth_security_signing_key": "682537459",
+          "ingot_iam.iam_security_mutation": "1230182639"
+        }
+      }
+    ]
+  },
+  "revocationDiagnostic": {
+    "date": "2026-11-15T06:29:35.608Z",
+    "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+    "groups": [
+      {
+        "case": "standard-rt-revocation",
+        "loginAuth": 0,
+        "revokeAuth": 1,
+        "revokeStatus": 400,
+        "revokeError": "invalid_grant",
+        "oldRtRefreshStatus": 200,
+        "accessAfterRevokeStatus": 200,
+        "credentialsIncluded": false
+      },
+      {
+        "case": "standard-rt-revocation",
+        "loginAuth": 1,
+        "revokeAuth": 0,
+        "revokeStatus": 400,
+        "revokeError": "invalid_grant",
+        "oldRtRefreshStatus": 200,
+        "accessAfterRevokeStatus": 200,
+        "credentialsIncluded": false
+      }
+    ],
+    "status": "observed-failure",
+    "batchStartedAt": "2026-11-15T06:29:35.609Z"
+  },
+  "retainedAttempts": {
+    "securityAttempt1": {
+      "date": "2026-11-15T05:36:41.347Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 10,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 0.15,
+            "observedBlocked": false
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 0,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        },
+        {
+          "case": "planned-GR-primary-switchover",
+          "status": "passed",
+          "oldRootStayedRevoked": true,
+          "newIdentityAndCutoffUnchanged": true
+        }
+      ],
+      "status": "failed",
+      "maxObservedBrowserCookieFraction": 0.9029319286346436,
+      "stack": [
+        "AssertionError [ERR_ASSERTION]: BFF_AUTH_UNAVAILABLE",
+        "",
+        "503 !== 200",
+        "",
+        "    at initial (file:///private/tmp/ingot-f12-6gv4n9_c/browser-f10.mjs:17:189)"
+      ],
+      "error": "BFF_AUTH_UNAVAILABLE\n\n503 !== 200\n"
+    },
+    "securityAttempt2": {
+      "date": "2026-11-15T05:49:03.285Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 11,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 3.227,
+            "observedBlocked": true
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 0,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        },
+        {
+          "case": "planned-GR-primary-switchover",
+          "status": "passed",
+          "oldRootStayedRevoked": true,
+          "newIdentityAndCutoffUnchanged": true
+        }
+      ],
+      "status": "failed",
+      "batchStartedAt": "2026-11-15T05:49:03.285Z",
+      "baselineReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 2,
+        "transient503": 0,
+        "healthyConsecutiveBatches": 2
+      },
+      "maxObservedBrowserCookieFraction": 0.9388918876647949,
+      "postSwitchReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 3,
+        "transient503": 4,
+        "healthyConsecutiveBatches": 2
+      },
+      "stack": [
+        "AssertionError [ERR_ASSERTION]: BFF_IDENTITY_UNAVAILABLE",
+        "",
+        "403 !== 200",
+        "",
+        "    at initial (file:///private/tmp/ingot-f12-6gv4n9_c/browser-f10.mjs:18:753)"
+      ],
+      "error": "BFF_IDENTITY_UNAVAILABLE\n\n403 !== 200\n"
+    },
+    "lateCommitAttempt1": {
+      "date": "2026-11-15T05:31:48.928Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "late-commit-positive",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 200,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 30,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-credential-change",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 401,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [
+            401,
+            401
+          ],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 39,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-dependency-failure",
+          "sourceBff": 0,
+          "backgroundAuth": 1,
+          "lateCommitAuth": 0,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 503,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 29,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-positive",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 200,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 27,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-credential-change",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 401,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [
+            401,
+            401
+          ],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 29,
+          "originalDeadlineKept": true
+        },
+        {
+          "case": "late-commit-dependency-failure",
+          "sourceBff": 1,
+          "backgroundAuth": 0,
+          "lateCommitAuth": 1,
+          "status": "passed",
+          "onlyOppositeAuthRunningDuringBackgroundCompletion": true,
+          "actualAuthRestartBeforeLateCommit": true,
+          "httpStatus": 503,
+          "noCookieOnRejection": true,
+          "recoveryRejects": [],
+          "onePersistedSession": true,
+          "noTokenCallOnLateCommit": true,
+          "recoveryAgeSeconds": 26,
+          "originalDeadlineKept": true
+        }
+      ],
+      "status": "passed",
+      "maxObservedBrowserCookieFraction": 0
+    },
+    "notCountedAsFinalPass": true,
+    "oauth403PreciseRootCauseConfirmed": false,
+    "laterReadOnlyRecoveryPrecondition": true,
+    "writeRequestsReplayed": false,
+    "freshLoginDiagnostics": {
+      "login": {
+        "date": "2026-11-15T06:02:21.354Z",
+        "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+        "groups": [
+          {
+            "case": "fresh-login",
+            "iteration": 0,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login",
+            "iteration": 1,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login",
+            "iteration": 2,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login",
+            "iteration": 3,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login",
+            "iteration": 4,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login",
+            "iteration": 5,
+            "status": "passed"
+          }
+        ],
+        "status": "passed",
+        "batchStartedAt": "2026-11-15T06:02:21.354Z"
+      },
+      "postSwitch": {
+        "date": "2026-11-15T06:07:40.864Z",
+        "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+        "groups": [
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 0,
+            "iteration": 0,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 0,
+            "iteration": 1,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 0,
+            "iteration": 2,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 1,
+            "iteration": 0,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 1,
+            "iteration": 1,
+            "status": "passed"
+          },
+          {
+            "case": "fresh-login-after-planned-switch",
+            "primaryIndex": 1,
+            "iteration": 2,
+            "status": "passed"
+          }
+        ],
+        "status": "passed",
+        "batchStartedAt": "2026-11-15T06:07:40.864Z",
+        "postSwitchReadPoolCheck": {
+          "safeReadsOnly": true,
+          "batches": 3,
+          "transient503": 14,
+          "healthyConsecutiveBatches": 2
+        }
+      }
+    }
+  },
+  "regressionEvidence": {
+    "f11Reference": "LEDGER-F11-P1-FIXES.json",
+    "sameFrozenArtifacts": true,
+    "freshNineModuleRerunThisRound": false,
+    "f11BackendTotals": {
+      "tests": 1924,
+      "passed": 1915,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 9
+    },
+    "frontendPassed": 658,
+    "unhandledFrontendErrors": 0,
+    "f12GrThreePreviouslySkippedActuallyExecuted": true,
+    "remainingSixIamOptionalNotExecuted": true,
+    "freshPythonChecks": {
+      "packageBoundaries": 10,
+      "contracts": 8,
+      "frameworkSchemaOwnership": 6,
+      "failures": 0
+    }
+  },
+  "historicalEvidence": [
+    {
+      "file": "LEDGER-CANDIDATE10-R1.json",
+      "evidenceSha256": "91e64e964fdb55f3eb34404d5ed50aa614dcee78d6ee2fe1578d692cac2bdfd4",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-R2.json",
+      "evidenceSha256": "4950775230fbd9ec32c1aa313a6e8d4ae515d58ff7005872683a2d3a6b2d758d",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-RACES.json",
+      "evidenceSha256": "bdecaf956ce6ee3482f8032b7299e7be90fb0e9de8665411805d2ca966196560",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-FIXED-ROOT-RT.json",
+      "evidenceSha256": "3a9c2c79b5973c0a1a5d9b4fe63a0e873bd94550e64ba80b31154d6d4c5405e9",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-RECOVERY.json",
+      "evidenceSha256": "a03f24af9079db29cfd09bce1e6fc41e902d8a68feed39af631bc5557dfcf2bc",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-MUTATIONS.json",
+      "evidenceSha256": "87fdbe226503371351dcee3d1cdbf600861f4e3984b747c84c7cf1d08fa1f5e4",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-CANDIDATE10-FIRST-MENU.json",
+      "evidenceSha256": "a72dcd04cf512a74b801640a913cc4cd8cb6c609299e8bef2886774f39a13541",
+      "cohort": "candidate10",
+      "rerunOnF11": false
+    },
+    {
+      "file": "LEDGER-MYSQL-FAULT-ACCEPTANCE.json",
+      "evidenceSha256": "5f39773f3afa575e577c5a0fad9a2cc64837085692614f7837c13b4401582369",
+      "cohort": "original version documented in evidence",
+      "rerunOnF11": false
+    },
+    {
+      "file": "INTEGRATION-RESULTS-20261113.json",
+      "evidenceSha256": "1f71cde5004642284a44483d54eda474734eb6172d7af031ee180d415c07e9a8",
+      "cohort": "original version documented in evidence",
+      "rerunOnF11": false
+    }
+  ],
+  "reuseBoundary": "Historical R1/R2 20 rounds each,1000 races,21 fixed-root RT,migration/native backup and compatible rollback retain original cohorts; F11 changed delivery/adoption code verified by F11 tests plus F12 real multi-node paths; no claim historical endurance/fault suites rerun on F11. Standard OAuth revoke is a newly failed path and is not covered by historical internal/BFF revocation success.",
+  "sourceFreeze": {
+    "ingot": {
+      "filesChecked": 7652,
+      "unexpectedChanged": [],
+      "unexpectedNew": [],
+      "noProductCurrentArchiveChanges": true
+    },
+    "ingot-admin": {
+      "filesChecked": 2589,
+      "unexpectedChanged": [],
+      "unexpectedNew": [],
+      "noProductCurrentArchiveChanges": true
+    }
+  },
+  "preCleanupCredentialScan": {
+    "filesScanned": 22,
+    "knownPrivateValuesCompared": 18,
+    "exactMatches": 0,
+    "jwtMatches": 0,
+    "credentialValuesIncluded": false
+  },
+  "cleanup": {
+    "namespace": "org-ledger-f12-b094647e35",
+    "vms": {
+      "test-manager": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "3G",
+        "restoredState": "Stopped"
+      },
+      "test-worker1": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "2G",
+        "restoredState": "Stopped"
+      },
+      "test-worker2": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "2G",
+        "restoredState": "Stopped"
+      }
+    },
+    "host": {
+      "ownedListenersClosed": true,
+      "privateFilesAndRawArtifactsRemoved": 45,
+      "sharedImagesRemoved": false
+    },
+    "completedAt": "2026-11-15T06:37:10Z"
+  },
+  "fixtureHashes": {
+    "browser-f10.mjs": "6e05d2735054a55d73729bda813daea4283caf6aa9ccd65c94e925c2cf1f642f",
+    "late-commit-multinode.mjs": "3d4a900e461f7f3ea37f90a623b402d0bd09fbb059d4d64e725ccef5db3af7cf",
+    "switch-smoke.mjs": "2a15618cec2a27f01bd14f94ba352686c4ee35653bc7b80a38ef41242ff77e06",
+    "focus-real.mjs": "f515be695a1753bec79141adc369129a66b76c707d24a51a10900acb0f583348",
+    "ui-tabs-context.mjs": "19e140c73bcb6879041b409556c6898174e076d01ef65d01290c8f713c48a0ac",
+    "ui-business-cases.mjs": "9a3bf14d3e1f79350e8e470c89f8afebc9c23b66b80224ac25905a08dbc6bcfe",
+    "ui-platform-boundary.mjs": "227d1541dc16d4de121d6c2071730a4d178f0e621d9e09f1db7ee447ad1a09f6",
+    "token-contracts.mjs": "87457c8c57a7c10a896da7081415bda148b12ac3c9c453aa42024168d68a8c56",
+    "oauth-revoke-diagnostic.mjs": "8b982592e543d9884483a0b6b5c9e3f214dc23f4b5692424e040a45e50fa0a30",
+    "quiescent-check.py": "469eb9db0bb933263ee6b439f7dd4e99c830653862ba01266ba7a8a1d39d2794",
+    "gr-runner.py": "7bd95a6e68814ed6370549d89ea5a56742229a0db70c81fb9f4b78b73dfdae35"
+  },
+  "limitations": [
+    "A13 and V02 overall remain open because F12-N01 failed",
+    "performance remains failed/deferred and independently blocks release",
+    "customer CA,physical sleep/overnight,target deployment/monitoring/first-deploy recovery stay in 20261031-security-same-origin-release-acceptance",
+    "one physical host; no physical-host resilience claim",
+    "first two recovery-period batches failed; later complete stable batch passed; earlier OAuth400/403 cause not conclusively established",
+    "no code,configuration baseline,DDL,current,archive,staging or commit changes this round"
+  ],
+  "finalChecks": {
+    "jsonParsed": 86,
+    "relativeLinksChecked": 238,
+    "brokenLinks": [],
+    "dualRepoExactGroups": 14,
+    "jwtMatches": [],
+    "rawCredentialFieldsInNewEvidence": [],
+    "privateFilesRemaining": 0,
+    "finalArtifactsMatchF11": true,
+    "bothGitDiffChecksPassed": true,
+    "bothStagingAreasEmpty": true,
+    "performancePassed": false,
+    "acceptancePassed": false,
+    "newRevocationFailurePreserved": true
+  },
+  "finalVmStateVerification": [
+    {
+      "vm": "test-manager",
+      "state": "Stopped",
+      "memory": "3.0GiB"
+    },
+    {
+      "vm": "test-worker1",
+      "state": "Stopped",
+      "memory": "2.0GiB"
+    },
+    {
+      "vm": "test-worker2",
+      "state": "Stopped",
+      "memory": "2.0GiB"
+    }
+  ]
+}

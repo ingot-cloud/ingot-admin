@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-14",
+  "packageCohort": "candidate10 (Auth diagnostics delta; other modules unchanged from candidate9)",
+  "status": "passed",
+  "modules": {
+    "auth": {
+      "totals": {
+        "tests": 114,
+        "failures": 0,
+        "skipped": 0,
+        "errors": 0
+      },
+      "skippedTests": [],
+      "jarSha256": "b68c76c1b2982e26ecfaadd07d31dc20147425f725f726ed9bc9a482e0ae0a0f",
+      "changeFromCandidate9": "storage-failure diagnostics only; no identity behavior change"
+    },
+    "bff": {
+      "totals": {
+        "tests": 34,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": [],
+      "jarSha256": "ba63061c2be4460a9bb4efc0a5846fd7dc81f90f0176a8ab06e2d6bd1036e62e"
+    },
+    "gateway": {
+      "totals": {
+        "tests": 46,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": [],
+      "jarSha256": "c353e3b2c1fa45239b943d789bbcb081d394ccd24e079a626291ebd05419f687"
+    },
+    "iam": {
+      "totals": {
+        "tests": 1525,
+        "skipped": 6,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": [
+        "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.onlineEvaluationAt100TenantsAnd1000Members()",
+        "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.actualBrowserComponentsAgainstLiveControllers()",
+        "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.largeGroupReadBenchmark()",
+        "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.groupWorkspaceBrowserAgainstMySql()",
+        "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.tenantContextAndAssignmentReadBenchmark()",
+        "com.ingot.cloud.iam.application.asset.StagedImageUploadsTest.boundImageRequiresSignedReadAndExpiredUploadIsDeletedFromStorage()"
+      ],
+      "jarSha256": "99caa46bace0a80ae8b2266fc8a960f5bfa8f86504b81bf346aae7c570fc0020"
+    },
+    "commons": {
+      "totals": {
+        "tests": 17,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": []
+    },
+    "feign": {
+      "totals": {
+        "tests": 12,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": []
+    },
+    "security-common": {
+      "totals": {
+        "tests": 71,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": []
+    },
+    "authorization-server": {
+      "totals": {
+        "tests": 60,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": []
+    },
+    "account-core": {
+      "totals": {
+        "tests": 26,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      },
+      "skippedTests": []
+    }
+  },
+  "iamTestHeap": "2g; temporary Gradle init script only",
+  "firstFullRun": "IAM test JVM exhausted default heap; failed observation retained, not counted as pass",
+  "releaseBlocked": true,
+  "committed": false,
+  "boundary": "Auth114 real Redis/MySQL/three-node GR passed after capacity recovery; other eight modules retain candidate9 results and package hashes; six IAM independent optional gates remain skipped"
+}

@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-14",
+  "status": "functional and security acceptance passed; performance deferred and not passed",
+  "candidate": "candidate10",
+  "releaseBlocked": true,
+  "committed": false,
+  "currentUpdated": false,
+  "archived": false,
+  "R1": {
+    "passed": 20,
+    "required": 20
+  },
+  "R2": {
+    "passed": 20,
+    "required": 20
+  },
+  "crossNodeRaces": 1000,
+  "mutationCrashPoints": 35,
+  "mutationBrowserProofGroups": 5,
+  "fixedRootRtRefreshes": 21,
+  "recoveryCases": 2,
+  "performance": {
+    "deferredByUser": true,
+    "gateStatus": "not passed",
+    "evidence": "LEDGER-PERFORMANCE-CONTROLS.md"
+  },
+  "cleanup": "LEDGER-CANDIDATE10-CLEANUP.json",
+  "boundary": [
+    "Three independent kernels on the same physical host; no physical host disaster claim.",
+    "R1 used a durable two-member majority of the three-member GR; secondary later recovered via native Clone; no claim all three DB members were always ONLINE.",
+    "Rollback is switch feature closure and saved ledger-compatible bundle restore; no schema or legacy-authority binary downgrade claim.",
+    "Six independent optional IAM tests remain skipped and are not counted as passes."
+  ]
+}

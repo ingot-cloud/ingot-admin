@@ -1,0 +1,300 @@
+{
+  "date": "2026-11-14T04:38:59.239Z",
+  "cases": [
+    {
+      "name": "acknowledged switch/logout/RT revocation survives actual MySQL primary SIGKILL and RPO0 promotion",
+      "status": "passed",
+      "before": {
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:101"
+          },
+          {
+            "vm": "test-worker1",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:101"
+          },
+          {
+            "vm": "test-worker2",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "PRIMARY",
+            "readOnly": 0,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:101"
+          }
+        ]
+      },
+      "killed": {
+        "killed": "test-worker2",
+        "at": 1794631151.863928
+      },
+      "after": {
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "PRIMARY",
+            "readOnly": 0,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:103"
+          },
+          {
+            "vm": "test-worker1",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:103"
+          },
+          {
+            "vm": "test-worker2",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:103"
+          }
+        ]
+      },
+      "cookie": 401,
+      "refresh": 400,
+      "resume": 403,
+      "logoutHasSetCookie": false,
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "35c8be18c35f06b4",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "REVOKED",
+        "rootGeneration": 1,
+        "currentSidHash": "35c8be18c35f06b4",
+        "rootDeadline": "2026-11-14T04:49:04Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "REVOKED",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:49:04Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "REVOKED",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:49:04Z"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TCP-alive old-primary minority refuses identity/result/RT while majority proceeds; old member rejoins without result change",
+      "status": "passed",
+      "partition": {
+        "isolated": "test-manager",
+        "mode": "partition-primary",
+        "rules": 8,
+        "at": 1794631216.366354
+      },
+      "during": {
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "PRIMARY",
+            "readOnly": 0,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:103"
+          },
+          {
+            "vm": "test-worker1",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:104"
+          },
+          {
+            "vm": "test-worker2",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "PRIMARY",
+            "readOnly": 0,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:104"
+          }
+        ]
+      },
+      "minorityStatuses": [
+        503,
+        503,
+        503
+      ],
+      "majorityStatuses": [
+        200,
+        200
+      ],
+      "after": {
+        "sidHash": "e2f69d7546c52da6",
+        "accessDigest": "52d5cf5c0f1f1caa",
+        "tenantId": "1000008",
+        "contextVersion": "55yTb-nWKWYMjC9qRD8Ohg",
+        "rootHash": "a2d1730f6cdd3d55",
+        "generation": 1,
+        "expiresAt": 1794631806,
+        "jwtExpiresAt": 1794631806,
+        "cookieExpiresAt": 1794631806,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "e2f69d7546c52da6",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "e2f69d7546c52da6",
+        "rootDeadline": "2026-11-14T04:50:06Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:50:06Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:50:06Z"
+          }
+        ]
+      },
+      "retiredSourceResultQuery": 401,
+      "readiness": {
+        "seconds": 0.979,
+        "transient503": 0,
+        "readOnlyRetry": true
+      }
+    },
+    {
+      "name": "all-node GR communication partition with TCP alive fails closed and heals without duplicate issuance or deadline extension",
+      "status": "passed",
+      "partition": {
+        "isolated": "test-worker2",
+        "mode": "partition-all",
+        "rules": 24,
+        "at": 1794631279.8412318
+      },
+      "during": {
+        "nodes": [
+          {
+            "vm": "test-manager",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:105"
+          },
+          {
+            "vm": "test-worker1",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "SECONDARY",
+            "readOnly": 1,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:105"
+          },
+          {
+            "vm": "test-worker2",
+            "tcp": true,
+            "state": "ONLINE",
+            "role": "PRIMARY",
+            "readOnly": 0,
+            "exitAction": "ABORT_SERVER",
+            "viewId": "17945563439378678:105"
+          }
+        ]
+      },
+      "identityStatuses": [
+        503,
+        503
+      ],
+      "refresh": 503,
+      "result": 503,
+      "after": {
+        "sidHash": "294509a7f8ad26fe",
+        "accessDigest": "92989bb6807998a8",
+        "tenantId": "1000008",
+        "contextVersion": "yNxK1LyTMk2llTAoj2g87A",
+        "rootHash": "1a3f86e1015a1d9a",
+        "generation": 1,
+        "expiresAt": 1794631866,
+        "jwtExpiresAt": 1794631866,
+        "cookieExpiresAt": 1794631866,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "database": {
+        "stage": "COMPLETED",
+        "resultSidHash": "294509a7f8ad26fe",
+        "operationGeneration": 0,
+        "fence": 1,
+        "resultSessions": 1,
+        "rootState": "ACTIVE",
+        "rootGeneration": 1,
+        "currentSidHash": "294509a7f8ad26fe",
+        "rootDeadline": "2026-11-14T04:51:06Z",
+        "tokens": [
+          {
+            "token_type": "access_token",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:51:06Z"
+          },
+          {
+            "token_type": "bff_cookie",
+            "status": "ACTIVE",
+            "count": 1,
+            "maximumExpiry": "2026-11-14T04:51:06Z"
+          }
+        ]
+      },
+      "retiredSourceResultQuery": 401,
+      "readiness": {
+        "seconds": 0.788,
+        "transient503": 0,
+        "readOnlyRetry": true
+      }
+    }
+  ],
+  "errors": [],
+  "phase": "healed-result-check",
+  "status": "passed"
+}

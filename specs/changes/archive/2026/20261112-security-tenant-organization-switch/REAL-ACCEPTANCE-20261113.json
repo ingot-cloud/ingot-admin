@@ -1,0 +1,2370 @@
+{
+  "date": "2026-11-13",
+  "status": "passed",
+  "recordedAt": "2026-11-13T01:50:10.117476Z",
+  "scope": "Five focused real-account scenarios plus explicit cross-node logout and recovery rechecks; broader A01–A13 release acceptance remains open.",
+  "focusedRun": {
+    "date": "2026-11-13",
+    "environment": "real isolated IAM, 2 Auth, 2 BFF, Gateway, shared MySQL/Redis",
+    "cases": [
+      {
+        "name": "A→B→A real browser and native peer synchronization",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "7b17205322a89b1f",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "izieoti_eb1xt2gtkPR32Q",
+          "expiresAt": 1794534181,
+          "jwtExpiresAt": 1794534391,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:46:31.783015Z"
+          },
+          "redisTtl": 90,
+          "cookieExpiresAt": 1794534181.87008
+        },
+        "target": {
+          "present": true,
+          "sidHash": "af649f567cbf7248",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "IprqhHDcWtI_qV38ZPe1qA",
+          "expiresAt": 1794534181,
+          "jwtExpiresAt": 1794534181,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:01Z"
+          },
+          "redisTtl": 87,
+          "cookieExpiresAt": 1794534181.591611
+        },
+        "returned": {
+          "present": true,
+          "sidHash": "41bc8dd57e347818",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "elS0QGHJbYv47OAF6TYSlQ",
+          "expiresAt": 1794534181,
+          "jwtExpiresAt": 1794534181,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:01Z"
+          },
+          "redisTtl": 85,
+          "cookieExpiresAt": 1794534181.326768
+        },
+        "memberA": "1000004",
+        "memberB": "1000009",
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 15
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 21
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 85
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 116
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 122
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 9
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/target",
+              "status": 200,
+              "ms": 43
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 77
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 82
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 47
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/IprqhHDcWtI_qV38ZPe1qA",
+              "status": 200,
+              "ms": 106
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 51
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 53
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/IprqhHDcWtI_qV38ZPe1qA/commit",
+              "status": 200,
+              "ms": 345,
+              "formalCookie": {
+                "expiresAt": 1794534181,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/IprqhHDcWtI_qV38ZPe1qA/commit",
+              "status": 200,
+              "ms": 351
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/IprqhHDcWtI_qV38ZPe1qA",
+              "status": 200,
+              "ms": 20
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/IprqhHDcWtI_qV38ZPe1qA",
+              "status": 200,
+              "ms": 25
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 21
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 20
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 75
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 61
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 73
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 17
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 51
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 30
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 55
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 77
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 82
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 8
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/target",
+              "status": 200,
+              "ms": 36
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 56
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 61
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 43
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/elS0QGHJbYv47OAF6TYSlQ",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/elS0QGHJbYv47OAF6TYSlQ/commit",
+              "status": 200,
+              "ms": 233,
+              "formalCookie": {
+                "expiresAt": 1794534181,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/elS0QGHJbYv47OAF6TYSlQ/commit",
+              "status": 200,
+              "ms": 238
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/elS0QGHJbYv47OAF6TYSlQ",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/elS0QGHJbYv47OAF6TYSlQ",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 21
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 3
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 15
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 59
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 65
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 17
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 64
+            }
+          ],
+          "issued": [
+            {
+              "node": 1,
+              "operationId": "IprqhHDcWtI_qV38ZPe1qA",
+              "sidHash": "af649f567cbf7248",
+              "expiresAt": "2026-11-13T01:43:01Z"
+            },
+            {
+              "node": 0,
+              "operationId": "elS0QGHJbYv47OAF6TYSlQ",
+              "sidHash": "41bc8dd57e347818",
+              "expiresAt": "2026-11-13T01:43:01Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "two real tabs commit competing transactions on different BFF nodes",
+        "status": "passed",
+        "statuses": [
+          409,
+          200
+        ],
+        "source": {
+          "present": true,
+          "sidHash": "c14a2d2406c7fd66",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "yo6W5gwhDilvauewPUIdYg",
+          "expiresAt": 1794534189,
+          "jwtExpiresAt": 1794534399,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:46:39.281777Z"
+          },
+          "redisTtl": 88,
+          "cookieExpiresAt": 1794534189.340588
+        },
+        "final": {
+          "present": true,
+          "sidHash": "757bff70a4b3cb52",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "AHQW7OYS5cXbKqe2Jek6gA",
+          "expiresAt": 1794534189,
+          "jwtExpiresAt": 1794534189,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:09Z"
+          },
+          "redisTtl": 88,
+          "cookieExpiresAt": 1794534189.312615
+        },
+        "transactions": [
+          {
+            "stage": "FAILED",
+            "formalPresent": false,
+            "resultSidHash": "7dad64acdc3abab5"
+          },
+          {
+            "stage": "COMPLETED",
+            "formalPresent": true,
+            "resultSidHash": "757bff70a4b3cb52"
+          }
+        ],
+        "trace": {
+          "mode": "race",
+          "held": false,
+          "arrived": 2,
+          "events": [
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 7
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 7
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/AHQW7OYS5cXbKqe2Jek6gA",
+              "status": 200,
+              "ms": 59
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/X4dw-cuAdeL1oWJh5Aj6Mw",
+              "status": 200,
+              "ms": 65
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 32
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 29
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 3
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/AHQW7OYS5cXbKqe2Jek6gA/commit",
+              "status": 200,
+              "ms": 241,
+              "formalCookie": {
+                "expiresAt": 1794534189,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/AHQW7OYS5cXbKqe2Jek6gA/commit",
+              "status": 200,
+              "ms": 247
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 47
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/X4dw-cuAdeL1oWJh5Aj6Mw/commit",
+              "status": 409,
+              "ms": 253
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/X4dw-cuAdeL1oWJh5Aj6Mw/commit",
+              "status": 409,
+              "ms": 259
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 22
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "AHQW7OYS5cXbKqe2Jek6gA",
+              "sidHash": "757bff70a4b3cb52",
+              "expiresAt": "2026-11-13T01:43:09Z"
+            },
+            {
+              "node": 1,
+              "operationId": "X4dw-cuAdeL1oWJh5Aj6Mw",
+              "sidHash": "7dad64acdc3abab5",
+              "expiresAt": "2026-11-13T01:43:09Z"
+            }
+          ]
+        },
+        "oldVersionWriteStatus": 409
+      },
+      {
+        "name": "peer browser logout while real Auth issuance result is in flight (round-robin topology)",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "f9a997288012aaa8",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "RX-0tWFrx0LlC9j6PZ0Rmg",
+          "expiresAt": 1794534196,
+          "jwtExpiresAt": 1794534406,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:46:46.877335Z"
+          },
+          "redisTtl": 88,
+          "cookieExpiresAt": 1794534196.926223
+        },
+        "commitBrowserStatus": 0,
+        "resumeStatus": 403,
+        "trace": {
+          "mode": "logout",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 42
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/rccPtbFCB45k0Ked_4cYUA",
+              "status": 200,
+              "ms": 76
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 25
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/logout",
+              "status": 200,
+              "ms": 39,
+              "formalCookie": {
+                "expiresAt": null,
+                "maxAge": 0
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/logout",
+              "status": 200,
+              "ms": 44
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 41
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/rccPtbFCB45k0Ked_4cYUA/commit",
+              "status": 403,
+              "ms": 879
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/rccPtbFCB45k0Ked_4cYUA/commit",
+              "status": 403,
+              "ms": 883
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "rccPtbFCB45k0Ked_4cYUA",
+              "sidHash": "c6f187b470606f98",
+              "expiresAt": "2026-11-13T01:43:16Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "dropped successful commit response restores exactly the original result (round-robin topology)",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "30af0e98ec7d24ef",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "ktVpBvKE8fHPCE7IkYmzrw",
+          "expiresAt": 1794534201,
+          "jwtExpiresAt": 1794534411,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:46:51.275719Z"
+          },
+          "redisTtl": 90,
+          "cookieExpiresAt": 1794534201.315476
+        },
+        "final": {
+          "present": true,
+          "sidHash": "f76a0352ca4f9545",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "my20eif2SDf7zD_Zmcft1w",
+          "expiresAt": 1794534201,
+          "jwtExpiresAt": 1794534201,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:21Z"
+          },
+          "redisTtl": 89,
+          "cookieExpiresAt": 1794534201.771262
+        },
+        "trace": {
+          "mode": "normal",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 17
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 52
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 78
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 83
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/target",
+              "status": 200,
+              "ms": 33
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 53
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 41
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/my20eif2SDf7zD_Zmcft1w",
+              "status": 200,
+              "ms": 67
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 32
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 3
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 45
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/commit",
+              "status": 200,
+              "ms": 228,
+              "formalCookie": {
+                "expiresAt": 1794534201,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/commit",
+              "status": 500,
+              "ms": 239
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 43
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/resume",
+              "status": 200,
+              "ms": 54,
+              "formalCookie": {
+                "expiresAt": 1794534201,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/resume",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 29
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 54
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 18
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "my20eif2SDf7zD_Zmcft1w",
+              "sidHash": "f76a0352ca4f9545",
+              "expiresAt": "2026-11-13T01:43:21Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "real clock reaches original login deadline after continuous switches",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "36dbf747fdef8362",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "yzQ_9nW3epmp-DWxslQOfg",
+          "expiresAt": 1794534204,
+          "jwtExpiresAt": 1794534414,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:46:54.733603Z"
+          },
+          "redisTtl": 90,
+          "cookieExpiresAt": 1794534204.780141
+        },
+        "target": {
+          "present": true,
+          "sidHash": "ccdf1d233fa27361",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "Q-q0WoyYKNVlAiTPiLQqIg",
+          "expiresAt": 1794534204,
+          "jwtExpiresAt": 1794534204,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          "redisTtl": 89,
+          "cookieExpiresAt": 1794534204.993288
+        },
+        "final": {
+          "present": true,
+          "sidHash": "a44b9b6ac92c65cf",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "FACfB6njF7yNiKThLzuqCQ",
+          "expiresAt": 1794534204,
+          "jwtExpiresAt": 1794534204,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          "redisTtl": 87,
+          "cookieExpiresAt": 1794534204.359917
+        },
+        "unchangedDeadline": "2026-11-13T01:43:24Z",
+        "samples": [
+          {
+            "at": "2026-11-13T01:41:57.714Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:02.733Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:07.758Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:12.780Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:17.804Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:22.823Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:27.846Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:32.869Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:37.888Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:42.907Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:47.928Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:52.956Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:42:57.977Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:43:03.000Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:43:08.022Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:43:13.049Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          },
+          {
+            "at": "2026-11-13T01:43:18.066Z",
+            "expiresAt": "2026-11-13T01:43:24Z"
+          }
+        ],
+        "expiredMeStatus": 401,
+        "replayedCookieStatus": 401,
+        "expiredRecoveryStatus": 410,
+        "unadoptedSessionsReclaimed": true,
+        "refreshTokenAvailable": false
+      }
+    ],
+    "errors": [],
+    "status": "passed",
+    "clientPolicyObservedInMySql": {
+      "in-bff-platform": "1",
+      "in-bff-tenant": "1"
+    },
+    "fixture": {
+      "accountCreatedThroughRealIamApi": true,
+      "tenantsCreatedThroughRealIamApi": true,
+      "accountId": "1000000",
+      "tenantIds": [
+        "1000003",
+        "1000008"
+      ],
+      "nodePorts": {
+        "iam": 55084,
+        "auth0": 55085,
+        "auth1": 55086,
+        "bff0": 55087,
+        "bff1": 55088,
+        "gateway": 55089
+      },
+      "bffClientConcurrencyPolicy": "UNIQUE (unchanged database seed default)",
+      "bffSessionTtlSeconds": 90,
+      "sourceOAuthAccessTtlSeconds": 300,
+      "fingerprintMode": "device",
+      "https": "self-signed isolated loopback; Chrome ignoreHTTPSErrors"
+    },
+    "absoluteCookieObservations": [
+      {
+        "path": "/bff/auth/tenant/switch-transactions/IprqhHDcWtI_qV38ZPe1qA/commit",
+        "expiresAt": 1794534181,
+        "sourceExpiresAt": 1794534181,
+        "maxAge": null
+      },
+      {
+        "path": "/bff/auth/tenant/switch-transactions/elS0QGHJbYv47OAF6TYSlQ/commit",
+        "expiresAt": 1794534181,
+        "sourceExpiresAt": 1794534181,
+        "maxAge": null
+      },
+      {
+        "path": "/bff/auth/tenant/switch-transactions/AHQW7OYS5cXbKqe2Jek6gA/commit",
+        "expiresAt": 1794534189,
+        "sourceExpiresAt": 1794534189,
+        "maxAge": null
+      },
+      {
+        "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/commit",
+        "expiresAt": 1794534201,
+        "sourceExpiresAt": 1794534201,
+        "maxAge": null
+      },
+      {
+        "path": "/bff/auth/tenant/switch-transactions/my20eif2SDf7zD_Zmcft1w/resume",
+        "expiresAt": 1794534201,
+        "sourceExpiresAt": 1794534201,
+        "maxAge": null
+      }
+    ],
+    "directPasswordGrantDenied": {
+      "status": 401,
+      "code": "invalid_client",
+      "newIdentityCreated": false
+    },
+    "cleanup": {
+      "queuedRevocations": 0,
+      "dueRevocations": 0,
+      "tenantFormalSessions": 0,
+      "testAccountOnlineSessions": 0
+    },
+    "jwkPrivateKeysEncrypted": true,
+    "deployedJarSha256": {
+      "auth": "0d816bcd032f30011855c32dfdb7aba1cdbddd50be0c509cd9a1e7c40d2ccbfb",
+      "bff": "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449",
+      "iam": "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc",
+      "gateway": "94a647743f133dca7d4d6e2b8499b19a1006165b0241c001fd8ef97443652ee6"
+    },
+    "frontendDistIndexSha256": {
+      "admin": "c031acffe0d9aaae568745b7b020471b6cfa24b45afb98727bb86bc96e46be99",
+      "admin-platform": "261c1b87ed01e6c68bf5bcb7279a096b71095accf5345218b905bbced031d8b0"
+    },
+    "harnessSha256": {
+      "runtime.py": "30bb5973ca54b2087b50c07981ada4614199235450fdc7ab325bbb991442072e",
+      "proxies.py": "17c9249f754e66ea43ae3e1103b6622cf0e9a72265e3b34f6d10edd3acf12159",
+      "browser.mjs": "d538cc7cc8de2ce8203c74eeb347d97f6a360b36691e5df5da53161b4cef74d4",
+      "regression.py": "ea064f32f7500c5bda10422a842704589046aba9396b340f743498de96a17987",
+      "collect.py": "d63f75ee376230f9a39b7401788671f6c262f0066b767fbba136147231d24c43",
+      "final-run.py": "9437656c266baa7e36d31441687060def94ed8767bb0b3a5dc58a3e7e418de33"
+    },
+    "sourceHeads": {
+      "ingot": "28beaeb119cc6310b7c7506765f00da492feef51",
+      "ingot-admin": "b2e55a4fec8d3630fdf555dd9d2bcae1ef5eb2de"
+    },
+    "sourceWorkingTrees": "Uncommitted implementation in both repositories; deployed fatJar hashes identify the tested backend packages.",
+    "regression": {
+      "status": "passed",
+      "modules": {
+        "ingot-framework:ingot-commons": {
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-framework:ingot-security:ingot-security-common": {
+          "tests": 69,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-framework:ingot-security:ingot-security-authorization-server": {
+          "tests": 60,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-service:ingot-auth:ingot-auth-provider": {
+          "tests": 25,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-service:ingot-bff": {
+          "tests": 36,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-service:ingot-gateway": {
+          "tests": 44,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-service:ingot-iam:ingot-iam-provider": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-framework:ingot-security:ingot-security-recording": {
+          "tests": 42,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "ingot-service:ingot-security:ingot-security-api": {
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "total": {
+        "tests": 286,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "limits": [
+      "Two Auth and two BFF JVMs on one host with a shared single Redis/MySQL; no claim of Redis cluster or cross-host partition testing.",
+      "Native UI/peer synchronization is verified in round trip; deterministic CAS competition uses real authenticated requests queued from two browser tabs, followed by page revalidation.",
+      "The public BFF client issues no Refresh Token. This run verifies BFF/Cookie/Access Token absolute cutoff; it does not claim a real refresh-token flow.",
+      "Only the five focused scenarios are closed. Original membership loss, restricted menus, dependency outages, audit-center persistence, customer CA and coordinated release/rollback remain separate acceptance items."
+    ]
+  },
+  "crossNodeSupplement": {
+    "date": "2026-11-13",
+    "environment": "real isolated IAM, 2 Auth, 2 BFF, Gateway, shared MySQL/Redis",
+    "cases": [
+      {
+        "name": "logout on BFF1 while issued result is in flight to BFF0; unused result durably queued",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "ed1b4af96c4d8472",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "n2dXUDei-rrBLUid1-oXOQ",
+          "expiresAt": 1794534579,
+          "jwtExpiresAt": 1794534789,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:53:09.769932Z"
+          },
+          "redisTtl": 89,
+          "cookieExpiresAt": 1794534579.856848
+        },
+        "commitBrowserStatus": 0,
+        "resumeStatus": 403,
+        "unadoptedResultDurablyQueued": true,
+        "cleanupSnapshot": {
+          "dueAt": 1794534579,
+          "issuancePendingUntil": "1794534579"
+        },
+        "trace": {
+          "mode": "logout",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 9
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 14
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 73
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/KxVUi9Paw2DfgR_J4MAUqA",
+              "status": 200,
+              "ms": 102
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 25
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/logout",
+              "status": 200,
+              "ms": 48,
+              "formalCookie": {
+                "expiresAt": null,
+                "maxAge": 0
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/logout",
+              "status": 200,
+              "ms": 53
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/KxVUi9Paw2DfgR_J4MAUqA/commit",
+              "status": 403,
+              "ms": 948
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/KxVUi9Paw2DfgR_J4MAUqA/commit",
+              "status": 403,
+              "ms": 953
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "KxVUi9Paw2DfgR_J4MAUqA",
+              "sidHash": "aa6e9b5f8f5051a3",
+              "expiresAt": "2026-11-13T01:49:39Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "BFF0 successful commit reply dropped; BFF1 restores the exact original result",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "6ee0398b6a97e3fd",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "R2xZ6iZFbYeIXXe8nQbPSw",
+          "expiresAt": 1794534584,
+          "jwtExpiresAt": 1794534794,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:53:14.773873Z"
+          },
+          "redisTtl": 89,
+          "cookieExpiresAt": 1794534584.834954
+        },
+        "final": {
+          "present": true,
+          "sidHash": "26dab564e1a8a5c5",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "z0ywp6XOYKQHSXCwChDGGQ",
+          "expiresAt": 1794534584,
+          "jwtExpiresAt": 1794534584,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T01:49:44Z"
+          },
+          "redisTtl": 88,
+          "cookieExpiresAt": 1794534584.847958
+        },
+        "trace": {
+          "mode": "normal",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 15
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 22
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 52
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 77
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 200,
+              "ms": 83
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/csrf",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/target",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 200,
+              "ms": 62
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 73
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/z0ywp6XOYKQHSXCwChDGGQ",
+              "status": 200,
+              "ms": 84
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 46
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 71
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ/commit",
+              "status": 200,
+              "ms": 337,
+              "formalCookie": {
+                "expiresAt": 1794534584,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ/commit",
+              "status": 500,
+              "ms": 353
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ",
+              "status": 200,
+              "ms": 16
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 48
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 40
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ/resume",
+              "status": 200,
+              "ms": 53,
+              "formalCookie": {
+                "expiresAt": 1794534584,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ/resume",
+              "status": 200,
+              "ms": 73
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/z0ywp6XOYKQHSXCwChDGGQ",
+              "status": 200,
+              "ms": 18
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 16
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/me/bootstrap",
+              "status": 200,
+              "ms": 62
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/iam/v1/tenant/workbench/statistics",
+              "status": 200,
+              "ms": 71
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 18
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "z0ywp6XOYKQHSXCwChDGGQ",
+              "sidHash": "26dab564e1a8a5c5",
+              "expiresAt": "2026-11-13T01:49:44Z"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [],
+    "status": "passed",
+    "fixture": {
+      "nodePorts": {
+        "auth0": 52582,
+        "auth1": 52583,
+        "bff0": 52584,
+        "bff1": 52585,
+        "iam": 52581,
+        "gateway": 52586
+      },
+      "sourceSessionTtlSeconds": 90,
+      "policy": "UNIQUE database seed default"
+    },
+    "deployedJarSha256": {
+      "auth": "0d816bcd032f30011855c32dfdb7aba1cdbddd50be0c509cd9a1e7c40d2ccbfb",
+      "bff": "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449",
+      "iam": "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc",
+      "gateway": "94a647743f133dca7d4d6e2b8499b19a1006165b0241c001fd8ef97443652ee6"
+    },
+    "harnessSha256": {
+      "runtime.py": "30bb5973ca54b2087b50c07981ada4614199235450fdc7ab325bbb991442072e",
+      "proxies.py": "ae742764aee0d89e71d9ac0b36b697f91b837b548159e9ff66784179d57f21d6",
+      "cross-node.mjs": "45dbb36c5c5f83c45fe983203d61d2a5abab1c7cc4bed6155d6385f41345039b",
+      "cross-node-run.py": "da3a59344346ecb1cdb160ef6ae0625a1d91e581676118c3a4a1488c2ef644f9"
+    }
+  },
+  "crossNodeAssertions": {
+    "commitNode": 0,
+    "logoutNode": 1,
+    "lostCommitNode": 0,
+    "resumeNode": 1,
+    "sameFinalPackages": true
+  },
+  "configurationValidation": {
+    "DEV_GROUP": "strict YAML duplicate-key and structure checks passed",
+    "TEST_GROUP": "strict YAML duplicate-key and structure checks passed",
+    "PROD_GROUP": "strict YAML duplicate-key and structure checks passed",
+    "realBffBoot": "DEV configuration imported by both real BFF nodes"
+  },
+  "runtimeCleanup": {
+    "fixtureContainersRemaining": 0,
+    "fixtureJvmsRemaining": 0,
+    "privateFixtureCredentialsDeleted": true
+  },
+  "findingsFixed": [
+    "F03: restored BFF YAML account/event/BFF nesting and removed duplicate root keys in all environments.",
+    "F04: distinguished server-side pre-authorization credential admission from direct password grant; missing authenticated client now returns invalid_client instead of 500.",
+    "F05: formal session Cookie uses fixed UTC HTTP Expires and no positive Max-Age, preserving original cutoff on delivery and resume."
+  ],
+  "notes": [
+    "The initial round-robin run happened to use the same BFF node for logout and for result resume. Cross-node assertions are backed by the separate explicitly routed supplement; raw request metadata is preserved.",
+    "Cookie wire Expires equals the original deadline exactly. Chromium exposes a fractional local Cookie-expiry estimate; protocol values, actual server expiry and explicit expired-Cookie replay are verified separately.",
+    "Unused issuance after logout stays in the durable cleanup ledger, bounded by the source deadline; this is not a claim of immediate revocation or pre-deadline ledger drainage."
+  ]
+}

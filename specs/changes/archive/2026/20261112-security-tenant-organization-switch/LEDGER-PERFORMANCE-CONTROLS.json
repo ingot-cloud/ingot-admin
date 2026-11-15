@@ -1,0 +1,50 @@
+{
+  "status": "failed-performance-gate",
+  "cohort": "candidate10",
+  "identitySemantics": "unchanged; no positive identity cache; original runtime configuration restored after each control",
+  "samples": [
+    {
+      "label": "candidate10 healthy three-node GR idle sequential actual-AT HTTP probe; warmup200; native LOCAL log housekeeping; retained audit backlog; no concurrent test load",
+      "date": "2026-11-14T06:06:01.223Z",
+      "samples": 1000,
+      "sidHash": "8280fae42f67191e",
+      "p50": 23.492459000000963,
+      "p95": 60.04870800000208,
+      "p99": 90.60991699999795,
+      "max": 126.15533299999515
+    },
+    {
+      "label": "candidate10 same-code JVM StatFilter mergeSql=false control; Wall/authority unchanged; warmup200; native LOCAL log housekeeping; retained audit backlog; no concurrent test load",
+      "date": "2026-11-14T06:22:07.895Z",
+      "samples": 1000,
+      "sidHash": "3cf721b4c302f57d",
+      "p50": 19.304582999997365,
+      "p95": 43.13904099999854,
+      "p99": 65.30770900000061,
+      "max": 454.6592079999973
+    },
+    {
+      "label": "candidate10 same-code JDBC local protocol state and pool READ_COMMITTED plus stat mergeSql=false control; authority ledger isolation unchanged; warmup200; native LOCAL log housekeeping; retained audit backlog; no concurrent test load",
+      "date": "2026-11-14T06:32:35.449Z",
+      "samples": 1000,
+      "sidHash": "017e6780f89616e5",
+      "p50": 19.713834000001953,
+      "p95": 44.23566600000049,
+      "p99": 70.22929199999999,
+      "max": 399.0551669999986
+    }
+  ],
+  "gatesMs": {
+    "p95": 15,
+    "p99": 50
+  },
+  "controlsAreReleaseConfiguration": false,
+  "unmeasured": [
+    "original throughput baseline",
+    "peak and 2x burst",
+    "refresh concentration",
+    "cold caches",
+    "outbox backlog",
+    "CPU and connection headroom"
+  ]
+}

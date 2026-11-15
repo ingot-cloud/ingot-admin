@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-14T08:20:15.028Z",
+  "cases": [
+    {
+      "name": "two actual UI tabs A to B to A; one bootstrap per tab per identity",
+      "status": "passed",
+      "before": {
+        "sidHash": "9c3aede27803bbb3",
+        "accessDigest": "d4f4d9ea12399ef2",
+        "tenantId": "1000003",
+        "contextVersion": "pzrKWI7RV64TayvVjUkDSw",
+        "rootHash": "bed4be9532246a77",
+        "generation": 0,
+        "expiresAt": 1794645018,
+        "jwtExpiresAt": 1794645018,
+        "cookieExpiresAt": 1794645018.182639,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "inB": {
+        "sidHash": "60e1cd264740b64f",
+        "accessDigest": "90dd084b4f43c10f",
+        "tenantId": "1000008",
+        "contextVersion": "7s7GC16m5uj2wNdGwnNwMA",
+        "rootHash": "bed4be9532246a77",
+        "generation": 1,
+        "expiresAt": 1794645018,
+        "jwtExpiresAt": 1794645018,
+        "cookieExpiresAt": 1794645018.892758,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      },
+      "inA": {
+        "sidHash": "fc761ded99a3ebb7",
+        "accessDigest": "0868102b912fcede",
+        "tenantId": "1000003",
+        "contextVersion": "Z37bt3X5ZSjBNGvl4XB79A",
+        "rootHash": "bed4be9532246a77",
+        "generation": 2,
+        "expiresAt": 1794645018,
+        "jwtExpiresAt": 1794645018,
+        "cookieExpiresAt": 1794645018.719051,
+        "hasRefreshToken": false,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      },
+      "bootstrapEach": [
+        1,
+        1
+      ]
+    },
+    {
+      "name": "old signed UI write with new shared Cookie is rejected before business forwarding and is not replayed",
+      "status": "passed",
+      "httpStatus": 409,
+      "code": "BFF_CONTEXT_CHANGED",
+      "uiWrites": 1,
+      "createdRows": 0,
+      "generation": 3
+    },
+    {
+      "name": "two actual selector tabs compete for one organization result",
+      "status": "passed",
+      "clickOutcomes": [
+        "fulfilled",
+        "fulfilled"
+      ],
+      "generationBefore": 3,
+      "generationAfter": 4
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "packageEvidence": "LEDGER-CANDIDATE10-REGRESSION.json",
+  "releaseBlocked": true
+}

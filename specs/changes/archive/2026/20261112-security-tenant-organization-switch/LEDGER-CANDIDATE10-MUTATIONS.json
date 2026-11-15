@@ -1,0 +1,4374 @@
+{
+  "status": "passed",
+  "packageCohort": "candidate10",
+  "count": 35,
+  "sourceSha256": "817ca59e304651efe9215d558fb3698d3ec54e55f77adf45e6f65e1172c3b92d",
+  "boundary": "independent cases, not a continuous35 batch; nonterminal result hook cases replaced; account status does not increment profile version under pre-existing contract, while security epoch/fence and real fields remain strictly verified; old browser proofs are separate",
+  "retainedFailedBatches": [
+    "mutation-candidate10-first-partial-failure.json",
+    "mutation-other-types-version-assertion-failure.json"
+  ],
+  "cases": [
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "before-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "3",
+        "passwordChangedAt": "2026-11-14T08:35:05.737077Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "3",
+        "passwordChangedAt": "2026-11-14T08:35:05.737077Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        }
+      ],
+      "startedAt": "2026-11-14T08:35:12.715Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:35:05.737077Z",
+          "version": 3
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:36:14.434565Z",
+            "deadline": "2026-11-14T08:37:14.434565Z",
+            "created_at": "2026-11-14T08:35:14.434565Z",
+            "updated_at": "2026-11-14T08:35:15.702026Z",
+            "authStatuses": [],
+            "authOutboxStatuses": [],
+            "operationIdHash": "b834a00bd4557d8e"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 2,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 9,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 1,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 9,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "after-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "5",
+        "passwordChangedAt": "2026-11-14T08:35:29.128058Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "5",
+        "passwordChangedAt": "2026-11-14T08:35:29.128058Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:35:36.273Z",
+      "unknownHeldBeyondHardDeadline": true,
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:35:29.128058Z",
+          "version": 5
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:36:38.433442Z",
+            "deadline": "2026-11-14T08:37:38.433442Z",
+            "created_at": "2026-11-14T08:35:38.433442Z",
+            "updated_at": "2026-11-14T08:35:41.470664Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "922173bab822adfe"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 4,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 18,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 2,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 18,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "before-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "7",
+        "passwordChangedAt": "2026-11-14T08:38:03.539528Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "7",
+        "passwordChangedAt": "2026-11-14T08:38:03.539528Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 500,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:38:09.841Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:38:03.539528Z",
+          "version": 7
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:39:12.460497Z",
+            "deadline": "2026-11-14T08:40:12.460497Z",
+            "created_at": "2026-11-14T08:38:12.460497Z",
+            "updated_at": "2026-11-14T08:39:13.112831Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "95f0a938f9407190"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 6,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 27,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 3,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 27,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "after-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "9",
+        "passwordChangedAt": "2026-11-14T08:39:29.179748Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "10",
+        "passwordChangedAt": "2026-11-14T08:39:40.740738Z"
+      },
+      "reply": {
+        "code": 3,
+        "value": {
+          "replyConfirmed": false,
+          "errorType": "RemoteDisconnected"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:39:36.283Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:39:40.740738Z",
+          "version": 10
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:40:39.848713Z",
+            "deadline": "2026-11-14T08:41:39.848713Z",
+            "created_at": "2026-11-14T08:39:39.848713Z",
+            "updated_at": "2026-11-14T08:39:40.777758Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "b7ce44b44c3af2bf"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 8,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 36,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 4,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 36,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "after-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "23",
+        "passwordChangedAt": "2026-11-14T08:48:47.999171Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "24",
+        "passwordChangedAt": "2026-11-14T08:49:04.142366Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_CHANGE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:49:00.904Z",
+      "outboxLockSetupMs": 810,
+      "terminalReplyAgeMs": 962.18798828125,
+      "epochsAfterUnblock": [
+        {
+          "scopeHash": "b96316aa0aa9a300",
+          "status": "ACTIVE",
+          "epoch": "17"
+        },
+        {
+          "scopeHash": "4653df371fba00ae",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "f0083459d07e0d4a",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "c81923a41041c5da",
+          "status": "ACTIVE",
+          "epoch": "78"
+        },
+        {
+          "scopeHash": "fe2b5c5521adb4a0",
+          "status": "ACTIVE",
+          "epoch": "9"
+        },
+        {
+          "scopeHash": "2a3839fb239466e2",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "61440e6b22ca522b",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "fcddf4b81f081073",
+          "status": "ACTIVE",
+          "epoch": "78"
+        }
+      ],
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:49:04.142366Z",
+          "version": 24
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:50:02.931986Z",
+            "deadline": "2026-11-14T08:51:02.931986Z",
+            "created_at": "2026-11-14T08:49:02.931986Z",
+            "updated_at": "2026-11-14T08:49:04.183099Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "fa49ffaa837ba685"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 17,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 78,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 9,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 78,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "after-result",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "26",
+        "passwordChangedAt": "2026-11-14T08:51:45.575673Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "27",
+        "passwordChangedAt": "2026-11-14T08:51:55.374105Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_CHANGE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:51:52.098Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:51:55.374105Z",
+          "version": 27
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:52:54.177786Z",
+            "deadline": "2026-11-14T08:53:54.177786Z",
+            "created_at": "2026-11-14T08:51:54.177786Z",
+            "updated_at": "2026-11-14T08:51:55.405741Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "f6bd3f698d587b37"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 19,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 87,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 10,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 87,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_CHANGE",
+      "point": "before-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "29",
+        "passwordChangedAt": "2026-11-14T08:52:21.199727Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "30",
+        "passwordChangedAt": "2026-11-14T08:52:31.235070Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_CHANGE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:52:27.728Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:52:31.235070Z",
+          "version": 30
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_CHANGE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:53:30.280571Z",
+            "deadline": "2026-11-14T08:54:30.280571Z",
+            "created_at": "2026-11-14T08:52:30.280571Z",
+            "updated_at": "2026-11-14T08:52:31.248395Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "a54073a45fa11ea9"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 21,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 96,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 11,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 96,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "before-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "32",
+        "passwordChangedAt": "2026-11-14T08:53:22.735549Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "32",
+        "passwordChangedAt": "2026-11-14T08:53:22.735549Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        }
+      ],
+      "startedAt": "2026-11-14T08:53:29.793Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:53:22.735549Z",
+          "version": 32
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:54:31.355711Z",
+            "deadline": "2026-11-14T08:55:31.355711Z",
+            "created_at": "2026-11-14T08:53:31.355711Z",
+            "updated_at": "2026-11-14T08:53:32.680176Z",
+            "authStatuses": [],
+            "authOutboxStatuses": [],
+            "operationIdHash": "11f38320a2b31530"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 22,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 102,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 12,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 102,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "after-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "34",
+        "passwordChangedAt": "2026-11-14T08:53:45.983288Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "34",
+        "passwordChangedAt": "2026-11-14T08:53:45.983288Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:53:52.737Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:53:45.983288Z",
+          "version": 34
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:54:54.127188Z",
+            "deadline": "2026-11-14T08:55:54.127188Z",
+            "created_at": "2026-11-14T08:53:54.127188Z",
+            "updated_at": "2026-11-14T08:53:55.475185Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "596f040d1ebe2436"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 23,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 111,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 14,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 111,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "before-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "36",
+        "passwordChangedAt": "2026-11-14T08:54:16.548864Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "36",
+        "passwordChangedAt": "2026-11-14T08:54:16.548864Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 500,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:54:22.977Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:54:16.548864Z",
+          "version": 36
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T08:55:25.476764Z",
+            "deadline": "2026-11-14T08:56:25.476764Z",
+            "created_at": "2026-11-14T08:54:25.476764Z",
+            "updated_at": "2026-11-14T08:55:26.430622Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "92764b19cf8bca88"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 24,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 120,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 16,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 120,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "after-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "38",
+        "passwordChangedAt": "2026-11-14T08:55:46.275426Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": true,
+        "version": "39",
+        "passwordChangedAt": "2026-11-14T08:55:57.247533Z"
+      },
+      "reply": {
+        "code": 3,
+        "value": {
+          "replyConfirmed": false,
+          "errorType": "RemoteDisconnected"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:55:53.219Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 1,
+          "password_changed_at": "2026-11-14T08:55:57.247533Z",
+          "version": 39
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:56:56.868008Z",
+            "deadline": "2026-11-14T08:57:56.868008Z",
+            "created_at": "2026-11-14T08:55:56.868008Z",
+            "updated_at": "2026-11-14T08:55:57.265713Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "586f37d2770f7a3f"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 25,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 129,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 18,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 129,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "after-result",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "41",
+        "passwordChangedAt": "2026-11-14T08:56:47.492174Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": true,
+        "version": "42",
+        "passwordChangedAt": "2026-11-14T08:56:56.016677Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_RESET"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:56:54.319Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 1,
+          "password_changed_at": "2026-11-14T08:56:56.016677Z",
+          "version": 42
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:57:55.681416Z",
+            "deadline": "2026-11-14T08:58:55.681416Z",
+            "created_at": "2026-11-14T08:56:55.681416Z",
+            "updated_at": "2026-11-14T08:56:56.041014Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "707a5881611aacca"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 26,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 138,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 20,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 138,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "before-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "44",
+        "passwordChangedAt": "2026-11-14T08:57:27.561659Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": true,
+        "version": "45",
+        "passwordChangedAt": "2026-11-14T08:57:35.880294Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_RESET"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:57:34.133Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 1,
+          "password_changed_at": "2026-11-14T08:57:35.880294Z",
+          "version": 45
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:58:35.586561Z",
+            "deadline": "2026-11-14T08:59:35.586561Z",
+            "created_at": "2026-11-14T08:57:35.586561Z",
+            "updated_at": "2026-11-14T08:57:35.897661Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "c224e8060fc05731"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 27,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 147,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 22,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 147,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "point": "after-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "47",
+        "passwordChangedAt": "2026-11-14T08:58:25.376873Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": true,
+        "version": "48",
+        "passwordChangedAt": "2026-11-14T08:58:34.265871Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "PASSWORD_RESET"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:58:32.073Z",
+      "outboxLockSetupMs": 826,
+      "terminalReplyAgeMs": 868.38720703125,
+      "epochsAfterUnblock": [
+        {
+          "scopeHash": "b96316aa0aa9a300",
+          "status": "ACTIVE",
+          "epoch": "28"
+        },
+        {
+          "scopeHash": "4653df371fba00ae",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "f0083459d07e0d4a",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "c81923a41041c5da",
+          "status": "ACTIVE",
+          "epoch": "156"
+        },
+        {
+          "scopeHash": "fe2b5c5521adb4a0",
+          "status": "ACTIVE",
+          "epoch": "24"
+        },
+        {
+          "scopeHash": "2a3839fb239466e2",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "61440e6b22ca522b",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "fcddf4b81f081073",
+          "status": "ACTIVE",
+          "epoch": "156"
+        }
+      ],
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 1,
+          "password_changed_at": "2026-11-14T08:58:34.265871Z",
+          "version": 48
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "PASSWORD_RESET",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T08:59:33.477626Z",
+            "deadline": "2026-11-14T09:00:33.477626Z",
+            "created_at": "2026-11-14T08:58:33.477626Z",
+            "updated_at": "2026-11-14T08:58:34.299157Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "09cbe7cdf600f074"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 28,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 156,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 24,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 156,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "before-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "50",
+        "passwordChangedAt": "2026-11-14T08:59:26.502469Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "50",
+        "passwordChangedAt": "2026-11-14T08:59:26.502469Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        }
+      ],
+      "startedAt": "2026-11-14T08:59:33.589Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:59:26.502469Z",
+          "version": 50
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:00:34.949983Z",
+            "deadline": "2026-11-14T09:01:34.949983Z",
+            "created_at": "2026-11-14T08:59:34.949983Z",
+            "updated_at": "2026-11-14T08:59:36.442142Z",
+            "authStatuses": [],
+            "authOutboxStatuses": [],
+            "operationIdHash": "2b2b797c3a3c0429"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 29,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 162,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 25,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 162,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "after-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "52",
+        "passwordChangedAt": "2026-11-14T08:59:51.491213Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "52",
+        "passwordChangedAt": "2026-11-14T08:59:51.491213Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T08:59:53.472Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T08:59:51.491213Z",
+          "version": 52
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:00:54.732238Z",
+            "deadline": "2026-11-14T09:01:54.732238Z",
+            "created_at": "2026-11-14T08:59:54.732238Z",
+            "updated_at": "2026-11-14T08:59:56.169077Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "801a78ae3722026c"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 30,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 171,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 27,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 171,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "before-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "54",
+        "passwordChangedAt": "2026-11-14T09:00:10.968759Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "54",
+        "passwordChangedAt": "2026-11-14T09:00:10.968759Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 500,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:00:17.171Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:00:10.968759Z",
+          "version": 54
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:01:19.322059Z",
+            "deadline": "2026-11-14T09:02:19.322059Z",
+            "created_at": "2026-11-14T09:00:19.322059Z",
+            "updated_at": "2026-11-14T09:01:19.864067Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "42daf52e4d0b92f1"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 31,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 180,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 29,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 180,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "after-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "56",
+        "passwordChangedAt": "2026-11-14T09:01:47.167982Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "56",
+        "passwordChangedAt": "2026-11-14T09:01:47.167982Z"
+      },
+      "reply": {
+        "code": 3,
+        "value": {
+          "replyConfirmed": false,
+          "errorType": "RemoteDisconnected"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:01:57.194Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:01:47.167982Z",
+          "version": 56
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:03:01.650597Z",
+            "deadline": "2026-11-14T09:04:01.650597Z",
+            "created_at": "2026-11-14T09:02:01.650597Z",
+            "updated_at": "2026-11-14T09:02:02.575494Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "34addf8b795d5433"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 32,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 189,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 31,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 189,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "after-result",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "58",
+        "passwordChangedAt": "2026-11-14T09:03:38.191136Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "58",
+        "passwordChangedAt": "2026-11-14T09:03:38.191136Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "LOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:03:47.195Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:03:38.191136Z",
+          "version": 58
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:04:48.831627Z",
+            "deadline": "2026-11-14T09:05:48.831627Z",
+            "created_at": "2026-11-14T09:03:48.831627Z",
+            "updated_at": "2026-11-14T09:03:49.307197Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "45224f5e596546be"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 33,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 201,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 34,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 201,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "before-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "60",
+        "passwordChangedAt": "2026-11-14T09:04:32.832743Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "60",
+        "passwordChangedAt": "2026-11-14T09:04:32.832743Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "LOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:04:42.096Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:04:32.832743Z",
+          "version": 60
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:05:43.944352Z",
+            "deadline": "2026-11-14T09:06:43.944352Z",
+            "created_at": "2026-11-14T09:04:43.944352Z",
+            "updated_at": "2026-11-14T09:04:44.600106Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "5247b781eb9dae05"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 34,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 213,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 37,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 213,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "LOCK",
+      "point": "after-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "62",
+        "passwordChangedAt": "2026-11-14T09:06:15.300257Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "62",
+        "passwordChangedAt": "2026-11-14T09:06:15.300257Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "LOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:06:23.561Z",
+      "outboxLockSetupMs": 974,
+      "terminalReplyAgeMs": 1104.416015625,
+      "epochsAfterUnblock": [
+        {
+          "scopeHash": "b96316aa0aa9a300",
+          "status": "ACTIVE",
+          "epoch": "35"
+        },
+        {
+          "scopeHash": "4653df371fba00ae",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "f0083459d07e0d4a",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "c81923a41041c5da",
+          "status": "ACTIVE",
+          "epoch": "225"
+        },
+        {
+          "scopeHash": "fe2b5c5521adb4a0",
+          "status": "ACTIVE",
+          "epoch": "40"
+        },
+        {
+          "scopeHash": "2a3839fb239466e2",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "61440e6b22ca522b",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "fcddf4b81f081073",
+          "status": "ACTIVE",
+          "epoch": "225"
+        }
+      ],
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:06:15.300257Z",
+          "version": 62
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "LOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:07:25.624652Z",
+            "deadline": "2026-11-14T09:08:25.624652Z",
+            "created_at": "2026-11-14T09:06:25.624652Z",
+            "updated_at": "2026-11-14T09:06:25.954710Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "edb1c26eaf6b428a"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 35,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 225,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 40,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 225,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "before-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "64",
+        "passwordChangedAt": "2026-11-14T09:07:40.189288Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "64",
+        "passwordChangedAt": "2026-11-14T09:07:40.189288Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 200
+        }
+      ],
+      "startedAt": "2026-11-14T09:07:49.642Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:07:40.189288Z",
+          "version": 64
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:08:51.550986Z",
+            "deadline": "2026-11-14T09:09:51.550986Z",
+            "created_at": "2026-11-14T09:07:51.550986Z",
+            "updated_at": "2026-11-14T09:07:53.101984Z",
+            "authStatuses": [],
+            "authOutboxStatuses": [],
+            "operationIdHash": "9209218cca7dd0ca"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 36,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 234,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 42,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 234,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "after-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "66",
+        "passwordChangedAt": "2026-11-14T09:08:19.379743Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "66",
+        "passwordChangedAt": "2026-11-14T09:08:19.379743Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:08:28.011Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:08:19.379743Z",
+          "version": 66
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:09:30.165747Z",
+            "deadline": "2026-11-14T09:10:30.165747Z",
+            "created_at": "2026-11-14T09:08:30.165747Z",
+            "updated_at": "2026-11-14T09:08:32.244326Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "6c179df1d0c9840d"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 37,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 243,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 44,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 243,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "before-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "68",
+        "passwordChangedAt": "2026-11-14T09:08:52.806066Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "68",
+        "passwordChangedAt": "2026-11-14T09:08:52.806066Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 500,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:08:56.005Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:08:52.806066Z",
+          "version": 68
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:09:58.236279Z",
+            "deadline": "2026-11-14T09:10:58.236279Z",
+            "created_at": "2026-11-14T09:08:58.236279Z",
+            "updated_at": "2026-11-14T09:10:00.013794Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "4abdb49fde4eb233"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 38,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 252,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 46,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 252,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "after-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "72",
+        "passwordChangedAt": "2026-11-14T09:17:47.608483Z"
+      },
+      "after": {
+        "enabled": false,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "72",
+        "passwordChangedAt": "2026-11-14T09:17:47.608483Z"
+      },
+      "reply": {
+        "code": 3,
+        "value": {
+          "replyConfirmed": false,
+          "errorType": "RemoteDisconnected"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:17:49.713Z",
+      "facts": {
+        "account": {
+          "enabled": 0,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:17:47.608483Z",
+          "version": 72
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:18:53.377025Z",
+            "deadline": "2026-11-14T09:19:53.377025Z",
+            "created_at": "2026-11-14T09:17:53.377025Z",
+            "updated_at": "2026-11-14T09:17:53.623847Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "ff32fd2fe3e79eb6"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 40,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 273,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 51,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 273,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "after-result",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "74",
+        "passwordChangedAt": "2026-11-14T09:18:50.251225Z"
+      },
+      "after": {
+        "enabled": false,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "74",
+        "passwordChangedAt": "2026-11-14T09:18:50.251225Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "DISABLE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:18:57.073Z",
+      "facts": {
+        "account": {
+          "enabled": 0,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:18:50.251225Z",
+          "version": 74
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:19:58.790802Z",
+            "deadline": "2026-11-14T09:20:58.790802Z",
+            "created_at": "2026-11-14T09:18:58.790802Z",
+            "updated_at": "2026-11-14T09:18:59.038009Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "d7e52c87047cbe44"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 41,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 285,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 54,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 285,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "before-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "76",
+        "passwordChangedAt": "2026-11-14T09:19:22.775287Z"
+      },
+      "after": {
+        "enabled": false,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "76",
+        "passwordChangedAt": "2026-11-14T09:19:22.775287Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "DISABLE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:19:28.701Z",
+      "facts": {
+        "account": {
+          "enabled": 0,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:19:22.775287Z",
+          "version": 76
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:20:30.108575Z",
+            "deadline": "2026-11-14T09:21:30.108575Z",
+            "created_at": "2026-11-14T09:19:30.108575Z",
+            "updated_at": "2026-11-14T09:19:30.319721Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "78ea759e61267d32"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 42,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 297,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 57,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 297,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "DISABLE",
+      "point": "after-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "78",
+        "passwordChangedAt": "2026-11-14T09:20:23.756061Z"
+      },
+      "after": {
+        "enabled": false,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "78",
+        "passwordChangedAt": "2026-11-14T09:20:23.756061Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "DISABLE"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:20:30.219Z",
+      "outboxLockSetupMs": 857,
+      "terminalReplyAgeMs": 986.151123046875,
+      "epochsAfterUnblock": [
+        {
+          "scopeHash": "b96316aa0aa9a300",
+          "status": "ACTIVE",
+          "epoch": "43"
+        },
+        {
+          "scopeHash": "4653df371fba00ae",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "f0083459d07e0d4a",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "c81923a41041c5da",
+          "status": "ACTIVE",
+          "epoch": "309"
+        },
+        {
+          "scopeHash": "fe2b5c5521adb4a0",
+          "status": "ACTIVE",
+          "epoch": "60"
+        },
+        {
+          "scopeHash": "2a3839fb239466e2",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "61440e6b22ca522b",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "fcddf4b81f081073",
+          "status": "ACTIVE",
+          "epoch": "309"
+        }
+      ],
+      "facts": {
+        "account": {
+          "enabled": 0,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:20:23.756061Z",
+          "version": 78
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "DISABLE",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:21:31.783584Z",
+            "deadline": "2026-11-14T09:22:31.783584Z",
+            "created_at": "2026-11-14T09:20:31.783584Z",
+            "updated_at": "2026-11-14T09:20:32.045773Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "694caab1bd87cee7"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 43,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 309,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 60,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 309,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "before-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "80",
+        "passwordChangedAt": "2026-11-14T09:21:27.861729Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "80",
+        "passwordChangedAt": "2026-11-14T09:21:27.861729Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:21:31.065Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:21:27.861729Z",
+          "version": 80
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:22:32.723307Z",
+            "deadline": "2026-11-14T09:23:32.723307Z",
+            "created_at": "2026-11-14T09:21:32.723307Z",
+            "updated_at": "2026-11-14T09:21:33.988728Z",
+            "authStatuses": [],
+            "authOutboxStatuses": [],
+            "operationIdHash": "6abb874ec475b304"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 44,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 321,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 63,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 321,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "after-block",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "82",
+        "passwordChangedAt": "2026-11-14T09:21:48.373829Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "82",
+        "passwordChangedAt": "2026-11-14T09:21:48.373829Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 503,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:21:56.727Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:21:48.373829Z",
+          "version": 82
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:22:58.419948Z",
+            "deadline": "2026-11-14T09:23:58.419948Z",
+            "created_at": "2026-11-14T09:21:58.419948Z",
+            "updated_at": "2026-11-14T09:21:59.908621Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "dfe015893860f8e6"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 45,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 336,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 67,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 336,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "before-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "84",
+        "passwordChangedAt": "2026-11-14T09:22:18.138587Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "84",
+        "passwordChangedAt": "2026-11-14T09:22:18.138587Z"
+      },
+      "reply": {
+        "code": 2,
+        "value": {
+          "status": 500,
+          "replyConfirmed": false,
+          "errorType": "TransportError"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:22:26.734Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:22:18.138587Z",
+          "version": 84
+        },
+        "lock": {
+          "locked": 1,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "ROLLED_BACK",
+            "lease_fence": 2,
+            "lease_until": "2026-11-14T09:23:29.161030Z",
+            "deadline": "2026-11-14T09:24:29.161030Z",
+            "created_at": "2026-11-14T09:22:29.161030Z",
+            "updated_at": "2026-11-14T09:23:30.235562Z",
+            "authStatuses": [
+              "ROLLED_BACK"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "11067c306912e4f0"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 46,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 351,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 71,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 351,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "after-business-commit",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "86",
+        "passwordChangedAt": "2026-11-14T09:23:47.921657Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "86",
+        "passwordChangedAt": "2026-11-14T09:23:47.921657Z"
+      },
+      "reply": {
+        "code": 3,
+        "value": {
+          "replyConfirmed": false,
+          "errorType": "RemoteDisconnected"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:23:52.637Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:23:47.921657Z",
+          "version": 86
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:24:56.121039Z",
+            "deadline": "2026-11-14T09:25:56.121039Z",
+            "created_at": "2026-11-14T09:23:56.121039Z",
+            "updated_at": "2026-11-14T09:23:56.670983Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "b3ae68b5cfec5a5a"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 47,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 366,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 75,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 366,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "after-result",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "88",
+        "passwordChangedAt": "2026-11-14T09:24:58.515139Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "88",
+        "passwordChangedAt": "2026-11-14T09:24:58.515139Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "UNLOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:25:06.957Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:24:58.515139Z",
+          "version": 88
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:26:08.450240Z",
+            "deadline": "2026-11-14T09:27:08.450240Z",
+            "created_at": "2026-11-14T09:25:08.450240Z",
+            "updated_at": "2026-11-14T09:25:08.666780Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "0d4698355f679bfa"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 48,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 378,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 78,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 378,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "before-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "90",
+        "passwordChangedAt": "2026-11-14T09:25:31.413693Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "90",
+        "passwordChangedAt": "2026-11-14T09:25:31.413693Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "UNLOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:25:39.450Z",
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:25:31.413693Z",
+          "version": 90
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:26:40.895591Z",
+            "deadline": "2026-11-14T09:27:40.895591Z",
+            "created_at": "2026-11-14T09:25:40.895591Z",
+            "updated_at": "2026-11-14T09:25:41.076756Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "8f3f874147818c52"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 49,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 390,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 81,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 390,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    },
+    {
+      "type": "UNLOCK",
+      "point": "after-unblock",
+      "status": "passed",
+      "before": {
+        "enabled": true,
+        "locked": true,
+        "mustChangePassword": false,
+        "version": "92",
+        "passwordChangedAt": "2026-11-14T09:26:55.599976Z"
+      },
+      "after": {
+        "enabled": true,
+        "locked": false,
+        "mustChangePassword": false,
+        "version": "92",
+        "passwordChangedAt": "2026-11-14T09:26:55.599976Z"
+      },
+      "reply": {
+        "code": 0,
+        "value": {
+          "status": 200,
+          "replyConfirmed": true,
+          "type": "UNLOCK"
+        }
+      },
+      "oldCredentials": [
+        {
+          "domain": "PLATFORM",
+          "accessIdentityPresent": false,
+          "refresh": 400
+        },
+        {
+          "domain": "TENANT",
+          "accessIdentityPresent": true,
+          "refresh": 400
+        }
+      ],
+      "startedAt": "2026-11-14T09:27:06.302Z",
+      "outboxLockSetupMs": 850,
+      "terminalReplyAgeMs": 920.005126953125,
+      "epochsAfterUnblock": [
+        {
+          "scopeHash": "b96316aa0aa9a300",
+          "status": "ACTIVE",
+          "epoch": "50"
+        },
+        {
+          "scopeHash": "4653df371fba00ae",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "f0083459d07e0d4a",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "c81923a41041c5da",
+          "status": "ACTIVE",
+          "epoch": "402"
+        },
+        {
+          "scopeHash": "fe2b5c5521adb4a0",
+          "status": "ACTIVE",
+          "epoch": "84"
+        },
+        {
+          "scopeHash": "2a3839fb239466e2",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "61440e6b22ca522b",
+          "status": "ACTIVE",
+          "epoch": "0"
+        },
+        {
+          "scopeHash": "fcddf4b81f081073",
+          "status": "ACTIVE",
+          "epoch": "402"
+        }
+      ],
+      "facts": {
+        "account": {
+          "enabled": 1,
+          "must_change_password": 0,
+          "password_changed_at": "2026-11-14T09:26:55.599976Z",
+          "version": 92
+        },
+        "lock": {
+          "locked": 0,
+          "locked_until": null
+        },
+        "mutations": [
+          {
+            "mutation_type": "UNLOCK",
+            "status": "COMMITTED",
+            "lease_fence": 1,
+            "lease_until": "2026-11-14T09:28:08.069856Z",
+            "deadline": "2026-11-14T09:29:08.069856Z",
+            "created_at": "2026-11-14T09:27:08.069856Z",
+            "updated_at": "2026-11-14T09:27:08.523778Z",
+            "authStatuses": [
+              "COMMITTED"
+            ],
+            "authOutboxStatuses": [
+              "DONE"
+            ],
+            "operationIdHash": "2fcbde0b0ec9264f"
+          }
+        ],
+        "scopeCounts": [
+          {
+            "status": "ACTIVE",
+            "count": 8
+          }
+        ],
+        "scopeEpochs": [
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 50,
+            "scopeHash": "b96316aa0aa9a300"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "4653df371fba00ae"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "f0083459d07e0d4a"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 402,
+            "scopeHash": "c81923a41041c5da"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 84,
+            "scopeHash": "fe2b5c5521adb4a0"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "2a3839fb239466e2"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 0,
+            "scopeHash": "61440e6b22ca522b"
+          },
+          {
+            "status": "ACTIVE",
+            "scope_epoch": 402,
+            "scopeHash": "fcddf4b81f081073"
+          }
+        ],
+        "ownedAccountWriteWaiters": 0
+      }
+    }
+  ]
+}

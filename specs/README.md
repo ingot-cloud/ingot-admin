@@ -202,7 +202,6 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 - [角色详情加载优化](./changes/archive/2026/20261012-base-role-detail-loading/README.md)（completed，2026-10-12 人工验收通过）；[当前能力](./current/base/role-version-application/README.md)
 
-
 ## 近期归档
 
 - [平台头像菜单移除切换组织](./changes/archive/2026/20261112-base-platform-user-menu/README.md)（completed，2026-11-12 用户确认测试通过）；[当前页面行为](./current/packages/app-header/spec.md)。
@@ -266,8 +265,18 @@ cp specs/templates/current/spec.md specs/current/security/session-safety/
 
 ## 当前活动变更
 
+- [目标环境发布验收](../../ingot/specs/changes/active/20261031-security-same-origin-release-acceptance/README.md)继续active/draft并阻断发布，前端不另建平行后端契约。
+
 - [飞书式内置帮助中心](./changes/active/20261103-common-help-center/README.md)（validating，2026-11-06 用户确认已交付范围验收通过，剩余平台静态资源鉴权、真实账号实操和业务截图）
 
 - [IAM 历史前端调用清理](./changes/active/20261107-base-iam-legacy-cleanup/README.md)（validating，退役PMS调用子图已清理；目标环境/人工验收待办）
 
 - [角色向导权限树滚动修复](./changes/active/20261107-org-role-permission-scroll/README.md)（validating，长树滚动与固定页脚修复，待实际环境复测）
+
+- [持久会话账本性能专项](./changes/active/20261115-security-session-ledger-performance/README.md)（draft；L07-P独立承接，目标规格/QPS待确认，性能未通过、发布仍阻断）。
+
+## 2026-11-15 主变更归档
+
+- [租户直接切换组织与持久会话账本](./changes/archive/2026/20261112-security-tenant-organization-switch/README.md)（completed；已更新current，F14功能安全收口；性能与目标发布仍独立阻断，未提交）。
+
+- 当前基线：[组织切换](./current/org/organization-switch/README.md)、[浏览器会话上下文](./current/security/session-context/README.md)。

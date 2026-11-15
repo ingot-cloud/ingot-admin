@@ -1,0 +1,261 @@
+{
+  "date": "2026-11-14T15:00:24.557981Z",
+  "change": "20261112-security-tenant-organization-switch",
+  "phase": "F09 final review fixes",
+  "approval": "User authorized all three fixes and real verification; performance remains separate; no commit",
+  "status": "validated_functional_security_release_performance_gate_open",
+  "backend": {
+    "modules": [
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "tests": 123,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 3
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-iam/ingot-iam-provider",
+        "tests": 1527,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 6
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "tests": 60,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "tests": 71,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "totals": {
+      "tests": 1918,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 9,
+      "passed": 1909
+    },
+    "skipped": [
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+      "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest.caughtNestedFailureStillRollsBackWholeRequiredTransaction()",
+      "com.ingot.cloud.iam.application.asset.StagedImageUploadsTest.boundImageRequiresSignedReadAndExpiredUploadIsDeletedFromStorage()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.onlineEvaluationAt100TenantsAnd1000Members()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.actualBrowserComponentsAgainstLiveControllers()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.largeGroupReadBenchmark()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.groupWorkspaceBrowserAgainstMySql()",
+      "com.ingot.cloud.iam.application.live.TenantLiveMySqlHttpTest.tenantContextAndAssignmentReadBenchmark()"
+    ],
+    "testRuntime": {
+      "maxHeapSize": "1g",
+      "forkEvery": 60,
+      "realMySQL": true,
+      "realRedis": true,
+      "HAGroupReplicationEnabled": false
+    },
+    "supplementaryIamHttp": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 5
+    }
+  },
+  "frontend": {
+    "tests": {
+      "httpClient": 40,
+      "authCore": 39,
+      "adminCore": 571,
+      "total": 650,
+      "failed": 0
+    },
+    "buildAndTypeCommands": [
+      {
+        "command": "pnpm exec prettier --write packages/http-client/src/client.ts packages/http-client/src/client.test.ts packages/http-client/src/types.ts",
+        "exit": 0
+      },
+      {
+        "command": "pnpm --filter @ingot/http-client --filter @ingot/admin-core --filter @ingot/auth-core test:unit",
+        "exit": 0
+      },
+      {
+        "command": "pnpm --filter @ingot/http-client build",
+        "exit": 0
+      },
+      {
+        "command": "pnpm --filter @ingot/auth-core build",
+        "exit": 0
+      },
+      {
+        "command": "pnpm --filter @ingot/admin-core build",
+        "exit": 0
+      },
+      {
+        "command": "pnpm type-check:apps",
+        "exit": 0
+      },
+      {
+        "command": "pnpm build:apps",
+        "exit": 0
+      },
+      {
+        "command": "pnpm check:boundaries",
+        "exit": 0
+      }
+    ]
+  },
+  "realEnvironment": {
+    "date": "2026-11-14T14:55:04.399Z",
+    "topology": "single-host isolated JVMs, real MySQL8.4/Redis8.2 and Chrome HTTPS; not HA/performance",
+    "groups": [
+      {
+        "case": "R02",
+        "status": "passed",
+        "positiveSameCookieSidDeadline": true,
+        "dependency503NoCookie": true,
+        "wrongDeviceRejected": 409,
+        "crossTenantPasswordMutation": true,
+        "ordinaryFormalATKeptTenantScope": true,
+        "oldRecoveryStatuses": [
+          401,
+          401,
+          401
+        ],
+        "gatewayRecoveryDenied": true
+      },
+      {
+        "case": "R03-delayed-binding-response",
+        "status": "passed",
+        "realDelayedBindingCookieReproduced": true,
+        "publicOperationWithoutCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "originalRootRevoked": true,
+        "oldLoginSwitchResumeDenied": true,
+        "newLoginPreserved": true
+      },
+      {
+        "case": "R03-concurrent-new-login",
+        "status": "passed",
+        "realDelayedBindingCookieReproduced": true,
+        "publicOperationWithoutCookieDenied": true,
+        "wrongDeviceDenied": true,
+        "originalRootRevoked": true,
+        "oldLoginSwitchResumeDenied": true,
+        "newLoginPreserved": true
+      }
+    ],
+    "status": "passed"
+  },
+  "artifacts": {
+    "ingot-auth/ingot-auth-provider": {
+      "artifact": "ingot-auth-provider-0.1.0.jar",
+      "sha256": "e5a2c7d5fd11d3896442b7492faba250b07b7f29b553114ff7bcd795277c4768"
+    },
+    "ingot-bff": {
+      "artifact": "ingot-bff-0.1.0.jar",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b"
+    },
+    "ingot-iam/ingot-iam-provider": {
+      "artifact": "ingot-iam-provider-0.1.0.jar",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc"
+    },
+    "ingot-gateway": {
+      "artifact": "ingot-gateway-0.1.0.jar",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de"
+    }
+  },
+  "pythonChecks": {
+    "packageBoundaries": 10,
+    "contract": 8,
+    "frameworkSchemas": 6,
+    "failed": 0
+  },
+  "cleanup": {
+    "ownedProcessesStopped": true,
+    "ownedContainersRemoved": true,
+    "ownedPersistentVolumeRemoved": true,
+    "ownedPortsClosed": true,
+    "privateRuntimeFilesRemoved": 20,
+    "privateRecordingsAndKeysRemoved": true,
+    "vmStates": {
+      "test-manager": "Stopped",
+      "test-worker1": "Stopped",
+      "test-worker2": "Stopped"
+    },
+    "vmMutationPerformed": false,
+    "unrelatedDockerResourcesModified": false
+  },
+  "limitations": [
+    "Final F09 real environment is single-host isolated; no HA or cross-machine failover claim",
+    "Three Group Replication tests not enabled in F09; candidate10 historical evidence remains separate",
+    "Six unrelated optional IAM tests remain skipped: three performance, two browser and one OSS",
+    "Performance gate remains failed/deferred; no current/archive update; no staging or commit"
+  ],
+  "resolvedExecutionIssues": [
+    {
+      "item": "Mockito restubbing after throwing answer",
+      "resolution": "Use doAnswer/doThrow; targeted and final regression pass"
+    },
+    {
+      "item": "Default broad IAM worker heap exhausted",
+      "resolution": "Temporary 1g worker and forkEvery=60; full suite passes; optional HTTP uses existing 1g/forkEvery=1 fixture; no product configuration change"
+    },
+    {
+      "item": "Private gateway fixture rejected BFF-only fields",
+      "resolution": "Removed unsupported fixture settings; production configuration unchanged"
+    },
+    {
+      "item": "Private OAuth fixture lacked x509 boolean TokenSettings",
+      "resolution": "New independent confidential fixture client with complete settings; no credential mutation had succeeded in failed seed"
+    },
+    {
+      "item": "Initial browser assertion omitted existing fingerprint-conflict 409",
+      "resolution": "Align assertion with existing transaction fingerprint contract; final package all groups rerun passed"
+    },
+    {
+      "item": "Framework schema test still expected pre-approved IAM table count 53",
+      "resolution": "Expect 54 and explicitly assert IAM ownership of iam_security_mutation; six checks pass"
+    }
+  ]
+}

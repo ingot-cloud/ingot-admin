@@ -1,0 +1,249 @@
+{
+  "completedAt": "2026-11-15",
+  "status": "completed",
+  "changeId": "20261112-security-tenant-organization-switch",
+  "approvedBy": "User explicitly authorized main closeout, current update then archive, keeping performance and target release blocked; no commit",
+  "acceptanceScope": "local and three-VM functional/security only",
+  "mainTasksComplete": true,
+  "a13Passed": true,
+  "v02LocalThreeVmClosed": true,
+  "currentUpdated": true,
+  "archived": true,
+  "committed": false,
+  "commitFlagScope": "Snapshot at archive and link-audit execution; subsequent commit state and identifiers are recorded in Git history",
+  "submissionPreparation": {
+    "userAuthorizedCommit": true,
+    "runtimeCodeConfigurationDdlChanged": false,
+    "historicalAcceptanceSnapshotsPreserved": true,
+    "remainingPerformanceTasks": "P01-P06",
+    "remainingTargetEnvironmentTasks": "E00-E05",
+    "releaseBlocked": true,
+    "pushAuthorized": false,
+    "checks": {
+      "relatedLocalLinks": 905,
+      "brokenLinks": 0,
+      "iamGeneratedBundleConsistent": true,
+      "frameworkSchemaTests": 6,
+      "frontendDocsCheckNode": "22.17.0",
+      "frontendDocsCheckPassed": true,
+      "functionalTestsRerun": false
+    }
+  },
+  "pr": null,
+  "runtimeCodeChanged": false,
+  "configurationChanged": false,
+  "deploymentPerformed": false,
+  "testsRerunThisCloseout": false,
+  "acceptedEvidence": {
+    "cohort": "F14 Auth+BFF, frozen IAM/Gateway and both frontend manifests",
+    "directed": 57,
+    "directedIncludedInRegression": true,
+    "relatedRegression": 418,
+    "failures": 0,
+    "skipped": 0,
+    "realGroups": 40,
+    "grBefore": 3,
+    "grAfter": 3,
+    "grUnique": 3,
+    "quiescentTenTableMatch": true,
+    "report": "LEDGER-F14-RECOVERY-AT-ONLY.json",
+    "matrix": "ACCEPTANCE-A01-A13.json",
+    "review": "Final read-only review found no new actionable security or compatibility findings"
+  },
+  "baselineDocuments": {
+    "ingot": [
+      "specs/current/security/tenant-organization-switch/README.md",
+      "specs/current/security/tenant-organization-switch/SPEC.md",
+      "specs/current/security/session-ledger/README.md",
+      "specs/current/security/session-ledger/SPEC.md",
+      "specs/current/security/same-origin-login/SPEC.md",
+      "specs/current/security/same-origin-login/README.md",
+      "specs/current/security/session-safety/SPEC.md",
+      "specs/current/security/session-safety/README.md",
+      "specs/current/security/credential-security/SPEC.md",
+      "specs/current/iam/database-persistence/README.md",
+      "specs/current/iam/database-persistence/SPEC.md",
+      "specs/current/README.md"
+    ],
+    "ingot-admin": [
+      "specs/current/org/organization-switch/README.md",
+      "specs/current/org/organization-switch/spec.md",
+      "specs/current/security/session-context/README.md",
+      "specs/current/security/session-context/spec.md",
+      "specs/current/ingot-login/password-login/spec.md",
+      "specs/current/ingot-login/password-login/README.md",
+      "specs/current/packages/network-query/spec.md",
+      "specs/current/packages/app-header/spec.md"
+    ]
+  },
+  "releaseBlocked": true,
+  "independentGates": {
+    "performance": {
+      "changeId": "20261115-security-session-ledger-performance",
+      "status": "draft",
+      "passed": false,
+      "releaseBlocking": true,
+      "repos": [
+        "ingot",
+        "ingot-admin"
+      ]
+    },
+    "targetEnvironment": {
+      "changeId": "20261031-security-same-origin-release-acceptance",
+      "status": "draft",
+      "passed": false,
+      "releaseBlocking": true,
+      "ownerRepo": "ingot",
+      "openTasks": [
+        "E00",
+        "E01",
+        "E02",
+        "E03",
+        "E04",
+        "E05"
+      ]
+    }
+  },
+  "historyPolicy": "Historical test results, failures, cohort ownership and currentUpdated/archived/committed flags stay snapshots of their execution; CLOSEOUT is latest archive state",
+  "noProductionReleaseClaim": true,
+  "closureVerification": {
+    "repos": {
+      "ingot": {
+        "currentDocuments": 12,
+        "archivedHistoricalJsonUnchanged": 45,
+        "markdownFilesChecked": 56,
+        "nonDocumentationChanges": [],
+        "mainCompleted": true,
+        "performanceDraftReleaseBlocked": true,
+        "stagingEmpty": true
+      },
+      "ingot-admin": {
+        "currentDocuments": 8,
+        "archivedHistoricalJsonUnchanged": 45,
+        "markdownFilesChecked": 49,
+        "nonDocumentationChanges": [],
+        "mainCompleted": true,
+        "performanceDraftReleaseBlocked": true,
+        "stagingEmpty": true
+      }
+    },
+    "jsonParsed": 92,
+    "markdownRelativeLinksChecked": 735,
+    "newBrokenLinks": [],
+    "preExistingUnrelatedBrokenLinks": [],
+    "historicalJsonByteIdentical": 90,
+    "targetDraftOpenTasks": 6,
+    "productCodeConfigDdlChanged": false,
+    "performanceAndTargetStillReleaseBlocked": true,
+    "staleActiveMainLinks": [],
+    "noCommit": true,
+    "acceptedF14ArtifactsUnchanged": true,
+    "independentGateRequirementsAndThresholdsUnchanged": true
+  },
+  "baselineDocumentHashes": {
+    "ingot": {
+      "specs/current/security/tenant-organization-switch/README.md": "cbe7a712402f82e9056a94ff3794b6ddd738c9664e4d2de6bc0d2b87466952b2",
+      "specs/current/security/tenant-organization-switch/SPEC.md": "21fa29e2b551a3abac57c785b8c2f001183b1a6752d0d5b600ff130a286f8379",
+      "specs/current/security/session-ledger/README.md": "af050d2ab32c5c4ebc834856da9f8940e1c6d88d19a108cb290ededad2404736",
+      "specs/current/security/session-ledger/SPEC.md": "802bb5bd3c9aa7c0882acc6005162a7e9afb4d5861788a323aa44a4385882856",
+      "specs/current/security/same-origin-login/SPEC.md": "27e7bdbec1b65729acffc1581c14e5cf859d0f7ee8bb7a66b505f60466377f4c",
+      "specs/current/security/same-origin-login/README.md": "e64008a97a48cab94ef2f804be9d4f4faad6421345ac5938331848806c9d02b4",
+      "specs/current/security/session-safety/SPEC.md": "4176645947baf84de44c07f2799e9a4f2195db972259e90bf84d691a2e972407",
+      "specs/current/security/session-safety/README.md": "4f9d8f6268953ee554c869bd08483a19ba62e91100b034145f29618a1d168684",
+      "specs/current/security/credential-security/SPEC.md": "466e60c161360d51addef8f2896d6b5170244ae1ea03f0f2603295e2f9717950",
+      "specs/current/iam/database-persistence/README.md": "95db1667f75c8203e20efd6804e232d290d073ada9c5c3447dec30011ab8b84a",
+      "specs/current/iam/database-persistence/SPEC.md": "0e8071aba1f921397db40a175e8a652ac1a02958848583e053487cee6904189f",
+      "specs/current/README.md": "2f817a4d0b271a0325d47713c5a7db4c4f37c251f423104f28036836119d62fd"
+    },
+    "ingot-admin": {
+      "specs/current/org/organization-switch/README.md": "d86a98e5a611a2e1ada31ec0c51dce259b2a704ebcfc77bc20da783c68aa6b44",
+      "specs/current/org/organization-switch/spec.md": "a61ff71f4701c4892bc6546d1735cb602fab4862a597af489dc73eab4fe8e9a0",
+      "specs/current/security/session-context/README.md": "798e9104261f692f51e25f5aa70a293b8cbba345057966952b7f2b75b4ebe8b6",
+      "specs/current/security/session-context/spec.md": "3a16ba4fad5017ab557ac7afed2446a4268b43589a983db429b2d72289fc8bb3",
+      "specs/current/ingot-login/password-login/spec.md": "6e74019a7d84af88c2a390e83ea05f56ad36ad692de5cc344050eb781ded4e5e",
+      "specs/current/ingot-login/password-login/README.md": "01f0ae52c24c240894b614302516374058d0718a76f29a8c1da181c02c5e0639",
+      "specs/current/packages/network-query/spec.md": "e6be481e80a31e428dd15af3c4dc71284c3fa7b87a22e077e4a362583d25d59f",
+      "specs/current/packages/app-header/spec.md": "630ab003b93e2108efc3b93b9742a59c852d35c7827104ac8bbb9d96c7dc266a"
+    }
+  },
+  "postArchiveDocLinkAudit": {
+    "repairs": [
+      {
+        "source": "ingot/specs/changes/archive/2026/20261109-security-missing-bearer-401/README.md",
+        "old": "../../../../current/security/session-safety/SPEC.md#3-resource-server-校验",
+        "new": "../../../../current/security/session-safety/SPEC.md#3-校验与并发"
+      },
+      {
+        "source": "ingot/specs/changes/archive/2026/20260730-framework-layered-cache/README.md",
+        "old": "../../../../docs/requirements/ROADMAP.md",
+        "new": "../../../../../docs/requirements/ROADMAP.md"
+      },
+      {
+        "source": "ingot/specs/changes/archive/2026/20260730-framework-layered-cache/README.md",
+        "old": "../../archive/2026/20260729-security-access-protection/README.md",
+        "new": "../20260729-security-access-protection/README.md"
+      },
+      {
+        "source": "ingot/specs/changes/archive/2026/20260730-framework-layered-cache/README.md",
+        "old": "../../../../AGENTS.md",
+        "new": "../../../../../AGENTS.md"
+      },
+      {
+        "source": "ingot/specs/changes/archive/2026/20260730-framework-layered-cache/README.md",
+        "old": "../../../../ingot-framework/ingot-core",
+        "new": "../../../../../ingot-framework/ingot-core"
+      },
+      {
+        "source": "ingot/specs/changes/archive/2026/20260730-framework-layered-cache/README.md",
+        "old": "../../archive/2026/20260729-security-access-protection/",
+        "new": "../20260729-security-access-protection/"
+      }
+    ],
+    "linkTargetsFixed": 6,
+    "historicalEvidencePolicy": "Only link targets in the two historical READMEs changed; test results, commit references and all historical main-change JSON unchanged",
+    "audit": {
+      "scope": "All outgoing local links from main archive, 20 current docs, indexes, independent gates, runbook and repaired legacy record; all inbound links into these docs and their folders from both repositories, including incorrect neighboring filenames and stale pre-archive paths. Code fences ignored; inline/reference links, images, HTML anchors, duplicate headings, Setext headings and Unicode headings parsed.",
+      "markdownParser": "markdown-it-py CommonMark",
+      "markdownDocumentsScanned": 1352,
+      "primaryDocuments": 117,
+      "relatedSourceDocuments": 184,
+      "inboundSourceDocuments": 100,
+      "localLinksChecked": 903,
+      "crossRepoLinksChecked": 44,
+      "markdownAnchorLinksChecked": 18,
+      "lineAnchorLinksChecked": 0,
+      "imageLinksChecked": 0,
+      "inboundLinksChecked": 131,
+      "directoryLinksChecked": 13,
+      "headingTargetDocuments": 13,
+      "externalLinksNotFetched": 10,
+      "nonMarkdownFragmentsNotTreatedAsHeadings": 0,
+      "absoluteWebsiteRoutesExcluded": [],
+      "issues": []
+    },
+    "parserControls": {
+      "unicodeAndDuplicateHeadingIds": true,
+      "setextAndExplicitHtmlAnchor": true,
+      "fencedExampleIgnored": true,
+      "referenceStyleLinkParsed": true,
+      "oldBrokenAnchorRejectedAndNewAnchorAccepted": true
+    },
+    "remainingRelatedLinkIssues": 0,
+    "codeConfigurationDdlChanged": false,
+    "functionalTestsRerun": false,
+    "vmsStarted": false,
+    "performanceAndTargetReleaseStillBlocked": true,
+    "committed": false,
+    "integrityVerification": {
+      "linkTargetsFixed": 6,
+      "legacyReadmeChangesOnlyLinkDestinations": true,
+      "historicalMainJsonByteIdentical": 90,
+      "currentDocumentHashesUnchanged": 20,
+      "finalFourJarsAndTwoFrontendManifestsUnchanged": true,
+      "dualRepoCloseoutAndFinalEvidenceIdentical": true,
+      "mainCompletedAndBothIndependentGatesDraftReleaseBlocked": true,
+      "targetOpenTasks": 6,
+      "committed": false
+    }
+  }
+}

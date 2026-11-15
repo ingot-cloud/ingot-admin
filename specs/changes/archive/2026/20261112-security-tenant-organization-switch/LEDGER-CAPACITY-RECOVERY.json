@@ -1,0 +1,209 @@
+{
+  "date": "2026-11-14",
+  "status": "infrastructure recovered; final campaign pending",
+  "runtimeWritingStoppedDuringRecovery": true,
+  "rtCampaignInterrupted": {
+    "cohort": "candidate9",
+    "passedRtConsumptions": 270,
+    "expectedPair": [
+      200,
+      400
+    ],
+    "actualPair": [
+      200,
+      503
+    ],
+    "notCountedAs900": true
+  },
+  "authRegressionDuringOutage": {
+    "tests": 114,
+    "failures": 3,
+    "failedGroup": "GR fixture connection/setup; no skipped tests",
+    "notCountedAsPass": true
+  },
+  "diskErrors": {
+    "test-worker1FirstObserved": "2026-11-14T05:20:51.033894Z",
+    "test-managerFirstObserved": "2026-11-14T05:23:36.477000Z"
+  },
+  "logSpaceRecovery": {
+    "date": "2026-11-14T05:40:09Z",
+    "node": "test-manager",
+    "closedBinlogsPurgedByMysql": true,
+    "currentBinlogPreserved": true,
+    "executedGtidUnchanged": true,
+    "relayRotationRequested": true,
+    "manualRelayDeletion": false,
+    "ledgerTableDeletion": false,
+    "gtidReset": false,
+    "bootstrap": false
+  },
+  "maintenanceMistake": {
+    "node": "test-worker1",
+    "onlyAdditionalHistoryIsOneMaintenanceGtid": true,
+    "binlogContainsRelayFlush": true,
+    "binlogContainsLedgerWrites": false,
+    "allOtherTargetGtidsIncludedInDonor": true,
+    "donor": "test-worker2",
+    "manualHistoryReset": false
+  },
+  "clonedRecipient": {
+    "date": "2026-11-14T05:54:14Z",
+    "target": "test-worker1",
+    "donor": "test-worker2",
+    "sessionStatesBefore": {
+      "REVOKED": 848,
+      "RETIRED": 202,
+      "ACTIVE": 5
+    },
+    "checksumsBefore": {
+      "auth_security_control": 718166519,
+      "auth_security_binding": 1454693670,
+      "auth_security_context": 4234385727,
+      "auth_security_session": 3181197853,
+      "auth_security_token": 3781688842,
+      "auth_security_operation": 3124694895,
+      "auth_security_scope": 3821948822,
+      "auth_security_outbox": 2023231246,
+      "auth_security_signing_key": 3913390764,
+      "ingot_iam.iam_security_mutation": 23514602
+    },
+    "gtidReset": false,
+    "bootstrap": false,
+    "maintenanceGtidContainsNoLedgerWrites": true,
+    "redoBytes": 67108864,
+    "status": "passed",
+    "cloneStatus": [
+      "Completed",
+      0
+    ],
+    "latestNodes": [
+      {
+        "vm": "test-manager",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "readOnly": 1,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:111"
+      },
+      {
+        "vm": "test-worker1",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "readOnly": 1,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:111"
+      },
+      {
+        "vm": "test-worker2",
+        "tcp": true,
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "readOnly": 0,
+        "exitAction": "ABORT_SERVER",
+        "viewId": "17945563439378678:111"
+      }
+    ],
+    "sessionStatesAfter": {
+      "REVOKED": 848,
+      "RETIRED": 202,
+      "ACTIVE": 5
+    },
+    "authorityIncarnationPreserved": true,
+    "allTenChecksumsUnchanged": true,
+    "completedAt": "2026-11-14T05:54:32Z"
+  },
+  "nativeLocalRotationValidation": [
+    {
+      "at": "2026-11-14T06:03:50Z",
+      "node": "test-manager",
+      "before": {
+        "freeBytes": 246034432,
+        "relayBytes": 59761
+      },
+      "after": {
+        "freeBytes": 246030336,
+        "relayBytes": 59761
+      },
+      "hasLocalTransactionDomain": false
+    },
+    {
+      "at": "2026-11-14T06:03:51Z",
+      "node": "test-worker1",
+      "before": {
+        "freeBytes": 491507712,
+        "relayBytes": 58912
+      },
+      "after": {
+        "freeBytes": 491491328,
+        "relayBytes": 58912
+      },
+      "hasLocalTransactionDomain": false
+    },
+    {
+      "at": "2026-11-14T06:03:53Z",
+      "node": "test-worker2",
+      "before": {
+        "freeBytes": 331194368,
+        "relayBytes": 1362
+      },
+      "after": {
+        "freeBytes": 331190272,
+        "relayBytes": 1362
+      },
+      "hasLocalTransactionDomain": false
+    },
+    {
+      "at": "2026-11-14T06:04:55Z",
+      "node": "test-manager",
+      "before": {
+        "freeBytes": 203468800,
+        "relayBytes": 2025436
+      },
+      "after": {
+        "freeBytes": 203333632,
+        "relayBytes": 2093047
+      },
+      "hasLocalTransactionDomain": false
+    },
+    {
+      "at": "2026-11-14T06:04:56Z",
+      "node": "test-worker1",
+      "before": {
+        "freeBytes": 487354368,
+        "relayBytes": 2092198
+      },
+      "after": {
+        "freeBytes": 487227392,
+        "relayBytes": 2153524
+      },
+      "hasLocalTransactionDomain": false
+    },
+    {
+      "at": "2026-11-14T06:04:58Z",
+      "node": "test-worker2",
+      "before": {
+        "freeBytes": 328994816,
+        "relayBytes": 1362
+      },
+      "after": {
+        "freeBytes": 328933376,
+        "relayBytes": 1362
+      },
+      "hasLocalTransactionDomain": false
+    }
+  ],
+  "auth114AfterRecovery": {
+    "totals": {
+      "tests": 114,
+      "failures": 0,
+      "skipped": 0,
+      "errors": 0
+    },
+    "jarSha256": "b68c76c1b2982e26ecfaadd07d31dc20147425f725f726ed9bc9a482e0ae0a0f",
+    "changeFromCandidate9": "storage-failure diagnostics only; no identity behavior change"
+  },
+  "releaseBlocked": true,
+  "committed": false
+}

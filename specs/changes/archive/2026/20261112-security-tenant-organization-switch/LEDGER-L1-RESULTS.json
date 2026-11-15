@@ -1,0 +1,39 @@
+{
+  "stage": "L1-foundation",
+  "date": "2026-11-13",
+  "status": "passed-local-foundation-only",
+  "suites": [
+    {
+      "suite": "com.ingot.cloud.auth.ledger.JdbcSecurityLedgerIntegrationTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "5b82c19e3c800cfb2e67fb1e8950faf340f2ce2a9e35294fd889c1bd58b6cbfe"
+    },
+    {
+      "suite": "com.ingot.cloud.auth.ledger.LedgerAuthorizationCodecTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "0d8462a7e96c04a51c44bffe6fa5b305a49b9736fcb661aaa37b3fc0f5494bbc"
+    },
+    {
+      "suite": "com.ingot.cloud.auth.ledger.LedgerCryptographyTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "sha256": "0e38b5b6a6278b533e8f37269038390f255f41431fd1127a48f75019acfa2f90"
+    }
+  ],
+  "files": {
+    "databases/auth/migrations/001_security_ledger.sql": "22f21121108c5cb378d6940363a5ff240ad848fe04349b4cb5634c1325939a47",
+    "ingot-service/ingot-auth/ingot-auth-provider/src/main/resources/sql/auth-security-ledger/schema.sql": "22f21121108c5cb378d6940363a5ff240ad848fe04349b4cb5634c1325939a47"
+  },
+  "mysql": "8.4 isolated container; durable default disk; global timezone +08:00; JDBC/ledger UTC",
+  "ha": "not tested in this stage",
+  "applicationIntegration": "not yet wired; Redis authority still present; F08 remains release-blocking",
+  "commit": false
+}

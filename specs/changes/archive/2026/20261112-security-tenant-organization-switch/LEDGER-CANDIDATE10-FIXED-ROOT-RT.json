@@ -1,0 +1,289 @@
+{
+  "date": "2026-11-14T10:14:46.334Z",
+  "fixture": "isolated confidential code+PKCE+Basic BFF adapter; actual rotating RT; no public grant change",
+  "refreshes": [
+    {
+      "at": "2026-11-14T10:15:20.523Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "62a9ab7cde268433",
+      "jwtExpiresAt": 1794651340,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:25.096Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "bb76879fa030e9cd",
+      "jwtExpiresAt": 1794651345,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:29.775Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "7c7fe0bc446e43e0",
+      "jwtExpiresAt": 1794651349,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:34.703Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "74819ed5c09841e3",
+      "jwtExpiresAt": 1794651354,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:39.196Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "53cf5c64298c0c3c",
+      "jwtExpiresAt": 1794651359,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:43.691Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "98007954f8b4b059",
+      "jwtExpiresAt": 1794651363,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:48.365Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "a44416500bd0698d",
+      "jwtExpiresAt": 1794651368,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:53.060Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "b5a3c469272564f0",
+      "jwtExpiresAt": 1794651373,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:57.715Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "1eaf4aec83077416",
+      "jwtExpiresAt": 1794651377,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:15:58.570Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "aad7053578e3c2f0",
+      "jwtExpiresAt": 1794651378,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:05.794Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "9e423cc2f5d9537b",
+      "jwtExpiresAt": 1794651386,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:10.314Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "3a1c33b09246bee6",
+      "jwtExpiresAt": 1794651390,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:14.979Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "af90a6bb73bb907b",
+      "jwtExpiresAt": 1794651395,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:19.475Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "8aff7f3f4892ad2e",
+      "jwtExpiresAt": 1794651399,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:24.028Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "5e567599837762f8",
+      "jwtExpiresAt": 1794651404,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:28.517Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "5699a8232738c3bd",
+      "jwtExpiresAt": 1794651408,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:33.108Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "606b8aa4b673caf6",
+      "jwtExpiresAt": 1794651413,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:37.612Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "69b9d98ba8b507c6",
+      "jwtExpiresAt": 1794651415,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:42.192Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "901d3e8abc1777ba",
+      "jwtExpiresAt": 1794651415,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:46.645Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "5522affa39f804c7",
+      "jwtExpiresAt": 1794651415,
+      "oldRtStatus": 400
+    },
+    {
+      "at": "2026-11-14T10:16:51.132Z",
+      "sidHash": "51fa9c80cf88595f",
+      "accessDigest": "cbe0bce49a78a93f",
+      "jwtExpiresAt": 1794651415,
+      "oldRtStatus": 400
+    }
+  ],
+  "steps": [
+    {
+      "name": "organization-switch",
+      "at": "2026-11-14T10:15:10.004Z",
+      "sample": {
+        "sidHash": "b9fe11c065e0c989",
+        "accessDigest": "99b72d0a431511ce",
+        "tenantId": "1000008",
+        "contextVersion": "mZSueTcazP7tei-t5tquTQ",
+        "rootHash": "9475d1e2548e6239",
+        "generation": 1,
+        "expiresAt": 1794651415,
+        "jwtExpiresAt": 1794651328,
+        "cookieExpiresAt": 1794651415,
+        "hasRefreshToken": true,
+        "hasAuthCookie": false,
+        "memberId": "1000009",
+        "deptIds": [
+          "1000010"
+        ]
+      }
+    },
+    {
+      "name": "organization-switch",
+      "at": "2026-11-14T10:15:17.841Z",
+      "sample": {
+        "sidHash": "51fa9c80cf88595f",
+        "accessDigest": "9060648e3d71720c",
+        "tenantId": "1000003",
+        "contextVersion": "GsmxMMjnk-zfCEKMHtuAsw",
+        "rootHash": "9475d1e2548e6239",
+        "generation": 2,
+        "expiresAt": 1794651415,
+        "jwtExpiresAt": 1794651332,
+        "cookieExpiresAt": 1794651415,
+        "hasRefreshToken": true,
+        "hasAuthCookie": false,
+        "memberId": "1000004",
+        "deptIds": [
+          "1000005"
+        ]
+      }
+    },
+    {
+      "name": "A-to-B-to-A-fixed-root-with-real-RT",
+      "at": "2026-11-14T10:15:17.886Z"
+    },
+    {
+      "name": "lost-RT-response-recovered-current-stored-result-without-replay",
+      "at": "2026-11-14T10:15:19.601Z"
+    },
+    {
+      "name": "Auth-BFF-restart-with-continuous-peer-RT-refresh",
+      "at": "2026-11-14T10:15:57.839Z"
+    },
+    {
+      "name": "database-unavailable-read-and-RT-fail-closed",
+      "at": "2026-11-14T10:16:04.699Z"
+    },
+    {
+      "name": "dependency-recovery-keeps-same-root-and-cutoff",
+      "at": "2026-11-14T10:16:06.317Z"
+    },
+    {
+      "name": "natural-original-deadline-refuses-cookie-RT-and-resume",
+      "at": "2026-11-14T10:16:57.201Z"
+    }
+  ],
+  "errors": [],
+  "originalDeadline": "2026-11-14T10:16:55Z",
+  "original": {
+    "sidHash": "8c10e467a0b8f5f5",
+    "accessDigest": "bedd4d0a69cc8812",
+    "tenantId": "1000003",
+    "contextVersion": "8_eju7dB05mvl5TPzG-YJg",
+    "rootHash": "9475d1e2548e6239",
+    "generation": 0,
+    "expiresAt": 1794651415,
+    "jwtExpiresAt": 1794651316,
+    "cookieExpiresAt": 1794651415.42492,
+    "hasRefreshToken": true,
+    "hasAuthCookie": false,
+    "memberId": "1000004",
+    "deptIds": [
+      "1000005"
+    ]
+  },
+  "dependencyStatuses": [
+    503,
+    503
+  ],
+  "database": {
+    "stage": "COMPLETED",
+    "resultSidHash": "51fa9c80cf88595f",
+    "operationGeneration": 1,
+    "fence": 1,
+    "resultSessions": 1,
+    "rootState": "ACTIVE",
+    "rootGeneration": 2,
+    "currentSidHash": "51fa9c80cf88595f",
+    "rootDeadline": "2026-11-14T10:16:55Z",
+    "tokens": [
+      {
+        "token_type": "access_token",
+        "status": "ACTIVE",
+        "count": 13,
+        "maximumExpiry": "2026-11-14T10:16:26.055021Z"
+      },
+      {
+        "token_type": "bff_cookie",
+        "status": "ACTIVE",
+        "count": 1,
+        "maximumExpiry": "2026-11-14T10:16:55Z"
+      },
+      {
+        "token_type": "refresh_token",
+        "status": "ACTIVE",
+        "count": 1,
+        "maximumExpiry": "2026-11-14T10:16:55Z"
+      },
+      {
+        "token_type": "refresh_token",
+        "status": "CONSUMED",
+        "count": 12,
+        "maximumExpiry": "2026-11-14T10:16:55Z"
+      }
+    ]
+  },
+  "naturalExpiry": {
+    "cookie": 401,
+    "refresh": 400,
+    "resume": 410,
+    "resumeHasSetCookie": false,
+    "at": "2026-11-14T10:16:57.201Z"
+  },
+  "status": "passed"
+}

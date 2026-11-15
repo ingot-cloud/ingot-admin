@@ -1,0 +1,451 @@
+{
+  "status": "failed",
+  "acceptedRounds": 1,
+  "requiredRounds": 20,
+  "batch": {
+    "date": "2026-11-14T06:58:44.135Z",
+    "group": "R1",
+    "rounds": [
+      {
+        "round": 1,
+        "status": "passed",
+        "seconds": 91.292,
+        "source": {
+          "sidHash": "ad7f027e48f853c1",
+          "accessDigest": "7033800bdd7ee21d",
+          "tenantId": "1000003",
+          "contextVersion": "fxDlyCxZ8H1Lfpw6JaB9PA",
+          "rootHash": "6bc78b5d537ab515",
+          "generation": 0,
+          "expiresAt": 1794640127,
+          "jwtExpiresAt": 1794640127,
+          "cookieExpiresAt": 1794640127.42069,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "memberId": "1000004",
+          "deptIds": [
+            "1000005"
+          ]
+        },
+        "target": {
+          "sidHash": "9cd67d502288e310",
+          "accessDigest": "2f51d55accde0ca1",
+          "tenantId": "1000008",
+          "contextVersion": "lBWrh293ltHQdZgaM3iQQg",
+          "rootHash": "6bc78b5d537ab515",
+          "generation": 1,
+          "expiresAt": 1794640127,
+          "jwtExpiresAt": 1794640127,
+          "cookieExpiresAt": 1794640127,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "memberId": "1000009",
+          "deptIds": [
+            "1000010"
+          ]
+        },
+        "afterRestart": {
+          "sidHash": "9cd67d502288e310",
+          "accessDigest": "2f51d55accde0ca1",
+          "tenantId": "1000008",
+          "contextVersion": "lBWrh293ltHQdZgaM3iQQg",
+          "rootHash": "6bc78b5d537ab515",
+          "generation": 1,
+          "expiresAt": 1794640127,
+          "jwtExpiresAt": 1794640127,
+          "cookieExpiresAt": 1794640127,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "memberId": "1000009",
+          "deptIds": [
+            "1000010"
+          ]
+        },
+        "staleProjection": {
+          "schemaVersion": 1,
+          "incarnation": "acceptance-80ce917cce30adcfcc92ab85",
+          "appId": "tenant-admin",
+          "contextVersion": "fxDlyCxZ8H1Lfpw6JaB9PA",
+          "rootDigest": "a5490857f0ed6b0d5056d4c0c57339bed0d95829866547fc0e74f8df0ced0627",
+          "sidDigest": "f32acb15a33d0250597670cd3edd720bb511d6a436ec2e168b294dca769aecf5",
+          "revision": "2",
+          "generation": 0,
+          "state": "ACTIVE",
+          "expiresAt": "2026-11-14T07:08:47Z"
+        },
+        "barriers": {
+          "barriers": [
+            {
+              "vm": "test-manager",
+              "port": 25113,
+              "replicasAcknowledged": 1,
+              "offset": "793847"
+            },
+            {
+              "vm": "test-worker1",
+              "port": 25114,
+              "replicasAcknowledged": 1,
+              "offset": "65361"
+            },
+            {
+              "vm": "test-worker2",
+              "port": 25115,
+              "replicasAcknowledged": 1,
+              "offset": "72098"
+            }
+          ]
+        },
+        "frozen": {
+          "partitions": [
+            {
+              "replica": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25110,
+                "name": "org-ledger-tl23qepg-redis-0"
+              },
+              "master": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25115,
+                "name": "org-ledger-tl23qepg-redis-5"
+              },
+              "offset": "72098"
+            },
+            {
+              "replica": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25111,
+                "name": "org-ledger-tl23qepg-redis-1"
+              },
+              "master": {
+                "vm": "test-manager",
+                "host": "192.168.252.12",
+                "port": 25113,
+                "name": "org-ledger-tl23qepg-redis-3"
+              },
+              "offset": "793847"
+            },
+            {
+              "replica": {
+                "vm": "test-worker2",
+                "host": "192.168.252.11",
+                "port": 25112,
+                "name": "org-ledger-tl23qepg-redis-2"
+              },
+              "master": {
+                "vm": "test-worker1",
+                "host": "192.168.252.10",
+                "port": 25114,
+                "name": "org-ledger-tl23qepg-redis-4"
+              },
+              "offset": "65361"
+            }
+          ]
+        },
+        "failover": {
+          "events": [
+            {
+              "action": "kill",
+              "vm": "test-manager",
+              "port": 25113,
+              "at": 1794639536.5551229,
+              "newMasters": [
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker1",
+              "port": 25114,
+              "at": 1794639541.1190689,
+              "newMasters": [
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25112,
+                  "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+                }
+              ]
+            },
+            {
+              "action": "kill",
+              "vm": "test-worker2",
+              "port": 25115,
+              "at": 1794639545.787219,
+              "newMasters": [
+                {
+                  "vm": "test-manager",
+                  "port": 25110,
+                  "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5"
+                },
+                {
+                  "vm": "test-worker1",
+                  "port": 25111,
+                  "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a"
+                },
+                {
+                  "vm": "test-worker2",
+                  "port": 25112,
+                  "nodeId": "faa90ee0234489daabe724e71525a7713c04312a"
+                }
+              ]
+            }
+          ],
+          "nodes": [
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25110,
+              "name": "org-ledger-tl23qepg-redis-0",
+              "nodeId": "100bc5cd08356623bd3122b7c9e3ee2616fdbfe5",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "72098",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "161"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25111,
+              "name": "org-ledger-tl23qepg-redis-1",
+              "nodeId": "d7a3a1af72d87b59c2a5680910dff41752ba7b8a",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "793847",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "161"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25112,
+              "name": "org-ledger-tl23qepg-redis-2",
+              "nodeId": "faa90ee0234489daabe724e71525a7713c04312a",
+              "role": "master",
+              "masterHost": null,
+              "masterPort": null,
+              "masterReplOffset": "65361",
+              "replicaReplOffset": null,
+              "masterLinkStatus": null,
+              "connectedReplicas": "0",
+              "clusterState": "ok",
+              "clusterEpoch": "161"
+            },
+            {
+              "vm": "test-manager",
+              "host": "192.168.252.12",
+              "port": 25113,
+              "name": "org-ledger-tl23qepg-redis-3",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker1",
+              "host": "192.168.252.10",
+              "port": 25114,
+              "name": "org-ledger-tl23qepg-redis-4",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            },
+            {
+              "vm": "test-worker2",
+              "host": "192.168.252.11",
+              "port": 25115,
+              "name": "org-ledger-tl23qepg-redis-5",
+              "available": false,
+              "errorType": "ConnectionRefusedError"
+            }
+          ]
+        },
+        "database": {
+          "stage": "COMPLETED",
+          "resultSidHash": "9cd67d502288e310",
+          "operationGeneration": 0,
+          "fence": 1,
+          "resultSessions": 1,
+          "rootState": "ACTIVE",
+          "rootGeneration": 1,
+          "currentSidHash": "9cd67d502288e310",
+          "rootDeadline": "2026-11-14T07:08:47Z",
+          "tokens": [
+            {
+              "token_type": "access_token",
+              "status": "ACTIVE",
+              "count": 1,
+              "maximumExpiry": "2026-11-14T07:08:47Z"
+            },
+            {
+              "token_type": "bff_cookie",
+              "status": "ACTIVE",
+              "count": 1,
+              "maximumExpiry": "2026-11-14T07:08:47Z"
+            }
+          ]
+        },
+        "oldCookieStatus": 401,
+        "oldSourceIssueStatus": 401
+      }
+    ],
+    "errors": [
+      "condition timed out"
+    ],
+    "current": {
+      "round": 2,
+      "startedAt": "2026-11-14T07:00:36.055Z",
+      "steps": [
+        {
+          "name": "logged-in",
+          "at": "2026-11-14T07:01:06.333Z",
+          "elapsedSeconds": 30.278
+        },
+        {
+          "name": "cookie-delivery-confirmed",
+          "at": "2026-11-14T07:01:20.413Z",
+          "elapsedSeconds": 44.358
+        },
+        {
+          "name": "switched-and-retired",
+          "at": "2026-11-14T07:01:21.176Z",
+          "elapsedSeconds": 45.121
+        },
+        {
+          "name": "stale-primaries-promoted",
+          "at": "2026-11-14T07:01:35.579Z",
+          "elapsedSeconds": 59.524
+        },
+        {
+          "name": "old-cookie-rejected-and-same-result-resumed",
+          "at": "2026-11-14T07:01:38.232Z",
+          "elapsedSeconds": 62.177
+        },
+        {
+          "name": "result-verified-before-restart",
+          "at": "2026-11-14T07:01:38.830Z",
+          "elapsedSeconds": 62.775
+        },
+        {
+          "name": "auth-restarted",
+          "at": "2026-11-14T07:02:17.439Z",
+          "elapsedSeconds": 101.384
+        }
+      ],
+      "cutoff": "2026-11-14T07:10:43Z"
+    },
+    "status": "failed"
+  },
+  "nodeHealth": {
+    "iam": {
+      "live": true,
+      "owned": true,
+      "rssKb": 596784,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InIamApplication in 43.729 seconds"
+      ],
+      "exceptionTypes": [],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 1199949,
+      "listener": true
+    },
+    "auth0": {
+      "live": true,
+      "owned": true,
+      "rssKb": 419960,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InAuthApplication in 36.101 seconds"
+      ],
+      "exceptionTypes": [],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 109328,
+      "listener": true
+    },
+    "auth1": {
+      "live": true,
+      "owned": true,
+      "rssKb": 801504,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InAuthApplication in 20.938 seconds"
+      ],
+      "exceptionTypes": [
+        "org.springframework.security.oauth2.core.OAuth2AuthenticationException",
+        "org.springframework.security.web.access.Exception",
+        "org.apache.catalina.valves.Error"
+      ],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 36405787,
+      "listener": true
+    },
+    "bff0": {
+      "live": true,
+      "owned": true,
+      "rssKb": 335072,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InBffApplication in 50.475 seconds"
+      ],
+      "exceptionTypes": [],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 9850,
+      "listener": true
+    },
+    "bff1": {
+      "live": true,
+      "owned": true,
+      "rssKb": 385016,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InBffApplication in 29.763 seconds"
+      ],
+      "exceptionTypes": [],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 647358,
+      "listener": true
+    },
+    "gateway": {
+      "live": true,
+      "owned": true,
+      "rssKb": 383376,
+      "state": "S (sleeping)",
+      "started": [
+        "Started InGatewayApplication in 26.562 seconds"
+      ],
+      "exceptionTypes": [
+        "reactor.netty.http.client.PrematureCloseException",
+        "i.c.g.e.GatewayErrorWebException",
+        "reactor.core.publisher.FluxOnAssembly$OnAssemblyException"
+      ],
+      "addressInUse": false,
+      "outOfMemory": false,
+      "logSize": 951849,
+      "listener": true
+    }
+  },
+  "diagnosis": "BFF completed startup in50.475s beyond45s fixture readiness wait; no BFF startup exception, address collision or OOM observed; not counted as20rounds",
+  "followup": "cold readiness budget120s; restart same candidate from zero; security assertions unchanged"
+}

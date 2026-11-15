@@ -1,0 +1,3396 @@
+{
+  "date": "2026-11-15T07:55:33.616375Z",
+  "phase": "F13 standard OAuth RT revocation repair",
+  "status": "functional_security_validated_performance_and_target_release_gates_open",
+  "approvedBy": "User explicitly authorized dual-repo approved Spec, implementation, directed/related regression, three-VM bidirectional real validation and A13/V02 closeout; no commit/archive",
+  "releaseBlocked": true,
+  "performanceChange": "20261115-security-session-ledger-performance",
+  "performancePassed": false,
+  "targetReleaseChange": "20261031-security-same-origin-release-acceptance",
+  "a13Passed": true,
+  "v02LocalThreeVmFunctionalSecurityClosed": true,
+  "currentUpdated": false,
+  "archived": false,
+  "committed": false,
+  "staged": false,
+  "artifacts": [
+    {
+      "module": "ingot-service/ingot-auth/ingot-auth-provider",
+      "sha256": "13985b6c2b633e7d3d579795fba247abea52086a4ee7e2d36362044d93a5398d"
+    },
+    {
+      "module": "ingot-service/ingot-bff",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b"
+    },
+    {
+      "module": "ingot-service/ingot-iam/ingot-iam-provider",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc"
+    },
+    {
+      "module": "ingot-service/ingot-gateway",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de"
+    },
+    {
+      "app": "admin",
+      "files": 350,
+      "manifestSha256": "6417ed7d65cd96acf6142b97b9716f3ea6bf8a7ddeb8e030f77c22aa40e7b39d"
+    },
+    {
+      "app": "admin-platform",
+      "files": 514,
+      "manifestSha256": "d15e15e789879bca89a1d6792ec170da83464c16c5dacd71ce5cbe3e74dd5328"
+    }
+  ],
+  "deployment": [
+    {
+      "node": "iam",
+      "vm": "test-manager",
+      "sha256": "1cfccf107b357d596fee80ad6432b1c93b0058ab22518c2c23834cf1f47126bc",
+      "matchesFinalPackage": true
+    },
+    {
+      "node": "auth0",
+      "vm": "test-worker1",
+      "sha256": "13985b6c2b633e7d3d579795fba247abea52086a4ee7e2d36362044d93a5398d",
+      "matchesFinalPackage": true
+    },
+    {
+      "node": "auth1",
+      "vm": "test-worker2",
+      "sha256": "13985b6c2b633e7d3d579795fba247abea52086a4ee7e2d36362044d93a5398d",
+      "matchesFinalPackage": true
+    },
+    {
+      "node": "bff0",
+      "vm": "test-worker1",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesFinalPackage": true
+    },
+    {
+      "node": "bff1",
+      "vm": "test-worker2",
+      "sha256": "ed0c8104b55e8a7aabf8c8a51f74c4d187df32b574d7944f65dee44fcc0ef71b",
+      "matchesFinalPackage": true
+    },
+    {
+      "node": "gateway",
+      "vm": "test-manager",
+      "sha256": "24314bdbbf0a63360398c96f3bf6eb1e5b9b8b2ac40e78e0090be1771d7c42de",
+      "matchesFinalPackage": true
+    }
+  ],
+  "sourceScope": {
+    "ingot": {
+      "modified": [
+        "ingot-service/ingot-auth/ingot-auth-provider/src/main/java/com/ingot/cloud/auth/ledger/LedgerAuthorizations.java",
+        "ingot-service/ingot-auth/ingot-auth-provider/src/main/java/com/ingot/cloud/auth/config/AuthorizationServerConfig.java"
+      ],
+      "new": [
+        "ingot-service/ingot-auth/ingot-auth-provider/src/test/java/com/ingot/cloud/auth/ledger/LedgerTokenRevocationProviderTest.java",
+        "ingot-service/ingot-auth/ingot-auth-provider/src/test/java/com/ingot/cloud/auth/ledger/LedgerTokenRevocationIntegrationTest.java",
+        "ingot-service/ingot-auth/ingot-auth-provider/src/main/java/com/ingot/cloud/auth/ledger/LedgerTokenRevocationProvider.java"
+      ],
+      "currentAndArchiveUnchanged": true
+    },
+    "ingot-admin": {
+      "modified": [],
+      "new": [],
+      "currentAndArchiveUnchanged": true
+    }
+  },
+  "directed": {
+    "phase": "directed",
+    "summary": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 13,
+      "exit": 0
+    },
+    "classes": [
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationProviderTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationIntegrationTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "realMysql": true,
+    "realRedis": true,
+    "grAvailable": true
+  },
+  "regression": {
+    "phase": "regression",
+    "summary": {
+      "tests": 410,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 410,
+      "exit": 0
+    },
+    "classes": [
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerProjectionsIntegrationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.service.biz.impl.BizSessionServiceImplTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.web.inner.InnerSessionAPITest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerBffTransactionsIntegrationTest",
+        "tests": 28,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerAuthorizationsIntegrationTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerFailureFilterTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerSwitchIssuanceIntegrationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.service.biz.StrictOrganizationTokenVerifierTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationProviderTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.service.biz.OrganizationSessionServiceTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerPreAuthorizationIntegrationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerRestoreIntegrationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.AuthorityServiceVerifierTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationIntegrationTest",
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerAuthorizationCodecTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerMutationFencesIntegrationTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerRetentionIntegrationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.web.inner.InnerOrganizationFailureContractTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.client.RedisAuthorizationTimeContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.service.biz.impl.CachingRemoteUserDetailsServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.JdbcSecurityLedgerIntegrationTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.service.biz.OrganizationTokenIssuerTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.web.inner.InnerLedgerRequestContractTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerAuditOutboxIntegrationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.ledger.LedgerCryptographyTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-auth/ingot-auth-provider",
+        "class": "com.ingot.cloud.auth.client.UtcJdbcContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "class": "com.ingot.cloud.bff.service.LoginTransactionServiceTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "class": "com.ingot.cloud.bff.service.SameOriginLoginLedgerTest",
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "class": "com.ingot.cloud.bff.service.LedgerHttpFailureContractTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-bff",
+        "class": "com.ingot.cloud.bff.service.OrganizationSwitchLedgerTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.error.GatewayErrorWebExceptionHandlerTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.filter.SessionTokenRelayFilterCookieTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.security.ChallengeFilterTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.filter.auth.AuthContextRelayFilterTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.captcha.CaptchaVCProcessorTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.filter.auth.internal.BearerJwtPayloadReaderTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.security.ChallengeResponsesTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.filter.BffAppContextFilterTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.security.config.BlacklistEventReporterConfigurationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.filter.auth.internal.ReactiveOnlineTokenUserTypeReaderTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.config.GatewayBffPropertiesTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.security.AccountLockFilterTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-service/ingot-gateway",
+        "class": "com.ingot.cloud.gateway.security.TempBlockStoreTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.model.bff.OrganizationPageJsonTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.utils.BffCookiePolicyTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.jackson.InApiTimeModuleTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.utils.EnumUtilsTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.model.security.CredentialExpirationReasonTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-commons",
+        "class": "com.ingot.framework.commons.model.iam.extension.ResourceDescriptorTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.authentication.PreAuthorizationCredentialAdmissionTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.token.AbsoluteExpiryRefreshTokenGeneratorTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.jackson2.PreAuthorizationDeadlineTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.SessionConcurrencyEnforcerTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.LocalSessionConcurrencyPolicySourceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.config.annotation.web.configuration.JwtTimeProtocolTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.session.SessionRegistrarTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.config.annotation.web.configurers.LoginFailureMessagesAuthenticationTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.session.DefaultSessionRevocationServiceTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.web.authentication.CustomOAuth2AuthorizationCodeRequestAuthenticationConverterTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.RemoteSessionConcurrencyPolicyResolverTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.authentication.AuthenticatedMemberBinderTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.jackson2.InUserIdentitySerializationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.web.authentication.DefaultAuthenticationFailureHandlerTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.resource.access.expression.InSecurityExpressionTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.SessionStoreAvailabilityTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.core.userdetails.CredentialExpirationMessagesTest",
+        "tests": 21,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.authorization.RedisOnlineTokenServiceTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.web.InTokenAuthFilterTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.config.annotation.web.configuration.PasswordEncoderConfigurationTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.resource.authentication.RemoteSessionAuthorityHttpTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.jwt.JwtTenantValidatorTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.core.userdetails.InUserUtcMetadataTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.resource.authentication.JwtInUserConverterTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.oauth2.server.resource.authentication.SecurityMutationTransportHttpTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-common",
+        "class": "com.ingot.framework.security.core.userdetails.InUserIdentityTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "class": "com.ingot.framework.feign.FeignTimeContractTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "class": "com.ingot.framework.feign.reactive.ReactiveOAuth2FeignRequestInterceptorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "class": "com.ingot.framework.feign.FeignCredentialLoggingTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "class": "com.ingot.framework.feign.OAuth2FeignRequestInterceptorTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-feign",
+        "class": "com.ingot.framework.feign.FeignReactiveHttpMessageConvertersTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.ManageAccountStatusUseCaseServiceTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.impl.LocalAccountLockoutPolicyLoaderTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.ConfirmPasswordUseCaseServiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.model.LockStateUtcBoundaryTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.RecordLoginUseCaseServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.LockAccountUseCaseServiceTest",
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.port.outbound.redis.RedisAccountLockSignalAdapterTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.ChangePasswordUseCaseServiceTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+        "class": "com.ingot.framework.security.account.domain.service.UnlockAccountUseCaseServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "realMysql": true,
+    "realRedis": true,
+    "grAvailable": true
+  },
+  "freshPythonChecks": {
+    "packageBoundaries": 10,
+    "apiContracts": 8,
+    "frameworkDdlOwnership": 6,
+    "failures": 0
+  },
+  "realGroupCount": 34,
+  "real": {
+    "standardRt": {
+      "date": "2026-11-15T07:41:21.314Z",
+      "phase": "F13 real standard OAuth revocation",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:44:24.037568Z",
+            "rootExpiresAt": "2026-11-15T07:44:24.037568Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "real-refresh-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshStatus": 400,
+          "revokeStatus": 200,
+          "noOriginalOrSuccessorUsable": true,
+          "deadlineBoundary": "independent rolling OAuth RT client; concurrent refresh may update its configured TTL; fixed BFF deadline verified separately"
+        },
+        {
+          "case": "real-new-login-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "freshLoginOnOppositeNode": true,
+          "differentSid": true,
+          "newLoginAndRefresh200": true,
+          "oldRepeatedRevokeDoesNotCloseNewRoot": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "delayed-old-revocation-after-fresh-login",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "actualHeldHttpRequest": true,
+          "newLoginCommittedBeforeOldRevocation": true,
+          "newLoginAndRefresh200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "dependency-failure-does-not-acknowledge-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "faultStatus": 503,
+          "onlyReadOnlyRecoveryChecks": true,
+          "originalStayedActiveUntilExplicitSuccessfulRevoke": true,
+          "thenOldRt400At401": true
+        },
+        {
+          "case": "auth-restart-preserves-revocation-and-independent-login",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualOppositeAuthRestart": true,
+          "oldRtAndAtRejectedBothNodes": true,
+          "newRootRefreshAndProfile200": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:45:45.847573Z",
+            "rootExpiresAt": "2026-11-15T07:45:45.847573Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "real-refresh-revocation-race",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "refreshStatus": 200,
+          "revokeStatus": 200,
+          "noOriginalOrSuccessorUsable": true,
+          "deadlineBoundary": "independent rolling OAuth RT client; concurrent refresh may update its configured TTL; fixed BFF deadline verified separately"
+        },
+        {
+          "case": "real-new-login-revocation-race",
+          "loginAuth": 1,
+          "revokeAuth": 1,
+          "status": "passed",
+          "freshLoginAuth": 0,
+          "freshLoginOnOppositeNode": true,
+          "differentSid": true,
+          "newLoginAndRefresh200": true,
+          "oldRepeatedRevokeDoesNotCloseNewRoot": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "delayed-old-revocation-after-fresh-login",
+          "loginAuth": 1,
+          "revokeAuth": 1,
+          "status": "passed",
+          "freshLoginAuth": 0,
+          "actualHeldHttpRequest": true,
+          "newLoginCommittedBeforeOldRevocation": true,
+          "newLoginAndRefresh200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "dependency-failure-does-not-acknowledge-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "faultStatus": 503,
+          "onlyReadOnlyRecoveryChecks": true,
+          "originalStayedActiveUntilExplicitSuccessfulRevoke": true,
+          "thenOldRt400At401": true
+        },
+        {
+          "case": "auth-restart-preserves-revocation-and-independent-login",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "actualOppositeAuthRestart": true,
+          "oldRtAndAtRejectedBothNodes": true,
+          "newRootRefreshAndProfile200": true,
+          "deadlineUnchanged": true
+        }
+      ],
+      "status": "passed"
+    },
+    "standardAt": {
+      "date": "2026-11-15T07:44:12.554Z",
+      "phase": "F13 real standard access revocation compatibility",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        },
+        {
+          "case": "older-access-selective-revocation-and-authentication-boundary",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "unauthenticatedInsideHeaderRedirectsWithoutRevocation": true,
+          "missingClientRawStatus": 302,
+          "badClientSecretStatus": 401,
+          "wrongHintCannotChangeActualTokenKind": true,
+          "onlySelectedAtRevoked": true,
+          "currentAtAndRtPreservedBeforeFamilyRevoke": true,
+          "thenFamilyAt401Rt400": true
+        },
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        },
+        {
+          "case": "older-access-selective-revocation-and-authentication-boundary",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "unauthenticatedInsideHeaderRedirectsWithoutRevocation": true,
+          "missingClientRawStatus": 302,
+          "badClientSecretStatus": 401,
+          "wrongHintCannotChangeActualTokenKind": true,
+          "onlySelectedAtRevoked": true,
+          "currentAtAndRtPreservedBeforeFamilyRevoke": true,
+          "thenFamilyAt401Rt400": true
+        }
+      ],
+      "status": "passed",
+      "missingClientObservation": {
+        "status": 302,
+        "redirected": false,
+        "path": "/oauth2/revoke",
+        "location": "http://192.168.252.10:28111/oauth2/login"
+      }
+    },
+    "bffSecurity": {
+      "date": "2026-11-15T07:44:28.196Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 11,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 3.551,
+            "observedBlocked": true
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 0,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        },
+        {
+          "case": "planned-GR-primary-switchover",
+          "status": "passed",
+          "oldRootStayedRevoked": true,
+          "newIdentityAndCutoffUnchanged": true
+        },
+        {
+          "case": "R02",
+          "source": 1,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 15,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 0.141,
+            "observedBlocked": false
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 1,
+          "target": 0,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 1,
+          "newLoginNode": 0,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 1,
+          "target": 0,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 1,
+          "newLoginNode": 0,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 1,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        }
+      ],
+      "status": "passed",
+      "batchStartedAt": "2026-11-15T07:44:28.196Z",
+      "baselineReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 2,
+        "transient503": 0,
+        "healthyConsecutiveBatches": 2
+      },
+      "maxObservedBrowserCookieFraction": 0.9264659881591797,
+      "postSwitchReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 2,
+        "transient503": 0,
+        "healthyConsecutiveBatches": 2
+      },
+      "postSwitchIamReadPoolCheck": {
+        "safeReadsOnly": true,
+        "healthyConsecutiveBatches": 2,
+        "statuses": [
+          "200:S0200"
+        ]
+      },
+      "routingProof": {
+        "bffNodes": [
+          0,
+          1
+        ],
+        "authNodes": [
+          0,
+          1
+        ],
+        "strictRecoveryByNode": [
+          {
+            "node": 0,
+            "statuses": [
+              200,
+              503,
+              401
+            ]
+          },
+          {
+            "node": 1,
+            "statuses": [
+              200,
+              503,
+              401
+            ]
+          }
+        ],
+        "logoutByNode": [
+          {
+            "node": 0,
+            "statuses": [
+              409,
+              200
+            ]
+          },
+          {
+            "node": 1,
+            "statuses": [
+              200,
+              409
+            ]
+          }
+        ]
+      }
+    },
+    "switchRoundTrip": {
+      "date": "2026-11-15T07:47:30.644Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "A-to-B-to-A-cross-nodes",
+          "status": "passed",
+          "createAndCommitOnDifferentNodes": true,
+          "memberAndDepartmentRebound": true,
+          "oneRootTwoGenerations": true,
+          "threeDistinctSids": true,
+          "originalCutoffAndCookieHeaderPreserved": true,
+          "oldCookieRejected": true,
+          "staleContextWithNewCookie409": true
+        }
+      ],
+      "status": "passed",
+      "maxObservedBrowserCookieFraction": 0.9945340156555176
+    },
+    "platform": {
+      "date": "2026-11-15T07:47:48.049Z",
+      "cases": [
+        {
+          "name": "platform login has no switch menu and tenant candidate API refuses platform application",
+          "status": "passed",
+          "candidateQuery": {
+            "status": 403,
+            "code": "BFF_ENTRY_MISMATCH"
+          }
+        },
+        {
+          "name": "platform logout acknowledges durable revocation without Cookie deletion",
+          "status": "passed",
+          "httpStatus": 200,
+          "setsCookie": false
+        }
+      ],
+      "errors": [],
+      "status": "passed"
+    }
+  },
+  "gr": {
+    "beforeIncludedIn410": {
+      "module": "ingot-service/ingot-auth/ingot-auth-provider",
+      "class": "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "after": {
+      "phase": "after",
+      "primary": "test-worker1",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "names": [
+        "newPhysicalTransactionMustCheckItsOwnBarrierAndOuterMarkerIsRestored()",
+        "nestedRequiredOperationsUseOneBarrierAndCommitAtomically()",
+        "caughtNestedFailureStillRollsBackWholeRequiredTransaction()"
+      ],
+      "exit": 0
+    },
+    "executions": 6,
+    "uniqueTests": 3,
+    "notAdditiveToRegressionUniqueCount": true,
+    "plannedPrimarySwitchover": {
+      "from": "test-manager",
+      "to": "test-worker1",
+      "onlineMembers": 3,
+      "plannedPrimarySwitchover": true,
+      "historyReset": false
+    }
+  },
+  "quiescent": {
+    "status": "passed",
+    "quiescentAfterStoppingSixJvms": true,
+    "sameView": true,
+    "nineAuthTablesAndIamResultTableMatch": true,
+    "nodes": [
+      {
+        "vm": "test-manager",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "e551621536f50cd2",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "1481084879",
+          "ingot_auth.auth_security_binding": "2883091503",
+          "ingot_auth.auth_security_context": "1966202488",
+          "ingot_auth.auth_security_session": "373460443",
+          "ingot_auth.auth_security_token": "3931994864",
+          "ingot_auth.auth_security_operation": "3678928102",
+          "ingot_auth.auth_security_scope": "156019260",
+          "ingot_auth.auth_security_outbox": "1460210179",
+          "ingot_auth.auth_security_signing_key": "2653216064",
+          "ingot_iam.iam_security_mutation": "1810450140"
+        }
+      },
+      {
+        "vm": "test-worker1",
+        "state": "ONLINE",
+        "role": "PRIMARY",
+        "viewHash": "e551621536f50cd2",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "1481084879",
+          "ingot_auth.auth_security_binding": "2883091503",
+          "ingot_auth.auth_security_context": "1966202488",
+          "ingot_auth.auth_security_session": "373460443",
+          "ingot_auth.auth_security_token": "3931994864",
+          "ingot_auth.auth_security_operation": "3678928102",
+          "ingot_auth.auth_security_scope": "156019260",
+          "ingot_auth.auth_security_outbox": "1460210179",
+          "ingot_auth.auth_security_signing_key": "2653216064",
+          "ingot_iam.iam_security_mutation": "1810450140"
+        }
+      },
+      {
+        "vm": "test-worker2",
+        "state": "ONLINE",
+        "role": "SECONDARY",
+        "viewHash": "e551621536f50cd2",
+        "onlineMembers": 3,
+        "durableFlush": 1,
+        "syncBinlog": 1,
+        "consistency": "BEFORE_AND_AFTER",
+        "exitAction": "ABORT_SERVER",
+        "requiredIncarnationMatches": true,
+        "blockedScopes": 0,
+        "nonTerminalIamMutations": 0,
+        "checksums": {
+          "ingot_auth.auth_security_control": "1481084879",
+          "ingot_auth.auth_security_binding": "2883091503",
+          "ingot_auth.auth_security_context": "1966202488",
+          "ingot_auth.auth_security_session": "373460443",
+          "ingot_auth.auth_security_token": "3931994864",
+          "ingot_auth.auth_security_operation": "3678928102",
+          "ingot_auth.auth_security_scope": "156019260",
+          "ingot_auth.auth_security_outbox": "1460210179",
+          "ingot_auth.auth_security_signing_key": "2653216064",
+          "ingot_iam.iam_security_mutation": "1810450140"
+        }
+      }
+    ]
+  },
+  "environment": {
+    "samePhysicalHost": true,
+    "vmKernels": [
+      {
+        "vm": "test-manager",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "436bf851a7b03fd9"
+      },
+      {
+        "vm": "test-worker1",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "b4289331746932e3"
+      },
+      {
+        "vm": "test-worker2",
+        "kernel": "6.8.0-147-generic",
+        "bootIdHash": "5488c9de1800120e"
+      }
+    ],
+    "runtime": "two Auth/BFF, IAM/Gateway; three MySQL8.4 GR and six Redis8.2 Cluster",
+    "temporaryMemoryGiB": [
+      4,
+      4,
+      4
+    ],
+    "componentStores": "one standalone MySQL and Redis on manager solely for regression; removed before final healthy-three-member acceptance",
+    "productionStrongGates": "BEFORE_AND_AFTER,flush1,sync1,ABORT_SERVER,REQUIRED incarnation; no runtime standalone override",
+    "capacityDifference": {
+      "defaultDiskHealthThreshold": "10GB",
+      "isolatedOverride": "128MB",
+      "sameAsF12": true,
+      "productionConfigurationChanged": false,
+      "strongGrGatesUnchanged": true,
+      "performanceCapacityOrProductionReadinessClaim": false
+    },
+    "capacityOrPerformancePassClaim": false
+  },
+  "resourceRecovery": {
+    "managerOom": {
+      "vm": "test-manager",
+      "oomKilled": true,
+      "exitCode": 137,
+      "finishedAt": "2026-11-15T07:16:31.597527804Z",
+      "runtimeRecoveryNotCountedComplete": true
+    },
+    "rejoin": {
+      "status": "passed",
+      "reason": "manager global OOM during component/runtime overlap",
+      "componentInstancesRemoved": 2,
+      "originalPersistentDataReused": true,
+      "historyReset": false,
+      "cloneUsed": false,
+      "threeOnline": [
+        {
+          "vm": "test-manager",
+          "onlineMembers": 3,
+          "requiredIncarnation": true
+        },
+        {
+          "vm": "test-worker1",
+          "onlineMembers": 3,
+          "requiredIncarnation": true
+        },
+        {
+          "vm": "test-worker2",
+          "onlineMembers": 3,
+          "requiredIncarnation": true
+        }
+      ],
+      "productionGrGatesUnchanged": true,
+      "finalCriticalSuiteWillRerun": true
+    },
+    "finalCriticalSuitesRerunAfterAllThreeOnline": true,
+    "preRejoinRt18": {
+      "date": "2026-11-15T07:20:29.767Z",
+      "phase": "F13 real standard OAuth revocation",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:23:33.078002Z",
+            "rootExpiresAt": "2026-11-15T07:23:33.078002Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "real-refresh-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshStatus": 400,
+          "revokeStatus": 200,
+          "noOriginalOrSuccessorUsable": true,
+          "deadlineBoundary": "independent rolling OAuth RT client; concurrent refresh may update its configured TTL; fixed BFF deadline verified separately"
+        },
+        {
+          "case": "real-new-login-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "freshLoginOnOppositeNode": true,
+          "differentSid": true,
+          "newLoginAndRefresh200": true,
+          "oldRepeatedRevokeDoesNotCloseNewRoot": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "delayed-old-revocation-after-fresh-login",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "actualHeldHttpRequest": true,
+          "newLoginCommittedBeforeOldRevocation": true,
+          "newLoginAndRefresh200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "dependency-failure-does-not-acknowledge-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "faultStatus": 503,
+          "onlyReadOnlyRecoveryChecks": true,
+          "originalStayedActiveUntilExplicitSuccessfulRevoke": true,
+          "thenOldRt400At401": true
+        },
+        {
+          "case": "auth-restart-preserves-revocation-and-independent-login",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualOppositeAuthRestart": true,
+          "oldRtAndAtRejectedBothNodes": true,
+          "newRootRefreshAndProfile200": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:24:57.098723Z",
+            "rootExpiresAt": "2026-11-15T07:24:57.098723Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "real-refresh-revocation-race",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "refreshStatus": 400,
+          "revokeStatus": 200,
+          "noOriginalOrSuccessorUsable": true,
+          "deadlineBoundary": "independent rolling OAuth RT client; concurrent refresh may update its configured TTL; fixed BFF deadline verified separately"
+        },
+        {
+          "case": "real-new-login-revocation-race",
+          "loginAuth": 1,
+          "revokeAuth": 1,
+          "status": "passed",
+          "freshLoginAuth": 0,
+          "freshLoginOnOppositeNode": true,
+          "differentSid": true,
+          "newLoginAndRefresh200": true,
+          "oldRepeatedRevokeDoesNotCloseNewRoot": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "delayed-old-revocation-after-fresh-login",
+          "loginAuth": 1,
+          "revokeAuth": 1,
+          "status": "passed",
+          "freshLoginAuth": 0,
+          "actualHeldHttpRequest": true,
+          "newLoginCommittedBeforeOldRevocation": true,
+          "newLoginAndRefresh200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "dependency-failure-does-not-acknowledge-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "faultStatus": 503,
+          "onlyReadOnlyRecoveryChecks": true,
+          "originalStayedActiveUntilExplicitSuccessfulRevoke": true,
+          "thenOldRt400At401": true
+        },
+        {
+          "case": "auth-restart-preserves-revocation-and-independent-login",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "actualOppositeAuthRestart": true,
+          "oldRtAndAtRejectedBothNodes": true,
+          "newRootRefreshAndProfile200": true,
+          "deadlineUnchanged": true
+        }
+      ],
+      "status": "passed"
+    },
+    "preRejoinAt4": {
+      "date": "2026-11-15T07:26:40.909Z",
+      "phase": "F13 real standard access revocation compatibility",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        },
+        {
+          "case": "older-access-selective-revocation-and-authentication-boundary",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "unauthenticatedInsideHeaderRedirectsWithoutRevocation": true,
+          "missingClientRawStatus": 302,
+          "badClientSecretStatus": 401,
+          "wrongHintCannotChangeActualTokenKind": true,
+          "onlySelectedAtRevoked": true,
+          "currentAtAndRtPreservedBeforeFamilyRevoke": true,
+          "thenFamilyAt401Rt400": true
+        },
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        },
+        {
+          "case": "older-access-selective-revocation-and-authentication-boundary",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "unauthenticatedInsideHeaderRedirectsWithoutRevocation": true,
+          "missingClientRawStatus": 302,
+          "badClientSecretStatus": 401,
+          "wrongHintCannotChangeActualTokenKind": true,
+          "onlySelectedAtRevoked": true,
+          "currentAtAndRtPreservedBeforeFamilyRevoke": true,
+          "thenFamilyAt401Rt400": true
+        }
+      ],
+      "status": "passed",
+      "missingClientObservation": {
+        "status": 302,
+        "redirected": false,
+        "path": "/oauth2/revoke",
+        "location": "http://192.168.252.10:28111/oauth2/login"
+      }
+    },
+    "preRejoinResultsNotCountedAsFinal34": true
+  },
+  "retainedAttempts": {
+    "directed-attempt1.json": {
+      "phase": "directed",
+      "summary": {
+        "tests": 13,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 12,
+        "exit": 1
+      },
+      "classes": [
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationProviderTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationIntegrationTest",
+          "tests": 11,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "realMysql": true,
+      "realRedis": true,
+      "grAvailable": true
+    },
+    "regression-attempt1.json": {
+      "phase": "regression",
+      "summary": {
+        "tests": 410,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0,
+        "passed": 409,
+        "exit": 1
+      },
+      "classes": [
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerProjectionsIntegrationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.service.biz.impl.BizSessionServiceImplTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.web.inner.InnerSessionAPITest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerBffTransactionsIntegrationTest",
+          "tests": 28,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerAuthorizationsIntegrationTest",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerFailureFilterTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerGroupReplicationIntegrationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerSwitchIssuanceIntegrationTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.service.biz.StrictOrganizationTokenVerifierTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationProviderTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.service.biz.OrganizationSessionServiceTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerPreAuthorizationIntegrationTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerRestoreIntegrationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.AuthorityServiceVerifierTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerTokenRevocationIntegrationTest",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerAuthorizationCodecTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerMutationFencesIntegrationTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerRetentionIntegrationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.web.inner.InnerOrganizationFailureContractTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.client.RedisAuthorizationTimeContractTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.service.biz.impl.CachingRemoteUserDetailsServiceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.JdbcSecurityLedgerIntegrationTest",
+          "tests": 13,
+          "failures": 1,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.service.biz.OrganizationTokenIssuerTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.web.inner.InnerLedgerRequestContractTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerAuditOutboxIntegrationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.ledger.LedgerCryptographyTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-auth/ingot-auth-provider",
+          "class": "com.ingot.cloud.auth.client.UtcJdbcContractTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-bff",
+          "class": "com.ingot.cloud.bff.service.LoginTransactionServiceTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-bff",
+          "class": "com.ingot.cloud.bff.service.SameOriginLoginLedgerTest",
+          "tests": 13,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-bff",
+          "class": "com.ingot.cloud.bff.service.LedgerHttpFailureContractTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-bff",
+          "class": "com.ingot.cloud.bff.service.OrganizationSwitchLedgerTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.error.GatewayErrorWebExceptionHandlerTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.filter.SessionTokenRelayFilterCookieTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.security.ChallengeFilterTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.filter.auth.AuthContextRelayFilterTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.captcha.CaptchaVCProcessorTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.filter.auth.internal.BearerJwtPayloadReaderTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.security.ChallengeResponsesTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.filter.BffAppContextFilterTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.security.config.BlacklistEventReporterConfigurationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.filter.auth.internal.ReactiveOnlineTokenUserTypeReaderTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.config.GatewayBffPropertiesTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.security.AccountLockFilterTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-service/ingot-gateway",
+          "class": "com.ingot.cloud.gateway.security.TempBlockStoreTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.model.bff.OrganizationPageJsonTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.utils.BffCookiePolicyTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.jackson.InApiTimeModuleTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.utils.EnumUtilsTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.model.security.CredentialExpirationReasonTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-commons",
+          "class": "com.ingot.framework.commons.model.iam.extension.ResourceDescriptorTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.authentication.PreAuthorizationCredentialAdmissionTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.token.AbsoluteExpiryRefreshTokenGeneratorTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.jackson2.PreAuthorizationDeadlineTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.SessionConcurrencyEnforcerTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.LocalSessionConcurrencyPolicySourceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.config.annotation.web.configuration.JwtTimeProtocolTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.session.SessionRegistrarTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.config.annotation.web.configurers.LoginFailureMessagesAuthenticationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.session.DefaultSessionRevocationServiceTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.web.authentication.CustomOAuth2AuthorizationCodeRequestAuthenticationConverterTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.session.concurrency.RemoteSessionConcurrencyPolicyResolverTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.authentication.AuthenticatedMemberBinderTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.jackson2.InUserIdentitySerializationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-authorization-server",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.web.authentication.DefaultAuthenticationFailureHandlerTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.resource.access.expression.InSecurityExpressionTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.SessionStoreAvailabilityTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.core.userdetails.CredentialExpirationMessagesTest",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.authorization.RedisOnlineTokenServiceTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.web.InTokenAuthFilterTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.config.annotation.web.configuration.PasswordEncoderConfigurationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.resource.authentication.RemoteSessionAuthorityHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.jwt.JwtTenantValidatorTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.core.userdetails.InUserUtcMetadataTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.resource.authentication.JwtInUserConverterTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.oauth2.server.resource.authentication.SecurityMutationTransportHttpTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-common",
+          "class": "com.ingot.framework.security.core.userdetails.InUserIdentityTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-feign",
+          "class": "com.ingot.framework.feign.FeignTimeContractTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-feign",
+          "class": "com.ingot.framework.feign.reactive.ReactiveOAuth2FeignRequestInterceptorTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-feign",
+          "class": "com.ingot.framework.feign.FeignCredentialLoggingTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-feign",
+          "class": "com.ingot.framework.feign.OAuth2FeignRequestInterceptorTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-feign",
+          "class": "com.ingot.framework.feign.FeignReactiveHttpMessageConvertersTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.ManageAccountStatusUseCaseServiceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.impl.LocalAccountLockoutPolicyLoaderTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.ConfirmPasswordUseCaseServiceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.model.LockStateUtcBoundaryTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.RecordLoginUseCaseServiceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.LockAccountUseCaseServiceTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.port.outbound.redis.RedisAccountLockSignalAdapterTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.ChangePasswordUseCaseServiceTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "module": "ingot-framework/ingot-security/ingot-security-account/ingot-security-account-core",
+          "class": "com.ingot.framework.security.account.domain.service.UnlockAccountUseCaseServiceTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ],
+      "realMysql": true,
+      "realRedis": true,
+      "grAvailable": true
+    },
+    "revocation-attempt1.json": {
+      "date": "2026-11-15T07:17:12.355Z",
+      "phase": "F13 real standard OAuth revocation",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:20:14.863250Z",
+            "rootExpiresAt": "2026-11-15T07:20:14.863250Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "real-refresh-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "refreshStatus": 400,
+          "revokeStatus": 200,
+          "noOriginalOrSuccessorUsable": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "real-new-login-revocation-race",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "freshLoginOnOppositeNode": true,
+          "differentSid": true,
+          "newLoginAndRefresh200": true,
+          "oldRepeatedRevokeDoesNotCloseNewRoot": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "delayed-old-revocation-after-fresh-login",
+          "loginAuth": 0,
+          "revokeAuth": 0,
+          "status": "passed",
+          "freshLoginAuth": 1,
+          "actualHeldHttpRequest": true,
+          "newLoginCommittedBeforeOldRevocation": true,
+          "newLoginAndRefresh200": true,
+          "oldRtAndAtRejected": true
+        },
+        {
+          "case": "dependency-failure-does-not-acknowledge-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "faultStatus": 503,
+          "onlyReadOnlyRecoveryChecks": true,
+          "originalStayedActiveUntilExplicitSuccessfulRevoke": true,
+          "thenOldRt400At401": true
+        },
+        {
+          "case": "auth-restart-preserves-revocation-and-independent-login",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "actualOppositeAuthRestart": true,
+          "oldRtAndAtRejectedBothNodes": true,
+          "newRootRefreshAndProfile200": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "fresh-rt-durable-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "revokeStatus": 200,
+          "oldRt400BothNodes": true,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true,
+          "dbAfter": {
+            "sessionStatus": "REVOKED",
+            "rootStatus": "REVOKED",
+            "rootCurrentIsThisSid": true,
+            "sessionExpiresAt": "2026-11-15T07:21:41.266259Z",
+            "rootExpiresAt": "2026-11-15T07:21:41.266259Z",
+            "absoluteExpiresAt": null,
+            "generation": 0,
+            "credentialsByStatus": {
+              "REVOKED": 2
+            }
+          },
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "consumed-rt-closes-successor-family-and-all-access",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "refreshes": 2,
+          "revokeConsumedOriginal": true,
+          "allThreeAt401": true,
+          "allRt400BothNodes": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "naturally-expired-access-live-rt-revocation",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "actualExpiryWait": true,
+          "rtRevocation200": true,
+          "oldRt400": true,
+          "deadlineUnchanged": true
+        },
+        {
+          "case": "client-ownership-repeat-and-unknown",
+          "loginAuth": 1,
+          "revokeAuth": 0,
+          "status": "passed",
+          "otherClientDenied": true,
+          "originalRefreshStillUsableBeforeCorrectRevoke": true,
+          "repeatAndUnknown200": true,
+          "oldRtAndAtRejected": true
+        }
+      ],
+      "status": "failed",
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '2026-11-15T07:22:16.452179Z'\n- '2026-11-15T07:22:15.746600Z'\n                     ^\n",
+      "location": [
+        "    at assertRevoked (file:///private/tmp/ingot-f13-pt9tue1p/revocation-real.mjs:22:559)",
+        "    at async file:///private/tmp/ingot-f13-pt9tue1p/revocation-real.mjs:43:285"
+      ]
+    },
+    "access-revocation-attempt1.json": {
+      "date": "2026-11-15T07:24:23.121Z",
+      "phase": "F13 real standard access revocation compatibility",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        }
+      ],
+      "status": "failed",
+      "error": "Expected values to be strictly equal:\n\n200 !== 401\n",
+      "location": [
+        "    at file:///private/tmp/ingot-f13-pt9tue1p/access-revocation-real.mjs:34:245"
+      ]
+    },
+    "access-revocation-attempt2.json": {
+      "date": "2026-11-15T07:25:58.693Z",
+      "phase": "F13 real standard access revocation compatibility",
+      "topology": "three VM kernels on same physical host; two Auth/BFF; strong three-member MySQL GR; six Redis Cluster plus isolated component test stores; actual HTTP",
+      "groups": [
+        {
+          "case": "access-only-no-refresh-standard-revocation",
+          "loginAuth": 0,
+          "revokeAuth": 1,
+          "status": "passed",
+          "httpStatus": 200,
+          "oldAt401AndNoAuthorityBothNodes": true,
+          "noCookie": true
+        }
+      ],
+      "status": "failed",
+      "missingClientObservation": {
+        "status": 302,
+        "redirected": false,
+        "path": "/oauth2/revoke",
+        "location": "http://192.168.252.11:28112/oauth2/login"
+      },
+      "error": "Expected values to be strictly equal:\n\n302 !== 401\n",
+      "location": [
+        "    at file:///private/tmp/ingot-f13-pt9tue1p/access-revocation-real.mjs:34:473"
+      ]
+    },
+    "security-attempt1.json": {
+      "date": "2026-11-15T07:29:27.896Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 9,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 0.175,
+            "observedBlocked": false
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        }
+      ],
+      "status": "failed_fixture_proxy_variable_shadow",
+      "batchStartedAt": "2026-11-15T07:29:27.896Z",
+      "baselineReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 2,
+        "transient503": 0,
+        "healthyConsecutiveBatches": 2
+      },
+      "maxObservedBrowserCookieFraction": 0.4297060966491699,
+      "failureReason": "UnboundLocalError in added fault-proxy branch; incomplete batch not counted"
+    },
+    "security-attempt2.json": {
+      "date": "2026-11-15T07:35:14.987Z",
+      "topology": "three Ubuntu VM kernels on one host; 2 Auth/BFF; 3-member GR; 3-primary/3-replica Redis; real Chrome HTTPS; no performance claim",
+      "groups": [
+        {
+          "case": "R02",
+          "source": 0,
+          "status": "passed",
+          "positiveRecoveredByBothNodes": true,
+          "sameCookieSidTokenDeadline": true,
+          "dependency503BothNodesWithoutCookie": true,
+          "oldRecoveryDeniedInsideWindow": true,
+          "recoveryAgeSeconds": 7,
+          "crossTenantPasswordMutation": true,
+          "authoritativeFenceActiveVerified": {
+            "credentialFenceActive": true,
+            "waitSeconds": 0.159,
+            "observedBlocked": false
+          },
+          "ordinaryTenantAFormalATPreserved": true,
+          "rejects": [
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 0,
+              "auth": 0,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            },
+            {
+              "bff": 1,
+              "auth": 1,
+              "status": 401,
+              "phase": "after-authoritative-fence-active"
+            }
+          ],
+          "tokenEndpointCallsDuringRecovery": 0,
+          "newPasswordFreshLogin": true,
+          "gatewayRecoveryDenied": true
+        },
+        {
+          "case": "R03-delayed-binding",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "R03-concurrent-new-login",
+          "source": 0,
+          "target": 1,
+          "status": "passed",
+          "actualDelayedCookieAcrossNodes": true,
+          "logoutNode": 0,
+          "newLoginNode": 1,
+          "originalRootRejectedByBothAuthNodes": true,
+          "publicOperationWithoutCookieDenied": true,
+          "anotherRootsCookieDenied": true,
+          "wrongDeviceDenied": true,
+          "oldCandidateStatuses": [
+            403,
+            403,
+            403
+          ],
+          "oldCandidatesCannotResume": true,
+          "noLogoutSetCookie": true,
+          "newIdentityPreservedAcrossBothNodes": true
+        },
+        {
+          "case": "node-restart",
+          "node": 0,
+          "status": "passed",
+          "newCookieSidRootTokenDeadlineUnchanged": true,
+          "oldLoggedOutCookieRejectedByBothNodes": true
+        }
+      ],
+      "status": "failed",
+      "batchStartedAt": "2026-11-15T07:35:14.987Z",
+      "baselineReadPoolCheck": {
+        "safeReadsOnly": true,
+        "batches": 2,
+        "transient503": 0,
+        "healthyConsecutiveBatches": 2
+      },
+      "maxObservedBrowserCookieFraction": 0.7042760848999023,
+      "stack": [
+        "Error: Command failed: /usr/bin/python3 /private/tmp/ingot-f13-pt9tue1p/switchover.py",
+        "Traceback (most recent call last):",
+        "  File \"/private/tmp/ingot-f13-pt9tue1p/switchover.py\", line 7, in <module>",
+        "    primary=next(n for n in nodes if query(n,\"SET SESSION [redacted]='EVENTUAL'; SELECT MEMBER_ROLE FROM performance_schema.replication_group_members WHERE MEMBER_ID=@@server_uuid;\")=='PRIMARY')",
+        "  File \"/private/tmp/ingot-f13-pt9tue1p/switchover.py\", line 7, in <genexpr>"
+      ],
+      "error": "Command failed: /usr/bin/python3 /private/tmp/ingot-f13-pt9tue1p/switchover.py\nTraceback (most recent call last):\n  File \"/private/tmp/ingot-f13-pt9tue1p/switchover.py\", line 7, in <module>\n    primary=next(n for n in nodes if query(n,\"SET SESSION [redacted]='EVENTUAL'; SELECT MEMBER_ROLE FROM performance_schema.replication_group_members WHERE MEMBER_ID=@@server_uuid;\")=='PRIMARY')\n  File \"/private/tmp/ingot-f13-pt9tue1p/switchover.py\", line 7, in <genexpr>\n    primary=next(n for n in nodes if query(n,\"SET SESSION [redacted]='EVENTUAL'; SELECT MEMBER_ROLE FROM performance_schema.replication_group_members WHERE MEMBER_ID=@@server_uuid;\")=='PRIMARY')\n  File \"/private/tmp/ingot-f13-pt9tue1p/switchover.py\", line 5, in query\n    def query(n,sql):return vm(n['vm'],['sudo','docker','exec','-i',n['name'],'sh','-c','export MYSQL_PWD=\"$(cat /run/secrets/root-password)\"; exec mysql --protocol=tcp -h127.0.0.1 -P23306 -uroot -N -B'],input=sql)\n  File \"/private/tmp/ingot-f13-pt9tue1p/lab.py\", line 20, in vm\n    return run(['multipass','exec',name,'--',*args],input,timeout)\n  File \"/private/tmp/ingot-f13-pt9tue1p/lab.py\", line 15, in run\n    raise RuntimeError('fixture command failed: '+str(args[:3])+' code='+str(value.returncode))\nRuntimeError: fixture command failed: ['multipass', 'exec', 'test-manager'] code=1\n"
+    }
+  },
+  "executionNotes": [
+    "SAS constructor adapter fixed before validation; no credentials in output",
+    "new AT test metadata aligned to real SAS generation after inherited invalidation; entire directed suite rerun",
+    "standalone rejection test requires actual standalone fixture, strong GR tests kept separate; entire410rerun",
+    "independent non-BFF RT uses existing rolling TTL; concurrent refresh can update it, not attributed to revoke; fixed BFF deadline separately strict",
+    "missing client authentication preserves existing raw302 login redirect; automatic following must not be counted as revocation200; old credentials unchanged and bad secret401",
+    "missing private browser envelope descriptor derived from same actual config before full BFF batch",
+    "added proxy local-variable shadow fixed; host proxy restarted only, no JVM/data reset; read-only pool recovery",
+    "manager global OOM from completed component/runtime resource overlap; removed finished component instances and restarted original persistent member; incremental rejoin, no Clone/history reset; final34fresh rerun with three ONLINE members"
+  ],
+  "credentialScan": {
+    "filesScanned": 21,
+    "knownPrivateValuesCompared": 16,
+    "exactMatches": 0,
+    "jwtMatches": 0,
+    "credentialsIncluded": false
+  },
+  "cleanup": {
+    "namespace": "org-ledger-f13-58d71bed5f",
+    "vms": {
+      "test-manager": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "3G",
+        "restoredState": "Stopped"
+      },
+      "test-worker1": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "2G",
+        "restoredState": "Stopped"
+      },
+      "test-worker2": {
+        "ownedContainersRemaining": 0,
+        "ownedDirectoriesRemoved": true,
+        "originalDockerNamesAndRunningStatePreserved": true,
+        "shmSizeRestored": "size=2045603840",
+        "restoredMemory": "2G",
+        "restoredState": "Stopped"
+      }
+    },
+    "host": {
+      "ownedListenersClosed": true,
+      "privateFilesAndRawArtifactsRemoved": 51,
+      "sharedImagesRemoved": false
+    },
+    "completedAt": "2026-11-15T07:54:36Z"
+  },
+  "cleanupInventoryBoundary": {
+    "reason": "initial inventory captured before existing Swarm service restored its three tasks during VM boot",
+    "serviceName": "demo_api",
+    "serviceCreatedAt": "2026-10-16T07:36:00.445960709Z",
+    "servicePredatesTask": true,
+    "lateBootTasks": 3,
+    "lateTasksArePreexistingService": true,
+    "defaultDockerMutationsPerformed": false,
+    "effectiveInventory": {
+      "test-manager": [],
+      "test-worker1": [
+        "demo_api.2.wed9bhmz2qvdmrxhq87yyzymn Up 53 minutes (healthy)",
+        "demo_api.3.syibn54cicj84s9woiaznhc9j Up 53 minutes (healthy)",
+        "demo_api.1.96rmienjow61vqk3qwvjnlivz Up 53 minutes (healthy)"
+      ],
+      "test-worker2": []
+    }
+  },
+  "reuse": {
+    "frontend": "F12/F11 same manifests and product files;658frontend tests/types/builds reused, no fresh frontend full rerun",
+    "iam": "unchanged jar and code;F11original regression reused, unrelated6optionalIAMtests not executed or counted",
+    "priorFullEvidence": "LEDGER-F11-P1-FIXES.json and LEDGER-F12-MULTINODE.json remain original cohorts and results",
+    "historicalEndurance": "candidate10 R1/R2 each20,1000races,21fixed-rootRT,backup/compatible rollback remain original versions; not claimed repeated on F13"
+  },
+  "limitations": [
+    "performance still blocks release",
+    "customer CA,physical sleep/overnight,target deployment/monitoring/first-deploy recovery remain existing release Spec",
+    "three VMs on one host is not physical-host disaster recovery",
+    "early OOM phase used two-member durable majority; only post-rejoin rerun counted as final34",
+    "no deployment/commit/archive/current update authorized this round"
+  ],
+  "finalChecks": {
+    "jsonParsed": 88,
+    "relativeLinksChecked": 252,
+    "brokenLinks": [],
+    "dualRepoExactGroups": 14,
+    "jwtMatches": [],
+    "rawCredentialFieldsInNewEvidence": [],
+    "privateFilesRemaining": 0,
+    "bothGitDiffChecksPassed": true,
+    "bothStagingAreasEmpty": true,
+    "performancePassed": false,
+    "acceptancePassed": true,
+    "f12FailurePreservedAndF13Resolved": true,
+    "finalArtifactsMatchF13": true
+  },
+  "finalVmStateVerification": [
+    {
+      "vm": "test-manager",
+      "state": "Stopped",
+      "memory": "3.0GiB"
+    },
+    {
+      "vm": "test-worker1",
+      "state": "Stopped",
+      "memory": "2.0GiB"
+    },
+    {
+      "vm": "test-worker2",
+      "state": "Stopped",
+      "memory": "2.0GiB"
+    }
+  ]
+}

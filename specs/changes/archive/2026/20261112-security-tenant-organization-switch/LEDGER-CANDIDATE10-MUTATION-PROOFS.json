@@ -1,0 +1,182 @@
+{
+  "date": "2026-11-14T09:27:57.336Z",
+  "cases": [
+    {
+      "type": "PASSWORD_CHANGE",
+      "status": "passed",
+      "whileBlocked": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "afterTerminal": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "reply": {
+        "code": 0,
+        "status": 200,
+        "replyConfirmed": true,
+        "type": "PASSWORD_CHANGE"
+      },
+      "terminal": "COMMITTED"
+    },
+    {
+      "type": "PASSWORD_RESET",
+      "status": "passed",
+      "whileBlocked": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "afterTerminal": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "reply": {
+        "code": 0,
+        "status": 200,
+        "replyConfirmed": true,
+        "type": "PASSWORD_RESET"
+      },
+      "terminal": "COMMITTED"
+    },
+    {
+      "type": "LOCK",
+      "status": "passed",
+      "whileBlocked": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "afterTerminal": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "reply": {
+        "code": 0,
+        "status": 200,
+        "replyConfirmed": true,
+        "type": "LOCK"
+      },
+      "terminal": "COMMITTED"
+    },
+    {
+      "type": "DISABLE",
+      "status": "passed",
+      "whileBlocked": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "afterTerminal": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "reply": {
+        "code": 0,
+        "status": 200,
+        "replyConfirmed": true,
+        "type": "DISABLE"
+      },
+      "terminal": "COMMITTED"
+    },
+    {
+      "type": "UNLOCK",
+      "status": "passed",
+      "whileBlocked": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "afterTerminal": {
+        "preauthorization": {
+          "httpStatus": 403,
+          "code": "BFF_IDENTITY_UNAVAILABLE",
+          "setsFormalCookie": false
+        },
+        "pendingSwitch": {
+          "httpStatus": 401,
+          "code": "BFF_TOKEN_INVALID",
+          "setsFormalCookie": false
+        }
+      },
+      "reply": {
+        "code": 0,
+        "status": 200,
+        "replyConfirmed": true,
+        "type": "UNLOCK"
+      },
+      "terminal": "COMMITTED"
+    }
+  ],
+  "errors": [],
+  "status": "passed"
+}

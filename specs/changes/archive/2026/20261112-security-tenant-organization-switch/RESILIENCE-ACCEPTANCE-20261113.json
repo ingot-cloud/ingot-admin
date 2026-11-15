@@ -1,0 +1,2267 @@
+{
+  "date": "2026-11-13",
+  "status": "passed",
+  "recordedAt": "2026-11-13T02:23:53.923723Z",
+  "realRefreshTokenRun": {
+    "date": "2026-11-13",
+    "status": "passed",
+    "client": "isolated confidential client; password + refresh_token; rotate RT; AT=20s, RT=180s",
+    "cases": [
+      {
+        "name": "A→B→A with seven real RT rotations, Auth restart and near-deadline refresh",
+        "status": "passed",
+        "originalDeadline": "2026-11-13T02:04:42Z",
+        "operations": [
+          {
+            "operationId": "LAY20tun50I6MZWB5OmYQw",
+            "sameResultOnOtherAuth": true,
+            "sidHash": "c093375aba3d779a"
+          },
+          {
+            "operationId": "FO09zwk4SNaNM8MkVb3i1g",
+            "sameResultOnOtherAuth": true,
+            "sidHash": "b887143d468928d2"
+          }
+        ],
+        "samples": [
+          {
+            "at": "2026-11-13T02:03:28.022101Z",
+            "sidHash": "c093375aba3d779a",
+            "jtiHash": "054e12ac9a45c23f",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:03:47.842121Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 74,
+              "online": 74,
+              "accessIndex": 74,
+              "refreshIndex": 74
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:33.217837Z",
+            "sidHash": "c093375aba3d779a",
+            "jtiHash": "1decf9fe0584175b",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:03:53.182373Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 68,
+              "online": 68,
+              "accessIndex": 68,
+              "refreshIndex": 68
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:38.607610Z",
+            "sidHash": "c093375aba3d779a",
+            "jtiHash": "6710ccba675b2fae",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:03:58.550252Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 63,
+              "online": 63,
+              "accessIndex": 63,
+              "refreshIndex": 63
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:43.983725Z",
+            "sidHash": "c093375aba3d779a",
+            "jtiHash": "5452d6834394e0c0",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:03.940525Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 58,
+              "online": 58,
+              "accessIndex": 58,
+              "refreshIndex": 58
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:51.583394Z",
+            "sidHash": "c093375aba3d779a",
+            "jtiHash": "97d2b42afd64cc74",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:11.438336Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 50,
+              "online": 50,
+              "accessIndex": 50,
+              "refreshIndex": 50
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:52.600034Z",
+            "sidHash": "b887143d468928d2",
+            "jtiHash": "ce62ab5614d959aa",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:11.765203Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 49,
+              "online": 50,
+              "accessIndex": 49,
+              "refreshIndex": 49
+            }
+          },
+          {
+            "at": "2026-11-13T02:03:57.789910Z",
+            "sidHash": "b887143d468928d2",
+            "jtiHash": "b36d90269a1805fb",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:17.765484Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 44,
+              "online": 44,
+              "accessIndex": 44,
+              "refreshIndex": 44
+            }
+          },
+          {
+            "at": "2026-11-13T02:04:02.991673Z",
+            "sidHash": "b887143d468928d2",
+            "jtiHash": "a1317b21bc92a1dc",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:22.959761Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 39,
+              "online": 39,
+              "accessIndex": 39,
+              "refreshIndex": 39
+            }
+          },
+          {
+            "at": "2026-11-13T02:04:37.218894Z",
+            "sidHash": "b887143d468928d2",
+            "jtiHash": "6989a81410ac03aa",
+            "absoluteExpiresAt": "2026-11-13T02:04:42Z",
+            "accessExpiresAt": "2026-11-13T02:04:42Z",
+            "refreshExpiresAt": "2026-11-13T02:04:42Z",
+            "onlineExpiresAt": "2026-11-13T02:04:42Z",
+            "redisTtlSeconds": {
+              "authorization": 4,
+              "online": 4,
+              "accessIndex": 4,
+              "refreshIndex": 4
+            }
+          }
+        ],
+        "oldRtReplays": [
+          {
+            "rotation": 1,
+            "node": 0,
+            "oldRefreshReplayStatus": 400,
+            "oldRefreshReplayCode": "invalid_grant"
+          },
+          {
+            "rotation": 2,
+            "node": 1,
+            "oldRefreshReplayStatus": 400,
+            "oldRefreshReplayCode": "invalid_grant"
+          },
+          {
+            "rotation": 3,
+            "node": 0,
+            "oldRefreshReplayStatus": 400,
+            "oldRefreshReplayCode": "invalid_grant"
+          }
+        ]
+      },
+      {
+        "name": "natural original deadline rejects latest RT and removes authorization/online state",
+        "status": "passed",
+        "deadline": "2026-11-13T02:04:42Z",
+        "observedAt": "2026-11-13T02:04:43.377629Z",
+        "refreshStatus": 400,
+        "error": "invalid_grant"
+      },
+      {
+        "name": "revoked RT and source token cannot refresh or issue another organization identity",
+        "status": "passed",
+        "refreshStatus": 400,
+        "switchStatus": 401
+      }
+    ],
+    "observedRotations": [
+      {
+        "rotation": 1,
+        "node": 0,
+        "oldRefreshReplayStatus": 400,
+        "oldRefreshReplayCode": "invalid_grant"
+      },
+      {
+        "rotation": 2,
+        "node": 1,
+        "oldRefreshReplayStatus": 400,
+        "oldRefreshReplayCode": "invalid_grant"
+      },
+      {
+        "rotation": 3,
+        "node": 0,
+        "oldRefreshReplayStatus": 400,
+        "oldRefreshReplayCode": "invalid_grant"
+      }
+    ],
+    "authRestart": {
+      "oldPid": 98587,
+      "newPid": 98714,
+      "currentSidPreserved": true,
+      "newNodeRefreshStatus": 200
+    }
+  },
+  "realRestartAndDependencyRun": {
+    "date": "2026-11-13",
+    "environment": "real isolated IAM, 2 Auth, 2 BFF, Gateway, shared MySQL/Redis",
+    "cases": [
+      {
+        "name": "BFF0 and Auth0 SIGKILL after real issuance; BFF1/Auth1 recover original result after natural lease expiry",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "cbed255efb273c69",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "GQUXhr-7BYX-6r61zQo49A",
+          "expiresAt": 1794536301,
+          "jwtExpiresAt": 1794536421,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:20:21.251909Z"
+          },
+          "redisTtl": 180,
+          "cookieExpiresAt": 1794536301.338468
+        },
+        "final": {
+          "present": true,
+          "sidHash": "490de2e967f8c885",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "FFR_rhJhLa4oG_YnI2APmw",
+          "expiresAt": 1794536301,
+          "jwtExpiresAt": 1794536301,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:18:21Z"
+          },
+          "redisTtl": 149,
+          "cookieExpiresAt": 1794536301
+        },
+        "leaseUntil": 1794536152,
+        "trace": {
+          "mode": "restart",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 75
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/FFR_rhJhLa4oG_YnI2APmw",
+              "status": 200,
+              "ms": 70
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FFR_rhJhLa4oG_YnI2APmw/commit",
+              "status": 500,
+              "ms": 610
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 148
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 69
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/FFR_rhJhLa4oG_YnI2APmw/result",
+              "status": 200,
+              "ms": 31
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 46
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 233
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/FFR_rhJhLa4oG_YnI2APmw/commit",
+              "status": 200,
+              "ms": 589,
+              "formalCookie": {
+                "expiresAt": 1794536301,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FFR_rhJhLa4oG_YnI2APmw/commit",
+              "status": 200,
+              "ms": 601
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 230
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 235
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "FFR_rhJhLa4oG_YnI2APmw",
+              "sidHash": "490de2e967f8c885",
+              "expiresAt": "2026-11-13T02:18:21Z"
+            }
+          ]
+        },
+        "nodeEvents": [
+          {
+            "node": "bff0",
+            "pid": 59519,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 59517,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 69003,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 69004,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              },
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 69004,
+                "at": 1794536122.945896
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "BFF restart after committed response loss; peer resume same result and deadline",
+        "status": "passed",
+        "source": {
+          "present": true,
+          "sidHash": "a1f2bd4e60cf99fa",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "D5kpFIu2JA2z4JFwuXXojw",
+          "expiresAt": 1794536336,
+          "jwtExpiresAt": 1794536455,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:20:55.450751Z"
+          },
+          "redisTtl": 180,
+          "cookieExpiresAt": 1794536336.804312
+        },
+        "final": {
+          "present": true,
+          "sidHash": "85b452200ccaa677",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "CzBcvrSam7y9ph3i4APjeg",
+          "expiresAt": 1794536336,
+          "jwtExpiresAt": 1794536336,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:18:56Z"
+          },
+          "redisTtl": 174,
+          "cookieExpiresAt": 1794536336
+        },
+        "trace": {
+          "mode": "normal",
+          "held": true,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 42
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/CzBcvrSam7y9ph3i4APjeg",
+              "status": 200,
+              "ms": 74
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 50
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 41
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/CzBcvrSam7y9ph3i4APjeg/commit",
+              "status": 200,
+              "ms": 273,
+              "formalCookie": {
+                "expiresAt": 1794536336,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/CzBcvrSam7y9ph3i4APjeg/commit",
+              "status": 500,
+              "ms": 278
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 29
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 43
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/CzBcvrSam7y9ph3i4APjeg/resume",
+              "status": 200,
+              "ms": 55,
+              "formalCookie": {
+                "expiresAt": 1794536336,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/CzBcvrSam7y9ph3i4APjeg/resume",
+              "status": 200,
+              "ms": 60
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 12
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 19
+            }
+          ],
+          "issued": [
+            {
+              "node": 1,
+              "operationId": "CzBcvrSam7y9ph3i4APjeg",
+              "sidHash": "85b452200ccaa677",
+              "expiresAt": "2026-11-13T02:18:56Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "logout during total Auth outage survives both BFF/Auth restarts; old result and Cookie never revive",
+        "status": "passed",
+        "logoutStatus": 200,
+        "cleanupBacklogDuringOutage": 1,
+        "rejected": {
+          "readStatus": 403,
+          "resumeStatus": 403,
+          "commitStatus": 403
+        },
+        "oldCookieMeStatus": 401,
+        "authSidEventuallyAbsent": true,
+        "nodeEvents": [
+          {
+            "node": "bff0",
+            "pid": 59519,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 59517,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 69003,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 69004,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              },
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 69004,
+                "at": 1794536122.945896
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 69003,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69003,
+                "at": 1794536157.5233548
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 69077,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69003,
+                "at": 1794536157.5233548
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69077,
+                "at": 1794536157.723702
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 69004,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              },
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 69004,
+                "at": 1794536122.945896
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 69004,
+                "at": 1794536162.7406578
+              }
+            ]
+          },
+          {
+            "node": "auth1",
+            "pid": 59518,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "auth1",
+                "action": "start",
+                "pid": 59518,
+                "at": 1794536075.1127942
+              },
+              {
+                "node": "auth1",
+                "action": "kill",
+                "pid": 59518,
+                "at": 1794536162.757804
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 69077,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69003,
+                "at": 1794536157.5233548
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69077,
+                "at": 1794536157.723702
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69077,
+                "at": 1794536163.173703
+              }
+            ]
+          },
+          {
+            "node": "bff1",
+            "pid": 59526,
+            "running": false,
+            "ready": false,
+            "events": [
+              {
+                "node": "bff1",
+                "action": "start",
+                "pid": 59526,
+                "at": 1794536075.663734
+              },
+              {
+                "node": "bff1",
+                "action": "kill",
+                "pid": 59526,
+                "at": 1794536163.189655
+              }
+            ]
+          },
+          {
+            "node": "bff0",
+            "pid": 78414,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 59519,
+                "at": 1794536075.332371
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 59519,
+                "at": 1794536122.524509
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69003,
+                "at": 1794536122.754627
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69003,
+                "at": 1794536157.5233548
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 69077,
+                "at": 1794536157.723702
+              },
+              {
+                "node": "bff0",
+                "action": "kill",
+                "pid": 69077,
+                "at": 1794536163.173703
+              },
+              {
+                "node": "bff0",
+                "action": "start",
+                "pid": 78414,
+                "at": 1794536163.369457
+              }
+            ]
+          },
+          {
+            "node": "bff1",
+            "pid": 78416,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "bff1",
+                "action": "start",
+                "pid": 59526,
+                "at": 1794536075.663734
+              },
+              {
+                "node": "bff1",
+                "action": "kill",
+                "pid": 59526,
+                "at": 1794536163.189655
+              },
+              {
+                "node": "bff1",
+                "action": "start",
+                "pid": 78416,
+                "at": 1794536163.778304
+              }
+            ]
+          },
+          {
+            "node": "auth0",
+            "pid": 78415,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 59517,
+                "at": 1794536074.912307
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 59517,
+                "at": 1794536122.5585191
+              },
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 69004,
+                "at": 1794536122.945896
+              },
+              {
+                "node": "auth0",
+                "action": "kill",
+                "pid": 69004,
+                "at": 1794536162.7406578
+              },
+              {
+                "node": "auth0",
+                "action": "start",
+                "pid": 78415,
+                "at": 1794536163.575514
+              }
+            ]
+          },
+          {
+            "node": "auth1",
+            "pid": 78417,
+            "running": true,
+            "ready": true,
+            "events": [
+              {
+                "node": "auth1",
+                "action": "start",
+                "pid": 59518,
+                "at": 1794536075.1127942
+              },
+              {
+                "node": "auth1",
+                "action": "kill",
+                "pid": 59518,
+                "at": 1794536162.757804
+              },
+              {
+                "node": "auth1",
+                "action": "start",
+                "pid": 78417,
+                "at": 1794536163.9995039
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "IAM unavailable: query/create/commit fail closed",
+        "status": "passed",
+        "dependency": "IAM",
+        "statuses": [
+          503,
+          503,
+          503
+        ],
+        "codes": [
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE"
+        ],
+        "source": {
+          "present": true,
+          "sidHash": "faf564d7882b8b39",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "ozywIrCxv9rs2HQdniI1Ng",
+          "expiresAt": 1794536377,
+          "jwtExpiresAt": 1794536495,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:21:35.717402Z"
+          },
+          "redisTtl": 179,
+          "cookieExpiresAt": 1794536377.126298
+        },
+        "initialTx": {
+          "stage": "LOGIN",
+          "formalPresent": false,
+          "resultSidHash": "e452203328c67369"
+        },
+        "recoveredSameTransaction": true,
+        "issuancesAfterRecovery": 1,
+        "final": {
+          "present": true,
+          "sidHash": "e452203328c67369",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "tYDWM2LVtCi5EFY2D5T9Uw",
+          "expiresAt": 1794536377,
+          "jwtExpiresAt": 1794536377,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:19:37Z"
+          },
+          "redisTtl": 169,
+          "cookieExpiresAt": 1794536377
+        },
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 503,
+              "ms": 28
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 52
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 56
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/target",
+              "status": 503,
+              "ms": 18
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 38
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 42
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 503,
+              "ms": 17
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/tYDWM2LVtCi5EFY2D5T9Uw/commit",
+              "status": 503,
+              "ms": 35
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/tYDWM2LVtCi5EFY2D5T9Uw/commit",
+              "status": 503,
+              "ms": 39
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 13
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 19
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 272
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/tYDWM2LVtCi5EFY2D5T9Uw",
+              "status": 200,
+              "ms": 89
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 58
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 52
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/tYDWM2LVtCi5EFY2D5T9Uw/commit",
+              "status": 200,
+              "ms": 536,
+              "formalCookie": {
+                "expiresAt": 1794536377,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/tYDWM2LVtCi5EFY2D5T9Uw/commit",
+              "status": 200,
+              "ms": 540
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "tYDWM2LVtCi5EFY2D5T9Uw",
+              "sidHash": "e452203328c67369",
+              "expiresAt": "2026-11-13T02:19:37Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "AUTH unavailable: query/create/commit fail closed",
+        "status": "passed",
+        "dependency": "AUTH",
+        "statuses": [
+          503,
+          503,
+          503
+        ],
+        "codes": [
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE"
+        ],
+        "source": {
+          "present": true,
+          "sidHash": "cea0619207ad71b2",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "-0JM4lfxZg1jPqhgU2m7_w",
+          "expiresAt": 1794536391,
+          "jwtExpiresAt": 1794536510,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:21:50.280981Z"
+          },
+          "redisTtl": 180,
+          "cookieExpiresAt": 1794536391.625529
+        },
+        "initialTx": {
+          "stage": "LOGIN",
+          "formalPresent": false,
+          "resultSidHash": "a0e100db3e0e4e02"
+        },
+        "recoveredSameTransaction": true,
+        "issuancesAfterRecovery": 1,
+        "final": {
+          "present": true,
+          "sidHash": "a0e100db3e0e4e02",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "cMKAwkkWAcfMEtzYufpkUg",
+          "expiresAt": 1794536391,
+          "jwtExpiresAt": 1794536391,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:19:51Z"
+          },
+          "redisTtl": 169,
+          "cookieExpiresAt": 1794536391
+        },
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 599,
+              "ms": 0
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 7
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 10
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 599,
+              "ms": 0
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 6
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 10
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 599,
+              "ms": 0
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/cMKAwkkWAcfMEtzYufpkUg/commit",
+              "status": 503,
+              "ms": 8
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/cMKAwkkWAcfMEtzYufpkUg/commit",
+              "status": 503,
+              "ms": 12
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 137
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 145
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 149
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 138
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 267
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/cMKAwkkWAcfMEtzYufpkUg",
+              "status": 200,
+              "ms": 1613
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 69
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 6
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 54
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/cMKAwkkWAcfMEtzYufpkUg/commit",
+              "status": 200,
+              "ms": 2194,
+              "formalCookie": {
+                "expiresAt": 1794536391,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/cMKAwkkWAcfMEtzYufpkUg/commit",
+              "status": 200,
+              "ms": 2198
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "cMKAwkkWAcfMEtzYufpkUg",
+              "sidHash": "a0e100db3e0e4e02",
+              "expiresAt": "2026-11-13T02:19:51Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "REDIS unavailable: query/create/commit fail closed",
+        "status": "passed",
+        "dependency": "REDIS",
+        "statuses": [
+          503,
+          503,
+          503
+        ],
+        "codes": [
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE"
+        ],
+        "directAuthStatuses": [
+          503,
+          503
+        ],
+        "directAuthCodes": [
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE"
+        ],
+        "source": {
+          "present": true,
+          "sidHash": "5e721a6903813f14",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "pPxHz1UaxBNFc1_vId-uEA",
+          "expiresAt": 1794536581,
+          "jwtExpiresAt": 1794536701,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:25:01.606512Z"
+          },
+          "redisTtl": 180,
+          "cookieExpiresAt": 1794536581.68742
+        },
+        "initialTx": {
+          "stage": "LOGIN",
+          "formalPresent": false,
+          "resultSidHash": "bc09f8492be45bcb"
+        },
+        "recoveredSameTransaction": true,
+        "issuancesAfterRecovery": 1,
+        "final": {
+          "present": true,
+          "sidHash": "bc09f8492be45bcb",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "6SYm59bwfAeZkSsy8e4CyA",
+          "expiresAt": 1794536581,
+          "jwtExpiresAt": 1794536581,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:23:01Z"
+          },
+          "redisTtl": 170,
+          "cookieExpiresAt": 1794536581
+        },
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 2040
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 2087
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/6SYm59bwfAeZkSsy8e4CyA/commit",
+              "status": 503,
+              "ms": 2094
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 11
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 16
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 68
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/operations/6SYm59bwfAeZkSsy8e4CyA",
+              "status": 200,
+              "ms": 71
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 48
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 5
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 7
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 57
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/6SYm59bwfAeZkSsy8e4CyA/commit",
+              "status": 200,
+              "ms": 309,
+              "formalCookie": {
+                "expiresAt": 1794536581,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/6SYm59bwfAeZkSsy8e4CyA/commit",
+              "status": 200,
+              "ms": 314
+            }
+          ],
+          "issued": [
+            {
+              "node": 0,
+              "operationId": "6SYm59bwfAeZkSsy8e4CyA",
+              "sidHash": "bc09f8492be45bcb",
+              "expiresAt": "2026-11-13T02:23:01Z"
+            }
+          ]
+        }
+      },
+      {
+        "name": "MYSQL unavailable: query/create/commit fail closed",
+        "status": "passed",
+        "dependency": "MYSQL",
+        "statuses": [
+          503,
+          503,
+          503
+        ],
+        "codes": [
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE",
+          "BFF_AUTH_UNAVAILABLE"
+        ],
+        "source": {
+          "present": true,
+          "sidHash": "5d20cd403b2823d6",
+          "tenantId": "1000003",
+          "userId": "1000000",
+          "contextVersion": "Id-IxZ6Y7qPvKjqff9OUVw",
+          "expiresAt": 1794536592,
+          "jwtExpiresAt": 1794536712,
+          "hasRefreshToken": false,
+          "hasAuthCookie": true,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000003",
+              "accountId": "1000000",
+              "memberId": "1000004"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000005"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:25:12.574435Z"
+          },
+          "redisTtl": 179,
+          "cookieExpiresAt": 1794536592.65225
+        },
+        "initialTx": {
+          "stage": "LOGIN",
+          "formalPresent": false,
+          "resultSidHash": "96de13173d4cdaf1"
+        },
+        "recoveredSameTransaction": true,
+        "issuancesAfterRecovery": 1,
+        "final": {
+          "present": true,
+          "sidHash": "96de13173d4cdaf1",
+          "tenantId": "1000008",
+          "userId": "1000000",
+          "contextVersion": "FWz_-NdILk-rF-YOrOyq9Q",
+          "expiresAt": 1794536592,
+          "jwtExpiresAt": 1794536592,
+          "hasRefreshToken": false,
+          "hasAuthCookie": false,
+          "online": {
+            "context": {
+              "domain": "TENANT",
+              "tenantId": "1000008",
+              "accountId": "1000000",
+              "memberId": "1000009"
+            },
+            "deptIds": [
+              "java.util.ImmutableCollections$List12",
+              [
+                "1000010"
+              ]
+            ],
+            "expiresAt": "2026-11-13T02:23:12Z"
+          },
+          "redisTtl": 168,
+          "cookieExpiresAt": 1794536592
+        },
+        "trace": {
+          "mode": "normal",
+          "held": false,
+          "arrived": 0,
+          "events": [
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 503,
+              "ms": 2126
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 2144
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/organizations/query",
+              "status": 503,
+              "ms": 2150
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/target",
+              "status": 503,
+              "ms": 2036
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 2056
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions",
+              "status": 503,
+              "ms": 2061
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 503,
+              "ms": 5031
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/FWz_-NdILk-rF-YOrOyq9Q/commit",
+              "status": 503,
+              "ms": 5048
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FWz_-NdILk-rF-YOrOyq9Q/commit",
+              "status": 503,
+              "ms": 5053
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 3
+            },
+            {
+              "role": "bff",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 10
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/me",
+              "status": 200,
+              "ms": 15
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/operations/FWz_-NdILk-rF-YOrOyq9Q",
+              "status": 200,
+              "ms": 68
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/organization-session/organizations/query",
+              "status": 200,
+              "ms": 38
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 0,
+              "path": "/inner/session/[redacted]",
+              "status": 200,
+              "ms": 4
+            },
+            {
+              "role": "auth",
+              "node": 1,
+              "path": "/inner/organization-session/verify",
+              "status": 200,
+              "ms": 47
+            },
+            {
+              "role": "bff",
+              "node": 1,
+              "path": "/bff/auth/tenant/switch-transactions/FWz_-NdILk-rF-YOrOyq9Q/commit",
+              "status": 200,
+              "ms": 237,
+              "formalCookie": {
+                "expiresAt": 1794536592,
+                "maxAge": null
+              }
+            },
+            {
+              "role": "tls",
+              "node": 0,
+              "path": "/bff/auth/tenant/switch-transactions/FWz_-NdILk-rF-YOrOyq9Q/commit",
+              "status": 200,
+              "ms": 241
+            }
+          ],
+          "issued": [
+            {
+              "node": 1,
+              "operationId": "FWz_-NdILk-rF-YOrOyq9Q",
+              "sidHash": "96de13173d4cdaf1",
+              "expiresAt": "2026-11-13T02:23:12Z"
+            }
+          ]
+        }
+      }
+    ],
+    "errors": [],
+    "finalState": {
+      "formalTenantSessions": 0,
+      "cleanupJobs": 0,
+      "cleanupDue": 0
+    },
+    "completedAt": "2026-11-13T02:20:25.465Z",
+    "nodeEvents": [],
+    "status": "passed",
+    "batchNote": "Five restart/IAM/Auth groups passed in the first final-package batch. An additional direct-Auth Redis probe used an incorrect route and returned 403; it was corrected to the declared RPC /organizations/query, and Redis/MySQL groups rerun against unchanged packages in a fresh fixture.",
+    "firstBatchStatus": "failed at incorrect test-probe route after five passed groups",
+    "secondBatchStatus": "passed"
+  },
+  "relatedRegression": {
+    "status": "passed",
+    "modules": {
+      "ingot-framework:ingot-commons": {
+        "tests": 4,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-framework:ingot-security:ingot-security-common": {
+        "tests": 69,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-framework:ingot-security:ingot-security-authorization-server": {
+        "tests": 60,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-service:ingot-auth:ingot-auth-provider": {
+        "tests": 25,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-service:ingot-bff": {
+        "tests": 36,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-service:ingot-gateway": {
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-service:ingot-iam:ingot-iam-provider": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-framework:ingot-security:ingot-security-recording": {
+        "tests": 42,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "ingot-service:ingot-security:ingot-security-api": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "total": {
+      "tests": 288,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "finalPackageSha256": {
+    "auth": "9884ca76e907e01e5523ada547717332aab06377f09131f621c54a9997ca1461",
+    "bff": "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449",
+    "iam": "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc",
+    "gateway": "87e6f071173c2c6fa2afac5a0318ce70dfc43d3b6fd39e7e34d0b6ad90e291cb"
+  },
+  "rtRunPackageSha256": {
+    "auth": "9884ca76e907e01e5523ada547717332aab06377f09131f621c54a9997ca1461",
+    "bff": "5f3a618eeed2487b6fdc4ba4414f2b9d2ce21c87735055b43cf3dc5ab8161449",
+    "iam": "0b853f78e0ac4103780f0b06eed611ae807b3e4c98245e95473f0df1ff69cefc",
+    "gateway": "94a647743f133dca7d4d6e2b8499b19a1006165b0241c001fd8ef97443652ee6"
+  },
+  "provenance": "RT and Redis contract regression used the final Auth/IAM/BFF packages. Only Gateway changed afterwards to repair F07; the final 288-test regression and all browser restart/dependency scenarios use the updated Gateway.",
+  "harnessSha256": {
+    "runtime.py": "2bcb233a2ce6b6abfeeb8b43ab78dff6ba5f3e9e49599458c6eac7ce454a64b2",
+    "proxies.py": "47b13dcf1fa216a98a6191859b23c232cde681acbe260af3f1f42d4215d9c4fd",
+    "rt.py": "3e151ffd0225ed4d21a24b410244f1b7f2eca75dbdde091aaf7c72cf5e3ffc1c",
+    "browser.mjs": "e4a0decc98d6ac118566af76c7c782a71a199b7ce25407533e298d0de1bd596e",
+    "dependency.mjs": "15983e80c1aa3f10c1825f7a68bd463e68cd4a3923aa950bb953ad7614a08a28",
+    "regression.py": "ea064f32f7500c5bda10422a842704589046aba9396b340f743498de96a17987",
+    "final-run.py": "a714b89b86f21022be81f544700c9ca4486323686e121b31a8765606cbf28d87",
+    "dependency-run.py": "fd51f2fb2aa775a72c015f3ab0a22e9eabe72ac6b139949bff311ef26cde51c3"
+  },
+  "fixedFindings": {
+    "F06": {
+      "date": "2026-11-13",
+      "status": "failed",
+      "client": "isolated confidential client; password + refresh_token; rotate RT; AT=20s, RT=180s",
+      "cases": [],
+      "observedRotations": [
+        {
+          "rotation": 1,
+          "node": 0,
+          "oldRefreshReplayStatus": 200,
+          "oldRefreshReplayCode": "S0200"
+        }
+      ],
+      "failure": "('rotated refresh replay accepted', 200)"
+    },
+    "F07": {
+      "failure": "Redis pause returned [500,500,500] at query/create/commit because Gateway pre-routing EXISTS raised QueryTimeoutException",
+      "expected": [
+        503,
+        503,
+        503
+      ],
+      "fixed": true
+    }
+  },
+  "runtimeCleanup": {
+    "fixtureContainersRemaining": 0,
+    "fixtureJvmsRemaining": 0,
+    "temporaryCredentialsDeleted": true
+  },
+  "limits": [
+    "All service JVMs run on one host with one shared Redis/MySQL; this does not represent cluster failover, cross-host partitions or storage data loss.",
+    "Public BFF clients still have no Refresh Token. RT uses an isolated confidential client and real Auth endpoints/internal caller proof with a 75-second cutoff, not a browser/public-client RT grant.",
+    "Dependency tests stop IAM/all Auth JVMs or pause Redis/MySQL while retaining data. They do not simulate arbitrary mid-command durability loss.",
+    "Self-signed same-origin HTTPS ignores certificate trust errors; customer CA, differential permissions, account-state matrix, audit persistence and coordinated deployment/rollback remain separate acceptance."
+  ]
+}

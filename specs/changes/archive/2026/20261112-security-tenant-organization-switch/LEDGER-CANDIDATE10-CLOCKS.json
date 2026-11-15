@@ -1,0 +1,142 @@
+{
+  "accepted": {
+    "at": "2026-11-14T10:13:44Z",
+    "method": "remote timestamp bounded by local request/response; midpoint estimate is not exact clock error",
+    "samples": [
+      {
+        "clock": "kernel",
+        "node": "test-manager",
+        "roundTripMs": 289.77084159851074,
+        "midpointOffsetMs": 732.064962387085,
+        "offsetLowerMs": 587.17942237854,
+        "offsetUpperMs": 876.9502639770508
+      },
+      {
+        "clock": "kernel",
+        "node": "test-worker1",
+        "roundTripMs": 443.83716583251953,
+        "midpointOffsetMs": 799.2143630981445,
+        "offsetLowerMs": 577.2957801818848,
+        "offsetUpperMs": 1021.1329460144043
+      },
+      {
+        "clock": "kernel",
+        "node": "test-worker2",
+        "roundTripMs": 350.4137992858887,
+        "midpointOffsetMs": 741.0621643066406,
+        "offsetLowerMs": 565.8552646636963,
+        "offsetUpperMs": 916.269063949585
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-manager",
+        "roundTripMs": 0.23508071899414062,
+        "midpointOffsetMs": 589.5755290985107,
+        "offsetLowerMs": 589.4579887390137,
+        "offsetUpperMs": 589.6930694580078
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-worker1",
+        "roundTripMs": 0.3619194030761719,
+        "midpointOffsetMs": 580.8818340301514,
+        "offsetLowerMs": 580.7008743286133,
+        "offsetUpperMs": 581.0627937316895
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-worker2",
+        "roundTripMs": 0.2899169921875,
+        "midpointOffsetMs": 567.777156829834,
+        "offsetLowerMs": 567.6321983337402,
+        "offsetUpperMs": 567.9221153259277
+      }
+    ]
+  },
+  "interruptedAttempt": {
+    "at": "2026-11-14T10:00:45Z",
+    "method": "remote timestamp bounded by local request/response; midpoint estimate is not exact clock error",
+    "samples": [
+      {
+        "clock": "kernel",
+        "node": "test-manager",
+        "roundTripMs": 275.8059501647949,
+        "midpointOffsetMs": -976198.4043121338,
+        "offsetLowerMs": -976336.3072872162,
+        "offsetUpperMs": -976060.5013370514
+      },
+      {
+        "clock": "kernel",
+        "node": "test-worker1",
+        "roundTripMs": 294.38328742980957,
+        "midpointOffsetMs": -976235.6517314911,
+        "offsetLowerMs": -976382.8434944153,
+        "offsetUpperMs": -976088.4602069855
+      },
+      {
+        "clock": "kernel",
+        "node": "test-worker2",
+        "roundTripMs": 309.5991611480713,
+        "midpointOffsetMs": 677.9186725616455,
+        "offsetLowerMs": 523.1192111968994,
+        "offsetUpperMs": 832.7183723449707
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-manager",
+        "roundTripMs": 0.865936279296875,
+        "midpointOffsetMs": -976334.401845932,
+        "offsetLowerMs": -976334.8348140717,
+        "offsetUpperMs": -976333.9688777924
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-worker1",
+        "roundTripMs": 0.48613548278808594,
+        "midpointOffsetMs": -976381.1690807343,
+        "offsetLowerMs": -976381.4120292664,
+        "offsetUpperMs": -976380.9258937836
+      },
+      {
+        "clock": "database UTC",
+        "node": "test-worker2",
+        "roundTripMs": 0.3972053527832031,
+        "midpointOffsetMs": 524.8675346374512,
+        "offsetLowerMs": 524.6689319610596,
+        "offsetUpperMs": 525.0661373138428
+      }
+    ]
+  },
+  "stoppedRecheck": {
+    "applicationsStoppedBeforeSynchronization": true,
+    "sessionDeadlineExtended": false,
+    "reason": "VM wall clocks lagged after interrupted host interval; invalid attempt retained",
+    "samples": [
+      {
+        "node": "test-manager",
+        "beforeMidpointOffsetMs": 708.3923816680908,
+        "advancedToRealUtc": false,
+        "afterMidpointOffsetMs": 710.639238357544,
+        "afterIntervalLowerMs": 562.3419284820557,
+        "afterIntervalUpperMs": 858.9367866516113
+      },
+      {
+        "node": "test-worker1",
+        "beforeMidpointOffsetMs": 666.0418510437012,
+        "advancedToRealUtc": false,
+        "afterMidpointOffsetMs": 667.5882339477539,
+        "afterIntervalLowerMs": 528.8338661193848,
+        "afterIntervalUpperMs": 806.342601776123
+      },
+      {
+        "node": "test-worker2",
+        "beforeMidpointOffsetMs": 140.1052474975586,
+        "advancedToRealUtc": false,
+        "afterMidpointOffsetMs": 133.71038436889648,
+        "afterIntervalLowerMs": 0.6654262542724609,
+        "afterIntervalUpperMs": 266.7553424835205
+      }
+    ]
+  },
+  "boundary": "Interrupted interval produced invalid VM clock skew; invalid attempt excluded. NTP had healed at stopped recheck; no manual clock step or credential extension performed."
+}
