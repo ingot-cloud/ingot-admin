@@ -171,7 +171,15 @@ for (const entry of ["platform", "tenant"]) {
       if (url.endsWith("/me")) {
         if (!state.session || cookies[state.sessionName] !== state.session)
           return finish(res, null, 401, "S0401");
+        if (state.contextSession !== state.session) {
+          state.contextVersion =
+            [...state.transactions.values()].find((tx) => tx.session === state.session)
+              ?.transactionId ?? opaque();
+          state.contextSession = state.session;
+        }
         return finish(res, {
+          contextVersion: state.contextVersion,
+          expiresAt: expiry(),
           appId: `${entry}-admin`,
           domain: state.domain,
           tenantId: entry === "tenant" ? "42" : null,
@@ -526,10 +534,9 @@ try {
     await page.waitForURL("**/fixture-home**");
     await page.locator(".in-user-dropdown").waitFor();
   };
-  const showLoginViaMenu = async (page) => {
-    await page.locator(".in-user-dropdown").click();
-    await page.getByRole("menuitem", { name: "切换组织" }).click();
-    await page.getByRole("button", { name: "确定", exact: true }).click();
+  // Password reauthentication remains a separate flow; direct organization switching has its own browser regression.
+  const showExplicitLogin = async (page) => {
+    await page.goto(new URL("/login/?loggedOut=1", page.url()).href);
     await page.locator("#login-username").waitFor();
     assert.equal(new URL(page.url()).search, "");
   };
@@ -606,11 +613,11 @@ try {
       const oldCookie = (await context.cookies(origin)).find(
         ({ name }) => name === state.sessionName,
       )?.value;
-      await showLoginViaMenu(page);
+      await showExplicitLogin(page);
       assert.deepEqual(
         summarize(state.requests.slice(start)),
         [],
-        "switch organization must show form without existing-cookie auto-entry",
+        "explicit reauthentication must show form without existing-cookie auto-entry",
       );
       assert.equal(
         (await context.cookies(origin)).find(({ name }) => name === state.sessionName)?.value,
@@ -625,7 +632,9 @@ try {
       await peer.locator(".in-user-dropdown").waitFor();
       assert.deepEqual(
         summarize(peerRequests.slice(peerStart)),
-        ["GET /api/iam/v1/me/bootstrap"],
+        state.entry === "tenant"
+          ? ["GET /api/bff/auth/me", "GET /api/iam/v1/me/bootstrap"]
+          : ["GET /api/iam/v1/me/bootstrap"],
         "native identity event rechecks peer once",
       );
       start = state.requests.length;
@@ -647,7 +656,7 @@ try {
       const afterBack = summarize(state.requests.slice(backStart));
       assert.deepEqual(
         afterBack,
-        ["GET /api/iam/v1/me/bootstrap"],
+        state.entry === "tenant" ? ["GET /api/bff/auth/me"] : ["GET /api/iam/v1/me/bootstrap"],
         "back after logout rejects old identity once and returns to forced form",
       );
       const other = active.find((value) => value.state !== state);
@@ -757,7 +766,9 @@ try {
     const close = page.getByRole("button", { name: "关闭安全验证" });
     await close.waitFor();
     await close.press("Enter");
-    const toast = page.locator(".in-message.el-message--error").filter({ hasText: "已取消安全验证" });
+    const toast = page
+      .locator(".in-message.el-message--error")
+      .filter({ hasText: "已取消安全验证" });
     await toast.waitFor();
     assert.equal(await page.locator(".auth-shell__panel").getByRole("alert").count(), 0);
     assert.equal(state.executions, 0);
@@ -802,7 +813,7 @@ try {
       "app-local logout via actual UI / native cross-tab logout",
       "existing-session single entry",
       "completed transaction reload single confirmation",
-      "organization switch forced form with existing cookie",
+      "explicit password reauthentication with existing cookie",
       "native identity event one peer bootstrap",
       "slow logout abort / immediate fresh login cookie preserved",
       "browser back after logout rejects old identity once",

@@ -1,4 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  clearSessionContext,
+  currentSessionContext,
+  rememberSessionContext,
+} from "@ingot/auth-core";
 
 const mocks = vi.hoisted(() => ({
   me: vi.fn(),
@@ -14,6 +19,13 @@ vi.mock("@ingot/auth-core", async (original) => ({
   createAuthApi: () => ({ me: mocks.me }),
 }));
 vi.mock("../net", () => ({ Http: {} }));
+vi.mock("./organizations", () => ({
+  pauseOrganizationSwitch: vi.fn(),
+  finishOrganizationSwitch: vi.fn(),
+  cancelOrganizationSwitch: vi.fn(),
+  returnToCurrentOrganization: vi.fn(),
+  bindOrganizationChannel: vi.fn(),
+}));
 vi.mock("../runtime", () => ({
   getAdminRuntimeConfig: () => ({
     login: {
@@ -30,9 +42,10 @@ vi.mock("../runtime", () => ({
 }));
 vi.mock("../stores/modules/auth", () => ({
   bindIdentityChannel: vi.fn(),
+  pauseIdentityContext: vi.fn(),
   beginIdentitySwitch: (onReady?: () => Promise<void>) => mocks.begin(onReady),
   publishIdentityInvalidated: mocks.notify,
-  useAuthStore: () => ({ loggingOut: mocks.loggingOut }),
+  useAuthStore: () => ({ loggingOut: mocks.loggingOut, sessionEstablished: vi.fn() }),
   useUserInfoStore: () => ({ getIsInitPwd: false }),
   DomainMismatchError: class extends Error {},
 }));
@@ -51,6 +64,7 @@ beforeEach(() => {
   mocks.install.mockClear();
   mocks.notify.mockClear();
   sessionStorage.clear();
+  clearSessionContext();
   mocks.replace.mockResolvedValue(undefined);
   mocks.begin.mockImplementation(async (onReady?: () => Promise<void>) => {
     await onReady?.();
@@ -58,12 +72,32 @@ beforeEach(() => {
 });
 
 describe("same-origin session entry", () => {
+  it("插件me经宿主验证并接纳，首次组织页不依赖共享API的隐式副作用", async () => {
+    mocks.entry = "tenant";
+    rememberSessionContext({
+      appId: "tenant-admin",
+      domain: "TENANT",
+      userId: 1,
+      clientId: "client",
+      contextVersion: "old",
+    });
+    mocks.me.mockResolvedValue({
+      data: { appId: "tenant-admin", domain: "TENANT", contextVersion: "new" },
+    });
+    await createSameOriginAuthSession().api.me();
+    expect(currentSessionContext()).toBe("new");
+    expect(mocks.begin).not.toHaveBeenCalled();
+  });
   it.each(["platform", "tenant"] as const)(
     "%s已有会话并发进入只读取一次me、装配和导航一次",
     async (entry) => {
       mocks.entry = entry;
       mocks.me.mockResolvedValue({
-        data: { appId: `${entry}-admin`, domain: entry === "tenant" ? "TENANT" : "PLATFORM" },
+        data: {
+          appId: `${entry}-admin`,
+          domain: entry === "tenant" ? "TENANT" : "PLATFORM",
+          contextVersion: `${entry}-context`,
+        },
       });
       const session = createSameOriginAuthSession();
       await Promise.all([session.onExistingSession(), session.onExistingSession()]);

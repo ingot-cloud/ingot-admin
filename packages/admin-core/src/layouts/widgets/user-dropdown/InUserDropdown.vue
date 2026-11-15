@@ -59,8 +59,9 @@ import type { Component } from "vue";
 import InAvatar from "@/components/avatar/InAvatar.vue";
 import { useUserInfoStore } from "@/stores/modules/auth";
 import { logoutAndReload } from "@/utils/security";
-import { useLogin } from "@/hooks/biz/useLogin";
-import { useMessage, useMessageConfirm } from "@/hooks/web/useMessage";
+import { ORGANIZATION_SWITCH_PATH } from "@ingot/auth-core";
+import { getAdminRouter } from "@/runtime";
+import { useMessage } from "@/hooks/web/useMessage";
 import FixPwdDialog from "./FixPwdDialog.vue";
 import ProfileDialog from "./ProfileDialog.vue";
 import { InAdminHeaderBuiltinUserMenuName, InAdminHeaderUserMenuItemType } from "@/plugin/header";
@@ -92,7 +93,6 @@ const username = computed(() => (restricted.value ? "当前账号" : getUsername
 const avatar = computed(() => (restricted.value ? "" : getAvatar.value));
 const resolvedTrigger = computed(() => (restricted.value ? undefined : props.trigger));
 const message = useMessage();
-const confirm = useMessageConfirm();
 
 const menuItems = computed(() =>
   restricted.value
@@ -111,8 +111,7 @@ const userInfo = computed(() => ({
 const privateRunBuiltin = async (name: ResolvedHeaderUserMenuItem["name"]) => {
   if (name === InAdminHeaderBuiltinUserMenuName.SwitchOrg) {
     try {
-      await confirm.warning("是否切换组织");
-      await useLogin().go({ forceLogin: true });
+      await getAdminRouter().push(ORGANIZATION_SWITCH_PATH);
     } catch {
       return;
     }

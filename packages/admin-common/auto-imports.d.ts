@@ -99,6 +99,7 @@ declare global {
   const onUpdated: typeof import('vue').onUpdated
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
   const pausableWatch: typeof import('@vueuse/core').pausableWatch
+  const pauseIdentityContext: typeof import('../admin-core/src/stores/modules/auth').pauseIdentityContext
   const provide: typeof import('vue').provide
   const provideLocal: typeof import('@vueuse/core').provideLocal
   const publishIdentityInvalidated: typeof import('../admin-core/src/stores/modules/auth').publishIdentityInvalidated
@@ -483,6 +484,7 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly pausableWatch: UnwrapRef<typeof import('@vueuse/core')['pausableWatch']>
+    readonly pauseIdentityContext: UnwrapRef<typeof import('../admin-core/src/stores/modules/auth')['pauseIdentityContext']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
     readonly publishIdentityInvalidated: UnwrapRef<typeof import('../admin-core/src/stores/modules/auth')['publishIdentityInvalidated']>

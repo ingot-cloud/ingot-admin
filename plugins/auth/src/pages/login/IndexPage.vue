@@ -1,8 +1,12 @@
 <template>
   <AuthPageShell>
     <AuthPageLoading :loading="restoring">
+      <div v-if="logoutPending" role="status">
+        <p>注销结果尚未确认，业务请求已暂停。</p>
+        <el-button @click="retryLogout">重试确认退出</el-button>
+      </div>
       <SelectTenant
-        v-if="candidates.length"
+        v-else-if="candidates.length"
         :list="candidates"
         :select="select"
         @back="back"
@@ -22,7 +26,7 @@ import AuthPageLoading from "../../components/AuthPageLoading.vue";
 import PasswordView from "./password/PasswordView.vue";
 import SelectTenant from "./select-tenant/SelectTenant.vue";
 import { useOps } from "./useOps";
-const { restoring, candidates, recoverable, submit, select, success, back, retry } = useOps();
+const { restoring, logoutPending, retryLogout, candidates, recoverable, submit, select, success, back, retry } = useOps();
 </script>
 <style scoped lang="postcss">
 .auth-login-retry {

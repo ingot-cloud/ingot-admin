@@ -5,7 +5,10 @@ import type { CurrentPasswordInput, PasswordChangeState } from "@/models/iam";
 const PATH = "/api/iam/v1/me/password";
 
 export function PasswordChangeStateAPI(options?: RequestOptions): Promise<R<PasswordChangeState>> {
-  return request.get<PasswordChangeState>(PATH, undefined, options);
+  return request.get<PasswordChangeState>(PATH, undefined, {
+    ...options,
+    __ingotIdentityBootstrap: true,
+  });
 }
 
 const cryptoOptions = {

@@ -1,6 +1,8 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import {
   consumeExplicitLogout,
+  hasPendingLogout,
+  subscribeLogoutState,
   EXPLICIT_LOGOUT_QUERY_KEY,
   createLoginFlow,
   isPreparationFailure,
@@ -28,11 +30,18 @@ export function useOps() {
     storage,
   });
   const restoring = ref(false);
+  const logoutPending = ref(hasPendingLogout(session.appId));
+  const unsubscribeLogout = subscribeLogoutState(session.appId, (state) => {
+    logoutPending.value = state.phase === "pending";
+    flow.reset();
+    candidates.value = [];
+  });
   const candidates = ref<TenantCandidate[]>([]);
   const recoverable = ref(false);
   let mounted = true;
   onBeforeUnmount(() => {
     mounted = false;
+    unsubscribeLogout();
   });
   const report = (error: unknown): void => {
     if (!mounted) return;
@@ -119,7 +128,18 @@ export function useOps() {
       restoring.value = false;
     }
   };
+  const retryLogout = async (): Promise<void> => {
+    if (restoring.value) return;
+    restoring.value = true;
+    try {
+      await session.api.logout();
+      logoutPending.value = hasPendingLogout(session.appId);
+      flow.reset();
+    } catch (error) { report(error); }
+    finally { restoring.value = false; }
+  };
   onMounted(async () => {
+    if (hasPendingLogout(session.appId)) { logoutPending.value = true; return; }
     // URL参数从不导入认证结果；旧书签只得到当前origin的稳定表单。
     const explicit = new URLSearchParams(location.search).get(EXPLICIT_LOGOUT_QUERY_KEY) === "1";
     if (location.search || location.hash)
@@ -137,5 +157,5 @@ export function useOps() {
       restoring.value = false;
     }
   });
-  return { restoring, candidates, recoverable, submit, select, success, back, retry };
+  return { restoring, logoutPending, retryLogout, candidates, recoverable, submit, select, success, back, retry };
 }

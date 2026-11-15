@@ -10,7 +10,10 @@ import type {
 const PATH = "/api/iam/v1/me";
 
 export function IamBootstrapAPI(options?: RequestOptions): Promise<R<IamBootstrap>> {
-  return request.get<IamBootstrap>(`${PATH}/bootstrap`, undefined, options);
+  return request.get<IamBootstrap>(`${PATH}/bootstrap`, undefined, {
+    ...options,
+    __ingotIdentityBootstrap: true,
+  });
 }
 
 export function IamCapabilitiesAPI(): Promise<R<CurrentCapabilities>> {

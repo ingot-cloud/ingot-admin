@@ -3,11 +3,15 @@
     <div class="img" style="background-image: url(&quot;/resource/images/403.svg&quot;)"></div>
     <div class="content">
       <h1>403</h1>
-      <div class="desc">抱歉，你无权访问该页面</div>
+      <div class="desc">
+        {{ menus.length ? "抱歉，你无权访问该页面" : "当前组织暂无可访问的页面" }}
+      </div>
       <div class="actions">
         <el-button type="primary" @click="handleAction">
           {{ buttonText }}
         </el-button>
+        <el-button v-if="tenantEntry" @click="switchOrganization">切换组织</el-button>
+        <el-button v-if="tenantEntry" @click="logoutAndReload()">退出登录</el-button>
       </div>
     </div>
   </div>
@@ -16,6 +20,10 @@
 import { useRouterStore } from "@/stores/modules/router";
 import { logoutAndReload } from "@/utils/security";
 import { useGo } from "@/hooks/web/useRouter";
+import { getAdminRuntimeConfig, getAdminRouter } from "@/runtime";
+import { ORGANIZATION_SWITCH_PATH } from "@ingot/auth-core";
+const tenantEntry = getAdminRuntimeConfig().login.entry === "tenant";
+const switchOrganization = () => getAdminRouter().replace(ORGANIZATION_SWITCH_PATH);
 const { menus } = storeToRefs(useRouterStore());
 const buttonText = computed(() => {
   return menus.value.length > 0 ? "返回首页" : "重新登录";

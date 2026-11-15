@@ -2,11 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { ApiError } from "@ingot/http-client";
 import { StatusCode } from "@/net/status-code";
+import { readLogoutState, confirmPendingLogout, LogoutPendingError, hasPendingLogout, rememberSessionContext, BFF_CONTEXT_HEADER } from "@ingot/auth-core";
 
 const IamBootstrapAPI = vi.fn();
 const IamCapabilitiesAPI = vi.fn();
 const PasswordChangeStateAPI = vi.fn();
-const LogoutAPI = vi.fn<(signal?: AbortSignal) => Promise<void>>(() => Promise.resolve());
+const LogoutAPI = vi.fn<(signal?: AbortSignal, contextVersion?: string) => Promise<void>>(() => Promise.resolve());
 vi.mock("@/api/common/password", () => ({
   PasswordChangeStateAPI: (...args: unknown[]) => PasswordChangeStateAPI(...args),
 }));
@@ -25,7 +26,7 @@ const runtimeState = vi.hoisted(() => ({ expectedDomain: "PLATFORM" as "PLATFORM
 vi.mock("@/runtime", () => ({
   getAdminRuntimeConfig: () => ({
     staticMenus: [],
-    login: { expectedDomain: runtimeState.expectedDomain },
+    login: { expectedDomain: runtimeState.expectedDomain, entry: runtimeState.expectedDomain === "TENANT" ? "tenant" : "platform", appId: runtimeState.expectedDomain === "TENANT" ? "tenant-admin" : "platform-admin" },
   }),
 }));
 
@@ -104,6 +105,10 @@ describe("session bootstrap", () => {
   });
 
   afterEach(() => {
+    for (const appId of ["platform-admin", "tenant-admin"]) {
+      const state = readLogoutState(appId);
+      if (state?.phase === "pending") confirmPendingLogout(appId, state.operationId);
+    }
     resetSessionBootstrap();
     vi.useRealTimers();
   });
@@ -138,8 +143,13 @@ describe("session bootstrap", () => {
     const first = auth.logout();
     expect(auth.loggingOut).toBe(true);
     const second = auth.logout();
+    const failure = expect(first).rejects.toBeInstanceOf(LogoutPendingError);
+    const secondFailure = expect(second).rejects.toBeInstanceOf(LogoutPendingError);
     await vi.advanceTimersByTimeAsync(1500);
-    await Promise.all([first, second]);
+    await Promise.all([failure, secondFailure]);
+    expect(hasPendingLogout("platform-admin")).toBe(true);
+    await expect(ensureSessionBootstrap()).rejects.toBeInstanceOf(LogoutPendingError);
+    expect(IamBootstrapAPI).not.toHaveBeenCalled();
     expect(LogoutAPI).toHaveBeenCalledOnce();
     const signal = LogoutAPI.mock.calls[0]?.[0];
     expect(signal).toBeInstanceOf(AbortSignal);
@@ -538,7 +548,7 @@ describe("session bootstrap", () => {
     }
     vi.stubGlobal("BroadcastChannel", MockChannel);
     publishIdentityInvalidated();
-    expect(posted).toEqual([{ type: "invalidated", source: expect.any(String) }]);
+    expect(posted).toEqual([expect.objectContaining({ type: "invalidated", source: expect.any(String), issuedAt: expect.any(Number) })]);
     vi.unstubAllGlobals();
   });
 });

@@ -7,6 +7,12 @@ declare module "axios" {
   interface AxiosRequestConfig {
     /** 内部：请求发起时的身份纪元；旧身份响应不得触发当前身份退出或回填。 */
     __ingotIdentityEpoch?: number;
+    /** 请求创建时固定的会话版本，重试不能改绑到新组织。 */
+    __ingotContextVersion?: string;
+    /** 内部：创建时业务已暂停；恢复后也不得发送该请求。 */
+    __ingotIdentityPaused?: boolean;
+    /** 内部：仅框架只读bootstrap/改密状态请求可在身份暂停期间执行。 */
+    __ingotIdentityBootstrap?: boolean;
 
     /**
      * 是否为刷新token后的请求重试

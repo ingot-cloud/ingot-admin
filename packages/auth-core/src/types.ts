@@ -57,4 +57,36 @@ export interface SessionMe {
   tenantId: string | null;
   userId: number;
   clientId: string;
+  /** 公开上下文版本，不是 sessionId 或 token。 */
+  contextVersion?: string;
+  expiresAt?: string;
+}
+
+export interface OrganizationSummary {
+  id: string;
+  name: string | null;
+}
+export interface OrganizationQuery {
+  page?: number;
+  pageSize?: number;
+  keyword?: string;
+}
+export interface OrganizationPage {
+  currentTenant: OrganizationSummary;
+  currentTenantAccessible: boolean;
+  records: OrganizationSummary[];
+  total: number;
+  switchableTotal: number;
+  page: number;
+  pageSize: number;
+}
+export type OrganizationSwitchStage =
+  "PREPARED" | "ISSUING" | "COMMITTING" | "COMPLETED" | "FAILED" | "EXPIRED" | "UNKNOWN";
+export interface OrganizationSwitchView {
+  transactionId: string;
+  tenantId: string;
+  stage: OrganizationSwitchStage;
+  expiresAt: string;
+  recoveryExpiresAt?: string | null;
+  sessionEstablished?: boolean | null;
 }

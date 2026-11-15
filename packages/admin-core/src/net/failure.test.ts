@@ -28,6 +28,7 @@ vi.mock("@/utils/message", () => ({
 vi.mock("@ingot/shared", () => ({
   parseChallengeRequired: (status?: number) => (status === 412 ? { vcType: "slide" } : null),
 }));
+vi.mock("@/runtime", () => ({ getAdminRuntimeConfig: () => ({ login: { entry: "platform" } }) }));
 
 const {
   handleAdminBusinessFailure,
@@ -75,15 +76,15 @@ describe("admin failure hooks", () => {
     expect(shouldBypassAdminError({ response: { status: 500 } } as never)).toBe(false);
   });
 
-  it("未授权时退出登录，refreshTokenAndRetry 时跳过", () => {
+  it("未授权时退出登录，refreshTokenAndRetry 时跳过", async () => {
     handleAdminUnauthorized(
       new ApiError({ kind: "business", message: "x", code: StatusCode.UNAUTHORIZED }),
     );
-    expect(logoutAndReload).toHaveBeenCalledWith(true);
+    await vi.waitFor(() => expect(logoutAndReload).toHaveBeenCalledWith(true));
 
     logoutAndReload.mockReset();
     handleAdminUnauthorized(new ApiError({ kind: "http", message: "unauthorized", status: 401 }));
-    expect(logoutAndReload).toHaveBeenCalledWith(true);
+    await vi.waitFor(() => expect(logoutAndReload).toHaveBeenCalledWith(true));
 
     logoutAndReload.mockReset();
     handleAdminUnauthorized(

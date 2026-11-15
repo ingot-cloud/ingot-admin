@@ -46,6 +46,8 @@ export interface HttpClientConfigureOptions {
 }
 
 export interface HttpClientHooks {
+  /** 在异步拦截器前同步捕获请求元数据；业务身份策略由使用方注入。 */
+  onRequestCreated?: (config: HttpRequestConfig) => void;
   onStart?: (config: InternalAxiosRequestConfig) => void;
   onEnd?: (config?: InternalAxiosRequestConfig) => void;
   onBusinessFailure?: (error: import("./error").ApiError) => void | Promise<void>;
@@ -76,9 +78,7 @@ export interface PostFilter {
   name?: string;
   /** 越小越先执行（与请求相同，不是越大越先）。官方槽位见 `InterceptorOrder.response`。 */
   order: number;
-  resolved(
-    response: AxiosResponse<R>,
-  ): AxiosResponse<R> | R | Promise<AxiosResponse<R> | R>;
+  resolved(response: AxiosResponse<R>): AxiosResponse<R> | R | Promise<AxiosResponse<R> | R>;
   rejected?(error: AxiosError): Promise<unknown>;
 }
 

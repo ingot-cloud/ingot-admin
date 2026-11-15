@@ -19,7 +19,15 @@ export const handleAdminUnauthorized = (error: ApiError): void => {
   if (path === "/login" || path === "/login/" || (error.config?.url ?? "").includes("/bff/auth/")) {
     return;
   }
-  logoutAndReload(true);
+  void import("@/runtime")
+    .then(({ getAdminRuntimeConfig }) => {
+      if (getAdminRuntimeConfig().login.entry === "tenant")
+        return import("@/auth/organizations").then(({ reconcileOrganizationContext }) =>
+          reconcileOrganizationContext(error.code),
+        );
+      return logoutAndReload(true);
+    })
+    .catch(() => undefined);
 };
 
 const isForbidden = (error: ApiError): boolean =>
@@ -39,6 +47,12 @@ const schedulePermissionRefresh = (): void => {
 let passwordChangeNavigation: Promise<void> | undefined;
 
 const handleAuthorizationFailure = (error: ApiError): boolean => {
+  if (error.code === "BFF_CONTEXT_CHANGED") {
+    void import("@/auth/organizations")
+      .then(({ reconcileOrganizationContext }) => reconcileOrganizationContext(error.code))
+      .catch(() => undefined);
+    return true;
+  }
   if (error.code === StatusCode.PasswordChangeRequired) {
     // 初始 bootstrap 由 store 处理；禁止进入通用 403 能力刷新，避免重复请求与递归。
     const url = error.config?.url ?? "";

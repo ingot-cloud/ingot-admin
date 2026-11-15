@@ -27,6 +27,8 @@ declare module "vue-router" {
      * 是否放行，即忽略身份验证
      */
     permitAuth?: boolean;
+    /** 仅校验真实账号会话的认证流程页，不加载原组织业务 bootstrap。 */
+    sessionOnly?: boolean;
     /**
      * 是否隐藏菜单
      */

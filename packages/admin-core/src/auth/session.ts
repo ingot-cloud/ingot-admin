@@ -1,4 +1,11 @@
-import { createAuthApi, takeReturnTo, type AuthSession, type SessionMe } from "@ingot/auth-core";
+import {
+  createAuthApi,
+  takeReturnTo,
+  readOrganizationSync,
+  publishOrganizationSync,
+  type AuthSession,
+  type SessionMe,
+} from "@ingot/auth-core";
 import logoUrl from "@ingot/appearance/assets/logo/in-light-framed.svg";
 import logoDarkUrl from "@ingot/appearance/assets/logo/in-dark-framed.svg";
 import { Http } from "../net";
@@ -15,12 +22,32 @@ import { useRouterStore } from "../stores/modules/router";
 import { PageName } from "../router/constants";
 import { Message } from "../utils/message";
 import { isApiError } from "@ingot/http-client";
+import {
+  pauseOrganizationSwitch,
+  finishOrganizationSwitch,
+  cancelOrganizationSwitch,
+  returnToCurrentOrganization,
+  bindOrganizationChannel,
+} from "./organizations";
+import { useLogin } from "../hooks/biz/useLogin";
+import { logoutAndReload } from "../utils/security";
+import { adoptBrowserSession } from "./browserContext";
 
 /** 为同源登录插件提供管理宿主能力，不依赖业务插件实现。 */
 export const createSameOriginAuthSession = (): AuthSession => {
   const config = getAdminRuntimeConfig();
   bindIdentityChannel();
-  const api = createAuthApi(Http, config.login.entry);
+  bindOrganizationChannel();
+  const transport = createAuthApi(Http, config.login.entry);
+  // 认证插件只依赖宿主API；共享me为纯查询，接纳与旧界面隔离由此宿主执行。
+  const api = {
+    ...transport,
+    me: async (signal?: AbortSignal) => {
+      const response = await transport.me(signal);
+      adoptBrowserSession(response.data);
+      return response;
+    },
+  };
   const validate = (me: SessionMe): void => {
     if (me.appId !== config.login.appId || me.domain !== config.login.expectedDomain)
       throw new DomainMismatchError(config.login.expectedDomain, me.domain);
@@ -66,8 +93,26 @@ export const createSameOriginAuthSession = (): AuthSession => {
     logoDarkUrl,
     colorScheme: config.login.colorScheme,
     api,
+    organizationSwitch:
+      config.login.entry === "tenant"
+        ? {
+            pending: pauseOrganizationSwitch,
+            completed: finishOrganizationSwitch,
+            failed: cancelOrganizationSwitch,
+            returnToCurrent: returnToCurrentOrganization,
+            requireLogin: () => useLogin().go({ forceLogin: true }),
+            logout: () => logoutAndReload(),
+          }
+        : undefined,
     onAuthenticated: async (result, identity) => {
       validate(identity);
+      useAuthStore().sessionEstablished();
+      adoptBrowserSession(identity);
+      if (config.login.entry === "tenant") {
+        const pending = readOrganizationSync();
+        if (pending?.phase === "pending")
+          publishOrganizationSync({ ...pending, phase: "cancelled" });
+      }
       if (notifiedTransaction !== result.transactionId) {
         notifiedTransaction = result.transactionId;
         publishIdentityInvalidated();
@@ -85,6 +130,7 @@ export const createSameOriginAuthSession = (): AuthSession => {
           throw error;
         }
         validate(me);
+        adoptBrowserSession(me);
         await enter();
         return true;
       })().finally(() => {

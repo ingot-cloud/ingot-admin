@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { RouteLocationNormalized } from "vue-router";
 import { MenuConfigurationError, NAVIGATION_ERROR_PATH } from "@/router/navigationError";
+import { ApiError } from "@ingot/http-client";
 
 const state = vi.hoisted(() => ({ exist: false, mustChange: false, conflict: false }));
 const bootstrap = vi.fn(async () => {
@@ -22,6 +23,7 @@ vi.mock("@/stores/modules/auth", () => ({
   DomainMismatchError: class extends Error {},
 }));
 vi.mock("@/hooks/biz/useGlobalLoading", () => ({ useGlobalLoading: () => ({ start, stop }) }));
+vi.mock("@/runtime", () => ({ getAdminRuntimeConfig: () => ({ login: { entry: "tenant" } }) }));
 vi.mock("@/stores/modules/router", () => ({
   useRouterStore: () => ({
     get configurationError() {
@@ -94,5 +96,19 @@ describe("强制改密路由", () => {
       query: { returnTo: "/orders" },
     });
     expect(bootstrap).not.toHaveBeenCalled();
+  });
+  it("来源组织成员失效时进入仅验证账号的选择页，保留切换恢复机会", async () => {
+    bootstrap.mockRejectedValueOnce(
+      new ApiError({
+        kind: "business",
+        code: "IdentityInvalid",
+        status: 401,
+        message: "原组织已不可访问",
+      }),
+    );
+    expect(await new UserInfoGuard().exec()(route("/members"), route("/"), vi.fn())).toEqual({
+      path: "/auth/organizations",
+      replace: true,
+    });
   });
 });

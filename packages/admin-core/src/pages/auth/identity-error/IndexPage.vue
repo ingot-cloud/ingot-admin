@@ -3,8 +3,15 @@
     <div class="img" style="background-image: url(&quot;/resource/images/403.svg&quot;)"></div>
     <div class="content">
       <h1>身份不匹配</h1>
-      <div class="desc">当前登录身份不属于本管理台，未装配业务模块。请重新登录本站账号。</div>
+      <div class="desc">
+        {{
+          tenantEntry
+            ? "当前登录身份无法访问本管理空间，可以切换组织或重新登录。"
+            : "当前登录身份不属于本管理台，未装配业务模块。请重新登录本站账号。"
+        }}
+      </div>
       <div class="actions">
+        <el-button v-if="tenantEntry" @click="switchOrganization">切换组织</el-button>
         <el-button type="primary" @click="privateOnRelogin">重新登录</el-button>
       </div>
     </div>
@@ -12,6 +19,11 @@
 </template>
 <script setup lang="ts">
 import { logoutAndReload } from "@/utils/security";
+import { getAdminRuntimeConfig, getAdminRouter } from "@/runtime";
+import { ORGANIZATION_SWITCH_PATH } from "@ingot/auth-core";
+
+const tenantEntry = getAdminRuntimeConfig().login.entry === "tenant";
+const switchOrganization = () => getAdminRouter().replace(ORGANIZATION_SWITCH_PATH);
 
 const privateOnRelogin = () => {
   logoutAndReload();

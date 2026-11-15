@@ -8,6 +8,7 @@ import {
 import type { InNetConfig } from "@/plugin";
 import NProgress from "@/components/nprogress";
 import CancelManager from "./cancel";
+import { captureRequestIdentity } from "./interceptor/request/identity";
 import { mergeAdminNetInterceptors } from "./core-interceptors";
 import { bindChallengeRetry } from "./challenge";
 import {
@@ -28,6 +29,7 @@ const createAdminHttpClient = (net?: InNetConfig): HttpClient => {
     cancelManager: CancelManager,
     interceptors: mergeAdminNetInterceptors(net?.interceptors),
     hooks: {
+      onRequestCreated: captureRequestIdentity,
       onStart: () => progress.start(),
       onEnd: () => progress.done(),
       onBusinessFailure: handleAdminBusinessFailure,

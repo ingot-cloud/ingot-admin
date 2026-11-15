@@ -1,5 +1,5 @@
 import type { AuthApi } from "./api";
-import type { AuthEntry, CompletedLoginResult, SessionMe } from "./types";
+import type { AuthEntry, CompletedLoginResult, SessionMe, OrganizationSwitchView } from "./types";
 export type AuthColorScheme = "auto" | "light" | "dark";
 export interface AuthAppearance {
   copyright: string;
@@ -22,4 +22,13 @@ export interface AuthSession {
   onExistingSession: () => Promise<boolean>;
   warn: (message: string) => void;
   error: (message: string) => void;
+  /** 仅租户宿主提供；插件不直接操作管理框架状态。 */
+  organizationSwitch?: {
+    pending: (view: OrganizationSwitchView, sourceVersion: string) => void;
+    completed: (view: OrganizationSwitchView, identity: SessionMe) => Promise<void>;
+    failed: () => Promise<void>;
+    returnToCurrent: (accessible: boolean) => Promise<void>;
+    requireLogin: () => Promise<void>;
+    logout: () => Promise<void>;
+  };
 }

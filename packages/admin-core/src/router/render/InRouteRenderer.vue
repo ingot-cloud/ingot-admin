@@ -2,7 +2,7 @@
   <router-view v-slot="{ Component, route }">
     <!-- 公开页保持实例，避免登录完成更新身份时重新触发事务恢复。 -->
     <component
-      v-if="Component && route.meta.permitAuth"
+      v-if="Component && (route.meta.permitAuth || route.meta.sessionOnly)"
       :is="UncachedRoutePage"
       :key="routeCacheKey(recordAt(route), route)"
       :component="Component"
@@ -14,7 +14,9 @@
       :max="ROUTE_CACHE_LIMIT"
     >
       <component
-        v-if="Component && !route.meta.permitAuth && !auth.isTransitioning"
+        v-if="
+          Component && !route.meta.permitAuth && !route.meta.sessionOnly && !auth.isTransitioning
+        "
         :is="shouldCacheRoute(recordAt(route)) ? CachedRoutePage : UncachedRoutePage"
         :key="routeCacheKey(recordAt(route), route)"
         :component="Component"

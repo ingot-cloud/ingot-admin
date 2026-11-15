@@ -1,3 +1,4 @@
+import { LogoutPendingError } from "@ingot/auth-core";
 import { useAuthStore } from "@/stores/modules/auth";
 import { useLogin } from "@/hooks/biz/useLogin";
 
@@ -15,6 +16,9 @@ export function logoutAndReload(ignoreRevokeAPI?: boolean): Promise<void> {
     })
     .catch((error: unknown) => {
       navigation = undefined;
+      if (error instanceof LogoutPendingError) {
+        return useLogin().go({ rememberReturnTo: false, forceLogin: true }).then(() => { throw error; });
+      }
       throw error;
     });
   return navigation;

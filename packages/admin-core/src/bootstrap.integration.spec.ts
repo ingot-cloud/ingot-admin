@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getActivePinia } from "pinia";
 import { bootstrapAdminApp } from "./bootstrap";
 import { INGOT_ADMIN_PLUGIN_API_VERSION } from "./plugin";
@@ -58,6 +58,8 @@ describe("bootstrap 集成", () => {
     expect(pluginPinia).toBe(runtime.pinia);
     expect(runtime.queryClient).toBeTruthy();
 
+    // 等待实际路由结束动画，避免其定时器在jsdom销毁后访问window。
+    await vi.waitFor(() => expect(window.globalLoading).toBe(false), { timeout: 3000 });
     runtime.app.unmount();
   });
 });

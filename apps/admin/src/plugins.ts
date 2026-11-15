@@ -5,7 +5,7 @@ import { createHelpPlugin } from "@ingot/help-plugin";
 import { createAppLocalPlugin } from "./app-plugin";
 
 export const createAdminPlugins = (appCode: string): InAdminPlugin[] => [
-  createAuthPlugin(createSameOriginAuthSession),
+  createAuthPlugin(createSameOriginAuthSession, { organizationSwitch: true }),
   orgPlugin,
   createHelpPlugin({
     entry: "tenant",

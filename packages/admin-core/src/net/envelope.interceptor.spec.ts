@@ -12,6 +12,7 @@ const isEnvelopeResponse = vi.fn();
 const identity = vi.hoisted(() => ({ epoch: 0 }));
 vi.mock("@/stores/modules/auth", () => ({
   usePermissions: () => ({ contextEpoch: identity.epoch }),
+  useAuthStore: () => ({ switchingIdentity: false, loggingOut: false }),
 }));
 
 vi.mock("@ingot/shared/crypto", async (importOriginal) => {

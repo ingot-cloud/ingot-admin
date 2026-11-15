@@ -8,6 +8,6 @@ export const bffAuthApi = () => createAuthApi(Http, getAdminRuntimeConfig().logi
 /**
  * 撤销当前应用会话
  */
-export function LogoutAPI(signal?: AbortSignal): Promise<R> {
-  return bffAuthApi().logout(signal);
+export function LogoutAPI(signal?: AbortSignal, contextVersion?: string): Promise<R> {
+  return bffAuthApi().logout(signal, contextVersion);
 }

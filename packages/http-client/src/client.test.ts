@@ -1,5 +1,5 @@
 import { AxiosError, AxiosHeaders } from "axios";
-import type { AxiosAdapter, InternalAxiosRequestConfig } from "axios";
+import type { AxiosAdapter, AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 import { describe, expect, it, vi } from "vitest";
 import { createHttpClient } from "./client";
 import { ApiError } from "./error";
@@ -62,6 +62,73 @@ const okBody = (data: unknown = { id: "1" }): R =>
   }) as R;
 
 describe("createHttpClient", () => {
+  it.each([
+    "rawRequest",
+    "get",
+    "delete",
+    "post",
+    "put",
+    "patch",
+    "head",
+    "options",
+    "postForm",
+    "putForm",
+    "patchForm",
+  ] as const)("%s 在异步拦截器前同步捕获请求元数据，重试保留原快照", async (method) => {
+    let identity = "source";
+    const snapshots: string[] = [];
+    const hook = vi.fn((config: AxiosRequestConfig & { creationSnapshot?: string }) => {
+      config.creationSnapshot ??= identity;
+    });
+    const http = createHttpClient({
+      hooks: { onRequestCreated: hook },
+      adapter: jsonAdapter((config) => {
+        snapshots.push(
+          (config as InternalAxiosRequestConfig & { creationSnapshot: string }).creationSnapshot,
+        );
+        return { data: okBody() };
+      }),
+    });
+    const config = {};
+    const pending =
+      method === "rawRequest"
+        ? http.rawRequest({ ...config, url: "/capture" })
+        : method === "head" || method === "options"
+          ? http[method]("/capture", config)
+          : http[method]("/capture", {}, config);
+    expect(hook).toHaveBeenCalledTimes(1);
+    identity = "target";
+    await pending;
+    expect(snapshots).toEqual(["source"]);
+    const original = hook.mock.calls[0]![0];
+    await http.rawRequest({ ...original, url: "/capture" });
+    expect(snapshots).toEqual(["source", "source"]);
+  });
+
+  it("复用调用选项创建新请求时重新捕获，不污染调用方对象", async () => {
+    let identity = "source";
+    const snapshots: string[] = [];
+    const config = { feedback: "silent" as const };
+    const http = createHttpClient({
+      hooks: {
+        onRequestCreated: (captured: AxiosRequestConfig & { creationSnapshot?: string }) => {
+          captured.creationSnapshot ??= identity;
+        },
+      },
+      adapter: jsonAdapter((captured) => {
+        snapshots.push(
+          (captured as InternalAxiosRequestConfig & { creationSnapshot: string }).creationSnapshot,
+        );
+        return { data: okBody() };
+      }),
+    });
+    await http.post("/first", {}, config);
+    identity = "target";
+    await http.post("/second", {}, config);
+    expect(snapshots).toEqual(["source", "target"]);
+    expect(config).toEqual({ feedback: "silent" });
+  });
+
   it("成功时归一化为 R 并展开 data", async () => {
     const http = createHttpClient({
       adapter: jsonAdapter(() => ({
@@ -98,7 +165,9 @@ describe("createHttpClient", () => {
       })),
       hooks: { onBusinessFailure },
     });
-    await expect(http.get("/api/app", null, { feedback: "silent" })).rejects.toBeInstanceOf(ApiError);
+    await expect(http.get("/api/app", null, { feedback: "silent" })).rejects.toBeInstanceOf(
+      ApiError,
+    );
     expect(onBusinessFailure).not.toHaveBeenCalled();
   });
 
@@ -153,7 +222,9 @@ describe("createHttpClient", () => {
         isUnauthorized: (error) => error.status === 401 || error.code === "S0401",
       },
     });
-    await expect(http.get("/api/me", null, { feedback: "silent" })).rejects.toMatchObject({ status: 401 });
+    await expect(http.get("/api/me", null, { feedback: "silent" })).rejects.toMatchObject({
+      status: 401,
+    });
     expect(onUnauthorized).toHaveBeenCalledTimes(1);
     expect(onBusinessFailure).not.toHaveBeenCalled();
   });

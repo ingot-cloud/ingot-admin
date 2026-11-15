@@ -1,5 +1,11 @@
 import axios from "axios";
-import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { CancelManager } from "./cancel";
 import {
   axiosResponseToR,
@@ -26,6 +32,7 @@ import { DEFAULT_SUCCESS_CODE } from "./types";
 
 class AxiosHttpClient implements HttpClient {
   private readonly instance: AxiosInstance;
+  private readonly hooks: HttpClientHooks;
 
   constructor(clientOptions: HttpClientOptions) {
     this.instance = axios.create({
@@ -37,6 +44,7 @@ class AxiosHttpClient implements HttpClient {
 
     const cancelManager = clientOptions.cancelManager ?? new CancelManager();
     const hooks = clientOptions.hooks ?? {};
+    this.hooks = hooks;
     const requestInterceptors: PreFilter[] = [
       createLifecycleRequestInterceptor(cancelManager, hooks),
       ...(clientOptions.interceptors?.request ?? []),
@@ -48,6 +56,12 @@ class AxiosHttpClient implements HttpClient {
     ];
     installRequestInterceptors(this.instance, requestInterceptors);
     installResponseInterceptors(this.instance, responseInterceptors);
+  }
+
+  private capture(config: HttpRequestConfig = {}): HttpRequestConfig {
+    const captured = { ...config };
+    this.hooks.onRequestCreated?.(captured);
+    return captured;
   }
 
   configure(options: HttpClientConfigureOptions): void {
@@ -63,7 +77,7 @@ class AxiosHttpClient implements HttpClient {
   }
 
   rawRequest<T = unknown>(config: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.request(config);
+    return this.instance.request(this.capture(config));
   }
 
   get<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
@@ -71,7 +85,7 @@ class AxiosHttpClient implements HttpClient {
     if (params) {
       next.params = Object.assign({}, next.params, params);
     }
-    return this.instance.get<T, R<T>>(url, next);
+    return this.instance.get<T, R<T>>(url, this.capture(next));
   }
 
   delete<T = unknown>(url: string, params?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
@@ -79,39 +93,39 @@ class AxiosHttpClient implements HttpClient {
     if (params) {
       next.data = Object.assign({}, next.data, params);
     }
-    return this.instance.delete<T, R<T>>(url, next);
+    return this.instance.delete<T, R<T>>(url, this.capture(next));
   }
 
   post<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.post<T, R<T>>(url, data, config);
+    return this.instance.post<T, R<T>>(url, data, this.capture(config));
   }
 
   put<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.put<T, R<T>>(url, data, config);
+    return this.instance.put<T, R<T>>(url, data, this.capture(config));
   }
 
   patch<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.patch<T, R<T>>(url, data, config);
+    return this.instance.patch<T, R<T>>(url, data, this.capture(config));
   }
 
   head<T = unknown>(url: string, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.head<T, R<T>>(url, config);
+    return this.instance.head<T, R<T>>(url, this.capture(config));
   }
 
   options<T = unknown>(url: string, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.options<T, R<T>>(url, config);
+    return this.instance.options<T, R<T>>(url, this.capture(config));
   }
 
   postForm<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.postForm(url, data, config);
+    return this.instance.postForm(url, data, this.capture(config));
   }
 
   putForm<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.putForm(url, data, config);
+    return this.instance.putForm(url, data, this.capture(config));
   }
 
   patchForm<T = unknown>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<R<T>> {
-    return this.instance.patchForm(url, data, config);
+    return this.instance.patchForm(url, data, this.capture(config));
   }
 }
 

@@ -17,6 +17,19 @@ import { getAdminRuntimeConfig, getAdminRouter } from "@/runtime";
 import { useLogin } from "@/hooks/biz/useLogin";
 import { PageName } from "@/router/constants";
 import { useRouterStore } from "./router";
+import {
+  clearSessionContext,
+  currentSessionContext,
+  hasPendingLogout,
+  beginPendingLogout,
+  confirmPendingLogout,
+  assertNoPendingLogout,
+  LogoutPendingError,
+  subscribeLogoutState,
+  sessionContextVerifiedAt,
+  readOrganizationSync,
+  publishOrganizationSync,
+} from "@ingot/auth-core";
 
 export class DomainMismatchError extends Error {
   readonly name = "DomainMismatchError";
@@ -61,39 +74,63 @@ const toUserInfo = (bootstrap: IamBootstrap): UserInfo => ({
 export const useAuthStore = defineStore(
   "security",
   () => {
-    const loggingOut = ref(false);
+    const loggingOut = ref(hasPendingLogout(getAdminRuntimeConfig().login.appId));
     const switchingIdentity = ref(false);
     const isTransitioning = computed(() => loggingOut.value || switchingIdentity.value);
     let logoutPromise: Promise<void> | undefined;
     const LOGOUT_TIMEOUT_MILLIS = 1500;
 
-    /** 退出仅执行一次；本地401不撤销远端，显式退出超时中止旧请求。 */
+    /** 未知注销持续暂停业务；本地计时器只能结束等待，不能伪造服务端成功。 */
     const logout = (ignoreRevokeAPI?: boolean): Promise<void> => {
       if (logoutPromise) return logoutPromise;
+      const appId = getAdminRuntimeConfig().login.appId;
+      const captured = currentSessionContext() ?? "";
+      const pending = ignoreRevokeAPI ? undefined : beginPendingLogout(appId, captured);
       loggingOut.value = true;
-      clearIdentityContext();
-      let revoke = Promise.resolve();
-      if (!ignoreRevokeAPI) {
-        const controller = new AbortController();
-        let timeout: ReturnType<typeof setTimeout> | undefined;
-        revoke = Promise.race([
-          LogoutAPI(controller.signal).then(
-            () => undefined,
-            () => undefined,
-          ),
-          new Promise<void>((resolve) => {
-            timeout = setTimeout(() => {
-              controller.abort();
-              resolve();
-            }, LOGOUT_TIMEOUT_MILLIS);
-          }),
-        ]).finally(() => clearTimeout(timeout));
+      if (getAdminRuntimeConfig().login.entry === "tenant") {
+        const switching = readOrganizationSync();
+        if (switching?.phase === "pending") publishOrganizationSync({ ...switching, phase: "cancelled" });
       }
-      logoutPromise = revoke.then(() => publishIdentityLoggedOut());
-      return logoutPromise;
+      clearSessionContext();
+      clearIdentityContext();
+      if (ignoreRevokeAPI) {
+        logoutPromise = Promise.resolve().then(() => publishIdentityLoggedOut(captured));
+        return logoutPromise;
+      }
+      const controller = new AbortController();
+      let timeout: ReturnType<typeof setTimeout> | undefined;
+      const attempt = Promise.race([
+        LogoutAPI(controller.signal, pending?.contextVersion).then(() => {
+          if (pending) confirmPendingLogout(appId, pending.operationId);
+        }),
+        new Promise<never>((_resolve, reject) => {
+          timeout = setTimeout(() => { controller.abort(); reject(new LogoutPendingError()); }, LOGOUT_TIMEOUT_MILLIS);
+        }),
+      ]).catch(() => {
+        if (logoutPromise === attempt) logoutPromise = undefined;
+        throw new LogoutPendingError();
+      }).finally(() => clearTimeout(timeout));
+      logoutPromise = attempt;
+      return attempt;
     };
 
-    return { logout, loggingOut, switchingIdentity, isTransitioning };
+    /** 新身份只可在注销已确认后接纳，旧退出结果不能覆盖后续登录。 */
+    const sessionEstablished = (): void => {
+      assertNoPendingLogout(getAdminRuntimeConfig().login.appId);
+      logoutPromise = undefined;
+      loggingOut.value = false;
+    };
+
+    const unsubscribeLogout = subscribeLogoutState(getAdminRuntimeConfig().login.appId, (state) => {
+      if (state.phase === "confirmed" && currentSessionContext() && sessionContextVerifiedAt() >= (state.confirmedAt ?? 0)) return;
+      loggingOut.value = state.phase === "pending";
+      clearSessionContext();
+      clearIdentityContext();
+      void useLogin().go({ rememberReturnTo: false, forceLogin: true });
+    });
+    onScopeDispose(unsubscribeLogout);
+
+    return { logout, sessionEstablished, loggingOut, switchingIdentity, isTransitioning };
   },
   {
     persist: {
@@ -261,15 +298,15 @@ const IDENTITY_SOURCE_ID = crypto.randomUUID();
 
 type IdentityEventType = "invalidated" | "logged-out";
 
-const publishIdentityEvent = (type: IdentityEventType): void => {
+const publishIdentityEvent = (type: IdentityEventType, contextVersion = currentSessionContext()): void => {
   if (typeof BroadcastChannel === "undefined") return;
   const channel = new BroadcastChannel(IDENTITY_CHANNEL_NAME);
-  channel.postMessage({ type, source: IDENTITY_SOURCE_ID });
+  channel.postMessage({ type, source: IDENTITY_SOURCE_ID, contextVersion, issuedAt: Date.now() });
   channel.close();
 };
 
 export const publishIdentityInvalidated = (): void => publishIdentityEvent("invalidated");
-const publishIdentityLoggedOut = (): void => publishIdentityEvent("logged-out");
+const publishIdentityLoggedOut = (contextVersion: string): void => { if (contextVersion) publishIdentityEvent("logged-out", contextVersion); };
 
 let identityTransitionVersion = 0;
 
@@ -284,21 +321,30 @@ function clearIdentityContext(): number {
   return transition;
 }
 
+/** 接纳新会话版本前同步隔离旧界面；业务恢复仍由bootstrap和目标路由完成。 */
+export const pauseIdentityContext = (): void => {
+  useAuthStore().switchingIdentity = true;
+  clearIdentityContext();
+};
+
 export const bindIdentityChannel = (): void => {
   if (identityChannelBound || typeof BroadcastChannel === "undefined") return;
   identityChannelBound = true;
   const channel = new BroadcastChannel(IDENTITY_CHANNEL_NAME);
   channel.addEventListener(
     "message",
-    (event: MessageEvent<{ type?: IdentityEventType; source?: string }>) => {
+    (event: MessageEvent<{ type?: IdentityEventType; source?: string; contextVersion?: string; issuedAt?: number }>) => {
       if (event.data?.source === IDENTITY_SOURCE_ID) return;
       if (event.data?.type === "logged-out") {
+        if (currentSessionContext() && event.data.contextVersion !== currentSessionContext()) return;
+        clearSessionContext();
         useAuthStore().loggingOut = true;
         clearIdentityContext();
         void useLogin().go({ rememberReturnTo: false });
         return;
       }
       if (event.data?.type !== "invalidated" || useAuthStore().loggingOut) return;
+      clearSessionContext();
       if (/^\/login\/?$/.test(window.location.pathname)) {
         clearIdentityContext();
         return;
@@ -412,6 +458,7 @@ export const resetSessionBootstrap = (): void => {
 };
 
 export const ensureSessionBootstrap = (options?: SessionFeedbackOptions): Promise<void> => {
+  if (hasPendingLogout(getAdminRuntimeConfig().login.appId)) return Promise.reject(new LogoutPendingError());
   if (bootstrapped) {
     return Promise.resolve();
   }
@@ -448,6 +495,7 @@ export const ensureSessionBootstrap = (options?: SessionFeedbackOptions): Promis
 export const refreshSessionPermissions = (options?: {
   refreshMenusIfVersionChanged?: boolean;
 }): Promise<void> => {
+  if (hasPendingLogout(getAdminRuntimeConfig().login.appId)) return Promise.reject(new LogoutPendingError());
   if (useUserInfoStore().getIsInitPwd) return Promise.resolve();
   if (refreshPromise) {
     return refreshPromise;
